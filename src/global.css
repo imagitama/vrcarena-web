@@ -1,0 +1,21 @@
+#root {
+  max-width: 100vw;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.main {
+  position: relative;
+}
+
+.clickable:hover {
+  cursor: pointer !important;
+  background: rgba(100, 100, 0, 0.5) !important;
+  outline: 2px solid rgba(100, 100, 0, 0.5);
+}
+
+.markdown-table {
+  width: auto !important;
+}

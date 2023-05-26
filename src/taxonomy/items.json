@@ -1,0 +1,1253 @@
+[
+  {
+    "type": "kingdom",
+    "scientificName": "Animalia",
+    "canonicalName": "Animals",
+    "children": [
+      {
+        "type": "phylum",
+        "scientificName": "Chordata",
+        "canonicalName": "Chordates",
+        "children": [
+          {
+            "type": "clade",
+            "scientificName": "Dinosauria",
+            "canonicalName": "Dinosaurs",
+            "children": []
+          },
+          {
+            "type": "class",
+            "scientificName": "Chondrichthyes",
+            "canonicalName": "Cartilaginous Fishes",
+            "children": [
+              {
+                "type": "order",
+                "scientificName": "Lamniformes",
+                "canonicalName": "Mackerel Sharks",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Lamnidae",
+                    "canonicalName": "Mackerel Shark Family",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Carcharodon",
+                        "canonicalName": "Great White Sharks",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Carcharodon carcharias",
+                            "canonicalName": "Great White Shark",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "class",
+            "scientificName": "Mammalia",
+            "canonicalName": "Mammals",
+            "children": [
+              {
+                "type": "order",
+                "scientificName": "Other Mammalia",
+                "canonicalNam": "Other Mammals",
+                "description": "Mammals that do not have their own taxonomy (Other Mammals)",
+                "children": []
+              },
+              {
+                "type": "order",
+                "scientificName": "Lagomorpha",
+                "canonicalName": "Lagomorphs",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Leporidae",
+                    "canonicalName": "Rabbits, hares, and pikas",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Oryctolagus",
+                        "canonicalName": "European rabbits",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Oryctolagus cuniculus",
+                            "canonicalName": "European rabbit",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Rodentia",
+                "canonicalName": "Rodents",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Muridae",
+                    "canonicalName": "Murids",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Mus",
+                        "canonicalName": "Mice",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Mus musculus",
+                            "canonicalName": "House mouse",
+                            "children": []
+                          },
+                          {
+                            "type": "species",
+                            "scientificName": "Mus spretus",
+                            "canonicalName": "Algerian mouse",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "genus",
+                        "scientificName": "Rattus",
+                        "canonicalName": "Rats",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Rattus norvegicus",
+                            "canonicalName": "Brown rat",
+                            "children": []
+                          },
+                          {
+                            "type": "species",
+                            "scientificName": "Rattus rattus",
+                            "canonicalName": "Black rat",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Diprotodontia",
+                "canonicalName": "Diprotodontia",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Macropodidae",
+                    "canonicalName": "Kangaroos",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Macropus",
+                        "canonicalName": "Kangaroos",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Macropus giganteus",
+                            "canonicalName": "Eastern Grey Kangaroo",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Carnivora",
+                "canonicalName": "Carnivorans",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Hyenidae",
+                    "canonicalName": "Hyenas",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Crocuta",
+                        "canonicalName": "Spotted Hyenas",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Crocuta crocuta",
+                            "canonicalName": "Spotted Hyenas",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Ailuridae",
+                    "canonicalName": "Red Pandas",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Ailurus",
+                        "canonicalName": "Red Pandas",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Ailurus fulgens",
+                            "canonicalName": "Red Panda",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Ursidae",
+                    "canonicalName": "Ursidae",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Ursus",
+                        "canonicalName": "Bears",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Ursus arctos",
+                            "canonicalName": "Brown bear",
+                            "children": []
+                          },
+                          {
+                            "type": "species",
+                            "scientificName": "Ursus americanus",
+                            "canonicalName": "American black bear",
+                            "children": []
+                          },
+                          {
+                            "type": "species",
+                            "scientificName": "Ursus maritimus",
+                            "canonicalName": "Polar bear",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Canidae",
+                    "canonicalName": "Canids",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Canis",
+                        "canonicalName": "Canines",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Canis lupus",
+                            "canonicalName": "Wolves",
+                            "children": []
+                          },
+                          {
+                            "type": "species",
+                            "scientificName": "Canis familiaris",
+                            "canonicalName": "Dogs",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "genus",
+                        "scientificName": "Vulpes",
+                        "canonicalName": "Foxes",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Vulpes vulpes",
+                            "canonicalName": "Red Foxes",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Mustelidae",
+                    "canonicalName": "Weasels and Otters",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Lutra",
+                        "canonicalName": "Otters",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Lutra canadensis",
+                            "canonicalName": "River Otters",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "genus",
+                        "scientificName": "Mustela",
+                        "canonicalName": "Weasels",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Mustela lutreola",
+                            "canonicalName": "European Mink",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Procyonidae",
+                    "canonicalName": "Raccoons",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Procyon",
+                        "canonicalName": "Common Raccoons",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Procyon lotor",
+                            "canonicalName": "Raccoons",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Felidae",
+                    "canonicalName": "Cats",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Felis",
+                        "canonicalName": "Small Cats",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Felis catus",
+                            "canonicalName": "Domestic Cats",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "genus",
+                        "scientificName": "Panthera",
+                        "canonicalName": "Big Cats",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Panthera leo",
+                            "canonicalName": "Lions",
+                            "children": []
+                          },
+                          {
+                            "type": "species",
+                            "scientificName": "Panthera tigris",
+                            "canonicalName": "Tigers",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Artiodactyla",
+                "canonicalName": "Even-toed Ungulates",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Cervidae",
+                    "canonicalName": "Deer",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Odocoileus",
+                        "canonicalName": "Deer",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Odocoileus virginianus",
+                            "canonicalName": "White-tailed Deer",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Bovidae",
+                    "canonicalName": "Cattle, Sheep, and Goats",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Bos",
+                        "canonicalName": "Cattle",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Bos taurus",
+                            "canonicalName": "Cattle",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "genus",
+                        "scientificName": "Ovis",
+                        "canonicalName": "Sheep",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Ovis aries",
+                            "canonicalName": "Sheep",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "genus",
+                        "scientificName": "Capra",
+                        "canonicalName": "Goats",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Capra aegagrus",
+                            "canonicalName": "Wild Goats",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Camelidae",
+                    "canonicalName": "Llamas and Alpacas",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Lama",
+                        "canonicalName": "Llamas",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Lama glama",
+                            "canonicalName": "Llamas",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "genus",
+                        "scientificName": "Vicugna",
+                        "canonicalName": "Alpacas",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Vicugna pacos",
+                            "canonicalName": "Alpacas",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Bovidae",
+                    "canonicalName": "Bovids",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Bos",
+                        "canonicalName": "Cattle",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Bos taurus",
+                            "canonicalName": "Domestic cattle",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Hippopotamidae",
+                    "canonicalName": "Hippopotamuses",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Hippopotamus",
+                        "canonicalName": "Hippo",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Hippopotamus amphibius",
+                            "canonicalName": "Hippopotamus",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Perissodactyla",
+                "canonicalName": "Odd-toed Ungulates",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Equidae",
+                    "canonicalName": "Horses",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Equus",
+                        "canonicalName": "Horses",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Equus ferus",
+                            "canonicalName": "Horses",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Chiroptera",
+                "canonicalName": "Bats",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Vespertilionidae",
+                    "canonicalName": "Vesper Bats",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Myotis",
+                        "canonicalName": "Mouse-eared Bats",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Myotis lucifugus",
+                            "canonicalName": "Little Brown Bat",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Cetacea",
+                "canonicalName": "Whales and Dolphins",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Delphinidae",
+                    "canonicalName": "Dolphins",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Tursiops",
+                        "canonicalName": "Bottlenose Dolphins",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Tursiops truncatus",
+                            "canonicalName": "Bottlenose Dolphins",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Balaenidae",
+                    "canonicalName": "Right Whales",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Eubalaena",
+                        "canonicalName": "Right Whales",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Eubalaena glacialis",
+                            "canonicalName": "North Atlantic Right Whale",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Testudines",
+                "canonicalName": "Turtles",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Cheloniidae",
+                    "canonicalName": "Sea Turtles",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Chelonia",
+                        "canonicalName": "Green Sea Turtles",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Chelonia mydas",
+                            "canonicalName": "Green Sea Turtle",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Emydidae",
+                    "canonicalName": "Pond Turtles",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Chrysemys",
+                        "canonicalName": "Painted Turtles",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Chrysemys picta",
+                            "canonicalName": "Painted Turtle",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "class",
+                "scientificName": "Aves",
+                "canonicalName": "Birds",
+                "children": [
+                  {
+                    "type": "order",
+                    "scientificName": "Passeriformes",
+                    "canonicalName": "Passerines",
+                    "children": [
+                      {
+                        "type": "family",
+                        "scientificName": "Fringillidae",
+                        "canonicalName": "Finches",
+                        "children": [
+                          {
+                            "type": "genus",
+                            "scientificName": "Spinus",
+                            "canonicalName": "Goldfinches",
+                            "children": [
+                              {
+                                "type": "species",
+                                "scientificName": "Spinus tristis",
+                                "canonicalName": "American Goldfinch",
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "order",
+                    "scientificName": "Strigiformes",
+                    "canonicalName": "Owls",
+                    "children": [
+                      {
+                        "type": "family",
+                        "scientificName": "Strigidae",
+                        "canonicalName": "Typical Owls",
+                        "children": [
+                          {
+                            "type": "genus",
+                            "scientificName": "Bubo",
+                            "canonicalName": "Eagles Owls",
+                            "children": [
+                              {
+                                "type": "species",
+                                "scientificName": "Bubo bubo",
+                                "canonicalName": "Eurasian Eagle-Owl",
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "class",
+            "scientificName": "Reptilia",
+            "canonicalName": "Reptiles",
+            "children": [
+              {
+                "type": "order",
+                "scientificName": "Other Reptilia",
+                "canonicalNam": "Other Reptiles",
+                "description": "Reptiles that do not have their own taxonomy (Other Reptiles)",
+                "children": []
+              },
+              {
+                "type": "order",
+                "scientificName": "Squamata",
+                "canonicalName": "Squamates",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Colubridae",
+                    "canonicalName": "Colubrids",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Pantherophis",
+                        "canonicalName": "Rat Snakes",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Pantherophis obsoletus",
+                            "canonicalName": "Western Rat Snake",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Lacertidae",
+                    "canonicalName": "Lizards",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Lacerta",
+                        "canonicalName": "True Lizards",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Lacerta agilis",
+                            "canonicalName": "Sand Lizard",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Pythonidae",
+                    "canonicalName": "Pythons",
+                    "children": [
+                      {
+                        "type": "genus",
+                        "scientificName": "Python",
+                        "canonicalName": "Pythons",
+                        "children": [
+                          {
+                            "type": "species",
+                            "scientificName": "Python molurus",
+                            "canonicalName": "Indian Python",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "phylum",
+        "scientificName": "Arthropoda",
+        "canonicalName": "Arthropods",
+        "children": [
+          {
+            "type": "class",
+            "scientificName": "Insecta",
+            "canonicalName": "Insects",
+            "children": [
+              {
+                "type": "order",
+                "scientificName": "Hymenoptera",
+                "canonicalName": "Ants, Bees, Wasps",
+                "children": [
+                  {
+                    "type": "family",
+                    "scientificName": "Formicidae",
+                    "canonicalName": "Ants",
+                    "children": []
+                  },
+                  {
+                    "type": "family",
+                    "scientificName": "Vespidae",
+                    "canonicalName": "Wasps",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "type": "order",
+                "scientificName": "Coleoptera",
+                "canonicalName": "Beetles",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "kingdom",
+    "scientificName": "Fantasy",
+    "canonicalName": "Fantasy",
+    "children": [
+      {
+        "type": "genus",
+        "scientificName": "Other Fantasy",
+        "canonicalName": "Other Fantasy",
+        "description": "For other exotic creatures that do not have their taxonomy here (Other Exotics)",
+        "children": []
+      },
+      {
+        "type": "genus",
+        "scientificName": "Dragons",
+        "canonicalName": "Dragons",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Wyverns",
+            "canonicalName": "Wyverns",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Kobolds",
+        "canonicalName": "Kobolds",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Kobolds",
+            "canonicalName": "Kobolds",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "kingdom",
+    "scientificName": "User Created",
+    "canonicalName": "User Created",
+    "children": [
+      {
+        "type": "genus",
+        "scientificName": "Synths",
+        "canonicalName": "Synths",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Synths",
+            "canonicalName": "Synths",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Wickerbeasts",
+        "canonicalName": "Wickerbeasts",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Wickerbeasts",
+            "canonicalName": "Wickerbeasts",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Cruxs",
+        "canonicalName": "Cruxs",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Cruxs",
+            "canonicalName": "Cruxs",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Dutch Angel Dragons",
+        "canonicalName": "Dutch Angel Dragons",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Dutch Angel Dragons",
+            "canonicalName": "Dutch Angel Dragons",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Sergals",
+        "canonicalName": "Sergals",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Sergals",
+            "canonicalName": "Sergals",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Protogens",
+        "canonicalName": "Protogens",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Protogens",
+            "canonicalName": "Protogens",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Yinglets",
+        "canonicalName": "Yinglets",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Yinglets",
+            "canonicalName": "Yinglets",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Rexouiums",
+        "canonicalName": "Rexouiums",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Rexouiums",
+            "canonicalName": "Rexouiums",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Best Bois",
+        "canonicalName": "Best Bois",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Best Bois",
+            "canonicalName": "Best Bois",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Monster Hunters",
+        "canonicalName": "Monster Hunters",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Monster Hunters",
+            "canonicalName": "Monster Hunters",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Ta genjūs",
+        "canonicalName": "Ta genjūs",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Ta genjūs",
+            "canonicalName": "Ta genjūs",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Chuas",
+        "canonicalName": "Chuas",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Chuas",
+            "canonicalName": "Chuas",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Manokits",
+        "canonicalName": "Manokits",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Manokits",
+            "canonicalName": "Manokits",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Avalis",
+        "canonicalName": "Avalis",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Avalis",
+            "canonicalName": "Avalis",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Hobkins",
+        "canonicalName": "Hobkins",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Hobkins",
+            "canonicalName": "Hobkins",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "genus",
+        "scientificName": "Impims",
+        "canonicalName": "Impims",
+        "children": [
+          {
+            "type": "species",
+            "scientificName": "Impims",
+            "canonicalName": "Impims",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "kingdom",
+    "scientificName": "Media",
+    "canonicalName": "TV shows, movies, video games and anime",
+    "children": [
+      {
+        "type": "class",
+        "scientificName": "TV Show Characters",
+        "canonicalName": "TV Show Characters",
+        "children": [
+          {
+            "type": "tv_show",
+            "scientificName": "Other TV Show",
+            "canonicalName": "Other TV Show",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "class",
+        "scientificName": "Movie Characters",
+        "canonicalName": "Movie Characters",
+        "children": [
+          {
+            "type": "movie",
+            "scientificName": "Other Movie",
+            "canonicalName": "Other Movie",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "class",
+        "scientificName": "Video Game Characters",
+        "canonicalName": "Video Game Characters",
+        "children": [
+          {
+            "type": "video_game",
+            "scientificName": "Other Video Game",
+            "canonicalName": "Other Video Game",
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "class",
+        "scientificName": "Anime Characters",
+        "canonicalName": "Anime Characters",
+        "children": [
+          {
+            "type": "anime",
+            "scientificName": "Made in Abyss",
+            "canonicalName": "Made in Abyss",
+            "children": [
+              {
+                "type": "species",
+                "scientificName": "Narehates",
+                "canonicalName": "Narehates",
+                "otherNames": ["Nanachis"],
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "anime",
+            "scientificName": "Other Anime",
+            "canonicalName": "Other Anime",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "kingdom",
+    "scientificName": "Pokémon",
+    "canonicalName": "Pokémon",
+    "children": [
+      {
+        "type": "pokemon",
+        "scientificName": "Charmander",
+        "canonicalName": "Charmander",
+        "children": [
+          {
+            "type": "evolution",
+            "scientificName": "Charmander",
+            "canonicalName": "Charmander",
+            "children": []
+          },
+          {
+            "type": "evolution",
+            "scientificName": "Charmeleon",
+            "canonicalName": "Charmeleon",
+            "children": []
+          },
+          {
+            "type": "evolution",
+            "scientificName": "Charizard",
+            "canonicalName": "Charizard",
+            "children": [
+              {
+                "type": "mega_evolution",
+                "scientificName": "Mega Charizard X",
+                "canonicalName": "Mega Charizard X",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "pokemon",
+        "scientificName": "Other Pokémon",
+        "canonicalName": "Other Pokémon",
+        "children": []
+      }
+    ]
+  },
+  {
+    "type": "kingdom",
+    "scientificName": "Other",
+    "canonicalName": "Other",
+    "children": [
+      {
+        "type": "class",
+        "scientificName": "Animate Object",
+        "canonicalName": "Animate Object",
+        "children": []
+      },
+      {
+        "type": "class",
+        "scientificName": "Robot",
+        "canonicalName": "Robot",
+        "children": []
+      }
+    ]
+  }
+]

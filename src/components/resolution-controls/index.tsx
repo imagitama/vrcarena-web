@@ -1,0 +1,138 @@
+import React, { useState } from 'react'
+import CheckIcon from '@material-ui/icons/Check'
+import ClearIcon from '@material-ui/icons/Clear'
+
+import useDatabaseSave from '../../hooks/useDatabaseSave'
+
+import Button from '../button'
+import LoadingIndicator from '../loading-indicator'
+
+import { handleError } from '../../error-handling'
+import useDataStoreItem from '../../hooks/useDataStoreItem'
+import {
+  CollectionNames,
+  ReportMeta,
+  ResolutionStatuses
+} from '../../modules/reports'
+import useUserId from '../../hooks/useUserId'
+import TextInput from '../text-input'
+
+export default ({
+  id,
+  existingResolutionStatus,
+  existingResolutionNotes,
+  onClick,
+  onDone
+}: {
+  id: string
+  existingResolutionStatus?: string // pending | resolved
+  existingResolutionNotes?: string
+  onClick?: (newValue: string) => void
+  onDone?: () => void
+}) => {
+  const [isLoading, isErroredLoading, metaRecord] = useDataStoreItem<
+    ReportMeta
+  >(
+    CollectionNames.ReportsMeta,
+    existingResolutionStatus ? false : id,
+    'resolve-button'
+  )
+  const [isSaving, , isErroredSaving, save] = useDatabaseSave(
+    CollectionNames.ReportsMeta,
+    id
+  )
+  const userId = useUserId()
+  const [newResolutionNotes, setNewResolutionNotes] = useState(
+    existingResolutionNotes || ''
+  )
+
+  if (isLoading || isSaving) {
+    return <LoadingIndicator message={isLoading ? 'Loading...' : 'Saving...'} />
+  }
+
+  if (!existingResolutionStatus && !metaRecord) {
+    return <>No record found</>
+  }
+
+  const resolutionStatus =
+    existingResolutionStatus ||
+    (!existingResolutionStatus && metaRecord
+      ? metaRecord.resolutionstatus
+      : null)
+
+  if (isErroredLoading || !resolutionStatus) {
+    return <>Failed to load record!</>
+  }
+
+  if (isErroredSaving) {
+    return <>Failed to save record!</>
+  }
+
+  const toggle = async () => {
+    try {
+      if (!resolutionStatus) {
+        throw new Error('Cannot toggle access - invalid initial status!')
+      }
+
+      const newResolutionStatus =
+        resolutionStatus === ResolutionStatuses.Pending
+          ? ResolutionStatuses.Resolved
+          : ResolutionStatuses.Pending
+      const newResolvedAt =
+        newResolutionStatus === ResolutionStatuses.Resolved ? new Date() : null
+      const newResolvedBy =
+        newResolutionStatus === ResolutionStatuses.Resolved ? userId : null
+
+      if (onClick) {
+        onClick(newResolutionStatus)
+      }
+
+      await save({
+        resolutionstatus: newResolutionStatus,
+        resolvedat: newResolvedAt,
+        resolvedby: newResolvedBy,
+        resolutionnotes: newResolutionNotes
+      })
+
+      if (onDone) {
+        onDone()
+      }
+    } catch (err) {
+      console.error('Failed to toggle deleted status', err)
+      handleError(err)
+    }
+  }
+
+  return (
+    <>
+      <Button
+        color="default"
+        onClick={toggle}
+        icon={
+          resolutionStatus === ResolutionStatuses.Pending ? (
+            <CheckIcon />
+          ) : resolutionStatus === ResolutionStatuses.Resolved ? (
+            <ClearIcon />
+          ) : (
+            undefined
+          )
+        }>
+        {resolutionStatus === ResolutionStatuses.Pending
+          ? 'Resolve'
+          : resolutionStatus === ResolutionStatuses.Resolved
+          ? 'Return To Pending'
+          : 'UNKNOWN'}
+      </Button>
+      <br />
+      <br />
+      Resolution notes (public):
+      <TextInput
+        fullWidth
+        rows={5}
+        multiline
+        onChange={e => setNewResolutionNotes(e.target.value)}
+        value={newResolutionNotes}
+      />
+    </>
+  )
+}
