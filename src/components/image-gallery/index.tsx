@@ -3,12 +3,8 @@ import Lightbox from 'react-image-lightbox-custom'
 import { makeStyles } from '@material-ui/core/styles'
 import 'react-image-lightbox-custom/style.css'
 import YouTubeIcon from '@material-ui/icons/YouTube'
-import {
-  getImageUrlFromYouTubeUrl,
-  isUrl,
-  isUrlAYoutubeVideo
-} from '../../utils'
-import YouTubePlayer from '../youtube-player'
+import { getImageUrlFromYouTubeUrl, isUrl } from '../../utils'
+import ImageGalleryItemContent from '../image-gallery-item-content'
 
 const useStyles = makeStyles({
   root: {},
@@ -153,20 +149,11 @@ export default ({
           )}
           // @ts-ignore
           mainCustomContent={
-            isUrlAYoutubeVideo(urls[activePhotoIdx]) ? (
-              <div className={classes.customContent}>
-                <YouTubePlayer url={urls[activePhotoIdx]} />
-              </div>
-            ) : renderer ? (
-              <div className={classes.customContent}>
-                {React.createElement(renderer, {
-                  url: urls[activePhotoIdx],
-                  index: activePhotoIdx
-                })}
-              </div>
-            ) : (
-              undefined
-            )
+            // @ts-ignore
+            <ImageGalleryItemContent
+              url={urls[activePhotoIdx]}
+              index={activePhotoIdx}
+            />
           }
           // need these or it renders errors (note: next/back arrows always visible)
           nextCustomContent={<></>}

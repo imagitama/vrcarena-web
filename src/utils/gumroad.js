@@ -152,3 +152,25 @@ export const getAuthorFromGumroadSubdomain = async subdomain => {
 
   return null
 }
+
+export const getAuthorByNameOrUrl = async (authorName, url) => {
+  console.debug(
+    `Getting author from author name "${authorName}" or url "${url}"...`
+  )
+
+  const gumroadUsername = getAuthorSubdomainFromGumroadUrl(url)
+
+  const matches = await simpleSearchRecords(CollectionNames.Authors, {
+    [AuthorFieldNames.name]: authorName,
+    [AuthorFieldNames.gumroadUsername]: gumroadUsername
+  })
+
+  if (matches.length > 0) {
+    console.debug(`Found author "${matches[0][AuthorFieldNames.name]}"`)
+    return matches[0]
+  } else {
+    console.debug(`Found no authors :(`)
+  }
+
+  return null
+}

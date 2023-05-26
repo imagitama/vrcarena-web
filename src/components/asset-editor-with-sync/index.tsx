@@ -45,15 +45,12 @@ const SyncForm = () => {
           existingGumroadUrl={url}
           // @ts-ignore
           onFieldsChanged={setNewFields}
-          // @ts-ignore
           onFieldChanged={setNewField}
-          // @ts-ignore
           onDone={() => {
             setNewFields(null)
             setIsSyncFormVisible(false)
             hydrate()
           }}
-          // @ts-ignore
           onCancel={() => setIsSyncFormVisible(false)}
         />
       ) : (

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
-import Markdown from '../markdown'
 import Checkbox from '@material-ui/core/Checkbox'
 import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
@@ -10,7 +9,6 @@ import Button from '../button'
 import ErrorMessage from '../error-message'
 import Paper from '../paper'
 import LoadingIndicator from '../loading-indicator'
-import TagInput from '../tag-input'
 import TextInput from '../text-input'
 import ImageUploader from '../image-uploader'
 import FormControls from '../form-controls'
@@ -23,29 +21,23 @@ import {
   CollectionNames
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { callFunction } from '../../firebase'
-import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, paths } from '../../config'
+import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '../../config'
 import {
   addQuotesToDescription,
   removeQuotesFromDescription
 } from '../../utils/formatting'
 import categoryMeta from '../../category-meta'
 import {
-  getAuthorFromGumroadSubdomain,
-  getTagsFromDescription,
   getCategoryFromNameAndDescription,
-  getImageUrlAsFile,
-  isValidPreviewImageUrl,
-  getCodeFromGumroadUrl,
-  getAuthorSubdomainFromGumroadUrl,
-  defaultTags
+  defaultTags,
+  getAuthorByNameOrUrl
 } from '../../utils/gumroad'
-import { cleanupTags } from '../../utils/tags'
-import { inDevelopment } from '../../environment'
-import devContent from './dev.json'
-import { scrollToElement } from '../../utils'
+import { isUrlAYoutubeVideo, scrollToElement } from '../../utils'
 import { bucketNames } from '../../file-uploading'
-import WarningMessage from '../warning-message'
+import useFirebaseFunction from '../../hooks/useFirebaseFunction'
+import { callFunction } from '../../firebase'
+import YoutubePlayer from '../youtube-player'
+import { getImageUrlAsFile } from '../../utils/files'
 
 const useStyles = makeStyles({
   field: {
@@ -60,20 +52,27 @@ const useStyles = makeStyles({
   },
   thumbnailUploader: {
     width: '50%'
+  },
+  attachments: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    '& > div': {
+      margin: '0 0.5rem 0.5rem 0'
+    }
+  },
+  thumbnailAttachmentSelector: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    '& > div': {
+      margin: '0 0.5rem 0.5rem 0',
+      cursor: 'pointer'
+    }
   }
 })
 
 type AssetFields = { [fieldName: string]: any }
-
-const cleanupFields = (fields: AssetFields): AssetFields => {
-  const newFields = { ...fields }
-  if (newFields[AssetFieldNames.tags]) {
-    newFields[AssetFieldNames.tags] = cleanupTags(
-      newFields[AssetFieldNames.tags]
-    )
-  }
-  return newFields
-}
 
 const getFieldsToSave = (
   fields: AssetFields,
@@ -88,6 +87,200 @@ const getFieldsToSave = (
   }
 
   return fieldsToSave
+}
+
+const attachmentItemTypes = {
+  IMAGE: 'IMAGE',
+  HOSTED_VIDEO: 'HOSTED_VIDEO',
+  EMBED: 'EMBED'
+}
+
+interface GetGumroadProductAttachment {
+  type: string
+  url: string
+  mimeType?: string
+}
+
+interface GetGumroadProductResult {
+  title: string
+  descriptionMarkdown: string
+  price: string // $40+
+  authorName: string
+  authorUrl: string
+  attachments: GetGumroadProductAttachment[]
+  features: string[]
+}
+
+const ThumbnailAttachmentSelector = ({
+  attachments,
+  onSelect
+}: {
+  attachments: GetGumroadProductAttachment[]
+  onSelect: (selectedAttachment: GetGumroadProductAttachment) => void
+}) => {
+  const classes = useStyles()
+  return (
+    <div className={classes.thumbnailAttachmentSelector}>
+      {attachments.map(attachment => (
+        <img
+          src={attachment.url}
+          width={200}
+          onClick={() => onSelect(attachment)}
+        />
+      ))}
+    </div>
+  )
+}
+
+const getDoesAttachmentNeedOptimizing = (
+  attachment: GetGumroadProductAttachment
+): boolean =>
+  attachment.mimeType
+    ? attachment.mimeType === 'image/png' ||
+      attachment.mimeType === 'image/jpg' ||
+      attachment.mimeType === 'image/jpeg'
+    : false
+
+const AttachmentsOptimizer = ({
+  attachmentsToOptimize,
+  onDone
+}: {
+  attachmentsToOptimize: GetGumroadProductAttachment[]
+  onDone: (newFileUrls: string[]) => void
+}) => {
+  const [loadingStates, setLoadingStates] = useState<boolean[]>(
+    attachmentsToOptimize.map(() => false)
+  )
+  const [errorStates, setErrorStates] = useState<boolean[]>(
+    attachmentsToOptimize.map(() => false)
+  )
+  const [optimizedImageUrls, setOptimizedImageUrls] = useState<
+    (null | string)[]
+  >(attachmentsToOptimize.map(() => null))
+  const classes = useStyles()
+
+  const setIsLoading = (index: number, newValue: boolean) =>
+    setLoadingStates(currentStates => {
+      const newStates = [...currentStates]
+      newStates[index] = newValue
+      return newStates
+    })
+  const setIsError = (index: number, newValue: boolean) =>
+    setErrorStates(currentStates => {
+      const newStates = [...currentStates]
+      newStates[index] = newValue
+      return newStates
+    })
+  const setOptimizedImageUrl = (index: number, newValue: string) =>
+    setOptimizedImageUrls(currentStates => {
+      const newStates = [...currentStates]
+      newStates[index] = newValue
+      return newStates
+    })
+
+  const downloadAndOptimizeImage = async (
+    index: number,
+    imageUrl: string
+  ): Promise<string> => {
+    try {
+      setIsLoading(index, true)
+      setIsError(index, false)
+
+      const {
+        data: { optimizedUrl }
+      } = await callFunction('downloadAndOptimizeImage', {
+        imageUrl,
+        bucketName: bucketNames.attachments,
+        bucketPath: ''
+      })
+
+      setIsLoading(index, false)
+      setIsError(index, false)
+      setOptimizedImageUrl(index, optimizedUrl)
+
+      return optimizedUrl
+    } catch (err) {
+      console.error(err)
+      handleError(err)
+
+      setIsLoading(index, false)
+      setIsError(index, true)
+
+      throw err
+    }
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      console.debug(`optimizing ${attachmentsToOptimize.length} attachments...`)
+
+      let optimizedUrlsToReturn: string[] = []
+
+      await Promise.all(
+        attachmentsToOptimize.map(async (attachment, index) => {
+          if (getDoesAttachmentNeedOptimizing(attachment)) {
+            const optimizedUrl = await downloadAndOptimizeImage(
+              index,
+              attachment.url
+            )
+            optimizedUrlsToReturn.push(optimizedUrl)
+          } else {
+            optimizedUrlsToReturn.push(attachment.url)
+          }
+        })
+      )
+
+      console.debug(
+        `optimization complete, returning ${
+          optimizedUrlsToReturn.length
+        } urls...`
+      )
+
+      onDone(optimizedUrlsToReturn)
+    })()
+  }, [])
+
+  return (
+    <div className={classes.attachments}>
+      {attachmentsToOptimize.map((attachment, index) => (
+        <div key={index}>
+          {getDoesAttachmentNeedOptimizing(attachment) ? (
+            loadingStates[index] ? (
+              <LoadingIndicator message={`Optimizing #${index + 1}...`} />
+            ) : errorStates[index] ? (
+              <ErrorMessage>Failed to optimize image #{index + 1}</ErrorMessage>
+            ) : (
+              <img src={optimizedImageUrls[index] || ''} width={300} />
+            )
+          ) : (
+            <YoutubePlayer url={attachment.url} />
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const useGumroadProduct = () =>
+  useFirebaseFunction<{ gumroadProductUrl: string }, GetGumroadProductResult>(
+    'getGumroadProduct'
+  )
+
+const AttachmentsOutput = ({ urls }: { urls: string[] }) => {
+  const classes = useStyles()
+  return (
+    <div className={classes.attachments}>
+      {urls.map(url => (
+        <div key={url}>
+          {isUrlAYoutubeVideo(url) ? (
+            <YoutubePlayer url={url} />
+          ) : (
+            <img src={url} width={300} />
+          )}
+        </div>
+      ))}
+    </div>
+  )
 }
 
 export default ({
@@ -110,13 +303,10 @@ export default ({
   const rootRef = useRef<HTMLDivElement>(null)
   const [urlValue, setUrlValue] = useState('')
   const [gumroadUrl, setGumroadUrl] = useState(existingGumroadUrl || '')
-  const [isFetching, setIsFetching] = useState(true)
-  const [isFetchError, setIsFetchError] = useState(false)
   const [newFields, setNewFields] = useState<AssetFields | null>(null)
   const [whichFieldsAreEnabled, setWhichFieldsAreEnabled] = useState({
     [AssetFieldNames.title]: true,
     [AssetFieldNames.description]: true,
-    [AssetFieldNames.tags]: true,
     [AssetFieldNames.thumbnailUrl]: true,
     [AssetFieldNames.fileUrls]: true,
     [AssetFieldNames.category]: true,
@@ -128,9 +318,19 @@ export default ({
   )
   const classes = useStyles()
   const [isUsingQuotes, setIsUsingQuotes] = useState(true)
-  const [previewImageUrl, setPreviewImageUrl] = useState('')
-  const [previewImageFile, setPreviewImageFile] = useState<File | undefined>()
   const [authorName, setAuthorName] = useState<string | null>(null)
+
+  const [
+    selectedThumbnailAttachment,
+    setSelectedThumbnailAttachment
+  ] = useState<null | GetGumroadProductAttachment>(null)
+  const [
+    selectedThumbnailAttachmentFile,
+    setSelectedThumbnailAttachmentFile
+  ] = useState<null | File>(null)
+  const [attachmentsToOptimize, setAttachmentsToOptimize] = useState<
+    null | GetGumroadProductAttachment[]
+  >(null)
 
   useEffect(() => {
     if (!newFields) {
@@ -149,71 +349,46 @@ export default ({
     setGumroadUrl(existingGumroadUrl)
   }, [existingGumroadUrl])
 
+  const [
+    isGettingProduct,
+    isFailedGettingProduct,
+    gumroadProduct,
+    callGetGumroadProductFunction
+  ] = useGumroadProduct()
+
   const populateFromGumroad = async () => {
-    try {
-      setIsFetching(true)
-      setIsFetchError(false)
+    const result = await callGetGumroadProductFunction({
+      gumroadProductUrl: gumroadUrl
+    })
 
-      const code = getCodeFromGumroadUrl(gumroadUrl)
+    setAttachmentsToOptimize(
+      result.attachments.filter(
+        attachment =>
+          getDoesAttachmentNeedOptimizing(attachment) ||
+          attachment.type === attachmentItemTypes.EMBED
+      )
+    )
 
-      if (!code) {
-        throw new Error(`Failed to get code from gumroad URL: ${gumroadUrl}`)
-      }
+    updateFields({
+      [AssetFieldNames.title]: result.title,
+      [AssetFieldNames.description]: isUsingQuotes
+        ? addQuotesToDescription(result.descriptionMarkdown)
+        : result.descriptionMarkdown,
+      [AssetFieldNames.tags]: defaultTags,
+      [AssetFieldNames.category]: getCategoryFromNameAndDescription(
+        result.title,
+        result.descriptionMarkdown
+      )
+    })
 
-      const authorSubdomain = getAuthorSubdomainFromGumroadUrl(gumroadUrl)
+    const author = await getAuthorByNameOrUrl(
+      result.authorName,
+      result.authorUrl
+    )
+    setAuthorName(author ? author[AuthorFieldNames.name] : null)
 
-      if (!authorSubdomain) {
-        throw new Error(
-          `Failed to get author subdomain from gumroad URL: ${gumroadUrl}`
-        )
-      }
-
-      const {
-        data: { name, descriptionMarkdown, ourPreviewUrl, ourPreviewUrlWebp }
-      } = inDevelopment()
-        ? devContent
-        : await callFunction('fetchGumroadInfo', {
-            code,
-            authorSubdomain
-          })
-
-      const author = await getAuthorFromGumroadSubdomain(authorSubdomain)
-
-      setIsFetching(false)
-      setIsFetchError(false)
-      updateFields({
-        [AssetFieldNames.title]: name,
-        [AssetFieldNames.description]: isUsingQuotes
-          ? addQuotesToDescription(descriptionMarkdown)
-          : descriptionMarkdown,
-        [AssetFieldNames.tags]: getTagsFromDescription(
-          descriptionMarkdown
-        ).concat(defaultTags),
-        [AssetFieldNames.category]: getCategoryFromNameAndDescription(
-          name,
-          descriptionMarkdown
-        ),
-        [AssetFieldNames.author]: author ? author.id : null,
-        [AssetFieldNames.fileUrls]: ourPreviewUrlWebp ? [ourPreviewUrlWebp] : []
-      })
-      setAuthorName(author ? author[AuthorFieldNames.name] : null)
-
-      if (!author || !author[AuthorFieldNames.name]) {
-        toggleIsFieldEnabled(AssetFieldNames.author)
-      }
-
-      if (isValidPreviewImageUrl(ourPreviewUrl)) {
-        const file = await getImageUrlAsFile(ourPreviewUrl)
-        setPreviewImageFile(file)
-        setPreviewImageUrl(ourPreviewUrl)
-      } else {
-        console.warn(`"${ourPreviewUrl}" is not a valid preview URL`)
-      }
-    } catch (err) {
-      console.error(err)
-      handleError(err)
-      setIsFetching(false)
-      setIsFetchError(true)
+    if (!author || !author[AuthorFieldNames.name]) {
+      toggleIsFieldEnabled(AssetFieldNames.author)
     }
   }
 
@@ -223,11 +398,13 @@ export default ({
 
   const onSaveBtnClick = async () => {
     try {
+      if (!newFields) {
+        console.warn('Trying to save without any new fields')
+        return
+      }
+
       const fieldsToSave: AssetFields = {
-        ...getFieldsToSave(
-          cleanupFields(newFields || {}),
-          whichFieldsAreEnabled
-        ),
+        ...getFieldsToSave(newFields, whichFieldsAreEnabled),
         [AssetFieldNames.sourceUrl]: gumroadUrl // set this here so newly created assets have it
       }
 
@@ -297,10 +474,8 @@ export default ({
     })
   }
 
-  if (isFetching) {
-    return (
-      <LoadingIndicator message="Fetching from Gumroad (takes up to a minute)..." />
-    )
+  if (isGettingProduct) {
+    return <LoadingIndicator message="Getting product from Gumroad..." />
   }
 
   if (isSaving) {
@@ -311,10 +486,10 @@ export default ({
     return <ErrorMessage>Failed to save asset</ErrorMessage>
   }
 
-  if (isFetchError) {
+  if (isFailedGettingProduct) {
     return (
       <ErrorMessage>
-        Failed to fetch from Gumroad
+        Failed to get from Gumroad
         <br />
         <br />
         <Button onClick={populateFromGumroad}>Try Again</Button>
@@ -338,59 +513,92 @@ export default ({
     )
   }
 
+  const validThumbnailAttachments =
+    gumroadProduct &&
+    gumroadProduct.attachments.filter(
+      ({ type }) => type === attachmentItemTypes.IMAGE
+    )
+
   return (
     <div ref={rootRef}>
       <p>Select which fields you want to take from the Gumroad product page:</p>
       <Paper className={classes.row}>
-        {isValidPreviewImageUrl(previewImageUrl) ? (
-          <>
-            Thumbnail
-            <Checkbox
-              checked={whichFieldsAreEnabled[AssetFieldNames.thumbnailUrl]}
-              onClick={() => toggleIsFieldEnabled(AssetFieldNames.thumbnailUrl)}
-            />
-            {whichFieldsAreEnabled[AssetFieldNames.thumbnailUrl] &&
-              (newFields[AssetFieldNames.thumbnailUrl] ? (
-                <AssetThumbnail url={newFields[AssetFieldNames.thumbnailUrl]} />
-              ) : (
-                <div className={classes.thumbnailUploader}>
-                  <WarningMessage>
-                    As of April 2023 we are migrating to a new way of uploading
-                    images. Please contact me (Peanut#1756) if you experience
-                    any issues with this
-                  </WarningMessage>
-                  <ImageUploader
-                    bucketName={bucketNames.assetThumbnails}
-                    directoryPath={assetId}
-                    preloadImageUrl={previewImageUrl}
-                    preloadFile={previewImageFile}
-                    requiredWidth={THUMBNAIL_WIDTH}
-                    requiredHeight={THUMBNAIL_HEIGHT}
-                    onDone={url =>
-                      updateFields({
-                        [AssetFieldNames.thumbnailUrl]: url
-                      })
-                    }
+        <>
+          Thumbnail
+          <Checkbox
+            checked={whichFieldsAreEnabled[AssetFieldNames.thumbnailUrl]}
+            onClick={() => toggleIsFieldEnabled(AssetFieldNames.thumbnailUrl)}
+          />
+          {whichFieldsAreEnabled[AssetFieldNames.thumbnailUrl] &&
+            (newFields[AssetFieldNames.thumbnailUrl] ? (
+              <AssetThumbnail url={newFields[AssetFieldNames.thumbnailUrl]} />
+            ) : !selectedThumbnailAttachment ? (
+              <div className={classes.thumbnailUploader}>
+                Select an image to use for the thumbnail (you will be able to
+                crop it):
+                <br />
+                {validThumbnailAttachments ? (
+                  <ThumbnailAttachmentSelector
+                    attachments={validThumbnailAttachments}
+                    onSelect={async selectedAttachment => {
+                      try {
+                        setSelectedThumbnailAttachment(selectedAttachment)
+                        setSelectedThumbnailAttachmentFile(
+                          await getImageUrlAsFile(
+                            selectedAttachment.url,
+                            'thumbnail',
+                            'png'
+                          )
+                        )
+                      } catch (err) {
+                        console.error(err)
+                        handleError(err)
+                      }
+                    }}
                   />
-                </div>
-              ))}
-          </>
-        ) : (
-          'Image cannot be used as a thumbnail (eg. it is .gif)'
-        )}
+                ) : (
+                  '(waiting for attachments)'
+                )}
+              </div>
+            ) : selectedThumbnailAttachmentFile ? (
+              <ImageUploader
+                bucketName={bucketNames.assetThumbnails}
+                directoryPath={assetId}
+                preloadFile={selectedThumbnailAttachmentFile}
+                preloadImageUrl={selectedThumbnailAttachment.url}
+                requiredWidth={THUMBNAIL_WIDTH}
+                requiredHeight={THUMBNAIL_HEIGHT}
+                onDone={url =>
+                  updateFields({
+                    [AssetFieldNames.thumbnailUrl]: url
+                  })
+                }
+                onCancel={() => setSelectedThumbnailAttachment(null)}
+              />
+            ) : (
+              <>Waiting for File</>
+            ))}
+        </>
       </Paper>
       <Paper className={classes.row}>
-        Attach image (recommended)
+        Attachments
         <Checkbox
           checked={whichFieldsAreEnabled[AssetFieldNames.fileUrls]}
           onClick={() => toggleIsFieldEnabled(AssetFieldNames.fileUrls)}
         />
-        <br />
-        <br />
-        {newFields[AssetFieldNames.fileUrls] ? (
-          <img src={newFields[AssetFieldNames.fileUrls][0]} height="400" />
+        {attachmentsToOptimize && attachmentsToOptimize.length ? (
+          <>
+            These images are being optimized (this takes up to a minute):
+            <AttachmentsOptimizer
+              attachmentsToOptimize={attachmentsToOptimize}
+              onDone={newFileUrls => {
+                setAttachmentsToOptimize(null)
+                updateField(AssetFieldNames.fileUrls, newFileUrls)
+              }}
+            />
+          </>
         ) : (
-          '(no image found - add it manually next tab)'
+          <AttachmentsOutput urls={newFields[AssetFieldNames.fileUrls] || []} />
         )}
       </Paper>
       <Paper className={classes.row}>
@@ -460,9 +668,11 @@ export default ({
         />
         {whichFieldsAreEnabled[AssetFieldNames.author] && (
           <>
-            {newFields[AssetFieldNames.author] && authorName
-              ? authorName
-              : '(no existing author detected - add it manually next tab)'}
+            {newFields[AssetFieldNames.author] &&
+            gumroadProduct &&
+            gumroadProduct.authorName
+              ? gumroadProduct.authorName
+              : '(no existing author detected - add it manually)'}
           </>
         )}
       </Paper>
@@ -477,25 +687,6 @@ export default ({
             {newFields[AssetFieldNames.category]
               ? categoryMeta[newFields[AssetFieldNames.category]].name
               : '(no category detected - add it manually next tab)'}
-          </>
-        )}
-      </Paper>
-      <Paper className={classes.row}>
-        Tags
-        <Checkbox
-          checked={whichFieldsAreEnabled[AssetFieldNames.tags]}
-          onClick={() => toggleIsFieldEnabled(AssetFieldNames.tags)}
-        />
-        {whichFieldsAreEnabled[AssetFieldNames.tags] && (
-          <>
-            <br />
-            Tags have been populated using the description from Gumroad:
-            <br />
-            <TagInput
-              currentTags={newFields[AssetFieldNames.tags]}
-              onChange={newTags => updateField(AssetFieldNames.tags, newTags)}
-              categoryName={newFields[AssetFieldNames.category]}
-            />
           </>
         )}
       </Paper>

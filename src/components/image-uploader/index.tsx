@@ -261,6 +261,7 @@ const Cropper = ({
 
 export default ({
   onDone,
+  onCancel = undefined,
   bucketName,
   directoryPath = '', // root
   generateThumbnail = false,
@@ -275,6 +276,7 @@ export default ({
   bucketName: string
   directoryPath?: string
   generateThumbnail?: boolean
+  onCancel?: () => void
   // settings
   requiredWidth?: number
   requiredHeight?: number
@@ -416,6 +418,10 @@ export default ({
   const reset = () => {
     setImageUrlToCrop(null)
     selectedFileRef.current = null
+
+    if (onCancel) {
+      onCancel()
+    }
   }
 
   if (isUploading) {

@@ -286,15 +286,15 @@ export const simpleSearchRecords = async (
   searchTermsByField: { [fieldName: string]: string } = {},
   limit: number = 1000
 ) => {
-  let query = supabase.from(tableName).select('*')
-
-  for (const [fieldName, searchText] of Object.entries(searchTermsByField)) {
-    query = query.ilike(fieldName, searchText)
-  }
-
-  query = query.limit(limit)
-
-  const { error, data } = await query
+  const { error, data } = await supabase
+    .from(tableName)
+    .select('*')
+    .or(
+      Object.entries(searchTermsByField)
+        .map(([fieldName, searchText]) => `${fieldName}.ilike.${searchText}`)
+        .join(',')
+    )
+    .limit(limit)
 
   if (error) {
     console.error(error)

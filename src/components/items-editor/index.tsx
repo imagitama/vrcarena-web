@@ -71,13 +71,18 @@ export default ({
   editor,
   renderer,
   emptyItem,
-  onAdd = undefined
+  allowDelete = true,
+  allowEditing = true,
+  allowAdding = true,
+  onAdd = undefined,
+  commonProps = {}
 }: {
   // ensure all items have an "id" property (used for key prop but maybe for modifying array later)
   items: Item<any>[]
   onChange: (newItems: Item<any>[]) => void
   editor: React.ReactElement<{
     item: Item<any>
+    index: number
     onChange?: (newFields: Item<any>) => void
     onDone?: (newFields: Item<any>) => void
   }>
@@ -85,7 +90,11 @@ export default ({
     item: Item<any>
   }>
   emptyItem?: Item<any>
+  allowDelete?: boolean
+  allowEditing?: boolean
+  allowAdding?: boolean
   onAdd?: () => void
+  commonProps?: any
 }) => {
   const classes = useStyles()
   const [activeIndexToEdit, setActiveIndexToEdit] = useState<number | null>(
@@ -160,9 +169,11 @@ export default ({
               <div>
                 {React.cloneElement(editor, {
                   item,
+                  index: idx,
                   onChange: (newFields: Item<any>) =>
                     onIdxChange(idx, newFields),
-                  onDone: (newFields: Item<any>) => onIdxEdited(idx, newFields)
+                  onDone: (newFields: Item<any>) => onIdxEdited(idx, newFields),
+                  ...commonProps
                 })}
               </div>
             ) : (
@@ -178,16 +189,22 @@ export default ({
                 <div>
                   <div>
                     {React.cloneElement(renderer, {
-                      item
+                      item,
+                      index: idx,
+                      ...commonProps
                     })}
                   </div>
                   <div className={`${classes.centerControls}`}>
-                    <div onClick={() => onDeleteIdxClick(idx)}>
-                      <DeleteIcon />
-                    </div>
-                    <div onClick={() => onEditIdxClick(idx)}>
-                      <EditIcon />
-                    </div>
+                    {allowDelete ? (
+                      <div onClick={() => onDeleteIdxClick(idx)}>
+                        <DeleteIcon />
+                      </div>
+                    ) : null}
+                    {allowEditing ? (
+                      <div onClick={() => onEditIdxClick(idx)}>
+                        <EditIcon />
+                      </div>
+                    ) : null}
                   </div>
                 </div>
                 <div
@@ -206,11 +223,13 @@ export default ({
           <div className={classes.noItemsMessage}>No items defined yet</div>
         </div>
       )}
-      <div className={classes.item}>
-        <div className={classes.addButton}>
-          <CardButton label="Add" onClick={onAddClick} />
+      {allowAdding ? (
+        <div className={classes.item}>
+          <div className={classes.addButton}>
+            <CardButton label="Add" onClick={onAddClick} />
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   )
 }
