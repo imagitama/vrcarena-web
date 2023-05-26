@@ -548,59 +548,63 @@ const SelectedAssets = ({
                 : '(no area found)'}
             </div>
             <div className={classes.selectedAssets}>
-              {assetIds.map(assetId => {
-                const assetsInArea = assetsByArea[areaName]
+              {assetIds ? (
+                assetIds.map(assetId => {
+                  const assetsInArea = assetsByArea[areaName]
 
-                if (!assetsInArea) {
-                  return 'No assets in area'
-                }
+                  if (!assetsInArea) {
+                    return 'No assets in area'
+                  }
 
-                const asset = assetsInArea.find(asset => asset.id === assetId)
+                  const asset = assetsInArea.find(asset => asset.id === assetId)
 
-                if (!asset) {
-                  return 'No asset found'
-                }
+                  if (!asset) {
+                    return 'No asset found'
+                  }
 
-                return (
-                  <div
-                    className={`${classes.asset} ${classes.small}`}
-                    key={assetId}>
-                    {!isAssetAChild(baseAssetId, asset) ? (
-                      <div className={classes.incompatibleWarning}>
-                        <Tooltip title={incompatibleWarningMessage}>
-                          <div className={classes.incompatibleWarningText}>
-                            <WarningIcon />
+                  return (
+                    <div
+                      className={`${classes.asset} ${classes.small}`}
+                      key={assetId}>
+                      {!isAssetAChild(baseAssetId, asset) ? (
+                        <div className={classes.incompatibleWarning}>
+                          <Tooltip title={incompatibleWarningMessage}>
+                            <div className={classes.incompatibleWarningText}>
+                              <WarningIcon />
+                            </div>
+                          </Tooltip>
+                        </div>
+                      ) : null}
+                      <div className={classes.icons}>
+                        <div
+                          className={classes.icon}
+                          onClick={() =>
+                            removeAssetIdFromArea(areaName, asset.id)
+                          }>
+                          <DeleteIcon />
+                        </div>
+                      </div>
+                      <div className={classes.meta}>
+                        <Link
+                          to={routes.viewAssetWithVar.replace(
+                            ':assetId',
+                            asset.id
+                          )}>
+                          <div className={classes.title}>
+                            {asset[AssetFieldNames.title]}
                           </div>
-                        </Tooltip>
+                          <div className={classes.subtitle}>
+                            by {asset[GetFullAssetsFieldNames.authorName]}
+                          </div>
+                        </Link>
                       </div>
-                    ) : null}
-                    <div className={classes.icons}>
-                      <div
-                        className={classes.icon}
-                        onClick={() =>
-                          removeAssetIdFromArea(areaName, asset.id)
-                        }>
-                        <DeleteIcon />
-                      </div>
+                      <img src={asset[AssetFieldNames.thumbnailUrl]} />
                     </div>
-                    <div className={classes.meta}>
-                      <Link
-                        to={routes.viewAssetWithVar.replace(
-                          ':assetId',
-                          asset.id
-                        )}>
-                        <div className={classes.title}>
-                          {asset[AssetFieldNames.title]}
-                        </div>
-                        <div className={classes.subtitle}>
-                          by {asset[GetFullAssetsFieldNames.authorName]}
-                        </div>
-                      </Link>
-                    </div>
-                    <img src={asset[AssetFieldNames.thumbnailUrl]} />
-                  </div>
-                )
-              })}
+                  )
+                })
+              ) : (
+                <>Failed: assets are empty</>
+              )}
             </div>
           </>
         </div>

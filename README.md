@@ -25,3 +25,9 @@ Fork the repo, create a branch and open a pull request with your changes.
 ### Backend changes
 
 Open an issue in this repo for any changes to the Firebase or SQL logic.
+
+## Roadmap
+
+### TypeScript
+
+I am in the process of migrating from JavaScript to TypeScript so you will see half and half.
