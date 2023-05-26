@@ -8,9 +8,11 @@ import Heading from '../../components/heading'
 import { CollectionNames } from '../../hooks/useDatabaseQuery'
 
 import * as routes from '../../routes'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import NoPermissionMessage from '../../components/no-permission-message'
 
 const View = () => {
-  const { authorId } = useParams()
+  const { authorId } = useParams<{ authorId: string }>()
   const isCreating = !authorId || authorId === 'create'
 
   return (
@@ -18,12 +20,14 @@ const View = () => {
       <Heading variant="h1">{isCreating ? 'Create' : 'Edit'} Author</Heading>
       <GenericEditor
         collectionName={CollectionNames.Authors}
+        // @ts-ignore
         id={isCreating ? undefined : authorId}
         analyticsCategory={isCreating ? 'CreateAuthor' : 'EditAuthor'}
         saveBtnAction="Click save author button"
         viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewAuthorWithVar.replace(':authorId', authorId)}
+        // @ts-ignore
         getSuccessUrl={newId =>
           routes.viewAuthorWithVar.replace(':authorId', newId)
         }
@@ -39,8 +43,14 @@ const View = () => {
 }
 
 export default () => {
-  const { authorId } = useParams()
+  const { authorId } = useParams<{ authorId: string }>()
+  const isLoggedIn = useIsLoggedIn()
+
   const isCreating = !authorId || authorId === 'create'
+
+  if (!isLoggedIn) {
+    return <NoPermissionMessage />
+  }
 
   return (
     <>
