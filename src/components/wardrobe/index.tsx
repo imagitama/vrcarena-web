@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import Chip from '@material-ui/core/Chip'
+import Chip, { ChipProps } from '@material-ui/core/Chip'
 
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
@@ -46,9 +46,15 @@ import CopyButton from '../../components/copy-button'
 import { handleError } from '../../error-handling'
 import ErrorMessage from '../error-message'
 import Paper from '../paper'
-import { base64EncodeString, parseBase64String } from '../../utils'
+import {
+  base64EncodeString,
+  parseBase64String,
+  scrollToElement,
+  scrollToSide
+} from '../../utils'
+import { Asset, FullAsset, RelationType } from '../../modules/assets'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   output: {
     marginTop: '1rem',
     '& *::-webkit-scrollbar': {
@@ -105,7 +111,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     fontSize: '125%',
     marginBottom: '0.25rem',
-    fontWeight: '100'
+    fontWeight: 100
   },
   input: {
     display: 'flex',
@@ -260,11 +266,15 @@ const useStyles = makeStyles(theme => ({
       width: '100%'
     }
   }
-}))
+})
 
-const TagChip = ({ tagName, ...props }) => <Chip label={tagName} {...props} />
+const TagChip = ({ tagName, ...props }: { tagName: string } & ChipProps) => (
+  <Chip label={tagName} {...props} />
+)
 
-const useAccessories = () => {
+type AssetsByArea = { [areaName: string]: FullAsset[] }
+
+const useAccessories = (): AssetsByArea => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(() => {
     let query = supabase
@@ -279,7 +289,10 @@ const useAccessories = () => {
 
     return query
   }, [isAdultContentEnabled])
-  const [isLoading, isError, assets] = useDataStore(getQuery, 'wardrobe')
+  const [isLoading, isError, assets] = useDataStore<FullAsset[]>(
+    getQuery,
+    'wardrobe'
+  )
 
   if (isLoading || isError || !assets) {
     return {}
@@ -294,12 +307,13 @@ const useAccessories = () => {
   return assetsByArea
 }
 
-const sortChildrenFirst = (assetId, assets) => {
+const sortChildrenFirst = (
+  assetId: string,
+  assets: FullAsset[]
+): FullAsset[] => {
   const newAssets = [...assets]
   newAssets.sort((assetA, assetB) => {
-    return assetA[AssetFieldNames.title].localeCompare(
-      assetB[AssetFieldNames.title]
-    )
+    return assetA.title.localeCompare(assetB.title)
   })
   newAssets.sort((assetA, assetB) => {
     if (isAssetAChild(assetId, assetA)) {
@@ -314,21 +328,23 @@ const sortChildrenFirst = (assetId, assets) => {
   return newAssets
 }
 
-const isAssetAChild = (assetId, asset) =>
-  asset[AssetFieldNames.children] &&
-  asset[AssetFieldNames.children].includes(assetId)
+const isAssetAChild = (assetId: string, asset: FullAsset): boolean =>
+  asset.relations &&
+  !!asset.relations.find(
+    relation =>
+      relation.type === RelationType.Parent && relation.asset === assetId
+  )
 
-const filterAssetFromExcludedTags = (asset, excludedTags) => {
-  if (
-    !excludedTags.length ||
-    !asset[AssetFieldNames.tags] ||
-    !asset[AssetFieldNames.tags].length
-  ) {
+const filterAssetFromExcludedTags = (
+  asset: FullAsset,
+  excludedTags: string[]
+): boolean => {
+  if (!excludedTags.length || !asset.tags || !asset.tags.length) {
     return true
   }
 
   for (const excludedTag of excludedTags) {
-    if (asset[AssetFieldNames.tags].includes(excludedTag)) {
+    if (asset.tags.includes(excludedTag)) {
       return false
     }
   }
@@ -345,12 +361,18 @@ const Area = ({
   assetsByArea,
   selectedAssetIds: selectedAssetIdsFromParent,
   toggleSelectAssetId
+}: {
+  baseAssetId: string
+  areaName: string
+  assetsByArea: AssetsByArea
+  selectedAssetIds: string[]
+  toggleSelectAssetId: (assetId: string) => void
 }) => {
   const classes = useStyles()
   const [selectedAssetIdx, setSelectedAssetIdx] = useState(0)
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const [excludedTags, setExcludedTags] = useState([])
-  const windowRef = useRef()
+  const [excludedTags, setExcludedTags] = useState<string[]>([])
+  const windowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!windowRef.current) {
@@ -364,7 +386,10 @@ const Area = ({
         behavior: 'smooth'
       })
     } catch (err) {
-      if (err.message.includes('scroll is not a function')) {
+      if (
+        (err as Error).message &&
+        (err as Error).message.includes('scroll is not a function')
+      ) {
         // modern browsers allow you to scroll inside an Element: https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll
         return
       }
@@ -399,11 +424,11 @@ const Area = ({
   const isTherePrevAsset = selectedAssetIdx > 0
   const isThereNextAsset = selectedAssetIdx < assetsToRender.length - 1
 
-  const includeTag = tag => {
+  const includeTag = (tag: string): void => {
     setExcludedTags(currentTags => currentTags.filter(item => item !== tag))
     setSelectedAssetIdx(0)
   }
-  const excludeTag = tag => {
+  const excludeTag = (tag: string): void => {
     setExcludedTags(currentTags => currentTags.concat([tag]))
     setSelectedAssetIdx(0)
   }
@@ -413,7 +438,11 @@ const Area = ({
   }
 
   return (
-    <Paper className={`${classes.area} ${classes[areaName]}`}>
+    <Paper
+      className={`${classes.area} ${
+        // @ts-ignore
+        classes[areaName] ? classes[areaName] : ''
+      }`}>
       <div className={classes.areaTitle}>
         <div className={classes.name}>{areaInfo.namePlural}</div>
         <div className={classes.tags}>
@@ -423,7 +452,7 @@ const Area = ({
               <TagChip
                 key={tag}
                 tagName={tag}
-                deleteIcon={isExcluded ? <AddIcon /> : null}
+                deleteIcon={isExcluded ? <AddIcon /> : undefined}
                 onDelete={
                   isExcluded ? () => includeTag(tag) : () => excludeTag(tag)
                 }
@@ -440,7 +469,7 @@ const Area = ({
           className={`${classes.control} ${
             isTherePrevAsset ? '' : classes.disabled
           }`}
-          onClick={selectedAssetIdx > 0 ? () => prevAsset() : null}>
+          onClick={selectedAssetIdx > 0 ? () => prevAsset() : undefined}>
           <ChevronLeftIcon />
         </div>
         <div className={classes.window} ref={windowRef}>
@@ -479,15 +508,13 @@ const Area = ({
                         ':assetId',
                         asset.id
                       )}>
-                      <div className={classes.title}>
-                        {asset[AssetFieldNames.title]}
-                      </div>
+                      <div>{asset.title}</div>
                       <div className={classes.subtitle}>
-                        by {asset[GetFullAssetsFieldNames.authorName]}
+                        by {asset.authorname}
                       </div>
                     </Link>
                   </div>
-                  <img src={asset[AssetFieldNames.thumbnailUrl]} />
+                  <img src={asset.thumbnailurl} />
                 </div>
               )
             })}
@@ -497,7 +524,7 @@ const Area = ({
           className={`${classes.control} ${
             isThereNextAsset ? '' : classes.disabled
           }`}
-          onClick={isThereNextAsset ? () => nextAsset() : null}>
+          onClick={isThereNextAsset ? () => nextAsset() : undefined}>
           <ChevronRightIcon />
         </div>
       </div>
@@ -513,6 +540,11 @@ const SelectedAssets = ({
   selectedAssetIdsByArea,
   assetsByArea,
   removeAssetIdFromArea
+}: {
+  baseAssetId: string
+  selectedAssetIdsByArea: { [areaName: string]: string[] }
+  assetsByArea: AssetsByArea
+  removeAssetIdFromArea: (areaName: string, assetId: string) => void
 }) => {
   const classes = useStyles()
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -540,7 +572,7 @@ const SelectedAssets = ({
       {entries.map(([areaName, assetIds]) => (
         <div key={areaName} className={classes.selectedArea}>
           <>
-            <div className={classes.selectedAreaTitle}>
+            <div>
               {areaName === standardAreaNames.none
                 ? standardAreas[areaName].namePlural
                 : accessoryAreasToUse[areaName]
@@ -590,15 +622,13 @@ const SelectedAssets = ({
                             ':assetId',
                             asset.id
                           )}>
-                          <div className={classes.title}>
-                            {asset[AssetFieldNames.title]}
-                          </div>
+                          <div>{asset.title}</div>
                           <div className={classes.subtitle}>
-                            by {asset[GetFullAssetsFieldNames.authorName]}
+                            by {asset.authorname}
                           </div>
                         </Link>
                       </div>
-                      <img src={asset[AssetFieldNames.thumbnailUrl]} />
+                      <img src={asset.thumbnailurl} />
                     </div>
                   )
                 })
@@ -614,9 +644,9 @@ const SelectedAssets = ({
 }
 
 const generateUrlFromSelectedAssetIdsByArea = (
-  baseAssetId,
-  selectedAssetIdsByArea
-) => {
+  baseAssetId: string,
+  selectedAssetIdsByArea: { [areaName: string]: string[] }
+): string => {
   const json = JSON.stringify(selectedAssetIdsByArea)
   const base64json = base64EncodeString(json)
 
@@ -627,11 +657,19 @@ const generateUrlFromSelectedAssetIdsByArea = (
 
   const url = `${WEBSITE_FULL_URL}${accessorizeUrl}?i=${base64json}`
 
+  console.debug(`generated URL ${url} from selected asset IDs ${json}`)
+
   return url
 }
 
-const getSelectedAssetIdsByAreaFromQueryParam = base64json => {
-  const result = parseBase64String(base64json)
+type AssetIdsByArea = { [areaName: string]: string[] }
+
+const getSelectedAssetIdsByAreaFromQueryParam = (
+  base64json: string
+): AssetIdsByArea => {
+  const json = parseBase64String(base64json)
+  const result = JSON.parse(json)
+  console.debug(`parsed ${json} from base64`)
   return result
 }
 
@@ -654,10 +692,20 @@ const IntroMessage = () => {
   )
 }
 
-export default ({ assetId, baseAsset, showThumbnail = true }) => {
-  const assetsByArea = useAccessories(assetId)
+export default ({
+  assetId,
+  baseAsset,
+  showThumbnail = true
+}: {
+  assetId: string
+  baseAsset: FullAsset
+  showThumbnail?: boolean
+}) => {
+  const assetsByArea = useAccessories()
   const classes = useStyles()
-  const [selectedAssetIdsByArea, setSelectedAssetIdsByArea] = useState({})
+  const [selectedAssetIdsByArea, setSelectedAssetIdsByArea] = useState<
+    AssetIdsByArea
+  >({})
   const [exportedUrl, setExportedUrl] = useState('')
   const queryParams = useQueryParams()
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -666,7 +714,7 @@ export default ({ assetId, baseAsset, showThumbnail = true }) => {
 
   const showIntroMessage = !isIntroMessageHidden
 
-  const toggleSelectAssetIdByArea = (areaName, assetId) => {
+  const toggleSelectAssetIdByArea = (areaName: string, assetId: string) => {
     setSelectedAssetIdsByArea(currentVal => {
       const newVal = { ...currentVal }
 
@@ -680,23 +728,31 @@ export default ({ assetId, baseAsset, showThumbnail = true }) => {
         newVal[areaName] = newVal[areaName].concat([assetId])
       }
 
+      hydrateExportedUrl(newVal)
+
       return newVal
     })
-    exportUrl()
   }
 
-  const removeAssetIdFromArea = (areaName, assetId) => {
-    setSelectedAssetIdsByArea(currentVal => ({
-      ...currentVal,
-      [areaName]: currentVal[areaName].filter(id => id !== assetId)
-    }))
-    exportUrl()
+  const removeAssetIdFromArea = (areaName: string, assetId: string) => {
+    setSelectedAssetIdsByArea(currentVal => {
+      const newVal = {
+        ...currentVal,
+        [areaName]: currentVal[areaName].filter(id => id !== assetId)
+      }
+
+      hydrateExportedUrl(newVal)
+
+      return newVal
+    })
   }
 
-  const exportUrl = () => {
+  const hydrateExportedUrl = (
+    overrideSelectedAssetIdsByArea?: AssetIdsByArea
+  ) => {
     const url = generateUrlFromSelectedAssetIdsByArea(
       assetId,
-      selectedAssetIdsByArea
+      overrideSelectedAssetIdsByArea || selectedAssetIdsByArea
     )
     setExportedUrl(url)
   }
@@ -727,7 +783,7 @@ export default ({ assetId, baseAsset, showThumbnail = true }) => {
     : areaNames
 
   return (
-    <div className={classes.root}>
+    <div>
       <div>
         {isError ? (
           <ErrorMessage>
@@ -744,9 +800,9 @@ export default ({ assetId, baseAsset, showThumbnail = true }) => {
               }
               size="small"
               fullWidth
-              disabled={!exportUrl}
+              isDisabled={!exportedUrl}
             />{' '}
-            <CopyButton text={exportUrl} />
+            <CopyButton text={exportedUrl} />
           </div>
         </FormControls>
       </div>
@@ -754,7 +810,7 @@ export default ({ assetId, baseAsset, showThumbnail = true }) => {
         <div className={classes.details}>
           {showThumbnail ? (
             <div className={classes.avatarThumbnailWrapper}>
-              <img src={baseAsset[AssetFieldNames.thumbnailUrl]} />
+              <img src={baseAsset.thumbnailurl} />
             </div>
           ) : null}
           <SelectedAssets
@@ -771,8 +827,11 @@ export default ({ assetId, baseAsset, showThumbnail = true }) => {
               baseAssetId={assetId}
               areaName={areaName}
               assetsByArea={assetsByArea}
-              baseAsset={baseAsset}
-              selectedAssetIds={selectedAssetIdsByArea[areaName]}
+              selectedAssetIds={
+                selectedAssetIdsByArea[areaName]
+                  ? selectedAssetIdsByArea[areaName]
+                  : []
+              }
               toggleSelectAssetId={assetId =>
                 toggleSelectAssetIdByArea(areaName, assetId)
               }

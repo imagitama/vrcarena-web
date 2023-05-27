@@ -39,6 +39,31 @@ export function scrollTo(x: number, isSmooth: boolean = true): void {
   }
 }
 
+export function scrollToSide(
+  x: number,
+  y: number,
+  isSmooth: boolean = true
+): void {
+  console.debug(`Scrolling to ${x},${y}`)
+  try {
+    window.scrollTo({
+      top: x,
+      left: y,
+      behavior: isSmooth ? 'smooth' : 'auto'
+    })
+  } catch (err) {
+    if (
+      (err as Error).message.includes(
+        "Failed to execute 'scrollTo' on 'Window': 2 arguments required, but only 1 present."
+      )
+    ) {
+      // newer browsers only need 1 argument: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTo
+      return
+    }
+    throw err
+  }
+}
+
 export function scrollToElement(
   element: HTMLElement,
   isSmooth = true,
