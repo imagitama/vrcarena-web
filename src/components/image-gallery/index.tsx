@@ -3,7 +3,11 @@ import Lightbox from 'react-image-lightbox-custom'
 import { makeStyles } from '@material-ui/core/styles'
 import 'react-image-lightbox-custom/style.css'
 import YouTubeIcon from '@material-ui/icons/YouTube'
-import { getImageUrlFromYouTubeUrl, isUrl } from '../../utils'
+import {
+  getImageUrlFromYouTubeUrl,
+  isUrl,
+  isUrlAYoutubeVideo
+} from '../../utils'
 import ImageGalleryItemContent from '../image-gallery-item-content'
 
 const useStyles = makeStyles({
@@ -130,6 +134,8 @@ export default ({
     }
   }
 
+  console.debug(`ImageGallery`, getSrcForIndex(activePhotoIdx, urls))
+
   return (
     <div
       className={`${classes.root} ${className || ''}`}
@@ -150,10 +156,14 @@ export default ({
           // @ts-ignore
           mainCustomContent={
             // @ts-ignore
-            <ImageGalleryItemContent
-              url={urls[activePhotoIdx]}
-              index={activePhotoIdx}
-            />
+            isUrlAYoutubeVideo(urls[activePhotoIdx]) ? (
+              <ImageGalleryItemContent
+                url={urls[activePhotoIdx]}
+                index={activePhotoIdx}
+              />
+            ) : (
+              undefined
+            )
           }
           // need these or it renders errors (note: next/back arrows always visible)
           nextCustomContent={<></>}

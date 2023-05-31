@@ -26,6 +26,13 @@ export default ({
 }) => {
   const classes = useStyles()
 
+  console.debug(
+    `ImageGalleryItemContent.render`,
+    url,
+    renderer,
+    `youtube=${isUrlAYoutubeVideo(url) ? 'yes' : 'no'}`
+  )
+
   return isUrlAYoutubeVideo(url) ? (
     <div className={classes.customContent}>
       <YouTubePlayer url={url} />
@@ -37,8 +44,6 @@ export default ({
         index
       })}
     </div>
-  ) : (
-    // Need to do this to make ImageGallery work
-    undefined
-  )
+  ) : // Need to do this to make ImageGallery work
+  null
 }
