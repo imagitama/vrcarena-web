@@ -57,8 +57,7 @@ interface DiscordServer {}
 
 interface VrchatWorld {}
 
-export interface FullAsset extends Asset {
-  // meta
+export interface AssetMeta {
   editornotes: string
   publishstatus: keyof typeof PublishStatuses
   publishedby: string // user ref
@@ -75,9 +74,24 @@ export interface FullAsset extends Asset {
   tweetrecordids: string[]
   approvedat: Date
   publishedat: Date
+}
 
-  // extra
+export interface AssetStats {
+  endorsementcount: number
+  commentcount: number
+  reviewcount: number
+}
+
+export interface FullAsset extends Asset, AssetMeta, AssetStats {
+  // authors
   authorname: string
+  isopenforcommission: boolean
+  commissioninfo: string
+  showcommissionstatusforassets: boolean
+  salereason: string | null
+  saledescription: string | null
+  saleexpiresat: Date | null
+
   speciesnames: string[]
   createdbyusername: string
   lastmodifiedbyusername: string
@@ -86,11 +100,6 @@ export interface FullAsset extends Asset {
   discordserverdata: DiscordServer | null
   clonableworlddata: VrchatWorld | null
   relationsdata: Asset[]
-
-  // stats
-  endorsementcount: number
-  commentcount: number
-  reviewcount: number
 }
 
 export const CollectionNames = {

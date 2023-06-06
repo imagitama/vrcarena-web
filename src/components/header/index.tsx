@@ -277,7 +277,11 @@ export default () => {
             <SocialMediaIcons />
           </div>
           <div className={classes.furalitySylvaLogo}>
-            <Link to={routes.furality}>
+            <Link
+              to={routes.viewEventWithVar.replace(
+                ':eventName',
+                'furality-sylva'
+              )}>
               <img src={furalitySylvaLogoUrl} alt="Furality Sylva logo" />
             </Link>
           </div>

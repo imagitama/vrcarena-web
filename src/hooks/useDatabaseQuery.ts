@@ -457,6 +457,9 @@ export const AuthorFieldNames = {
   avatarUrl: 'avatarurl',
   bannerUrl: 'bannerurl',
   boothUsername: 'boothusername',
+  saleReason: 'salereason',
+  saleDescription: 'saledescription',
+  saleExpiresAt: 'saleexpiresat',
   // deprecated
   ownedBy: 'ownedby',
   inheritFields: 'inheritfields',

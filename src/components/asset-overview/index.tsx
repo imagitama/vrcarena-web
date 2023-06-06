@@ -5,6 +5,8 @@ import LinkIcon from '@material-ui/icons/Link'
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
 import LazyLoad from 'react-lazyload'
 import WarningIcon from '@material-ui/icons/Warning'
+import Card from '@material-ui/core/Card'
+import CardActionArea from '@material-ui/core/CardActionArea'
 
 // icons
 import BuildIcon from '@material-ui/icons/Build'
@@ -76,13 +78,14 @@ import TabAvatars from './components/tab-avatars'
 import TabAdmin from './components/tab-admin'
 import TabRelated from './components/tab-related'
 import AddToCartButton from '../add-to-cart-button'
-import TabLinks from './components/tab-links'
 import { getUrlForVrChatWorldId } from '../../social-media'
 import { getRankById } from '../../taxonomy'
 import SpeciesList from '../species-list'
 
 import Relations from '../relations'
 import useAssetOverview from './useAssetOverview'
+import OpenForCommissionsMessage from '../open-for-commissions-message'
+import { getTitleForReason } from '../../events'
 
 // controls
 const LoggedInControls = React.lazy(() =>
@@ -239,6 +242,19 @@ const useStyles = makeStyles({
     '& svg': {
       fontSize: '100%'
     }
+  },
+  miniSaleInfo: {
+    marginTop: '0.5rem',
+    textAlign: 'center',
+    '& a': {
+      display: 'block',
+      padding: '1rem',
+      color: 'inherit'
+    }
+  },
+  saleTitle: {
+    fontSize: '150%',
+    marginBottom: '0.25rem'
   }
 })
 
@@ -380,6 +396,32 @@ const RiskyFileNotice = ({ sourceUrl }: { sourceUrl?: string }) => {
       <WarningIcon /> This file has not been verified as safe to download. Use
       at your own risk.
     </div>
+  )
+}
+
+const MiniSaleInfo = () => {
+  const { asset } = useAssetOverview()
+  const classes = useStyles()
+
+  if (
+    !asset ||
+    !asset.salereason ||
+    (asset.saleexpiresat && asset.saleexpiresat < new Date())
+  ) {
+    return null
+  }
+
+  return (
+    <Card className={classes.miniSaleInfo}>
+      <CardActionArea>
+        <Link to={routes.viewAuthorWithVar.replace(':authorId', asset.author)}>
+          <div className={classes.saleTitle}>
+            {getTitleForReason(asset.salereason)} Sale!
+          </div>
+          Click here to view the author's sale info
+        </Link>
+      </CardActionArea>
+    </Card>
   )
 }
 
@@ -690,10 +732,15 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                 <Area name="related" label="Related Assets">
                   <TabRelated />
                 </Area>
-                {/* Removed until <LinkedAccessories /> is updated for children => relations
-                 <Area name="children" label="Children">
-                  <TabLinks />
-                </Area> */}
+                {asset.isopenforcommission &&
+                asset.showcommissionstatusforassets ? (
+                  <Area name="commissions" label="Commission Info">
+                    <OpenForCommissionsMessage
+                      info={asset.commissioninfo}
+                      authorId={asset.author}
+                    />
+                  </Area>
+                ) : null}
                 {isEditor ? (
                   <Area name="admin" label="Admin">
                     <TabAdmin />
@@ -757,6 +804,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                   />
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
                   <DiscordServerInfo />
+                  <MiniSaleInfo />
                 </Control>
               </ControlGroup>
             ) : null}

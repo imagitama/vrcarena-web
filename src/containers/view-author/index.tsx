@@ -37,13 +37,15 @@ import { trackAction } from '../../analytics'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import { client as supabase } from '../../supabase'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import { FullAuthor } from '../../modules/authors'
+import SaleInfo from '../../components/sale-info'
 
 const GetFullAuthorsFieldNames = {
   lastModifiedByUsername: 'lastmodifiedbyusername',
   createdByUsername: 'createdbyusername'
 }
 
-function AssetsByAuthorId({ authorId }) {
+function AssetsByAuthorId({ authorId }: { authorId: string }) {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(() => {
     let query = supabase
@@ -71,7 +73,7 @@ function AssetsByAuthorId({ authorId }) {
     return <ErrorMessage>Failed to get assets for author</ErrorMessage>
   }
 
-  if (!results.length) {
+  if (!Array.isArray(results) || !results.length) {
     return <NoResultsMessage>This author has no assets</NoResultsMessage>
   }
 
@@ -139,9 +141,9 @@ function FindMoreAuthorsBtn() {
 const analyticsCategory = 'ViewAuthor'
 
 const View = () => {
-  const { authorId } = useParams()
+  const { authorId } = useParams<{ authorId: string }>()
   const [, , user] = useUserRecord()
-  const [isLoading, isErrored, result, hydrate] = useDataStoreItem(
+  const [isLoading, isErrored, result, hydrate] = useDataStoreItem<FullAuthor>(
     'getfullauthors',
     authorId,
     'view-author'
@@ -161,36 +163,43 @@ const View = () => {
   }
 
   const {
-    [AuthorFieldNames.name]: name,
-    [AuthorFieldNames.description]: description,
-    [AuthorFieldNames.categories]: categories = [],
-    [AuthorFieldNames.discordServerId]: discordServerId,
-    [AuthorFieldNames.isOpenForCommission]: isOpenForCommission,
-    [AuthorFieldNames.commissionInfo]: commissionInfo,
-    [AuthorFieldNames.avatarUrl]: avatarUrl,
-    [AuthorFieldNames.email]: email,
-    [AuthorFieldNames.websiteUrl]: websiteUrl,
-    [AuthorFieldNames.gumroadUsername]: gumroadUsername,
-    [AuthorFieldNames.discordUsername]: discordUsername,
-    [AuthorFieldNames.twitterUsername]: twitterUsername,
-    [AuthorFieldNames.patreonUsername]: patreonUsername,
-    [AuthorFieldNames.discordServerInviteUrl]: discordServerInviteUrl,
-    [AuthorFieldNames.lastModifiedBy]: lastModifiedBy,
-    [AuthorFieldNames.boothUsername]: boothUsername,
+    name: name,
+    description: description,
+    categories: categories,
+    discordserverid: discordServerId,
+    isopenforcommission: isOpenForCommission,
+    commissioninfo: commissionInfo,
+    avatarurl: avatarUrl,
+    email: email,
+    websiteurl: websiteUrl,
+    gumroadusername: gumroadUsername,
+    discordusername: discordUsername,
+    twitterusername: twitterUsername,
+    patreonusername: patreonUsername,
+    discordserverinviteurl: discordServerInviteUrl,
+    lastmodifiedby: lastModifiedBy,
+    boothusername: boothUsername,
+    salereason: saleReason,
+    saledescription: saleDescription,
+    saleexpiresat: saleExpiresAtString,
 
     // view
-    [GetFullAuthorsFieldNames.createdByUsername]: createdByUsername,
-    [GetFullAuthorsFieldNames.lastModifiedByUsername]: lastModifiedByUsername,
+    createdbyusername: createdByUsername,
+    lastmodifiedbyusername: lastModifiedByUsername,
 
     // meta
-    [CommonMetaFieldNames.publishStatus]: publishStatus,
-    [CommonMetaFieldNames.accessStatus]: accessStatus,
-    [CommonMetaFieldNames.approvalStatus]: approvalStatus,
-    [CommonMetaFieldNames.editorNotes]: editorNotes,
-    [CommonMetaFieldNames.createdBy]: createdBy
+    publishstatus: publishStatus,
+    accessstatus: accessStatus,
+    approvalstatus: approvalStatus,
+    editornotes: editorNotes,
+    createdby: createdBy
   } = result
 
   const isDeleted = accessStatus === AccessStatuses.Deleted
+
+  const saleExpiresAt = saleExpiresAtString
+    ? new Date(saleExpiresAtString)
+    : null
 
   return (
     <>
@@ -243,9 +252,7 @@ const View = () => {
             </div>
           </div>
 
-          {description && (
-            <Markdown source={description} className={classes.desc} />
-          )}
+          {description && <Markdown source={description} />}
 
           <SocialMediaList
             socialMedia={{
@@ -261,8 +268,22 @@ const View = () => {
             actionCategory={analyticsCategory}
           />
 
+          {saleReason !== null ? (
+            <SaleInfo
+              authorId={authorId}
+              reason={saleReason}
+              description={saleDescription}
+              expiresAt={saleExpiresAt}
+              showViewAuthorButton={false}
+              showViewEventButton={true}
+            />
+          ) : null}
+
           {isOpenForCommission && (
-            <OpenForCommissionMessage info={commissionInfo} />
+            <OpenForCommissionMessage
+              authorId={authorId}
+              info={commissionInfo}
+            />
           )}
 
           {!isOpenForCommission && commissionInfo && (
@@ -284,7 +305,7 @@ const View = () => {
         />
       )}
 
-      {canEditAuthor(user, result) && (
+      {canEditAuthor(user) && (
         <>
           <Heading variant="h2">Actions</Heading>
           <EditorRecordManager

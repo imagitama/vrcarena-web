@@ -70,9 +70,21 @@ const useStyles = makeStyles({
   }
 })
 
+interface SocialMediaItem {
+  id: string
+  type: string
+  icon: any
+  iconClass?: string
+  url?: string
+  label?: string
+}
+
 function SocialMediaListItem({
   actionCategory,
   item: { type, icon: Icon, iconClass, url, label }
+}: {
+  actionCategory: string
+  item: SocialMediaItem
 }) {
   const classes = useStyles()
 
@@ -130,10 +142,29 @@ export default ({
     discordServerInviteUrl,
     boothUsername
   }
+}: {
+  actionCategory: string
+  socialMedia: {
+    websiteUrl?: string
+    email?: string
+    gumroadUsername?: string
+    vrchatUsername?: string
+    vrchatUserId?: string
+    chilloutVrUsername?: string
+    neosVrUsername?: string
+    discordUsername?: string
+    twitterUsername?: string
+    telegramUsername?: string
+    youtubeChannelId?: string
+    twitchUsername?: string
+    patreonUsername?: string
+    discordServerInviteUrl?: string
+    boothUsername?: string
+  }
 }) => {
   const classes = useStyles()
 
-  const items = [
+  const items: SocialMediaItem[] = [
     {
       id: 'website',
       icon: LanguageIcon,

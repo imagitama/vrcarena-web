@@ -44,6 +44,6 @@ export default ({
         index
       })}
     </div>
-  ) : // Need to do this to make ImageGallery work
+  ) : // NOTE: Cannot return undefined as it throws React error
   null
 }

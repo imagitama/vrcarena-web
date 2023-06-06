@@ -6,10 +6,7 @@ import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { CollectionNames, UserFieldNames } from '../../hooks/useDatabaseQuery'
 import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'
-
 import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
-
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
@@ -42,7 +39,7 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
     return <ErrorMessage>Failed to load your user account</ErrorMessage>
   }
 
-  const { [UserFieldNames.username]: username } = user
+  const { username } = user
 
   const onSaveBtnClick = async () => {
     try {

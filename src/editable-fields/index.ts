@@ -9,7 +9,25 @@ import events from './events'
 import playlists from './playlists'
 import pages from './pages'
 
-export default {
+export interface Option {
+  value: string | null
+  label: string
+}
+
+export interface EditableField {
+  name: string
+  label: string
+  type: string
+  default?: any
+  hint?: string
+  fieldProperties?: any
+  isRequired?: boolean
+  options?: Option[]
+}
+
+const editableFieldsByCollectionName: {
+  [collectionName: string]: EditableField[]
+} = {
   [OldCollectionNames.Authors]: authors,
   [OldCollectionNames.Users]: users,
   [OldCollectionNames.DiscordServers]: discordServers,
@@ -19,3 +37,5 @@ export default {
   [CollectionNames.Playlists]: playlists,
   [CollectionNames.Pages]: pages
 }
+
+export default editableFieldsByCollectionName

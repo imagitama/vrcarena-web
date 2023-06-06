@@ -26,7 +26,15 @@ export interface User {
   createdat: Date
 }
 
-export interface FullUser {}
+export interface UserMeta {
+  patreonstatus: string
+}
+
+export interface UserAdminMeta {
+  role: string
+}
+
+export interface FullUser extends User, UserMeta, UserAdminMeta {}
 
 export const CollectionNames = {
   Users: 'users',

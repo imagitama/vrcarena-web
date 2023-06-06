@@ -65,7 +65,9 @@ export default () => {
     )
 
     return () => clearTimeout(timeoutRef.current)
-  }, [bannerUrl && bannerUrl.url === lastKnownBannerUrl.url])
+  }, [
+    bannerUrl && lastKnownBannerUrl && bannerUrl.url === lastKnownBannerUrl.url
+  ])
 
   if (!lastKnownBannerUrl) {
     return null

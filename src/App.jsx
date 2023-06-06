@@ -156,11 +156,6 @@ const News = lazy(() =>
     import(/* webpackChunkName: "news" */ './containers/news')
   )
 )
-const ViewTag = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-tag" */ './containers/view-tag')
-  )
-)
 const Tags = lazy(() =>
   catchChunkDeaths(() =>
     import(/* webpackChunkName: "tags" */ './containers/tags')
@@ -353,19 +348,9 @@ const Accessorize = lazy(() =>
   )
 )
 // events
-const Events = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "events" */ './containers/events')
-  )
-)
 const ViewEvent = lazy(() =>
   catchChunkDeaths(() =>
     import(/* webpackChunkName: "view-event" */ './containers/view-event')
-  )
-)
-const EditEvent = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "edit-event" */ './containers/edit-event')
   )
 )
 const ViewArea = lazy(() =>
@@ -448,11 +433,6 @@ const Ranks = lazy(() =>
 const viewRank = lazy(() =>
   catchChunkDeaths(() =>
     import(/* webpackChunkName: "view-rank" */ './containers/view-rank')
-  )
-)
-const Furality = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-rank" */ './containers/furality')
   )
 )
 
@@ -539,7 +519,6 @@ const MainContent = () => {
           component={ViewCategory}
         />
         <Route exact path={routes.news} component={News} />
-        <Route exact path={routes.viewTagWithVar} component={ViewTag} />
         <Route exact path={routes.searchWithVar} component={Search} />
         <Route exact path={routes.editSpeciesWithVar} component={EditSpecies} />
         <Route
@@ -649,9 +628,6 @@ const MainContent = () => {
         <Route exact path={routes.accessorizeWithVar} component={Accessorize} />
         <Route exact path={routes.ranks} component={Ranks} />
         <Route exact path={routes.viewRankWithVar} component={viewRank} />
-        <Route exact path={routes.events} component={Events} />
-        <Route exact path={routes.createEvent} component={EditEvent} />
-        <Route exact path={routes.editEventWithVar} component={EditEvent} />
         <Route exact path={routes.viewEventWithVar} component={ViewEvent} />
         <Route
           exact
@@ -690,7 +666,6 @@ const MainContent = () => {
           component={Query}
         />
         <Route exact path={routes.bulkAdd} component={BulkAdd} />
-        <Route exact path={routes.furality} component={Furality} />
         <Route
           exact
           path={routes.editPageWithParentAndPageVar}

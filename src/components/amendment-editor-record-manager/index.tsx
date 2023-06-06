@@ -8,6 +8,26 @@ import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import { FullAmendment } from '../../modules/amendments'
+import { getIsStringADate } from '../../utils'
+
+// dates inside of diffs are stored as strings so we need to convert them to Date for storage
+const mapRawFieldsToSavableFields = (fields: {
+  [key: string]: any
+}): { [key: string]: any } => {
+  const savableFields: { [key: string]: any } = {}
+
+  for (const fieldName in fields) {
+    let field = fields[fieldName]
+
+    if (getIsStringADate(field)) {
+      field = new Date(field)
+    }
+
+    savableFields[fieldName] = field
+  }
+
+  return savableFields
+}
 
 export default ({
   amendment,
@@ -25,7 +45,10 @@ export default ({
 
   const beforeApprove = async () => {
     try {
+      // const fieldsToSave = mapRawFieldsToSavableFields(amendment.fields)
       const fieldsToSave = amendment.fields
+
+      // console.debug(`Saving parent`, amendment.fields, fieldsToSave)
 
       await saveParent({
         ...fieldsToSave

@@ -72,16 +72,11 @@ interface MenuItemDetails {
 
 const AvatarMenuItem = () => {
   const [, , user] = useUserRecord()
-  const classes = useStyles()
 
   return (
     <>
       <Avatar
-        url={
-          user && user[UserFieldNames.avatarUrl]
-            ? user[UserFieldNames.avatarUrl]
-            : null
-        }
+        url={user && user.avatarurl ? user.avatarurl : null}
         size={sizes.TINY}
       />
       <KeyboardArrowDownIcon />

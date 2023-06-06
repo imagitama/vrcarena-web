@@ -62,7 +62,7 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
       <Heading variant="h3">Current Avatar</Heading>
       <br />
       <img
-        src={user[UserFieldNames.avatarUrl] || defaultAvatarUrl}
+        src={user.avatarurl || defaultAvatarUrl}
         alt="Your avatar"
         width={AVATAR_WIDTH}
         height={AVATAR_HEIGHT}

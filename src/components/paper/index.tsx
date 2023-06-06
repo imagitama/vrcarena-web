@@ -5,10 +5,11 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles(theme => ({
   root: {
     padding: '1rem',
-    transition: 'all 100ms'
-  },
-  margin: {
+    transition: 'all 100ms',
     margin: '1rem 0'
+  },
+  noMargin: {
+    margin: '0 !important'
   },
   hover: {
     '&:hover': {
@@ -42,7 +43,7 @@ export default ({
     <Paper
       className={`${classes.root} ${hover ? classes.hover : ''} ${
         selected ? classes.selected : ''
-      } ${className} ${margin ? classes.margin : ''}`}>
+      } ${className} ${margin ? '' : classes.noMargin}`}>
       {children}
     </Paper>
   )

@@ -716,9 +716,7 @@ const Editor = () => {
   }
 
   const isPatron =
-    (user &&
-      user[UserMetaFieldNames.patreonStatus] === PatreonStatuses.Patron) ||
-    inDevelopment()
+    (user && user.patreonstatus === PatreonStatuses.Patron) || inDevelopment()
 
   const isSyncWithGumroadEnabled = asset.gumroad && asset.gumroad.sync === true
 

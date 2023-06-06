@@ -1,4 +1,4 @@
-import { AssetCategories, AuthorFieldNames } from '../hooks/useDatabaseQuery'
+import { AuthorFieldNames } from '../hooks/useDatabaseQuery'
 import { fieldTypes } from '../generic-forms'
 import {
   THUMBNAIL_WIDTH,
@@ -6,6 +6,22 @@ import {
   BANNER_WIDTH,
   BANNER_HEIGHT
 } from '../config'
+import categoryMeta from '../category-meta'
+
+const saleReasonOptions = [
+  {
+    value: 'furality_sylva',
+    label: 'Furality Sylva'
+  },
+  {
+    value: 'other',
+    label: 'Other'
+  },
+  {
+    value: null,
+    label: 'Disable'
+  }
+]
 
 export default [
   {
@@ -101,9 +117,9 @@ export default [
     name: AuthorFieldNames.categories,
     label: 'Categories',
     type: fieldTypes.multichoice,
-    options: Object.entries(AssetCategories).map(([key, value]) => ({
-      label: key,
-      value
+    options: Object.entries(categoryMeta).map(([name, categoryInfo]) => ({
+      value: name,
+      label: categoryInfo.name
     })),
     default: []
   },
@@ -118,6 +134,7 @@ export default [
     },
     default: ''
   },
+  // commissions
   {
     name: AuthorFieldNames.isOpenForCommission,
     label: 'Open for commissions',
@@ -141,5 +158,29 @@ export default [
     default: '',
     hint:
       'Explain what they offer, their prices, links to work they have done. You can use Markdown so you can embed images and links.'
+  },
+  // sales
+  {
+    name: AuthorFieldNames.saleReason,
+    label: 'Sale reason',
+    type: fieldTypes.singlechoice,
+    default: null,
+    options: saleReasonOptions,
+    hint: 'The event the sale is for (select "Disable" to hide all sale info)'
+  },
+  {
+    name: AuthorFieldNames.saleDescription,
+    label: 'Sale description/info',
+    type: fieldTypes.textMarkdown,
+    default: '',
+    hint:
+      'Explain what the sale is for, what assets are on sale, what booth you have at the event, etc.'
+  },
+  {
+    name: AuthorFieldNames.saleExpiresAt,
+    label: 'Sale expiry',
+    type: fieldTypes.date,
+    default: null,
+    hint: 'When does the sale expire? We will hide all sale info after this'
   }
 ]

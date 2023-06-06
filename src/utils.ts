@@ -12,6 +12,7 @@ import {
 import * as routes from './routes'
 import { AmendmentsFieldNames } from './modules/amendments'
 import { CollectionNames as ReportsCollectionNames } from './modules/reports'
+import { FullUser } from './modules/users'
 
 export function scrollToTop(isSmooth: boolean = true): void {
   console.debug(`Scrolling to top...`)
@@ -100,7 +101,7 @@ export function parseSearchTermFromUrlPath(urlPath: string): string {
   return window.decodeURIComponent(urlPath)
 }
 
-export function canEditPedestal(user: UserWithMeta) {
+export function canEditPedestal(user: FullUser) {
   if (!user) {
     return false
   }
@@ -116,7 +117,7 @@ export function canEditPedestal(user: UserWithMeta) {
   return false
 }
 
-export function canEditAuthor(user: UserWithMeta): boolean {
+export function canEditAuthor(user: FullUser): boolean {
   if (!user) {
     return false
   }
@@ -126,7 +127,7 @@ export function canEditAuthor(user: UserWithMeta): boolean {
   return false
 }
 
-export function canEditDiscordServer(user: UserWithMeta): boolean {
+export function canEditDiscordServer(user: FullUser): boolean {
   if (!user) {
     return false
   }
@@ -136,7 +137,7 @@ export function canEditDiscordServer(user: UserWithMeta): boolean {
   return false
 }
 
-export function canApproveAsset(user: UserWithMeta): boolean {
+export function canApproveAsset(user: FullUser): boolean {
   if (!user) {
     return false
   }
@@ -146,12 +147,7 @@ export function canApproveAsset(user: UserWithMeta): boolean {
   return false
 }
 
-interface UserWithMeta {
-  role: string
-  patreonstatus: string
-}
-
-export function canEditSpecies(user: UserWithMeta) {
+export function canEditSpecies(user: FullUser) {
   if (!user) {
     return false
   }
@@ -544,3 +540,11 @@ export const moveItemToRight = <T>(array: T[], indexToMove: number): T[] => {
   newArray.splice(newIndex, 0, item)
   return newArray
 }
+
+export function getIsStringADate(string: string): boolean {
+  const date = new Date(string)
+  // @ts-ignore
+  return !isNaN(date) && date.toString() !== 'Invalid Date'
+}
+
+export const getDateFromString = (string: string): Date => new Date(string)

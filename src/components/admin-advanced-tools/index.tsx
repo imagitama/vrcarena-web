@@ -6,6 +6,7 @@ import NoPermissionMessage from '../no-permission-message'
 
 import { callFunction } from '../../firebase'
 import useUserRecord from '../../hooks/useUserRecord'
+import { UserRoles } from '../../hooks/useDatabaseQuery'
 
 interface FunctionMeta {
   name: string
@@ -101,7 +102,7 @@ const FunctionCaller = ({
 export default () => {
   const [, , user] = useUserRecord()
 
-  if (!user || !user.isAdmin) {
+  if (!user || user.role !== UserRoles.Admin) {
     return <NoPermissionMessage />
   }
 

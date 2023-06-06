@@ -6,7 +6,6 @@ import Heading from '../../components/heading'
 import ErrorMessage from '../../components/error-message'
 import NoPermissionMessage from '../../components/no-permission-message'
 import LoadingIndicator from '../../components/loading-indicator'
-import SuccessMessage from '../../components/success-message'
 import WarningMessage from '../../components/warning-message'
 import AssetResultsItem from '../../components/asset-results-item'
 import ShortDiff from '../../components/short-diff'
@@ -16,17 +15,13 @@ import CommentList from '../../components/comment-list'
 
 import {
   CollectionNames as OldCollectionNames,
-  ApprovalStatuses,
-  PublishStatuses
+  ApprovalStatuses
 } from '../../hooks/useDatabaseQuery'
 import useIsEditor from '../../hooks/useIsEditor'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import useUserId from '../../hooks/useUserId'
-import { handleError } from '../../error-handling'
-import { CollectionNames, CommonMetaFieldNames } from '../../data-store'
-import EditorRecordManager from '../../components/editor-record-manager'
+import { CommonMetaFieldNames } from '../../data-store'
 import {
   AmendmentsFieldNames,
   GetFullAmendmentsFieldNames

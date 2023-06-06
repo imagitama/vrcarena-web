@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import moment from 'moment'
 
 import {
   AssetFieldNames,
@@ -21,7 +22,7 @@ import SketchfabEmbed from '../sketchfab-embed'
 import AssetResultsItem from '../asset-results-item'
 import AuthorResultsItem from '../author-results-item'
 import DiscordServerResultsItem from '../discord-server-results-item'
-import { isUrlAnImage } from '../../utils'
+import { getDateFromString, isUrlAnImage } from '../../utils'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import Message from '../message'
 import VrchatAvatars from '../vrchat-avatars'
@@ -29,6 +30,7 @@ import { fieldTypes } from '../../generic-forms'
 import TextDiff from '../text-diff'
 import TagDiff from '../tag-diff'
 import Relations from '../relations'
+import authorsEditableFields from '../../editable-fields/authors'
 
 const useStyles = makeStyles({
   output: {
@@ -119,6 +121,10 @@ const getLabelForValue = value => {
     return 'Yes'
   } else if (value === false) {
     return 'No'
+  } else if (value === null) {
+    return '(nothing)'
+  } else if (value instanceof Date) {
+    return moment(value).toString()
   } else if (value && typeof value === 'string') {
     return value
   } else if (value && !isNaN(value)) {
@@ -633,94 +639,37 @@ const RenderersForFields = {
       renderer: ({ fields }) => <div>{fields[AssetFieldNames.videoUrl]}</div>
     }
   },
-  [CollectionNames.Authors]: {
-    [AuthorFieldNames.name]: {
-      label: 'Name',
-      type: fieldTypes.text
-    },
-    [AuthorFieldNames.description]: {
-      label: 'Description',
-      type: fieldTypes.textMarkdown
-    },
-    [AuthorFieldNames.websiteUrl]: {
-      label: 'Website URL',
-      type: fieldTypes.url
-    },
-    [AuthorFieldNames.email]: {
-      label: 'Email',
-      type: fieldTypes.email
-    },
-    [AuthorFieldNames.twitterUsername]: {
-      label: 'Twitter username',
-      type: fieldTypes.text
-    },
-    [AuthorFieldNames.gumroadUsername]: {
-      label: 'Gumroad username',
-      type: fieldTypes.text
-    },
-    [AuthorFieldNames.discordUsername]: {
-      label: 'Discord username',
-      type: fieldTypes.text
-    },
-    [AuthorFieldNames.discordServerInviteUrl]: {
-      label: 'Discord server invite URL',
-      type: fieldTypes.url
-    },
-    [AuthorFieldNames.patreonUsername]: {
-      label: 'Patreon username',
-      type: fieldTypes.text
-    },
-    [AuthorFieldNames.boothUsername]: {
-      label: 'Booth username',
-      type: fieldTypes.text
-    },
-    [AuthorFieldNames.categories]: {
-      label: 'Categories',
-      renderer: ({ fields }) => (
-        <CategoryOutput categories={fields[AuthorFieldNames.categories]} />
-      )
-    },
-    [AuthorFieldNames.discordServerId]: {
-      label: 'Discord server ID',
-      type: fieldTypes.text
-    },
-    [AuthorFieldNames.isOpenForCommission]: {
-      label: 'Is open for commission',
-      type: fieldTypes.checkbox
-    },
-    [AuthorFieldNames.commissionInfo]: {
-      label: 'Commission info',
-      type: fieldTypes.textMarkdown
-    },
-    [AuthorFieldNames.showCommissionStatusForAssets]: {
-      label: 'Show commission status in assets',
-      type: fieldTypes.checkbox
-    },
-    [AuthorFieldNames.avatarUrl]: {
-      label: 'Avatar',
-      type: fieldTypes.imageUpload
-    },
-    [AuthorFieldNames.bannerUrl]: {
-      label: 'Banner',
-      type: fieldTypes.imageUpload
-    }
-  }
+  [CollectionNames.Authors]: authorsEditableFields
 }
 
 const getRendererByType = (type, fieldName) => {
   switch (type) {
     case fieldTypes.text:
-      return ({ fields }) => <Value value={`${fields[fieldName]}`} />
+      return ({ fields }) => <Value value={fields[fieldName]} />
     case fieldTypes.textMarkdown:
       return ({ fields }) => <Value value={`${fields[fieldName]}`} />
-    // case fieldTypes.multichoice:
-    //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
+    case fieldTypes.multichoice:
+      return ({ fields, rendererInfo }) => (
+        <Value
+          value={fields[fieldName].map(
+            selectedValue =>
+              rendererInfo.options.find(({ value }) => value === selectedValue)
+                .label
+          )}
+        />
+      )
     case fieldTypes.checkbox:
       return ({ fields }) => (
         <Value value={`${fields[fieldName] ? 'True' : 'False'}`} />
       )
-    // case fieldTypes.date:
-    //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
+    case fieldTypes.date:
+      return ({ fields }) => (
+        <Value
+          value={
+            fields[fieldName] ? getDateFromString(fields[fieldName]) : null
+          }
+        />
+      )
     // case fieldTypes.ref:
     //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
     case fieldTypes.imageUpload:
@@ -729,8 +678,18 @@ const getRendererByType = (type, fieldName) => {
     //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
     // case fieldTypes.searchable:
     //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
-    // case fieldTypes.singlechoice:
-    //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
+    case fieldTypes.singlechoice:
+      return ({ fields, rendererInfo }) => (
+        <Value
+          value={
+            fields[fieldName]
+              ? rendererInfo.options.find(
+                  ({ value }) => value === fields[fieldName]
+                ).label
+              : null
+          }
+        />
+      )
     // case fieldTypes.assets:
     //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
     // case fieldTypes.custom:
@@ -788,7 +747,9 @@ export default ({
     <div className={classes.output}>
       {keys.map(fieldNameThatChanged => {
         const fieldNameToUse = fieldNameThatChanged.toLowerCase()
-        const rendererInfo = renderers[fieldNameToUse]
+        const rendererInfo = Array.isArray(renderers)
+          ? renderers.find(renderer => renderer.name === fieldNameToUse)
+          : renderers[fieldNameToUse]
 
         if (fieldNameThatChanged === 'id') {
           throw new Error('Cannot show diff for ID')
@@ -825,13 +786,15 @@ export default ({
             hasChanged={!!onlyNewFields[fieldNameToUse]}>
             {React.cloneElement(
               renderer({
-                fields: { ...oldFields }
+                fields: { ...oldFields },
+                rendererInfo
               })
             )}
             <Divider />
             {React.cloneElement(
               renderer({
-                fields: { ...newFields, ...extraData }
+                fields: { ...newFields, ...extraData },
+                rendererInfo
               })
             )}
           </Field>

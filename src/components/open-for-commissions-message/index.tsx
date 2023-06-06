@@ -8,10 +8,10 @@ import Button from '../button'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   root: {
     margin: '1rem 0',
-    padding: '1rem 1rem 0.5rem'
+    padding: '1rem 1rem 0'
   },
   withButton: {
     display: 'flex'
@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
   heading: {
     width: '100%',
     fontSize: '150%',
-    fontWeight: '100',
+    fontWeight: 100,
     display: 'flex',
     alignItems: 'center'
   },
@@ -35,13 +35,18 @@ const useStyles = makeStyles(() => ({
       marginBottom: 0
     }
   }
-}))
+})
 
 export default ({
   info,
   showViewAuthorButton,
   authorId,
   analyticsCategory
+}: {
+  info: string
+  showViewAuthorButton?: boolean
+  authorId: string
+  analyticsCategory?: string
 }) => {
   const classes = useStyles()
   return (
@@ -53,7 +58,11 @@ export default ({
         <MonetizationOnIcon className={classes.icon} /> This author is open for
         commissions
       </div>
-      {info && <Markdown source={info} className={classes.info} />}
+      {info && (
+        <div className={classes.info}>
+          <Markdown source={info} />
+        </div>
+      )}
       {showViewAuthorButton && (
         <Button
           url={routes.viewAuthorWithVar.replace(':authorId', authorId)}
