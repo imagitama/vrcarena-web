@@ -35,6 +35,7 @@ import freeImageUrl from './assets/free.webp'
 import MostRecentDiscordAnnouncement from './components/most-recent-discord-announcement'
 import PatreonCosts from './components/patreon-costs'
 import LatestTweet from './components/latest-tweet'
+import RecentActivity from './components/recent-activity'
 
 const useStyles = makeStyles({
   root: {
@@ -90,9 +91,7 @@ const useStyles = makeStyles({
     },
     '& > a': {
       width: '100%',
-      height: '100%'
-    },
-    '& a': {
+      height: '100%',
       color: 'inherit'
     },
     '& $controls': {
@@ -432,6 +431,12 @@ export default () => {
             Patreon come out of the pocket of our staff.
             <br />
             <PatreonCosts />
+          </Tile>
+          <Tile
+            title="Recent Activity"
+            url={routes.activity}
+            buttonLabel="View All">
+            <RecentActivity />
           </Tile>
         </div>
       </div>
