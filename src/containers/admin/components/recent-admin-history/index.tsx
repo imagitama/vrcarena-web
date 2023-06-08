@@ -16,6 +16,7 @@ import { CollectionNames as UsersCollectionNames } from '../../../../modules/use
 import { CollectionNames as CommentsCollectionNames } from '../../../../modules/comments'
 import { CollectionNames as AssetsCollectionNames } from '../../../../modules/assets'
 import { CollectionNames } from '../../../../data-store'
+import { CollectionNames as OldCollectionNames } from '../../../../hooks/useDatabaseQuery'
 
 interface UserAdminMeta {
   id: string
@@ -93,6 +94,7 @@ export default () => {
 
   const entriesToRender = entries.filter(
     entry =>
+      entry.parenttable !== OldCollectionNames.Notices &&
       // ignore asset details as they get spammy
       // TODO: maybe show them if the asset is public so we can keep track of published changes?
       entry.parenttable !== AssetsCollectionNames.Assets &&

@@ -33,6 +33,7 @@ import {
   ReportMetaFieldNames,
   ResolutionStatuses
 } from '../../modules/reports'
+import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
 
 const getLabelForApprovalStatus = (approvalStatus: string): string => {
   switch (approvalStatus) {
@@ -200,6 +201,8 @@ const LabelForEntry = ({
               </>
             )
           }
+        case AuthorsCollectionNames.Authors:
+          return <>edited author</>
         case ReportsCollectionNames.ReportsMeta:
           if (data.changes[ReportMetaFieldNames.resolutionstatus]) {
             return (
