@@ -9,6 +9,7 @@ import {
   isUrlAYoutubeVideo
 } from '../../utils'
 import ImageGalleryItemContent from '../image-gallery-item-content'
+import { mediaQueryForMobiles } from '../../media-queries'
 
 const useStyles = makeStyles({
   root: {},
@@ -24,7 +25,11 @@ const useStyles = makeStyles({
       justifyItems: 'center'
     },
     '& .ril__image': {
-      position: 'static'
+      position: 'static',
+      [mediaQueryForMobiles]: {
+        width: '100%',
+        transform: 'none !important'
+      }
     }
   },
   thumbs: {
