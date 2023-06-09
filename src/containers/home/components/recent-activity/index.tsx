@@ -6,6 +6,8 @@ import { FullActivityEntry } from '../../../../modules/activity'
 import ActivityItemLabel from '../../../../components/activity-item-label'
 import { colors } from '../../../../brand'
 import FormattedDate from '../../../../components/formatted-date'
+import { CommonFieldNames } from '../../../../data-store'
+import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
 
 const useStyles = makeStyles({
   items: {},
@@ -21,7 +23,9 @@ const useStyles = makeStyles({
 export default () => {
   const [isLoading, isError, activityEntries] = useSupabaseView<
     FullActivityEntry[]
-  >('fullActivity')
+  >('fullActivity', query =>
+    query.order(CommonFieldNames.createdAt, { ascending: false })
+  )
   const classes = useStyles()
 
   if (isLoading) {

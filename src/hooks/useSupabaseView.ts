@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
-// @ts-ignore
-import { SupabaseQueryBuilder } from '@supabase/supabase-js'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { client as supabase } from '../supabase'
 import useDataStore from './useDataStore'
 
@@ -8,7 +7,7 @@ export default <TResult>(
   viewName: string,
   getQuery?:
     | null
-    | ((query: SupabaseQueryBuilder<any>) => SupabaseQueryBuilder<any>),
+    | ((query: PostgrestFilterBuilder<any>) => PostgrestFilterBuilder<any>),
   queryName?: string
 ): [boolean, boolean, null | TResult, null | number, () => void] => {
   const mainGetQuery = useCallback(() => {
