@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import LoadingShimmer from '../../../../components/loading-shimmer'
 import useSupabaseView from '../../../../hooks/useSupabaseView'
@@ -21,11 +21,14 @@ const useStyles = makeStyles({
 })
 
 export default () => {
+  const getQuery = useCallback(
+    (query: any): any =>
+      query.order(CommonFieldNames.createdAt, { ascending: false }),
+    []
+  )
   const [isLoading, isError, activityEntries] = useSupabaseView<
     FullActivityEntry[]
-  >('fullActivity', query =>
-    query.order(CommonFieldNames.createdAt, { ascending: false })
-  )
+  >('fullActivity', getQuery)
   const classes = useStyles()
 
   if (isLoading) {
