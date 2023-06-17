@@ -7,21 +7,32 @@ import {
   BANNER_HEIGHT
 } from '../config'
 import categoryMeta from '../category-meta'
+import events from '../events'
 
-const saleReasonOptions = [
-  {
-    value: 'furality_sylva',
-    label: 'Furality Sylva'
-  },
-  {
-    value: 'other',
-    label: 'Other'
-  },
-  {
-    value: null,
-    label: 'Disable'
-  }
-]
+const saleReasonOptions: {
+  value: string | null
+  label: string
+}[] = Object.entries(events)
+  .map<{ value: string | null; label: string }>(
+    ([eventName, eventDetails]) => ({
+      value: eventName,
+      label: eventDetails.title
+    })
+  )
+  .concat([
+    {
+      value: 'furality_sylva',
+      label: 'Furality Sylva'
+    },
+    {
+      value: 'other',
+      label: 'Other'
+    },
+    {
+      value: null,
+      label: 'Disable'
+    }
+  ])
 
 export default [
   {
