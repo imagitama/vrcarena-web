@@ -15,15 +15,11 @@ const saleReasonOptions: {
 }[] = Object.entries(events)
   .map<{ value: string | null; label: string }>(
     ([eventName, eventDetails]) => ({
-      value: eventName,
+      value: eventName.replaceAll('-', '_'),
       label: eventDetails.title
     })
   )
   .concat([
-    {
-      value: 'furality_sylva',
-      label: 'Furality Sylva'
-    },
     {
       value: 'other',
       label: 'Other'

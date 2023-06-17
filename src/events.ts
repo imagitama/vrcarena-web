@@ -23,7 +23,7 @@ const events: { [eventName: string]: EventInfo } = {
     description:
       'Hex Furry Festival is an online EDM festival ran through Twitch, VRChat, and Discord. Free to all!',
     thumbnailUrl: hexFurryFestivalUrl,
-    sourceUrl: 'https://hexfurryfest.com/',
+    sourceUrl: 'https://hexfurryfest.com/?source=vrcarena',
     assetTags: ['hex_furry_festival']
   },
   'pride-month': {
