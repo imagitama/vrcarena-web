@@ -10,7 +10,7 @@ import TwitterIcon from '@material-ui/icons/Twitter'
 import * as routes from '../../routes'
 import { openMenu } from '../../modules/app'
 import { ReactComponent as Logo } from '../../assets/images/logo.svg'
-import furalitySylvaLogoUrl from '../../assets/images/furality-sylva-logo-md.png'
+import promoLogoUrl from '../../assets/images/events/hex-furry-festival.webp'
 import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord.svg'
 import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon.svg'
 import {
@@ -178,7 +178,7 @@ const useStyles = makeStyles({
       display: 'flex'
     }
   },
-  furalitySylvaLogo: {
+  promoLogo: {
     width: '100%',
     transition: '100ms all',
     display: 'block',
@@ -276,13 +276,13 @@ export default () => {
           <div>
             <SocialMediaIcons />
           </div>
-          <div className={classes.furalitySylvaLogo}>
+          <div className={classes.promoLogo}>
             <Link
               to={routes.viewEventWithVar.replace(
                 ':eventName',
-                'furality-sylva'
+                'hex-furry-festival'
               )}>
-              <img src={furalitySylvaLogoUrl} alt="Furality Sylva logo" />
+              <img src={promoLogoUrl} alt="Hex Furry Festival logo" />
             </Link>
           </div>
         </div>
