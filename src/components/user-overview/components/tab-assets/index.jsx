@@ -4,6 +4,7 @@ import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled
 import useUserOverview from '../../useUserOverview'
 import PaginatedView from '../../../paginated-view'
 import AssetResults from '../../../asset-results'
+import WarningMessage from '../../../warning-message'
 
 const Renderer = ({ items }) => <AssetResults assets={items} />
 
@@ -26,22 +27,28 @@ export default () => {
   }
 
   return (
-    <PaginatedView
-      viewName="getPublicAssets"
-      getQuery={getQuery}
-      sortKey="view-user-assets"
-      sortOptions={[
-        {
-          label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt
-        },
-        {
-          label: 'Title',
-          fieldName: AssetFieldNames.title
-        }
-      ]}
-      defaultFieldName={AssetFieldNames.createdAt}>
-      <Renderer />
-    </PaginatedView>
+    <>
+      <WarningMessage>
+        These are assets this user has posted to the site and are not
+        necessarily what they have created. Users are separate to authors.
+      </WarningMessage>
+      <PaginatedView
+        viewName="getPublicAssets"
+        getQuery={getQuery}
+        sortKey="view-user-assets"
+        sortOptions={[
+          {
+            label: 'Submission date',
+            fieldName: AssetFieldNames.createdAt
+          },
+          {
+            label: 'Title',
+            fieldName: AssetFieldNames.title
+          }
+        ]}
+        defaultFieldName={AssetFieldNames.createdAt}>
+        <Renderer />
+      </PaginatedView>
+    </>
   )
 }
