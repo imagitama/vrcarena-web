@@ -1,27 +1,41 @@
-import { useCallback, useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-
-import { AssetFieldNames } from './useDatabaseQuery'
-import useIsAdultContentEnabled from './useIsAdultContentEnabled'
-import useDataStore from './useDataStore'
-import { client as supabase } from '../supabase'
-import { setIsSearching } from '../modules/app'
 import { Asset } from '../modules/assets'
+import useAlgoliaSearch, {
+  AssetSearchResult,
+  Indexes
+} from './useAlgoliaSearch'
+import { setIsSearching } from '../modules/app'
+import { useEffect } from 'react'
+import useIsAdultContentEnabled from './useIsAdultContentEnabled'
 
 const defaultLimit = 50
 
-// backslash is an escape symbol
-const cleanupSearchTerm = (searchTerm: string): string =>
-  searchTerm
-    ? searchTerm
-        .trim()
-        .replaceAll('\\', '')
-        .replaceAll("'", "''")
-    : ''
-
-// fix some weird issue on Sentry where the entire URL is dumped into the search term
-const validateSearchTerm = (searchTerm: string): boolean =>
-  !!searchTerm && !searchTerm.includes('http')
+const mapAssetSearchResultsToAssets = (
+  assetSearchResults: AssetSearchResult[]
+): Asset[] =>
+  assetSearchResults.map(assetSearchResult => ({
+    ...assetSearchResult,
+    thumbnailurl: assetSearchResult.thumbnailUrl,
+    shortdescription: '',
+    pedestalvideourl: '',
+    pedestalfallbackimageurl: '',
+    author: '',
+    category: '',
+    tags: [],
+    bannerurl: '',
+    fileurls: [],
+    slug: '',
+    species: [],
+    vrchatclonableavatarids: [],
+    vrchatclonableworldids: [],
+    priceusd: '',
+    sourceurl: '',
+    isadult: assetSearchResult.isAdult,
+    relations: [],
+    tutorialsteps: [],
+    ranks: [],
+    discordserver: ''
+  }))
 
 export default (
   searchTerm: string,
@@ -29,69 +43,32 @@ export default (
   limit = defaultLimit
 ): [boolean, boolean, Asset[] | null] => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const [actualSearchTerm, setActualSearchTerm] = useState<string>('')
-  const timerRef = useRef<NodeJS.Timeout>()
+
+  // always start with this filter to minimize chance of mistakenly showing it
+  let filters: string[] = ['isAdult != 1']
+
+  if (filtersByFieldName.category) {
+    filters.push(`category: ${filtersByFieldName.category}`)
+  }
+
+  if (isAdultContentEnabled) {
+    filters = filters.filter(filter => filter !== 'isAdult != 1')
+  }
+
+  const [isLoading, isErrored, assetSearchResults] = useAlgoliaSearch(
+    Indexes.Assets,
+    searchTerm,
+    filters.join(' AND ')
+  )
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    const newSearchTerm = cleanupSearchTerm(searchTerm)
-
-    // handle filter change without a term
-    if (actualSearchTerm === newSearchTerm && !newSearchTerm) {
-      return
-    }
-
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-    }
-
-    timerRef.current = setTimeout(() => setActualSearchTerm(newSearchTerm), 500)
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-      }
-    }
-  }, [searchTerm])
-
-  const getQuery = useCallback(() => {
-    if (!validateSearchTerm(actualSearchTerm)) {
-      return false
-    }
-
-    let query = supabase
-      .rpc('searchassets', {
-        searchterm: actualSearchTerm.split(' ').join('&')
-      })
-      .select('*')
-      .limit(limit)
-      .order('rank', {
-        ascending: false
-      })
-
-    if (!isAdultContentEnabled) {
-      query = query.is(AssetFieldNames.isAdult, false)
-    }
-
-    for (const [fieldName, values] of Object.entries(filtersByFieldName)) {
-      query = query.or(
-        values.map(value => `${fieldName}.eq.${value}`).join(',')
-      )
-    }
-
-    return query
-  }, [
-    actualSearchTerm,
-    isAdultContentEnabled,
-    Object.keys(filtersByFieldName).join('+'),
-    Object.values(filtersByFieldName).join('+')
-  ])
-
-  const [isLoading, isError, value] = useDataStore<Asset[]>(getQuery)
 
   useEffect(() => {
     dispatch(setIsSearching(isLoading))
   }, [isLoading])
 
-  return [isLoading, isError, value]
+  const assets = assetSearchResults
+    ? mapAssetSearchResultsToAssets(assetSearchResults)
+    : null
+
+  return [isLoading, isErrored, assets]
 }
