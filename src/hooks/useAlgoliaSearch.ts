@@ -9,17 +9,8 @@ export const Indexes = {
   Assets: `${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}_ASSETS`
 }
 
-const appId = process.env.REACT_APP_ALGOLIA_APP_ID
-
-if (!appId) {
-  throw new Error('Need an algolia app ID')
-}
-
-const apiKey = process.env.REACT_APP_ALGOLIA_SEARCH_API_KEY
-
-if (!apiKey) {
-  throw new Error('Need an algolia api key')
-}
+const appId = process.env.REACT_APP_ALGOLIA_APP_ID || ''
+const apiKey = process.env.REACT_APP_ALGOLIA_SEARCH_API_KEY || ''
 
 let client: SearchClient
 
