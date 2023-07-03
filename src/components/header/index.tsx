@@ -10,7 +10,6 @@ import TwitterIcon from '@material-ui/icons/Twitter'
 import * as routes from '../../routes'
 import { openMenu } from '../../modules/app'
 import { ReactComponent as Logo } from '../../assets/images/logo.svg'
-import promoLogoUrl from '../../assets/images/events/hex-furry-festival.webp'
 import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord.svg'
 import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon.svg'
 import {
@@ -276,7 +275,7 @@ export default () => {
           <div>
             <SocialMediaIcons />
           </div>
-          <div className={classes.promoLogo}>
+          {/* <div className={classes.promoLogo}>
             <Link
               to={routes.viewEventWithVar.replace(
                 ':eventName',
@@ -284,7 +283,7 @@ export default () => {
               )}>
               <img src={promoLogoUrl} alt="Hex Furry Festival logo" />
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
 
