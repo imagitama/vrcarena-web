@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 export default () => {
   const getQuery = useCallback(
     (query: any): any =>
-      query.order(CommonFieldNames.createdAt, { ascending: false }),
+      query.order(CommonFieldNames.createdAt, { ascending: false }).limit(5),
     []
   )
   const [isLoading, isError, activityEntries] = useSupabaseView<
