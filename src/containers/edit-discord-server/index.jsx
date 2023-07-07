@@ -52,10 +52,10 @@ const View = () => {
           ':discordServerId',
           discordServerId
         )}
-        getSuccessUrl={newRecords =>
+        getSuccessUrl={newRecord =>
           routes.viewDiscordServerWithVar.replace(
             ':discordServerId',
-            newRecords ? newRecords[0].id : ''
+            newRecord ? newRecord.id : ''
           )
         }
         cancelUrl={
