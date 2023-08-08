@@ -11,6 +11,8 @@ import { CommentFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsEditor from '../../hooks/useIsEditor'
 import { getQueryParam } from '../../utils'
 import { trackAction } from '../../analytics'
+import { CollectionNames } from '../../modules/assets'
+import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles({
   root: {}
@@ -85,6 +87,13 @@ export default ({
           </NoResultsMessage>
         )}
       </div>
+      {collectionName === CollectionNames.Assets ? (
+        <WarningMessage>
+          If information about this asset is incorrect (eg. the source is
+          broken) please create a report instead of commenting here. Staff do
+          not monitor these comments.
+        </WarningMessage>
+      ) : null}
       <AddCommentForm
         collectionName={collectionName}
         parentId={parentId}
