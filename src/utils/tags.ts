@@ -21,7 +21,8 @@ export const categories = {
   Features: 'Features',
   Textures: 'Textures',
   Avatars: 'Avatars',
-  License: 'License'
+  License: 'License',
+  Performance: 'Performance'
 }
 
 export interface TagDetails {
@@ -147,9 +148,41 @@ const standard3dModelTags: TagDetails[] = [
   }
 ]
 
+const platformNames = {
+  PC: 'PC',
+  Quest: 'Quest'
+}
+
+const performanceRanks = {
+  Excellent: 'Excellent',
+  Good: 'Good',
+  Medium: 'Medium',
+  Poor: 'Poor',
+  VeryPoor: 'Very Poor'
+}
+
+const performanceTagDetails: TagDetails[] = Object.keys(platformNames).reduce<
+  TagDetails[]
+>(
+  (result, platformName) =>
+    result.concat(
+      Object.keys(performanceRanks).map(performanceRank => ({
+        tag: `${performanceRank.toLowerCase()}_${platformName.toLowerCase()}_rank`,
+        category: categories.Performance,
+        // @ts-ignore
+        description: `${platformNames[platformName]} - ${
+          // @ts-ignore
+          performanceRanks[performanceRank]
+        } Performance Rank`
+      }))
+    ),
+  []
+)
+
 export const tagDetailsByCategory: { [categoryName: string]: TagDetails[] } = {
   [AssetCategories.world]: [tagWip, ...worldTagDetails],
-  [AssetCategories.worldAsset]: [...standardTags]
+  [AssetCategories.worldAsset]: [...standardTags],
+  [AssetCategories.avatar]: [...standardTags, ...performanceTagDetails]
 }
 
 export const tags: TagDetails[] = [
