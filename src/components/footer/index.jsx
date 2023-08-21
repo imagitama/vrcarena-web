@@ -13,6 +13,7 @@ import useStorage from '../../hooks/useStorage'
 import { auth as firebaseAuth } from '../../firebase'
 
 import Button from '../button'
+import BulkEditButton from '../bulk-edit-button'
 import useSupabaseUserId from '../../hooks/useSupabaseUserId'
 
 const useStyles = makeStyles({
@@ -124,6 +125,7 @@ export default () => {
     <>
       {process.env.NODE_ENV === 'development' && <DevelopmentTools />}
       <ScrollToTopBtn />
+      <BulkEditButton />
       <footer className={classes.footer}>
         <div className={classes.col}>
           {uid ? (

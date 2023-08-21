@@ -11,6 +11,7 @@ const enhancers = []
 const middleware = [thunk, routerMiddleware(history)]
 
 if (process.env.NODE_ENV === 'development') {
+  // @ts-ignore
   const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__
 
   if (typeof devToolsExtension === 'function') {
@@ -28,5 +29,7 @@ export const store = createStore(
   initialState,
   composedEnhancers
 )
+
+export type RootState = ReturnType<typeof store.getState>
 
 export default store

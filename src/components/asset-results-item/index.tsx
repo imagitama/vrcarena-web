@@ -19,9 +19,9 @@ import {
 import 'pure-react-carousel/dist/react-carousel.es.css'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import MoneyOffIcon from '@mui/icons-material/MoneyOff'
+import Checkbox from '@material-ui/core/Checkbox'
 
 import * as routes from '../../routes'
 import categoryMeta from '../../category-meta'
@@ -42,6 +42,9 @@ import LoadingIndicator from '../loading-indicator'
 import LoadingShimmer from '../loading-shimmer'
 import AddToCartButton from '../add-to-cart-button'
 import Chip from '../chip'
+import { Asset, FullAsset } from '../../modules/assets'
+import useIsEditor from '../../hooks/useIsEditor'
+import useBulkEdit from '../../hooks/useBulkEdit'
 
 const chipMargin = '0.25rem'
 
@@ -204,12 +207,17 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     left: 0
   },
+  toggleBulkEditButton: {
+    position: 'absolute',
+    top: 0,
+    left: 30
+  },
   description: {
     overflowX: 'hidden'
   }
 }))
 
-function truncateTextAndAddEllipsis(text) {
+function truncateTextAndAddEllipsis(text: string): string {
   return text && text.length >= 100 ? `${text.slice(0, 100)}...` : text
 }
 
@@ -220,18 +228,24 @@ function ExtraChips({
   showCost = false,
   isFree,
   isPaid
+}: {
+  asset: FullAsset
+  showCategory: boolean
+  categoryName: string
+  showCost: boolean
+  isFree: boolean
+  isPaid: boolean
 }) {
   const classes = useStyles()
   return (
     <div className={classes.extraChips}>
-      {asset[AssetMetaFieldNames.approvalStatus] ===
-        ApprovalStatuses.Waiting && (
+      {asset.approvalstatus === ApprovalStatuses.Waiting && (
         <Chip label="Unapproved" className={classes.extraChip} />
       )}
-      {asset[AssetMetaFieldNames.publishStatus] === PublishStatuses.Draft && (
+      {asset.publishstatus === PublishStatuses.Draft && (
         <Chip label="Draft" className={classes.extraChip} />
       )}
-      {asset[AssetMetaFieldNames.pinnedStatus] === PinnedStatuses.Pinned && (
+      {asset.pinnedstatus === PinnedStatuses.Pinned && (
         <Chip icon={<RoomIcon />} label={false} className={classes.extraChip} />
       )}
       {showCategory && <CategoryChip categoryName={categoryName} />}
@@ -240,7 +254,7 @@ function ExtraChips({
   )
 }
 
-const CategoryChip = ({ categoryName }) => {
+const CategoryChip = ({ categoryName }: { categoryName: string }) => {
   const classes = useStyles()
 
   // handle weird edge case when category has been deleted
@@ -261,7 +275,7 @@ const CategoryChip = ({ categoryName }) => {
   )
 }
 
-const CostChip = ({ isFree, isPaid }) => {
+const CostChip = ({ isFree, isPaid }: { isFree: boolean; isPaid: boolean }) => {
   const classes = useStyles()
 
   if (!isFree && !isPaid) {
@@ -271,38 +285,44 @@ const CostChip = ({ isFree, isPaid }) => {
   return (
     <Chip
       title={isFree ? 'Free' : isPaid ? 'Paid' : ''}
-      icon={isFree ? <MoneyOffIcon /> : isPaid ? <AttachMoneyIcon /> : ''}
+      icon={
+        isFree ? <MoneyOffIcon /> : isPaid ? <AttachMoneyIcon /> : undefined
+      }
       label={false}
       className={classes.extraChip}
     />
   )
 }
 
-function HoverOnContent({ asset }) {
+function HoverOnContent({ asset }: { asset: Asset }) {
   const classes = useStyles()
 
   const carouselItems = []
 
-  if (asset[AssetFieldNames.pedestalVideoUrl]) {
+  if (asset.pedestalvideourl) {
     carouselItems.push(
       <div className={classes.pedestal}>
         <PedestalVideo
-          videoUrl={asset[AssetFieldNames.pedestalVideoUrl]}
-          fallbackImageUrl={asset[AssetFieldNames.pedestalFallbackImageUrl]}
+          videoUrl={asset.pedestalvideourl}
+          fallbackImageUrl={asset.pedestalfallbackimageurl}
         />
       </div>
     )
   }
 
-  const attachedImageUrls = asset[AssetFieldNames.fileUrls].filter(isUrlAnImage)
+  const attachedImageUrls = asset.fileurls.filter(isUrlAnImage)
 
   if (attachedImageUrls.length) {
     attachedImageUrls.forEach(url => {
-      carouselItems.push(<Image src={url} alt="Attachment" />)
+      carouselItems.push(
+        <Image src={url} alt="Attachment" hasMasterSpinner={false} />
+      )
     })
   }
 
-  carouselItems.push(<Image src={asset[AssetFieldNames.thumbnailUrl]} />)
+  carouselItems.push(
+    <Image src={asset.thumbnailurl} hasMasterSpinner={false} />
+  )
 
   return (
     <CarouselProvider
@@ -315,7 +335,7 @@ function HoverOnContent({ asset }) {
             <Link
               to={routes.viewAssetWithVar.replace(
                 ':assetId',
-                asset[AssetFieldNames.slug] || asset.id
+                asset.slug || asset.id
               )}>
               <div className={classes.slideContent}>{item}</div>
               <div className={classes.slideLoadingSpinner}>
@@ -337,23 +357,49 @@ function HoverOnContent({ asset }) {
   )
 }
 
-function HoverOnEffect({ assetId }) {
+function HoverOnEffect({ assetId }: { assetId: string }) {
   const classes = useStyles()
-  const [, , asset] = useDatabaseQuery(CollectionNames.Assets, assetId)
+  // @ts-ignore
+  const [, , asset] = useDatabaseQuery<Asset>(CollectionNames.Assets, assetId)
+
+  if (!asset || Array.isArray(asset)) {
+    return null
+  }
 
   return (
     <div className={classes.hoverOnEffect}>
-      {asset && <HoverOnContent asset={asset} />}
+      {asset ? <HoverOnContent asset={asset} /> : null}
     </div>
   )
 }
 
-const getIsFree = tags =>
+const ToggleBulkEditButton = ({ id }: { id: string }) => {
+  const [ids, toggleId] = useBulkEdit()
+
+  if (!ids) {
+    return null
+  }
+
+  return (
+    <Checkbox
+      checked={ids.includes(id)}
+      onClick={e => {
+        toggleId(id)
+        e.stopPropagation()
+        e.preventDefault()
+        return false
+      }}
+    />
+  )
+}
+
+const getIsFree = (tags: string[]): boolean =>
   tags && (tags.includes('free') || tags.includes('free model'))
-const getIsPaid = tags =>
+const getIsPaid = (tags: string[]): boolean =>
   tags && (tags.includes('paid') || tags.includes('paid model'))
 
-export default function AssetItem({
+const AssetResultsItem = ({
+  // @ts-ignore
   asset = {},
   showCategory = false,
   showCost = true,
@@ -361,25 +407,25 @@ export default function AssetItem({
   isLandscape = false,
   hoverOnEffect = false,
   isUnselected = false,
-  onClick = null,
+  onClick,
   shimmer = false,
   showAddToCart = false
-}) {
+}: {
+  asset?: Asset
+  showCategory?: boolean
+  showCost?: boolean
+  showIsNsfw?: boolean
+  isLandscape?: boolean
+  hoverOnEffect?: boolean
+  isUnselected?: boolean
+  onClick?: () => void
+  shimmer?: boolean
+  showAddToCart?: boolean
+}) => {
   const classes = useStyles()
-  const cardRef = useRef()
+  const cardRef = useRef<HTMLDivElement>()
   const [isHoverOnEffectVisible, setIsHoverOnEffectVisible] = useState(false)
-
-  const {
-    id,
-    [AssetFieldNames.title]: title,
-    [AssetFieldNames.description]: description,
-    [AssetFieldNames.thumbnailUrl]: thumbnailUrl,
-    [AssetFieldNames.isAdult]: isAdult,
-    [AssetFieldNames.category]: category,
-    [AssetFieldNames.createdAt]: createdAt,
-    [AssetFieldNames.tags]: tags,
-    [AssetFieldNames.slug]: slug
-  } = asset || {}
+  const isEditor = useIsEditor()
 
   useEffect(() => {
     if (!hoverOnEffect) {
@@ -394,19 +440,22 @@ export default function AssetItem({
       setIsHoverOnEffectVisible(false)
     }
 
-    cardRef.current.addEventListener('mouseover', onMouseOver)
-
-    cardRef.current.addEventListener('mouseleave', onMouseLeave)
+    if (cardRef.current) {
+      cardRef.current.addEventListener('mouseover', onMouseOver)
+      cardRef.current.addEventListener('mouseleave', onMouseLeave)
+    }
 
     return () => {
-      cardRef.current.removeEventListener('mouseover', onMouseOver)
-      cardRef.current.removeEventListener('mouseleave', onMouseLeave)
+      if (cardRef.current) {
+        cardRef.current.removeEventListener('mouseover', onMouseOver)
+        cardRef.current.removeEventListener('mouseleave', onMouseLeave)
+      }
     }
   }, [hoverOnEffect])
 
   if (shimmer) {
     return (
-      <div className={`${classes.root} ${classes.shimmer}`}>
+      <div className={classes.root}>
         <LoadingShimmer height={300} />
       </div>
     )
@@ -420,41 +469,48 @@ export default function AssetItem({
       ref={cardRef}>
       <CardActionArea className={classes.actionArea}>
         <Link
-          to={routes.viewAssetWithVar.replace(':assetId', slug || id)}
-          className={`${classes.link} ${
-            isLandscape ? classes.landscapeLink : ''
-          }`}
+          to={routes.viewAssetWithVar.replace(
+            ':assetId',
+            asset.slug || asset.id
+          )}
+          className={`${isLandscape ? classes.landscapeLink : ''}`}
           onClick={onClick}>
           <ExtraChips
+            // @ts-ignore
             asset={asset}
             showCategory={showCategory}
-            categoryName={category}
+            categoryName={asset.category}
             showCost={showCost}
-            isFree={getIsFree(tags)}
-            isPaid={getIsPaid(tags)}
+            isFree={getIsFree(asset.tags)}
+            isPaid={getIsPaid(asset.tags)}
           />
           {showAddToCart && (
             <div className={classes.addToCartButton}>
-              <AddToCartButton assetId={id} />
+              <AddToCartButton assetId={asset.id} />
             </div>
           )}
-          <LazyLoad width={200} height={200}>
+          {isEditor && (
+            <div className={classes.toggleBulkEditButton}>
+              <ToggleBulkEditButton id={asset.id} />
+            </div>
+          )}
+          <LazyLoad height={200}>
             <CardMedia
               className={classes.media}
-              image={thumbnailUrl || defaultThumbnailUrl}
-              title={`Thumbnail for ${title}`}>
-              {isAdult && showIsNsfw && (
+              image={asset.thumbnailurl || defaultThumbnailUrl}
+              title={`Thumbnail for ${asset.title}`}>
+              {asset.isadult && showIsNsfw && (
                 <Chip label="NSFW" className={classes.nsfwChip} />
               )}
             </CardMedia>
           </LazyLoad>
           <CardContent>
             <Typography variant="h5" component="h2">
-              {title}
+              {asset.title}
             </Typography>
-            {createdAt && (
+            {asset.createdat && (
               <div className={classes.date}>
-                <FormattedDate date={createdAt} />
+                <FormattedDate date={asset.createdat} />
               </div>
             )}
             <Typography
@@ -462,15 +518,17 @@ export default function AssetItem({
               color="textSecondary"
               component="p"
               className={classes.description}>
-              {truncateTextAndAddEllipsis(description)}
+              {truncateTextAndAddEllipsis(asset.description)}
             </Typography>
           </CardContent>
         </Link>
       </CardActionArea>
 
       {isHoverOnEffectVisible && hoverOnEffect && (
-        <HoverOnEffect assetId={id} />
+        <HoverOnEffect assetId={asset.id} />
       )}
     </Card>
   )
 }
+
+export default AssetResultsItem

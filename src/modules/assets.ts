@@ -49,6 +49,7 @@ export interface Asset {
   relations: Relation[]
   tutorialsteps: TutorialStep[]
   ranks: string[]
+  createdat: Date
 }
 
 interface TutorialStep {}

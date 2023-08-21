@@ -347,6 +347,7 @@ const Avatars = () => {
               <TableRow key={assetId}>
                 <TableCell>
                   <AssetResultsItem
+                    // @ts-ignore
                     asset={{
                       id: submissions[0].asset,
                       [AssetFieldNames.title]: submissions[0].title,

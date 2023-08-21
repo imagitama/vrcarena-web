@@ -13,6 +13,7 @@ const defaultLimit = 50
 const mapAssetSearchResultsToAssets = (
   assetSearchResults: AssetSearchResult[]
 ): Asset[] =>
+  // @ts-ignore
   assetSearchResults.map(assetSearchResult => ({
     ...assetSearchResult,
     thumbnailurl: assetSearchResult.thumbnailUrl,
@@ -34,7 +35,8 @@ const mapAssetSearchResultsToAssets = (
     relations: [],
     tutorialsteps: [],
     ranks: [],
-    discordserver: ''
+    discordserver: '',
+    createdat: undefined
   }))
 
 export default (

@@ -1,3 +1,4 @@
+import { AnyAction, Dispatch } from 'redux'
 import { CollectionNames } from '../hooks/useDatabaseQuery'
 
 export const searchIndexNameLabels = {
@@ -42,23 +43,35 @@ function getInitialSearchTerm() {
   return ''
 }
 
-const initialState = {
+interface SearchFilter {}
+
+export interface AppState {
+  isMenuOpen: boolean
+  searchTerm: string
+  searchTableName: string
+  bannerUrl: string
+  bannerFallbackUrl: string
+  searchFilters: SearchFilter[]
+  searchCount: 0 // a (bad) way to force a re-render
+  isSearching: boolean
+  bulkEditIds: null | string[] // null is not in edit mode
+}
+
+const initialState: AppState = {
   isMenuOpen: false,
   searchTerm: getInitialSearchTerm(),
   searchTableName: getInitialSearchIndexName(),
-  darkModeEnabled: true,
   bannerUrl: '',
   bannerFallbackUrl: '',
   searchFilters: [],
-  searchCount: 0, // todo: wtf is this
-  isSearching: false
+  searchCount: 0,
+  isSearching: false,
+  bulkEditIds: null
 }
 
 const OPEN_MENU = 'OPEN_MENU'
 const CLOSE_MENU = 'CLOSE_MENU'
 const CHANGE_SEARCH_TERM = 'CHANGE_SEARCH_TERM'
-const TOGGLE_DARK_MODE = 'TOGGLE_DARK_MODE'
-const SET_DARK_MODE_ENABLED = 'SET_DARK_MODE_ENABLED'
 const CHANGE_SEARCH_TABLE_NAME = 'CHANGE_SEARCH_TABLE_NAME'
 const SET_BANNER_URLS = 'SET_BANNER_URLS'
 const OVERRIDE_SEARCH_FILTER = 'OVERRIDE_SEARCH_FILTER'
@@ -66,8 +79,11 @@ const ADD_SEARCH_FILTER = 'ADD_SEARCH_FILTER'
 const REMOVE_SEARCH_FILTER = 'REMOVE_SEARCH_FILTER'
 const CLEAR_SEARCH_FILTERS = 'CLEAR_SEARCH_FILTERS'
 const IS_SEARCHING = 'IS_SEARCHING'
+const ENTER_BULK_EDIT_MODE = 'ENTER_BULK_EDIT_MODE'
+const LEAVE_BULK_EDIT_MODE = 'LEAVE_BULK_EDIT_MODE'
+const TOGGLE_BULK_EDIT_ID = 'TOGGLE_BULK_EDIT_ID'
 
-export default (state = initialState, action) => {
+export default (state: AppState = initialState, action: AnyAction) => {
   switch (action.type) {
     case OPEN_MENU:
       return {
@@ -84,7 +100,7 @@ export default (state = initialState, action) => {
     case CHANGE_SEARCH_TERM:
       return {
         ...state,
-        isSearching: action.payload.searchTerm ? true : false, 
+        isSearching: action.payload.searchTerm ? true : false,
         searchTerm: action.payload.searchTerm,
         // a cheeky way to force the site to search again by pressing enter
         searchCount: state.searchCount + 1
@@ -94,18 +110,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         searchTableName: action.payload.newTableName
-      }
-
-    case TOGGLE_DARK_MODE:
-      return {
-        ...state,
-        darkModeEnabled: !state.darkModeEnabled
-      }
-
-    case SET_DARK_MODE_ENABLED:
-      return {
-        ...state,
-        darkModeEnabled: action.payload.newValue
       }
 
     case SET_BANNER_URLS:
@@ -146,26 +150,49 @@ export default (state = initialState, action) => {
         isSearching: action.payload.isSearching
       }
 
+    case ENTER_BULK_EDIT_MODE:
+      return {
+        ...state,
+        bulkEditIds: []
+      }
+
+    case LEAVE_BULK_EDIT_MODE:
+      return {
+        ...state,
+        bulkEditIds: null
+      }
+
+    case TOGGLE_BULK_EDIT_ID:
+      if (!state.bulkEditIds) {
+        return { ...state }
+      }
+      return {
+        ...state,
+        bulkEditIds: state.bulkEditIds.includes(action.payload.id)
+          ? state.bulkEditIds.filter(
+              idToCheck => idToCheck !== action.payload.id
+            )
+          : state.bulkEditIds.concat([action.payload.id])
+      }
+
     default:
       return state
   }
 }
 
-// ACTIONS
-
-export const openMenu = () => dispatch => {
+export const openMenu = () => (dispatch: Dispatch) => {
   dispatch({
     type: OPEN_MENU
   })
 }
 
-export const closeMenu = () => dispatch => {
+export const closeMenu = () => (dispatch: Dispatch) => {
   dispatch({
     type: CLOSE_MENU
   })
 }
 
-export const changeSearchTerm = (searchTerm = '') => dispatch => {
+export const changeSearchTerm = (searchTerm = '') => (dispatch: Dispatch) => {
   dispatch({
     type: CHANGE_SEARCH_TERM,
     payload: {
@@ -174,7 +201,9 @@ export const changeSearchTerm = (searchTerm = '') => dispatch => {
   })
 }
 
-export const changeSearchTableName = newTableName => dispatch => {
+export const changeSearchTableName = (newTableName: string) => (
+  dispatch: Dispatch
+) => {
   dispatch({
     type: CHANGE_SEARCH_TABLE_NAME,
     payload: {
@@ -183,22 +212,9 @@ export const changeSearchTableName = newTableName => dispatch => {
   })
 }
 
-export const toggleDarkMode = () => dispatch => {
-  dispatch({
-    type: TOGGLE_DARK_MODE
-  })
-}
-
-export const setDarkModeEnabled = newValue => dispatch => {
-  dispatch({
-    type: SET_DARK_MODE_ENABLED,
-    payload: {
-      newValue
-    }
-  })
-}
-
-export const setBannerUrls = newValue => dispatch => {
+export const setBannerUrls = (newValue: { url: string }) => (
+  dispatch: Dispatch
+) => {
   console.debug('Set banner URLs', newValue)
   dispatch({
     type: SET_BANNER_URLS,
@@ -208,7 +224,9 @@ export const setBannerUrls = newValue => dispatch => {
   })
 }
 
-export const overrideSearchFilter = searchFilter => dispatch => {
+export const overrideSearchFilter = (searchFilter: SearchFilter) => (
+  dispatch: Dispatch
+) => {
   dispatch({
     type: OVERRIDE_SEARCH_FILTER,
     payload: {
@@ -217,7 +235,9 @@ export const overrideSearchFilter = searchFilter => dispatch => {
   })
 }
 
-export const addSearchFilter = searchFilter => dispatch => {
+export const addSearchFilter = (searchFilter: SearchFilter) => (
+  dispatch: Dispatch
+) => {
   dispatch({
     type: ADD_SEARCH_FILTER,
     payload: {
@@ -226,7 +246,9 @@ export const addSearchFilter = searchFilter => dispatch => {
   })
 }
 
-export const removeSearchFilter = searchFilter => dispatch => {
+export const removeSearchFilter = (searchFilter: SearchFilter) => (
+  dispatch: Dispatch
+) => {
   dispatch({
     type: REMOVE_SEARCH_FILTER,
     payload: {
@@ -235,17 +257,32 @@ export const removeSearchFilter = searchFilter => dispatch => {
   })
 }
 
-export const clearSearchFilters = () => dispatch => {
+export const clearSearchFilters = () => (dispatch: Dispatch) => {
   dispatch({
     type: CLEAR_SEARCH_FILTERS
   })
 }
 
-export const setIsSearching = isSearching => dispatch => {
+export const setIsSearching = (newVal: boolean) => (dispatch: Dispatch) => {
   dispatch({
     type: IS_SEARCHING,
     payload: {
-      isSearching
+      isSearching: newVal
     }
   })
 }
+
+export const enterBulkEditMode = () => ({
+  type: ENTER_BULK_EDIT_MODE
+})
+
+export const leaveBulkEditMode = () => ({
+  type: LEAVE_BULK_EDIT_MODE
+})
+
+export const toggleBulkEditId = (id: string) => ({
+  type: TOGGLE_BULK_EDIT_ID,
+  payload: {
+    id
+  }
+})
