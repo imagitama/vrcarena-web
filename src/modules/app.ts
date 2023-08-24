@@ -55,6 +55,7 @@ export interface AppState {
   searchCount: 0 // a (bad) way to force a re-render
   isSearching: boolean
   bulkEditIds: null | string[] // null is not in edit mode
+  isSelectingAll: boolean
 }
 
 const initialState: AppState = {
@@ -66,7 +67,8 @@ const initialState: AppState = {
   searchFilters: [],
   searchCount: 0,
   isSearching: false,
-  bulkEditIds: null
+  bulkEditIds: null,
+  isSelectingAll: false
 }
 
 const OPEN_MENU = 'OPEN_MENU'
@@ -82,6 +84,8 @@ const IS_SEARCHING = 'IS_SEARCHING'
 const ENTER_BULK_EDIT_MODE = 'ENTER_BULK_EDIT_MODE'
 const LEAVE_BULK_EDIT_MODE = 'LEAVE_BULK_EDIT_MODE'
 const TOGGLE_BULK_EDIT_ID = 'TOGGLE_BULK_EDIT_ID'
+const SELECT_BULK_EDIT_ID = 'SELECT_BULK_EDIT_ID'
+const SET_SELECT_ALL = 'SET_SELECT_ALL'
 
 export default (state: AppState = initialState, action: AnyAction) => {
   switch (action.type) {
@@ -173,6 +177,23 @@ export default (state: AppState = initialState, action: AnyAction) => {
               idToCheck => idToCheck !== action.payload.id
             )
           : state.bulkEditIds.concat([action.payload.id])
+      }
+
+    case SELECT_BULK_EDIT_ID:
+      if (!state.bulkEditIds) {
+        return { ...state, bulkEditIds: [action.payload.id] }
+      }
+      return {
+        ...state,
+        bulkEditIds: state.bulkEditIds.includes(action.payload.id)
+          ? state.bulkEditIds
+          : state.bulkEditIds.concat([action.payload.id])
+      }
+
+    case SET_SELECT_ALL:
+      return {
+        ...state,
+        isSelectingAll: action.payload.newValue
       }
 
     default:
@@ -284,5 +305,19 @@ export const toggleBulkEditId = (id: string) => ({
   type: TOGGLE_BULK_EDIT_ID,
   payload: {
     id
+  }
+})
+
+export const selectBulkEditId = (id: string) => ({
+  type: SELECT_BULK_EDIT_ID,
+  payload: {
+    id
+  }
+})
+
+export const setSelectingAll = (newValue: boolean) => ({
+  type: SET_SELECT_ALL,
+  payload: {
+    newValue
   }
 })

@@ -374,7 +374,15 @@ function HoverOnEffect({ assetId }: { assetId: string }) {
 }
 
 const ToggleBulkEditButton = ({ id }: { id: string }) => {
-  const [ids, toggleId] = useBulkEdit()
+  const { ids, toggleId, selectId, isSelectingAll } = useBulkEdit()
+
+  useEffect(() => {
+    if (!isSelectingAll) {
+      return
+    }
+
+    selectId(id)
+  }, [isSelectingAll])
 
   if (!ids) {
     return null

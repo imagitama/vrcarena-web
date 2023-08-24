@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -55,7 +55,7 @@ enum BulkAction {
 interface Handler {
   Form: () => React.ReactElement | null
   Preview: ({ asset }: { asset: FullAsset }) => React.ReactElement | null
-  Action: (assetId: string, asset: FullAsset, data: any) => void
+  Action: (assetId: string, asset: FullAsset, data: any) => Promise<void>
 }
 
 const Handlers: { [key in BulkAction]: Handler } = {
@@ -135,7 +135,7 @@ const Render = () => {
   ] = useState<null | BulkAction>(null)
   const [assetData, setAssetData] = useState<FullAsset[]>([])
   const [userInput, setUserInput] = useState<string>('')
-  const [ids] = useGlobalBulkEdit()
+  const { ids, setSelectingAll } = useGlobalBulkEdit()
   const [assetIdsWaitingToEdit, setAssetIdsWaitingToEdit] = useState<
     null | string[]
   >(null)
@@ -149,6 +149,8 @@ const Render = () => {
     setAssetIdsWaitingToEdit(null)
     leaveBulkEditMode()
   }
+
+  const onSelectAllClick = () => setSelectingAll(true)
 
   useEffect(() => {
     if (!ids) {
@@ -251,16 +253,18 @@ const Render = () => {
     <>
       <Button color="default" onClick={() => reset()}>
         Cancel Bulk Edit
-      </Button>{' '}
+      </Button>
+      {' | '}
       {selectedBulkAction === null ? (
         (Object.values(BulkAction) as Array<keyof typeof BulkAction>)
           .filter(i => typeof i === 'string')
           .map(bulkAction => (
-            <Button
-              key={bulkAction}
-              onClick={() => initiateBulkAction(BulkAction[bulkAction])}>
-              {bulkAction}
-            </Button>
+            <Fragment key={bulkAction}>
+              <Button
+                onClick={() => initiateBulkAction(BulkAction[bulkAction])}>
+                {bulkAction}
+              </Button>{' '}
+            </Fragment>
           ))
       ) : (
         <context.Provider
@@ -277,6 +281,8 @@ const Render = () => {
           </Paper>
         </context.Provider>
       )}
+      {' | '}
+      <Button onClick={() => onSelectAllClick()}>Select All</Button>
     </>
   )
 }
