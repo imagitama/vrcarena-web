@@ -651,11 +651,16 @@ const getRendererByType = (type, fieldName) => {
     case fieldTypes.multichoice:
       return ({ fields, rendererInfo }) => (
         <Value
-          value={fields[fieldName].map(
-            selectedValue =>
-              rendererInfo.options.find(({ value }) => value === selectedValue)
-                .label
-          )}
+          value={
+            fields[fieldName]
+              ? fields[fieldName].map(
+                  selectedValue =>
+                    rendererInfo.options.find(
+                      ({ value }) => value === selectedValue
+                    ).label
+                )
+              : '(no options)'
+          }
         />
       )
     case fieldTypes.checkbox:
