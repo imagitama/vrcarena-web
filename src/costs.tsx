@@ -18,12 +18,12 @@ export const costs: Cost[] = [
         Google Firebase
       </>
     ),
-    monthlyCost: 60,
+    monthlyCost: 13,
     olderCosts: (
       <>
-        Mar 2023 - $61.38
+        Aug 2023 - $10.94
         <br />
-        Feb 2023 - $53.34
+        Jul 2023 - $12.31
       </>
     )
   },
