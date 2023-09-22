@@ -26,6 +26,7 @@ export default (props: {
   <TextField
     {...props}
     // @ts-ignore
+    multiline={props.rows && props.rows > 0}
     variant={props.variant || 'outlined'}
     disabled={props.isDisabled}
   />

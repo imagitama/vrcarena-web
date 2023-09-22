@@ -29,6 +29,9 @@ import FileUploader from '../../components/file-uploader'
 
 import { bucketNames } from '../../file-uploading'
 import ChangeRanksForm from '../../components/change-ranks-form'
+import SurveyForm from '../../components/survey-form'
+import survey from '../../surveys/creating-asset'
+import { CollectionNames } from '../../modules/assets'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -143,6 +146,12 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <h2>Survey Form</h2>
+        <SurveyForm
+          survey={survey}
+          parentTable={CollectionNames.Assets}
+          parentId="abc"
+        />
         <h2>Change Rank Form</h2>
         <ChangeRanksForm />
         <h2>Loading</h2>
