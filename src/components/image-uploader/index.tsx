@@ -243,6 +243,18 @@ const Cropper = ({
   )
 }
 
+const getSupabaseOptimizedUrl = (url: string): string => {
+  if (!url.includes('storage/v1/object')) {
+    throw new Error(`Cannot get Supabase optimized URL: URL is weird: ${url}`)
+  }
+
+  const chunks = url.split('storage/v1/object/public')
+
+  const newUrl = `${chunks[0]}storage/v1/render/image/public${chunks[1]}`
+
+  return newUrl
+}
+
 export default ({
   onDone,
   onCancel = undefined,
@@ -371,12 +383,14 @@ export default ({
       fileToUpload.name
     }`
 
-    // NOTE: Supabase always serves our images as .webp so don't need to do this
-    // verify by seeing Content-Type header
-    // 1.91mb PNG becomes 125kb WEBP
     const uploadedUrl = await upload(fileToUpload, bucketName, uploadPath)
 
-    return uploadedUrl
+    // NOTE: Supabase always serves our images as .webp if you use the "render" URL
+    // verify by seeing Content-Type header
+    // 1.91mb PNG becomes 125kb WEBP
+    const autoOptimizedUrl = getSupabaseOptimizedUrl(uploadedUrl)
+
+    return autoOptimizedUrl
   }
 
   const onDoneCropping = async (
