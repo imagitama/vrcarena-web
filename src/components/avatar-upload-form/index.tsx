@@ -28,8 +28,10 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
     userId
   )
 
-  const onUploadedWithUrl = async (url: string) => {
+  const onUploadedWithUrls = async (urls: string[]) => {
     try {
+      const url = urls[0]
+
       if (onClick) {
         onClick()
       }
@@ -73,7 +75,7 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
         Please contact me (Peanut#1756) if you experience any issues with this
       </WarningMessage>
       <ImageUploader
-        onDone={onUploadedWithUrl}
+        onDone={onUploadedWithUrls}
         bucketName={bucketNames.userAvatars}
         directoryPath={userId}
         requiredWidth={AVATAR_WIDTH}

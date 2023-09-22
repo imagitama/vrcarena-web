@@ -65,19 +65,21 @@ const ErrorBoundaryWrapper = () => {
 
 const ImageUploadTest = () => {
   const [isFormVisible, setIsFormVisible] = useState(false)
-  const [lastUrl, setLastUrl] = useState('')
+  const [lastUrls, setLastUrls] = useState<string[]>([])
 
   return (
     <>
-      {lastUrl ? <img src={lastUrl} /> : null}
+      {lastUrls.length ? lastUrls.map(url => <img src={url} />) : null}
       <Button onClick={() => setIsFormVisible(currentVal => !currentVal)}>
         Upload image
       </Button>
       {isFormVisible ? (
         <ImageUploader
+          allowMultiple
+          allowCropping={false}
           bucketName="test"
           directoryPath="dev"
-          onDone={url => setLastUrl(url)}
+          onDone={urls => setLastUrls(urls)}
         />
       ) : null}
     </>

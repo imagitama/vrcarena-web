@@ -185,8 +185,9 @@ export default ({
       [name]: newVal
     }))
 
-  const onFileUploadedWithUrl = async url =>
-    setField(AttachmentsFieldNames.url, url)
+  const onFileUploadedWithUrl = async urls => {
+    setField(AttachmentsFieldNames.url, urls[0])
+  }
 
   const onSaveClick = async () => {
     try {

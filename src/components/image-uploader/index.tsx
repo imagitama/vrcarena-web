@@ -6,8 +6,6 @@ import 'react-image-crop/dist/ReactCrop.css'
 import CheckIcon from '@material-ui/icons/Check'
 import PhotoIcon from '@material-ui/icons/Photo'
 
-import { callFunction } from '../../firebase'
-import { usingEmulator } from '../../environment'
 import useFileUpload from '../../hooks/useFileUpload'
 
 import FormControls from '../form-controls'
@@ -19,7 +17,6 @@ import {
   UnsupportedMimeTypeError
 } from '../../file-uploading'
 import ErrorMessage from '../error-message'
-import { getExtensionFromUrl } from '../../utils'
 
 const useStyles = makeStyles({
   root: {},
@@ -101,19 +98,6 @@ const convertFileToUrl = async (file: File): Promise<string> => {
     })
 
     reader.readAsDataURL(file)
-  })
-}
-
-const blobToBase64 = async (blob: Blob): Promise<string> => {
-  return new Promise((resolve, _) => {
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      if (!reader.result) {
-        throw new Error('Could not convert blob to base64: reader is empty')
-      }
-      resolve(reader.result.toString())
-    }
-    reader.readAsDataURL(blob)
   })
 }
 
@@ -264,15 +248,16 @@ export default ({
   onCancel = undefined,
   bucketName,
   directoryPath = '', // root
-  generateThumbnail = false,
   requiredWidth = undefined,
   requiredHeight = undefined,
   maxSizeBytes = undefined,
   allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp'],
+  allowMultiple = false,
+  allowCropping = true,
   preloadImageUrl = undefined,
   preloadFile = undefined
 }: {
-  onDone: (url: string, thumbnailUrl?: string) => void
+  onDone: (urls: string[]) => void
   bucketName: string
   directoryPath?: string
   generateThumbnail?: boolean
@@ -282,6 +267,8 @@ export default ({
   requiredHeight?: number
   allowedMimeTypes?: string[]
   maxSizeBytes?: number
+  allowMultiple?: boolean
+  allowCropping?: boolean
   // for sync with gumroad
   preloadImageUrl?: string
   preloadFile?: File
@@ -292,12 +279,14 @@ export default ({
   if (!bucketName) {
     throw new Error('Need a bucket name')
   }
+  if (allowCropping && allowMultiple) {
+    throw new Error('Cannot allow cropping and multiple files yet')
+  }
 
   const selectedFileRef = useRef<File | null>(preloadFile || null)
   const [imageUrlToCrop, setImageUrlToCrop] = useState<string | null>(
     preloadImageUrl || null
   )
-  const [isOptimizing, setIsOptimizing] = useState(false)
   const classes = useStyles()
   const [lastCustomError, setLastCustomError] = useState<Error | null>(null)
 
@@ -307,12 +296,30 @@ export default ({
       console.warn('Accepted files is empty')
       return
     }
-    const file = acceptedFiles[0]
-    selectedFileRef.current = file
-    const imageUrl = await convertFileToUrl(file)
-    setImageUrlToCrop(imageUrl)
+
+    if (allowCropping) {
+      const file = acceptedFiles[0]
+      selectedFileRef.current = file
+      const imageUrl = await convertFileToUrl(file)
+      setImageUrlToCrop(imageUrl)
+    } else {
+      const results = []
+
+      console.debug(`Multi-upload of ${acceptedFiles.length} files`)
+
+      for (const acceptedFile of acceptedFiles) {
+        console.debug(`Uploading file "${acceptedFile.name}"...`)
+
+        results.push(await uploadImage(acceptedFile))
+      }
+
+      console.debug(`All files have been uploaded`)
+
+      onDone(results)
+    }
   }, [])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    multiple: allowMultiple,
     onDrop,
     maxSize: maxSizeBytes,
     accept: allowedMimeTypes,
@@ -359,6 +366,19 @@ export default ({
     )
   }
 
+  const uploadImage = async (fileToUpload: File): Promise<string> => {
+    const uploadPath = `${directoryPath ? `${directoryPath}/` : ''}${
+      fileToUpload.name
+    }`
+
+    // NOTE: Supabase always serves our images as .webp so don't need to do this
+    // verify by seeing Content-Type header
+    // 1.91mb PNG becomes 125kb WEBP
+    const uploadedUrl = await upload(fileToUpload, bucketName, uploadPath)
+
+    return uploadedUrl
+  }
+
   const onDoneCropping = async (
     image: HTMLImageElement,
     cropSettings: Crop
@@ -377,38 +397,9 @@ export default ({
         type: 'image/png'
       })
 
-      const uploadPath = `${
-        directoryPath ? `${directoryPath}/` : ''
-      }${fileNameWithExt}`
+      const uploadedUrl = await uploadImage(fileToUpload)
 
-      const uploadedUrl = await upload(fileToUpload, bucketName, uploadPath)
-
-      // TODO: We should probably optimize this ourselves in case they haven't done a good job
-      if (getExtensionFromUrl(uploadedUrl) === 'webp') {
-        onDone(uploadedUrl)
-        return
-      }
-
-      try {
-        setIsOptimizing(true)
-
-        const {
-          data: { optimizedUrl: optimizedImageUrl, thumbnailUrl }
-        } = await callFunction('optimizeImage', {
-          imageUrl: uploadedUrl,
-          bucketName,
-          generateThumbnail
-        })
-
-        selectedFileRef.current = null
-        setIsOptimizing(false)
-        setImageUrlToCrop(null)
-
-        onDone(optimizedImageUrl, thumbnailUrl)
-      } catch (err) {
-        setLastCustomError(err as Error)
-        throw err
-      }
+      onDone([uploadedUrl])
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -429,12 +420,6 @@ export default ({
       <LoadingIndicator
         message={`Uploading image (${percentageDone.toFixed(1)}%)...`}
       />
-    )
-  }
-
-  if (isOptimizing) {
-    return (
-      <LoadingIndicator message="Optimizing image (takes 15-30 seconds)..." />
     )
   }
 
@@ -463,7 +448,8 @@ export default ({
             <>Drop your image here!</>
           ) : (
             <>
-              <PhotoIcon /> Drag and drop your image here or click here
+              <PhotoIcon /> Drag and drop your image{allowMultiple ? 's' : ''}{' '}
+              here or click here
             </>
           )}
         </div>

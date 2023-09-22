@@ -47,8 +47,10 @@ export default ({
     return <ErrorMessage>Failed to save banner</ErrorMessage>
   }
 
-  const onUploadedWithUrl = async (url: string) => {
+  const onUploadedWithUrls = async (urls: string[]) => {
     try {
+      const url = urls[0]
+
       if (overrideSave) {
         overrideSave(url)
 
@@ -85,7 +87,7 @@ export default ({
       </WarningMessage>
       <BannerUploader
         assetId={assetIdForBucket || assetId || ''}
-        onDone={onUploadedWithUrl}
+        onDone={onUploadedWithUrls}
       />
     </>
   )

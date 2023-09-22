@@ -62,8 +62,10 @@ export default ({
     return <SuccessMessage>Thumbnail has been changed!</SuccessMessage>
   }
 
-  const onUploaded = async (url: string) => {
+  const onUploaded = async (urls: string[]) => {
     try {
+      const url = urls[0]
+
       if (overrideSave) {
         overrideSave(url)
 

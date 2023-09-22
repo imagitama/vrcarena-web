@@ -9,7 +9,7 @@ export default ({
   onDone
 }: {
   assetId: string
-  onDone: (url: string) => void
+  onDone: (urls: string[]) => void
 }) =>
   assetId ? (
     <ImageUploader

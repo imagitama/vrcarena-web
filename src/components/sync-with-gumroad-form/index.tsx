@@ -568,9 +568,9 @@ export default ({
                 preloadImageUrl={selectedThumbnailAttachment.url}
                 requiredWidth={THUMBNAIL_WIDTH}
                 requiredHeight={THUMBNAIL_HEIGHT}
-                onDone={url =>
+                onDone={urls =>
                   updateFields({
-                    [AssetFieldNames.thumbnailUrl]: url
+                    [AssetFieldNames.thumbnailUrl]: urls[0]
                   })
                 }
                 onCancel={() => setSelectedThumbnailAttachment(null)}

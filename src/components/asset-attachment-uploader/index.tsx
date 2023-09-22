@@ -179,13 +179,8 @@ export default ({
   )
   const classes = useStyles()
 
-  const onFileAttached = (fileUrl: string) => {
-    if (newFileUrls.includes(fileUrl)) {
-      console.warn(`URL is already attached: ${fileUrl}`)
-      return
-    }
-
-    setNewFileUrls(newFileUrls.concat([fileUrl]))
+  const onFilesAttached = (fileUrls: string[]) => {
+    setNewFileUrls(newFileUrls.concat(fileUrls))
     setAttachmentType(null)
   }
 
@@ -304,9 +299,11 @@ export default ({
       <Paper>
         {attachmentType === attachmentTypes.Image ? (
           <ImageUploader
+            allowMultiple
+            allowCropping={false}
             bucketName={bucketNames.attachments}
             directoryPath=""
-            onDone={url => onFileAttached(url)}
+            onDone={urls => onFilesAttached(urls)}
           />
         ) : attachmentType === attachmentTypes.File ? (
           <>
@@ -317,11 +314,11 @@ export default ({
             <FileUploader
               bucketName={bucketNames.attachments}
               directoryPath=""
-              onDone={url => onFileAttached(url)}
+              onDone={url => onFilesAttached([url])}
             />
           </>
         ) : attachmentType === attachmentTypes.URL ? (
-          <UrlSelector onDone={url => onFileAttached(url)} />
+          <UrlSelector onDone={url => onFilesAttached([url])} />
         ) : (
           <>
             {!limit || (limit && newFileUrls && newFileUrls.length < limit) ? (
