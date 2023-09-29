@@ -21,7 +21,7 @@ const View = () => {
   }
 
   if (isErrored) {
-    return <ErrorMessage />
+    return <ErrorMessage>Failed to load your user record</ErrorMessage>
   }
 
   if (!canEditSpecies(user)) {
@@ -37,8 +37,9 @@ const View = () => {
         saveBtnAction="Click save species button"
         viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
-        getSuccessUrl={id =>
-          routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', id)
+        // @ts-ignore
+        getSuccessUrl={(record: any) =>
+          routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', record.id)
         }
       />
     </>

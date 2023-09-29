@@ -110,7 +110,7 @@ export default ({
   successUrl = '',
   cancelUrl = '',
   extraFormData = {},
-  getSuccessUrl = () => null,
+  getSuccessUrl = () => '',
   // amendments
   overrideFields = null,
   onFieldChanged = undefined
