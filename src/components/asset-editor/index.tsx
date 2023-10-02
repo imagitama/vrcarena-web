@@ -858,12 +858,15 @@ const Editor = () => {
           editor={
             <>
               <Markdown source={nsfwRules} />
-              {/* @ts-ignore */}
-              <ToggleAdultForm
-                assetId={assetId}
-                isAdult={asset.isadult === true}
-                onDone={() => hydrate()}
-              />
+              {assetId ? (
+                <ToggleAdultForm
+                  assetId={assetId}
+                  isAdult={asset.isadult === true}
+                  onDone={() => hydrate()}
+                />
+              ) : (
+                'Need asset ID'
+              )}
             </>
           }
         />

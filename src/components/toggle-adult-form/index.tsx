@@ -8,8 +8,19 @@ import { handleError } from '../../error-handling'
 import { createRef } from '../../utils'
 
 import Button from '../button'
+import WarningMessage from '../warning-message'
 
-export default ({ assetId, isAdult, onDone, overrideSave = null }) => {
+export default ({
+  assetId,
+  isAdult,
+  onDone,
+  overrideSave = undefined
+}: {
+  assetId: string
+  isAdult: boolean
+  onDone: () => void
+  overrideSave?: (newValue: boolean) => void
+}) => {
   const [isSaving, , , save] = useDatabaseSave(CollectionNames.Assets, assetId)
 
   const onToggleClick = async () => {
@@ -44,6 +55,10 @@ export default ({ assetId, isAdult, onDone, overrideSave = null }) => {
 
   return (
     <>
+      <WarningMessage>
+        Please do not mark as NSFW if there is both a SFW and NSFW variation of
+        the asset (use tags to indicate that)
+      </WarningMessage>
       <Button icon={<LoyaltyIcon />} onClick={onToggleClick}>
         {isSaving ? 'Saving...' : isAdult ? 'Mark as SFW' : 'Mark as NSFW'}
       </Button>
