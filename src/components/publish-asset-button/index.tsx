@@ -12,6 +12,7 @@ import SuccessMessage from '../success-message'
 import { Asset } from '../../modules/assets'
 import WarningMessage from '../warning-message'
 import { adultSearchTerms } from '../../config'
+import { AssetCategories } from '../../hooks/useDatabaseQuery'
 
 const errorCodes: { [key: string]: string } = {
   IS_NOT_DRAFT: 'IS_NOT_DRAFT',
@@ -82,7 +83,10 @@ const getValidationErrorMessagesForAsset = (asset: Asset): string[] => {
   if (!asset.author) {
     messages.push(validationErrorMessages.NO_AUTHOR)
   }
-  if (!asset.species || !asset.species.length) {
+  if (
+    asset.category === AssetCategories.avatar &&
+    (!asset.species || !asset.species.length)
+  ) {
     messages.push(validationErrorMessages.NO_SPECIES)
   }
   if (!asset.thumbnailurl || asset.thumbnailurl === defaultThumbnailUrl) {

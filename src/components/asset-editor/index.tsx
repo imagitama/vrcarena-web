@@ -364,7 +364,6 @@ const getLabelForSyncButton = (sourceType: string): string => {
 }
 
 const PatreonOnlyMessage = () => (
-  // @ts-ignore
   <NoPermissionMessage message="You must be a Patreon supporter to use this feature" />
 )
 
@@ -890,19 +889,21 @@ const Editor = () => {
         Recommended
       </Heading>
       <div className={classes.formEditorAreas}>
-        <FormEditorArea
-          fieldName={AssetFieldNames.species}
-          title="Species"
-          description="Help people find your asset by grouping it into its species (if applicable)."
-          icon={() => <PetsIcon />}
-          display={SpeciesDisplay}
-          editor={
-            <ChangeSpeciesEditor
-              assetId={assetId ? assetId : undefined}
-              activeSpeciesIds={asset.species || []}
-            />
-          }
-        />
+        {asset.category === AssetCategories.avatar ? (
+          <FormEditorArea
+            fieldName={AssetFieldNames.species}
+            title="Species"
+            description="Help people find your asset by grouping it into its species (if applicable)."
+            icon={() => <PetsIcon />}
+            display={SpeciesDisplay}
+            editor={
+              <ChangeSpeciesEditor
+                assetId={assetId ? assetId : undefined}
+                activeSpeciesIds={asset.species || []}
+              />
+            }
+          />
+        ) : null}
         <FormEditorArea
           fieldName={AssetFieldNames.bannerUrl}
           title="Banner"

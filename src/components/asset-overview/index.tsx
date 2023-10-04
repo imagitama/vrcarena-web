@@ -607,12 +607,17 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
               <LoadingShimmer width={200} height={25} />
             ) : (
               <>
-                <SpeciesList
-                  speciesIds={asset.species ? asset.species : []}
-                  speciesNames={asset.speciesnames ? asset.speciesnames : []}
-                />
-                {asset.species && asset.species.length ? ' / ' : ''}
-
+                {asset.category === AssetCategories.avatar ? (
+                  <>
+                    <SpeciesList
+                      speciesIds={asset.species ? asset.species : []}
+                      speciesNames={
+                        asset.speciesnames ? asset.speciesnames : []
+                      }
+                    />
+                    {asset.species && asset.species.length ? ' / ' : ''}
+                  </>
+                ) : null}
                 {isEditor &&
                   asset.ranks &&
                   insertItemInbetweenAllItems(
