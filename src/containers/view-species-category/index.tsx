@@ -12,27 +12,34 @@ import ErrorMessage from '../../components/error-message'
 
 import categoryMeta from '../../category-meta'
 import {
+  AssetCategories,
   AssetFieldNames,
-  CollectionNames,
-  SpeciesFieldNames
+  CollectionNames
 } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 import * as routes from '../../routes'
+import { FullAsset } from '../../modules/assets'
+import { Species } from '../../modules/species'
 
-function getDisplayNameByCategoryName(categoryName) {
+function getDisplayNameByCategoryName(categoryName: string): string {
   return categoryMeta[categoryName].name
 }
 
-function getDescriptionByCategoryName(categoryName) {
+function getDescriptionByCategoryName(categoryName: string): string {
   return categoryMeta[categoryName].shortDescription
 }
 
-const Renderer = ({ items }) => <AssetResults assets={items} showAddToCart />
+const Renderer = ({ items }: { items: FullAsset[] }) => (
+  <AssetResults assets={items} showAddToCart />
+)
 
 const View = () => {
-  const { speciesIdOrSlug: speciesId, categoryName } = useParams()
+  const {
+    speciesIdOrSlug: speciesId,
+    categoryName = AssetCategories.avatar
+  } = useParams<{ speciesIdOrSlug: string; categoryName: string }>()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
     query => {
@@ -46,11 +53,9 @@ const View = () => {
     [speciesId, categoryName, isAdultContentEnabled]
   )
 
-  const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStoreItem(
-    CollectionNames.Species,
-    speciesId,
-    'view-species-category'
-  )
+  const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStoreItem<
+    Species
+  >(CollectionNames.Species, speciesId, 'view-species-category')
 
   if (isLoadingSpecies || !species) {
     return <LoadingIndicator message="Loading species..." />
@@ -64,8 +69,7 @@ const View = () => {
     <>
       <Helmet>
         <title>
-          {species[SpeciesFieldNames.pluralName]} |{' '}
-          {getDisplayNameByCategoryName(categoryName)} |{' '}
+          {species.pluralname} | {getDisplayNameByCategoryName(categoryName)} |{' '}
           {getDescriptionByCategoryName(categoryName)} | VRCArena
         </title>
         <meta
@@ -81,7 +85,7 @@ const View = () => {
               ':speciesIdOrSlug',
               speciesId
             )}>
-            {species[SpeciesFieldNames.pluralName]}
+            {species.pluralname}
           </Link>
         </Heading>
         <Heading variant="h2">
@@ -96,6 +100,7 @@ const View = () => {
         <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
         <PaginatedView
           viewName="getPublicAssets"
+          // @ts-ignore
           getQuery={getQuery}
           sortKey="view-category"
           sortOptions={[
@@ -112,6 +117,7 @@ const View = () => {
           urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
             .replace(':speciesIdOrSlug', speciesId)
             .replace(':categoryName', categoryName)}>
+          {/* @ts-ignore */}
           <Renderer />
         </PaginatedView>
       </div>

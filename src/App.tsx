@@ -11,7 +11,6 @@ import { darkTheme } from './themes'
 // Do not lazy load these routes as they are very popular so they should load fast
 import Home from './containers/home'
 import ViewAsset from './containers/view-asset'
-import ViewSpecies from './containers/view-species'
 import ViewSpeciesCategory from './containers/view-species-category'
 import ViewCategory from './containers/view-category'
 import ViewAvatars from './containers/view-avatars'
@@ -28,7 +27,6 @@ import UnapprovedAssetsMessage from './components/unapproved-assets-message'
 import BannedNotice from './components/banned-notice'
 import Banner from './components/banner'
 import DraftAssetsMessage from './components/draft-assets-message'
-import Fireworks from './components/fireworks'
 import Searchbar from './components/searchbar'
 import DesktopMenu from './components/desktop-menu'
 
@@ -41,11 +39,10 @@ import {
   mediaQueryForTabletsOrAbove
 } from './media-queries'
 import useUserRecord from './hooks/useUserRecord'
-import { UserFieldNames } from './hooks/useDatabaseQuery'
 import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
 
-const catchChunkDeaths = functionToImport =>
+const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch(err => {
     if (err.message.includes('Loading chunk')) {
       // Warning: this could cause an infinite loop :)
@@ -99,7 +96,7 @@ const useStyles = makeStyles({
     transform: 'translate(-25%, -25%)',
     padding: '2rem',
     background: 'rgba(0, 0, 0, 0.5)',
-    zIndex: '999'
+    zIndex: 999
   }
 })
 
@@ -443,10 +440,10 @@ const useSetupProfileRedirect = () => {
 
   useEffect(() => {
     // username will be "null" if not created yet
-    if (user && !user[UserFieldNames.username]) {
+    if (user && !user.username) {
       push(routes.setupProfile)
     }
-  }, [user ? user[UserFieldNames.username] !== null : null, location.pathname])
+  }, [user ? user.username !== null : null, location.pathname])
 }
 
 const MainContent = () => {
@@ -523,21 +520,18 @@ const MainContent = () => {
         <Route exact path={routes.editSpeciesWithVar} component={EditSpecies} />
         <Route
           exact
-          path={routes.viewAllSpeciesWithPageNumberVar}
+          path={[routes.viewAllSpeciesWithPageNumberVar, routes.viewAllSpecies]}
           component={ViewAllSpecies}
         />
         <Route
           exact
-          path={routes.viewSpeciesCategoryWithVarAndPageNumberVar}
+          path={[
+            routes.viewSpeciesCategoryWithVar,
+            routes.viewSpeciesCategoryWithVarAndPageNumberVar,
+            routes.viewSpeciesWithVar
+          ]}
           component={ViewSpeciesCategory}
         />
-        <Route
-          exact
-          path={routes.viewSpeciesCategoryWithVar}
-          component={ViewSpeciesCategory}
-        />
-        <Route exact path={routes.viewAllSpecies} component={ViewAllSpecies} />
-        <Route exact path={routes.viewSpeciesWithVar} component={ViewSpecies} />
         <Route exact path={routes.editUserWithVar} component={EditUser} />
         <Route exact path={routes.staffUsers} component={Users} />
         <Route
@@ -700,30 +694,20 @@ export default () => {
         <Banner />
         <PageHeader />
         <div className={classes.searchbarArea}>
-          <div className={classes.searchBar}>
-            <div className={classes.searchBarInner}>
+          <div>
+            <div>
               <Searchbar />
             </div>
           </div>
 
           {!isMobile && (
-            <div className={classes.desktopMenu}>
+            <div>
               <DesktopMenu />
             </div>
           )}
         </div>
         <main className="main">
           <div className={`${isHome ? '' : classes.mainContainer}`}>
-            {new Date() < new Date('10 June 2022') && (
-              <Fireworks
-                eventName="2_year_anniversary"
-                message={
-                  <div style={{ fontSize: '200%', textAlign: 'center' }}>
-                    Celebrating our 2 Year Anniversary!
-                  </div>
-                }
-              />
-            )}
             <BannedNotice />
             <Notices isHome={isHome} />
             <UnapprovedAssetsMessage />

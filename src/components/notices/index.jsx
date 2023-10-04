@@ -9,6 +9,7 @@ import useStorage, { keys as storageKeys } from '../../hooks/useStorage'
 import { trackAction } from '../../analytics'
 import Notice from '../notice'
 import { write as writeStorage } from '../../utils/storage'
+import ErrorMessage from '../error-message'
 
 const useStyles = makeStyles({
   home: {
@@ -35,7 +36,7 @@ export default ({ isHome = false }) => {
   }
 
   if (isErrored) {
-    return 'Failed to load notices'
+    return <ErrorMessage>Failed to load notices</ErrorMessage>
   }
 
   if (isLoading || !results || !results.length) {
