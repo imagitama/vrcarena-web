@@ -96,9 +96,6 @@ const SpeciesResult = ({ speciesIdOrSlug }: { speciesIdOrSlug: string }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getAvatarsQuery = useCallback(
     query => {
-      if (!species) {
-        return null
-      }
       query = query.eq(AssetFieldNames.category, AssetCategories.avatar)
       query = query.contains(AssetFieldNames.species, [species.id])
       if (!isAdultContentEnabled) {
@@ -193,7 +190,7 @@ const SpeciesResult = ({ speciesIdOrSlug }: { speciesIdOrSlug: string }) => {
       <PaginatedView
         viewName="getPublicAssets"
         // @ts-ignore
-        getQuery={getAvatarsQuery}
+        getQuery={species ? getAvatarsQuery : undefined}
         sortKey="view-category"
         sortOptions={[
           {

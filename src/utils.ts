@@ -260,7 +260,7 @@ export function isRef(value: any): boolean {
 // if you provide an access ID it will still error?
 // so strip that out
 export function fixAccessingImagesUsingToken(url: string): string {
-  if (!url.includes('GoogleAccessId')) {
+  if (!url || !url.includes('GoogleAccessId')) {
     return url
   }
   return url.split('?')[0]
