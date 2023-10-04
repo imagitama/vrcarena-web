@@ -101,10 +101,12 @@ const SpeciesResult = ({ speciesIdOrSlug }: { speciesIdOrSlug: string }) => {
     }
 
     let query = supabase
-      .from(CollectionNames.Species)
+      .from('getpublicassets')
       .select('*')
       .eq(AssetFieldNames.category, AssetCategories.avatar)
       .contains(AssetFieldNames.species, [species.id])
+      .order(AssetFieldNames.createdAt, { ascending: false })
+      .limit(20)
 
     if (!isAdultContentEnabled) {
       query = query.eq(AssetFieldNames.isAdult, false)
