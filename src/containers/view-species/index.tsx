@@ -12,6 +12,7 @@ import ErrorMessage from '../../components/error-message'
 import Button from '../../components/button'
 import BodyText from '../../components/body-text'
 import LoadingIndicator from '../../components/loading-indicator'
+import PageControls from '../../components/page-controls'
 
 import {
   AssetCategories,
@@ -33,7 +34,6 @@ import { fixAccessingImagesUsingToken } from '../../utils'
 import { client as supabase } from '../../supabase'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { Species } from '../../modules/species'
-import PaginatedView from '../../components/paginated-view'
 import AssetResults from '../../components/asset-results'
 import { Asset } from '../../modules/assets'
 
@@ -90,35 +90,42 @@ const SpeciesResult = ({ speciesIdOrSlug }: { speciesIdOrSlug: string }) => {
   )
   let [isLoading, isError, speciesResults] = useDataStore<Species[]>(
     getSpeciesQuery,
-    'view-species'
+    'view-species-info'
   )
   const species = speciesResults ? speciesResults[0] : null
   const classes = useStyles()
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getAvatarsQuery = useCallback(
-    query => {
-      if (!species) {
-        return query
-      }
-      query = query.eq(AssetFieldNames.category, AssetCategories.avatar)
-      query = query.contains(AssetFieldNames.species, [species.id])
-      if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
-      }
-      return query
-    },
-    [species && species.id, isAdultContentEnabled]
+  const getAvatarsQuery = useCallback(() => {
+    if (!species) {
+      return
+    }
+
+    let query = supabase
+      .from(CollectionNames.Species)
+      .select('*')
+      .eq(AssetFieldNames.category, AssetCategories.avatar)
+      .contains(AssetFieldNames.species, [species.id])
+
+    if (!isAdultContentEnabled) {
+      query = query.eq(AssetFieldNames.isAdult, false)
+    }
+
+    return query
+  }, [species && species.id, isAdultContentEnabled])
+  let [isLoadingAssets, isErrorLoadingAssets, assets] = useDataStore<Asset[]>(
+    species ? getAvatarsQuery : null,
+    'view-species-assets'
   )
 
-  if (isLoading) {
+  if (isLoading || isLoadingAssets) {
     return <LoadingIndicator />
   }
 
-  if (isError) {
+  if (isError || isErrorLoadingAssets) {
     return <ErrorMessage>Failed to load species</ErrorMessage>
   }
 
-  if (!species || (!isFirebaseId && !species)) {
+  if (!species || (!isFirebaseId && !species) || !assets) {
     return <ErrorMessage>Could not found that species</ErrorMessage>
   }
 
@@ -191,29 +198,27 @@ const SpeciesResult = ({ speciesIdOrSlug }: { speciesIdOrSlug: string }) => {
           </Button>
         </>
       )}
-      <PaginatedView
-        viewName="getPublicAssets"
-        // @ts-ignore
-        getQuery={species ? getAvatarsQuery : undefined}
-        sortKey="view-category"
-        sortOptions={[
-          {
-            label: 'Submission date',
-            fieldName: AssetFieldNames.createdAt
-          },
-          {
-            label: 'Title',
-            fieldName: AssetFieldNames.title
-          }
-        ]}
-        defaultFieldName={AssetFieldNames.createdAt}
-        urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar.replace(
-          ':speciesIdOrSlug',
-          speciesIdOrSlug
-        )}>
-        {/* @ts-ignore */}
-        <Renderer />
-      </PaginatedView>
+      <Heading variant="h2">
+        <Link
+          to={routes.viewSpeciesCategoryWithVar
+            .replace(':speciesIdOrSlug', species.id)
+            .replace(':categoryName', AssetCategories.avatar)}>
+          Avatars
+        </Link>
+      </Heading>
+      <AssetResults assets={assets} />
+      <PageControls>
+        <Button
+          url={routes.viewSpeciesCategoryWithVar
+            .replace(':speciesIdOrSlug', species.id)
+            .replace(':categoryName', AssetCategories.avatar)}
+          color="default"
+          onClick={() =>
+            trackAction(analyticsCategory, 'Click all avatars button')
+          }>
+          View All Avatars
+        </Button>
+      </PageControls>
     </>
   )
 }
