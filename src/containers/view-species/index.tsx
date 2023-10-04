@@ -88,10 +88,11 @@ const SpeciesResult = ({ speciesIdOrSlug }: { speciesIdOrSlug: string }) => {
         ),
     [speciesIdOrSlug]
   )
-  let [isLoading, isError, species] = useDataStore<Species>(
+  let [isLoading, isError, speciesResults] = useDataStore<Species[]>(
     getSpeciesQuery,
     'view-species'
   )
+  const species = speciesResults ? speciesResults[0] : null
   const classes = useStyles()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getAvatarsQuery = useCallback(
