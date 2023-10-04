@@ -96,6 +96,9 @@ const SpeciesResult = ({ speciesIdOrSlug }: { speciesIdOrSlug: string }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getAvatarsQuery = useCallback(
     query => {
+      if (!species) {
+        return query
+      }
       query = query.eq(AssetFieldNames.category, AssetCategories.avatar)
       query = query.contains(AssetFieldNames.species, [species.id])
       if (!isAdultContentEnabled) {
