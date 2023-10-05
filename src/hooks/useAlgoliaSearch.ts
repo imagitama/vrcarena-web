@@ -41,7 +41,8 @@ const mapHitsToAssetSearchResults = (hits: Hit<AssetHit>[]) =>
 export default (
   indexName: string,
   keywords: string,
-  filters?: string
+  filters?: string,
+  limit?: number
 ): [boolean, boolean, AssetSearchResult[] | null] => {
   const [results, setResults] = useState<AssetSearchResult[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -73,14 +74,11 @@ export default (
 
         console.debug(`Algolia Search`, keywords, filters)
 
-        const { hits } = await indexRef.current.search<AssetHit>(
-          keywords,
-          filters
-            ? {
-                filters
-              }
-            : {}
-        )
+        const { hits } = await indexRef.current.search<AssetHit>(keywords, {
+          filters,
+          offset: 0,
+          length: limit
+        })
 
         console.debug(`Algolia Search complete`, hits)
 

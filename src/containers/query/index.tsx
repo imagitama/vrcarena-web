@@ -558,6 +558,7 @@ const KEY_CODE_ESCAPE = 27
 interface PaginatedViewItem {}
 
 const Renderer = ({ items }: { items?: PaginatedViewItem[] }) => (
+  // @ts-ignore
   <AssetResults assets={items} />
 )
 

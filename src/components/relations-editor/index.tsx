@@ -23,6 +23,9 @@ import useTimer from '../../hooks/useTimer'
 import { formHideDelay } from '../../config'
 
 const useStyles = makeStyles({
+  editor: {
+    marginBottom: '1rem'
+  },
   label: {
     fontSize: '150%',
     marginBottom: '0.5rem'
@@ -36,6 +39,7 @@ const RelationEditorForm = ({
   onDone: (newRelation: Relation) => void
   relation?: Relation
 }) => {
+  const classes = useStyles()
   const [newRelation, setNewRelation] = useState<Relation>(
     relation || {
       asset: '',
@@ -43,10 +47,7 @@ const RelationEditorForm = ({
       comments: ''
     }
   )
-  const [isLoadingAsset, isErrorLoadingAsset, asset] = useDataStoreItem<Asset>(
-    CollectionNames.Assets,
-    newRelation.asset || false
-  )
+  const [assetsData, setAssetsData] = useState<Asset[]>([])
 
   const onSelectedAsset = (newAsset: Asset) => {
     console.debug(`Selected asset ${newAsset.id} for relation`)
@@ -54,6 +55,7 @@ const RelationEditorForm = ({
       ...newRelation,
       asset: newAsset.id
     })
+    setAssetsData(currentData => currentData.concat([newAsset]))
   }
 
   const onCommentsChange = (newComments: string) =>
@@ -68,13 +70,14 @@ const RelationEditorForm = ({
   }
 
   return (
-    <div>
+    <div className={classes.editor}>
       <AssetSearch
-        selectedAsset={asset || undefined}
+        selectedAsset={assetsData.find(
+          assetData => assetData.id === newRelation.asset
+        )}
         onSelect={onSelectedAsset}
-        limit={5}
+        limit={10}
       />
-
       <Select
         fullWidth
         onChange={e =>
@@ -96,7 +99,6 @@ const RelationEditorForm = ({
           </MenuItem>
         ))}
       </Select>
-
       <TextInput
         multiline
         rows={2}
@@ -105,7 +107,6 @@ const RelationEditorForm = ({
         onChange={e => onCommentsChange(e.target.value)}
         placeholder="Comments (optional)"
       />
-
       <FormControls>
         <Button onClick={onDoneClick}>
           {relation ? 'Edit' : 'Add'} Relation

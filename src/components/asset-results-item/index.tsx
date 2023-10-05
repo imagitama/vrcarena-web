@@ -45,6 +45,7 @@ import Chip from '../chip'
 import { Asset, FullAsset } from '../../modules/assets'
 import useIsEditor from '../../hooks/useIsEditor'
 import useBulkEdit from '../../hooks/useBulkEdit'
+import SelectedTick from '../selected-tick'
 
 const chipMargin = '0.25rem'
 
@@ -199,7 +200,7 @@ const useStyles = makeStyles(theme => ({
   slide: {
     position: 'relative'
   },
-  unselected: {
+  dim: {
     opacity: '0.3'
   },
   addToCartButton: {
@@ -414,10 +415,12 @@ const AssetResultsItem = ({
   showIsNsfw = true,
   isLandscape = false,
   hoverOnEffect = false,
-  isUnselected = false,
+  isSelected = false,
+  dim = false,
   onClick,
   shimmer = false,
-  showAddToCart = false
+  showAddToCart = false,
+  showSelectedTick = false
 }: {
   asset?: Asset
   showCategory?: boolean
@@ -425,15 +428,19 @@ const AssetResultsItem = ({
   showIsNsfw?: boolean
   isLandscape?: boolean
   hoverOnEffect?: boolean
-  isUnselected?: boolean
-  onClick?: () => void
+  isSelected?: boolean
+  dim?: boolean
+  onClick?: (event: React.SyntheticEvent<HTMLElement>) => void
   shimmer?: boolean
   showAddToCart?: boolean
+  showSelectedTick?: boolean
 }) => {
   const classes = useStyles()
   const cardRef = useRef<HTMLDivElement>()
   const [isHoverOnEffectVisible, setIsHoverOnEffectVisible] = useState(false)
   const isEditor = useIsEditor()
+
+  console.log('RENDER ITEM', { showSelectedTick, isSelected })
 
   useEffect(() => {
     if (!hoverOnEffect) {
@@ -472,7 +479,7 @@ const AssetResultsItem = ({
   return (
     <Card
       className={`${classes.root} ${isLandscape ? classes.landscape : ''} ${
-        isUnselected ? classes.unselected : ''
+        dim ? classes.dim : ''
       }`}
       ref={cardRef}>
       <CardActionArea className={classes.actionArea}>
@@ -535,6 +542,8 @@ const AssetResultsItem = ({
       {isHoverOnEffectVisible && hoverOnEffect && (
         <HoverOnEffect assetId={asset.id} />
       )}
+
+      {showSelectedTick && isSelected ? <SelectedTick /> : null}
     </Card>
   )
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AssetResultsItem from '../asset-results-item'
-import LoadingShimmer from '../loading-shimmer'
+import { Asset } from '../../modules/assets'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -17,40 +17,32 @@ const useStyles = makeStyles({
 export default ({
   assets = [],
   showCategory = false,
-  showPinned = false,
   showCost = true,
   showIsNsfw = true,
   hoverOnEffect = false,
   selectedAssetIds = [],
-  showUnselected = false,
-  onClickWithEventAndAsset = null,
+  dimUnselected = false,
+  onClickWithEventAndAsset = undefined,
   shimmer = false,
-  showAddToCart = true
+  showAddToCart = true,
+  showSelectedTick = false
+}: {
+  assets?: Asset[]
+  showCategory?: boolean
+  showCost?: boolean
+  showIsNsfw?: boolean
+  hoverOnEffect?: boolean
+  selectedAssetIds?: string[]
+  dimUnselected?: boolean
+  onClickWithEventAndAsset?: (
+    event: React.SyntheticEvent<HTMLElement>,
+    asset: Asset
+  ) => void
+  shimmer?: boolean
+  showAddToCart?: boolean
+  showSelectedTick?: boolean
 }) => {
   const classes = useStyles()
-  let allAssets
-
-  if (showPinned) {
-    const { pinnedAssets, unpinnedAssets } = assets.reduce(
-      ({ pinnedAssets, unpinnedAssets }, asset) => {
-        if (asset.isPinned) {
-          return {
-            pinnedAssets: pinnedAssets.concat([asset]),
-            unpinnedAssets
-          }
-        }
-        return {
-          pinnedAssets,
-          unpinnedAssets: unpinnedAssets.concat([asset])
-        }
-      },
-      { pinnedAssets: [], unpinnedAssets: [] }
-    )
-
-    allAssets = pinnedAssets.concat(unpinnedAssets)
-  } else {
-    allAssets = assets
-  }
 
   return (
     <div className={classes.root}>
@@ -67,24 +59,30 @@ export default ({
           </div>
         </>
       ) : (
-        allAssets.map(asset => (
+        assets.map(asset => (
           <div key={asset.id} className={classes.item}>
             <AssetResultsItem
               asset={asset}
               showCategory={showCategory}
-              showPinned={showPinned}
               showCost={showCost}
               showIsNsfw={showIsNsfw}
               hoverOnEffect={hoverOnEffect}
-              isUnselected={
-                showUnselected && !selectedAssetIds.includes(asset.id)
+              isSelected={selectedAssetIds.includes(asset.id)}
+              dim={
+                dimUnselected &&
+                selectedAssetIds.length &&
+                !selectedAssetIds.includes(asset.id)
+                  ? true
+                  : false
               }
               onClick={
                 onClickWithEventAndAsset
-                  ? e => onClickWithEventAndAsset(e, asset)
-                  : null
+                  ? (e: React.SyntheticEvent<HTMLElement>) =>
+                      onClickWithEventAndAsset(e, asset)
+                  : undefined
               }
               showAddToCart={showAddToCart}
+              showSelectedTick={showSelectedTick}
             />
           </div>
         ))

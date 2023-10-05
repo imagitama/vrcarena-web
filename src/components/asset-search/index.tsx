@@ -55,15 +55,17 @@ export default ({
       ) : null}
       {results || selectedAsset ? (
         <AssetResults
-          assets={results || [selectedAsset]}
-          // @ts-ignore
+          assets={
+            results ? results : selectedAsset ? [selectedAsset] : undefined
+          }
           onClickWithEventAndAsset={(event, asset) => {
             event.preventDefault()
             event.stopPropagation()
             onSelect(asset)
             return false
           }}
-          showUnselected={!!selectedAsset}
+          dimUnselected
+          showSelectedTick
           selectedAssetIds={selectedAsset ? [selectedAsset.id] : undefined}
         />
       ) : null}

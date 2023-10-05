@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PhotoIcon from '@material-ui/icons/Photo'
@@ -29,8 +29,7 @@ import {
   AssetCategories,
   AssetFieldNames,
   CollectionNames,
-  PatreonStatuses,
-  UserMetaFieldNames
+  PatreonStatuses
 } from '../../hooks/useDatabaseQuery'
 
 import * as routes from '../../routes'
@@ -40,67 +39,65 @@ import { isGumroadUrl, isBoothUrl } from '../../utils'
 import { getDoesAssetNeedPublishing } from '../../utils/assets'
 import useUserRecord from '../../hooks/useUserRecord'
 
-import Button from '../../components/button'
-import FormControls from '../../components/form-controls'
-import NoPermissionMessage from '../../components/no-permission-message'
-import Heading from '../../components/heading'
-import EditorArea from '../../components/editor-area'
-import Message from '../../components/message'
-import SuccessMessage from '../../components/success-message'
-import LoadingIndicator from '../../components/loading-indicator'
+import Button from '../button'
+import FormControls from '../form-controls'
+import NoPermissionMessage from '../no-permission-message'
+import Heading from '../heading'
+import EditorArea from '../editor-area'
+import Message from '../message'
+import SuccessMessage from '../success-message'
+import LoadingIndicator from '../loading-indicator'
 
 // editors
-import AssetSourceEditor from '../../components/asset-source-editor'
-import AssetThumbnail from '../../components/asset-thumbnail'
-import AssetThumbnailUploader from '../../components/asset-thumbnail-uploader'
-import AssetTitleEditor from '../../components/asset-title-editor'
-import Markdown from '../../components/markdown'
-import DescriptionEditor from '../../components/description-editor'
-import ChangeAuthorForm from '../../components/change-author-form'
-import ChangeSpeciesEditor from '../../components/change-species-editor'
-import TagChips from '../../components/tag-chips'
-import AssetTagsEditor from '../../components/asset-tags-editor'
-import ChangeCategoryForm from '../../components/change-category-form'
-import AssetBannerEditor from '../../components/asset-banner-editor'
-import Price from '../../components/price'
-import PriceEditor from '../../components/price-editor'
-import AssetFiles from '../../components/asset-files'
-import AssetAttachmentUploader from '../../components/asset-attachment-uploader'
-import TutorialSteps from '../../components/tutorial-steps'
-import TutorialStepsEditor from '../../components/tutorial-steps-editor'
-import LinkedAssetsEditor from '../../components/linked-assets-editor'
-import AssetResults from '../../components/asset-results'
-import ToggleAdultForm from '../../components/toggle-adult-form'
-import DiscordServerInfo from '../../components/discord-server-info'
-import ChangeDiscordServerForm from '../../components/change-discord-server-form'
-import VrchatAvatarIdsForm from '../../components/vrchat-avatar-ids-form'
-import VrchatAvatars from '../../components/vrchat-avatars'
-import SketchfabEmbedEditor from '../../components/sketchfab-embed-editor'
-import ChangeVrchatWorldForm from '../../components/change-vrchat-world-form'
-import VrchatWorlds from '../../components/vrchat-worlds'
-import SketchfabEmbed from '../../components/sketchfab-embed'
-import SyncWithGumroadSettings from '../../components/sync-with-gumroad-settings'
-import PedestalVideo from '../../components/pedestal-video'
-import PedestalUploadForm from '../../components/pedestal-upload-form'
-import AssetShortDescriptionEditor from '../../components/asset-short-description-editor'
-import SlugEditor from '../../components/slug-editor'
+import AssetSourceEditor from '../asset-source-editor'
+import AssetThumbnail from '../asset-thumbnail'
+import AssetThumbnailUploader from '../asset-thumbnail-uploader'
+import AssetTitleEditor from '../asset-title-editor'
+import Markdown from '../markdown'
+import DescriptionEditor from '../description-editor'
+import ChangeAuthorForm from '../change-author-form'
+import ChangeSpeciesEditor from '../change-species-editor'
+import TagChips from '../tag-chips'
+import AssetTagsEditor from '../asset-tags-editor'
+import ChangeCategoryForm from '../change-category-form'
+import AssetBannerEditor from '../asset-banner-editor'
+import Price from '../price'
+import PriceEditor from '../price-editor'
+import AssetFiles from '../asset-files'
+import AssetAttachmentUploader from '../asset-attachment-uploader'
+import TutorialSteps from '../tutorial-steps'
+import TutorialStepsEditor from '../tutorial-steps-editor'
+import ToggleAdultForm from '../toggle-adult-form'
+import DiscordServerInfo from '../discord-server-info'
+import ChangeDiscordServerForm from '../change-discord-server-form'
+import VrchatAvatarIdsForm from '../vrchat-avatar-ids-form'
+import VrchatAvatars from '../vrchat-avatars'
+import SketchfabEmbedEditor from '../sketchfab-embed-editor'
+import ChangeVrchatWorldForm from '../change-vrchat-world-form'
+import VrchatWorlds from '../vrchat-worlds'
+import SketchfabEmbed from '../sketchfab-embed'
+import SyncWithGumroadSettings from '../sync-with-gumroad-settings'
+import PedestalVideo from '../pedestal-video'
+import PedestalUploadForm from '../pedestal-upload-form'
+import AssetShortDescriptionEditor from '../asset-short-description-editor'
+import SlugEditor from '../slug-editor'
+import RelationsEditor from '../relations-editor'
+import Relations from '../relations'
+import LicenseEditor from '../license-editor'
 
 // @ts-ignore assets
 import placeholderPedestalVideoUrl from '../../assets/videos/placeholder-pedestal.webm'
 import placeholderPedestalFallbackImageUrl from '../../assets/videos/placeholder-pedestal-fallback.webp'
 
 // publish
-import PublishAssetButton from '../../components/publish-asset-button'
+import PublishAssetButton from '../publish-asset-button'
 import { getCanAssetBePublished } from '../../assets'
-import LicenseEditor from '../license-editor'
 import CategoryItem from '../category-item'
 import { Asset, FullAsset } from '../../modules/assets'
 import { inDevelopment } from '../../environment'
 import TagChip from '../tag-chip'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import { defaultBorderRadius } from '../../themes'
-import RelationsEditor from '../relations-editor'
-import Relations from '../relations'
 
 interface EditorInfo {
   assetId: string | null
@@ -168,15 +165,12 @@ const useStyles = makeStyles(theme => ({
     margin: '1rem 0'
   },
   formEditorArea: {
-    width: '49.5%',
+    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
     padding: '0.5rem',
     marginBottom: '1rem',
     borderRadius: defaultBorderRadius,
     [mediaQueryForTabletsOrBelow]: {
       width: '100%'
-    },
-    '&:nth-child(even)': {
-      marginLeft: '1%'
     },
     '&:nth-child(1), &:nth-child(4), &:nth-child(5), &:nth-child(7), &:nth-child(9), &:nth-child(12)': {
       backgroundColor: 'rgba(0, 0, 0, 0.1)'
@@ -230,6 +224,40 @@ const useStyles = makeStyles(theme => ({
   sourceUrl: {
     '& svg': {
       fontSize: '100%'
+    }
+  },
+
+  sectionButton: {
+    fontSize: '125%',
+    background: 'rgba(255, 255, 255, 0.1)',
+    padding: '1rem',
+    cursor: 'pointer',
+    '&:hover': {
+      background: 'rgba(255, 255, 255, 0.2)'
+    }
+  },
+  section: {
+    borderRadius: defaultBorderRadius,
+    border: '0.2rem solid',
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    marginTop: '0.5rem'
+  },
+  invalid: {
+    borderColor: 'rgba(255, 0, 0, 0.1)',
+    '& $sectionButton': {
+      background: 'rgba(255, 0, 0, 0.1)'
+    }
+  },
+  semiValid: {
+    borderColor: 'rgba(255, 255, 0, 0.1)',
+    '& $sectionButton': {
+      background: 'rgba(255, 255, 0, 0.1)'
+    }
+  },
+  valid: {
+    borderColor: 'rgba(0, 255, 0, 0.1)',
+    '& $sectionButton': {
+      background: 'rgba(0, 255, 0, 0.1)'
     }
   }
 }))
@@ -699,6 +727,39 @@ const MainControls = () => {
   )
 }
 
+// @ts-ignore
+const SectionsContext = createContext<{
+  toggleSection: (sectionName: string) => void
+  expandedSectionName: string | null
+}>()
+const useSections = () => useContext(SectionsContext)
+
+const Section = ({
+  name,
+  title,
+  children
+}: {
+  name: string
+  title: string
+  children: any
+}) => {
+  const classes = useStyles()
+  const { toggleSection, expandedSectionName } = useSections()
+
+  const isExpanded = expandedSectionName === name
+
+  return (
+    <div className={classes.section}>
+      <div
+        className={classes.sectionButton}
+        onClick={() => toggleSection(name)}>
+        {title}
+      </div>
+      {isExpanded ? <div>{children}</div> : null}
+    </div>
+  )
+}
+
 const Editor = () => {
   const {
     asset,
@@ -709,6 +770,15 @@ const Editor = () => {
   } = useEditor()
   const [, , user] = useUserRecord()
   const classes = useStyles()
+  const [expandedSectionName, setExpandedSectionName] = useState<string | null>(
+    'basics'
+  )
+
+  const toggleSection = (sectionName: string) => {
+    setExpandedSectionName(
+      expandedSectionName === sectionName ? null : sectionName
+    )
+  }
 
   if (!asset) {
     return null
@@ -720,12 +790,13 @@ const Editor = () => {
   const isSyncWithGumroadEnabled = asset.gumroad && asset.gumroad.sync === true
 
   return (
-    <div>
+    <SectionsContext.Provider
+      value={{
+        toggleSection,
+        expandedSectionName
+      }}>
       <MainControls />
-      <Heading variant="h2" className={classes.formEditorAreaHeading}>
-        Required
-      </Heading>
-      <div className={classes.formEditorAreas}>
+      <Section name="basics" title="Basic Metadata">
         <FormEditorArea
           fieldName={AssetFieldNames.sourceUrl}
           isRequired
@@ -828,22 +899,6 @@ const Editor = () => {
           }
         />
         <FormEditorArea
-          fieldName={AssetFieldNames.tags}
-          isRequired
-          title="Tags"
-          description="Correct tags are very helpful for finding the right asset. the site also uses them to display your asset in different ways."
-          icon={() => <LocalOfferIcon />}
-          display={TagsDisplay}
-          editor={
-            <AssetTagsEditor
-              assetId={assetId}
-              tags={asset.tags || []}
-              // @ts-ignore
-              categoryName={asset.category}
-            />
-          }
-        />
-        <FormEditorArea
           fieldName={AssetFieldNames.isAdult}
           isRequired
           title="Toggle Adult"
@@ -869,26 +924,6 @@ const Editor = () => {
             </>
           }
         />
-        <FormEditorArea
-          fieldName={AssetFieldNames.tutorialSteps}
-          title="Tutorial Steps"
-          description="The steps to complete the tutorial."
-          icon={() => <FormatListNumberedIcon />}
-          doWeRender={asset.category === AssetCategories.tutorial}
-          display={TutorialStepsDisplay}
-          editor={
-            // @ts-ignore
-            <TutorialStepsEditor
-              assetId={assetId}
-              existingSteps={asset.tutorialsteps || []}
-            />
-          }
-        />
-      </div>
-      <Heading variant="h2" className={classes.formEditorAreaHeading}>
-        Recommended
-      </Heading>
-      <div className={classes.formEditorAreas}>
         {asset.category === AssetCategories.avatar ? (
           <FormEditorArea
             fieldName={AssetFieldNames.species}
@@ -935,6 +970,44 @@ const Editor = () => {
             />
           }
         />
+      </Section>
+      {asset.category === AssetCategories.tutorial ? (
+        <Section name="tutorialSteps" title="Tutorial Steps">
+          <FormEditorArea
+            fieldName={AssetFieldNames.tutorialSteps}
+            title="Tutorial Steps"
+            description="The steps to complete the tutorial."
+            icon={() => <FormatListNumberedIcon />}
+            display={TutorialStepsDisplay}
+            editor={
+              // @ts-ignore
+              <TutorialStepsEditor
+                assetId={assetId}
+                existingSteps={asset.tutorialsteps || []}
+              />
+            }
+          />
+        </Section>
+      ) : null}
+      <Section name="tags" title="Tags">
+        <FormEditorArea
+          fieldName={AssetFieldNames.tags}
+          isRequired
+          title="Tags"
+          description="Correct tags are very helpful for finding the right asset. the site also uses them to display your asset in different ways."
+          icon={() => <LocalOfferIcon />}
+          display={TagsDisplay}
+          editor={
+            <AssetTagsEditor
+              assetId={assetId}
+              tags={asset.tags || []}
+              // @ts-ignore
+              categoryName={asset.category}
+            />
+          }
+        />
+      </Section>
+      <Section name="Relationships" title="Relationships">
         <FormEditorArea
           fieldName={AssetFieldNames.relations}
           title="Relations"
@@ -954,11 +1027,8 @@ const Editor = () => {
             />
           }
         />
-      </div>
-      <Heading variant="h2" className={classes.formEditorAreaHeading}>
-        Optional
-      </Heading>
-      <div className={classes.formEditorAreas}>
+      </Section>
+      <Section name="vrchat" title="VRChat">
         <FormEditorArea
           fieldName={AssetFieldNames.vrchatClonableWorldIds}
           title="VRChat World"
@@ -975,6 +1045,22 @@ const Editor = () => {
             ) : null
           }
         />
+        <FormEditorArea
+          fieldName={AssetFieldNames.vrchatClonableAvatarIds}
+          title="VRChat Avatars"
+          description="If users can clone an avatar in VRChat to test the asset you can set that here. Note: We only grab its info once."
+          icon={() => <VRChatIcon />}
+          display={VrchatAvatarsDisplay}
+          editor={
+            // @ts-ignore
+            <VrchatAvatarIdsForm
+              assetId={assetId}
+              avatarIds={asset.vrchatclonableavatarids}
+            />
+          }
+        />
+      </Section>
+      <Section name="requirements" title="Requirements">
         <FormEditorArea
           fieldName={AssetFieldNames.tags}
           title="License"
@@ -1017,56 +1103,15 @@ const Editor = () => {
             />
           }
         />
-        <FormEditorArea
-          fieldName={AssetFieldNames.vrchatClonableAvatarIds}
-          title="VRChat Avatars"
-          description="If users can clone an avatar in VRChat to test the asset you can set that here. Note: We only grab its info once."
-          icon={() => <VRChatIcon />}
-          display={VrchatAvatarsDisplay}
-          editor={
-            // @ts-ignore
-            <VrchatAvatarIdsForm
-              assetId={assetId}
-              avatarIds={asset.vrchatclonableavatarids}
-            />
-          }
-        />
-        <FormEditorArea
-          fieldName={AssetFieldNames.sketchfabEmbedUrl}
-          title="Sketchfab"
-          description="We can embed a 3D preview from the Sketchfab website here."
-          icon={() => <ControlCameraIcon />}
-          display={SketchfabDisplay}
-          // @ts-ignore
-          editor={<SketchfabEmbedEditor assetId={assetId} />}
-        />
-        <FormEditorArea
-          fieldName={AssetFieldNames.gumroad}
-          title="Auto Sync"
-          description="Automatically sync with Gumroad once per day. Experimental."
-          icon={() => <SyncIcon />}
-          display={GumroadSettingsDisplay}
-          editor={
-            <SyncWithGumroadSettings
-              assetId={assetId}
-              isEnabled={isSyncWithGumroadEnabled}
-              // @ts-ignore
-              settings={asset.gumroad}
-            />
-          }
-        />
-      </div>
-      <Heading variant="h2" className={classes.formEditorAreaHeading}>
-        Patreon Supporters Only
-      </Heading>
-      {isPatron ? (
-        <SuccessMessage>
-          Thank you for being a Patreon supporter!
-        </SuccessMessage>
-      ) : (
-        <BecomePatronMessage />
-      )}
-      <div className={classes.formEditorAreas}>
+      </Section>
+      <Section name="patreon" title="Patreon Supporters Only">
+        {isPatron ? (
+          <SuccessMessage>
+            Thank you for being a Patreon supporter!
+          </SuccessMessage>
+        ) : (
+          <BecomePatronMessage />
+        )}
         <FormEditorArea
           title="Pedestal"
           description="A pedestal is a 10 second, 360 degree rotating video of your 3D model. It is used on the asset page, on the homepage (if featured) and in various other places."
@@ -1126,9 +1171,35 @@ const Editor = () => {
             isPatron ? <SlugEditor assetId={assetId} /> : <PatreonOnlyMessage />
           }
         />
-      </div>
+      </Section>
+      <Section name="other" title="Other">
+        <FormEditorArea
+          fieldName={AssetFieldNames.sketchfabEmbedUrl}
+          title="Sketchfab"
+          description="We can embed a 3D preview from the Sketchfab website here."
+          icon={() => <ControlCameraIcon />}
+          display={SketchfabDisplay}
+          // @ts-ignore
+          editor={<SketchfabEmbedEditor assetId={assetId} />}
+        />
+        <FormEditorArea
+          fieldName={AssetFieldNames.gumroad}
+          title="Auto Sync"
+          description="Automatically sync with Gumroad once per day. Experimental."
+          icon={() => <SyncIcon />}
+          display={GumroadSettingsDisplay}
+          editor={
+            <SyncWithGumroadSettings
+              assetId={assetId}
+              isEnabled={isSyncWithGumroadEnabled}
+              // @ts-ignore
+              settings={asset.gumroad}
+            />
+          }
+        />
+      </Section>
       <MainControls />
-    </div>
+    </SectionsContext.Provider>
   )
 }
 

@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import CheckIcon from '@material-ui/icons/Check'
 import Link from '../../components/link'
 
 import useDatabaseQuery, {
@@ -13,6 +12,7 @@ import ErrorMessage from '../../components/error-message'
 import { fixAccessingImagesUsingToken } from '../../utils'
 import * as routes from '../../routes'
 import { Species } from '../../modules/species'
+import SelectedTick from '../selected-tick'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem' },
@@ -66,25 +66,15 @@ const useStyles = makeStyles({
       bottom: 0
     }
   },
-  selectedIcon: {
-    background: 'rgb(255, 255, 0)',
-    color: '#000',
-    borderRadius: '100%',
-    padding: '0.5rem',
-    position: 'absolute',
-    top: '4px',
-    left: '25px',
-    width: '30px',
-    height: '30px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   unselected: {
     opacity: '0.4',
     '&:hover': {
       opacity: 1
     }
+  },
+  selectedTick: {
+    top: '4px',
+    left: '25px'
   }
 })
 
@@ -155,9 +145,7 @@ const SpeciesTile = ({
         alt={`Thumbnail for species ${title}`}
       />
       {!showUnselected && isSelected ? (
-        <div className={classes.selectedIcon}>
-          <CheckIcon />
-        </div>
+        <SelectedTick className={classes.selectedTick} />
       ) : null}
     </Wrapper>
   )

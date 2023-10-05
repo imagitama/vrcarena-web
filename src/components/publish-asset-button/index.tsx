@@ -209,7 +209,8 @@ export default ({
       <Button
         icon={<PublishIcon />}
         color="tertiary"
-        onClick={lastValidationErrorMessages.length ? publish : attemptPublish}>
+        onClick={lastValidationErrorMessages.length ? publish : attemptPublish}
+        size="large">
         Publish For Approval
         {lastValidationErrorMessages.length ? ' (Anyway)' : ''}
       </Button>

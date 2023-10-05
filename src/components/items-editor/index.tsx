@@ -6,6 +6,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import CardButton from '../card-button'
 import { moveItemToLeft, moveItemToRight } from '../../utils'
+import { defaultBorderRadius } from '../../themes'
 
 export type Item<T> = {
   id: string
@@ -25,9 +26,14 @@ const useStyles = makeStyles({
     height: '100%',
     minWidth: '200px',
     minHeight: '400px',
+    margin: '0 0.25rem',
     '& > *': {
       width: '100%'
     }
+  },
+  emptyItem: {
+    borderRadius: defaultBorderRadius,
+    border: '0.1rem dashed rgba(255, 255, 255, 0.5)'
   },
   sideControl: {
     display: 'flex',
@@ -50,7 +56,8 @@ const useStyles = makeStyles({
     height: '400px'
   },
   noItemsMessage: {
-    fontStyle: 'italic'
+    fontStyle: 'italic',
+    textAlign: 'center'
   },
   activeForEditing: {
     width: '100%',
@@ -219,7 +226,7 @@ export default ({
           </div>
         ))
       ) : (
-        <div className={classes.item}>
+        <div className={`${classes.item} ${classes.emptyItem}`}>
           <div className={classes.noItemsMessage}>No items defined yet</div>
         </div>
       )}

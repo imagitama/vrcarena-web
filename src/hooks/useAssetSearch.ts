@@ -60,7 +60,8 @@ export default (
   const [isLoading, isErrored, assetSearchResults] = useAlgoliaSearch(
     Indexes.Assets,
     searchTerm,
-    filters.join(' AND ')
+    filters.join(' AND '),
+    limit
   )
   const dispatch = useDispatch()
 
