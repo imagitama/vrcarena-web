@@ -3,8 +3,7 @@ import { WithOutContext as ReactTags } from 'react-tag-input-no-dnd'
 
 import { areasByCategory } from '../../areas'
 import categoryMeta from '../../category-meta'
-import { tags as officialTagDetails, renamedTags } from '../../utils/tags'
-import { featureMeta } from '../../features'
+import officialTagDetails, { renamedTags } from '../../utils/tags'
 
 import './styles.css'
 
@@ -65,17 +64,6 @@ const popularSuggestions = officialTagDetails.map(({ tag, category }) => ({
   text: `${category} - ${tag}`
 }))
 
-const featureSuggestions = Object.entries(featureMeta).reduce(
-  (finalTags, [, { label, tags }]) =>
-    finalTags.concat(
-      tags.map(tagName => ({
-        id: tagName,
-        text: `Feature/${label} - ${tagName}`
-      }))
-    ),
-  []
-)
-
 const renamedSuggestions = Object.entries(renamedTags).reduce(
   (finalTags, [goodTag, badTags]) =>
     finalTags.concat([
@@ -87,7 +75,6 @@ const renamedSuggestions = Object.entries(renamedTags).reduce(
 const suggestions = []
   .concat(areaSuggestions)
   .concat(popularSuggestions)
-  .concat(featureSuggestions)
   .concat(renamedSuggestions)
 
 export default ({ currentTags = [], onChange, className = '' }) => {

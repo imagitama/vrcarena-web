@@ -68,7 +68,6 @@ const tagsSearch = {
   customizable_body: ['body shape', 'body slider'],
   hand_colliders: ['colliders'],
   full_body_ready: ['full body'],
-  multiple_blend_shapes: ['blend shapes', 'shapekey', 'body slider', 'viseme'],
   toggle_accessories: ['Toggleable'],
   // appearance
   collar: ['collar'],

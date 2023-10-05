@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { areasByCategory } from '../../areas'
-import {
+import defaultTagDetails, {
   tagDetailsByCategory,
-  TagDetails,
-  tags as defaultTagDetails,
-  moreTags as moreTagDetails
+  TagDetails
 } from '../../utils/tags'
 
 import FormControls from '../form-controls'
@@ -105,16 +103,16 @@ const RecommendedTags = ({
                   <div className={classes.categoryName}>{namePlural}</div>
                   <div>
                     {tags.map(tagName => {
-                      const tagDetails = moreTagDetails.find(
-                        ({ tag }) => tag === tagName
-                      )
+                      // const tagDetails = moreTagDetails.find(
+                      //   ({ tag }) => tag === tagName
+                      // )
                       return (
                         <TagChip
                           key={tagName}
                           tagName={tagName}
-                          description={
-                            tagDetails ? tagDetails.description : undefined
-                          }
+                          // description={
+                          //   tagDetails ? tagDetails.description : undefined
+                          // }
                           isDisabled={newTags.includes(tagName)}
                           onClick={() => onClickWithTag(tagName)}
                           isFilled={false}

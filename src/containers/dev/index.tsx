@@ -15,14 +15,13 @@ import NoPermissionMessage from '../../components/no-permission-message'
 import WarningMessage from '../../components/warning-message'
 import Message from '../../components/message'
 import ErrorBoundary from '../../components/error-boundary'
-import { featureMeta } from '../../features'
 import ImageUploader from '../../components/image-uploader'
 import MarkdownEditor from '../../components/markdown-editor'
 import LoadingIndicator from '../../components/loading-indicator'
 import AssetEditor, { EditorContext } from '../../components/asset-editor'
 import TextDiff from '../../components/text-diff'
 import TagDiff from '../../components/tag-diff'
-import { tags } from '../../utils/tags'
+import tags from '../../utils/tags'
 import SetupProfile from '../../components/setup-profile'
 import SpeciesVsSelector from '../../components/species-vs-selector'
 import FileUploader from '../../components/file-uploader'
@@ -32,6 +31,7 @@ import ChangeRanksForm from '../../components/change-ranks-form'
 import SurveyForm from '../../components/survey-form'
 import survey from '../../surveys/creating-asset'
 import { CollectionNames } from '../../modules/assets'
+import FeaturesToTagsEditor from '../../components/features-to-tags-editor'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -148,6 +148,8 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <h2>Features To Tags Editor</h2>
+        <FeaturesToTagsEditor onChange={() => {}} />
         <h2>Survey Form</h2>
         <SurveyForm
           survey={survey}
@@ -161,12 +163,7 @@ export default () => {
         <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} />
         <h2>Asset Features</h2>
-        <AssetFeatures
-          tags={Object.values(featureMeta).reduce<string[]>(
-            (finalTags, { tags }) => finalTags.concat(tags),
-            []
-          )}
-        />
+        <AssetFeatures tags={tags.map(tagDetails => tagDetails.tag)} />
         <h2>Text Diff</h2>
         <TextDiff
           oldValue={loremIpsum}

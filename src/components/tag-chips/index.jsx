@@ -1,6 +1,6 @@
 import React from 'react'
 import TagChip from '../tag-chip'
-import { tags as officialTagDetails, categories } from '../../utils/tags'
+import officialTagDetails, { categories } from '../../utils/tags'
 
 export default ({ tags, shimmer = false, isFilled = true }) => {
   if (shimmer) {

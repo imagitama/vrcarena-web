@@ -2,7 +2,11 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Tooltip from '@material-ui/core/Tooltip'
 import HelpIcon from '@material-ui/icons/Help'
-import { featureMeta } from '../../features'
+import {
+  allTags as tagDetails,
+  TagDetails,
+  getLabelForTagDetails
+} from '../../utils/tags'
 import LoadingShimmer from '../loading-shimmer'
 import { colorPalette } from '../../config'
 
@@ -49,20 +53,21 @@ const useStyles = makeStyles({
   }
 })
 
-const Feature = ({ featureName, matchedTags, isBad = false, tip = '' }) => {
+const Feature = ({ tagDetails }: { tagDetails: TagDetails }) => {
   const classes = useStyles()
-  const feature = featureMeta[featureName]
-  const Icon = feature.icon
+  const Icon = tagDetails.icon || null
   return (
-    <div className={`${classes.item} ${isBad ? classes.bad : ''}`}>
-      <div className={classes.icon}>
-        <Icon />
-      </div>
+    <div className={`${classes.item}`}>
+      {Icon ? (
+        <div className={classes.icon}>
+          <Icon />
+        </div>
+      ) : null}
       <div className={classes.label}>
-        {feature.label}
-        {tip ? (
+        {getLabelForTagDetails(tagDetails)}
+        {tagDetails.tip ? (
           <div className={classes.tipIcon}>
-            <Tooltip title={tip}>
+            <Tooltip title={tagDetails.tip}>
               <HelpIcon />
             </Tooltip>
           </div>
@@ -86,32 +91,24 @@ const LoadingFeature = () => {
   )
 }
 
-const getFeaturesFromTags = tags => {
-  const matches = []
-  const featureEntries = Object.entries(featureMeta)
+const getTagDetailsFromTags = (tags: string[]): TagDetails[] =>
+  tags.map(tagToFind => {
+    const match = tagDetails.find(tagDetail => tagDetail.tag === tagToFind)
 
-  for (const [featureName, feature] of featureEntries) {
-    for (const tag of tags) {
-      if (feature.tags.includes(tag)) {
-        const match = matches.find(item => item.featureName === featureName)
-
-        if (match) {
-          match.matchedTags.push(tag)
-        } else {
-          matches.push({
-            featureName,
-            matchedTags: [tag],
-            ...feature
-          })
-        }
-      }
+    if (!match) {
+      throw new Error(`Could not find tag details for tag "${tagToFind}"`)
     }
-  }
 
-  return matches
-}
+    return match
+  })
 
-export default ({ tags = [], shimmer = false }) => {
+export default ({
+  tags = [],
+  shimmer = false
+}: {
+  tags?: string[]
+  shimmer?: boolean
+}) => {
   const classes = useStyles()
 
   if (shimmer) {
@@ -130,8 +127,8 @@ export default ({ tags = [], shimmer = false }) => {
 
   return (
     <div className={classes.items}>
-      {getFeaturesFromTags(tags).map(feature => (
-        <Feature key={feature.featureName} {...feature} />
+      {getTagDetailsFromTags(tags).map(tagDetails => (
+        <Feature key={tagDetails.tag} tagDetails={tagDetails} />
       ))}
     </div>
   )
