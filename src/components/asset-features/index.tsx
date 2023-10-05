@@ -91,16 +91,19 @@ const LoadingFeature = () => {
   )
 }
 
-const getTagDetailsFromTags = (tags: string[]): TagDetails[] =>
-  tags.map(tagToFind => {
-    const match = tagDetails.find(tagDetail => tagDetail.tag === tagToFind)
+const getTagDetailsFromTags = (tags: string[]): TagDetails[] => {
+  const newTagDetails: TagDetails[] = []
 
-    if (!match) {
-      throw new Error(`Could not find tag details for tag "${tagToFind}"`)
+  for (const tag of tags) {
+    const match = tagDetails.find(tagDetail => tagDetail.tag === tag)
+
+    if (match) {
+      newTagDetails.push(match)
     }
+  }
 
-    return match
-  })
+  return newTagDetails
+}
 
 export default ({
   tags = [],

@@ -12,6 +12,7 @@ import WcIcon from '@material-ui/icons/Wc'
 import LiveTvIcon from '@material-ui/icons/LiveTv'
 // import ControlCameraIcon from '@material-ui/icons/ControlCamera'
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
+import MoneyOffIcon from '@mui/icons-material/MoneyOff'
 import ClearIcon from '@material-ui/icons/Clear'
 import LinkIcon from '@material-ui/icons/Link'
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows'
@@ -86,12 +87,13 @@ const standardTags: TagDetails[] = [
     tag: 'paid',
     category: categories.General,
     description:
-      'You have to pay ANY amount of money to get this asset (including subscriptions like Patreon)'
+      'You have to pay ANY amount of money to get this asset (including subscriptions like Patreon)',
+    icon: AttachMoneyIcon
   },
   {
     tag: 'free',
     category: categories.General,
-    icon: AttachMoneyIcon,
+    icon: MoneyOffIcon,
     description:
       'You do not have to pay ANY amount of money to get this asset (including subscriptions like Patreon'
   },
