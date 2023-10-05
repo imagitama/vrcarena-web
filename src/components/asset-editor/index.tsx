@@ -796,7 +796,7 @@ const Editor = () => {
         expandedSectionName
       }}>
       <MainControls />
-      <Section name="basics" title="Basic Metadata">
+      <Section name="basics" title="Basics">
         <FormEditorArea
           fieldName={AssetFieldNames.sourceUrl}
           isRequired

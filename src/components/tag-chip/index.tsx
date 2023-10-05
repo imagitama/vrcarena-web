@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from '../../components/link'
 import Chip from '@material-ui/core/Chip'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -32,8 +32,21 @@ const ChipWithTooltip = ({
   isLoading = false
 }: Props) => {
   const classes = useStyles()
+  const [isOpen, setIsOpen] = useState(false)
+  const onClickToUse = () => {
+    if (!onClick) {
+      return
+    }
+    setIsOpen(false)
+    onClick()
+  }
   return (
-    <Tooltip arrow title={description}>
+    <Tooltip
+      arrow
+      title={description}
+      open={isOpen}
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseOut={() => setIsOpen(false)}>
       <Chip
         className={classes.chip}
         label={
@@ -46,7 +59,7 @@ const ChipWithTooltip = ({
         color={isFilled && !isDisabled ? 'primary' : undefined}
         disabled={isDisabled}
         clickable={!isDisabled}
-        onClick={isDisabled !== true ? onClick : undefined}
+        onClick={isDisabled !== true ? onClickToUse : undefined}
         icon={icon}
       />
     </Tooltip>
