@@ -20,7 +20,7 @@ import CheckroomIcon from '@mui/icons-material/Checkroom'
 import WomanIcon from '@mui/icons-material/Woman'
 import ColorizeIcon from '@mui/icons-material/Colorize'
 import ImagesearchRollerIcon from '@mui/icons-material/ImagesearchRoller'
-import { ReactComponent as BlenderIcon } from '../assets/images/icons/blender.svg'
+import { Blender as BlenderIcon } from '@emotion-icons/boxicons-logos/Blender'
 import { ReactComponent as SubstancePainterIcon } from '../assets/images/icons/substance-painter.svg'
 import { ReactComponent as OculusIcon } from '../assets/images/icons/oculus.svg'
 import { ReactComponent as ChilloutVRIcon } from '../assets/images/icons/chilloutvr.svg'
@@ -140,6 +140,7 @@ const standard3dModelTags: TagDetails[] = [
   },
   {
     tag: 'fbx_included',
+    label: 'FBX Included',
     category: categories.Features,
     icon: FbxIcon,
     description: 'Includes a FBX file'
@@ -429,6 +430,8 @@ export const allTags: TagDetails[] = [
   },
   {
     tag: 'requires_physbones',
+    label: 'Requires PhysBones',
+    icon: BoneIcon,
     category: categories.Features,
     description: 'Requires VRChat PhysBones to operate'
   },
@@ -509,4 +512,5 @@ export default allTags
  * - toggle_accessories
  * - dynamic_bones_ready
  * - requires_dynamic_bones
+ * - multiple_blend_shapes
  */
