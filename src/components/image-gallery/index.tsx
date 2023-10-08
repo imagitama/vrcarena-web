@@ -16,7 +16,6 @@ import { mediaQueryForMobiles, queryForMobiles } from '../../media-queries'
 const useStyles = makeStyles({
   root: {
     width: '100%',
-    height: '20rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -26,21 +25,25 @@ const useStyles = makeStyles({
   },
   image: {
     margin: '0 0.5rem',
-    height: '100%',
+    width: '33.3%',
     cursor: 'pointer',
     transition: 'all 100ms',
     '& img': {
-      height: '100%'
+      width: '100%'
     },
     [mediaQueryForMobiles]: {
-      cursor: 'default'
+      cursor: 'default',
+      width: '100%'
     }
   },
   '& $image': {
     transform: 'scale(1.05)'
   },
   expanded: {
-    height: 'calc(100vh - 10rem)',
+    height: 'auto',
+    '& $image': {
+      width: 'auto'
+    },
     '& $image:hover': {
       transform: false
     },
@@ -93,6 +96,9 @@ const useStyles = makeStyles({
     width: '30rem',
     display: 'flex',
     alignItems: 'center'
+  },
+  hidden: {
+    display: 'none'
   }
 })
 
@@ -112,15 +118,15 @@ const Image = ({
 
   const isYoutube = isUrlAYoutubeVideo(image.url)
 
-  if (isExpanded && !isSelected) {
-    return null
-  }
+  // if (isExpanded && !isSelected) {
+  //   return null
+  // }
 
   return (
     <div
       className={`${classes.image} ${
         isExpanded && isYoutube ? classes.youtube : ''
-      }`}>
+      } ${isExpanded && !isSelected ? classes.hidden : ''}`}>
       {isExpanded && isYoutube ? (
         <>
           <VideoPlayer url={image.url} autoplay width="100%" height="100%" />
