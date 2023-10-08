@@ -445,12 +445,6 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
   const classes = useStyles()
   const [, , user] = useUserRecord()
   useBanner(asset && asset.bannerurl)
-  // store as ref to avoid re-drawing each re-render
-  const sizesRefs = useRef([
-    getRandomInt(200, 300),
-    getRandomInt(200, 300),
-    getRandomInt(200, 300)
-  ])
   const [isPedestalExpanded, setIsPedestalExpanded] = useState(false)
 
   const isAllowedToEditAsset = asset && user && getCanUserEditAsset(asset, user)
@@ -534,17 +528,17 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
           </div>
         ) : isLoading || attachedImagesAndYouTubeUrls.length ? (
           <ImageGallery
-            urls={isLoading ? [] : attachedImagesAndYouTubeUrls}
-            thumbnailUrls={
+            images={
               isLoading
-                ? [
-                    <LoadingShimmer height={sizesRefs.current[0]} />,
-                    <LoadingShimmer height={sizesRefs.current[1]} />,
-                    <LoadingShimmer height={sizesRefs.current[2]} />
-                  ]
-                : attachedImagesAndYouTubeUrls.slice(0, 3)
+                ? []
+                : attachedImagesAndYouTubeUrls
+                    .slice(0, 3)
+                    // .concat(['https://www.youtube.com/watch?v=uMboDekgvz0'])
+                    .map(url => ({
+                      url
+                    }))
             }
-            onOpen={() =>
+            onClickImage={() =>
               trackAction(
                 analyticsCategoryName,
                 'Click attached image thumbnail to open gallery'
@@ -562,10 +556,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                 'Click go prev image in gallery'
               )
             }
-            wrap={false}
-            className={classes.primaryImageGallery}
-            isStatic={isLoading}
-            minHeight={sizesRefs.current[0]}
+            showLoadingCount={isLoading ? 3 : 0}
           />
         ) : asset ? (
           <div className={classes.thumbnailWrapper}>
@@ -656,17 +647,14 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
             {attachedImagesAndYouTubeUrls.length > 3 && (
               <Area name="extra-attached-images" label="Images">
                 <ImageGallery
-                  urls={isLoading ? [] : attachedImagesAndYouTubeUrls.slice(3)}
-                  thumbnailUrls={
+                  images={
                     isLoading
-                      ? [
-                          <LoadingShimmer height={300} />,
-                          <LoadingShimmer height={300} />,
-                          <LoadingShimmer height={300} />
-                        ]
-                      : attachedImagesAndYouTubeUrls.slice(3)
+                      ? []
+                      : attachedImagesAndYouTubeUrls
+                          .slice(3)
+                          .map(url => ({ url }))
                   }
-                  onOpen={() =>
+                  onClickImage={() =>
                     trackAction(
                       analyticsCategoryName,
                       'Click attached image thumbnail to open gallery'
@@ -684,9 +672,6 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                       'Click go prev image in gallery'
                     )
                   }
-                  wrap={false}
-                  isStatic={isLoading}
-                  minHeight={300}
                 />
               </Area>
             )}

@@ -1,233 +1,280 @@
-import React, { useState, useEffect } from 'react'
-import Lightbox from 'react-image-lightbox-custom'
-import { makeStyles } from '@material-ui/core/styles'
-import 'react-image-lightbox-custom/style.css'
-import YouTubeIcon from '@material-ui/icons/YouTube'
+import React, { useRef, useState } from 'react'
+import { makeStyles } from '@material-ui/styles'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import VideoPlayer from '../video-player'
+import LoadingShimmer from '../loading-shimmer'
 import {
   getImageUrlFromYouTubeUrl,
-  isUrl,
+  getRandomInt,
   isUrlAYoutubeVideo
 } from '../../utils'
-import ImageGalleryItemContent from '../image-gallery-item-content'
-import { mediaQueryForMobiles } from '../../media-queries'
+import Button from '../button'
+import { useMediaQuery } from 'react-responsive'
+import { mediaQueryForMobiles, queryForMobiles } from '../../media-queries'
 
 const useStyles = makeStyles({
-  root: {},
-  // lightbox library has a bug where it fills the viewport with a child which doesn't bubble up the click events
-  imageWrapper: {
-    '& .ril__inner': {
-      position: 'static',
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      justifyItems: 'center'
-    },
-    '& .ril__image': {
-      position: 'static',
-      [mediaQueryForMobiles]: {
-        width: '100%',
-        transform: 'none !important'
-      }
-    }
-  },
-  thumbs: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    '& picture': {
-      position: 'relative',
-      width: '33.3%',
-      maxWidth: '400px',
-      paddingRight: '0.5rem',
-      cursor: 'pointer',
-      '& img': {
-        width: '100%'
-      },
-      '&:last-child img': {
-        paddingRight: 0
-      },
-      '& svg': {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        color: 'rgb(255, 0, 0)',
-        fontSize: '10rem',
-        transition: 'all 100ms'
-      },
-      '&:hover svg': {
-        color: 'rgb(255, 100, 100)'
-      }
-    }
-  },
-  nowrap: {
-    flexWrap: 'nowrap'
-  },
-  customContent: {
+  root: {
     width: '100%',
-    height: '100%',
+    height: '20rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    justifyItems: 'center'
+    [mediaQueryForMobiles]: {
+      height: ''
+    }
   },
-  youtubeIcon: {}
+  image: {
+    margin: '0 0.5rem',
+    height: '100%',
+    cursor: 'pointer',
+    transition: 'all 100ms',
+    '& img': {
+      height: '100%'
+    },
+    [mediaQueryForMobiles]: {
+      cursor: 'default'
+    }
+  },
+  '& $image': {
+    transform: 'scale(1.05)'
+  },
+  expanded: {
+    height: 'calc(100vh - 10rem)',
+    '& $image:hover': {
+      transform: false
+    },
+    [mediaQueryForMobiles]: {
+      height: 'auto'
+    }
+  },
+  btn: {
+    fontSize: '2rem',
+    opacity: 0,
+    transition: 'all 100ms',
+    display: 'flex',
+    alignItems: 'center',
+    '& svg': {
+      fontSize: '100%'
+    },
+    [mediaQueryForMobiles]: {
+      position: 'absolute',
+      background: 'rgba(0, 0, 0, 1)'
+    }
+  },
+  visible: {
+    opacity: 0.5,
+    '&:hover': {
+      cursor: 'pointer',
+      opacity: 1
+    }
+  },
+  btnLeft: {
+    left: 0
+  },
+  btnRight: {
+    right: 0
+  },
+  caption: {
+    marginTop: '0.5rem'
+  },
+  videoPlayerControls: {
+    marginTop: '0.25rem',
+    display: 'flex',
+    justifyContent: 'right'
+  },
+  youtube: {
+    width: 'calc(100vw - 20rem)',
+    [mediaQueryForMobiles]: {
+      width: 'auto'
+    }
+  },
+  shimmer: {
+    width: '30rem',
+    display: 'flex',
+    alignItems: 'center'
+  }
 })
 
-function getSrcForIndex(index: number, urls: string[]) {
-  // return empty string to ImageGallery uses "items"
-  if (!urls || !urls.length) {
-    return ''
-  }
-
-  const urlOrUrls = urls[index]
-  return urlOrUrls
-}
-
-export const Sizes = {
-  SMALL: 'small',
-  LARGE: 'large'
-}
-
-export default ({
-  urls = [],
-  renderer = undefined,
-  thumbnailUrls = undefined,
-  onOpen = undefined,
-  onMoveNext = undefined,
-  onMovePrev = undefined,
-  wrap = true,
-  className = '',
-  isStatic = false,
-  minHeight = undefined
+const Image = ({
+  image,
+  onClick,
+  isSelected,
+  isExpanded
 }: {
-  urls?: string[]
-  renderer?: React.ComponentType<{ url: string; index: number }>
-  thumbnailUrls?: (string | React.ReactNode)[]
-  onOpen?: () => void | Promise<void>
-  onMoveNext?: () => void | Promise<void>
-  onMovePrev?: () => void | Promise<void>
-  wrap?: boolean
-  className?: string
-  isStatic?: boolean
-  minHeight?: number
+  image: ImageDetails
+  onClick: () => void
+  isSelected?: boolean
+  isExpanded?: boolean
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [activePhotoIdx, setActivePhotoIdx] = useState(0)
   const classes = useStyles()
-  const [height, setHeight] = useState<number | undefined>(minHeight)
+  const isMobile = useMediaQuery({ query: queryForMobiles })
 
-  if (!thumbnailUrls) {
-    thumbnailUrls = urls
+  const isYoutube = isUrlAYoutubeVideo(image.url)
+
+  if (isExpanded && !isSelected) {
+    return null
   }
-
-  useEffect(() => {
-    if (!minHeight) {
-      return
-    }
-    setHeight(minHeight)
-  }, [minHeight])
-
-  function onThumbnailClick(idx: number) {
-    setActivePhotoIdx(idx)
-    setIsOpen(true)
-    if (onOpen) {
-      onOpen()
-    }
-  }
-
-  console.debug(`ImageGallery`, getSrcForIndex(activePhotoIdx, urls))
 
   return (
     <div
-      className={`${classes.root} ${className || ''}`}
-      style={{
-        // this is to prevent the gallery shrinking to 0px when we give it new URLs (such as when shimmer goes away)
-        // probably broken if you navigate between assets XD
-        height
-      }}>
-      {isOpen && (
-        <Lightbox
-          wrapperClassName={classes.imageWrapper}
-          mainSrc={getSrcForIndex(activePhotoIdx, urls)}
-          nextSrc={getSrcForIndex((activePhotoIdx + 1) % urls.length, urls)}
-          prevSrc={getSrcForIndex(
-            (activePhotoIdx + urls.length - 1) % urls.length,
-            urls
+      className={`${classes.image} ${
+        isExpanded && isYoutube ? classes.youtube : ''
+      }`}>
+      {isExpanded && isYoutube ? (
+        <>
+          <VideoPlayer url={image.url} autoplay width="100%" height="100%" />
+          {isMobile ? null : (
+            <div className={classes.videoPlayerControls}>
+              <Button onClick={() => onClick()}>Close Player</Button>
+            </div>
           )}
-          // @ts-ignore
-          mainCustomContent={
-            // @ts-ignore
-            isUrlAYoutubeVideo(urls[activePhotoIdx]) ? (
-              <ImageGalleryItemContent
-                url={urls[activePhotoIdx]}
-                index={activePhotoIdx}
-              />
-            ) : (
-              undefined
-            )
+        </>
+      ) : (
+        <img
+          src={
+            isYoutube
+              ? getImageUrlFromYouTubeUrl(image.url)
+              : image.thumbnailUrl || image.url
           }
-          // need these or it renders errors (note: next/back arrows always visible)
-          nextCustomContent={<></>}
-          prevCustomContent={<></>}
-          onCloseRequest={() => {
-            console.log('onCloseRequest')
-            setIsOpen(false)
-          }}
-          onMovePrevRequest={() => {
-            setActivePhotoIdx((activePhotoIdx + urls.length - 1) % urls.length)
-            if (onMovePrev) {
-              onMovePrev()
-            }
-          }}
-          onMoveNextRequest={() => {
-            setActivePhotoIdx((activePhotoIdx + 1) % urls.length)
-            if (onMoveNext) {
-              onMoveNext()
-            }
-          }}
-          clickOutsideToClose
+          alt={image.alt || ''}
+          onClick={() => onClick()}
         />
       )}
-      <div
-        className={`${classes.thumbs} ${wrap === false ? classes.nowrap : ''}`}>
-        {thumbnailUrls.map(
-          (contents: string | React.ReactNode, idx: number) => {
-            const isContentsUrl = isUrl(contents)
-            const youtubImageUrl = isContentsUrl
-              ? getImageUrlFromYouTubeUrl(contents)
-              : false
-            return (
-              <picture
-                key={idx}
-                onClick={() => (!isStatic ? onThumbnailClick(idx) : null)}>
-                {isContentsUrl ? (
-                  <>
-                    <img
-                      src={youtubImageUrl || contents}
-                      alt={`Thumbnail ${idx}`}
-                      ref={imageElement => {
-                        if (!imageElement) {
-                          return
-                        }
-                        imageElement.onload = () => setHeight(undefined)
-                      }}
-                    />
-                    {youtubImageUrl ? (
-                      <YouTubeIcon className={classes.youtubeIcon} />
-                    ) : null}
-                  </>
-                ) : React.isValidElement(contents) ? (
-                  React.cloneElement(contents)
-                ) : null}
-              </picture>
-            )
-          }
-        )}
-      </div>
+      {image.caption ? (
+        <div className={classes.caption}>{image.caption}</div>
+      ) : null}
     </div>
   )
 }
+
+const LoadingShimmers = ({ count }: { count: number }) => {
+  const classes = useStyles()
+
+  // store as ref to avoid re-drawing each re-render
+  const sizesRefs = useRef([
+    getRandomInt(200, 300),
+    getRandomInt(200, 300),
+    getRandomInt(200, 300)
+  ])
+
+  const shimmers = []
+
+  for (let i = 0; i < count; i++) {
+    shimmers.push(
+      <div className={`${classes.image} ${classes.shimmer}`}>
+        <LoadingShimmer height={sizesRefs.current[i]} />
+      </div>
+    )
+  }
+
+  return <>{shimmers}</>
+}
+
+interface ImageDetails {
+  id?: string
+  alt?: string // alt
+  caption?: string | React.ReactElement
+  url: string
+  thumbnailUrl?: string
+}
+
+const ImageGallery = ({
+  images,
+  onClickImage,
+  onMoveNext,
+  onMovePrev,
+  showLoadingCount
+}: {
+  images?: ImageDetails[]
+  onClickImage?: (image: ImageDetails) => void
+  onMoveNext?: () => void
+  onMovePrev?: () => void
+  showLoadingCount?: number
+}) => {
+  const classes = useStyles()
+  const isMobile = useMediaQuery({ query: queryForMobiles })
+  const [selectedIdx, setSelectedIdx] = useState<null | number>(
+    isMobile ? 0 : null
+  )
+
+  return (
+    <div
+      className={`${classes.root} ${
+        selectedIdx !== null ? classes.expanded : ''
+      }`}>
+      {showLoadingCount ? (
+        <LoadingShimmers count={showLoadingCount} />
+      ) : (
+        <>
+          <div
+            className={`${classes.btn} ${classes.btnLeft} ${
+              selectedIdx !== null && selectedIdx > 0 ? classes.visible : ''
+            }`}
+            onClick={() => {
+              setSelectedIdx(currentVal => {
+                if (currentVal !== null && currentVal > 0) {
+                  return currentVal - 1
+                }
+                return currentVal
+              })
+
+              if (onMovePrev) {
+                onMovePrev()
+              }
+            }}>
+            <ChevronLeftIcon />
+          </div>
+          {images
+            ? images.map((image, i) => (
+                <Image
+                  key={image.id || image.url}
+                  image={image}
+                  isSelected={selectedIdx === i}
+                  isExpanded={selectedIdx !== null}
+                  onClick={() => {
+                    setSelectedIdx(currentVal => {
+                      if (currentVal === i) {
+                        return null
+                      }
+                      return i
+                    })
+
+                    if (onClickImage) {
+                      onClickImage(image)
+                    }
+                  }}
+                />
+              ))
+            : null}
+          <div
+            className={`${classes.btn} ${classes.btnRight} ${
+              selectedIdx !== null && images && selectedIdx < images.length - 1
+                ? classes.visible
+                : ''
+            }`}
+            onClick={() => {
+              setSelectedIdx(currentVal => {
+                if (
+                  currentVal !== null &&
+                  images &&
+                  currentVal < images.length - 1
+                ) {
+                  return currentVal + 1
+                }
+                return currentVal
+              })
+
+              if (onMoveNext) {
+                onMoveNext()
+              }
+            }}>
+            <ChevronRightIcon />
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+export default ImageGallery

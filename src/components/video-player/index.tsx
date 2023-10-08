@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import ReactPlayer from 'react-player'
+import { BaseReactPlayerProps } from 'react-player/base'
 import { handleError } from '../../error-handling'
 
 const errorStates = {
@@ -10,7 +11,7 @@ const errorStates = {
   UNKNOWN: 'unknown'
 }
 
-function getErrorStateForEvent(e) {
+function getErrorStateForEvent(e: any): string {
   switch (e.target.error.code) {
     case e.target.error.MEDIA_ERR_ABORTED:
       return errorStates.ABORTED
@@ -25,7 +26,7 @@ function getErrorStateForEvent(e) {
   }
 }
 
-function getLabelForErrorState(errorState) {
+function getLabelForErrorState(errorState: string): string {
   switch (errorState) {
     case errorStates.ABORTED:
       return 'you aborted the playback'
@@ -42,12 +43,41 @@ function getLabelForErrorState(errorState) {
   }
 }
 
-export default ({ url, onPlay = null, ...otherProps }) => {
-  const [errorState, setErrorState] = useState(null)
+export default ({
+  url,
+  onPlay = undefined,
+  config = {},
+  ...otherProps
+}: {
+  url: string
+  autoplay?: boolean
+  onPlay?: () => void
+} & BaseReactPlayerProps) => {
+  const [errorState, setErrorState] = useState<string | null>(null)
+
+  const configToUse = {
+    ...config,
+    youtube: {
+      height: '1080px',
+      ...(config.youtube || {}),
+      playerVars: {
+        ...((config.youtube || {}).playerVars || {}),
+        autoplay: 1
+      }
+    },
+    file: {
+      ...(config.file || {}),
+      attributes: {
+        ...((config.file || {}).attributes || {}),
+        autoPlay: true
+      }
+    }
+  }
+
+  console.debug(configToUse)
 
   return (
     <>
-      {' '}
       <ReactPlayer
         light
         url={url}
@@ -64,6 +94,8 @@ export default ({ url, onPlay = null, ...otherProps }) => {
           setErrorState(getErrorStateForEvent(e))
         }}
         playing={true}
+        playsinline={true}
+        config={configToUse}
         {...otherProps}
       />
       {errorState &&

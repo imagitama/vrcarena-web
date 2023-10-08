@@ -88,12 +88,13 @@ const LoadingGallery = () => {
 
   return (
     <ImageGallery
-      thumbnailUrls={[
-        <LoadingShimmer height={sizesRefs.current[0]} />,
-        <LoadingShimmer height={sizesRefs.current[1]} />,
-        <LoadingShimmer height={sizesRefs.current[2]} />
-      ]}
-      isStatic
+      showLoadingCount={3}
+      // thumbnailUrls={[
+      //   <LoadingShimmer height={sizesRefs.current[0]} />,
+      //   <LoadingShimmer height={sizesRefs.current[1]} />,
+      //   <LoadingShimmer height={sizesRefs.current[2]} />
+      // ]}
+      // isStatic
     />
   )
 }
@@ -157,49 +158,58 @@ export default ({
   return (
     <div>
       <ImageGallery
-        renderer={({ url, index }) => {
-          const attachment = attachments[index]
-          return (
-            <div>
-              <AttachmentItem attachment={attachment} />
-              <div className={classes.caption}>
-                Posted by{' '}
-                <Link
-                  to={routes.viewUserWithVar.replace(
-                    ':userId',
-                    attachment.createdby
-                  )}>
-                  {attachment.createdbyusername}
-                </Link>
-                {includeParents ? (
-                  <>
-                    {' '}
-                    for{' '}
-                    <Link
-                      to={getParentLink(
-                        attachment.parenttable,
-                        attachment.parentid
-                      )}>
-                      {getParentLabel(
-                        attachment.parenttable,
-                        attachment.parentid
-                      )}
-                    </Link>
-                  </>
-                ) : null}
-              </div>
-            </div>
+        images={attachments.map(attachment => ({
+          url: attachment.url,
+          caption: (
+            <>
+              Posted by{' '}
+              <Link
+                to={routes.viewUserWithVar.replace(
+                  ':userId',
+                  attachment.createdby
+                )}>
+                {attachment.createdbyusername}
+              </Link>
+              {includeParents ? (
+                <>
+                  {' '}
+                  for{' '}
+                  <Link
+                    to={getParentLink(
+                      attachment.parenttable,
+                      attachment.parentid
+                    )}>
+                    {getParentLabel(
+                      attachment.parenttable,
+                      attachment.parentid
+                    )}
+                  </Link>
+                </>
+              ) : null}
+            </>
           )
-        }}
-        thumbnailUrls={attachments.map(attachment =>
-          attachment.thumbnailurl ? (
-            attachment.thumbnailurl
-          ) : attachment.type === attachmentTypes.image ? (
-            attachment.url
-          ) : (
-            <Thumbnail url={attachment.url} />
-          )
-        )}
+        }))}
+
+        // renderer={({ url, index }) => {
+        //   const attachment = attachments[index]
+        //   return (
+        //     <div>
+        //       <AttachmentItem attachment={attachment} />
+        //       <div className={classes.caption}>
+
+        //       </div>
+        //     </div>
+        //   )
+        // }}
+        // thumbnailUrls={attachments.map(attachment =>
+        //   attachment.thumbnailurl ? (
+        //     attachment.thumbnailurl
+        //   ) : attachment.type === attachmentTypes.image ? (
+        //     attachment.url
+        //   ) : (
+        //     <Thumbnail url={attachment.url} />
+        //   )
+        // )}
       />
     </div>
   )
