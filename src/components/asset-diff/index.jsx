@@ -273,9 +273,13 @@ export default ({ oldFields, newFields, changedFieldNames = [] }) => {
           <Value value={oldFields[AssetFieldNames.sourceUrl]} />
           <Value value={newFields[AssetFieldNames.sourceUrl]} />
         </Field>
-        <Field name={AssetFieldNames.priceUsd} label="Price (USD)">
-          <Value value={oldFields[AssetFieldNames.priceUsd]} />
-          <Value value={newFields[AssetFieldNames.priceUsd]} />
+        <Field name={AssetFieldNames.price} label="Price">
+          <Value value={oldFields[AssetFieldNames.price]} />
+          <Value value={newFields[AssetFieldNames.price]} />
+        </Field>
+        <Field name={AssetFieldNames.priceCurrency} label="Price Currency">
+          <Value value={oldFields[AssetFieldNames.priceCurrency]} />
+          <Value value={newFields[AssetFieldNames.priceCurrency]} />
         </Field>
         <Field name={AssetFieldNames.gumroad} label="Gumroad Settings">
           <GumroadSettings settings={oldFields[AssetFieldNames.gumroad]} />

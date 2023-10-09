@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import { popularCurrencies } from '../../currency'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -8,11 +9,13 @@ const useStyles = makeStyles(theme => ({
     width: 'auto',
     height: '38px',
 
+    // @ts-ignore
     'background-color': theme.palette.tertiary.main,
     '-webkit-border-radius': '3px 4px 4px 3px',
     '-moz-border-radius': '3px 4px 4px 3px',
     'border-radius': '3px 4px 4px 3px',
 
+    // @ts-ignore
     'border-left': `1px solid ${theme.palette.tertiary.main}`,
 
     /* This makes room for the triangle */
@@ -37,6 +40,7 @@ const useStyles = makeStyles(theme => ({
       height: '0',
       'border-top': '19px solid transparent',
       'border-bottom': '19px solid transparent',
+      // @ts-ignore
       'border-right': `19px solid ${theme.palette.tertiary.main}`
     },
 
@@ -67,20 +71,30 @@ const useStyles = makeStyles(theme => ({
 
 // show "+" symbol as some gumroad products have multiple variants
 // and the API only gives us a price for one of them (which is random?)
-export default ({ priceUsd, isLoading = false }) => {
+export default ({
+  price,
+  priceCurrency,
+  isLoading = false
+}: {
+  price: number
+  priceCurrency: keyof typeof popularCurrencies
+  isLoading?: boolean
+}) => {
   const classes = useStyles()
 
-  if (!priceUsd) {
+  if (!price) {
     return null
   }
 
   return (
     <div className={classes.root}>
-      <span className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
+      <span className={`${isLoading ? classes.loading : ''}`}>
         <span className={classes.price}>
-          {priceUsd === 0 ? 'Free' : `$${priceUsd.toFixed(2)}`}
+          {price === 0 ? 'Free' : `$${price.toFixed(2)}`}
         </span>{' '}
-        {priceUsd === 0 ? null : <span className={classes.currency}>USD</span>}
+        {price === 0 ? null : (
+          <span className={classes.currency}>{priceCurrency}</span>
+        )}
       </span>
     </div>
   )

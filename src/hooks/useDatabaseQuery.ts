@@ -203,7 +203,8 @@ export const AssetFieldNames = {
   vrchatClonableWorldIds: 'vrchatclonableworldids',
   vrchatClonableAvatarIds: 'vrchatclonableavatarids',
   shortDescription: 'shortdescription',
-  priceUsd: 'priceusd',
+  price: 'price',
+  priceCurrency: 'pricecurrency',
   gumroad: 'gumroad',
   ranks: 'ranks',
   relations: 'relations'

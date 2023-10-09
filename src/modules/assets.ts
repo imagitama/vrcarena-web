@@ -1,3 +1,4 @@
+import { popularCurrencies } from '../currency'
 import {
   AccessStatuses,
   ApprovalStatuses,
@@ -38,7 +39,8 @@ export interface Asset {
   species: string[]
   vrchatclonableavatarids: string[]
   vrchatclonableworldids: string[]
-  priceusd: string
+  price: number
+  pricecurrency: keyof typeof popularCurrencies
   sourceurl: string
   gumroad?: {
     sync: boolean

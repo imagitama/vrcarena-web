@@ -741,18 +741,19 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
           </div>
           <div className={classes.rightCol}>
             {isLoading ||
-            (asset && (asset.priceusd || getIsAssetFree(asset.tags))) ? (
+            (asset && (asset.price || getIsAssetFree(asset.tags))) ? (
               <ControlGroup>
                 <Control>
                   <Price
                     isLoading={isLoading}
-                    priceUsd={
+                    price={
                       isLoading
                         ? 123.45
                         : getIsAssetFree(asset.tags)
                         ? 0
-                        : asset.priceusd
+                        : asset.price
                     }
+                    priceCurrency={asset ? asset.pricecurrency : 'USD'}
                   />
                 </Control>
               </ControlGroup>

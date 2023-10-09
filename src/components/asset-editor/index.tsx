@@ -548,9 +548,9 @@ const TagsDisplay = ({ value }: { value: string[] }) => (
   </>
 )
 
-const PriceDisplay = ({ value }: { value: string }) =>
+const PriceDisplay = ({ value, fields }: { value: number; fields: Asset }) =>
   value ? (
-    <Price priceUsd={value} />
+    <Price price={value} priceCurrency={fields.pricecurrency} />
   ) : (
     <NoValueMessage>No price set</NoValueMessage>
   )
@@ -1078,14 +1078,21 @@ const Editor = () => {
           }
         />
         <FormEditorArea
-          fieldName={AssetFieldNames.priceUsd}
+          fieldName={AssetFieldNames.price}
           title="Price"
-          description="The price of the asset (in USD). More currencies coming soon!"
+          description="The price of the asset."
           icon={() => <AttachMoneyIcon />}
           display={PriceDisplay}
           editor={
-            // @ts-ignore
-            <PriceEditor assetId={assetId} currentPriceUsd={asset.priceusd} />
+            assetId ? (
+              <PriceEditor
+                assetId={assetId}
+                currentPrice={asset.price}
+                currentPriceCurrency={asset.pricecurrency}
+              />
+            ) : (
+              <>Waiting</>
+            )
           }
         />
         <FormEditorArea
