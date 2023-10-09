@@ -30,8 +30,6 @@ import FormattedDate from '../formatted-date'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import useDatabaseQuery, {
   ApprovalStatuses,
-  AssetFieldNames,
-  AssetMetaFieldNames,
   CollectionNames,
   PinnedStatuses,
   PublishStatuses
@@ -215,6 +213,9 @@ const useStyles = makeStyles(theme => ({
   },
   description: {
     overflowX: 'hidden'
+  },
+  freeChip: {
+    backgroundColor: 'rgb(100, 150, 100)'
   }
 }))
 
@@ -286,11 +287,9 @@ const CostChip = ({ isFree, isPaid }: { isFree: boolean; isPaid: boolean }) => {
   return (
     <Chip
       title={isFree ? 'Free' : isPaid ? 'Paid' : ''}
-      icon={
-        isFree ? <MoneyOffIcon /> : isPaid ? <AttachMoneyIcon /> : undefined
-      }
-      label={false}
-      className={classes.extraChip}
+      icon={isFree ? undefined : isPaid ? <AttachMoneyIcon /> : undefined}
+      label={isFree ? 'FREE' : false}
+      className={`${classes.extraChip} ${isFree ? classes.freeChip : ''}`}
     />
   )
 }
@@ -439,8 +438,6 @@ const AssetResultsItem = ({
   const cardRef = useRef<HTMLDivElement>()
   const [isHoverOnEffectVisible, setIsHoverOnEffectVisible] = useState(false)
   const isEditor = useIsEditor()
-
-  console.log('RENDER ITEM', { showSelectedTick, isSelected })
 
   useEffect(() => {
     if (!hoverOnEffect) {
