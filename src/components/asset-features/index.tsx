@@ -97,7 +97,7 @@ const getTagDetailsFromTags = (tags: string[]): TagDetails[] => {
   for (const tag of tags) {
     const match = tagDetails.find(tagDetail => tagDetail.tag === tag)
 
-    if (match) {
+    if (match && match.icon) {
       newTagDetails.push(match)
     }
   }

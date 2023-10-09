@@ -17,7 +17,6 @@ import ClearIcon from '@material-ui/icons/Clear'
 import LinkIcon from '@material-ui/icons/Link'
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows'
 import CheckroomIcon from '@mui/icons-material/Checkroom'
-import WomanIcon from '@mui/icons-material/Woman'
 import ColorizeIcon from '@mui/icons-material/Colorize'
 import ImagesearchRollerIcon from '@mui/icons-material/ImagesearchRoller'
 import { Blender as BlenderIcon } from '@emotion-icons/boxicons-logos/Blender'
@@ -31,6 +30,10 @@ import { Unity as UnityIcon } from '@emotion-icons/boxicons-logos/Unity'
 import { InsertTemplate as InsertTemplateIcon } from '@emotion-icons/icomoon/InsertTemplate'
 import { Bone as BoneIcon } from '@emotion-icons/boxicons-solid/Bone'
 import { Resize100Percent as Resize100PercentIcon } from '@emotion-icons/entypo/Resize100Percent'
+import { PaintBucket as PaintBucketIcon } from '@emotion-icons/foundation/PaintBucket'
+import { MaleSign as MaleSignIcon } from '@emotion-icons/boxicons-regular/MaleSign'
+import { FemaleSign as FemaleSignIcon } from '@emotion-icons/boxicons-regular/FemaleSign'
+import { Animation as AnimationIcon } from '@emotion-icons/material/Animation'
 
 export const cleanupTags = (tags?: string[]): string[] =>
   tags
@@ -161,6 +164,7 @@ const standard3dModelTags: TagDetails[] = [
   {
     tag: 'textures_included',
     category: categories.Textures,
+    icon: PaintBucketIcon,
     description: 'Includes some albedo, normal, metallic, roughness maps'
   },
   {
@@ -294,6 +298,7 @@ const avatarTagDetails = [
   {
     tag: 'custom_emotes',
     description: 'Includes custom emotes (eg. a dance)',
+    icon: AnimationIcon,
     category: categories.Features
   },
   {
@@ -383,7 +388,7 @@ export const allTags: TagDetails[] = [
   ...avatarTagDetails,
   {
     tag: 'custom_animations',
-    icon: DirectionsRunIcon,
+    icon: AnimationIcon,
     description: 'Includes custom Unity or Blender animations',
     category: categories.Features
   },
@@ -445,12 +450,13 @@ export const allTags: TagDetails[] = [
     tag: 'female_blend_shapes',
     label: 'Female Variant Included',
     category: categories.Features,
-    icon: WomanIcon,
+    icon: FemaleSignIcon,
     description: 'Includes blendshapes or shape keys to appear female'
   },
   {
     tag: 'male_blend_shapes',
     category: categories.Features,
+    icon: MaleSignIcon,
     description: 'Includes blendshapes or shape keys to appear male'
   },
   // licensing
