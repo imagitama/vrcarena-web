@@ -18,3 +18,5 @@ export const popularCurrencies = {
 }
 
 export type PopularCurrency = keyof typeof popularCurrencies
+
+export const defaultCurrency: PopularCurrency = 'USD'

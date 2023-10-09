@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { popularCurrencies } from '../../currency'
+import { defaultCurrency, popularCurrencies } from '../../currency'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -93,7 +93,9 @@ export default ({
           {price === 0 ? 'Free' : `$${price.toFixed(2)}`}
         </span>{' '}
         {price === 0 ? null : (
-          <span className={classes.currency}>{priceCurrency}</span>
+          <span className={classes.currency}>
+            {priceCurrency || defaultCurrency}
+          </span>
         )}
       </span>
     </div>
