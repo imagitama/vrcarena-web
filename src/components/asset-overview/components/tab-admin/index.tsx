@@ -2,9 +2,9 @@ import React, { useContext } from 'react'
 
 import Heading from '../../../heading'
 import AdminHistory from '../../../admin-history'
-// import AssetAmendments from '../../../asset-amendments'
 import TweetsAdmin from '../../../tweets-admin'
 import TabContext from '../../context'
+import { CollectionNames } from '../../../../modules/assets'
 
 export default () => {
   const { assetId } = useContext(TabContext)
@@ -12,11 +12,12 @@ export default () => {
   return (
     <>
       <Heading variant="h2">History</Heading>
-      <AdminHistory id={assetId} limit={10} />
-
-      {/* <Heading variant="h2">Amendments</Heading>
-      <AssetAmendments assetId={assetId} /> */}
-
+      <AdminHistory
+        id={assetId}
+        limit={10}
+        type={CollectionNames.Assets}
+        metaType={CollectionNames.AssetsMeta}
+      />
       <Heading variant="h2">Tweets</Heading>
       <TweetsAdmin assetId={assetId} />
     </>
