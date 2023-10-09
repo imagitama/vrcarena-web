@@ -12,6 +12,9 @@ const errorStates = {
 }
 
 function getErrorStateForEvent(e: any): string {
+  if (!e || !e.target) {
+    return errorStates.UNKNOWN
+  }
   switch (e.target.error.code) {
     case e.target.error.MEDIA_ERR_ABORTED:
       return errorStates.ABORTED
