@@ -983,6 +983,19 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                     )}
                   </div>
                 ) : null}
+                {asset && asset.approvedat ? (
+                  <div>
+                    Approved <FormattedDate date={asset.approvedat} /> by{' '}
+                    {asset.approvedbyusername ? (
+                      <UsernameLink
+                        id={asset.approvedby}
+                        username={asset.approvedbyusername}
+                      />
+                    ) : (
+                      '(unknown)'
+                    )}
+                  </div>
+                ) : null}
                 {asset && asset.lastsyncedwithgumroadat ? (
                   <div>
                     Last synced with Gumroad{' '}

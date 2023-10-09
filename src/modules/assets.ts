@@ -74,6 +74,7 @@ export interface AssetMeta {
   lastsyncedwithgumroadat: Date
   tweetrecordids: string[]
   approvedat: Date
+  approvedby: string
   publishedat: Date
 }
 
@@ -101,6 +102,9 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   discordserverdata: DiscordServer | null
   clonableworlddata: VrchatWorld | null
   relationsdata: Asset[]
+
+  // approval
+  approvedbyusername: string
 }
 
 export const CollectionNames = {
