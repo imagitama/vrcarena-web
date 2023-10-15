@@ -34,6 +34,7 @@ import {
 } from '../../hooks/useDatabaseQuery'
 import { CommonMetaFieldNames } from '../../data-store'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
+import useScrollMemory from '../../hooks/useScrollMemory'
 
 const useStyles = makeStyles({
   root: {
@@ -192,6 +193,8 @@ const Page = () => {
   const [isLoading, isErrored, items, totalCount, hydrate] = useDataStore<
     any[]
   >(pageGetQuery, `paginated-view-${collectionName || viewName}`)
+
+  useScrollMemory(isLoading === false && isErrored === false)
 
   if (isLoading || !items) {
     return <LoadingIndicator message="Loading page..." />

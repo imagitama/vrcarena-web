@@ -92,7 +92,7 @@ export default (
         return
       }
 
-      const scrollAmount = Math.floor(window.pageYOffset)
+      const scrollAmount = Math.floor(window.scrollY)
       const offsetMinusInner = document.body.offsetHeight - window.innerHeight
 
       if (offsetMinusInner - scrollAmount <= 5) {
