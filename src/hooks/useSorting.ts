@@ -1,11 +1,16 @@
 import { OrderDirections } from './useDatabaseQuery'
 import useStorage from './useStorage'
 
+export interface SortingConfig {
+  fieldName: string
+  direction: string
+}
+
 export default (
-  sortKey,
-  defaultFieldName = '',
-  defaultDirection = OrderDirections.DESC
-) => {
+  sortKey: string,
+  defaultFieldName: string = '',
+  defaultDirection: string = OrderDirections.DESC
+): [SortingConfig | null, (newConfig: SortingConfig) => void] => {
   const [sorting, setSorting] = useStorage(`sorting_${sortKey}`, {
     fieldName: defaultFieldName,
     direction: defaultDirection

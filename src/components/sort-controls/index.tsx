@@ -3,11 +3,18 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 
-import useSorting from '../../hooks/useSorting'
+import useSorting, { SortingConfig } from '../../hooks/useSorting'
 import { OrderDirections } from '../../hooks/useDatabaseQuery'
 import Button from '../button'
 
-const getLabelForSelectedSortOption = (sorting, sortOptions) => {
+const getLabelForSelectedSortOption = (
+  sorting: SortingConfig | null,
+  sortOptions: SortOption[]
+): string => {
+  if (!sorting) {
+    return '...'
+  }
+
   const match = sortOptions.find(
     option =>
       option.fieldName === sorting.fieldName &&
@@ -19,10 +26,17 @@ const getLabelForSelectedSortOption = (sorting, sortOptions) => {
     return match.label
   }
 
-  return '???'
+  return '...'
 }
 
-const appendDirections = options => {
+export interface SortOption {
+  fieldName: string
+  label: string
+  direction?: string
+  withDirections?: boolean
+}
+
+const appendDirections = (options: SortOption[]): SortOption[] => {
   const newOptions = []
 
   for (const { fieldName, label, withDirections } of options) {
@@ -51,14 +65,22 @@ const appendDirections = options => {
   return newOptions
 }
 
-export default ({ sortKey, options, defaultFieldName = '' }) => {
+export default ({
+  sortKey,
+  options,
+  defaultFieldName = ''
+}: {
+  sortKey: string
+  options: SortOption[]
+  defaultFieldName?: string
+}) => {
   const [sorting, setSorting] = useSorting(sortKey, defaultFieldName)
-  const buttonRef = useRef()
+  const buttonRef = useRef<HTMLSpanElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const optionsWithDirections = appendDirections(options)
 
-  const onClickItem = (fieldName, direction) =>
+  const onClickItem = (fieldName: string, direction: string) =>
     setSorting({
       fieldName,
       direction
@@ -89,7 +111,9 @@ export default ({ sortKey, options, defaultFieldName = '' }) => {
           {optionsWithDirections.map(({ fieldName, label, direction }) => (
             <MenuItem
               key={`${fieldName}.${direction}`}
-              onClick={() => onClickItem(fieldName, direction)}>
+              onClick={
+                direction ? () => onClickItem(fieldName, direction) : undefined
+              }>
               {label}
             </MenuItem>
           ))}

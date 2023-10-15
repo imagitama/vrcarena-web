@@ -91,7 +91,6 @@ export default () => {
   return (
     <PaginatedView
       viewName="getFullAmendments"
-      // @ts-ignore
       getQuery={getQuery}
       sortKey="view-amendments"
       sortOptions={[

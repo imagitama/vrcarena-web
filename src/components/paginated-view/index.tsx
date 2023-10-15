@@ -11,7 +11,7 @@ import AddIcon from '@material-ui/icons/Add'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 
-import SortControls from '../sort-controls'
+import SortControls, { SortOption } from '../sort-controls'
 import PagesNavigation from '../pages-navigation'
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
@@ -20,7 +20,7 @@ import Button from '../button'
 import ButtonDropdown from '../button-dropdown'
 
 import useHistory from '../../hooks/useHistory'
-import useSorting from '../../hooks/useSorting'
+import useSorting, { SortingConfig } from '../../hooks/useSorting'
 import useDataStore from '../../hooks/useDataStore'
 import useIsEditor from '../../hooks/useIsEditor'
 import { client as supabase } from '../../supabase'
@@ -33,6 +33,7 @@ import {
   AssetFieldNames
 } from '../../hooks/useDatabaseQuery'
 import { CommonMetaFieldNames } from '../../data-store'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 const useStyles = makeStyles({
   root: {
@@ -55,12 +56,45 @@ const useStyles = makeStyles({
 
 const limitPerPage = 50
 
-const PaginatedViewContext = createContext()
+type Filters = { [fieldName: string]: string | null }
+
+type GetQueryFn = (
+  currentQuery: PostgrestFilterBuilder<any>,
+  selectedSubView: string | null
+) => PostgrestFilterBuilder<any>
+
+interface SubViewConfig {
+  id: string | null
+  label: string
+}
+
+interface PaginatedViewData {
+  viewName?: string
+  editorViewName?: string
+  collectionName?: string
+  select: string
+  getQuery?: GetQueryFn
+  sortKey: string
+  defaultFieldName: string
+  defaultDirection?: string
+  renderer: React.ReactElement
+  urlWithPageNumberVar: string
+  selectedSubView: string | null
+  filters: Filters
+  setFilters: (newFilters: Filters) => void
+  internalPageNumber: number | null
+  setInternalPageNumber: (newPageNumber: number) => void
+  subViews?: SubViewConfig[]
+  sortOptions?: SortOption[]
+}
+
+// @ts-ignore
+const PaginatedViewContext = createContext<PaginatedViewData>()
 export const usePaginatedView = () => useContext(PaginatedViewContext)
 
 const Page = () => {
   const { push } = useHistory()
-  const { pageNumber = '1' } = useParams()
+  const { pageNumber = '1' } = useParams<{ pageNumber: string }>()
   const isEditor = useIsEditor()
   const {
     viewName,
@@ -83,13 +117,17 @@ const Page = () => {
   const pageGetQuery = useCallback(() => {
     const rangeStart = (currentPageNumber - 1) * limitPerPage
     const rangeEnd = rangeStart + limitPerPage - 1
-    const isAscending = sorting.direction === OrderDirections.ASC
+    const isAscending = sorting
+      ? sorting.direction === OrderDirections.ASC
+      : false
 
     let query
 
     // "exact" gives us correct count at a cost of performance
     // "estimated" is better for performance but is always capped at the max read number (1000)
-    const selectOptions = { count: 'exact' }
+    const selectOptions: {
+      count: 'exact' | 'planned' | 'estimated' | null | undefined
+    } = { count: 'exact' }
 
     if (!collectionName && !viewName) {
       throw new Error(
@@ -106,9 +144,13 @@ const Page = () => {
       // supabase does not have support for "views" but the underlying REST API does so jam it in here
       // TODO: Investigate as apparently supported: https://github.com/supabase/supabase/issues/190#issuecomment-689591527
       // query.url = new URL(`${supabase.restUrl}/${viewName.toLowerCase()}`)
-    } else {
+    } else if (collectionName) {
       query = supabase.from(collectionName)
       query = query.select(select, selectOptions)
+    } else {
+      throw new Error(
+        'Cannot render PaginatedView: need view or collection name'
+      )
     }
 
     if (getQuery) {
@@ -122,15 +164,16 @@ const Page = () => {
     }
 
     // toLowerCase incase they saved an old camelCase field name which breaks SQL
-    query = query
-      .range(rangeStart, rangeEnd)
-      .order(sorting.fieldName.toLowerCase(), {
+    query = query.range(rangeStart, rangeEnd)
+
+    if (sorting) {
+      query = query.order(sorting.fieldName.toLowerCase(), {
         ascending: isAscending
       })
+    }
 
     // hack
-    console.log(sorting.fieldName, SpeciesFieldNames.pluralName)
-    if (sorting.fieldName === SpeciesFieldNames.pluralName) {
+    if (sorting && sorting.fieldName === SpeciesFieldNames.pluralName) {
       query = query.order(AssetFieldNames.title.toLowerCase(), {
         ascending: true
       })
@@ -141,15 +184,14 @@ const Page = () => {
     viewName,
     getQuery,
     currentPageNumber,
-    sorting.direction,
+    sorting ? sorting.direction : null,
     selectedSubView,
     Object.values(filters).join('+'),
     isEditor
   ])
-  const [isLoading, isErrored, items, totalCount, hydrate] = useDataStore(
-    pageGetQuery,
-    `paginated-view-${collectionName || viewName}`
-  )
+  const [isLoading, isErrored, items, totalCount, hydrate] = useDataStore<
+    any[]
+  >(pageGetQuery, `paginated-view-${collectionName || viewName}`)
 
   if (isLoading || !items) {
     return <LoadingIndicator message="Loading page..." />
@@ -169,35 +211,50 @@ const Page = () => {
         items,
         hydrate
       })}
-      <PagesNavigation
-        currentPageNumber={currentPageNumber}
-        pageCount={Math.ceil(totalCount / limitPerPage)}
-        onClickWithPageNumber={newPageNumber =>
-          urlWithPageNumberVar
-            ? push(urlWithPageNumberVar.replace(':pageNumber', newPageNumber))
-            : setInternalPageNumber(newPageNumber)
-        }
-      />
+      {totalCount ? (
+        <PagesNavigation
+          currentPageNumber={currentPageNumber}
+          pageCount={Math.ceil(totalCount / limitPerPage)}
+          onClickWithPageNumber={newPageNumber =>
+            urlWithPageNumberVar
+              ? push(
+                  urlWithPageNumberVar.replace(
+                    ':pageNumber',
+                    newPageNumber.toString()
+                  )
+                )
+              : setInternalPageNumber(newPageNumber)
+          }
+        />
+      ) : null}
     </>
   )
 }
 
-const ControlGroup = ({ children }) => {
+const ControlGroup = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   return <div className={classes.controlGroup}>{children}</div>
 }
 
-const Control = ({ children }) => {
+const Control = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   return <div className={classes.control}>{children}</div>
 }
 
 const clearId = 'clear'
 
-const CommonMetaControl = ({ label, fieldName, fieldMap }) => {
+const CommonMetaControl = ({
+  label,
+  fieldName,
+  fieldMap
+}: {
+  label: string
+  fieldName: string
+  fieldMap: { [key: string]: string }
+}) => {
   const { filters, setFilters } = usePaginatedView()
 
-  const onSelect = newVal =>
+  const onSelect = (newVal: string) =>
     setFilters({
       [fieldName]: newVal === clearId ? null : newVal
     })
@@ -239,6 +296,13 @@ const CommonMetaControls = () => {
   )
 }
 
+const subViewConfigAll: SubViewConfig[] = [
+  {
+    label: 'All',
+    id: null
+  }
+]
+
 export default ({
   viewName,
   editorViewName,
@@ -253,24 +317,40 @@ export default ({
   extraControls = [],
   urlWithPageNumberVar = '',
   createUrl,
-  subViews = null,
+  subViews,
   showCommonMetaControls = false
+}: {
+  viewName?: string
+  editorViewName?: string
+  collectionName?: string
+  select?: string
+  getQuery?: GetQueryFn
+  sortKey?: string
+  sortOptions?: SortOption[]
+  defaultFieldName?: string
+  defaultDirection?: string
+  children?: React.ReactElement
+  extraControls?: React.ReactElement[]
+  urlWithPageNumberVar?: string
+  createUrl?: string
+  subViews?: SubViewConfig[]
+  showCommonMetaControls?: boolean
 }) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
   }
 
-  const [selectedSubView, setSelectedSubView] = useState(null)
+  const [selectedSubView, setSelectedSubView] = useState<string | null>(null)
   const [filters, setFilters] = useState({})
   const classes = useStyles()
   const isEditor = useIsEditor()
-  const { pageNumber = '1' } = useParams()
+  const { pageNumber = '1' } = useParams<{ pageNumber: string }>()
 
   const currentPageNumber = parseInt(pageNumber)
 
   // for views that do not want to use the URL to track page number
   // eg users/abc/assets
-  const [internalPageNumber, setInternalPageNumber] = useState(
+  const [internalPageNumber, setInternalPageNumber] = useState<number | null>(
     urlWithPageNumberVar ? null : currentPageNumber
   )
 
@@ -304,30 +384,23 @@ export default ({
           ) : null}
           {subViews ? (
             <ControlGroup>
-              {[
-                {
-                  label: 'All',
-                  id: null
-                }
-              ]
-                .concat(subViews)
-                .map(({ label, id }, idx) => (
-                  <Fragment key={id}>
-                    {idx !== 0 ? <>&nbsp;</> : ''}
-                    <Button
-                      onClick={() => setSelectedSubView(id)}
-                      color="default"
-                      icon={
-                        selectedSubView === id ? (
-                          <CheckBoxIcon />
-                        ) : (
-                          <CheckBoxOutlineBlankIcon />
-                        )
-                      }>
-                      {label}
-                    </Button>
-                  </Fragment>
-                ))}
+              {subViewConfigAll.concat(subViews).map(({ label, id }, idx) => (
+                <Fragment key={id}>
+                  {idx !== 0 ? <>&nbsp;</> : ''}
+                  <Button
+                    onClick={() => setSelectedSubView(id)}
+                    color="default"
+                    icon={
+                      selectedSubView === id ? (
+                        <CheckBoxIcon />
+                      ) : (
+                        <CheckBoxOutlineBlankIcon />
+                      )
+                    }>
+                    {label}
+                  </Button>
+                </Fragment>
+              ))}
             </ControlGroup>
           ) : null}
           {extraControls ? (

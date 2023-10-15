@@ -21,13 +21,21 @@ const useStyles = makeStyles({
   }
 })
 
-export default ({ pageCount, currentPageNumber, onClickWithPageNumber }) => {
+export default ({
+  pageCount,
+  currentPageNumber,
+  onClickWithPageNumber
+}: {
+  pageCount: number
+  currentPageNumber: number
+  onClickWithPageNumber: (pageNumber: number) => void
+}) => {
   const classes = useStyles()
   return (
     <div className={classes.root}>
       {[...Array(pageCount)].map((item, idx) => {
         const pageNumber = idx + 1
-        const isSelected = pageNumber === parseInt(currentPageNumber)
+        const isSelected = pageNumber === currentPageNumber
         return (
           <div
             className={`${classes.control} ${
