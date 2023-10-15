@@ -39,10 +39,11 @@ function AssetsTable({ assets }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {assets.map(({ id, title }) => (
+          {assets.map(({ id, title, slug }) => (
             <TableRow key={id}>
               <TableCell>
-                <Link to={routes.viewAssetWithVar.replace(':assetId', id)}>
+                <Link
+                  to={routes.viewAssetWithVar.replace(':assetId', slug || id)}>
                   {title}
                 </Link>
               </TableCell>

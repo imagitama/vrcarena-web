@@ -37,7 +37,11 @@ export default ({
       return (
         <>
           Asset{' '}
-          <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
+          <Link
+            to={routes.viewAssetWithVar.replace(
+              ':assetId',
+              asset.slug || asset.id
+            )}>
             {asset.title}
           </Link>{' '}
           was approved
@@ -51,7 +55,11 @@ export default ({
             {' '}
             <UsernameLink id={createdBy} username={createdByUsername} />{' '}
             commented on asset{' '}
-            <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
+            <Link
+              to={routes.viewAssetWithVar.replace(
+                ':assetId',
+                asset.slug || asset.id
+              )}>
               {asset.title}
             </Link>
           </>

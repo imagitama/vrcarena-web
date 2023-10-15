@@ -1211,7 +1211,7 @@ const Editor = () => {
 }
 
 export default () => {
-  const { assetId, isHydrating } = useEditor()
+  const { assetId, asset, isHydrating } = useEditor()
   const classes = useStyles()
 
   return (
@@ -1221,7 +1221,10 @@ export default () => {
           {assetId && (
             <Button
               color="default"
-              url={routes.viewAssetWithVar.replace(':assetId', assetId)}>
+              url={routes.viewAssetWithVar.replace(
+                ':assetId',
+                asset && asset.slug ? asset.slug : assetId
+              )}>
               View Asset
             </Button>
           )}

@@ -50,11 +50,14 @@ export const getUrl = (
   switch (message) {
     case ActivityEvents.ASSET_APPROVED:
       asset = extraData[AssetCollectionNames.Assets]
-      return routes.viewAssetWithVar.replace(':assetId', asset.id)
+      return routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id)
     case ActivityEvents.COMMENT_CREATED:
       if (extraData[AssetCollectionNames.Assets]) {
         asset = extraData[AssetCollectionNames.Assets]
-        return routes.viewAssetWithVar.replace(':assetId', asset.id)
+        return routes.viewAssetWithVar.replace(
+          ':assetId',
+          asset.slug || asset.id
+        )
       } else if (extraData[UserCollectionNames.Users]) {
         user = extraData[UserCollectionNames.Users]
         return routes.viewUserWithVar.replace(':userId', user.id)

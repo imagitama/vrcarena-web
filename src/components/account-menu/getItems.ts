@@ -40,7 +40,7 @@ export const cart = async (): Promise<MenuItemData[]> => {
 
     return data.map(asset => ({
       id: asset.id,
-      url: routes.viewAssetWithVar.replace(':assetId', asset.id),
+      url: routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id),
       label: asset.title,
       imageUrl: asset.thumbnailurl
     }))
@@ -82,7 +82,7 @@ export const queue = async (): Promise<MenuItemData[]> => {
 
     return data.map(asset => ({
       id: asset.id,
-      url: routes.viewAssetWithVar.replace(':assetId', asset.id),
+      url: routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id),
       label: asset.title,
       imageUrl: asset.thumbnailurl
     }))

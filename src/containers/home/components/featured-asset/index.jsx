@@ -137,12 +137,10 @@ export default () => {
     [AssetFieldNames.title]: title,
     [AssetFieldNames.description]: description,
     [AssetFieldNames.shortDescription]: shortDescription,
-    [AssetFieldNames.thumbnailUrl]: thumbnailUrl,
-    [AssetFieldNames.pedestalVideoUrl]: pedestalVideoUrl,
-    [AssetFieldNames.pedestalFallbackImageUrl]: pedestalFallbackImageUrl
+    [AssetFieldNames.slug]: slug
   } = asset
 
-  const viewUrl = routes.viewAssetWithVar.replace(':assetId', assetId)
+  const viewUrl = routes.viewAssetWithVar.replace(':assetId', slug || assetId)
 
   return (
     <div className={`${classes.root} ${isVisible ? classes.visible : ''}`}>

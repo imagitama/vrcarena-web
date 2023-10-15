@@ -56,7 +56,11 @@ export default ({ uploadItem, user }) => {
         {asset ? (
           <>
             for{' '}
-            <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
+            <Link
+              to={routes.viewAssetWithVar.replace(
+                ':assetId',
+                asset.slug || asset.id
+              )}>
               {asset[AssetFieldNames.title]}
             </Link>
           </>

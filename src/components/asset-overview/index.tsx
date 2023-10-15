@@ -285,7 +285,10 @@ const ParentControlGroup = () => {
         <div className={classes.parentWrapper}>
           <div className={classes.parentIcon}>
             <Link
-              to={routes.viewAssetWithVar.replace(':assetId', parentData.id)}>
+              to={routes.viewAssetWithVar.replace(
+                ':assetId',
+                parentData.slug || parentData.id
+              )}>
               <LinkIcon /> <span>Parent</span>
             </Link>
           </div>
@@ -348,7 +351,7 @@ const Area = ({
 }) => {
   const classes = useStyles()
   const ref = useRef<HTMLDivElement>(null)
-  const { assetId } = useAssetOverview()
+  const { assetId, asset } = useAssetOverview()
 
   return (
     <div ref={ref}>
@@ -358,7 +361,10 @@ const Area = ({
             <div className={classes.areaLabel}>
               <Link
                 to={routes.viewAssetWithVarAndTabVar
-                  .replace(':assetId', assetId)
+                  .replace(
+                    ':assetId',
+                    asset && asset.slug ? asset.slug : assetId
+                  )
                   .replace(':tabName', name)}>
                 {label} <LinkIcon className={classes.areaIcon} />
               </Link>
@@ -449,7 +455,10 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
 
   const isAllowedToEditAsset = asset && user && getCanUserEditAsset(asset, user)
 
-  const urlToAsset = routes.viewAssetWithVar.replace(':assetId', assetId)
+  const urlToAsset = routes.viewAssetWithVar.replace(
+    ':assetId',
+    asset && asset.slug ? asset.slug : assetId
+  )
 
   if (isError || (results && results.length === 0)) {
     return (

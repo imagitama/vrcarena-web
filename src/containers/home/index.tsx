@@ -291,7 +291,7 @@ const FeaturedAssetTile = () => {
   return (
     <Tile
       title={title}
-      url={routes.viewAssetWithVar.replace(':assetId', asset.id)}
+      url={routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id)}
       buttonLabel="View Featured Asset"
       backgroundImageUrl={pedestalVideoUrl ? undefined : thumbnailUrl}
       background={

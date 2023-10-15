@@ -506,7 +506,7 @@ const Area = ({
                     <Link
                       to={routes.viewAssetWithVar.replace(
                         ':assetId',
-                        asset.id
+                        asset.slug || asset.id
                       )}>
                       <div>{asset.title}</div>
                       <div className={classes.subtitle}>
@@ -620,7 +620,7 @@ const SelectedAssets = ({
                         <Link
                           to={routes.viewAssetWithVar.replace(
                             ':assetId',
-                            asset.id
+                            asset.slug || asset.id
                           )}>
                           <div>{asset.title}</div>
                           <div className={classes.subtitle}>
