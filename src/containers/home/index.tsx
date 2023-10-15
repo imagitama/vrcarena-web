@@ -118,8 +118,7 @@ const useStyles = makeStyles({
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     padding: '2rem 2rem 6rem 2rem',
     [mediaQueryForMobiles]: {
-      minHeight: '175px',
-      padding: '1rem 1rem 3rem 1rem'
+      padding: '1rem 1rem 4rem 1rem'
     },
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.2)',

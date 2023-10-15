@@ -39,10 +39,10 @@ const useStyles = makeStyles({
     padding: '1rem 1rem 0',
     height: '125px',
     [mediaQueryForTabletsOrBelow]: {
-      height: '200px'
+      height: '160px'
     },
     [mediaQueryForMobiles]: {
-      height: '180px',
+      height: '120px',
       padding: '0.5rem 0.5rem 0'
     }
   },
