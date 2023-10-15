@@ -9,6 +9,8 @@ import {
 } from '../../utils/tags'
 import LoadingShimmer from '../loading-shimmer'
 import { colorPalette } from '../../config'
+import * as routes from '../../routes'
+import Link from '../link'
 
 const useStyles = makeStyles({
   items: {
@@ -19,7 +21,8 @@ const useStyles = makeStyles({
     marginTop: '1rem',
     fontWeight: 'bold',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    color: 'inherit'
   },
   icon: {
     width: '25px',
@@ -57,7 +60,9 @@ const Feature = ({ tagDetails }: { tagDetails: TagDetails }) => {
   const classes = useStyles()
   const Icon = tagDetails.icon || null
   return (
-    <div className={`${classes.item}`}>
+    <Link
+      to={routes.queryWithVar.replace(':query', tagDetails.tag)}
+      className={classes.item}>
       {Icon ? (
         <div className={classes.icon}>
           <Icon />
@@ -73,7 +78,7 @@ const Feature = ({ tagDetails }: { tagDetails: TagDetails }) => {
           </div>
         ) : null}
       </div>
-    </div>
+    </Link>
   )
 }
 
