@@ -14,11 +14,7 @@ import AddIcon from '@material-ui/icons/Add'
 import Link from '../../components/link'
 
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import {
-  GetFullAssetsFieldNames,
-  AssetFieldNames,
-  AssetCategories
-} from '../../hooks/useDatabaseQuery'
+import { AssetFieldNames, AssetCategories } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
 import useQueryParams from '../../hooks/useQueryParams'
 import useStorage from '../../hooks/useStorage'
@@ -27,7 +23,6 @@ import * as routes from '../../routes'
 import { client as supabase } from '../../supabase'
 import { WEBSITE_FULL_URL } from '../../config'
 import {
-  getAreasForAsset,
   groupAssetsIntoAreas,
   standardAreaNames,
   standardAreas
@@ -46,13 +41,8 @@ import CopyButton from '../../components/copy-button'
 import { handleError } from '../../error-handling'
 import ErrorMessage from '../error-message'
 import Paper from '../paper'
-import {
-  base64EncodeString,
-  parseBase64String,
-  scrollToElement,
-  scrollToSide
-} from '../../utils'
-import { Asset, FullAsset, RelationType } from '../../modules/assets'
+import { base64EncodeString, parseBase64String } from '../../utils'
+import { PublicAsset, RelationType } from '../../modules/assets'
 
 const useStyles = makeStyles({
   output: {
@@ -272,7 +262,7 @@ const TagChip = ({ tagName, ...props }: { tagName: string } & ChipProps) => (
   <Chip label={tagName} {...props} />
 )
 
-type AssetsByArea = { [areaName: string]: FullAsset[] }
+type AssetsByArea = { [areaName: string]: PublicAsset[] }
 
 const useAccessories = (): AssetsByArea => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -289,7 +279,7 @@ const useAccessories = (): AssetsByArea => {
 
     return query
   }, [isAdultContentEnabled])
-  const [isLoading, isError, assets] = useDataStore<FullAsset[]>(
+  const [isLoading, isError, assets] = useDataStore<PublicAsset[]>(
     getQuery,
     'wardrobe'
   )
@@ -309,8 +299,8 @@ const useAccessories = (): AssetsByArea => {
 
 const sortChildrenFirst = (
   assetId: string,
-  assets: FullAsset[]
-): FullAsset[] => {
+  assets: PublicAsset[]
+): PublicAsset[] => {
   const newAssets = [...assets]
   newAssets.sort((assetA, assetB) => {
     return assetA.title.localeCompare(assetB.title)
@@ -328,7 +318,7 @@ const sortChildrenFirst = (
   return newAssets
 }
 
-const isAssetAChild = (assetId: string, asset: FullAsset): boolean =>
+const isAssetAChild = (assetId: string, asset: PublicAsset): boolean =>
   asset.relations &&
   !!asset.relations.find(
     relation =>
@@ -336,7 +326,7 @@ const isAssetAChild = (assetId: string, asset: FullAsset): boolean =>
   )
 
 const filterAssetFromExcludedTags = (
-  asset: FullAsset,
+  asset: PublicAsset,
   excludedTags: string[]
 ): boolean => {
   if (!excludedTags.length || !asset.tags || !asset.tags.length) {
@@ -698,7 +688,7 @@ export default ({
   showThumbnail = true
 }: {
   assetId: string
-  baseAsset: FullAsset
+  baseAsset: PublicAsset
   showThumbnail?: boolean
 }) => {
   const assetsByArea = useAccessories()

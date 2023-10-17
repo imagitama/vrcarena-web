@@ -12,7 +12,6 @@ import ErrorMessage from '../../components/error-message'
 import LoadingIndicator from '../../components/loading-indicator'
 import AssetResults from '../../components/asset-results'
 import Heading from '../../components/heading'
-import NoResultsMessage from '../../components/no-results-message'
 import Button from '../../components/button'
 import DiscordServerWidget from '../../components/discord-server-widget'
 import SocialMediaList from '../../components/social-media-list'
@@ -25,59 +24,48 @@ import useUserRecord from '../../hooks/useUserRecord'
 import {
   CollectionNames as OldCollectionNames,
   AssetFieldNames,
-  AuthorFieldNames,
-  AccessStatuses
+  AccessStatuses,
+  OrderDirections
 } from '../../hooks/useDatabaseQuery'
-import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
-import { CommonMetaFieldNames, CollectionNames } from '../../data-store'
+import { CollectionNames } from '../../data-store'
 import { canEditAuthor } from '../../utils'
 import { trackAction } from '../../analytics'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import { client as supabase } from '../../supabase'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { FullAuthor } from '../../modules/authors'
 import SaleInfo from '../../components/sale-info'
+import PaginatedView from '../../components/paginated-view'
+import { PublicAsset } from '../../modules/assets'
 
-const GetFullAuthorsFieldNames = {
-  lastModifiedByUsername: 'lastmodifiedbyusername',
-  createdByUsername: 'createdbyusername'
-}
+const Renderer = ({ items }: { items?: PublicAsset[] }) => (
+  <AssetResults assets={items} />
+)
 
-function AssetsByAuthorId({ authorId }: { authorId: string }) {
+function AssetsByAuthor({ author }: { author: FullAuthor }) {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(() => {
-    let query = supabase
-      .from('getPublicAssets'.toLowerCase())
-      .select('*')
-      .eq(AssetFieldNames.author, authorId)
-
-    // TODO: Disable by default to be safer
-    if (!isAdultContentEnabled) {
-      query = query.eq(AssetFieldNames.isAdult, false)
-    }
-
-    return query
-  }, [authorId, isAdultContentEnabled])
-  const [isLoading, isErrored, results] = useDataStore(
-    getQuery,
-    'assets-by-author-id'
+  const getQuery = useCallback(
+    query => {
+      query = query.eq(AssetFieldNames.author, author.id)
+      if (!isAdultContentEnabled) {
+        query = query.eq(AssetFieldNames.isAdult, false)
+      }
+      return query
+    },
+    [author.id, isAdultContentEnabled]
   )
 
-  if (isLoading) {
-    return <LoadingIndicator message="Finding their assets..." />
-  }
-
-  if (isErrored) {
-    return <ErrorMessage>Failed to get assets for author</ErrorMessage>
-  }
-
-  if (!Array.isArray(results) || !results.length) {
-    return <NoResultsMessage>This author has no assets</NoResultsMessage>
-  }
-
-  return <AssetResults assets={results} />
+  return (
+    <PaginatedView
+      viewName={'getPublicAssets'}
+      getQuery={getQuery}
+      getQueryString={() => `author:${author.name}`}
+      defaultFieldName={AssetFieldNames.createdAt}
+      defaultDirection={OrderDirections.DESC}>
+      <Renderer />
+    </PaginatedView>
+  )
 }
 
 const useStyles = makeStyles({
@@ -143,7 +131,7 @@ const analyticsCategory = 'ViewAuthor'
 const View = () => {
   const { authorId } = useParams<{ authorId: string }>()
   const [, , user] = useUserRecord()
-  const [isLoading, isErrored, result, hydrate] = useDataStoreItem<FullAuthor>(
+  const [isLoading, isErrored, author, hydrate] = useDataStoreItem<FullAuthor>(
     'getfullauthors',
     authorId,
     'view-author'
@@ -158,7 +146,7 @@ const View = () => {
     return <ErrorMessage>Failed to get author</ErrorMessage>
   }
 
-  if (!result) {
+  if (!author) {
     return <ErrorMessage>The author does not exist</ErrorMessage>
   }
 
@@ -193,7 +181,7 @@ const View = () => {
     approvalstatus: approvalStatus,
     editornotes: editorNotes,
     createdby: createdBy
-  } = result
+  } = author
 
   const isDeleted = accessStatus === AccessStatuses.Deleted
 
@@ -294,7 +282,7 @@ const View = () => {
           )}
         </div>
         <div className={classes.col}>
-          <AssetsByAuthorId authorId={authorId} />
+          <AssetsByAuthor author={author} />
         </div>
       </div>
 

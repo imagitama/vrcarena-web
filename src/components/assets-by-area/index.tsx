@@ -12,6 +12,7 @@ import * as routes from '../../routes'
 
 import AssetResults from '../asset-results'
 import Heading from '../heading'
+import { PublicAsset } from '../../modules/assets'
 
 const useStyles = makeStyles({
   tags: {
@@ -19,14 +20,24 @@ const useStyles = makeStyles({
   }
 })
 
-export default ({ assets, categoryName }) => {
+export default ({
+  assets,
+  categoryName
+}: {
+  assets?: PublicAsset[]
+  categoryName: string
+}) => {
   const classes = useStyles()
+
+  if (!assets) {
+    return null
+  }
 
   const assetsByArea = groupAssetsIntoAreas(assets, categoryName)
   const areas = areasByCategory[categoryName]
 
   return (
-    <div className={classes.root}>
+    <div>
       {Object.entries(assetsByArea)
         .filter(([, assets]) => assets.length)
         .map(([areaName, assets]) => (

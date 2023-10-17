@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/Add'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import SortControls, { SortOption } from '../sort-controls'
 import PagesNavigation from '../pages-navigation'
@@ -20,7 +21,7 @@ import Button from '../button'
 import ButtonDropdown from '../button-dropdown'
 
 import useHistory from '../../hooks/useHistory'
-import useSorting, { SortingConfig } from '../../hooks/useSorting'
+import useSorting from '../../hooks/useSorting'
 import useDataStore from '../../hooks/useDataStore'
 import useIsEditor from '../../hooks/useIsEditor'
 import { client as supabase } from '../../supabase'
@@ -33,8 +34,8 @@ import {
   AssetFieldNames
 } from '../../hooks/useDatabaseQuery'
 import { CommonMetaFieldNames } from '../../data-store'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import useScrollMemory from '../../hooks/useScrollMemory'
+import { getPathForQueryString } from '../../queries'
 
 const useStyles = makeStyles({
   root: {
@@ -87,6 +88,7 @@ interface PaginatedViewData {
   setInternalPageNumber: (newPageNumber: number) => void
   subViews?: SubViewConfig[]
   sortOptions?: SortOption[]
+  getQueryString?: () => string
 }
 
 // @ts-ignore
@@ -111,7 +113,8 @@ const Page = () => {
     selectedSubView,
     filters,
     internalPageNumber,
-    setInternalPageNumber
+    setInternalPageNumber,
+    getQueryString
   } = usePaginatedView()
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
   const [sorting] = useSorting(sortKey, defaultFieldName, defaultDirection)
@@ -230,6 +233,11 @@ const Page = () => {
           }
         />
       ) : null}
+      {getQueryString ? (
+        <Button url={getPathForQueryString(getQueryString())} color="default">
+          Generate Query
+        </Button>
+      ) : null}
     </>
   )
 }
@@ -321,7 +329,8 @@ export default ({
   urlWithPageNumberVar = '',
   createUrl,
   subViews,
-  showCommonMetaControls = false
+  showCommonMetaControls = false,
+  getQueryString = undefined
 }: {
   viewName?: string
   editorViewName?: string
@@ -338,6 +347,7 @@ export default ({
   createUrl?: string
   subViews?: SubViewConfig[]
   showCommonMetaControls?: boolean
+  getQueryString?: () => string
 }) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
@@ -376,7 +386,8 @@ export default ({
         filters,
         setFilters,
         internalPageNumber,
-        setInternalPageNumber
+        setInternalPageNumber,
+        getQueryString
       }}>
       <div className={classes.root}>
         <div className={classes.controls}>

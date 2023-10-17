@@ -220,7 +220,8 @@ export default () => {
             //   {activeFilters.length ? ` (${activeFilters.length})` : ''}
             // </Button>
           ]}
-          urlWithPageNumberVar={routes.viewAvatarsWithPageVar}>
+          urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
+          getQueryString={() => `category:${AssetCategories.avatar}`}>
           <Renderer />
         </PaginatedView>
       </div>

@@ -86,6 +86,11 @@ export interface AssetStats {
   reviewcount: number
 }
 
+export interface PublicAsset extends Asset, AssetMeta, AssetStats {
+  author: string
+  authorname: string
+}
+
 export interface FullAsset extends Asset, AssetMeta, AssetStats {
   // authors
   authorname: string

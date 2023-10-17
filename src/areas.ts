@@ -8,7 +8,7 @@ import retextureAreas from './areas/retexture'
 import articleAreas from './areas/article'
 import worldAreas from './areas/world'
 import toolAreas from './areas/tool'
-import { Asset, FullAsset } from './modules/assets'
+import { Asset, PublicAsset } from './modules/assets'
 import worldAssetAreas from './areas/worldAsset'
 
 export const areasByCategory = {
@@ -60,15 +60,15 @@ export const getAreasForAsset = (
 }
 
 export const groupAssetsIntoAreas = (
-  assets: FullAsset[],
+  assets: PublicAsset[],
   categoryNameOrAreas: string | { [areaName: string]: Area }
-): { [areaName: string]: FullAsset[] } => {
+): { [areaName: string]: PublicAsset[] } => {
   const areas =
     typeof categoryNameOrAreas === 'string'
       ? areasByCategory[categoryNameOrAreas]
       : categoryNameOrAreas
 
-  const assetsByArea: { [areaName: string]: FullAsset[] } = Object.keys(
+  const assetsByArea: { [areaName: string]: PublicAsset[] } = Object.keys(
     areas
   ).reduce((groups, areaName) => ({ ...groups, [areaName]: [] }), {})
 

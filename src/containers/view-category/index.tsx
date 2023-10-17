@@ -19,8 +19,9 @@ import AvatarTutorialSection from './components/avatar-tutorial-section'
 import AssetsByArea from '../../components/assets-by-area'
 import AreaNavigation from '../../components/area-navigation'
 import Link from '../../components/link'
+import { PublicAsset } from '../../modules/assets'
 
-function getDisplayNameByCategoryName(categoryName) {
+function getDisplayNameByCategoryName(categoryName: string): string {
   const category = categoryMeta[categoryName]
   if (!category) {
     return 'Unknown Category'
@@ -28,7 +29,7 @@ function getDisplayNameByCategoryName(categoryName) {
   return category.name
 }
 
-function getDescriptionByCategoryName(categoryName) {
+function getDescriptionByCategoryName(categoryName: string): string {
   const category = categoryMeta[categoryName]
   if (!category) {
     return 'This category has been removed or is unavailable.'
@@ -36,7 +37,15 @@ function getDescriptionByCategoryName(categoryName) {
   return category.shortDescription
 }
 
-const Renderer = ({ items, categoryName, groupByAreaEnabled }) => {
+const Renderer = ({
+  items,
+  categoryName,
+  groupByAreaEnabled
+}: {
+  items?: PublicAsset[]
+  categoryName: string
+  groupByAreaEnabled?: boolean
+}) => {
   if (groupByAreaEnabled) {
     return <AssetsByArea assets={items} categoryName={categoryName} />
   } else {
@@ -45,7 +54,7 @@ const Renderer = ({ items, categoryName, groupByAreaEnabled }) => {
 }
 
 export default () => {
-  const { categoryName } = useParams()
+  const { categoryName } = useParams<{ categoryName: string }>()
   const { pathname } = useLocation()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
@@ -116,7 +125,8 @@ export default () => {
               }>
               Group By Area
             </Button>
-          ]}>
+          ]}
+          getQueryString={() => `category:${categoryName}`}>
           <Renderer
             categoryName={categoryName}
             groupByAreaEnabled={groupByAreaEnabled}
