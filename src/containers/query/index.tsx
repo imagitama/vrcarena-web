@@ -24,6 +24,7 @@ import categoryMeta from '../../category-meta'
 import PaginatedView from '../../components/paginated-view'
 import TagTextField from '../../components/tag-text-field'
 import { SupabaseQueryBuilder } from '@supabase/supabase-js/dist/main/lib/SupabaseQueryBuilder'
+import { PublicAsset } from '../../modules/assets'
 
 const useStyles = makeStyles({
   root: {
@@ -103,9 +104,14 @@ const parseQueryStringToOperations = (queryString: string): Operation[] => {
 }
 
 const getOperatorForQuery = (
+  fieldName: string,
   logicalOperator: string | null,
   operator: string
 ): string => {
+  if (fieldName === AssetFieldNames.species) {
+    return postgrestOperatorAbbreviations.contains
+  }
+
   if (
     !logicalOperator ||
     logicalOperator === postgresLogicalOperators.default
@@ -132,9 +138,14 @@ const useGetQuery = (
           : query
 
       for (const operation of operations) {
+        console.debug(`operation`, operation)
         query = query.filter(
           getInternalFieldName(operation.fieldName),
-          getOperatorForQuery(operation.logical, operation.operator),
+          getOperatorForQuery(
+            operation.fieldName,
+            operation.logical,
+            operation.operator
+          ),
           isFieldAnArray(operation.fieldName)
             ? `{${operation.value}}`
             : operation.value
@@ -152,13 +163,18 @@ const useGetQuery = (
 const getLogicalOperatorLabel = (logicalOperator: string): string =>
   logicalOperatorLabels[logicalOperator]
 
+export const symbols = {
+  equals: '=',
+  contains: '⊃'
+}
+
 const getOperatorOutputSymbol = (operator: string): string => {
   switch (operator) {
     case postgrestOperatorAbbreviations.equals:
     case postgrestOperatorAbbreviations.ilike:
-      return '='
+      return symbols.equals
     case postgrestOperatorAbbreviations.contains:
-      return '⊃'
+      return symbols.contains
     default:
       return operator || ''
   }
@@ -193,7 +209,9 @@ const LabelForOperation = ({ operation }: { operation: Operation }) => (
     {getFieldNameLabel(operation.fieldName)}
     {operation.logical ? ` ${logicalOperatorSymbols[operation.logical]}` : ' '}
     <span title={getOperatorLabel(operation.operator)}>
-      {getOperatorOutputSymbol(operation.operator)}
+      {operation.fieldName === AssetFieldNames.species
+        ? symbols.contains
+        : getOperatorOutputSymbol(operation.operator)}
     </span>{' '}
     {operation.value}
   </>
@@ -202,7 +220,8 @@ const LabelForOperation = ({ operation }: { operation: Operation }) => (
 const fieldNameLabels = {
   [AssetFieldNames.tags]: 'Tags',
   [AssetFieldNames.category]: 'Category',
-  [AssetFieldNames.author]: 'Author'
+  [AssetFieldNames.author]: 'Author',
+  [AssetFieldNames.species]: 'Species'
 }
 
 const operatorLabels = {
@@ -555,10 +574,7 @@ const areOperationsTheSame = (
 const KEY_CODE_ENTER = 13
 const KEY_CODE_ESCAPE = 27
 
-interface PaginatedViewItem {}
-
-const Renderer = ({ items }: { items?: PaginatedViewItem[] }) => (
-  // @ts-ignore
+const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
 )
 

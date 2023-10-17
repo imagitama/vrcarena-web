@@ -20,8 +20,9 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 import * as routes from '../../routes'
-import { FullAsset } from '../../modules/assets'
+import { PublicAsset } from '../../modules/assets'
 import { Species } from '../../modules/species'
+import { symbols } from '../query'
 
 function getDisplayNameByCategoryName(categoryName: string): string {
   return categoryMeta[categoryName].name
@@ -31,8 +32,8 @@ function getDescriptionByCategoryName(categoryName: string): string {
   return categoryMeta[categoryName].shortDescription
 }
 
-const Renderer = ({ items }: { items: FullAsset[] }) => (
-  <AssetResults assets={items} showAddToCart />
+const Renderer = ({ items }: { items?: PublicAsset[] }) => (
+  <AssetResults assets={items} />
 )
 
 const View = () => {
@@ -116,8 +117,8 @@ const View = () => {
           defaultFieldName={AssetFieldNames.createdAt}
           urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
             .replace(':speciesIdOrSlug', speciesId)
-            .replace(':categoryName', categoryName)}>
-          {/* @ts-ignore */}
+            .replace(':categoryName', categoryName)}
+          getQueryString={() => `species:${species.id}`}>
           <Renderer />
         </PaginatedView>
       </div>
