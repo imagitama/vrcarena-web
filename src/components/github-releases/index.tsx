@@ -14,7 +14,6 @@ const useStyles = makeStyles({
   },
   details: {
     '& a': {
-      display: 'block',
       padding: '10px',
       display: 'flex',
       alignItems: 'center',
@@ -34,7 +33,7 @@ const useStyles = makeStyles({
 })
 
 // source: https://www.seancdavis.com/posts/extract-github-repo-name-from-url-using-javascript/
-const getGitHubAuthorAndRepoName = url => {
+const getGitHubAuthorAndRepoName = (url: string): string | null => {
   if (!url) return null
   const match = url.match(
     /^https?:\/\/(www\.)?github.com\/(?<owner>[\w.-]+)\/(?<name>[\w.-]+)/
@@ -44,9 +43,20 @@ const getGitHubAuthorAndRepoName = url => {
   return `${match.groups.owner}/${match.groups.name}`
 }
 
-const getButtonLabelFromAssetName = name => `.${name.split('.').pop()}`
+const getButtonLabelFromAssetName = (name: string): string =>
+  `.${name.split('.').pop()}`
 
-const ReleaseAsset = ({ asset: { name, browser_download_url } }) => {
+interface GitHubAsset {
+  name: string
+  browser_download_url: string
+  content_type: string
+}
+
+const ReleaseAsset = ({
+  asset: { name, browser_download_url }
+}: {
+  asset: GitHubAsset
+}) => {
   const classes = useStyles()
   return (
     <Button
@@ -59,7 +69,8 @@ const ReleaseAsset = ({ asset: { name, browser_download_url } }) => {
   )
 }
 
-const getBestNameForRelease = ({ name, tag_name }) => tag_name || name
+const getBestNameForRelease = ({ name, tag_name }: GitHubRelease): string =>
+  tag_name || name
 
 const mimeTypesSortedByBest = [
   'application/x-gzip', // .unitypackage
@@ -70,7 +81,7 @@ const mimeTypesSortedByBest = [
   'application/x-msdownload' // exe
 ]
 
-const getBestAsset = assets => {
+const getBestAsset = (assets: GitHubAsset[]): GitHubAsset | null => {
   if (!assets.length) {
     return null
   }
@@ -93,8 +104,22 @@ const getBestAsset = assets => {
   }, assets[0])
 }
 
-export default ({ gitHubUrl, showErrorOnNotFound = true }) => {
-  const [result, setResult] = useState(null)
+interface GitHubRelease {
+  name: string
+  tag_name: string
+  prerelease: boolean
+  assets: GitHubAsset[]
+  html_url: string
+}
+
+export default ({
+  gitHubUrl,
+  showErrorOnNotFound = true
+}: {
+  gitHubUrl: string
+  showErrorOnNotFound: boolean
+}) => {
+  const [results, setResults] = useState<GitHubRelease[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isErrored, setIsErrored] = useState(false)
   const classes = useStyles()
@@ -140,7 +165,7 @@ export default ({ gitHubUrl, showErrorOnNotFound = true }) => {
 
         const newData = await resp.json()
 
-        setResult(newData)
+        setResults(newData)
         setIsLoading(false)
         setIsErrored(false)
       } catch (err) {
@@ -149,7 +174,7 @@ export default ({ gitHubUrl, showErrorOnNotFound = true }) => {
         console.error(err)
 
         // ignore this useless error
-        if (err.message === 'Failed to fetch') {
+        if ((err as Error).message === 'Failed to fetch') {
           return
         }
 
@@ -158,7 +183,7 @@ export default ({ gitHubUrl, showErrorOnNotFound = true }) => {
     })()
   }, [gitHubUrl])
 
-  if (!gitHubUrl || (result && result.length === 0)) {
+  if (!gitHubUrl || !results || (results && results.length === 0)) {
     return null
   }
 
@@ -170,9 +195,15 @@ export default ({ gitHubUrl, showErrorOnNotFound = true }) => {
     return <ErrorMessage>Failed to get details from GitHub</ErrorMessage>
   }
 
-  const latestRelease = result[0]
+  const latestNonBetaRelease = results.find(
+    result => result.prerelease !== true
+  )
 
-  const { html_url: url, assets } = latestRelease
+  if (!latestNonBetaRelease) {
+    return null
+  }
+
+  const { html_url: url, assets } = latestNonBetaRelease
 
   const bestAsset = getBestAsset(assets)
 
@@ -180,7 +211,7 @@ export default ({ gitHubUrl, showErrorOnNotFound = true }) => {
     <div className={classes.root}>
       <div className={classes.details}>
         <a href={url} target="_blank" rel="noopener noreferrer">
-          View release details: {getBestNameForRelease(latestRelease)}{' '}
+          View release details: {getBestNameForRelease(latestNonBetaRelease)}{' '}
           <OpenInNewIcon className={classes.icon} />
         </a>
       </div>
