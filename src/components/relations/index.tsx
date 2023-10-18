@@ -1,6 +1,11 @@
 import React, { useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Asset, Relation, RelationType } from '../../modules/assets'
+import {
+  Asset,
+  PublicAsset,
+  Relation,
+  RelationType
+} from '../../modules/assets'
 import AssetResultsItem from '../asset-results-item'
 import Markdown from '../markdown'
 import { client as supabase } from '../../supabase'
@@ -35,6 +40,9 @@ const useStyles = makeStyles({
     '& > p:last-child': {
       marginBottom: 0
     }
+  },
+  itemLabel: {
+    marginTop: '0.5rem'
   }
 })
 
@@ -53,6 +61,40 @@ export const getLabelForType = (relationType: string): string => {
   }
 }
 
+export const Relations = ({ children }: { children: React.ReactNode }) => {
+  const classes = useStyles()
+
+  return <div className={classes.relations}>{children}</div>
+}
+
+export const RelationItem = ({
+  relation,
+  asset,
+  showRelation
+}: {
+  relation: Relation
+  asset: PublicAsset
+  showRelation?: boolean
+}) => {
+  const classes = useStyles()
+
+  return (
+    <div className={classes.relation}>
+      <AssetResultsItem asset={asset} />
+      {showRelation ? (
+        <div className={classes.itemLabel}>
+          {getLabelForType(relation.type)}
+        </div>
+      ) : null}
+      {relation.comments ? (
+        <div className={classes.comments}>
+          <Markdown source={relation.comments} />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
 export default ({ relations }: { relations: Relation[] }) => {
   const getQuery = useCallback(
     () =>
@@ -62,14 +104,9 @@ export default ({ relations }: { relations: Relation[] }) => {
         .or(relations.map(({ asset }) => `id.eq.${asset}`).join(',')),
     [relations.map(({ asset }) => asset).join('+')]
   )
-  const [
-    isLoadingAssets,
-    isErrorLoadingAssets,
-    assets,
-    ,
-    hydrate
-  ] = useDataStore<Asset[]>(getQuery, 'relations')
-
+  const [isLoadingAssets, isErrorLoadingAssets, assets] = useDataStore<
+    PublicAsset[]
+  >(getQuery, 'relations')
   const classes = useStyles()
 
   const relationsWithData = assets
@@ -103,31 +140,31 @@ export default ({ relations }: { relations: Relation[] }) => {
     return <NoResultsMessage>No relations found</NoResultsMessage>
   }
 
-  console.log('RENDER', relations, relationsByType)
-
   return (
     <div className={classes.root}>
       {Object.entries(relationsByType).map(
         ([relationType, relationsForType]) => (
-          <div key={relationType} className={classes.relationType}>
+          <div className={classes.relationType}>
             <div className={classes.label}>{getLabelForType(relationType)}</div>
-            <div className={classes.relations}>
+            <Relations>
               {relationsForType.map(relation => {
-                const relationData = assets.find(
-                  ({ id }) => id === relation.asset
-                )
+                const asset = assets.find(({ id }) => id === relation.asset)
+
+                if (!asset) {
+                  throw new Error(
+                    `Could not get asset for ID ${relation.asset}`
+                  )
+                }
+
                 return (
-                  <div key={relation.asset} className={classes.relation}>
-                    <AssetResultsItem asset={relationData} />
-                    {relation.comments ? (
-                      <div className={classes.comments}>
-                        <Markdown source={relation.comments} />
-                      </div>
-                    ) : null}
-                  </div>
+                  <RelationItem
+                    key={relationType}
+                    relation={relation}
+                    asset={asset}
+                  />
                 )
               })}
-            </div>
+            </Relations>
           </div>
         )
       )}

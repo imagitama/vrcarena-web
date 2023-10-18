@@ -22,7 +22,6 @@ import useUserRecord from '../../hooks/useUserRecord'
 import {
   isUrlAnImage,
   isUrlNotAnImageOrVideo,
-  getRandomInt,
   getDescriptionForHtmlMeta,
   getOpenGraphUrlForRouteUrl,
   isGitHubUrl,
@@ -42,7 +41,7 @@ import { getCanUserEditAsset } from '../../assets'
 import Link from '../../components/link'
 import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
 import categoryMeta from '../../category-meta'
-import { Asset, FullAsset, RelationType } from '../../modules/assets'
+import { FullAsset, RelationType } from '../../modules/assets'
 
 import AssetThumbnail from '../asset-thumbnail'
 import Heading from '../heading'
@@ -86,6 +85,7 @@ import Relations from '../relations'
 import useAssetOverview from './useAssetOverview'
 import OpenForCommissionsMessage from '../open-for-commissions-message'
 import { getTitleForReason } from '../../events'
+import TabMentions from './components/tab-mentions'
 
 // controls
 const LoggedInControls = React.lazy(() =>
@@ -740,6 +740,9 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                     />
                   </Area>
                 ) : null}
+                <Area name="mentions" label="Relations">
+                  <TabMentions />
+                </Area>
                 {isEditor ? (
                   <Area name="admin" label="Admin">
                     <TabAdmin />
