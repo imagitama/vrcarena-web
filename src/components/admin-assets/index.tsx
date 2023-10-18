@@ -29,6 +29,7 @@ import EditorRecordManager from '../editor-record-manager'
 import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
 import { colorPalette } from '../../config'
+import Link from '../link'
 
 const useStyles = makeStyles({
   pass: {
@@ -46,19 +47,24 @@ const AssetApprovalChecklistItem = ({
   label,
   isValid,
   isNotImportant,
-  validLabel
+  validLabel,
+  url
 }: {
   label: string
   isValid: boolean
   isNotImportant?: boolean
   validLabel?: string
+  url?: string
 }) => {
   const classes = useStyles()
   return (
     <li>
       {label}:{' '}
       {isValid ? (
-        <span className={classes.pass}>{validLabel || 'Pass'}</span>
+        <>
+          <span className={classes.pass}>{validLabel || 'Pass'}</span>{' '}
+          {url ? <Link to={url}>Link</Link> : null}
+        </>
       ) : (
         <span
           className={`${classes.fail} ${
@@ -106,7 +112,8 @@ function AssetsTable({
                 accessstatus,
                 species,
                 speciesnames,
-                publishedat
+                publishedat,
+                sourceurl
               } = asset
               return (
                 <TableRow key={id}>
@@ -120,6 +127,18 @@ function AssetsTable({
                   </TableCell>
                   <TableCell>
                     <ul>
+                      <AssetApprovalChecklistItem
+                        label="Source"
+                        isValid={
+                          typeof sourceurl === 'string' && sourceurl !== ''
+                        }
+                        validLabel={'Set'}
+                        url={
+                          typeof sourceurl === 'string' && sourceurl !== ''
+                            ? sourceurl
+                            : ''
+                        }
+                      />
                       <AssetApprovalChecklistItem
                         label="Thumbnail"
                         isValid={
