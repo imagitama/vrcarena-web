@@ -63,7 +63,11 @@ const AssetApprovalChecklistItem = ({
       {isValid ? (
         <>
           <span className={classes.pass}>{validLabel || 'Pass'}</span>{' '}
-          {url ? <Link to={url}>Link</Link> : null}
+          {url ? (
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              Link
+            </a>
+          ) : null}
         </>
       ) : (
         <span
