@@ -7,7 +7,7 @@ import {
   AssetFieldNames,
   OrderDirections
 } from '../../../../hooks/useDatabaseQuery'
-import { PublicAsset, Relation } from '../../../../modules/assets'
+import { PublicAsset } from '../../../../modules/assets'
 import { Relations, RelationItem } from '../../../relations'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => {
@@ -19,18 +19,26 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => {
 
   return (
     <Relations>
-      {items.map(item => (
-        <RelationItem
-          key={item.id}
-          relation={
-            item.relations.find(
-              relation => relation.asset === assetId
-            ) as Relation
-          }
-          asset={item}
-          showRelation
-        />
-      ))}
+      {items.map(item => {
+        const relation = item.relations.find(
+          relation => relation.asset === assetId
+        )
+
+        if (!relation) {
+          throw new Error(
+            `Could not find any relation matching asset ${assetId}`
+          )
+        }
+
+        return (
+          <RelationItem
+            key={item.id}
+            relation={relation}
+            asset={item}
+            showRelation
+          />
+        )
+      })}
     </Relations>
   )
 }
