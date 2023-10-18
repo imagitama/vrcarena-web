@@ -86,6 +86,7 @@ import useAssetOverview from './useAssetOverview'
 import OpenForCommissionsMessage from '../open-for-commissions-message'
 import { getTitleForReason } from '../../events'
 import TabMentions from './components/tab-mentions'
+import AssetResultsItemParent from '../asset-results-item-parent'
 
 // controls
 const LoggedInControls = React.lazy(() =>
@@ -189,26 +190,6 @@ const useStyles = makeStyles({
   parentWrapper: {
     position: 'relative'
   },
-  parentIcon: {
-    position: 'absolute',
-    width: '100%',
-    top: 0,
-    left: 0,
-    zIndex: 10,
-    background: 'rgba(0, 0, 0, 0.5)',
-    '& a': {
-      width: '100%',
-      padding: '0.5rem',
-      color: '#FFF',
-      display: 'flex',
-      alignItems: 'center',
-      fontWeight: 'bold'
-    },
-    '& svg': {
-      fontSize: '150%',
-      marginRight: '0.5rem'
-    }
-  },
   vrchatIcon: {
     fontSize: '200%',
     display: 'flex'
@@ -283,15 +264,7 @@ const ParentControlGroup = () => {
     <ControlGroup>
       <div className={classes.parent}>
         <div className={classes.parentWrapper}>
-          <div className={classes.parentIcon}>
-            <Link
-              to={routes.viewAssetWithVar.replace(
-                ':assetId',
-                parentData.slug || parentData.id
-              )}>
-              <LinkIcon /> <span>Parent</span>
-            </Link>
-          </div>
+          <AssetResultsItemParent parent={parentData} />
           <AssetResultsItem
             asset={parentData}
             showCategory={false}

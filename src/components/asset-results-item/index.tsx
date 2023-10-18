@@ -216,6 +216,9 @@ const useStyles = makeStyles(theme => ({
   },
   freeChip: {
     backgroundColor: 'rgb(100, 150, 100)'
+  },
+  pushDownIcons: {
+    paddingTop: '2.5rem'
   }
 }))
 
@@ -229,7 +232,8 @@ function ExtraChips({
   categoryName = '',
   showCost = false,
   isFree,
-  isPaid
+  isPaid,
+  pushDown
 }: {
   asset: FullAsset
   showCategory: boolean
@@ -237,10 +241,14 @@ function ExtraChips({
   showCost: boolean
   isFree: boolean
   isPaid: boolean
+  pushDown: boolean
 }) {
   const classes = useStyles()
   return (
-    <div className={classes.extraChips}>
+    <div
+      className={`${classes.extraChips} ${
+        pushDown ? classes.pushDownIcons : ''
+      }`}>
       {asset.approvalstatus === ApprovalStatuses.Waiting && (
         <Chip label="Unapproved" className={classes.extraChip} />
       )}
@@ -419,7 +427,8 @@ const AssetResultsItem = ({
   onClick,
   shimmer = false,
   showAddToCart = false,
-  showSelectedTick = false
+  showSelectedTick = false,
+  pushDownIcons = false
 }: {
   asset?: Asset
   showCategory?: boolean
@@ -433,6 +442,7 @@ const AssetResultsItem = ({
   shimmer?: boolean
   showAddToCart?: boolean
   showSelectedTick?: boolean
+  pushDownIcons?: boolean
 }) => {
   const classes = useStyles()
   const cardRef = useRef<HTMLDivElement>()
@@ -495,6 +505,7 @@ const AssetResultsItem = ({
             showCost={showCost}
             isFree={getIsFree(asset.tags)}
             isPaid={getIsPaid(asset.tags)}
+            pushDown={pushDownIcons}
           />
           {showAddToCart && (
             <div className={classes.addToCartButton}>

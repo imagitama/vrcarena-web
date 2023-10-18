@@ -1,4 +1,5 @@
 import React, { useCallback, useContext } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled'
 import { client as supabase } from '../../../../supabase'
 import TabContext from '../../context'
@@ -10,8 +11,13 @@ import {
 import { PublicAsset } from '../../../../modules/assets'
 import { Relations, RelationItem } from '../../../relations'
 
+const useStyles = makeStyles({
+  item: { margin: '0.5rem' }
+})
+
 const Renderer = ({ items }: { items?: PublicAsset[] }) => {
   const { assetId } = useContext(TabContext)
+  const classes = useStyles()
 
   if (!items) {
     return null
@@ -31,12 +37,17 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => {
         }
 
         return (
-          <RelationItem
-            key={item.id}
-            relation={relation}
-            asset={item}
-            showRelation
-          />
+          <div key={item.id} className={classes.item}>
+            <RelationItem
+              relation={{
+                type: relation.type,
+                asset: relation.asset,
+                comments: ''
+              }}
+              asset={item}
+              showRelation
+            />
+          </div>
         )
       })}
     </Relations>

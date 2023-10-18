@@ -13,6 +13,7 @@ import useDataStore from '../../hooks/useDataStore'
 import LoadingIndicator from '../loading-indicator'
 import NoResultsMessage from '../no-results-message'
 import ErrorMessage from '../error-message'
+import AssetResultsItemParent from '../asset-results-item-parent'
 
 const useStyles = makeStyles({
   root: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles({
     flexWrap: 'wrap'
   },
   relation: {
+    position: 'relative',
     height: '100%',
     margin: '0 0.5rem 0.5rem 0'
   },
@@ -80,12 +82,8 @@ export const RelationItem = ({
 
   return (
     <div className={classes.relation}>
-      <AssetResultsItem asset={asset} />
-      {showRelation ? (
-        <div className={classes.itemLabel}>
-          {getLabelForType(relation.type)}
-        </div>
-      ) : null}
+      {showRelation ? <AssetResultsItemParent parent={asset} /> : null}
+      <AssetResultsItem asset={asset} pushDownIcons={showRelation} />
       {relation.comments ? (
         <div className={classes.comments}>
           <Markdown source={relation.comments} />
