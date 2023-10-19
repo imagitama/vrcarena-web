@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@material-ui/core/styles'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 
 import BigSearchInput from '../../components/big-search-input'
 import * as routes from '../../routes'
@@ -20,7 +21,7 @@ import {
 } from '../../hooks/useDatabaseQuery'
 import AssetResults from '../../components/asset-results'
 import PaginatedView from '../../components/paginated-view'
-import { FullAsset, PublicAsset } from '../../modules/assets'
+import { CollectionNames, FullAsset, PublicAsset } from '../../modules/assets'
 import { query } from '../../data-store'
 import { CollectionNames as AuthorCollectionNames } from '../../modules/authors'
 import { CollectionNames as UserCollectionNames } from '../../modules/users'
@@ -29,8 +30,10 @@ import Link from '../../components/link'
 import { handleError } from '../../error-handling'
 import ErrorMessage from '../../components/error-message'
 import Message from '../../components/message'
+import useDataStore from '../../hooks/useDataStore'
+import { client as supabase } from '../../supabase'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     position: 'relative'
   },
@@ -51,8 +54,22 @@ const useStyles = makeStyles({
     '& input': {
       padding: '5px'
     }
+  },
+  autocompleteList: {
+    position: 'absolute',
+    zIndex: 50,
+    width: '50vw',
+    marginTop: '0.5rem',
+    backgroundColor: theme.palette.background.paper
+  },
+  autocompleteSuggestion: {
+    padding: '0.25rem',
+    '&:hover': {
+      cursor: 'pointer',
+      backgroundColor: 'rgba(255, 255, 255, 0.1)'
+    }
   }
-})
+}))
 
 const updateQueryStringInUrl = (newQueryString: string): void => {
   const queryStringToInsert = convertSearchTermToUrlPath(newQueryString)
@@ -132,8 +149,6 @@ const getChunksFromUserInput = (input: string): string[] => {
 class InvalidUserInputError extends Error {}
 
 export const getOperationsFromUserInput = (userInput: string): Operation[] => {
-  // const chunks = userInput.split(' ')
-
   const chunks = getChunksFromUserInput(userInput)
 
   if (!chunks) {
@@ -264,9 +279,6 @@ const getCollectionNameForFieldName = (fieldName: string) => {
       return UserCollectionNames.Users
     default:
       return null
-    // throw new Error(
-    //   `Cannot get collection name for field name "${fieldName}"`
-    // )
   }
 }
 
@@ -355,10 +367,8 @@ export const extendQueryFromUserInput = (
         if (Array.isArray(operation.value)) {
           throw new Error('Should not be an array')
         }
-        // const valueToUse = operation.value.replaceAll('*', '%')
-        const valueToUse = operation.value
-        methods.push(['ilike', operation.fieldName, valueToUse])
-        query = query.ilike(operation.fieldName, valueToUse)
+        methods.push(['ilike', operation.fieldName, operation.value])
+        query = query.ilike(operation.fieldName, operation.value)
         break
       case Operator.FILTER:
         methods.push(['eq', operation.fieldName, operation.value])
@@ -393,9 +403,6 @@ const getDisplayErrorMessage = (err: Error): string => {
   return err.message
 }
 
-// const parseQueryStringToOperations = (queryString: string): Operation[] =>
-//   getOperationsFromUserInput(window.decodeURIComponent(queryString))
-
 const KEY_CODE_ENTER = 13
 const KEY_CODE_ESCAPE = 27
 
@@ -403,17 +410,36 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
 )
 
-// const isOperationValid = (value: unknown): value is Operation => value !== false
+interface Suggestion {
+  tag: string
+  count: number
+}
+
+const getPartialTagFromUserInput = (userInput: string): string => {
+  if (!userInput) {
+    return ''
+  }
+
+  const chunks = getChunksFromUserInput(userInput)
+
+  console.debug(`Query.getPartialTag`, { chunks })
+
+  const lastChunk = chunks.pop()
+
+  if (!lastChunk || lastChunk.includes(':')) {
+    return ''
+  }
+
+  return lastChunk
+}
 
 export default () => {
   const classes = useStyles()
   const { query: rawQueryString = '' } = useParams<{ query: string }>()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [lastError, setLastError] = useState<Error | null>(null)
-
   const rawQueryStringParsed = parseSearchTermFromUrlPath(rawQueryString)
-
-  console.debug(`Parse Query String`, { rawQueryString, rawQueryStringParsed })
+  const [isFocused, setIsFocused] = useState(false)
 
   const [queryStringToDisplay, setQueryStringToDisplay] = useState(
     rawQueryStringParsed.trim()
@@ -423,19 +449,73 @@ export default () => {
   )
   const [operations, setOperations] = useState<Operation[]>([])
 
-  const queryStringToParse = parseSearchTermFromUrlPath(queryStringToUse)
+  const userInputToUse = parseSearchTermFromUrlPath(queryStringToUse)
 
   const updateQueryStringToDisplay = (newQueryString: string): void => {
     updateQueryStringInUrl(newQueryString)
     setQueryStringToDisplay(newQueryString)
   }
 
-  const userInput = queryStringToParse
+  const autocompleteTimer = useRef<NodeJS.Timeout>()
+  const userInput = parseSearchTermFromUrlPath(queryStringToDisplay)
+  const partialTag = getPartialTagFromUserInput(userInput)
+
+  const getSuggestionsQuery = useCallback(
+    () =>
+      supabase
+        .from(CollectionNames.TagStats)
+        .select('*')
+        .ilike('tag', `${partialTag}*`)
+        .limit(10),
+    [partialTag]
+  )
+  const [isAutocompleting, setIsAutocompleting] = useState(false)
+  const [, , suggestions] = useDataStore<Suggestion[]>(
+    isAutocompleting && partialTag.length >= 3 ? getSuggestionsQuery : null
+  )
+
+  const completeSuggestion = (tag: string) => {
+    console.debug(`Query.completeSuggestion`, tag)
+    const chunks = getChunksFromUserInput(userInput).slice(0, -1)
+    chunks.push(tag)
+    const newUserInput = chunks.join(' ')
+    updateQueryStringInUrl(newUserInput)
+    setQueryStringToDisplay(newUserInput)
+    setQueryStringToUse(newUserInput)
+    setIsAutocompleting(false)
+  }
+
+  useEffect(() => {
+    if (!isFocused) {
+      // @ts-ignore
+      clearTimeout(autocompleteTimer.current)
+      setIsAutocompleting(false)
+    }
+  }, [isFocused])
+
+  useEffect(() => {
+    if (!userInput || userInput.length < 3) {
+      return
+    }
+
+    if (!partialTag) {
+      return
+    }
+
+    autocompleteTimer.current = setTimeout(() => {
+      setIsAutocompleting(true)
+    }, 500)
+
+    return () => {
+      // @ts-ignore
+      clearTimeout(autocompleteTimer.current)
+    }
+  }, [userInput])
 
   useEffect(() => {
     ;(async () => {
       try {
-        const newOperations = getOperationsFromUserInput(userInput)
+        const newOperations = getOperationsFromUserInput(userInputToUse)
 
         console.debug(`Query.useEffect`, { newOperations })
 
@@ -466,7 +546,7 @@ export default () => {
         handleError(err)
       }
     })()
-  }, [userInput])
+  }, [userInputToUse])
 
   const getQuery = useCallback(
     query => {
@@ -490,22 +570,36 @@ export default () => {
   return (
     <div className={classes.root}>
       <BigSearchInput
+        autoFocus
         onClear={clearQuery}
         // input props
-        onKeyDown={(e: React.KeyboardEvent) => {
+        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (e.keyCode === KEY_CODE_ENTER) {
             setQueryStringToUse(queryStringToDisplay)
           } else if (e.keyCode === KEY_CODE_ESCAPE) {
             clearQuery()
           }
         }}
-        onChange={(e: React.ChangeEvent) =>
-          // @ts-ignore TODO Investigate
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           updateQueryStringToDisplay(e.target.value)
-        }
+        }}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         value={queryStringToDisplay}
         isSearching={false}
       />
+      {isAutocompleting && suggestions && suggestions.length ? (
+        <div className={classes.autocompleteList}>
+          {suggestions.map(suggestion => (
+            <div
+              key={suggestion.tag}
+              className={classes.autocompleteSuggestion}
+              onMouseDown={() => completeSuggestion(suggestion.tag)}>
+              {suggestion.tag} ({suggestion.count})
+            </div>
+          ))}
+        </div>
+      ) : null}
       <Link to={routes.queryCheatsheet}>View cheatsheet</Link>
       {lastError ? (
         <ErrorMessage>
@@ -521,7 +615,13 @@ export default () => {
           <Renderer />
         </PaginatedView>
       ) : (
-        <Message>Enter a query to get started</Message>
+        <Message>
+          Type a query in the input above to get started
+          <br />
+          <br />
+          We have a version of the "booru" style query system. View the
+          cheatsheet <Link to={routes.queryCheatsheet}>here</Link>
+        </Message>
       )}
     </div>
   )

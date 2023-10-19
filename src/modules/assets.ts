@@ -116,5 +116,6 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
 
 export const CollectionNames = {
   Assets: 'assets',
-  AssetsMeta: 'assetmeta'
+  AssetsMeta: 'assetmeta',
+  TagStats: 'tagstats'
 }
