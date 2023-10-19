@@ -6,7 +6,7 @@ let scrollAmountsByUrl: { [url: string]: number } = {}
 
 const useScrollMemory = (hasFinishedLoading = false) => {
   const { pathname } = useLocation()
-  const oldPathnameRef = useRef(pathname)
+  const oldPathnameRef = useRef<string>()
 
   useEffect(() => {
     if (!hasFinishedLoading) {
@@ -19,12 +19,19 @@ const useScrollMemory = (hasFinishedLoading = false) => {
       oldPathnameRef.current.includes('/page') &&
       pathname.includes('/page')
     ) {
+      console.debug(`useScrollMemory ignoring page navigation`, {
+        old: oldPathnameRef.current,
+        new: pathname
+      })
       return
     }
 
     oldPathnameRef.current = pathname
 
     if (pathname in scrollAmountsByUrl) {
+      console.debug(`useScrollMemory found a scroll amount, scrolling...`, {
+        amount: scrollAmountsByUrl[pathname]
+      })
       scrollTo(scrollAmountsByUrl[pathname], false)
     }
 

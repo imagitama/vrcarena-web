@@ -625,7 +625,11 @@ export default () => {
             collectionName={'getpublicassets'}
             // @ts-ignore
             getQuery={getQuery}
-            defaultFieldName={AssetFieldNames.createdAt}>
+            defaultFieldName={AssetFieldNames.createdAt}
+            urlWithPageNumberVar={routes.queryWithVarAndPageVar.replace(
+              ':query',
+              convertSearchTermToUrlPath(queryStringToDisplay)
+            )}>
             <Renderer />
           </PaginatedView>
         ) : (

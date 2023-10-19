@@ -668,7 +668,11 @@ const MainContent = () => {
         />
         <Route
           exact
-          path={[routes.query, routes.queryWithVar]}
+          path={[
+            routes.query,
+            routes.queryWithVar,
+            routes.queryWithVarAndPageVar
+          ]}
           component={Query}
         />
         <Route exact path={routes.bulkAdd} component={BulkAdd} />
