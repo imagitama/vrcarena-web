@@ -117,7 +117,7 @@ const View = () => {
           urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
             .replace(':speciesIdOrSlug', speciesId)
             .replace(':categoryName', categoryName)}
-          getQueryString={() => `species:${species.pluralname}`}>
+          getQueryString={() => `species:"${species.pluralname}"`}>
           <Renderer />
         </PaginatedView>
       </div>

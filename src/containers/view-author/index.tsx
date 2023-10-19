@@ -60,7 +60,7 @@ function AssetsByAuthor({ author }: { author: FullAuthor }) {
     <PaginatedView
       viewName={'getPublicAssets'}
       getQuery={getQuery}
-      getQueryString={() => `author:${author.name}`}
+      getQueryString={() => `author:"${author.name}"`}
       defaultFieldName={AssetFieldNames.createdAt}
       defaultDirection={OrderDirections.DESC}>
       <Renderer />
