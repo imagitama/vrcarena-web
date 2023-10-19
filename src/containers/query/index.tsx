@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@material-ui/core/styles'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
-import Autocomplete from '@material-ui/lab/Autocomplete'
+import { Helmet } from 'react-helmet'
 
 import BigSearchInput from '../../components/big-search-input'
 import * as routes from '../../routes'
@@ -30,6 +30,7 @@ import Link from '../../components/link'
 import { handleError } from '../../error-handling'
 import ErrorMessage from '../../components/error-message'
 import Message from '../../components/message'
+import WarningMessage from '../../components/warning-message'
 import useDataStore from '../../hooks/useDataStore'
 import { client as supabase } from '../../supabase'
 
@@ -568,61 +569,75 @@ export default () => {
   }
 
   return (
-    <div className={classes.root}>
-      <BigSearchInput
-        autoFocus
-        onClear={clearQuery}
-        // input props
-        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-          if (e.keyCode === KEY_CODE_ENTER) {
-            setQueryStringToUse(queryStringToDisplay)
-          } else if (e.keyCode === KEY_CODE_ESCAPE) {
-            clearQuery()
-          }
-        }}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          updateQueryStringToDisplay(e.target.value)
-        }}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        value={queryStringToDisplay}
-        isSearching={false}
-      />
-      {isAutocompleting && suggestions && suggestions.length ? (
-        <div className={classes.autocompleteList}>
-          {suggestions.map(suggestion => (
-            <div
-              key={suggestion.tag}
-              className={classes.autocompleteSuggestion}
-              onMouseDown={() => completeSuggestion(suggestion.tag)}>
-              {suggestion.tag} ({suggestion.count})
-            </div>
-          ))}
-        </div>
-      ) : null}
-      <Link to={routes.queryCheatsheet}>View cheatsheet</Link>
-      {lastError ? (
-        <ErrorMessage>
-          Failed to run query: {getDisplayErrorMessage(lastError)}
-        </ErrorMessage>
-      ) : null}
-      {operations.length ? (
-        <PaginatedView
-          collectionName={'getpublicassets'}
-          // @ts-ignore
-          getQuery={getQuery}
-          defaultFieldName={AssetFieldNames.createdAt}>
-          <Renderer />
-        </PaginatedView>
-      ) : (
-        <Message>
-          Type a query in the input above to get started
-          <br />
-          <br />
-          We have a version of the "booru" style query system. View the
-          cheatsheet <Link to={routes.queryCheatsheet}>here</Link>
-        </Message>
-      )}
-    </div>
+    <>
+      <Helmet>
+        <title>Execute a query | VRCArena</title>
+        <meta
+          name="description"
+          content={`Use our booru-style query language to find the assets you want. Include or exclude tags, filter by author name and sort by different dates.`}
+        />
+      </Helmet>
+      <div className={classes.root}>
+        <WarningMessage>
+          Welcome to the new query page. I replaced the old query language with
+          a "booru"-style one. Please let me know in our Discord if it doesn't
+          work for you.
+        </WarningMessage>
+        <BigSearchInput
+          autoFocus
+          onClear={clearQuery}
+          // input props
+          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.keyCode === KEY_CODE_ENTER) {
+              setQueryStringToUse(queryStringToDisplay)
+            } else if (e.keyCode === KEY_CODE_ESCAPE) {
+              clearQuery()
+            }
+          }}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            updateQueryStringToDisplay(e.target.value)
+          }}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          value={queryStringToDisplay}
+          isSearching={false}
+        />
+        {isAutocompleting && suggestions && suggestions.length ? (
+          <div className={classes.autocompleteList}>
+            {suggestions.map(suggestion => (
+              <div
+                key={suggestion.tag}
+                className={classes.autocompleteSuggestion}
+                onMouseDown={() => completeSuggestion(suggestion.tag)}>
+                {suggestion.tag} ({suggestion.count})
+              </div>
+            ))}
+          </div>
+        ) : null}
+        <Link to={routes.queryCheatsheet}>View cheatsheet</Link>
+        {lastError ? (
+          <ErrorMessage>
+            Failed to run query: {getDisplayErrorMessage(lastError)}
+          </ErrorMessage>
+        ) : null}
+        {operations.length ? (
+          <PaginatedView
+            collectionName={'getpublicassets'}
+            // @ts-ignore
+            getQuery={getQuery}
+            defaultFieldName={AssetFieldNames.createdAt}>
+            <Renderer />
+          </PaginatedView>
+        ) : (
+          <Message>
+            Type a query in the input above to get started
+            <br />
+            <br />
+            We have a version of the "booru" style query system. View the
+            cheatsheet <Link to={routes.queryCheatsheet}>here</Link>
+          </Message>
+        )}
+      </div>
+    </>
   )
 }
