@@ -20,6 +20,7 @@ import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import ControlCameraIcon from '@material-ui/icons/ControlCamera'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered'
+import { Tachometer as TachometerIcon } from '@emotion-icons/boxicons-regular/Tachometer'
 
 import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord.svg'
 import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon.svg'
@@ -98,6 +99,7 @@ import { inDevelopment } from '../../environment'
 import TagChip from '../tag-chip'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import { defaultBorderRadius } from '../../themes'
+import PerformanceEditor from '../performance-editor'
 
 interface EditorInfo {
   assetId: string | null
@@ -1029,6 +1031,25 @@ const Editor = () => {
         />
       </Section>
       <Section name="vrchat" title="VRChat">
+        <FormEditorArea
+          title="Performance"
+          description="Help people find avatars that match their performance requirements."
+          icon={() => <TachometerIcon />}
+          doWeRender={asset.category === AssetCategories.avatar}
+          display={() => (
+            <PerformanceEditor
+              assetId={assetId || undefined}
+              currentTags={asset.tags || []}
+            />
+          )}
+          editor={
+            <PerformanceEditor
+              assetId={assetId || undefined}
+              currentTags={asset.tags || []}
+              isEditing
+            />
+          }
+        />
         <FormEditorArea
           fieldName={AssetFieldNames.vrchatClonableWorldIds}
           title="VRChat World"

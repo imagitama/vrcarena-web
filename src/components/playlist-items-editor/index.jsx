@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Markdown from '../markdown'
 import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
 import AddIcon from '@material-ui/icons/Add'
 import DeleteIcon from '@material-ui/icons/Delete'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'

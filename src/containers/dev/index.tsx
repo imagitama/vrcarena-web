@@ -32,6 +32,7 @@ import SurveyForm from '../../components/survey-form'
 import survey from '../../surveys/creating-asset'
 import { CollectionNames } from '../../modules/assets'
 import FeaturesToTagsEditor from '../../components/features-to-tags-editor'
+import PerformanceEditor from '../../components/performance-editor'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -136,6 +137,22 @@ const FileUploaderDemo = () => {
   )
 }
 
+const PerformanceEditorDemo = () => {
+  const [isEditing, setIsEditing] = useState(false)
+  const [newTags, setNewTags] = useState<string[]>([])
+  return (
+    <>
+      <Button onClick={() => setIsEditing(!isEditing)}>Toggle Editing</Button>
+      <code>{newTags.join(' ')}</code>
+      <PerformanceEditor
+        currentTags={newTags}
+        overrideSave={newTags => setNewTags(newTags)}
+        isEditing={isEditing}
+      />
+    </>
+  )
+}
+
 const loremIpsum =
   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
 
@@ -148,6 +165,8 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <h2>Performance Editor</h2>
+        <PerformanceEditorDemo />
         <h2>Features To Tags Editor</h2>
         <FeaturesToTagsEditor onChange={() => {}} />
         <h2>Survey Form</h2>

@@ -34,6 +34,7 @@ import { PaintBucket as PaintBucketIcon } from '@emotion-icons/foundation/PaintB
 import { MaleSign as MaleSignIcon } from '@emotion-icons/boxicons-regular/MaleSign'
 import { FemaleSign as FemaleSignIcon } from '@emotion-icons/boxicons-regular/FemaleSign'
 import { Animation as AnimationIcon } from '@emotion-icons/material/Animation'
+import { getPerformanceRankLabel, PerformanceRank } from '../avatar-performance'
 
 export const cleanupTags = (tags?: string[]): string[] =>
   tags
@@ -215,35 +216,32 @@ const platformNames = {
   Quest: 'Quest'
 }
 
-const performanceRanks = {
-  Excellent: 'Excellent',
-  Good: 'Good',
-  Medium: 'Medium',
-  Poor: 'Poor',
-  VeryPoor: 'Very Poor'
-}
-
 const performanceTagDetails: TagDetails[] = Object.keys(platformNames).reduce<
   TagDetails[]
 >(
   (result, platformName) =>
     result.concat(
-      Object.keys(performanceRanks).map(performanceRank => ({
-        tag: `${performanceRank.toLowerCase()}_${platformName.toLowerCase()}_rank`,
-        // @ts-ignore
-        label: `${performanceRanks[performanceRank]} ${platformName} Rank`,
-        category:
-          platformName === platformNames.PC
-            ? categories.PC_Rank
-            : categories.Quest_Rank,
-        icon:
-          platformName === platformNames.PC ? DesktopWindowsIcon : OculusIcon,
-        // @ts-ignore
-        description: `${platformNames[platformName]} - ${
+      Object.values(PerformanceRank)
+        .filter(item => typeof item === 'number')
+        .map(performanceRank => ({
+          tag: `${PerformanceRank[
+            performanceRank as number
+          ].toLowerCase()}_${platformName.toLowerCase()}_rank`,
           // @ts-ignore
-          performanceRanks[performanceRank]
-        } Performance Rank`
-      }))
+          label: `${getPerformanceRankLabel(
+            performanceRank as PerformanceRank
+          )} ${platformName} Rank`,
+          category:
+            platformName === platformNames.PC
+              ? categories.PC_Rank
+              : categories.Quest_Rank,
+          icon:
+            platformName === platformNames.PC ? DesktopWindowsIcon : OculusIcon,
+          // @ts-ignore
+          description: `${platformName} - ${getPerformanceRankLabel(
+            performanceRank as PerformanceRank
+          )} Performance Rank`
+        }))
     ),
   []
 )
