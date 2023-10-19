@@ -10,7 +10,7 @@ import {
   FullHistoryEntry
 } from '../../modules/history'
 import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import { getUrlForParent, getLabelForParent } from '../../utils'
+import { getUrlForParent, getLabelForParent } from '../../relations'
 import Link from '../link'
 import UsernameLink from '../username-link'
 import {

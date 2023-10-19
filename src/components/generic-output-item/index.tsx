@@ -6,7 +6,7 @@ import { Asset } from '../../modules/assets'
 import Comment from '../comment'
 import { Comment as CommentData } from '../../modules/comments'
 import Link from '../link'
-import { getUrlForParent } from '../../utils'
+import { getUrlForParent } from '../../relations'
 
 export default ({
   type,

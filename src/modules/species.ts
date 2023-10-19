@@ -14,3 +14,7 @@ export interface Species {
   createdat: Date
   createdby: string
 }
+
+export const CollectionNames = {
+  Species: 'species'
+}

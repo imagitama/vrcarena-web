@@ -432,6 +432,13 @@ const viewRank = lazy(() =>
     import(/* webpackChunkName: "view-rank" */ './containers/view-rank')
   )
 )
+const QueryCheatsheetContainer = lazy(() =>
+  catchChunkDeaths(() =>
+    import(
+      /* webpackChunkName: "query-cheatsheet" */ './containers/query-cheatsheet'
+    )
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -654,6 +661,11 @@ const MainContent = () => {
         <Route exact path={routes.reviews} component={Reviews} />
         <Route exact path={routes.transparency} component={Transparency} />
         <Route exact path={routes.unsubscribe} component={Unsubscribe} />
+        <Route
+          exact
+          path={routes.queryCheatsheet}
+          component={QueryCheatsheetContainer}
+        />
         <Route
           exact
           path={[routes.query, routes.queryWithVar]}

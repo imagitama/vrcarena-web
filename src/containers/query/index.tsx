@@ -1,30 +1,34 @@
-import React, { SyntheticEvent, useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import Chip from '@material-ui/core/Chip'
 import { makeStyles } from '@material-ui/core/styles'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import AddIcon from '@material-ui/icons/Add'
-import CheckIcon from '@material-ui/icons/Check'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import BigSearchInput from '../../components/big-search-input'
 import * as routes from '../../routes'
 import {
   convertSearchTermToUrlPath,
+  getIsUuid,
   parseSearchTermFromUrlPath
 } from '../../utils'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import {
   AssetFieldNames,
-  GetPublicAssetsFieldNames
+  AssetMetaFieldNames,
+  AuthorFieldNames,
+  SpeciesFieldNames,
+  UserFieldNames
 } from '../../hooks/useDatabaseQuery'
 import AssetResults from '../../components/asset-results'
-import { TextField } from '@material-ui/core'
-import categoryMeta from '../../category-meta'
 import PaginatedView from '../../components/paginated-view'
-import TagTextField from '../../components/tag-text-field'
-import { SupabaseQueryBuilder } from '@supabase/supabase-js/dist/main/lib/SupabaseQueryBuilder'
-import { PublicAsset } from '../../modules/assets'
+import { FullAsset, PublicAsset } from '../../modules/assets'
+import { query } from '../../data-store'
+import { CollectionNames as AuthorCollectionNames } from '../../modules/authors'
+import { CollectionNames as UserCollectionNames } from '../../modules/users'
+import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
+import Link from '../../components/link'
+import { handleError } from '../../error-handling'
+import ErrorMessage from '../../components/error-message'
+import Message from '../../components/message'
 
 const useStyles = makeStyles({
   root: {
@@ -51,525 +55,346 @@ const useStyles = makeStyles({
 })
 
 const updateQueryStringInUrl = (newQueryString: string): void => {
+  const queryStringToInsert = convertSearchTermToUrlPath(newQueryString)
+  console.debug(`Query.updateQueryStringInUrl`, {
+    newQueryString,
+    queryStringToInsert
+  })
   window.history.replaceState(
     null,
     'Search',
-    newQueryString
-      ? routes.queryWithVar.replace(
-          ':query',
-          convertSearchTermToUrlPath(newQueryString)
-        )
-      : routes.query
+    routes.queryWithVar.replace(':query', queryStringToInsert)
   )
 }
 
-const postgrestOperatorAbbreviations = {
-  equals: 'eq',
-  contains: 'cs',
-  ilike: 'ilike'
+export enum Operator {
+  HAS,
+  OR,
+  MINUS,
+  WILDCARD,
+  FILTER,
+  SORT
 }
 
-const postgresLogicalOperators = {
-  default: 'default', // doesnt actually exist
-  not: 'not'
+export interface Operation {
+  fieldName: keyof FullAsset
+  operator: Operator
+  value: string | string[]
 }
 
-const isFieldAnArray = (fieldName: string): boolean => {
-  switch (fieldName) {
-    case AssetFieldNames.tags:
-    case AssetFieldNames.species:
-      return true
-    default:
-      return false
+export const sortableFieldMap = {
+  created: AssetFieldNames.createdAt,
+  // updated: AssetFieldNames.lastModifiedAt,
+  approved: AssetMetaFieldNames.approvedAt
+}
+
+export enum Platforms {
+  gumroad,
+  booth,
+  github
+}
+
+const getFieldNameFromSortField = (fieldName: string): keyof FullAsset => {
+  if (fieldName in sortableFieldMap) {
+    // @ts-ignore
+    return sortableFieldMap[fieldName] as keyof FullAsset
   }
+  throw new Error(`Unknown field "${fieldName}" to sort by`)
 }
 
-interface Operation {
-  fieldName: string
-  logical: string | null
-  operator: string
-  value: string
-}
+const getChunksFromUserInput = (input: string): string[] => {
+  const keywords = []
+  let inQuotes = false
+  let currentKeyword = ''
 
-const parseQueryStringToOperations = (queryString: string): Operation[] => {
-  if (typeof queryString !== 'string' || !queryString || !queryString.length) {
-    return []
-  }
+  for (let i = 0; i < input.length; i++) {
+    const char = input[i]
 
-  const chunks = queryString.trim().split(' ')
-
-  const operations = chunks.map(mapStringToOperation).filter(isOperationValid)
-
-  return operations
-}
-
-const getOperatorForQuery = (
-  fieldName: string,
-  logicalOperator: string | null,
-  operator: string
-): string => {
-  if (fieldName === AssetFieldNames.species) {
-    return postgrestOperatorAbbreviations.contains
-  }
-
-  if (
-    !logicalOperator ||
-    logicalOperator === postgresLogicalOperators.default
-  ) {
-    return operator
-  }
-  return `${logicalOperator}.${operator}`
-}
-
-type GetQueryFunction = (
-  query: SupabaseQueryBuilder<any>
-) => SupabaseQueryBuilder<any>
-
-const useGetQuery = (
-  operationsStr: string,
-  operations: Operation[]
-): GetQueryFunction => {
-  const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
-    query => {
-      query =
-        isAdultContentEnabled === false
-          ? query.is(AssetFieldNames.isAdult, false)
-          : query
-
-      for (const operation of operations) {
-        console.debug(`operation`, operation)
-        query = query.filter(
-          getInternalFieldName(operation.fieldName),
-          getOperatorForQuery(
-            operation.fieldName,
-            operation.logical,
-            operation.operator
-          ),
-          isFieldAnArray(operation.fieldName)
-            ? `{${operation.value}}`
-            : operation.value
-        )
+    if (char === ' ' && !inQuotes) {
+      if (currentKeyword.length > 0) {
+        keywords.push(currentKeyword)
+        currentKeyword = ''
       }
-
-      return query
-    },
-    [isAdultContentEnabled, operationsStr]
-  )
-
-  return getQuery
-}
-
-const getLogicalOperatorLabel = (logicalOperator: string): string =>
-  logicalOperatorLabels[logicalOperator]
-
-export const symbols = {
-  equals: '=',
-  contains: '⊃'
-}
-
-const getOperatorOutputSymbol = (operator: string): string => {
-  switch (operator) {
-    case postgrestOperatorAbbreviations.equals:
-    case postgrestOperatorAbbreviations.ilike:
-      return symbols.equals
-    case postgrestOperatorAbbreviations.contains:
-      return symbols.contains
-    default:
-      return operator || ''
-  }
-}
-
-const getOperatorLabel = (operator: string): string => {
-  switch (operator) {
-    case postgrestOperatorAbbreviations.equals:
-    case postgrestOperatorAbbreviations.ilike:
-      return 'Equals'
-    case postgrestOperatorAbbreviations.contains:
-      return 'Contains'
-    default:
-      return operator || ''
-  }
-}
-
-const getFieldNameLabel = (fieldName: string): string => {
-  switch (fieldName) {
-    case GetPublicAssetsFieldNames.authorName:
-      return 'author'
-    default:
-      return fieldName
-  }
-}
-
-const getTextForOperation = (operation: Operation): string =>
-  `${operation.fieldName}.${operation.operator}.${operation.value}`
-
-const LabelForOperation = ({ operation }: { operation: Operation }) => (
-  <>
-    {getFieldNameLabel(operation.fieldName)}
-    {operation.logical ? ` ${logicalOperatorSymbols[operation.logical]}` : ' '}
-    <span title={getOperatorLabel(operation.operator)}>
-      {operation.fieldName === AssetFieldNames.species
-        ? symbols.contains
-        : getOperatorOutputSymbol(operation.operator)}
-    </span>{' '}
-    {operation.value}
-  </>
-)
-
-const fieldNameLabels = {
-  [AssetFieldNames.tags]: 'Tags',
-  [AssetFieldNames.category]: 'Category',
-  [AssetFieldNames.author]: 'Author',
-  [AssetFieldNames.species]: 'Species'
-}
-
-const operatorLabels = {
-  [postgrestOperatorAbbreviations.equals]: 'Equals',
-  [postgrestOperatorAbbreviations.contains]: 'Contains'
-}
-
-const allowedOperators = {
-  [AssetFieldNames.category]: [postgrestOperatorAbbreviations.equals],
-  [AssetFieldNames.author]: [postgrestOperatorAbbreviations.equals]
-}
-
-const logicalOperatorLabels = {
-  [postgresLogicalOperators.default]: 'Does',
-  [postgresLogicalOperators.not]: 'Does Not'
-}
-
-const allowedLogicalOperators = {
-  [AssetFieldNames.category]: [postgresLogicalOperators.default],
-  [AssetFieldNames.author]: [postgresLogicalOperators.default]
-}
-
-const logicalOperatorSymbols = {
-  [postgresLogicalOperators.default]: '',
-  [postgresLogicalOperators.not]: '✖'
-}
-
-const CategorySelector = ({
-  value,
-  onNewValue
-}: {
-  value: string
-  onNewValue: (newValue: string) => void
-}) => (
-  <Select value={value} onChange={e => onNewValue(e.target.value as string)}>
-    {Object.entries(categoryMeta).map(([category, meta]) => (
-      <MenuItem key={category} value={category}>
-        {meta.nameSingular}
-      </MenuItem>
-    ))}
-  </Select>
-)
-
-const TextInput = ({
-  value,
-  onNewValue,
-  onDone
-}: {
-  value: string
-  onNewValue: (newValue: string) => void
-  onDone: (newTag?: string) => void
-}) => (
-  <TextField
-    value={value}
-    onKeyDown={e => {
-      if (e.key === 'Enter') {
-        onDone()
-      }
-    }}
-    onChange={e => onNewValue(e.target.value)}
-  />
-)
-
-const ValueInput = ({
-  fieldName,
-  value,
-  onNewValue,
-  onDone
-}: {
-  fieldName: string
-  value: string
-  onNewValue: (newValue: string) => void
-  onDone: (newTag?: string) => void
-}) => {
-  const classes = useStyles()
-  switch (fieldName) {
-    case AssetFieldNames.category:
-      return <CategorySelector value={value} onNewValue={onNewValue} />
-    case AssetFieldNames.tags:
-      return (
-        <TagTextField
-          onChange={(newTags: string[]) => {
-            if (newTags.length) {
-              onDone(newTags[0])
-            } else {
-              onNewValue('')
-            }
-          }}
-          className={classes.tagTextField}
-        />
-      )
-    default:
-      return <TextInput value={value} onNewValue={onNewValue} onDone={onDone} />
-  }
-}
-
-const getDefaultOperatorForFieldName = (fieldName: string): string => {
-  switch (fieldName) {
-    case AssetFieldNames.tags:
-      return postgrestOperatorAbbreviations.contains
-    default:
-      return postgrestOperatorAbbreviations.equals
-  }
-}
-
-const AddOperationForm = ({
-  onAdd
-}: {
-  onAdd: (
-    fieldName: string,
-    logical: string | null,
-    operator: string,
-    value: string
-  ) => void
-}) => {
-  const [fieldName, setFieldName] = useState('')
-  const [logical, setLogical] = useState(postgresLogicalOperators.default)
-  const [operator, setOperator] = useState(
-    postgrestOperatorAbbreviations.contains
-  )
-  const [value, setValue] = useState('')
-
-  const changeFieldName = (newFieldName: string): void => {
-    setFieldName(newFieldName)
-    setOperator(getDefaultOperatorForFieldName(newFieldName))
-  }
-
-  const onDone = (overrideNewValue?: string): void => {
-    if (!fieldName || !operator || (!value && !overrideNewValue)) {
-      return
+    } else if (char === '"') {
+      inQuotes = !inQuotes
+    } else {
+      currentKeyword += char
     }
-    const actualNewValue = overrideNewValue || value
-    onAdd(
-      fieldName,
-      logical === postgresLogicalOperators.default ? null : logical,
-      operator,
-      actualNewValue
+  }
+
+  if (currentKeyword.length > 0) {
+    keywords.push(currentKeyword)
+  }
+
+  return keywords
+}
+
+class InvalidUserInputError extends Error {}
+
+export const getOperationsFromUserInput = (userInput: string): Operation[] => {
+  // const chunks = userInput.split(' ')
+
+  const chunks = getChunksFromUserInput(userInput)
+
+  if (!chunks) {
+    throw new InvalidUserInputError('User input does not match regex')
+  }
+
+  console.debug(`Query.start`, { userInput, chunks })
+
+  const operations: Operation[] = []
+
+  for (const chunk of chunks) {
+    if (chunk[0] === '~') {
+      operations.push({
+        fieldName: 'tags',
+        operator: Operator.OR,
+        value: chunk.slice(1)
+      })
+    } else if (chunk[0] === '-') {
+      operations.push({
+        fieldName: 'tags',
+        operator: Operator.MINUS,
+        value: chunk.slice(1)
+      })
+      // } else if (chunk.includes('*')) {
+      //   operations.push({
+      //     fieldName: 'tags',
+      //     operator: Operator.WILDCARD,
+      //     value: chunk
+      //   })
+    } else if (chunk.includes('sort:')) {
+      const subChunks = chunk.split(':')
+      operations.push({
+        fieldName: getFieldNameFromSortField(subChunks[1]),
+        operator: Operator.SORT,
+        value: subChunks[2]
+      })
+    } else if (chunk.includes('user:')) {
+      operations.push({
+        fieldName: 'createdby',
+        operator: Operator.FILTER,
+        value: chunk.replace('user:', '')
+      })
+    } else if (chunk.includes('author:')) {
+      operations.push({
+        fieldName: 'author',
+        operator: Operator.FILTER,
+        value: chunk.replace('author:', '')
+      })
+    } else if (chunk.includes('category:')) {
+      operations.push({
+        fieldName: 'category',
+        operator: Operator.FILTER,
+        value: chunk.replace('category:', '')
+      })
+    } else if (chunk.includes('species:')) {
+      operations.push({
+        fieldName: 'species',
+        operator: Operator.HAS,
+        value: chunk.replace('species:', '')
+      })
+    } else if (chunk.includes('source:')) {
+      operations.push({
+        fieldName: 'sourceurl',
+        operator: Operator.WILDCARD,
+        value: chunk.replace('source:', '')
+      })
+      // } else if (chunk.includes('approved:')) {
+      //   operations.push({
+      //     fieldName: 'approvedby',
+      //     operator: Operator.FILTER,
+      //     value: chunk.replace('approved:', '')
+      //   })
+      // } else if (chunk.includes('parent:')) {
+      //   operations.push({
+      //     fieldName: 'relations',
+      //     operator: Operator.FILTER,
+      //     value: chunk.replace('parent:', '')
+      //   })
+    } else {
+      operations.push({
+        fieldName: 'tags',
+        operator: Operator.HAS,
+        value: chunk
+      })
+    }
+  }
+
+  let orOperation: Operation | null = null
+
+  const mergedOperations = operations.reduce<Operation[]>(
+    (results, operation, idx) => {
+      if (operation.operator === Operator.OR) {
+        if (!orOperation) {
+          orOperation = {
+            ...operation,
+            value: [operation.value as string]
+          }
+        } else {
+          orOperation = {
+            ...orOperation,
+            // @ts-ignore
+            value: orOperation.value.concat([operation.value])
+          }
+        }
+        return results
+      }
+
+      return [...results, operation]
+    },
+    []
+  )
+
+  if (orOperation) {
+    mergedOperations.push(orOperation)
+  }
+
+  return mergedOperations
+}
+
+const getCollectionNameForFieldName = (fieldName: string) => {
+  switch (fieldName) {
+    case 'author':
+      return AuthorCollectionNames.Authors
+    case 'species':
+      return SpeciesCollectionNames.Species
+    case 'createdby':
+    case 'lastmodifiedby':
+      return UserCollectionNames.Users
+    default:
+      return null
+    // throw new Error(
+    //   `Cannot get collection name for field name "${fieldName}"`
+    // )
+  }
+}
+
+const getColumnNameForFieldName = (fieldName: string) => {
+  switch (fieldName) {
+    case 'author':
+      return AuthorFieldNames.name
+    case 'species':
+      return SpeciesFieldNames.pluralName
+    case 'createdby':
+    case 'lastmodifiedby':
+      return UserFieldNames.username
+    default:
+      throw new Error(`Cannot get column name for field name "${fieldName}"`)
+  }
+}
+
+class CouldNotFindIdError extends Error {}
+
+const getIdIfNotId = async (
+  idOrName: string,
+  fieldName: string
+): Promise<string> => {
+  if (getIsUuid(idOrName)) {
+    return idOrName
+  }
+
+  const collectionName = getCollectionNameForFieldName(fieldName)
+
+  if (!collectionName) {
+    return idOrName
+  }
+
+  const columnName = getColumnNameForFieldName(fieldName)
+
+  console.debug(`Query.getID`, { collectionName, columnName, name: idOrName })
+
+  const { data: results } = await query<{ id: string }>(collectionName, '*', {
+    [columnName]: idOrName
+  })
+
+  console.debug(`Query.getID.result`, { results })
+
+  if (results === null || results.length !== 1) {
+    throw new CouldNotFindIdError(
+      `Could not find record in column "${columnName}" by ID "${idOrName}" in collection "${collectionName}" - result is ${results}`
     )
   }
 
-  return (
-    <>
-      <Select
-        value={fieldName}
-        label={fieldName || 'Field'}
-        onChange={e => changeFieldName(e.target.value as string)}>
-        {Object.entries(fieldNameLabels).map(([name, label]) => (
-          <MenuItem key={name} value={name}>
-            {label}
-          </MenuItem>
-        ))}
-      </Select>
-      <Select
-        value={logical}
-        label={getLogicalOperatorLabel(logical)}
-        onChange={e => setLogical(e.target.value as string)}>
-        {Object.entries(logicalOperatorLabels)
-          .filter(([name]) =>
-            fieldName && allowedLogicalOperators[fieldName]
-              ? allowedLogicalOperators[fieldName].includes(name)
-              : true
-          )
-          .map(([name, label]) => (
-            <MenuItem key={name} value={name}>
-              {label}
-            </MenuItem>
-          ))}
-      </Select>
-      <Select
-        value={operator}
-        label={operator ? getOperatorLabel(operator) : 'Operator'}
-        onChange={e => setOperator(e.target.value as string)}>
-        {Object.entries(operatorLabels)
-          .filter(([name]) =>
-            fieldName && allowedOperators[fieldName]
-              ? allowedOperators[fieldName].includes(name)
-              : true
-          )
-          .map(([name, label]) => (
-            <MenuItem key={name} value={name}>
-              {label}
-            </MenuItem>
-          ))}
-      </Select>
-      <ValueInput
-        fieldName={fieldName}
-        value={value}
-        onNewValue={newValue => setValue(newValue)}
-        onDone={onDone}
-      />
-      <CheckIcon onClick={() => onDone()} />
-    </>
-  )
+  const id = results[0].id
+
+  return id
 }
 
-const OperationsOutput = ({
-  queryStringToDisplay,
-  onAddOperationWithFields,
-  onRemoveOperation
-}: {
-  queryStringToDisplay: string
-  onAddOperationWithFields: (
-    fieldName: string,
-    logical: string | null,
-    operator: string,
-    value: string
-  ) => void
-  onRemoveOperation: (operation: Operation) => void
-}) => {
-  const classes = useStyles()
-  const [isAddFormVisible, setIsAddFormVisible] = useState(false)
+export const extendQueryFromUserInput = (
+  baseQuery: PostgrestFilterBuilder<FullAsset>,
+  operations: Operation[]
+): PostgrestFilterBuilder<FullAsset> => {
+  let query = baseQuery
 
-  const queryStringToParse = parseSearchTermFromUrlPath(queryStringToDisplay)
+  console.debug(`Query`, { operations })
 
-  const operations = parseQueryStringToOperations(queryStringToParse)
+  const methods: any[][] = []
 
-  return (
-    <div className={classes.operations}>
-      {operations.map(operation => (
-        <div key={getTextForOperation(operation)} className={classes.operation}>
-          <Chip
-            label={<LabelForOperation operation={operation} />}
-            onDelete={() => onRemoveOperation(operation)}
-          />
-        </div>
-      ))}
-      {isAddFormVisible ? (
-        <AddOperationForm
-          onAdd={(...args) => {
-            setIsAddFormVisible(false)
-            onAddOperationWithFields(...args)
-          }}
-        />
-      ) : (
-        <Chip
-          label="Add"
-          onClick={() => setIsAddFormVisible(true)}
-          icon={<AddIcon />}
-        />
-      )}
-    </div>
-  )
-}
-
-const getInternalFieldName = (userFieldName: string): string => {
-  switch (userFieldName) {
-    case 'author':
-      return GetPublicAssetsFieldNames.authorName
-    default:
-      return userFieldName
-  }
-}
-
-const mapStringToOperation = (chunk: string): Operation | false => {
-  if (chunk.includes(':')) {
-    const itemsInsideChunk = chunk.split(':')
-    const fieldName = itemsInsideChunk[0]
-    const value = itemsInsideChunk[1]
-
-    return {
-      fieldName,
-      logical: null,
-      operator: postgrestOperatorAbbreviations.ilike,
-      value
+  for (const operation of operations) {
+    switch (operation.operator) {
+      case Operator.HAS:
+        methods.push(['contains', operation.fieldName, `{${operation.value}}`])
+        query = query.contains(operation.fieldName, `{${operation.value}}`)
+        break
+      case Operator.OR:
+        if (!Array.isArray(operation.value)) {
+          throw new Error('Should be an array')
+        }
+        const filters = operation.value
+          .map(value => `tags.cs.{${value}}`)
+          .join(',')
+        methods.push(['or', [filters]])
+        query = query.or(filters)
+        break
+      case Operator.MINUS:
+        methods.push(['not', 'tags', 'cs', `{${operation.value}}`])
+        query = query.not('tags', 'cs', `{${operation.value}}`)
+        break
+      case Operator.WILDCARD:
+        if (Array.isArray(operation.value)) {
+          throw new Error('Should not be an array')
+        }
+        // const valueToUse = operation.value.replaceAll('*', '%')
+        const valueToUse = operation.value
+        methods.push(['ilike', operation.fieldName, valueToUse])
+        query = query.ilike(operation.fieldName, valueToUse)
+        break
+      case Operator.FILTER:
+        methods.push(['eq', operation.fieldName, operation.value])
+        query = query.eq(operation.fieldName, operation.value)
+        break
+      case Operator.SORT:
+        const opts = {
+          ascending: operation.value === 'asc'
+        }
+        methods.push(['order', operation.fieldName, opts])
+        query = query.order(operation.fieldName, opts)
+        break
+      default:
+        throw new Error(`Unknown operator "${operation.operator}"`)
     }
   }
 
-  if (chunk.includes('.')) {
-    const itemsInsideChunk = chunk.split('.')
+  console.debug(`Query`, { methods })
 
-    const includesLogical = itemsInsideChunk.length === 4
+  console.debug(`Query.return`, { query })
 
-    const fieldName = itemsInsideChunk[0]
-    const logical = includesLogical ? itemsInsideChunk[1] : null
-    const operator = includesLogical ? itemsInsideChunk[2] : itemsInsideChunk[1]
-    const value = includesLogical ? itemsInsideChunk[3] : itemsInsideChunk[2]
-
-    return {
-      fieldName,
-      logical,
-      operator,
-      value
-    }
-  }
-
-  if (chunk.includes('-')) {
-    const tagName = chunk.substring(1)
-
-    if (!tagName) {
-      return false
-    }
-
-    return {
-      fieldName: AssetFieldNames.tags,
-      logical: postgresLogicalOperators.not,
-      operator: postgrestOperatorAbbreviations.contains,
-      value: tagName
-    }
-  }
-
-  const tagName = chunk
-
-  if (!tagName) {
-    return false
-  }
-
-  return {
-    fieldName: AssetFieldNames.tags,
-    logical: null,
-    operator: postgrestOperatorAbbreviations.contains,
-    value: tagName
-  }
+  return query
 }
 
-const mapOperationToString = ({
-  fieldName,
-  logical,
-  operator,
-  value
-}: Operation): string => {
-  switch (fieldName) {
-    case AssetFieldNames.tags:
-      return `${logical === postgresLogicalOperators.not ? '-' : ''}${value}`
-    default:
-      switch (operator) {
-        case postgrestOperatorAbbreviations.equals:
-          return `${fieldName}:${value}`
-        default:
-          return `${fieldName}${
-            logical ? `.${logical}` : ''
-          }.${operator}.${value}`
-      }
+const getDisplayErrorMessage = (err: Error): string => {
+  if (err instanceof InvalidUserInputError) {
+    return 'Your input is invalid'
   }
+  if (err instanceof CouldNotFindIdError) {
+    return 'Could not find the data you want to filter with'
+  }
+  return err.message
 }
 
-const areOperationsTheSame = (
-  operationA: Operation,
-  operationB: Operation
-): boolean => {
-  for (const prop in operationA) {
-    // @ts-ignore
-    if (operationA[prop] !== operationB[prop]) {
-      return false
-    }
-  }
-
-  return true
-}
+// const parseQueryStringToOperations = (queryString: string): Operation[] =>
+//   getOperationsFromUserInput(window.decodeURIComponent(queryString))
 
 const KEY_CODE_ENTER = 13
 const KEY_CODE_ESCAPE = 27
@@ -578,13 +403,17 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
 )
 
-const isOperationValid = (value: unknown): value is Operation => value !== false
+// const isOperationValid = (value: unknown): value is Operation => value !== false
 
 export default () => {
   const classes = useStyles()
   const { query: rawQueryString = '' } = useParams<{ query: string }>()
+  const isAdultContentEnabled = useIsAdultContentEnabled()
+  const [lastError, setLastError] = useState<Error | null>(null)
 
   const rawQueryStringParsed = parseSearchTermFromUrlPath(rawQueryString)
+
+  console.debug(`Parse Query String`, { rawQueryString, rawQueryStringParsed })
 
   const [queryStringToDisplay, setQueryStringToDisplay] = useState(
     rawQueryStringParsed.trim()
@@ -592,6 +421,7 @@ export default () => {
   const [queryStringToUse, setQueryStringToUse] = useState(
     rawQueryStringParsed.trim()
   )
+  const [operations, setOperations] = useState<Operation[]>([])
 
   const queryStringToParse = parseSearchTermFromUrlPath(queryStringToUse)
 
@@ -600,9 +430,56 @@ export default () => {
     setQueryStringToDisplay(newQueryString)
   }
 
-  const operations = parseQueryStringToOperations(queryStringToParse)
+  const userInput = queryStringToParse
 
-  const getQuery = useGetQuery(queryStringToParse, operations)
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const newOperations = getOperationsFromUserInput(userInput)
+
+        console.debug(`Query.useEffect`, { newOperations })
+
+        const finalOperations: Operation[] = []
+
+        for (const operation of newOperations) {
+          const newValue = Array.isArray(operation.value)
+            ? await Promise.all(
+                operation.value.map(value =>
+                  getIdIfNotId(value, operation.fieldName)
+                )
+              )
+            : await getIdIfNotId(operation.value, operation.fieldName)
+
+          finalOperations.push({
+            ...operation,
+            value: newValue
+          })
+        }
+
+        console.debug(`Query.useEffect.end`, { finalOperations })
+
+        setOperations(finalOperations)
+        setLastError(null)
+      } catch (err) {
+        setLastError(err as Error)
+        console.error(err)
+        handleError(err)
+      }
+    })()
+  }, [userInput])
+
+  const getQuery = useCallback(
+    query => {
+      query = extendQueryFromUserInput(query, operations)
+
+      if (isAdultContentEnabled !== true) {
+        query = query.eq(AssetFieldNames.isAdult, false)
+      }
+
+      return query
+    },
+    [JSON.stringify(operations), isAdultContentEnabled]
+  )
 
   const clearQuery = () => {
     updateQueryStringInUrl('')
@@ -610,45 +487,8 @@ export default () => {
     setQueryStringToUse('')
   }
 
-  const onAddOperationWithFields = (
-    fieldName: string,
-    logical: string | null,
-    operator: string,
-    value: string
-  ) => {
-    let newQueryString = queryStringToDisplay ? `${queryStringToDisplay} ` : ''
-
-    newQueryString = `${newQueryString} ${mapOperationToString({
-      fieldName,
-      logical,
-      operator,
-      value
-    })}`
-
-    updateQueryStringToDisplay(newQueryString)
-    setQueryStringToUse(newQueryString)
-  }
-
-  const onRemoveOperation = (operationToRemove: Operation): void => {
-    const newQueryString = queryStringToDisplay
-      .trim()
-      .split(' ')
-      .map(mapStringToOperation)
-      .filter(isOperationValid)
-      .filter(operation => !areOperationsTheSame(operationToRemove, operation))
-      .map(mapOperationToString)
-      .join(' ')
-    updateQueryStringToDisplay(newQueryString)
-    setQueryStringToUse(newQueryString)
-  }
-
   return (
     <div className={classes.root}>
-      <OperationsOutput
-        queryStringToDisplay={queryStringToDisplay}
-        onAddOperationWithFields={onAddOperationWithFields}
-        onRemoveOperation={onRemoveOperation}
-      />
       <BigSearchInput
         onClear={clearQuery}
         // input props
@@ -666,14 +506,23 @@ export default () => {
         value={queryStringToDisplay}
         isSearching={false}
       />
-      <PaginatedView
-        collectionName={'getpublicassets'}
-        // select="*, author!inner(name)"
-        // @ts-ignore
-        getQuery={getQuery}
-        defaultFieldName={AssetFieldNames.createdAt}>
-        <Renderer />
-      </PaginatedView>
+      <Link to={routes.queryCheatsheet}>View cheatsheet</Link>
+      {lastError ? (
+        <ErrorMessage>
+          Failed to run query: {getDisplayErrorMessage(lastError)}
+        </ErrorMessage>
+      ) : null}
+      {operations.length ? (
+        <PaginatedView
+          collectionName={'getpublicassets'}
+          // @ts-ignore
+          getQuery={getQuery}
+          defaultFieldName={AssetFieldNames.createdAt}>
+          <Renderer />
+        </PaginatedView>
+      ) : (
+        <Message>Enter a query to get started</Message>
+      )}
     </div>
   )
 }

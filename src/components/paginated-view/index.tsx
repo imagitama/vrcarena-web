@@ -63,7 +63,7 @@ type Filters = { [fieldName: string]: string | null }
 type GetQueryFn = (
   currentQuery: PostgrestFilterBuilder<any>,
   selectedSubView: string | null
-) => PostgrestFilterBuilder<any>
+) => PostgrestFilterBuilder<any> | Promise<PostgrestFilterBuilder<any>>
 
 interface SubViewConfig {
   id: string | null
@@ -118,14 +118,14 @@ const Page = () => {
   } = usePaginatedView()
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
   const [sorting] = useSorting(sortKey, defaultFieldName, defaultDirection)
-  const pageGetQuery = useCallback(() => {
+  const pageGetQuery = useCallback(async () => {
     const rangeStart = (currentPageNumber - 1) * limitPerPage
     const rangeEnd = rangeStart + limitPerPage - 1
     const isAscending = sorting
       ? sorting.direction === OrderDirections.ASC
       : false
 
-    let query
+    let query: any
 
     // "exact" gives us correct count at a cost of performance
     // "estimated" is better for performance but is always capped at the max read number (1000)

@@ -22,7 +22,6 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 import * as routes from '../../routes'
 import { PublicAsset } from '../../modules/assets'
 import { Species } from '../../modules/species'
-import { symbols } from '../query'
 
 function getDisplayNameByCategoryName(categoryName: string): string {
   return categoryMeta[categoryName].name

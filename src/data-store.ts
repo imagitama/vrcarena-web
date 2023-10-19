@@ -1,11 +1,6 @@
-import {
-  AccessStatuses,
-  ApprovalStatuses,
-  FeaturedStatuses,
-  PinnedStatuses,
-  PublishStatuses
-} from './hooks/useDatabaseQuery'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { client as supabase } from './supabase'
+import { getIsUuid } from './utils'
 
 const standardFieldNames = {
   id: 'id'
@@ -209,22 +204,27 @@ export const PagesFieldNames = {
   lastModifiedAt: 'lastmodifiedat'
 }
 
-export const query = async (
+export const query = <TRecord>(
   collectionName: string,
   selectFieldNames: string,
-  where: string,
-  { startAt, limit }: { startAt?: number; limit?: number }
-) => {
+  where: { [key: string]: string },
+  settings: { startAt?: number; limit?: number } = {}
+): PostgrestFilterBuilder<TRecord> => {
   let queryChain = supabase.from(collectionName).select(selectFieldNames || '*')
 
-  if (typeof selectFieldNames === 'string') {
-    return queryChain.eq(standardFieldNames.id, selectFieldNames)
+  if (getIsUuid(selectFieldNames)) {
+    console.log('it is a uuid!', selectFieldNames)
+    queryChain = queryChain.eq(standardFieldNames.id, selectFieldNames)
   }
 
-  if (startAt && limit) {
-    queryChain = queryChain.range(startAt, limit)
-  } else if (limit) {
-    queryChain = queryChain.limit(limit)
+  for (const [key, value] of Object.entries(where)) {
+    queryChain = queryChain.eq(key, value)
+  }
+
+  if (settings.startAt && settings.limit) {
+    queryChain = queryChain.range(settings.startAt, settings.limit)
+  } else if (settings.limit) {
+    queryChain = queryChain.limit(settings.limit)
   }
 
   return queryChain

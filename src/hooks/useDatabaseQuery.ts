@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { inDevelopment } from '../environment'
 import { handleError } from '../error-handling'
-import { isRef } from '../utils'
 import { client as supabase } from '../supabase'
 
 export const Operators = {
@@ -232,7 +230,8 @@ export const AssetMetaFieldNames = {
   tweetRecordIds: 'tweetrecordids',
   queuedTweetRecordIds: 'queuedtweetrecordids',
   approvedAt: 'approvedat',
-  publishedAt: 'publishedat'
+  publishedAt: 'publishedat',
+  approvedBy: 'approvedby'
 }
 
 export const AssetEditorMetaFieldNames = {
