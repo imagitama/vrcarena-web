@@ -366,6 +366,16 @@ const avatarTagDetails = [
     description: 'Includes multiple eye color textures',
     category: categories.Modelling,
     icon: ColorizeIcon
+  },
+  {
+    tag: 'eye_tracking_support',
+    category: categories.Avatars,
+    description: 'Has blendshapes to support eye tracking'
+  },
+  {
+    tag: 'face_tracking_support',
+    category: categories.Avatars,
+    description: 'Has blendshapes to support mouth tracking'
   }
 ]
 
