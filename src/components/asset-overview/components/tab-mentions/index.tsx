@@ -30,23 +30,21 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => {
           relation => relation.asset === assetId
         )
 
-        if (!relation) {
-          throw new Error(
-            `Could not find any relation matching asset ${assetId}`
-          )
-        }
+        // can't throw here - some kind of race condition on navigation means entire asset page crashes
 
         return (
           <div key={item.id} className={classes.item}>
-            <RelationItem
-              relation={{
-                type: relation.type,
-                asset: relation.asset,
-                comments: ''
-              }}
-              asset={item}
-              showRelation
-            />
+            {relation ? (
+              <RelationItem
+                relation={{
+                  type: relation.type,
+                  asset: relation.asset,
+                  comments: ''
+                }}
+                asset={item}
+                showRelation
+              />
+            ) : null}
           </div>
         )
       })}
