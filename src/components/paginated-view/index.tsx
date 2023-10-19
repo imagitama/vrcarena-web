@@ -36,6 +36,7 @@ import {
 import { CommonMetaFieldNames } from '../../data-store'
 import useScrollMemory from '../../hooks/useScrollMemory'
 import { getPathForQueryString } from '../../queries'
+import { scrollToTop } from '../../utils'
 
 const useStyles = makeStyles({
   root: {
@@ -221,16 +222,19 @@ const Page = () => {
         <PagesNavigation
           currentPageNumber={currentPageNumber}
           pageCount={Math.ceil(totalCount / limitPerPage)}
-          onClickWithPageNumber={newPageNumber =>
-            urlWithPageNumberVar
-              ? push(
-                  urlWithPageNumberVar.replace(
-                    ':pageNumber',
-                    newPageNumber.toString()
-                  )
+          onClickWithPageNumber={newPageNumber => {
+            if (urlWithPageNumberVar) {
+              push(
+                urlWithPageNumberVar.replace(
+                  ':pageNumber',
+                  newPageNumber.toString()
                 )
-              : setInternalPageNumber(newPageNumber)
-          }
+              )
+            } else {
+              setInternalPageNumber(newPageNumber)
+            }
+            scrollToTop(true)
+          }}
         />
       ) : null}
       {getQueryString ? (
