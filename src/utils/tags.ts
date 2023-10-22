@@ -467,6 +467,18 @@ export const allTags: TagDetails[] = [
     icon: MaleSignIcon,
     description: 'Includes blendshapes or shape keys to appear male'
   },
+  {
+    tag: 'vrcfury_ready',
+    category: categories.Features,
+    label: 'VRCFury Ready',
+    description: 'Ready for VRCFury'
+  },
+  {
+    tag: 'has_nsfw_variant',
+    category: categories.Features,
+    label: 'Has NSFW variant',
+    description: 'Has both a SFW and NSFW variant'
+  },
   // licensing
   {
     tag: 'public_avatars_banned',
