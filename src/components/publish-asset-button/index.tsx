@@ -113,12 +113,12 @@ const getValidationErrorMessagesForAsset = (asset: Asset): string[] => {
   if (!asset.fileurls || !asset.fileurls.length) {
     messages.push(validationErrorMessages.NO_ATTACHMENTS)
   }
-  // if (
-  //   asset.category === AssetCategories.accessory &&
-  //   (!asset.children || !asset.children.length)
-  // ) {
-  //   messages.push(validationErrorMessages.MISSING_ACCESSORY_PARENT)
-  // }
+  if (
+    asset.category === AssetCategories.accessory &&
+    (!asset.relations || !asset.relations.length)
+  ) {
+    messages.push(validationErrorMessages.MISSING_ACCESSORY_PARENT)
+  }
 
   return messages
 }
