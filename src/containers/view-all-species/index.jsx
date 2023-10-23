@@ -89,10 +89,7 @@ const Results = ({ items }) => {
       {items.map(item => (
         <div key={item.id} className={classes.item}>
           <Link
-            to={routes.viewSpeciesWithVar.replace(
-              ':speciesIdOrSlug',
-              item[SpeciesFieldNames.slug] || item.id
-            )}>
+            to={routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', item.id)}>
             <img
               src={item[SpeciesFieldNames.thumbnailUrl]}
               alt="Species thumbnail"
