@@ -72,7 +72,12 @@ const SpeciesOutput = ({
       style={{ marginLeft: indent ? indent * 10 : 0 }}
       onClick={
         onSpeciesClickWithId
-          ? () => onSpeciesClickWithId(speciesItem.id)
+          ? e => {
+              e.stopPropagation()
+              e.preventDefault()
+              onSpeciesClickWithId(speciesItem.id)
+              return false
+            }
           : undefined
       }>
       <div className={classes.speciesItemTitle}>
