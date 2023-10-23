@@ -4,8 +4,8 @@ import { FullAsset } from '../../modules/assets'
 interface Context {
   ids: null | string[]
   assets: FullAsset[]
-  userInput: string
-  setUserInput: (newUserInput: string) => void
+  userInput: string | string[]
+  setUserInput: (newUserInput: string | string[]) => void
 }
 
 // @ts-ignore

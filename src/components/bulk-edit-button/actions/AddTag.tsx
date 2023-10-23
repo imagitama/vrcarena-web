@@ -19,6 +19,9 @@ export const Action = async (
 
 export const Preview = ({ asset }: { asset: FullAsset }) => {
   const { userInput: tagToAdd } = useBulkEdit()
+  if (Array.isArray(tagToAdd)) {
+    throw new Error('User input not string')
+  }
   return (
     <TagDiff
       oldTags={asset.tags}
@@ -36,6 +39,10 @@ export const Form = () => {
 
   if (!ids) {
     return null
+  }
+
+  if (Array.isArray(userInput)) {
+    throw new Error('User input not string')
   }
 
   return (

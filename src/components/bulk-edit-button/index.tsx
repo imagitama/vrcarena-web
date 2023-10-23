@@ -16,6 +16,7 @@ import {
 import Button from '../button'
 import * as RemoveTag from './actions/RemoveTag'
 import * as AddTag from './actions/AddTag'
+import * as ChangeSpecies from './actions/ChangeSpecies'
 // import * as Delete from './action/Delete'
 // import * as Undelete from './action/Undelete'
 // import * as Approve from './action/Approve'
@@ -24,7 +25,6 @@ import * as AddTag from './actions/AddTag'
 // import * as Unpublish from './action/Unpublish'
 // import * as ReplaceInText from './action/ReplaceInText'
 // import * as ChangeCategory from './action/ChangeCategory'
-// import * as ChangeSpecies from './action/ChangeSpecies'
 // import * as ChangeAuthor from './action/ChangeAuthor'
 // import * as ToggleIsAdult from './action/ToggleIsAdult'
 import { context, useBulkEdit } from './context'
@@ -38,7 +38,8 @@ import LoadingIndicator from '../loading-indicator'
 
 enum BulkAction {
   RemoveTag,
-  AddTag
+  AddTag,
+  ChangeSpecies
   // Delete,
   // Undelete,
   // Approve,
@@ -47,7 +48,6 @@ enum BulkAction {
   // Unpublish,
   // ReplaceInText,
   // ChangeCategory,
-  // ChangeSpecies,
   // ChangeAuthor,
   // ToggleIsAdult
 }
@@ -60,7 +60,8 @@ interface Handler {
 
 const Handlers: { [key in BulkAction]: Handler } = {
   [BulkAction.RemoveTag]: RemoveTag,
-  [BulkAction.AddTag]: AddTag
+  [BulkAction.AddTag]: AddTag,
+  [BulkAction.ChangeSpecies]: ChangeSpecies
   // [BulkAction.Delete]: Delete,
   // [BulkAction.Undelete]: Undelete,
   // [BulkAction.Approve]: Approve,
@@ -69,7 +70,6 @@ const Handlers: { [key in BulkAction]: Handler } = {
   // [BulkAction.Unpublish]: Unpublish,
   // [BulkAction.ReplaceInText]: ReplaceInText,
   // [BulkAction.ChangeCategory]: ChangeCategory,
-  // [BulkAction.ChangeSpecies]: ChangeSpecies,
   // [BulkAction.ChangeAuthor]: ChangeAuthor,
   // [BulkAction.ToggleIsAdult]: ToggleIsAdult
 }
@@ -134,7 +134,7 @@ const Render = () => {
     setSelectedBulkAction
   ] = useState<null | BulkAction>(null)
   const [assetData, setAssetData] = useState<FullAsset[]>([])
-  const [userInput, setUserInput] = useState<string>('')
+  const [userInput, setUserInput] = useState<string | string[]>('')
   const { ids, setSelectingAll } = useGlobalBulkEdit()
   const [assetIdsWaitingToEdit, setAssetIdsWaitingToEdit] = useState<
     null | string[]
@@ -193,6 +193,10 @@ const Render = () => {
   }
 
   const initiateBulkAction = (actionToInitiate: BulkAction) => {
+    // TODO: Better do this
+    if (actionToInitiate === BulkAction.ChangeSpecies) {
+      setUserInput([])
+    }
     setSelectedBulkAction(actionToInitiate)
   }
 
