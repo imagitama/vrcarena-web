@@ -20,6 +20,7 @@ import * as routes from '../../routes'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import { Species } from '../../modules/species'
+import SuccessMessage from '../../components/success-message'
 
 const description =
   'Avatars in VR social games can be grouped into different species. Here is a list of all species that we know about in VR social games from Avalis to Dutch Angel Dragons to Digimon.'
@@ -163,6 +164,11 @@ export default () => {
           </Button>
         </>
       )}
+      <SuccessMessage>
+        23 October update - all species have been re-organised into a
+        multi-tiered system. Some have been renamed, split up or moved around.
+        Please message on Discord if you like or dislike the new system!
+      </SuccessMessage>
       <AllSpeciesOutput />
     </>
   )
