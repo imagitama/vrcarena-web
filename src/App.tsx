@@ -249,13 +249,6 @@ const EditDiscordServer = lazy(() =>
     )
   )
 )
-const CreateSpecies = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "create-species" */ './containers/create-species'
-    )
-  )
-)
 const EditSpecies = lazy(() =>
   catchChunkDeaths(() =>
     import(/* webpackChunkName: "edit-species" */ './containers/edit-species')
@@ -431,17 +424,6 @@ const BulkAdd = lazy(() =>
     import(/* webpackChunkName: "bulk-add" */ './containers/bulk-add')
   )
 )
-// ranks
-const Ranks = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "ranks" */ './containers/ranks')
-  )
-)
-const viewRank = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-rank" */ './containers/view-rank')
-  )
-)
 const QueryCheatsheetContainer = lazy(() =>
   catchChunkDeaths(() =>
     import(
@@ -514,7 +496,6 @@ const MainContent = () => {
         />
         <Route exact path={routes.myAccount} component={MyAccount} />
         <Route exact path={routes.privacyPolicy} component={PrivacyPolicy} />
-        <Route exact path={routes.createSpecies} component={CreateSpecies} />
         <Route exact path={routes.randomAvatars} component={RandomAvatars} />
         <Route
           exact
@@ -534,7 +515,11 @@ const MainContent = () => {
         />
         <Route exact path={routes.news} component={News} />
         <Route exact path={routes.searchWithVar} component={Search} />
-        <Route exact path={routes.editSpeciesWithVar} component={EditSpecies} />
+        <Route
+          exact
+          path={[routes.createSpecies, routes.editSpeciesWithVar]}
+          component={EditSpecies}
+        />
         <Route
           exact
           path={[routes.viewAllSpeciesWithPageNumberVar, routes.viewAllSpecies]}
@@ -643,8 +628,6 @@ const MainContent = () => {
         />
         <Route exact path={routes.brand} component={Brand} />
         <Route exact path={routes.accessorizeWithVar} component={Accessorize} />
-        <Route exact path={routes.ranks} component={Ranks} />
-        <Route exact path={routes.viewRankWithVar} component={viewRank} />
         <Route exact path={routes.viewEventWithVar} component={ViewEvent} />
         <Route
           exact

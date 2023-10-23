@@ -6,10 +6,17 @@ import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 import * as routes from '../../routes'
 import { CollectionNames, editableFields } from '../../modules/tags'
+import NoPermissionMessage from '../../components/no-permission-message'
+import useIsEditor from '../../hooks/useIsEditor'
 
 export default () => {
   const { tag } = useParams<{ tag?: string }>()
   const isCreating = !tag
+  const isEditor = useIsEditor()
+
+  if (!isEditor) {
+    return <NoPermissionMessage />
+  }
 
   return (
     <>

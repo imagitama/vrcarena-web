@@ -1,18 +1,28 @@
 import React, { useState, useEffect } from 'react'
 
-import { createRef, isRef } from '../../../../utils'
-import { mapDates } from '../../../../hooks/useDatabaseQuery'
-
 import Button from '../../../button'
 import LoadingIndicator from '../../../loading-indicator'
 import SearchForIdForm from '../../../search-for-id-form'
 
-export default ({ name, onChange, value, fieldProperties }) => {
+export interface SearchableInputFieldProperties {
+  collectionName: string
+  fieldAsLabel: string
+  renderer: (props: { item: any }) => React.ReactElement
+}
+
+export default ({
+  name,
+  onChange,
+  value,
+  fieldProperties
+}: {
+  name: string
+  onChange: (collectionName: string, id: string) => void
+  value: any
+  fieldProperties: SearchableInputFieldProperties
+}) => {
   if (!fieldProperties.collectionName) {
     throw new Error(`Needs collection name! Field ${name}`)
-  }
-  if (!fieldProperties.indexName) {
-    throw new Error(`Needs index name! Field ${name}`)
   }
   if (!fieldProperties.fieldAsLabel) {
     throw new Error(`Needs field name to use as label! Field ${name}`)
@@ -21,8 +31,8 @@ export default ({ name, onChange, value, fieldProperties }) => {
     throw new Error(`Needs renderer! Field ${name}`)
   }
 
-  const [isFormVisible, setIsFormVisible] = useState()
-  const [valueData, setValueData] = useState(null)
+  const [isFormVisible, setIsFormVisible] = useState(false)
+  const [valueData, setValueData] = useState<null | { id: string }>(null)
 
   useEffect(() => {
     if (!value) {
@@ -71,12 +81,11 @@ export default ({ name, onChange, value, fieldProperties }) => {
       )}
       {(isFormVisible || !value) && (
         <SearchForIdForm
-          preselectedId={value ? value.id : null}
-          indexName={fieldProperties.indexName}
+          collectionName={fieldProperties.collectionName}
           fieldAsLabel={fieldProperties.fieldAsLabel}
-          onDone={id => {
+          onDone={(id: string) => {
             setIsFormVisible(false)
-            onChange(createRef(fieldProperties.collectionName, id))
+            onChange(fieldProperties.collectionName, id)
           }}
         />
       )}

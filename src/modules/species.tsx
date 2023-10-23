@@ -1,7 +1,46 @@
-import { SpeciesFieldNames } from '../hooks/useDatabaseQuery'
+import React from 'react'
+import SpeciesResultItem from '../components/species-result-item'
+import { EditableField } from '../editable-fields'
 import { fieldTypes } from '../generic-forms'
+import { SpeciesFieldNames } from '../hooks/useDatabaseQuery'
 
-export default [
+export interface Species {
+  id: string
+  parent: string
+  type: 'genus' | 'species'
+  singularname: string
+  pluralname: string
+  description: string
+  shortdescription: string
+  thumbnailurl: string
+  fallbackthumbnailurl: string
+  thumbnailsourceurl: string
+  ispopular: boolean
+  slug: string
+  lastmodifiedat: Date
+  lastmodifiedby: string
+  createdat: Date
+  createdby: string
+}
+
+export const CollectionNames = {
+  Species: 'species'
+}
+
+export const editableFields: EditableField[] = [
+  {
+    name: SpeciesFieldNames.parent,
+    label: 'Parent',
+    type: fieldTypes.searchable,
+    hint: 'If this is a child of a Genus (avoid nesting too many levels)',
+    fieldProperties: {
+      collectionName: CollectionNames.Species,
+      fieldAsLabel: SpeciesFieldNames.pluralName,
+      renderer: ({ item }: { item: Species }) => (
+        <SpeciesResultItem species={item} />
+      )
+    }
+  },
   {
     name: SpeciesFieldNames.singularName,
     label: 'Name (singular)',

@@ -20,17 +20,15 @@ import MarkdownEditor from '../../components/markdown-editor'
 import LoadingIndicator from '../../components/loading-indicator'
 import AssetEditor, { EditorContext } from '../../components/asset-editor'
 import TextDiff from '../../components/text-diff'
-import TagDiff from '../../components/tag-diff'
 import SetupProfile from '../../components/setup-profile'
-import SpeciesVsSelector from '../../components/species-vs-selector'
 import FileUploader from '../../components/file-uploader'
 
 import { bucketNames } from '../../file-uploading'
-import ChangeRanksForm from '../../components/change-ranks-form'
 import SurveyForm from '../../components/survey-form'
 import survey from '../../surveys/creating-asset'
 import { CollectionNames } from '../../modules/assets'
 import PerformanceEditor from '../../components/performance-editor'
+import SpeciesSelector from '../../components/species-selector'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -110,15 +108,6 @@ const AssetEditorWrapper = () => {
   )
 }
 
-const SpeciesVsSelectorDemo = () => {
-  return (
-    <SpeciesVsSelector
-      horizontalTitles={true}
-      selectedSpeciesIds={['37KnSjelJNppCSD8jeyM']}
-    />
-  )
-}
-
 const FileUploaderDemo = () => {
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null)
 
@@ -163,6 +152,8 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <h2>Species Selector</h2>
+        <SpeciesSelector />
         <h2>Performance Editor</h2>
         <PerformanceEditorDemo />
         <h2>Survey Form</h2>
@@ -171,8 +162,6 @@ export default () => {
           parentTable={CollectionNames.Assets}
           parentId="abc"
         />
-        <h2>Change Rank Form</h2>
-        <ChangeRanksForm />
         <h2>Loading</h2>
         <LoadingIndicator message="Loading items..." />
         <h2>Tag Input</h2>
@@ -212,8 +201,6 @@ export default () => {
         <h2>Setup Profile</h2>
         {/* @ts-ignore */}
         <SetupProfile initialStepIdx={2} />
-        <h2>Species VS Selector</h2>
-        <SpeciesVsSelectorDemo />
         <h2>File Upload</h2>
         <FileUploaderDemo />
       </div>

@@ -3,7 +3,6 @@ import { CollectionNames } from '../data-store'
 import authors from './authors'
 import users from './users'
 import discordServers from './discord-servers'
-import species from './species'
 import userMeta from './user-meta'
 import events from './events'
 import playlists from './playlists'
@@ -25,6 +24,7 @@ export interface EditableField {
   isRequired?: boolean
   options?: Option[]
   isEditable?: boolean
+  length?: number
 }
 
 // @ts-ignore
@@ -34,7 +34,6 @@ const editableFieldsByCollectionName: {
   [OldCollectionNames.Authors]: authors,
   [OldCollectionNames.Users]: users,
   [OldCollectionNames.DiscordServers]: discordServers,
-  [OldCollectionNames.Species]: species,
   [OldCollectionNames.UserMeta]: userMeta,
   [CollectionNames.Events]: events,
   [CollectionNames.Playlists]: playlists,

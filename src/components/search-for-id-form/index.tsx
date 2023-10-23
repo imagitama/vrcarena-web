@@ -9,8 +9,10 @@ import {
   AuthorFieldNames,
   CollectionNames,
   DiscordServerFieldNames,
+  SpeciesFieldNames,
   UserFieldNames
 } from '../../hooks/useDatabaseQuery'
+import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
 
 const useStyles = makeStyles({
   textInput: {
@@ -31,8 +33,8 @@ const useStyles = makeStyles({
   }
 })
 
-const getSearchStatementForIndex = indexName => {
-  switch (indexName) {
+const getSearchStatementForCollectionName = (collectionName: string) => {
+  switch (collectionName) {
     case CollectionNames.Assets:
       return `${AssetFieldNames.title}, ${AssetFieldNames.description}, ${
         AssetFieldNames.thumbnailUrl
@@ -43,17 +45,18 @@ const getSearchStatementForIndex = indexName => {
       return `${AuthorFieldNames.name}, ${AuthorFieldNames.avatarUrl}`
     case CollectionNames.DiscordServers:
       return DiscordServerFieldNames.name
+    case SpeciesCollectionNames.Species:
+      return `${SpeciesFieldNames.pluralName}`
     default:
       throw new Error(
-        `Cannot get search statement: index ${indexName} not configured!`
+        `Cannot get search statement: index ${collectionName} not configured!`
       )
   }
 }
 
-const getFieldsToSearchForIndex = indexName => {
-  switch (indexName) {
+const getFieldsToSearchForCollectionName = (collectionName: string) => {
+  switch (collectionName) {
     case CollectionNames.Assets:
-      // return [AssetFieldNames.title, AssetFieldNames.tags]
       return [AssetFieldNames.title]
     case CollectionNames.Users:
       return [UserFieldNames.username]
@@ -61,15 +64,17 @@ const getFieldsToSearchForIndex = indexName => {
       return [AuthorFieldNames.name]
     case CollectionNames.DiscordServers:
       return [DiscordServerFieldNames.name]
+    case SpeciesCollectionNames.Species:
+      return [SpeciesFieldNames.pluralName]
     default:
       throw new Error(
-        `Cannot get search statement: index ${indexName} not configured!`
+        `Cannot get search statement: index ${collectionName} not configured!`
       )
   }
 }
 
-const getTableOrViewNameForIndex = indexName => {
-  switch (indexName) {
+const getTableOrViewNameForCollectionName = (collectionName: string) => {
+  switch (collectionName) {
     case CollectionNames.Authors:
       return 'getpublicauthors'
     case CollectionNames.DiscordServers:
@@ -77,32 +82,39 @@ const getTableOrViewNameForIndex = indexName => {
     case CollectionNames.Comments:
       return 'getpubliccomments'
     default:
-      return indexName
+      return collectionName
   }
 }
 
+type SearchResult = { [prop: string]: any }
+
 function SearchForm({
-  indexName,
+  collectionName,
   searchTerm,
   fieldAsLabel,
   onClickWithIdAndDetails,
-  renderer: Renderer = null
+  renderer: Renderer = undefined
+}: {
+  collectionName: string
+  searchTerm: string
+  fieldAsLabel: string
+  onClickWithIdAndDetails: (id: string, details: any) => void
+  renderer?: (props: { result: any; onClick: () => void }) => React.ReactElement
 }) {
-  const [isSearching, isErrored, results] = useSearching(
-    getTableOrViewNameForIndex(indexName),
+  const [isSearching, isErrored, results] = useSearching<SearchResult[]>(
+    getTableOrViewNameForCollectionName(collectionName),
     searchTerm,
-    getSearchStatementForIndex(indexName),
-    getFieldsToSearchForIndex(indexName)
-    // getQuery
+    getSearchStatementForCollectionName(collectionName),
+    getFieldsToSearchForCollectionName(collectionName)
   )
   const classes = useStyles()
 
   if (isSearching) {
-    return 'Searching...'
+    return <>Searching...</>
   }
 
   if (isErrored) {
-    return 'Errored'
+    return <>Errored</>
   }
 
   if (!results) {
@@ -110,7 +122,7 @@ function SearchForm({
   }
 
   if (!results.length) {
-    return 'No results!'
+    return <>No results!</>
   }
 
   return (
@@ -140,8 +152,18 @@ function SearchForm({
 }
 
 // TODO: Rename onDone to onClickWithIdAndDetails
-export default ({ indexName, fieldAsLabel, onDone, renderer }) => {
-  const [searchTerm, setSearchTerm] = useState(null)
+export default ({
+  collectionName,
+  fieldAsLabel,
+  onDone,
+  renderer = undefined
+}: {
+  collectionName: string
+  fieldAsLabel: string
+  onDone: (id: string) => void
+  renderer?: (props: { result: any }) => React.ReactElement
+}) => {
+  const [searchTerm, setSearchTerm] = useState<string | null>(null)
   const classes = useStyles()
 
   return (
@@ -150,7 +172,7 @@ export default ({ indexName, fieldAsLabel, onDone, renderer }) => {
         {searchTerm && (
           <>
             <SearchForm
-              indexName={indexName}
+              collectionName={collectionName}
               searchTerm={searchTerm}
               fieldAsLabel={fieldAsLabel}
               onClickWithIdAndDetails={onDone}
@@ -164,8 +186,8 @@ export default ({ indexName, fieldAsLabel, onDone, renderer }) => {
         Search:
         <TextInput
           onChange={e => setSearchTerm(e.target.value)}
-          value={searchTerm}
-          variant="filled"
+          value={searchTerm || ''}
+          // variant="filled"
           className={classes.textInput}
         />
       </div>

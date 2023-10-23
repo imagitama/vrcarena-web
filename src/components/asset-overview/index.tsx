@@ -78,7 +78,6 @@ import TabAdmin from './components/tab-admin'
 import TabRelated from './components/tab-related'
 import AddToCartButton from '../add-to-cart-button'
 import { getUrlForVrChatWorldId } from '../../social-media'
-import { getRankById } from '../../taxonomy'
 import SpeciesList from '../species-list'
 
 import Relations from '../relations'
@@ -591,25 +590,6 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                     {asset.species && asset.species.length ? ' / ' : ''}
                   </>
                 ) : null}
-                {isEditor &&
-                  asset.ranks &&
-                  insertItemInbetweenAllItems(
-                    asset.ranks.map(rank => {
-                      const rankDetails = getRankById(rank)
-                      return rankDetails ? (
-                        <Link
-                          key={rank}
-                          to={routes.viewRankWithVar.replace(':rankId', rank)}>
-                          R: {rankDetails.canonicalName}
-                        </Link>
-                      ) : (
-                        <span key={rank}>{rank}</span>
-                      )
-                    }),
-                    <> / </>
-                  )}
-
-                {isEditor && asset.ranks && asset.ranks.length ? ' / ' : ''}
                 <Link
                   to={routes.viewCategoryWithVar.replace(
                     ':categoryName',

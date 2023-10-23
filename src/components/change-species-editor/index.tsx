@@ -11,7 +11,7 @@ import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import SpeciesVsSelector from '../species-vs-selector'
+import SpeciesSelector from '../species-selector'
 import { Asset } from '../../modules/assets'
 import Heading from '../heading'
 import Message from '../message'
@@ -31,10 +31,9 @@ function SpeciesButtons({
   onClickSpecies: (id: string) => void
 }): React.ReactElement {
   return (
-    <SpeciesVsSelector
+    <SpeciesSelector
       selectedSpeciesIds={activeSpeciesIds}
       onSpeciesClickWithId={(id: string) => onClickSpecies(id)}
-      horizontalTitles
     />
   )
 }
@@ -142,32 +141,15 @@ export default ({
         <Heading variant="h2" noTopMargin>
           How do I pick a species?
         </Heading>
-        <p>
-          We recommend that you follow "tag what you see" or in other words if
-          it looks like a species then it probably is that species. If it looks
-          like a rabbit (and doesn't have its own species) then it is a rabbit.
-        </p>
         <ul>
           <li>
-            if your asset applies to ALL species (such as an accessory like a
-            hat) then do not select ANY species
+            tag what you SEE - does the avatar contain a texture for a different
+            species? Tag it!
           </li>
           <li>
-            if your avatar uses a base model of a completely different species
-            do NOT use that species - tag what you SEE
+            selecting a parent will automatically select all of the children
           </li>
         </ul>
-        <Heading variant="h3">What about an accessory?</Heading>
-        <p>
-          Try your best to match the accessory to the parent avatar's species.
-          eg. the Canis Wolf by Rezillo Ryker has wolf, dog, hyena so some
-          clothing for it would also have wolf, dog, hyena.
-        </p>
-        <Heading variant="h3">What about tool, world assets, etc.?</Heading>
-        <p>
-          It isn't very important but try your best if the asset has any species
-          in it.
-        </p>
       </Message>
       <SpeciesButtons
         activeSpeciesIds={newSpeciesIds}

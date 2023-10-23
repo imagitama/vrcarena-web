@@ -496,7 +496,8 @@ export const SpeciesFieldNames = {
   lastModifiedAt: 'lastmodifiedat',
   createdAt: 'createdat',
   createdBy: 'createdby',
-  slug: 'slug'
+  slug: 'slug',
+  parent: 'parent'
 }
 
 export const HomepageFieldNames = {

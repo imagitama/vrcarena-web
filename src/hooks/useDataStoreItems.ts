@@ -4,7 +4,8 @@ import { handleError } from '../error-handling'
 
 export default <TItem>(
   collectionName: string,
-  queryName: string = 'unnamed'
+  queryName: string = 'unnamed',
+  orderBy?: string
 ): [boolean, boolean, TItem[] | null, number | null] => {
   const [result, setResult] = useState<TItem[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -28,9 +29,14 @@ export default <TItem>(
         setIsLoading(true)
         setIsErrored(false)
 
-        const { error, data, count } = await supabase
-          .from(collectionName)
-          .select('*')
+        let query = supabase.from(collectionName).select('*')
+
+        // TODO: Do this better
+        if (orderBy) {
+          query = query.order(orderBy, { ascending: true })
+        }
+
+        const { error, data, count } = await query
 
         console.debug(
           `useDataStoreItems :: ${collectionName} :: ${queryName} :: query complete`,
@@ -59,7 +65,7 @@ export default <TItem>(
         setIsLoading(false)
       }
     })()
-  }, [collectionName, queryName])
+  }, [collectionName, queryName, orderBy])
 
   return [isLoading, isErrored, result, totalCount]
 }

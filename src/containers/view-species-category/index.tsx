@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
-import Link from '../../components/link'
+import EditIcon from '@material-ui/icons/Edit'
 
+import Link from '../../components/link'
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
 import PaginatedView from '../../components/paginated-view'
@@ -22,6 +23,8 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 import * as routes from '../../routes'
 import { PublicAsset } from '../../modules/assets'
 import { Species } from '../../modules/species'
+import Button from '../../components/button'
+import useIsEditor from '../../hooks/useIsEditor'
 
 function getDisplayNameByCategoryName(categoryName: string): string {
   return categoryMeta[categoryName].name
@@ -52,6 +55,7 @@ const View = () => {
     },
     [speciesId, categoryName, isAdultContentEnabled]
   )
+  const isEditor = useIsEditor()
 
   const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStoreItem<
     Species
@@ -77,52 +81,53 @@ const View = () => {
           content={getDescriptionByCategoryName(categoryName)}
         />
       </Helmet>
-
-      <div>
-        <Heading variant="h1">
-          <Link
-            to={routes.viewSpeciesWithVar.replace(
-              ':speciesIdOrSlug',
-              speciesId
-            )}>
-            {species.pluralname}
-          </Link>
-        </Heading>
-        <Heading variant="h2">
-          <Link
-            to={routes.viewSpeciesCategoryWithVar
-              .replace(':speciesIdOrSlug', speciesId)
-              .replace(':categoryName', categoryName)}>
-            {' '}
-            {getDisplayNameByCategoryName(categoryName)}
-          </Link>
-        </Heading>
-        <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
-        <PaginatedView
-          viewName="getPublicAssets"
-          // @ts-ignore
-          getQuery={getQuery}
-          sortKey="view-category"
-          sortOptions={[
-            {
-              label: 'Submission date',
-              fieldName: AssetFieldNames.createdAt
-            },
-            {
-              label: 'Title',
-              fieldName: AssetFieldNames.title
-            }
-          ]}
-          defaultFieldName={AssetFieldNames.createdAt}
-          urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
+      {isEditor ? (
+        <Button
+          url={routes.editSpeciesWithVar.replace(':speciesId', species.id)}
+          icon={<EditIcon />}>
+          Edit
+        </Button>
+      ) : null}
+      <Heading variant="h1">
+        <Link
+          to={routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', speciesId)}>
+          {species.pluralname}
+        </Link>
+      </Heading>
+      <Heading variant="h2">
+        <Link
+          to={routes.viewSpeciesCategoryWithVar
             .replace(':speciesIdOrSlug', speciesId)
-            .replace(':categoryName', categoryName)}
-          getQueryString={() =>
-            `species:"${species.pluralname}" category:${AssetCategories.avatar}`
-          }>
-          <Renderer />
-        </PaginatedView>
-      </div>
+            .replace(':categoryName', categoryName)}>
+          {' '}
+          {getDisplayNameByCategoryName(categoryName)}
+        </Link>
+      </Heading>
+      <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
+      <PaginatedView
+        viewName="getPublicAssets"
+        // @ts-ignore
+        getQuery={getQuery}
+        sortKey="view-category"
+        sortOptions={[
+          {
+            label: 'Submission date',
+            fieldName: AssetFieldNames.createdAt
+          },
+          {
+            label: 'Title',
+            fieldName: AssetFieldNames.title
+          }
+        ]}
+        defaultFieldName={AssetFieldNames.createdAt}
+        urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
+          .replace(':speciesIdOrSlug', speciesId)
+          .replace(':categoryName', categoryName)}
+        getQueryString={() =>
+          `species:"${species.pluralname}" category:${AssetCategories.avatar}`
+        }>
+        <Renderer />
+      </PaginatedView>
     </>
   )
 }
