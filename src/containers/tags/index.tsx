@@ -1,9 +1,15 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import AddIcon from '@material-ui/icons/Add'
+
 import AllTagsBrowser from '../../components/all-tags-browser'
+import Button from '../../components/button'
 import Heading from '../../components/heading'
+import useIsEditor from '../../hooks/useIsEditor'
+import * as routes from '../../routes'
 
 export default () => {
+  const isEditor = useIsEditor()
   return (
     <>
       <Helmet>
@@ -14,6 +20,11 @@ export default () => {
         />
       </Helmet>
       <Heading variant="h1">Browse tags</Heading>
+      {isEditor ? (
+        <Button url={routes.createTag} icon={<AddIcon />}>
+          Create
+        </Button>
+      ) : null}
       <AllTagsBrowser />
     </>
   )

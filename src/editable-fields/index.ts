@@ -24,6 +24,7 @@ export interface EditableField {
   fieldProperties?: any
   isRequired?: boolean
   options?: Option[]
+  isEditable?: boolean
 }
 
 // @ts-ignore

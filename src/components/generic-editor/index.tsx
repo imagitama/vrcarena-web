@@ -295,6 +295,9 @@ export default ({
 
       {fieldsToUse
         .filter(({ type }) => type !== fieldTypes.hidden)
+        .filter(({ isEditable }) =>
+          id ? (isEditable !== false ? true : false) : true
+        )
         .map(({ name, type, default: defaultValue, label, hint, ...rest }) => {
           const Input = getInputForFieldType(type)
 

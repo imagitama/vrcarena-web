@@ -38,6 +38,12 @@ export const CollectionNames = {
 
 export const editableFields: EditableField[] = [
   {
+    name: 'id',
+    label: 'Tag',
+    type: fieldTypes.text,
+    isEditable: false
+  },
+  {
     name: 'label',
     label: 'Label',
     type: fieldTypes.text,
