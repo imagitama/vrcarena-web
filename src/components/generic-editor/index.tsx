@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import useUserId from '../../hooks/useUserId'
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 
-import editableFields from '../../editable-fields'
+import editableFields, { EditableField } from '../../editable-fields'
 import { fieldTypes } from '../../generic-forms'
 import { trackAction } from '../../analytics'
-import { scrollToTop, createRef } from '../../utils'
+import { scrollToTop } from '../../utils'
 import { handleError } from '../../error-handling'
 
 import Button from '../button'
@@ -29,9 +27,8 @@ import AssetsInput from './components/assets-input'
 import DateInput from './components/date-input'
 import CustomInput from './components/custom-input'
 import TagsInput from './components/tags-input'
-import { CommonFieldNames } from '../../data-store'
 
-function getInputForFieldType(type) {
+function getInputForFieldType(type: keyof typeof fieldTypes) {
   switch (type) {
     case fieldTypes.text:
       return TextInput
@@ -72,7 +69,7 @@ const useStyles = makeStyles({
   }
 })
 
-const getHiddenFieldsForDb = fields => {
+const getHiddenFieldsForDb = (fields: EditableField[]) => {
   const hiddenFields = fields.filter(({ type }) => type === fieldTypes.hidden)
 
   if (!hiddenFields.length) {
@@ -88,9 +85,13 @@ const getHiddenFieldsForDb = fields => {
   )
 }
 
-const validateFields = (newFields, fieldDefinitions) => {
+const validateFields = (
+  newFields: Record,
+  fieldDefinitions: EditableField[]
+): boolean => {
   for (const fieldDef of fieldDefinitions) {
     if (fieldDef.isRequired) {
+      // TODO: Better required check - "false" is provided but would fail this
       if (!newFields[fieldDef.name]) {
         return false
       }
@@ -99,43 +100,61 @@ const validateFields = (newFields, fieldDefinitions) => {
   return true
 }
 
+type Record = { [fieldName: string]: string | boolean | number }
+
 export default ({
+  fields = undefined,
   collectionName,
-  viewName,
+  viewName = '',
   id = null,
   analyticsCategory = '',
-  saveBtnAction = '',
-  viewBtnAction = '',
-  cancelBtnAction = '',
+  saveBtnAction = 'Click save button',
+  viewBtnAction = 'Click view item button after save',
+  cancelBtnAction = 'Click cancel button',
   successUrl = '',
   cancelUrl = '',
   extraFormData = {},
-  getSuccessUrl = () => '',
+  getSuccessUrl = undefined,
   // amendments
   overrideFields = null,
   onFieldChanged = undefined
+}: {
+  fields?: EditableField[]
+  collectionName: string
+  viewName?: string
+  id?: string | null
+  analyticsCategory?: string
+  saveBtnAction?: string
+  viewBtnAction?: string
+  cancelBtnAction?: string
+  successUrl?: string
+  cancelUrl?: string
+  extraFormData?: Object
+  getSuccessUrl?: (newId: string | null) => string
+  overrideFields?: Record | null
+  onFieldChanged?: (fieldName: string, newValue: any) => void
 }) => {
-  if (!(collectionName in editableFields)) {
+  if (!fields && !(collectionName in editableFields)) {
     throw new Error(`Collection name ${collectionName} not in editable fields!`)
   }
 
-  const fields = editableFields[collectionName]
+  const fieldsToUse = fields || editableFields[collectionName]
 
-  const [isLoading, isErrored, result] = useDataStoreItem(
+  const [isLoading, isErrored, result] = useDataStoreItem<Record>(
     viewName || collectionName,
-    id,
+    id || false,
     `generic-editor-${viewName || collectionName}`
   )
   const [isSaving, isSuccess, isFailed, save] = useDatabaseSave(
     collectionName,
     id
   )
-  const [formFields, setFormFields] = useState(
+  const [formFields, setFormFields] = useState<null | Record>(
     overrideFields
       ? overrideFields
       : id
       ? null
-      : fields.reduce((newFormFields, fieldConfig) => {
+      : fieldsToUse.reduce((newFormFields, fieldConfig) => {
           return {
             ...newFormFields,
             [fieldConfig.name]: fieldConfig.default
@@ -143,7 +162,7 @@ export default ({
         }, {})
   )
   const classes = useStyles()
-  const [createdDocId, setCreatedDocId] = useState(null)
+  const [createdDocId, setCreatedDocId] = useState<string | null>(null)
   const [isInvalid, setIsInvalid] = useState(false)
 
   useEffect(() => {
@@ -152,7 +171,7 @@ export default ({
     }
 
     setFormFields(
-      fields.reduce((newFormFields, fieldConfig) => {
+      fieldsToUse.reduce((newFormFields, fieldConfig) => {
         return {
           ...newFormFields,
           [fieldConfig.name]:
@@ -164,9 +183,13 @@ export default ({
     )
   }, [result === null])
 
-  const onFieldChange = (name, newVal) => {
+  const onFieldChange = (name: string, newVal: string | boolean | number) => {
     if (onFieldChanged) {
       onFieldChanged(name, newVal)
+    }
+
+    if (!formFields) {
+      return
     }
 
     setFormFields({
@@ -176,7 +199,7 @@ export default ({
     setIsInvalid(false)
   }
 
-  const onFieldsChange = updates => {
+  const onFieldsChange = (updates: Record) => {
     setFormFields({
       ...formFields,
       ...updates
@@ -186,21 +209,28 @@ export default ({
 
   const onSaveBtnClick = async () => {
     try {
-      trackAction(analyticsCategory, saveBtnAction, id)
+      if (analyticsCategory) {
+        trackAction(analyticsCategory, saveBtnAction, id)
+      }
+
+      if (!formFields) {
+        console.warn('Cannot save - no form fields')
+        return
+      }
 
       scrollToTop()
 
-      if (!validateFields(formFields, fields)) {
+      if (!validateFields(formFields, fieldsToUse)) {
         setIsInvalid(true)
         return
       }
 
-      const [newId] = await save({
+      const [newDocument] = await save({
         ...formFields,
-        ...getHiddenFieldsForDb(fields)
+        ...getHiddenFieldsForDb(fieldsToUse)
       })
 
-      setCreatedDocId(newId)
+      setCreatedDocId(newDocument ? newDocument.id : null)
     } catch (err) {
       console.error(`Failed to save ${id} to ${collectionName}`, err)
       handleError(err)
@@ -235,13 +265,21 @@ export default ({
     return (
       <SuccessMessage>
         The record has been saved
-        <br />
-        <br />
-        <Button
-          url={id ? successUrl : getSuccessUrl(createdDocId)}
-          onClick={() => trackAction(analyticsCategory, viewBtnAction, id)}>
-          View
-        </Button>
+        {getSuccessUrl || successUrl ? (
+          <>
+            <br />
+            <br />
+            <Button
+              url={getSuccessUrl ? getSuccessUrl(createdDocId) : successUrl}
+              onClick={() => {
+                if (analyticsCategory) {
+                  trackAction(analyticsCategory, viewBtnAction, id)
+                }
+              }}>
+              View
+            </Button>
+          </>
+        ) : null}
       </SuccessMessage>
     )
   }
@@ -255,7 +293,7 @@ export default ({
         </ErrorMessage>
       )}
 
-      {fields
+      {fieldsToUse
         .filter(({ type }) => type !== fieldTypes.hidden)
         .map(({ name, type, default: defaultValue, label, hint, ...rest }) => {
           const Input = getInputForFieldType(type)
@@ -266,11 +304,13 @@ export default ({
               label={type !== fieldTypes.checkbox ? label : null}>
               <Input
                 name={name}
+                // @ts-ignore
                 value={formFields[name]}
                 defaultValue={defaultValue}
                 label={label}
                 {...rest}
-                onChange={newVal => onFieldChange(name, newVal)}
+                onChange={(newVal: any) => onFieldChange(name, newVal)}
+                // @ts-ignore
                 extraFormData={extraFormData}
                 setFieldsValues={onFieldsChange}
                 databaseResult={result}

@@ -26,7 +26,6 @@ export default ({
   // required
   id,
   metaCollectionName,
-  collectionName,
   // optional
   editUrl,
   // existing
@@ -37,7 +36,6 @@ export default ({
   // callbacks
   onDone = undefined,
   // visibility
-  showEditButtons = false,
   showApprovalButtons = true,
   // showPublishButtons = true,
   showAccessButtons = true,
@@ -50,15 +48,14 @@ export default ({
   showBox = true
 }: {
   id: string
-  collectionName?: string
   metaCollectionName: string
+  collectionName?: string
   editUrl?: string
   existingApprovalStatus?: string
   existingPublishStatus?: string
   existingAccessStatus?: string
   existingEditorNotes?: string
   onDone?: () => void
-  showEditButtons?: boolean
   showApprovalButtons?: boolean
   showPublishButtons?: boolean
   showAccessButtons?: boolean
@@ -71,7 +68,7 @@ export default ({
   const classes = useStyles()
   return (
     <div className={`${classes.root} ${showBox ? classes.box : classes.noBox}`}>
-      {showEditButtons ? (
+      {editUrl ? (
         <div className={classes.item}>
           <Button icon={<EditIcon />} url={editUrl}>
             Edit

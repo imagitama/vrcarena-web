@@ -6,6 +6,7 @@ import {
   PinnedStatuses,
   PublishStatuses
 } from '../hooks/useDatabaseQuery'
+import { Tag } from './tags'
 
 export const RelationType = {
   Parent: 'parent',
@@ -92,7 +93,6 @@ export interface PublicAsset extends Asset, AssetMeta, AssetStats {
 }
 
 export interface FullAsset extends Asset, AssetMeta, AssetStats {
-  // authors
   authorname: string
   isopenforcommission: boolean
   commissioninfo: string
@@ -100,7 +100,6 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   salereason: string | null
   saledescription: string | null
   saleexpiresat: Date | null
-
   speciesnames: string[]
   createdbyusername: string
   lastmodifiedbyusername: string
@@ -109,9 +108,8 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   discordserverdata: DiscordServer | null
   clonableworlddata: VrchatWorld | null
   relationsdata: Asset[]
-
-  // approval
   approvedbyusername: string
+  tagsdata: Tag[]
 }
 
 export const CollectionNames = {

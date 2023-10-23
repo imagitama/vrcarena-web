@@ -2,15 +2,12 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Tooltip from '@material-ui/core/Tooltip'
 import HelpIcon from '@material-ui/icons/Help'
-import {
-  allTags as tagDetails,
-  TagDetails,
-  getLabelForTagDetails
-} from '../../utils/tags'
+import { getLabelForTag } from '../../utils/tags'
 import LoadingShimmer from '../loading-shimmer'
 import { colorPalette } from '../../config'
 import * as routes from '../../routes'
 import Link from '../link'
+import { FullTag, Tag } from '../../modules/tags'
 
 const useStyles = makeStyles({
   items: {
@@ -56,23 +53,27 @@ const useStyles = makeStyles({
   }
 })
 
-const Feature = ({ tagDetails }: { tagDetails: TagDetails }) => {
+const Feature = ({ tag, data }: { tag: string; data?: Tag }) => {
+  if (!data) {
+    throw new Error(`Tag ${tag} has no data`)
+  }
+
   const classes = useStyles()
-  const Icon = tagDetails.icon || null
+  // const Icon = tagDetails.icon || null
   return (
     <Link
-      to={routes.queryWithVar.replace(':query', tagDetails.tag)}
+      to={routes.queryWithVar.replace(':query', tag)}
       className={classes.item}>
-      {Icon ? (
+      {/* {Icon ? (
         <div className={classes.icon}>
           <Icon />
         </div>
-      ) : null}
+      ) : null} */}
       <div className={classes.label}>
-        {getLabelForTagDetails(tagDetails)}
-        {tagDetails.tip ? (
+        {data.label || getLabelForTag(tag)}
+        {data.description ? (
           <div className={classes.tipIcon}>
-            <Tooltip title={tagDetails.tip}>
+            <Tooltip title={data.description}>
               <HelpIcon />
             </Tooltip>
           </div>
@@ -96,25 +97,13 @@ const LoadingFeature = () => {
   )
 }
 
-const getTagDetailsFromTags = (tags: string[]): TagDetails[] => {
-  const newTagDetails: TagDetails[] = []
-
-  for (const tag of tags) {
-    const match = tagDetails.find(tagDetail => tagDetail.tag === tag)
-
-    if (match && match.icon) {
-      newTagDetails.push(match)
-    }
-  }
-
-  return newTagDetails
-}
-
 export default ({
   tags = [],
+  tagsData = [],
   shimmer = false
 }: {
   tags?: string[]
+  tagsData?: Tag[]
   shimmer?: boolean
 }) => {
   const classes = useStyles()
@@ -129,15 +118,21 @@ export default ({
     )
   }
 
-  if (!tags || !tags.length) {
+  if (!tags || !tags.length || !tagsData || !tagsData.length) {
     return null
   }
 
   return (
     <div className={classes.items}>
-      {getTagDetailsFromTags(tags).map(tagDetails => (
-        <Feature key={tagDetails.tag} tagDetails={tagDetails} />
-      ))}
+      {tags
+        .filter(tag => tagsData.find(data => data.id === tag))
+        .map(tag => (
+          <Feature
+            key={tag}
+            tag={tag}
+            data={tagsData.find(data => data.id === tag)}
+          />
+        ))}
     </div>
   )
 }

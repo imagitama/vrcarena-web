@@ -20,23 +20,20 @@ const View = () => {
       <Heading variant="h1">{isCreating ? 'Create' : 'Edit'} Author</Heading>
       <GenericEditor
         collectionName={CollectionNames.Authors}
-        // @ts-ignore
         id={isCreating ? undefined : authorId}
         analyticsCategory={isCreating ? 'CreateAuthor' : 'EditAuthor'}
         saveBtnAction="Click save author button"
         viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewAuthorWithVar.replace(':authorId', authorId)}
-        // @ts-ignore
         getSuccessUrl={newId =>
-          routes.viewAuthorWithVar.replace(':authorId', newId)
+          routes.viewAuthorWithVar.replace(':authorId', newId || authorId)
         }
         cancelUrl={
           isCreating
             ? routes.authors
             : routes.viewAuthorWithVar.replace(':authorId', authorId)
         }
-        changeMetaFields={false}
       />
     </>
   )

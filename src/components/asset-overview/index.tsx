@@ -784,7 +784,11 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                 </Control>
               </ControlGroup>
             ) : null}
-            <AssetFeatures tags={asset ? asset.tags : []} shimmer={isLoading} />
+            <AssetFeatures
+              tags={asset ? asset.tags : []}
+              tagsData={asset ? asset.tagsdata : []}
+              shimmer={isLoading}
+            />
             <ParentControlGroup />
             <ControlGroup>
               {asset && asset.category === AssetCategories.avatar && (
@@ -935,7 +939,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
             )}
             <ControlGroup>
               <TagChips
-                tags={asset && asset.tags}
+                tags={asset ? asset.tags : []}
                 shimmer={isLoading}
                 isFilled={false}
               />

@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { areasByCategory } from '../../areas'
-import defaultTagDetails, {
-  tagDetailsByCategory,
-  TagDetails
-} from '../../utils/tags'
+import useDataStoreItems from '../../hooks/useDataStoreItems'
+import { FullTag } from '../../modules/tags'
 
 import FormControls from '../form-controls'
 import Button from '../button'
@@ -56,17 +54,25 @@ const RecommendedTags = ({
   categoryName?: string
 }) => {
   const classes = useStyles()
+  const [isLoading, isError, allTagDetails] = useDataStoreItems<FullTag>(
+    'getfulltags',
+    'all-tags-browser'
+  )
 
-  const tagDetailsToUse =
-    categoryName && tagDetailsByCategory[categoryName]
-      ? tagDetailsByCategory[categoryName]
-      : defaultTagDetails
+  if (!allTagDetails) {
+    return null
+  }
+
+  // const tagDetailsToUse =
+  //   categoryName && tagDetailsByCategory[categoryName]
+  //     ? tagDetailsByCategory[categoryName]
+  //     : defaultTagDetails
 
   return (
     <div>
       <div className={classes.categories}>
         {Object.entries(
-          tagDetailsToUse.reduce<{ [category: string]: TagDetails[] }>(
+          allTagDetails.reduce<{ [category: string]: FullTag[] }>(
             (result, tagDetails) => ({
               ...result,
               [tagDetails.category]: result[tagDetails.category]
@@ -75,11 +81,11 @@ const RecommendedTags = ({
             }),
             {}
           )
-        ).map(([category, tagDetailItems]: [string, TagDetails[]]) => (
+        ).map(([category, tagDetailItems]: [string, FullTag[]]) => (
           <div className={classes.category} key={category}>
             <div className={classes.categoryName}>{category}</div>
             <div>
-              {tagDetailItems.map(({ tag, description }) => (
+              {tagDetailItems.map(({ id: tag, description }) => (
                 <TagChip
                   key={tag}
                   tagName={tag}
@@ -103,16 +109,10 @@ const RecommendedTags = ({
                   <div className={classes.categoryName}>{namePlural}</div>
                   <div>
                     {tags.map(tagName => {
-                      // const tagDetails = moreTagDetails.find(
-                      //   ({ tag }) => tag === tagName
-                      // )
                       return (
                         <TagChip
                           key={tagName}
                           tagName={tagName}
-                          // description={
-                          //   tagDetails ? tagDetails.description : undefined
-                          // }
                           isDisabled={newTags.includes(tagName)}
                           onClick={() => onClickWithTag(tagName)}
                           isFilled={false}

@@ -299,7 +299,6 @@ const View = () => {
           <EditorRecordManager
             id={authorId}
             metaCollectionName={CollectionNames.AuthorsMeta}
-            showEditButtons
             editUrl={routes.editAuthorWithVar.replace(':authorId', authorId)}
             existingApprovalStatus={approvalStatus}
             existingPublishStatus={publishStatus}

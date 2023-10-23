@@ -8,6 +8,7 @@ import userMeta from './user-meta'
 import events from './events'
 import playlists from './playlists'
 import pages from './pages'
+import { fieldTypes } from '../generic-forms'
 
 export interface Option {
   value: string | null
@@ -17,7 +18,7 @@ export interface Option {
 export interface EditableField {
   name: string
   label: string
-  type: string
+  type: keyof typeof fieldTypes
   default?: any
   hint?: string
   fieldProperties?: any
@@ -25,6 +26,7 @@ export interface EditableField {
   options?: Option[]
 }
 
+// @ts-ignore
 const editableFieldsByCollectionName: {
   [collectionName: string]: EditableField[]
 } = {

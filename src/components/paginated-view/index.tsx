@@ -318,6 +318,25 @@ const subViewConfigAll: SubViewConfig[] = [
   }
 ]
 
+export interface PaginatedViewProps {
+  viewName?: string
+  editorViewName?: string
+  collectionName?: string
+  select?: string
+  getQuery?: GetQueryFn
+  sortKey?: string
+  sortOptions?: SortOption[]
+  defaultFieldName?: string
+  defaultDirection?: string
+  children?: React.ReactElement
+  extraControls?: React.ReactElement[]
+  urlWithPageNumberVar?: string
+  createUrl?: string
+  subViews?: SubViewConfig[]
+  showCommonMetaControls?: boolean
+  getQueryString?: () => string
+}
+
 export default ({
   viewName,
   editorViewName,
@@ -335,24 +354,7 @@ export default ({
   subViews,
   showCommonMetaControls = false,
   getQueryString = undefined
-}: {
-  viewName?: string
-  editorViewName?: string
-  collectionName?: string
-  select?: string
-  getQuery?: GetQueryFn
-  sortKey?: string
-  sortOptions?: SortOption[]
-  defaultFieldName?: string
-  defaultDirection?: string
-  children?: React.ReactElement
-  extraControls?: React.ReactElement[]
-  urlWithPageNumberVar?: string
-  createUrl?: string
-  subViews?: SubViewConfig[]
-  showCommonMetaControls?: boolean
-  getQueryString?: () => string
-}) => {
+}: PaginatedViewProps) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
   }

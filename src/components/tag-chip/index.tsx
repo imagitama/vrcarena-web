@@ -20,10 +20,12 @@ interface Props {
   onClick?: () => void
   icon?: React.ReactElement
   isLoading?: boolean
+  label?: string
 }
 
 const ChipWithTooltip = ({
   tagName,
+  label = '',
   description = '',
   isFilled = true,
   isDisabled = false,
@@ -52,6 +54,8 @@ const ChipWithTooltip = ({
         label={
           isLoading ? (
             <span className={classes.loading}>{tagName}</span>
+          ) : label ? (
+            label
           ) : (
             tagName
           )
@@ -70,7 +74,7 @@ export default (props: Props) => {
   return props.onClick || props.isDisabled ? (
     <ChipWithTooltip {...props} />
   ) : (
-    <Link to={routes.queryWithVar.replace(':query', props.tagName)}>
+    <Link to={routes.viewTagWithVar.replace(':tag', props.tagName)}>
       <ChipWithTooltip {...props} />
     </Link>
   )

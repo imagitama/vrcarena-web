@@ -73,7 +73,6 @@ export default ({
       <EditorRecordManager
         id={amendment.id}
         metaCollectionName={CollectionNames.AmendmentsMeta}
-        showEditButtons={false}
         showPublishButtons={false}
         showAccessButtons={false}
         showEditorNotes

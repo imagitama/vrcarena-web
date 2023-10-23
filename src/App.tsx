@@ -158,6 +158,16 @@ const Tags = lazy(() =>
     import(/* webpackChunkName: "tags" */ './containers/tags')
   )
 )
+const EditTag = lazy(() =>
+  catchChunkDeaths(() =>
+    import(/* webpackChunkName: "edit-tag" */ './containers/edit-tag')
+  )
+)
+const ViewTag = lazy(() =>
+  catchChunkDeaths(() =>
+    import(/* webpackChunkName: "view-tag" */ './containers/view-tag')
+  )
+)
 const Search = lazy(() =>
   catchChunkDeaths(() =>
     import(/* webpackChunkName: "search" */ './containers/search')
@@ -597,6 +607,12 @@ const MainContent = () => {
         <Route exact path={routes.resetPassword} component={ResetPassword} />
         <Route exact path={routes.pedestals} component={Pedestals} />
         <Route exact path={routes.vsScreen} component={VsScreen} />
+        <Route
+          exact
+          path={[routes.createTag, routes.editTagWithVar]}
+          component={EditTag}
+        />
+        <Route exact path={routes.viewTagWithVar} component={ViewTag} />
         <Route exact path={routes.tags} component={Tags} />
         <Route exact path={routes.memoryGame} component={MemoryGame} />
         <Route

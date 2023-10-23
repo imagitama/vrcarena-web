@@ -3,7 +3,7 @@
   "homepage": "https://create-react-app-redux.now.sh",
   "scripts": {
     "deploy": "now && now alias",
-    "start": "FAST_REFRESH=true react-scripts start --fast-refresh",
+    "start": "FAST_REFRESH=true REACT_APP_USE_FUNCTIONS_EMULATOR=true react-scripts start --fast-refresh",
     "start:function-emulator": "FAST_REFRESH=true REACT_APP_USE_FUNCTIONS_EMULATOR=true react-scripts start",
     "start:firestore-emulator": "FAST_REFRESH=true REACT_APP_USE_FIRESTORE_EMULATOR=true react-scripts start",
     "start:emulators": "FAST_REFRESH=true REACT_APP_USE_EMULATORS=true react-scripts start",

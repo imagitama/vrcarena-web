@@ -1,25 +1,27 @@
-import React, { useCallback } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import TagChip from '../tag-chip'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useDataStore from '../../hooks/useDataStore'
 import { client as supabase } from '../../supabase'
+import { FullTag } from '../../modules/tags'
 
 export default () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
-  const getQuery = useCallback(
-    () =>
-      supabase
-        .from(
-          (isAdultContentEnabled ? 'getAllTags' : 'getAllSfwTags').toLowerCase()
-        )
-        .select('*'),
-    [isAdultContentEnabled]
-  )
+  const getQuery = useCallback(() => {
+    let query = supabase
+      .from('getFullTags'.toLowerCase())
+      .select('*')
+      .order('count', { ascending: false })
 
-  const [isLoading, isError, results] = useDataStore<{ tags: string[] }>(
+    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
+
+    return query
+  }, [isAdultContentEnabled])
+
+  const [isLoading, isError, allTagDetails] = useDataStore<FullTag[]>(
     getQuery,
     'all-tags-browser'
   )
@@ -28,16 +30,22 @@ export default () => {
     return <LoadingIndicator message="Loading tags..." />
   }
 
-  if (isError || !Array.isArray(results) || !results.length) {
+  if (isError || !Array.isArray(allTagDetails) || !allTagDetails.length) {
     return <ErrorMessage>Failed to load tags</ErrorMessage>
   }
 
-  const tags: string[] = results[0].tags
-
   return (
     <>
-      {tags.map(tag => (
-        <TagChip key={tag} tagName={tag} />
+      {allTagDetails.map(tagDetails => (
+        <Fragment key={tagDetails.tag}>
+          <TagChip
+            tagName={tagDetails.id}
+            label={`${tagDetails.id}${
+              tagDetails.count ? ` (${tagDetails.count})` : ''
+            }`}
+          />
+          <br />
+        </Fragment>
       ))}
     </>
   )

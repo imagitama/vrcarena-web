@@ -21,7 +21,6 @@ import LoadingIndicator from '../../components/loading-indicator'
 import AssetEditor, { EditorContext } from '../../components/asset-editor'
 import TextDiff from '../../components/text-diff'
 import TagDiff from '../../components/tag-diff'
-import tags from '../../utils/tags'
 import SetupProfile from '../../components/setup-profile'
 import SpeciesVsSelector from '../../components/species-vs-selector'
 import FileUploader from '../../components/file-uploader'
@@ -31,7 +30,6 @@ import ChangeRanksForm from '../../components/change-ranks-form'
 import SurveyForm from '../../components/survey-form'
 import survey from '../../surveys/creating-asset'
 import { CollectionNames } from '../../modules/assets'
-import FeaturesToTagsEditor from '../../components/features-to-tags-editor'
 import PerformanceEditor from '../../components/performance-editor'
 
 const ErrorCodeDecoder = () => {
@@ -167,8 +165,6 @@ export default () => {
         <h1>Components</h1>
         <h2>Performance Editor</h2>
         <PerformanceEditorDemo />
-        <h2>Features To Tags Editor</h2>
-        <FeaturesToTagsEditor onChange={() => {}} />
         <h2>Survey Form</h2>
         <SurveyForm
           survey={survey}
@@ -182,19 +178,11 @@ export default () => {
         <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} />
         <h2>Asset Features</h2>
-        <AssetFeatures tags={tags.map(tagDetails => tagDetails.tag)} />
+        <AssetFeatures tags={[]} />
         <h2>Text Diff</h2>
         <TextDiff
           oldValue={loremIpsum}
           newValue={`${loremIpsum.slice(0, 20)}${loremIpsum.slice(25)}`}
-        />
-        <h2>Tag Diff</h2>
-        <TagDiff
-          oldTags={tags.map(x => x.tag).slice(0, 20)}
-          newTags={tags
-            .map(x => x.tag)
-            .slice(5, 15)
-            .concat(tags.map(x => x.tag).slice(15))}
         />
         <h2>Error Message</h2>
         <ErrorMessage
