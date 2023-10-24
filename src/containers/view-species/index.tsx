@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 import EditIcon from '@material-ui/icons/Edit'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import Link from '../../components/link'
 import Heading from '../../components/heading'
@@ -11,53 +12,106 @@ import AssetResults from '../../components/asset-results'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 
-import {
-  AssetCategories,
-  AssetFieldNames,
-  CollectionNames
-} from '../../hooks/useDatabaseQuery'
+import { AssetCategories, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 import * as routes from '../../routes'
 import { PublicAsset } from '../../modules/assets'
-import { Species } from '../../modules/species'
+import { CollectionNames, Species } from '../../modules/species'
 import Button from '../../components/button'
 import useIsEditor from '../../hooks/useIsEditor'
 import { prepareValueForQuery } from '../../queries'
+import useDataStore from '../../hooks/useDataStore'
+import { client as supabase } from '../../supabase'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
 )
 
-const View = () => {
-  const {
-    speciesIdOrSlug: speciesId,
-    categoryName = AssetCategories.avatar
-  } = useParams<{ speciesIdOrSlug: string; categoryName: string }>()
+const AssetsForSpecies = ({
+  species,
+  childSpecies
+}: {
+  species: Species
+  childSpecies: Species[]
+}) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
+  const speciesIdsToSearchFor = [
+    species.id,
+    ...childSpecies.map(childSpeciesItem => childSpeciesItem.id)
+  ]
   const getQuery = useCallback(
-    query => {
-      query = query.contains(AssetFieldNames.species, [speciesId])
-      query = query.eq(AssetFieldNames.category, categoryName)
+    (query: PostgrestFilterBuilder<PublicAsset>) => {
+      query = query
+        .overlaps('species', speciesIdsToSearchFor)
+        .eq('category', AssetCategories.avatar)
       if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
+        query = query.eq('isadult', false)
       }
       return query
     },
-    [speciesId, categoryName, isAdultContentEnabled]
+    [speciesIdsToSearchFor.join(','), isAdultContentEnabled]
   )
+
+  return (
+    <PaginatedView
+      viewName="getPublicAssets"
+      getQuery={getQuery}
+      sortKey="view-category"
+      sortOptions={[
+        {
+          label: 'Submission date',
+          fieldName: AssetFieldNames.createdAt
+        },
+        {
+          label: 'Title',
+          fieldName: AssetFieldNames.title
+        }
+      ]}
+      defaultFieldName={AssetFieldNames.createdAt}
+      urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
+        .replace(':speciesIdOrSlug', species.id)
+        .replace(':categoryName', AssetCategories.avatar)}
+      getQueryString={() =>
+        `species:${prepareValueForQuery(species.pluralname)} category:${
+          AssetCategories.avatar
+        }`
+      }>
+      <Renderer />
+    </PaginatedView>
+  )
+}
+
+const View = () => {
+  const { speciesIdOrSlug: speciesId } = useParams<{
+    speciesIdOrSlug: string
+    categoryName: string
+  }>()
   const isEditor = useIsEditor()
 
   const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStoreItem<
     Species
   >(CollectionNames.Species, speciesId, 'view-species')
 
-  if (isLoadingSpecies || !species) {
+  const getQuery = useCallback(() => {
+    const query = supabase
+      .from<Species>(CollectionNames.Species)
+      .select('*')
+      .eq('parent', speciesId)
+    return query
+  }, [speciesId])
+  const [
+    isLoadingChildren,
+    isErrorLoadingChildren,
+    childSpecies
+  ] = useDataStore<Species[]>(getQuery)
+
+  if (isLoadingSpecies || !species || isLoadingChildren || !childSpecies) {
     return <LoadingIndicator message="Loading species..." />
   }
 
-  if (isErrorLoadingSpecies) {
+  if (isErrorLoadingSpecies || isErrorLoadingSpecies) {
     return <ErrorMessage>Failed to load species</ErrorMessage>
   }
 
@@ -86,31 +140,22 @@ const View = () => {
         </Link>
       </Heading>
       <BodyText>{species.description || species.shortdescription}</BodyText>
-      <PaginatedView
-        viewName="getPublicAssets"
-        getQuery={getQuery}
-        sortKey="view-category"
-        sortOptions={[
-          {
-            label: 'Submission date',
-            fieldName: AssetFieldNames.createdAt
-          },
-          {
-            label: 'Title',
-            fieldName: AssetFieldNames.title
-          }
-        ]}
-        defaultFieldName={AssetFieldNames.createdAt}
-        urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
-          .replace(':speciesIdOrSlug', speciesId)
-          .replace(':categoryName', categoryName)}
-        getQueryString={() =>
-          `species:${prepareValueForQuery(species.pluralname)} category:${
-            AssetCategories.avatar
-          }`
-        }>
-        <Renderer />
-      </PaginatedView>
+      {childSpecies.length ? (
+        <Heading variant="h2">
+          Children:{' '}
+          {childSpecies.map(childSpeciesItem => (
+            <Link
+              key={childSpeciesItem.id}
+              to={routes.viewSpeciesWithVar.replace(
+                ':speciesIdOrSlug',
+                childSpeciesItem.id
+              )}>
+              {childSpeciesItem.pluralname}
+            </Link>
+          ))}
+        </Heading>
+      ) : null}
+      <AssetsForSpecies species={species} childSpecies={childSpecies} />
     </>
   )
 }

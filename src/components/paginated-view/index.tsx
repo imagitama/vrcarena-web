@@ -335,6 +335,7 @@ export interface PaginatedViewProps {
   subViews?: SubViewConfig[]
   showCommonMetaControls?: boolean
   getQueryString?: () => string
+  limit?: number
 }
 
 export default ({
@@ -353,7 +354,8 @@ export default ({
   createUrl,
   subViews,
   showCommonMetaControls = false,
-  getQueryString = undefined
+  getQueryString = undefined,
+  limit = undefined
 }: PaginatedViewProps) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
