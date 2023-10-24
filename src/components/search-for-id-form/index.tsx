@@ -13,7 +13,6 @@ import {
   UserFieldNames
 } from '../../hooks/useDatabaseQuery'
 import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 const useStyles = makeStyles({
   textInput: {

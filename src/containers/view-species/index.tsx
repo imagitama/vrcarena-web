@@ -14,7 +14,11 @@ import ErrorMessage from '../../components/error-message'
 import RedirectMessage from '../../components/redirect-message'
 import Button from '../../components/button'
 
-import { AssetCategories, AssetFieldNames } from '../../hooks/useDatabaseQuery'
+import {
+  AssetCategories,
+  AssetFieldNames,
+  SpeciesFieldNames
+} from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import useIsEditor from '../../hooks/useIsEditor'
@@ -86,26 +90,45 @@ const AssetsForSpecies = ({
 }
 
 const View = () => {
-  const { speciesIdOrSlug: speciesId } = useParams<{
+  const { speciesIdOrSlug } = useParams<{
     speciesIdOrSlug: string
     categoryName: string
   }>()
   const isEditor = useIsEditor()
-  const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStoreItem<
+  const getSpeciesQuery = useCallback(
+    () =>
+      supabase
+        .from<Species>(CollectionNames.Species)
+        .select('*')
+        .or(
+          `id.eq.${speciesIdOrSlug},${
+            SpeciesFieldNames.slug
+          }.eq.${speciesIdOrSlug}`
+        ),
+    [speciesIdOrSlug]
+  )
+  const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStore<
     Species
-  >(CollectionNames.Species, speciesId, 'view-species')
-  const getQuery = useCallback(() => {
+  >(getSpeciesQuery, 'view-species')
+
+  const getChildrenQuery = useCallback(() => {
+    if (!species) {
+      return null
+    }
     const query = supabase
       .from<Species>(CollectionNames.Species)
       .select('*')
-      .eq('parent', speciesId)
+      .eq('parent', species.id)
     return query
-  }, [speciesId])
+  }, [species && species.id])
   const [
     isLoadingChildren,
     isErrorLoadingChildren,
     childSpecies
-  ] = useDataStore<Species[]>(getQuery)
+  ] = useDataStore<Species[]>(
+    species ? getChildrenQuery : null,
+    'view-species-children'
+  )
   const { push } = useHistory()
 
   useEffect(() => {
@@ -161,7 +184,10 @@ const View = () => {
       ) : null}
       <Heading variant="h1">
         <Link
-          to={routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', speciesId)}>
+          to={routes.viewSpeciesWithVar.replace(
+            ':speciesIdOrSlug',
+            species.id
+          )}>
           {species.pluralname}
         </Link>
       </Heading>
