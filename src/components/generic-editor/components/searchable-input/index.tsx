@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import useDataStoreItem from '../../../../hooks/useDataStoreItem'
 
 import Button from '../../../button'
 import LoadingIndicator from '../../../loading-indicator'
@@ -10,6 +11,8 @@ export interface SearchableInputFieldProperties {
   renderer: (props: { item: any }) => React.ReactElement
 }
 
+type SearchResult = { [prop: string]: any }
+
 export default ({
   name,
   onChange,
@@ -17,7 +20,7 @@ export default ({
   fieldProperties
 }: {
   name: string
-  onChange: (collectionName: string, id: string) => void
+  onChange: (id: string) => void
   value: any
   fieldProperties: SearchableInputFieldProperties
 }) => {
@@ -33,23 +36,14 @@ export default ({
 
   const [isFormVisible, setIsFormVisible] = useState(false)
   const [valueData, setValueData] = useState<null | { id: string }>(null)
-
-  useEffect(() => {
-    if (!value) {
-      return
-    }
-
-    const docId = value.id
-
-    async function main() {
-      console.debug('populating', fieldProperties.collectionName, docId, value)
-      setValueData({
-        id: docId
-      })
-    }
-
-    main()
-  }, [value])
+  const [
+    isLoadingExisting,
+    isErroredLoadingExisting,
+    existingItem
+  ] = useDataStoreItem<SearchResult>(
+    fieldProperties.collectionName,
+    value || false
+  )
 
   return (
     <div
@@ -58,13 +52,13 @@ export default ({
         margin: '1rem 0',
         background: 'rgba(0,0,0,0.2)'
       }}>
-      {value ? (
+      {value || existingItem ? (
         <>
           Selected:
           <br />
           <br />
-          {valueData ? (
-            <fieldProperties.renderer item={valueData} />
+          {valueData || existingItem ? (
+            <fieldProperties.renderer item={valueData || existingItem} />
           ) : (
             <LoadingIndicator />
           )}
@@ -83,9 +77,10 @@ export default ({
         <SearchForIdForm
           collectionName={fieldProperties.collectionName}
           fieldAsLabel={fieldProperties.fieldAsLabel}
-          onDone={(id: string) => {
+          onClickWithIdAndDetails={(id: string, item: any) => {
             setIsFormVisible(false)
-            onChange(fieldProperties.collectionName, id)
+            setValueData(item)
+            onChange(id)
           }}
         />
       )}

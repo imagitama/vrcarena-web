@@ -17,6 +17,7 @@ export interface Species {
   thumbnailsourceurl: string
   ispopular: boolean
   slug: string
+  redirectto: string // ID
   lastmodifiedat: Date
   lastmodifiedby: string
   createdat: Date
@@ -90,5 +91,18 @@ export const editableFields: EditableField[] = [
     type: fieldTypes.text,
     hint:
       'The website or tweet or whatever that you found the image above. Respect authors!'
+  },
+  {
+    name: SpeciesFieldNames.redirectTo,
+    label: 'Redirect',
+    type: fieldTypes.searchable,
+    hint: 'Redirect every visit to this species to another species',
+    fieldProperties: {
+      collectionName: CollectionNames.Species,
+      fieldAsLabel: SpeciesFieldNames.pluralName,
+      renderer: ({ item }: { item: Species }) => (
+        <SpeciesResultItem species={item} />
+      )
+    }
   }
 ]

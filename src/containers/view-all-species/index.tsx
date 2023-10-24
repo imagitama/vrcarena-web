@@ -12,6 +12,7 @@ import { trackAction } from '../../analytics'
 import useIsEditor from '../../hooks/useIsEditor'
 import useDatabaseQuery, {
   CollectionNames,
+  Operators,
   options,
   OrderDirections,
   SpeciesFieldNames
@@ -110,9 +111,10 @@ const SpeciesOutput = ({
 }
 
 const AllSpeciesOutput = () => {
+  const isEditor = useIsEditor()
   const [isLoading, isError, species] = useDatabaseQuery<Species>(
     CollectionNames.Species,
-    [],
+    isEditor ? [] : [[SpeciesFieldNames.redirectTo, 'is', null]],
     {
       [options.orderBy]: [SpeciesFieldNames.singularName, OrderDirections.ASC]
     }

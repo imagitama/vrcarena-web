@@ -497,7 +497,8 @@ export const SpeciesFieldNames = {
   createdAt: 'createdat',
   createdBy: 'createdby',
   slug: 'slug',
-  parent: 'parent'
+  parent: 'parent',
+  redirectTo: 'redirectto'
 }
 
 export const HomepageFieldNames = {
@@ -582,7 +583,7 @@ const getOptionsIfProvided = (
   }
 }
 
-export type WhereClause = [string, string, string | boolean]
+export type WhereClause = [string, string, string | boolean | null]
 
 type OrderBy = [string, string]
 

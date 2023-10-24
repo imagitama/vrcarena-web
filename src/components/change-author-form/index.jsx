@@ -361,7 +361,7 @@ export default ({
       <SearchForIdForm
         indexName={CollectionNames.Authors}
         renderer={SearchResultRenderer}
-        onDone={onIdAndDetails}
+        onClickWithIdAndDetails={onIdAndDetails}
       />
       <br />
       <br />

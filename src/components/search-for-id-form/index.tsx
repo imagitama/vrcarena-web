@@ -13,6 +13,7 @@ import {
   UserFieldNames
 } from '../../hooks/useDatabaseQuery'
 import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
+import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 const useStyles = makeStyles({
   textInput: {
@@ -89,12 +90,14 @@ const getTableOrViewNameForCollectionName = (collectionName: string) => {
 type SearchResult = { [prop: string]: any }
 
 function SearchForm({
+  existingId,
   collectionName,
   searchTerm,
   fieldAsLabel,
   onClickWithIdAndDetails,
   renderer: Renderer = undefined
 }: {
+  existingId?: string
   collectionName: string
   searchTerm: string
   fieldAsLabel: string
@@ -107,6 +110,7 @@ function SearchForm({
     getSearchStatementForCollectionName(collectionName),
     getFieldsToSearchForCollectionName(collectionName)
   )
+
   const classes = useStyles()
 
   if (isSearching) {
@@ -151,16 +155,15 @@ function SearchForm({
   )
 }
 
-// TODO: Rename onDone to onClickWithIdAndDetails
 export default ({
   collectionName,
   fieldAsLabel,
-  onDone,
+  onClickWithIdAndDetails,
   renderer = undefined
 }: {
   collectionName: string
   fieldAsLabel: string
-  onDone: (id: string) => void
+  onClickWithIdAndDetails: (id: string, details: any) => void
   renderer?: (props: { result: any }) => React.ReactElement
 }) => {
   const [searchTerm, setSearchTerm] = useState<string | null>(null)
@@ -175,7 +178,7 @@ export default ({
               collectionName={collectionName}
               searchTerm={searchTerm}
               fieldAsLabel={fieldAsLabel}
-              onClickWithIdAndDetails={onDone}
+              onClickWithIdAndDetails={onClickWithIdAndDetails}
               renderer={renderer}
             />
           </>
@@ -187,7 +190,6 @@ export default ({
         <TextInput
           onChange={e => setSearchTerm(e.target.value)}
           value={searchTerm || ''}
-          // variant="filled"
           className={classes.textInput}
         />
       </div>

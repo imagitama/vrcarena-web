@@ -77,7 +77,7 @@ export default ({
       <SearchForIdForm
         indexName={CollectionNames.Assets}
         fieldAsLabel={AssetFieldNames.title}
-        onDone={(id, searchResult) => {
+        onClickWithIdAndDetails={id => {
           setNewClonableWorldId(id)
         }}
       />

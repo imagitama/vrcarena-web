@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react'
+import React, { Fragment, useCallback, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import EditIcon from '@material-ui/icons/Edit'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
@@ -11,18 +11,20 @@ import PaginatedView from '../../components/paginated-view'
 import AssetResults from '../../components/asset-results'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
+import RedirectMessage from '../../components/redirect-message'
+import Button from '../../components/button'
 
 import { AssetCategories, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import useIsEditor from '../../hooks/useIsEditor'
+import useDataStore from '../../hooks/useDataStore'
 
-import * as routes from '../../routes'
 import { PublicAsset } from '../../modules/assets'
 import { CollectionNames, Species } from '../../modules/species'
-import Button from '../../components/button'
-import useIsEditor from '../../hooks/useIsEditor'
+
+import * as routes from '../../routes'
 import { prepareValueForQuery } from '../../queries'
-import useDataStore from '../../hooks/useDataStore'
 import { client as supabase } from '../../supabase'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
@@ -89,11 +91,9 @@ const View = () => {
     categoryName: string
   }>()
   const isEditor = useIsEditor()
-
   const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStoreItem<
     Species
   >(CollectionNames.Species, speciesId, 'view-species')
-
   const getQuery = useCallback(() => {
     const query = supabase
       .from<Species>(CollectionNames.Species)
@@ -106,13 +106,39 @@ const View = () => {
     isErrorLoadingChildren,
     childSpecies
   ] = useDataStore<Species[]>(getQuery)
+  const { push } = useHistory()
+
+  useEffect(() => {
+    if (!species || !species.redirectto) {
+      return
+    }
+
+    const timeout = setTimeout(
+      () =>
+        push(
+          routes.viewSpeciesWithVar.replace(
+            ':speciesIdOrSlug',
+            species.redirectto
+          )
+        ),
+      1000
+    )
+
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [species && species.redirectto])
 
   if (isLoadingSpecies || !species || isLoadingChildren || !childSpecies) {
     return <LoadingIndicator message="Loading species..." />
   }
 
-  if (isErrorLoadingSpecies || isErrorLoadingSpecies) {
+  if (isErrorLoadingSpecies || isErrorLoadingChildren) {
     return <ErrorMessage>Failed to load species</ErrorMessage>
+  }
+
+  if (species.redirectto) {
+    return <RedirectMessage />
   }
 
   return (
@@ -143,15 +169,17 @@ const View = () => {
       {childSpecies.length ? (
         <Heading variant="h2">
           Children:{' '}
-          {childSpecies.map(childSpeciesItem => (
-            <Link
-              key={childSpeciesItem.id}
-              to={routes.viewSpeciesWithVar.replace(
-                ':speciesIdOrSlug',
-                childSpeciesItem.id
-              )}>
-              {childSpeciesItem.pluralname}
-            </Link>
+          {childSpecies.map((childSpeciesItem, idx) => (
+            <Fragment key={childSpeciesItem.id}>
+              {idx > 0 ? ', ' : ''}
+              <Link
+                to={routes.viewSpeciesWithVar.replace(
+                  ':speciesIdOrSlug',
+                  childSpeciesItem.id
+                )}>
+                {childSpeciesItem.pluralname}
+              </Link>
+            </Fragment>
           ))}
         </Heading>
       ) : null}

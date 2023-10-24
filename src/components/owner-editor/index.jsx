@@ -76,7 +76,7 @@ export default ({ collectionName, id, actionCategory }) => {
       <SearchForIdForm
         indexName={CollectionNames.Users}
         fieldAsLabel={UserFieldNames.username}
-        onDone={id => onSave(id)}
+        onClickWithIdAndDetails={id => onSave(id)}
       />
       <hr />
       <Button onClick={() => onSave(null)}>Clear Existing Owner</Button>
