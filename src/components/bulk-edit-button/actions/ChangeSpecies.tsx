@@ -1,49 +1,54 @@
 import { updateRecord } from '../../../data-store'
 import { useBulkEdit } from '../context'
-import { Asset, CollectionNames, FullAsset } from '../../../modules/assets'
+import { Asset, CollectionNames } from '../../../modules/assets'
 import SpeciesDropdown from '../../species-dropdown'
+import { useEffect } from 'react'
 
 export const Action = async (
   assetId: string,
   asset: Asset,
-  newSpeciesIds: string[]
+  newData: { [assetId: string]: Asset }
 ): Promise<void> => {
+  const newSpecies = newData[assetId].species
+  console.log('ACTION - CHANGE SPECIES', assetId, asset, newData, newSpecies)
   await updateRecord(CollectionNames.Assets, assetId, {
-    species: newSpeciesIds
+    species: newSpecies
   })
 }
 
-export const Preview = ({ asset }: { asset: FullAsset }) => {
-  const { userInput: newSpeciesIds } = useBulkEdit()
-  if (!Array.isArray(newSpeciesIds)) {
-    throw new Error('User input not species IDs')
-  }
-  return <>{newSpeciesIds.join(', ')}</>
+export const Preview = ({ asset }: { asset: Asset }) => {
+  const { newData } = useBulkEdit()
+
+  const newSpeciesIds = (newData[asset.id] || {}).species || []
+
+  return <>{(newSpeciesIds || []).join(', ')}</>
 }
 
-export const Form = () => {
-  const { ids, userInput, setUserInput } = useBulkEdit()
+export const FormPerAsset = ({ asset }: { asset: Asset }) => {
+  const { ids, newData, setNewData } = useBulkEdit()
+
+  const newSpeciesIds = (newData[asset.id] || {}).species || []
 
   if (!ids) {
     return null
   }
 
-  if (!Array.isArray(userInput)) {
-    throw new Error('User input not species IDs')
-  }
+  const toggleSpeciesId = (speciesId: string) =>
+    setNewData({
+      ...newData,
+      [asset.id]: {
+        species: newSpeciesIds.includes(speciesId)
+          ? newSpeciesIds.filter(id => id !== speciesId)
+          : newSpeciesIds.concat(speciesId)
+      }
+    })
 
   return (
     <>
-      Force new species for these assets:{' '}
+      Change species:
       <SpeciesDropdown
-        selectedSpeciesIds={userInput}
-        onSpeciesClickWithId={id =>
-          setUserInput(
-            userInput.includes(id)
-              ? userInput.filter(existingId => existingId !== id)
-              : userInput.concat(id)
-          )
-        }
+        selectedSpeciesIds={newSpeciesIds}
+        onSpeciesClickWithId={id => toggleSpeciesId(id)}
       />
     </>
   )

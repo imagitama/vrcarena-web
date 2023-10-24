@@ -1,11 +1,13 @@
 import { createContext, useContext } from 'react'
-import { FullAsset } from '../../modules/assets'
+import { Asset, FullAsset } from '../../modules/assets'
+import type { BulkAction } from './'
 
 interface Context {
   ids: null | string[]
-  assets: FullAsset[]
-  userInput: string | string[]
-  setUserInput: (newUserInput: string | string[]) => void
+  assets: Asset[]
+  newData: { [assetId: string]: Partial<Asset> } & { all: Partial<Asset> }
+  setNewData: (newData: { [assetId: string]: Partial<Asset> } & { all: Partial<Asset> }) => void
+  selectedBulkAction: BulkAction
 }
 
 // @ts-ignore

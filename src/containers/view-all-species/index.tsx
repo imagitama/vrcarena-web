@@ -62,9 +62,7 @@ function convertToNestedArray(
 ): SpeciesWithChildren[] {
   const nestedArray: SpeciesWithChildren[] = []
   for (const item of arr) {
-    console.log('check', item.parent, parentId)
     if (item.parent === parentId) {
-      console.debug(`parent ${item.parent} is equal to ${parentId}`)
       const children = convertToNestedArray(arr, item.id)
       if (children.length) {
         ;(item as SpeciesWithChildren).children = children

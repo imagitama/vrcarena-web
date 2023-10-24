@@ -1,5 +1,6 @@
 import { AnyAction, Dispatch } from 'redux'
 import { CollectionNames } from '../hooks/useDatabaseQuery'
+import { Asset } from './assets'
 
 export const searchIndexNameLabels = {
   [CollectionNames.Assets]: 'assets',
@@ -56,6 +57,7 @@ export interface AppState {
   isSearching: boolean
   bulkEditIds: null | string[] // null is not in edit mode
   isSelectingAll: boolean
+  bulkEditAssetDatas: Asset[]
 }
 
 const initialState: AppState = {
@@ -68,7 +70,8 @@ const initialState: AppState = {
   searchCount: 0,
   isSearching: false,
   bulkEditIds: null,
-  isSelectingAll: false
+  isSelectingAll: false,
+  bulkEditAssetDatas: []
 }
 
 const OPEN_MENU = 'OPEN_MENU'
@@ -176,18 +179,30 @@ export default (state: AppState = initialState, action: AnyAction) => {
           ? state.bulkEditIds.filter(
               idToCheck => idToCheck !== action.payload.id
             )
-          : state.bulkEditIds.concat([action.payload.id])
+          : state.bulkEditIds.concat([action.payload.id]),
+        bulkEditAssetDatas: action.payload.asset
+          ? state.bulkEditAssetDatas.concat([action.payload.asset])
+          : state.bulkEditAssetDatas
       }
 
     case SELECT_BULK_EDIT_ID:
       if (!state.bulkEditIds) {
-        return { ...state, bulkEditIds: [action.payload.id] }
+        return {
+          ...state,
+          bulkEditIds: [action.payload.id],
+          bulkEditAssetDatas: action.payload.asset
+            ? state.bulkEditAssetDatas.concat([action.payload.asset])
+            : state.bulkEditAssetDatas
+        }
       }
       return {
         ...state,
         bulkEditIds: state.bulkEditIds.includes(action.payload.id)
           ? state.bulkEditIds
-          : state.bulkEditIds.concat([action.payload.id])
+          : state.bulkEditIds.concat([action.payload.id]),
+        bulkEditAssetDatas: action.payload.asset
+          ? state.bulkEditAssetDatas.concat([action.payload.asset])
+          : state.bulkEditAssetDatas
       }
 
     case SET_SELECT_ALL:
@@ -301,17 +316,19 @@ export const leaveBulkEditMode = () => ({
   type: LEAVE_BULK_EDIT_MODE
 })
 
-export const toggleBulkEditId = (id: string) => ({
+export const toggleBulkEditId = (id: string, asset?: Asset) => ({
   type: TOGGLE_BULK_EDIT_ID,
   payload: {
-    id
+    id,
+    asset
   }
 })
 
-export const selectBulkEditId = (id: string) => ({
+export const selectBulkEditId = (id: string, asset?: Asset) => ({
   type: SELECT_BULK_EDIT_ID,
   payload: {
-    id
+    id,
+    asset
   }
 })
 

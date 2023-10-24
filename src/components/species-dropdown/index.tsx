@@ -9,26 +9,8 @@ import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import Select from '../select'
 
-interface SpeciesWithChildren extends Species {
-  children?: SpeciesWithChildren[]
-}
-
-function convertToNestedArray(
-  arr: Species[],
-  parentId: string | null = null
-): SpeciesWithChildren[] {
-  const nestedArray: SpeciesWithChildren[] = []
-  for (const item of arr) {
-    if (item.parent === parentId) {
-      const children = convertToNestedArray(arr, item.id)
-      if (children.length) {
-        ;(item as SpeciesWithChildren).children = children
-      }
-      nestedArray.push(item as SpeciesWithChildren)
-    }
-  }
-  return nestedArray
-}
+// cache for bulk edit
+let lastKnownAllSpecies: Species[]
 
 const SpeciesSelector = ({
   selectedSpeciesIds = [],
@@ -37,21 +19,25 @@ const SpeciesSelector = ({
   selectedSpeciesIds: string[]
   onSpeciesClickWithId: (id: string) => void
 }) => {
-  const [isLoading, isError, allSpecies] = useDataStoreItems<Species>(
-    CollectionNames.Species,
+  const [isLoading, isError, newSpecies] = useDataStoreItems<Species>(
+    lastKnownAllSpecies ? '' : CollectionNames.Species,
     'species-dropdown',
     SpeciesFieldNames.pluralName
   )
 
-  if (isLoading || !allSpecies) {
+  if (newSpecies) {
+    lastKnownAllSpecies = newSpecies
+  }
+
+  const allSpecies = lastKnownAllSpecies || newSpecies
+
+  if ((!lastKnownAllSpecies && isLoading) || !allSpecies) {
     return <LoadingIndicator message="Loading species..." />
   }
 
   if (isError) {
     return <ErrorMessage>Failed to load species</ErrorMessage>
   }
-
-  const speciesHierarchy = convertToNestedArray(allSpecies)
 
   return (
     <Select multiple value={selectedSpeciesIds}>

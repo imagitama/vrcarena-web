@@ -4,12 +4,16 @@ import {
   selectBulkEditId as selectBulkEditIdAction,
   setSelectingAll as setSelectingAllAction
 } from '../modules/app'
+import { Asset } from '../modules/assets'
 import { RootState } from '../store'
 
 const useBulkEdit = (): {
   ids: null | string[]
+  assetDatas: Asset[]
   toggleId: (id: string) => void
+  toggleAsset: (asset: Asset) => void
   selectId: (id: string) => void
+  selectAsset: (asset: Asset) => void
   isSelectingAll: boolean
   setSelectingAll: (newValue: boolean) => void
 } => {
@@ -19,6 +23,9 @@ const useBulkEdit = (): {
   const isSelectingAll = useSelector<RootState, boolean>(
     state => state.app.isSelectingAll
   )
+  const assetDatas = useSelector<RootState, Asset[]>(
+    state => state.app.bulkEditAssetDatas
+  )
   const dispatch = useDispatch()
 
   const toggleId = (id: string) => {
@@ -26,9 +33,19 @@ const useBulkEdit = (): {
     dispatch(toggleBulkEditIdAction(id))
   }
 
+  const toggleAsset = (asset: Asset) => {
+    console.debug(`Toggle bulk edit asset "${asset.id}"`)
+    dispatch(toggleBulkEditIdAction(asset.id, asset))
+  }
+
   const selectId = (id: string) => {
     console.debug(`Select bulk edit ID "${id}"`)
     dispatch(selectBulkEditIdAction(id))
+  }
+
+  const selectAsset = (asset: Asset) => {
+    console.debug(`Select bulk edit asset "${asset.id}"`)
+    dispatch(selectBulkEditIdAction(asset.id, asset))
   }
 
   const setSelectingAll = (newValue: boolean) => {
@@ -37,8 +54,11 @@ const useBulkEdit = (): {
 
   return {
     ids,
+    assetDatas,
     toggleId,
+    toggleAsset,
     selectId,
+    selectAsset,
     isSelectingAll,
     setSelectingAll
   }

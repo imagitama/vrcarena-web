@@ -3,23 +3,29 @@ import { useBulkEdit } from '../context'
 import { Asset, CollectionNames, FullAsset } from '../../../modules/assets'
 import TextInput from '../../text-input'
 import TagDiff from '../../tag-diff'
+import { useState } from 'react'
 
 export const Action = async (
   assetId: string,
   asset: Asset,
-  tagToRemove: string
+  newData: { all: Asset }
 ): Promise<void> => {
+  const tagToRemove = newData.all.tags[0]
+  console.log(
+    'ACTION - REMOVE TAG',
+    asset.tags,
+    newData.all.tags[0],
+    tagToRemove
+  )
   await updateRecord(CollectionNames.Assets, assetId, {
     tags: asset.tags.filter(tag => tag !== tagToRemove)
   })
 }
 
-export const Preview = ({ asset }: { asset: FullAsset }) => {
-  const { userInput: tagToRemove } = useBulkEdit()
+export const Preview = ({ asset }: { asset: Asset }) => {
+  const { newData } = useBulkEdit()
 
-  if (Array.isArray(tagToRemove)) {
-    throw new Error('User input not string')
-  }
+  const tagToRemove = newData.all.tags ? newData.all.tags[0] : ''
 
   return (
     <TagDiff
@@ -30,14 +36,11 @@ export const Preview = ({ asset }: { asset: FullAsset }) => {
 }
 
 export const Form = () => {
-  const { ids, userInput, setUserInput } = useBulkEdit()
+  const { ids, newData, setNewData } = useBulkEdit()
+  const [userInput, setUserInput] = useState('')
 
   if (!ids) {
     return null
-  }
-
-  if (Array.isArray(userInput)) {
-    throw new Error('User input not string')
   }
 
   return (
@@ -45,7 +48,15 @@ export const Form = () => {
       Remove tag{' '}
       <TextInput
         value={userInput}
-        onChange={e => setUserInput(e.target.value.trim())}
+        onChange={e => {
+          const newUserInput = e.target.value.trim()
+          setUserInput(newUserInput)
+          setNewData({
+            all: {
+              tags: [newUserInput]
+            }
+          })
+        }}
         size="small"
       />{' '}
       from {ids.length} assets?

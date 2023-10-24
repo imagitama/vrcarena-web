@@ -30,13 +30,13 @@ import * as ChangeSpecies from './actions/ChangeSpecies'
 import { context, useBulkEdit } from './context'
 import useGlobalBulkEdit from '../../hooks/useBulkEdit'
 import { readRecord } from '../../data-store'
-import { FullAsset } from '../../modules/assets'
+import { Asset, CollectionNames } from '../../modules/assets'
 import { handleError } from '../../error-handling'
 import Paper from '../paper'
 import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 
-enum BulkAction {
+export enum BulkAction {
   RemoveTag,
   AddTag,
   ChangeSpecies
@@ -53,9 +53,10 @@ enum BulkAction {
 }
 
 interface Handler {
-  Form: () => React.ReactElement | null
-  Preview: ({ asset }: { asset: FullAsset }) => React.ReactElement | null
-  Action: (assetId: string, asset: FullAsset, data: any) => Promise<void>
+  Form?: () => React.ReactElement | null
+  FormPerAsset?: ({ asset }: { asset: Asset }) => React.ReactElement | null
+  Preview: ({ asset }: { asset: Asset }) => React.ReactElement | null
+  Action: (assetId: string, asset: Asset, data: any) => Promise<void>
 }
 
 const Handlers: { [key in BulkAction]: Handler } = {
@@ -96,7 +97,7 @@ const Preview = ({
       <TableHead>
         <TableRow>
           <TableCell>Asset</TableCell>
-          <TableCell>Change</TableCell>
+          <TableCell>Preview</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -126,6 +127,48 @@ const Preview = ({
   )
 }
 
+const FormsForEachAsset = () => {
+  const { ids, assets, selectedBulkAction } = useBulkEdit()
+
+  if (!ids) {
+    return null
+  }
+
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Asset</TableCell>
+          <TableCell>Form</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {ids.map(id => {
+          const asset = assets.find(asset => asset.id === id)
+          return (
+            <TableRow key={id}>
+              <TableCell>
+                {asset ? asset.id : '(loading)'}
+                <br />
+                {asset ? asset.title : '(loading)'}
+              </TableCell>
+              <TableCell>
+                {asset
+                  ? React.createElement(
+                      // @ts-ignore
+                      Handlers[selectedBulkAction.toString()].FormPerAsset,
+                      { asset }
+                    )
+                  : null}
+              </TableCell>
+            </TableRow>
+          )
+        })}
+      </TableBody>
+    </Table>
+  )
+}
+
 const Render = () => {
   const bulkEditIds = useSelector<RootState>(state => state.app.bulkEditIds)
   const dispatch = useDispatch()
@@ -133,9 +176,13 @@ const Render = () => {
     selectedBulkAction,
     setSelectedBulkAction
   ] = useState<null | BulkAction>(null)
-  const [assetData, setAssetData] = useState<FullAsset[]>([])
-  const [userInput, setUserInput] = useState<string | string[]>('')
-  const { ids, setSelectingAll } = useGlobalBulkEdit()
+  const [assetData, setAssetData] = useState<Asset[]>([])
+  const [newData, setNewData] = useState<
+    { [assetId: string]: Partial<Asset> } & { all: Partial<Asset> }
+  >({
+    all: {}
+  })
+  const { ids, setSelectingAll, assetDatas } = useGlobalBulkEdit()
   const [assetIdsWaitingToEdit, setAssetIdsWaitingToEdit] = useState<
     null | string[]
   >(null)
@@ -145,7 +192,9 @@ const Render = () => {
   const reset = () => {
     setSelectedBulkAction(null)
     setAssetData([])
-    setUserInput('')
+    setNewData({
+      all: {}
+    })
     setAssetIdsWaitingToEdit(null)
     leaveBulkEditMode()
   }
@@ -166,12 +215,29 @@ const Render = () => {
         console.debug(`Fetching data for ${idsToGet.length} assets...`)
 
         const newAssetData = await Promise.all(
-          idsToGet.map(id => readRecord<FullAsset>('getfullassets', id))
+          idsToGet.map(id => {
+            const existingData = assetDatas.find(asset => asset.id === id)
+
+            if (existingData) {
+              return existingData
+            }
+
+            return readRecord<Asset>(CollectionNames.Assets, id)
+          })
         )
 
         console.debug(`Found data for them`, newAssetData)
 
         setAssetData(currentAssets => currentAssets.concat(newAssetData))
+        setNewData(currentData => {
+          const evenNewerData = { ...currentData }
+          for (const asset of newAssetData) {
+            if (!evenNewerData[asset.id]) {
+              evenNewerData[asset.id] = asset
+            }
+          }
+          return evenNewerData
+        })
       } catch (err) {
         console.error(err)
         handleError(err)
@@ -193,10 +259,6 @@ const Render = () => {
   }
 
   const initiateBulkAction = (actionToInitiate: BulkAction) => {
-    // TODO: Better do this
-    if (actionToInitiate === BulkAction.ChangeSpecies) {
-      setUserInput([])
-    }
     setSelectedBulkAction(actionToInitiate)
   }
 
@@ -208,12 +270,14 @@ const Render = () => {
       throw new Error('IDs should not be null')
     }
 
-    const action = Handlers[selectedBulkAction].Action
+    const actionFn = Handlers[selectedBulkAction].Action
 
     setAssetIdsWaitingToEdit(assetData.map(asset => asset.id))
 
     for (const id of ids) {
-      console.debug(`Performing action on asset ${id}...`)
+      console.debug(
+        `Performing action "${selectedBulkAction}" on asset ${id}...`
+      )
 
       const asset = assetData.find(asset => asset.id === id)
 
@@ -221,7 +285,7 @@ const Render = () => {
         throw new Error(`Could not find asset "${id}" in data`)
       }
 
-      await action(id, asset, userInput)
+      await actionFn(id, asset, newData)
 
       setAssetIdsWaitingToEdit(currentIds => {
         if (!currentIds) {
@@ -257,8 +321,7 @@ const Render = () => {
     <>
       <Button color="default" onClick={() => reset()}>
         Cancel Bulk Edit
-      </Button>
-      {' | '}
+      </Button>{' '}
       {selectedBulkAction === null ? (
         (Object.values(BulkAction) as Array<keyof typeof BulkAction>)
           .filter(i => typeof i === 'string')
@@ -272,9 +335,24 @@ const Render = () => {
           ))
       ) : (
         <context.Provider
-          value={{ ids, assets: assetData, userInput, setUserInput }}>
+          value={{
+            ids,
+            assets: assetData,
+            newData,
+            setNewData,
+            selectedBulkAction
+          }}>
           <Paper>
-            {React.createElement(Handlers[selectedBulkAction].Form, {})}
+            {Handlers[selectedBulkAction].Form ? (
+              React.createElement(
+                Handlers[selectedBulkAction].Form || 'div',
+                {}
+              )
+            ) : Handlers[selectedBulkAction].FormPerAsset ? (
+              <FormsForEachAsset />
+            ) : (
+              <>No form to render</>
+            )}
             <Preview selectedBulkAction={selectedBulkAction} />
             <br />
             <Button onClick={() => applyBulkEdit()}>
@@ -282,11 +360,11 @@ const Render = () => {
             </Button>{' '}
             Warning: Recommended to only operate on 10 assets at a time to avoid
             throttling our backend
+            <br />
+            Warning: Refresh page after operation or it will show old data
           </Paper>
         </context.Provider>
       )}
-      {' | '}
-      <Button onClick={() => onSelectAllClick()}>Select All</Button>
     </>
   )
 }

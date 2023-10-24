@@ -207,9 +207,9 @@ const useStyles = makeStyles(theme => ({
     left: 0
   },
   toggleBulkEditButton: {
-    position: 'absolute',
-    top: 0,
-    left: 30
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: '0.25rem'
   },
   description: {
     overflowX: 'hidden'
@@ -381,15 +381,15 @@ function HoverOnEffect({ assetId }: { assetId: string }) {
   )
 }
 
-const ToggleBulkEditButton = ({ id }: { id: string }) => {
-  const { ids, toggleId, selectId, isSelectingAll } = useBulkEdit()
+const ToggleBulkEditButton = ({ asset }: { asset: Asset }) => {
+  const { ids, toggleAsset, selectAsset, isSelectingAll } = useBulkEdit()
 
   useEffect(() => {
     if (!isSelectingAll) {
       return
     }
 
-    selectId(id)
+    selectAsset(asset)
   }, [isSelectingAll])
 
   if (!ids) {
@@ -398,9 +398,9 @@ const ToggleBulkEditButton = ({ id }: { id: string }) => {
 
   return (
     <Checkbox
-      checked={ids.includes(id)}
+      checked={ids.includes(asset.id)}
       onClick={e => {
-        toggleId(id)
+        toggleAsset(asset)
         e.stopPropagation()
         e.preventDefault()
         return false
@@ -489,6 +489,11 @@ const AssetResultsItem = ({
         dim ? classes.dim : ''
       }`}
       ref={cardRef}>
+      {isEditor && (
+        <div className={classes.toggleBulkEditButton}>
+          <ToggleBulkEditButton asset={asset} />
+        </div>
+      )}
       <CardActionArea className={classes.actionArea}>
         <Link
           to={routes.viewAssetWithVar.replace(
@@ -510,11 +515,6 @@ const AssetResultsItem = ({
           {showAddToCart && (
             <div className={classes.addToCartButton}>
               <AddToCartButton assetId={asset.id} />
-            </div>
-          )}
-          {isEditor && (
-            <div className={classes.toggleBulkEditButton}>
-              <ToggleBulkEditButton id={asset.id} />
             </div>
           )}
           <LazyLoad height={200}>
