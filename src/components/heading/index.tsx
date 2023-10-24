@@ -32,6 +32,9 @@ const useStyles = makeStyles(theme => ({
   },
   fakeLink: {
     color: theme.palette.primary.light
+  },
+  inline: {
+    display: 'inline'
   }
 }))
 
@@ -42,6 +45,7 @@ interface Props extends TypographyProps {
   id?: string
   fakeLink?: boolean
   style?: Object
+  inline?: boolean
 }
 
 export default forwardRef<{}, Props>(
@@ -54,7 +58,8 @@ export default forwardRef<{}, Props>(
       className = '',
       id,
       fakeLink,
-      style = {}
+      style = {},
+      inline
     },
     ref
   ) => {
@@ -68,7 +73,7 @@ export default forwardRef<{}, Props>(
           noTopMargin ? classes.noTopMargin : ''
         } ${noMargin ? classes.noMargin : ''} ${className} ${
           fakeLink ? classes.fakeLink : ''
-        }`}
+        } ${inline ? classes.inline : ''}`}
         ref={ref}
         id={id}
         style={style}>

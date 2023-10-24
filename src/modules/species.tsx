@@ -24,8 +24,16 @@ export interface Species {
   createdby: string
 }
 
+export interface FullSpecies extends Species {
+  parentpluralname: string | null
+}
+
 export const CollectionNames = {
   Species: 'species'
+}
+
+export const ViewNames = {
+  GetFullSpecies: 'getfullspecies'
 }
 
 export const editableFields: EditableField[] = [

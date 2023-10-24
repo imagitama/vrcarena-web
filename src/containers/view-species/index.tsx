@@ -25,7 +25,12 @@ import useIsEditor from '../../hooks/useIsEditor'
 import useDataStore from '../../hooks/useDataStore'
 
 import { PublicAsset } from '../../modules/assets'
-import { CollectionNames, Species } from '../../modules/species'
+import {
+  CollectionNames,
+  FullSpecies,
+  Species,
+  ViewNames
+} from '../../modules/species'
 
 import * as routes from '../../routes'
 import { prepareValueForQuery } from '../../queries'
@@ -98,7 +103,7 @@ const View = () => {
   const getSpeciesQuery = useCallback(
     () =>
       supabase
-        .from<Species>(CollectionNames.Species)
+        .from<Species>(ViewNames.GetFullSpecies)
         .select('*')
         .or(
           `id.eq.${speciesIdOrSlug},${
@@ -111,7 +116,7 @@ const View = () => {
     isLoadingSpecies,
     isErrorLoadingSpecies,
     speciesResults
-  ] = useDataStore<Species[]>(getSpeciesQuery, 'view-species')
+  ] = useDataStore<FullSpecies[]>(getSpeciesQuery, 'view-species')
 
   const species =
     speciesResults && speciesResults.length === 1 ? speciesResults[0] : null
@@ -187,18 +192,33 @@ const View = () => {
           Edit Species
         </Button>
       ) : null}
-
-      <Heading variant="h1">
-        <Link to={routes.viewAllSpecies}>All</Link>
-        {' / '}
-        <Link
-          to={routes.viewSpeciesWithVar.replace(
-            ':speciesIdOrSlug',
-            species.id
-          )}>
-          {species.pluralname}
-        </Link>
-      </Heading>
+      <div>
+        <Heading variant="h2" inline>
+          <Link to={routes.viewAllSpecies}>All</Link>
+          {species.parentpluralname ? (
+            <>
+              {' / '}
+              <Link
+                to={routes.viewSpeciesWithVar.replace(
+                  ':speciesIdOrSlug',
+                  species.parent
+                )}>
+                {species.parentpluralname}
+              </Link>
+            </>
+          ) : null}
+          {' / '}
+        </Heading>
+        <Heading variant="h1" inline>
+          <Link
+            to={routes.viewSpeciesWithVar.replace(
+              ':speciesIdOrSlug',
+              species.id
+            )}>
+            {species.pluralname}
+          </Link>
+        </Heading>
+      </div>
       <BodyText>{species.description || species.shortdescription}</BodyText>
       {childSpecies.length ? (
         <Heading variant="h2">
