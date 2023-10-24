@@ -11,7 +11,7 @@ import { darkTheme } from './themes'
 // Do not lazy load these routes as they are very popular so they should load fast
 import Home from './containers/home'
 import ViewAsset from './containers/view-asset'
-import ViewSpeciesCategory from './containers/view-species-category'
+import ViewSpecies from './containers/view-species'
 import ViewCategory from './containers/view-category'
 import ViewAvatars from './containers/view-avatars'
 import ViewAllSpecies from './containers/view-all-species'
@@ -532,7 +532,7 @@ const MainContent = () => {
             routes.viewSpeciesCategoryWithVarAndPageNumberVar,
             routes.viewSpeciesWithVar
           ]}
-          component={ViewSpeciesCategory}
+          component={ViewSpecies}
         />
         <Route exact path={routes.editUserWithVar} component={EditUser} />
         <Route exact path={routes.staffUsers} component={Users} />

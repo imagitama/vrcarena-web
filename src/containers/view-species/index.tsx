@@ -11,7 +11,6 @@ import AssetResults from '../../components/asset-results'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 
-import categoryMeta from '../../category-meta'
 import {
   AssetCategories,
   AssetFieldNames,
@@ -25,14 +24,7 @@ import { PublicAsset } from '../../modules/assets'
 import { Species } from '../../modules/species'
 import Button from '../../components/button'
 import useIsEditor from '../../hooks/useIsEditor'
-
-function getDisplayNameByCategoryName(categoryName: string): string {
-  return categoryMeta[categoryName].name
-}
-
-function getDescriptionByCategoryName(categoryName: string): string {
-  return categoryMeta[categoryName].shortDescription
-}
+import { prepareValueForQuery } from '../../queries'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -59,7 +51,7 @@ const View = () => {
 
   const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStoreItem<
     Species
-  >(CollectionNames.Species, speciesId, 'view-species-category')
+  >(CollectionNames.Species, speciesId, 'view-species')
 
   if (isLoadingSpecies || !species) {
     return <LoadingIndicator message="Loading species..." />
@@ -73,19 +65,18 @@ const View = () => {
     <>
       <Helmet>
         <title>
-          {species.pluralname} | {getDisplayNameByCategoryName(categoryName)} |{' '}
-          {getDescriptionByCategoryName(categoryName)} | VRCArena
+          {species.pluralname} | {species.shortdescription} | VRCArena
         </title>
         <meta
           name="description"
-          content={getDescriptionByCategoryName(categoryName)}
+          content={species.description || species.shortdescription}
         />
       </Helmet>
       {isEditor ? (
         <Button
           url={routes.editSpeciesWithVar.replace(':speciesId', species.id)}
           icon={<EditIcon />}>
-          Edit
+          Edit Species
         </Button>
       ) : null}
       <Heading variant="h1">
@@ -94,19 +85,9 @@ const View = () => {
           {species.pluralname}
         </Link>
       </Heading>
-      <Heading variant="h2">
-        <Link
-          to={routes.viewSpeciesCategoryWithVar
-            .replace(':speciesIdOrSlug', speciesId)
-            .replace(':categoryName', categoryName)}>
-          {' '}
-          {getDisplayNameByCategoryName(categoryName)}
-        </Link>
-      </Heading>
-      <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
+      <BodyText>{species.description || species.shortdescription}</BodyText>
       <PaginatedView
         viewName="getPublicAssets"
-        // @ts-ignore
         getQuery={getQuery}
         sortKey="view-category"
         sortOptions={[
@@ -124,7 +105,9 @@ const View = () => {
           .replace(':speciesIdOrSlug', speciesId)
           .replace(':categoryName', categoryName)}
         getQueryString={() =>
-          `species:"${species.pluralname}" category:${AssetCategories.avatar}`
+          `species:${prepareValueForQuery(species.pluralname)} category:${
+            AssetCategories.avatar
+          }`
         }>
         <Renderer />
       </PaginatedView>
