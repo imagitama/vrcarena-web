@@ -107,9 +107,14 @@ const View = () => {
         ),
     [speciesIdOrSlug]
   )
-  const [isLoadingSpecies, isErrorLoadingSpecies, species] = useDataStore<
-    Species
-  >(getSpeciesQuery, 'view-species')
+  const [
+    isLoadingSpecies,
+    isErrorLoadingSpecies,
+    speciesResults
+  ] = useDataStore<Species[]>(getSpeciesQuery, 'view-species')
+
+  const species =
+    speciesResults && speciesResults.length === 1 ? speciesResults[0] : null
 
   const getChildrenQuery = useCallback(() => {
     if (!species) {
@@ -182,7 +187,10 @@ const View = () => {
           Edit Species
         </Button>
       ) : null}
+
       <Heading variant="h1">
+        <Link to={routes.viewAllSpecies}>All</Link>
+        {' / '}
         <Link
           to={routes.viewSpeciesWithVar.replace(
             ':speciesIdOrSlug',
