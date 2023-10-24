@@ -1,8 +1,10 @@
-import React, { Fragment, useCallback, useEffect } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useHistory, useParams } from 'react-router'
 import EditIcon from '@material-ui/icons/Edit'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 import Link from '../../components/link'
 import Heading from '../../components/heading'
@@ -35,10 +37,13 @@ import {
 import * as routes from '../../routes'
 import { prepareValueForQuery } from '../../queries'
 import { client as supabase } from '../../supabase'
+import { trackAction } from '../../analytics'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
 )
+
+const analyticsCategoryName = 'ViewSpecies'
 
 const AssetsForSpecies = ({
   species,
@@ -48,10 +53,15 @@ const AssetsForSpecies = ({
   childSpecies: Species[]
 }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
+  const [includeChildren, setIncludeChildren] = useState(true)
+
   const speciesIdsToSearchFor = [
     species.id,
-    ...childSpecies.map(childSpeciesItem => childSpeciesItem.id)
+    ...(includeChildren
+      ? childSpecies.map(childSpeciesItem => childSpeciesItem.id)
+      : [])
   ]
+
   const getQuery = useCallback(
     (query: PostgrestFilterBuilder<PublicAsset>) => {
       query = query
@@ -88,7 +98,23 @@ const AssetsForSpecies = ({
         `species:${prepareValueForQuery(species.pluralname)} category:${
           AssetCategories.avatar
         }`
-      }>
+      }
+      extraControls={[
+        <Button
+          icon={
+            includeChildren ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
+          }
+          onClick={() => {
+            setIncludeChildren(currentVal => !currentVal)
+            trackAction(
+              analyticsCategoryName,
+              'Click on toggle include children'
+            )
+          }}
+          color="default">
+          Child Species
+        </Button>
+      ]}>
       <Renderer />
     </PaginatedView>
   )

@@ -208,8 +208,7 @@ const useStyles = makeStyles(theme => ({
   },
   toggleBulkEditButton: {
     display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '0.25rem'
+    justifyContent: 'center'
   },
   description: {
     overflowX: 'hidden'
