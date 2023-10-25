@@ -8,6 +8,8 @@ import { mediaQueryForMobiles } from '../../media-queries'
 
 import { CollectionNames as OldCollectionNames } from '../../hooks/useDatabaseQuery'
 
+import * as config from '../../config'
+
 import Button from '../button'
 import {
   isBoothUrl,
@@ -80,9 +82,9 @@ function getButtonLabel(category, sourceUrl, isNoFilesAttached) {
 const addReferrerToGumroadUrl = url => {
   if (url && isGumroadUrl(url)) {
     // TODO: Probably re-build URL from scratch
-    return `${url}${url.includes('?') ? '' : '?'}&referrer=${
+    return `${url}${url.includes('?') ? '' : '?'}&referrer=${encodeURIComponent(
       config.WEBSITE_FULL_URL
-    }`
+    )}`
   }
   return url
 }
