@@ -153,7 +153,7 @@ export default () => {
       <div>
         <h1>Components</h1>
         <h2>Species Selector</h2>
-        <SpeciesSelector />
+        <SpeciesSelector selectedSpeciesIds={['IpItSWT1QpwLB16IPz2e']} />
         <h2>Performance Editor</h2>
         <PerformanceEditorDemo />
         <h2>Survey Form</h2>

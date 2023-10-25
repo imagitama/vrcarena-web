@@ -33,10 +33,7 @@ const useStyles = makeStyles({
     }
   },
   selected: {
-    '& img': {
-      borderRadius: '5px',
-      outline: '2px solid yellow'
-    }
+    outline: '2px solid yellow'
   }
 })
 
