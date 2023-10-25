@@ -359,7 +359,7 @@ export default ({
   return (
     <>
       <SearchForIdForm
-        indexName={CollectionNames.Authors}
+        collectionName={CollectionNames.Authors}
         renderer={SearchResultRenderer}
         onClickWithIdAndDetails={onIdAndDetails}
       />

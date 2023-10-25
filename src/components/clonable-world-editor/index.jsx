@@ -75,7 +75,7 @@ export default ({
       {newClonableWorldId && `You have selected: ${newClonableWorldId}`}
 
       <SearchForIdForm
-        indexName={CollectionNames.Assets}
+        collectionName={CollectionNames.Assets}
         fieldAsLabel={AssetFieldNames.title}
         onClickWithIdAndDetails={id => {
           setNewClonableWorldId(id)

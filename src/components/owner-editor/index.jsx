@@ -74,7 +74,7 @@ export default ({ collectionName, id, actionCategory }) => {
     <>
       <p>Enter a username to search for a new owner:</p>
       <SearchForIdForm
-        indexName={CollectionNames.Users}
+        collectionName={CollectionNames.Users}
         fieldAsLabel={UserFieldNames.username}
         onClickWithIdAndDetails={id => onSave(id)}
       />

@@ -357,7 +357,7 @@ export default ({
   return (
     <>
       <SearchForIdForm
-        indexName={CollectionNames.DiscordServers}
+        collectionName={CollectionNames.DiscordServers}
         renderer={SearchResultRenderer}
         onClickWithIdAndDetails={onIdAndDetails}
       />
