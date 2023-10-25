@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
 import AddIcon from '@material-ui/icons/Add'
@@ -22,16 +22,41 @@ import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import { Species } from '../../modules/species'
 import SuccessMessage from '../../components/success-message'
+import AutocompleteInput from '../../components/autocomplete-input'
+import {
+  mediaQueryForMobiles,
+  mediaQueryForTablets,
+  mediaQueryForTabletsOrBelow
+} from '../../media-queries'
 
 const description =
   'Avatars in VR social games can be grouped into different species. Here is a list of all species that we know about in VR social games from Avalis to Dutch Angel Dragons to Digimon.'
 const analyticsCategory = 'ViewAllSpecies'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
+  speciesResults: {
+    marginTop: '0.5rem',
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
   speciesItem: {
-    marginBottom: '0.5rem',
+    width: '33.3%',
+    padding: '0.25rem',
     '& a': {
-      color: 'inherit'
+      color: 'inherit',
+      display: 'block',
+      '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.1)'
+      }
+    },
+    [mediaQueryForTablets]: {
+      width: '50%'
+    },
+    [mediaQueryForMobiles]: {
+      width: '100%'
+    },
+    '& $speciesItem': {
+      width: '100%'
     }
   },
   speciesItemTitle: {
@@ -50,8 +75,19 @@ const useStyles = makeStyles(theme => ({
   description: {
     fontSize: '75%',
     fontStyle: 'italic'
+  },
+  autocompleteWrapper: {
+    marginBottom: '1rem',
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  autocomplete: {
+    width: '50%',
+    [mediaQueryForTabletsOrBelow]: {
+      width: '100%'
+    }
   }
-}))
+})
 
 interface SpeciesWithChildren extends Species {
   children?: SpeciesWithChildren[]
@@ -74,7 +110,7 @@ function convertToNestedArray(
   return nestedArray
 }
 
-const SpeciesOutput = ({
+const SpeciesResult = ({
   speciesItem,
   indent = 0
 }: {
@@ -103,14 +139,14 @@ const SpeciesOutput = ({
       </Link>
       {speciesItem.children
         ? speciesItem.children.map(speciesChild => (
-            <SpeciesOutput speciesItem={speciesChild} indent={1} />
+            <SpeciesResult speciesItem={speciesChild} indent={1} />
           ))
         : null}
     </div>
   )
 }
 
-const AllSpeciesOutput = () => {
+const View = () => {
   const isEditor = useIsEditor()
   const [isLoading, isError, species] = useDatabaseQuery<Species>(
     CollectionNames.Species,
@@ -119,6 +155,8 @@ const AllSpeciesOutput = () => {
       [options.orderBy]: [SpeciesFieldNames.singularName, OrderDirections.ASC]
     }
   )
+  const [filterIds, setFilterIds] = useState<string[] | null>(null)
+  const classes = useStyles()
 
   if (isLoading || !Array.isArray(species)) {
     return <LoadingIndicator message="Loading species..." />
@@ -128,14 +166,33 @@ const AllSpeciesOutput = () => {
     return <ErrorMessage>Failed to load species</ErrorMessage>
   }
 
-  const speciesHierarchy = convertToNestedArray(species)
+  const filteredSpecies =
+    filterIds !== null
+      ? species.filter(speciesItem => filterIds.includes(speciesItem.id))
+      : species
+
+  const speciesHierarchy = convertToNestedArray(filteredSpecies)
 
   return (
-    <div>
-      {speciesHierarchy.map(speciesItem => (
-        <SpeciesOutput key={speciesItem.id} speciesItem={speciesItem} />
-      ))}
-    </div>
+    <>
+      <div className={classes.autocompleteWrapper}>
+        <AutocompleteInput
+          label="Search for species"
+          options={species.map(speciesItem => ({
+            label: speciesItem.pluralname,
+            data: speciesItem.id
+          }))}
+          onSelectedOption={newOption => setFilterIds([newOption.data])}
+          className={classes.autocomplete}
+          onClear={() => setFilterIds(null)}
+        />
+      </div>
+      <div className={classes.speciesResults}>
+        {speciesHierarchy.map(speciesItem => (
+          <SpeciesResult key={speciesItem.id} speciesItem={speciesItem} />
+        ))}
+      </div>
+    </>
   )
 }
 
@@ -169,7 +226,7 @@ export default () => {
         multi-tiered system. Some have been renamed, split up or moved around.
         Please message on Discord if you like or dislike the new system!
       </SuccessMessage>
-      <AllSpeciesOutput />
+      <View />
     </>
   )
 }

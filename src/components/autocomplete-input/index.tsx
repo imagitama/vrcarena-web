@@ -1,4 +1,8 @@
-import React, { HTMLProps } from 'react'
+import React, {
+  FocusEventHandler,
+  HTMLProps,
+  KeyboardEventHandler
+} from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete, { AutocompleteProps } from '@material-ui/lab/Autocomplete'
 
@@ -17,7 +21,11 @@ export default ({
   onNewValue = undefined,
   onSelectedOption = undefined,
   multiple,
-  ...props
+  autoFocus,
+  className,
+  onKeyDown,
+  onFocus,
+  onBlur
 }: {
   label: string
   options: AutocompleteOption<any>[]
@@ -31,11 +39,12 @@ export default ({
   value?: string
   onNewValue?: (newValue: string) => void
   onSelectedOption?: (newOption: AutocompleteOption<any>) => void
-} & HTMLProps<HTMLDivElement>) => {
-  console.debug(`Autocomplete.render`, {
-    value,
-    options: options.map(option => `${option.label}.${option.data}`).join(', ')
-  })
+  autoFocus?: boolean
+  className?: string
+  onKeyDown?: KeyboardEventHandler
+  onFocus?: FocusEventHandler
+  onBlur?: FocusEventHandler
+}) => {
   return (
     <Autocomplete
       options={options}
@@ -45,7 +54,7 @@ export default ({
           {...params}
           label={label}
           variant="outlined"
-          autoFocus={props.autoFocus}
+          autoFocus={autoFocus}
         />
       )}
       filterOptions={
@@ -88,10 +97,11 @@ export default ({
       }}
       openOnFocus
       multiple={multiple}
-      // extra
-      onKeyDown={props.onKeyDown}
-      onFocus={props.onFocus}
-      onBlur={props.onBlur}
+      className={className}
+      // events
+      onKeyDown={onKeyDown}
+      onFocus={onFocus}
+      onBlur={onBlur}
     />
   )
 }

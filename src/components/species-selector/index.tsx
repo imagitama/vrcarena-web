@@ -1,20 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { CollectionNames, Species } from '../../modules/species'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import { SpeciesFieldNames } from '../../hooks/useDatabaseQuery'
+import AutocompleteInput from '../autocomplete-input'
 
 interface SpeciesWithChildren extends Species {
   children?: SpeciesWithChildren[]
 }
 
 const useStyles = makeStyles({
+  speciesResults: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
   speciesItem: {
-    marginBottom: '0.25rem',
+    padding: '0.25rem',
     '&:hover': {
-      cursor: 'pointer'
+      cursor: 'pointer',
+      backgroundColor: 'rgba(255, 255, 255, 0.1)'
     }
   },
   speciesItemTitle: {
@@ -110,6 +116,8 @@ const SpeciesSelector = ({
     'species-selector',
     SpeciesFieldNames.pluralName
   )
+  const [filterIds, setFilterIds] = useState<string[] | null>(null)
+  const classes = useStyles()
 
   if (isLoading || !allSpecies) {
     return <LoadingIndicator message="Loading species..." />
@@ -119,19 +127,38 @@ const SpeciesSelector = ({
     return <ErrorMessage>Failed to load species</ErrorMessage>
   }
 
-  const speciesHierarchy = convertToNestedArray(allSpecies)
+  const filteredSpecies =
+    filterIds !== null
+      ? allSpecies.filter(speciesItem => filterIds.includes(speciesItem.id))
+      : allSpecies
+
+  const speciesHierarchy = convertToNestedArray(filteredSpecies)
 
   return (
-    <div>
-      {speciesHierarchy.map(speciesItem => (
-        <SpeciesOutput
-          key={speciesItem.id}
-          speciesItem={speciesItem}
-          selectedSpeciesIds={selectedSpeciesIds}
-          onSpeciesClickWithId={onSpeciesClickWithId}
-        />
-      ))}
-    </div>
+    <>
+      <AutocompleteInput
+        label="Search for species"
+        options={allSpecies.map(speciesItem => ({
+          label: speciesItem.pluralname,
+          data: speciesItem.id
+        }))}
+        onSelectedOption={(newOption: { data: string }) =>
+          setFilterIds([newOption.data])
+        }
+        onClear={() => setFilterIds(null)}
+      />
+
+      <div className={classes.speciesResults}>
+        {speciesHierarchy.map(speciesItem => (
+          <SpeciesOutput
+            key={speciesItem.id}
+            speciesItem={speciesItem}
+            selectedSpeciesIds={selectedSpeciesIds}
+            onSpeciesClickWithId={onSpeciesClickWithId}
+          />
+        ))}
+      </div>
+    </>
   )
 }
 
