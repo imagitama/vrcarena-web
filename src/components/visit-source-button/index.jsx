@@ -78,7 +78,7 @@ function getButtonLabel(category, sourceUrl, isNoFilesAttached) {
 }
 
 const addReferrerToGumroadUrl = url => {
-  if (isGumroadUrl(url)) {
+  if (url && isGumroadUrl(url)) {
     // TODO: Probably re-build URL from scratch
     return `${url}${url.includes('?') ? '' : '?'}&referrer=${
       config.WEBSITE_FULL_URL
