@@ -20,7 +20,7 @@ export default ({
   fieldProperties
 }: {
   name: string
-  onChange: (id: string) => void
+  onChange: (id: string | null) => void
   value: any
   fieldProperties: SearchableInputFieldProperties
 }) => {
@@ -45,6 +45,8 @@ export default ({
     value || false
   )
 
+  const clear = () => onChange(null)
+
   return (
     <div
       style={{
@@ -66,7 +68,10 @@ export default ({
           <br />
           {!isFormVisible && (
             <div>
-              <Button onClick={() => setIsFormVisible(true)}>Change</Button>
+              <Button onClick={() => setIsFormVisible(true)}>Change</Button>{' '}
+              <Button color="default" onClick={() => clear()}>
+                Clear
+              </Button>
             </div>
           )}
         </>
