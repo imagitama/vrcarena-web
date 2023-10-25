@@ -89,7 +89,6 @@ export const editableFields: EditableField[] = [
       height: 300,
       directoryName: 'species-thumbnails'
     },
-    isRequired: true,
     hint:
       'Use a dark image so it is easier on the eyes. Prefer an anthro version of the species as it is for VRChat.'
   },
