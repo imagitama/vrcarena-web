@@ -242,7 +242,8 @@ const View = () => {
               species.id
             )}>
             {species.pluralname}
-          </Link>
+          </Link>{' '}
+          ({species.avatarcount})
         </Heading>
       </div>
       <BodyText>{species.description || species.shortdescription}</BodyText>

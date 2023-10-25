@@ -20,7 +20,7 @@ import useDatabaseQuery, {
 import * as routes from '../../routes'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
-import { Species } from '../../modules/species'
+import { FullSpecies, Species, ViewNames } from '../../modules/species'
 import SuccessMessage from '../../components/success-message'
 import AutocompleteInput from '../../components/autocomplete-input'
 import {
@@ -90,7 +90,7 @@ const useStyles = makeStyles({
   }
 })
 
-interface SpeciesWithChildren extends Species {
+interface SpeciesWithChildren extends FullSpecies {
   children?: SpeciesWithChildren[]
 }
 
@@ -131,7 +131,9 @@ const SpeciesResult = ({
         <div className={classes.speciesItemTitle}>
           <img src={speciesItem.thumbnailurl} />{' '}
           <div>
-            <div className={classes.name}>{speciesItem.pluralname}</div>
+            <div className={classes.name}>
+              {speciesItem.pluralname} ({speciesItem.avatarcount})
+            </div>
             <div className={classes.description}>
               {speciesItem.shortdescription}
             </div>
@@ -150,7 +152,7 @@ const SpeciesResult = ({
 const View = () => {
   const isEditor = useIsEditor()
   const [isLoading, isError, species] = useDatabaseQuery<Species>(
-    CollectionNames.Species,
+    ViewNames.GetFullSpecies,
     isEditor ? [] : [[SpeciesFieldNames.redirectTo, 'is', null]],
     {
       [options.orderBy]: [SpeciesFieldNames.singularName, OrderDirections.ASC]

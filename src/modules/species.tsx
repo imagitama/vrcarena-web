@@ -26,6 +26,7 @@ export interface Species {
 
 export interface FullSpecies extends Species {
   parentpluralname: string | null
+  avatarcount: number
 }
 
 export const CollectionNames = {
