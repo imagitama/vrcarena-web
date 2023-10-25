@@ -42,7 +42,8 @@ export default ({ analyticsCategory, onDone, saveOnSelect = false }) => {
     species
   ] = useDataStoreItems(
     CollectionNames.Species,
-    'favorite-species-editor-species'
+    'favorite-species-editor-species',
+    SpeciesFieldNames.pluralName
   )
   const [isSaving, isSaveSuccess, isSaveErrored, save] = useDatabaseSave(
     CollectionNames.Users,
