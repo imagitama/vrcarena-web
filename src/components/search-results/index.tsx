@@ -37,6 +37,7 @@ import categoryMeta, { Category } from '../../category-meta'
 import useSpecies from '../../hooks/useSpecies'
 import { Species } from '../../modules/species'
 import { Asset } from '../../modules/assets'
+import { getPathForQueryString } from '../../queries'
 
 const useStyles = makeStyles({
   tableWrapper: {
@@ -158,6 +159,13 @@ function Results({
         <>
           <AssetResults assets={hits} />
           <PoweredByAlgoliaLogo />
+          <Button
+            color="default"
+            url={getPathForQueryString(
+              hits.map(hit => `id:${hit.id}`).join(' ')
+            )}>
+            Export Assets To Query
+          </Button>
         </>
       )
     case CollectionNames.Authors:

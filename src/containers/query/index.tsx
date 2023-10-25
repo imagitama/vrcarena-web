@@ -228,6 +228,12 @@ export const getOperationsFromUserInput = (userInput: string): Operation[] => {
       //     operator: Operator.FILTER,
       //     value: chunk.replace('parent:', '')
       //   })
+    } else if (chunk.includes('id:')) {
+      operations.push({
+        fieldName: 'id',
+        operator: Operator.OR,
+        value: chunk.replace('id:', '')
+      })
     } else {
       operations.push({
         fieldName: 'tags',
@@ -334,6 +340,9 @@ const getIdIfNotId = async (
   return id
 }
 
+const getIsFieldNameArray = (fieldName: string): boolean =>
+  fieldName === AssetFieldNames.tags
+
 export const extendQueryFromUserInput = (
   baseQuery: PostgrestFilterBuilder<FullAsset>,
   operations: Operation[]
@@ -355,7 +364,14 @@ export const extendQueryFromUserInput = (
           throw new Error('Should be an array')
         }
         const filters = operation.value
-          .map(value => `tags.cs.{${value}}`)
+          .map(
+            value =>
+              `${operation.fieldName}${
+                getIsFieldNameArray(operation.fieldName)
+                  ? `.cs.{${value}}`
+                  : `.eq.${value}`
+              }`
+          )
           .join(',')
         methods.push(['or', [filters]])
         query = query.or(filters)
