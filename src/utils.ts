@@ -436,3 +436,29 @@ export function getIsStringADate(string: string): boolean {
 export const getDateFromString = (string: string): Date => new Date(string)
 
 export const getIsUuid = (string: string): boolean => validateUuid(string)
+
+export const findItemAndParents = <
+  TItem extends { id: string; parent: string }
+>(
+  items: TItem[],
+  id: string
+): TItem[] => {
+  const findItem = (items: TItem[], id: string): TItem[] => {
+    let returnItems: TItem[] = []
+
+    for (const item of items) {
+      if (item.id === id) {
+        console.log('MATCH!', id)
+
+        returnItems.push(item)
+
+        if (item.parent) {
+          returnItems = returnItems.concat(findItem(items, item.parent))
+        }
+      }
+    }
+    return returnItems
+  }
+
+  return findItem(items, id) || []
+}

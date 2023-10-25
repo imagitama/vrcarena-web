@@ -28,6 +28,7 @@ import {
   mediaQueryForTablets,
   mediaQueryForTabletsOrBelow
 } from '../../media-queries'
+import { findItemAndParents } from '../../utils'
 
 const description =
   'Avatars in VR social games can be grouped into different species. Here is a list of all species that we know about in VR social games from Avalis to Dutch Angel Dragons to Digimon.'
@@ -155,7 +156,7 @@ const View = () => {
       [options.orderBy]: [SpeciesFieldNames.singularName, OrderDirections.ASC]
     }
   )
-  const [filterIds, setFilterIds] = useState<string[] | null>(null)
+  const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()
 
   if (isLoading || !Array.isArray(species)) {
@@ -167,9 +168,7 @@ const View = () => {
   }
 
   const filteredSpecies =
-    filterIds !== null
-      ? species.filter(speciesItem => filterIds.includes(speciesItem.id))
-      : species
+    filterId !== null ? findItemAndParents<Species>(species, filterId) : species
 
   const speciesHierarchy = convertToNestedArray(filteredSpecies)
 
@@ -182,9 +181,9 @@ const View = () => {
             label: speciesItem.pluralname,
             data: speciesItem.id
           }))}
-          onSelectedOption={newOption => setFilterIds([newOption.data])}
+          onSelectedOption={newOption => setFilterId(newOption.data)}
           className={classes.autocomplete}
-          onClear={() => setFilterIds(null)}
+          onClear={() => setFilterId(null)}
         />
       </div>
       <div className={classes.speciesResults}>

@@ -6,6 +6,7 @@ import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import { SpeciesFieldNames } from '../../hooks/useDatabaseQuery'
 import AutocompleteInput from '../autocomplete-input'
+import { findItemAndParents } from '../../utils'
 
 interface SpeciesWithChildren extends Species {
   children?: SpeciesWithChildren[]
@@ -113,7 +114,7 @@ const SpeciesSelector = ({
     'species-selector',
     SpeciesFieldNames.pluralName
   )
-  const [filterIds, setFilterIds] = useState<string[] | null>(null)
+  const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()
 
   if (isLoading || !allSpecies) {
@@ -125,8 +126,8 @@ const SpeciesSelector = ({
   }
 
   const filteredSpecies =
-    filterIds !== null
-      ? allSpecies.filter(speciesItem => filterIds.includes(speciesItem.id))
+    filterId !== null
+      ? findItemAndParents<Species>(allSpecies, filterId)
       : allSpecies
 
   const speciesHierarchy = convertToNestedArray(filteredSpecies)
@@ -140,9 +141,9 @@ const SpeciesSelector = ({
           data: speciesItem.id
         }))}
         onSelectedOption={(newOption: { data: string }) =>
-          setFilterIds([newOption.data])
+          setFilterId(newOption.data)
         }
-        onClear={() => setFilterIds(null)}
+        onClear={() => setFilterId(null)}
       />
 
       <div className={classes.speciesResults}>
