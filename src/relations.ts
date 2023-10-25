@@ -4,14 +4,14 @@ import {
   AuthorFieldNames,
   CollectionNames as OldCollectionNames,
   CommentFieldNames,
-  PatreonStatuses,
   ReportFieldNames,
-  UserFieldNames,
-  UserRoles
+  SpeciesFieldNames,
+  UserFieldNames
 } from './hooks/useDatabaseQuery'
 import * as routes from './routes'
 import { AmendmentsFieldNames } from './modules/amendments'
 import { CollectionNames as ReportsCollectionNames } from './modules/reports'
+import { CollectionNames as SpeciesCollectionNames } from './modules/species'
 
 const labelMaxLength = 100
 
@@ -52,6 +52,8 @@ export const getUrlForParent = (
     case ReportsCollectionNames.Reports:
     case ReportsCollectionNames.ReportsMeta:
       return routes.viewReportWithVar.replace(':reportId', parentId)
+    case SpeciesCollectionNames.Species:
+      return routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', parentId)
     default:
       throw new Error(
         `Could not get URL for parent ${parentTable} - not supported`
@@ -108,6 +110,8 @@ export const getLabelForParent = (
           ) || '(no report reason)'
         )
       }
+    case SpeciesCollectionNames.Species:
+      return parentData[SpeciesFieldNames.pluralName] || '(no name)'
     default:
       throw new Error(
         `Could not get label for parent ${parentTable} - not supported`

@@ -45,7 +45,11 @@ export default ({
     value || false
   )
 
-  const clear = () => onChange(null)
+  const clear = () => {
+    onChange(null)
+    setIsFormVisible(false)
+    setValueData(null)
+  }
 
   return (
     <div

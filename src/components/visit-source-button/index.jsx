@@ -77,6 +77,16 @@ function getButtonLabel(category, sourceUrl, isNoFilesAttached) {
   return 'Visit Source'
 }
 
+const addReferrerToGumroadUrl = url => {
+  if (isGumroadUrl(url)) {
+    // TODO: Probably re-build URL from scratch
+    return `${url}${url.includes('?') ? '' : '?'}&referrer=${
+      config.WEBSITE_FULL_URL
+    }`
+  }
+  return url
+}
+
 export default ({
   isAssetLoading,
   assetId,
@@ -126,7 +136,7 @@ export default ({
   return (
     <Button
       color={isNoFilesAttached ? 'primary' : 'default'}
-      url={sourceUrl}
+      url={addReferrerToGumroadUrl(sourceUrl)}
       icon={<LaunchIcon />}
       onClick={onBtnClick}
       size={isLarge ? 'large' : undefined}
