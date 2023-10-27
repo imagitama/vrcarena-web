@@ -97,7 +97,7 @@ const LoadingFeature = () => {
   )
 }
 
-export default ({
+const AssetFeatures = ({
   tags = [],
   tagsData = [],
   shimmer = false
@@ -136,3 +136,5 @@ export default ({
     </div>
   )
 }
+
+export default AssetFeatures

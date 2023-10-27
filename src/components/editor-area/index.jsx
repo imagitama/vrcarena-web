@@ -79,7 +79,7 @@ const useStyles = makeStyles({
   }
 })
 
-export default ({
+const EditorArea = ({
   // for asset amendment form (not passed in for pedestal upload form which modifies 2 fields)
   fieldName = undefined,
   title,
@@ -148,10 +148,12 @@ export default ({
           {React.cloneElement(
             DisplayAndEditor ? (
               DisplayAndEditor
-            ) : isEditorOpen ? (
+            ) : isEditorOpen && Editor ? (
               Editor
-            ) : (
+            ) : Display ? (
               <Display />
+            ) : (
+              <>Nothing to render</>
             ),
             isEditorOpen
               ? {
@@ -201,3 +203,5 @@ export default ({
     </div>
   )
 }
+
+export default EditorArea

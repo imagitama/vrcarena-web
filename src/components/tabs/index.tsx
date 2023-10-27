@@ -43,33 +43,40 @@ const useStyles = makeStyles({
   root: {},
   vertical: {
     display: 'flex'
-  }
+  },
+  horizontal: {}
 })
 
-const tabsContext = createContext()
+interface TabContext {}
+
+// @ts-ignore
+const tabsContext = createContext<TabContext>()
 export const useTabs = () => useContext(tabsContext)
 
-/**
- * Tab:
- * {
- *   name: string, (used for :tabName in URL)
- *   label: string,
- *   contents: () => React
- * }
- */
-
-const TabPanel = ({ activeTabIdx, index, children, item }) =>
+const TabPanel = ({
+  activeTabIdx,
+  index,
+  children,
+  item
+}: {
+  activeTabIdx: number
+  index: number
+  children: React.ReactNode
+  item: TabItem
+}) =>
   activeTabIdx === index ? (
     item.noLazy ? (
-      children
+      <>{children}</>
     ) : (
       <LazyLoad placeholder={<LoadingIndicator message="Scroll down..." />}>
         {children}
       </LazyLoad>
     )
-  ) : null
+  ) : (
+    <></>
+  )
 
-const getInitialTabIdx = (tabName, items) => {
+const getInitialTabIdx = (tabName: string, items: TabItem[]): number => {
   const idx = items.findIndex(item => item.name === tabName)
 
   if (idx === -1) {
@@ -79,28 +86,31 @@ const getInitialTabIdx = (tabName, items) => {
   return idx
 }
 
-/**
- * items: Array<Tab>
- *
- * type Tab = {
- *   name: string // used in URL
- *   label: string
- *   contents: () => React.Element
- * }
- */
-
+export interface TabItem {
+  name: string // used in URL
+  label: string
+  contents: React.ReactElement
+  noLazy?: boolean
+  isEnabled?: boolean
+}
 export default ({
   items,
   urlWithTabNameVar = '',
   horizontal = false,
   overrideInitialTabIdx = undefined,
   children
+}: {
+  items: TabItem[]
+  urlWithTabNameVar?: string
+  horizontal?: boolean
+  overrideInitialTabIdx?: number
+  children?: React.ReactNode
 }) => {
   const enabledItems = items
     .filter(item => item)
     .filter(({ isEnabled }) => isEnabled !== false)
 
-  const { tabName } = useParams()
+  const { tabName } = useParams<{ tabName: string }>()
   const { push } = useHistory()
   const isMobile = useMediaQuery({ query: queryForTabletsOrBelow })
   const [activeTabIdx, setActiveTabIdx] = useState(0)
@@ -144,7 +154,7 @@ export default ({
               }}
               className={classes.tabs}>
               {enabledItems.map(({ name, label }, index) => (
-                <Tab key={name} label={label} index={index} />
+                <Tab key={name} label={label} />
               ))}
             </Tabs>
           </div>

@@ -29,6 +29,9 @@ const useStyles = makeStyles({
   label: {
     fontSize: '150%',
     marginBottom: '0.5rem'
+  },
+  formLabel: {
+    margin: '0.5rem 0'
   }
 })
 
@@ -71,6 +74,7 @@ const RelationEditorForm = ({
 
   return (
     <div className={classes.editor}>
+      <div className={classes.formLabel}>1. Search for an asset</div>
       <AssetSearch
         selectedAsset={assetsData.find(
           assetData => assetData.id === newRelation.asset
@@ -78,6 +82,9 @@ const RelationEditorForm = ({
         onSelect={onSelectedAsset}
         limit={10}
       />
+      <div className={classes.formLabel}>
+        2. Select if a parent, child, sibling, etc.
+      </div>
       <Select
         fullWidth
         onChange={e =>
@@ -86,7 +93,8 @@ const RelationEditorForm = ({
             type: e.target.value as string
           }))
         }
-        value={newRelation.type}>
+        value={newRelation.type}
+        placeholder="Select a relationship">
         <MenuItem value="" disabled>
           Select a relationship
         </MenuItem>
@@ -99,6 +107,7 @@ const RelationEditorForm = ({
           </MenuItem>
         ))}
       </Select>
+      <div className={classes.formLabel}>3. Add some comments (optional)</div>
       <TextInput
         multiline
         rows={2}
@@ -249,6 +258,7 @@ export default ({
     <div>
       {isAddFormVisible ? <RelationEditorForm onDone={onAddRelation} /> : null}
       <ItemsEditor
+        nameSingular="relation"
         // @ts-ignore
         editor={<Editor />}
         // @ts-ignore

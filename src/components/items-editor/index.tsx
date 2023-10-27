@@ -7,6 +7,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import CardButton from '../card-button'
 import { moveItemToLeft, moveItemToRight } from '../../utils'
 import { defaultBorderRadius } from '../../themes'
+import Button from '../button'
 
 export type Item<T> = {
   id: string
@@ -57,7 +58,8 @@ const useStyles = makeStyles({
   },
   noItemsMessage: {
     fontStyle: 'italic',
-    textAlign: 'center'
+    textAlign: 'center',
+    marginBottom: '0.5rem'
   },
   activeForEditing: {
     width: '100%',
@@ -78,6 +80,7 @@ export default ({
   editor,
   renderer,
   emptyItem,
+  nameSingular = 'item',
   allowDelete = true,
   allowEditing = true,
   allowAdding = true,
@@ -96,6 +99,7 @@ export default ({
   renderer: React.ReactElement<{
     item: Item<any>
   }>
+  nameSingular?: string
   emptyItem?: Item<any>
   allowDelete?: boolean
   allowEditing?: boolean
@@ -227,13 +231,20 @@ export default ({
         ))
       ) : (
         <div className={`${classes.item} ${classes.emptyItem}`}>
-          <div className={classes.noItemsMessage}>No items defined yet</div>
+          <div>
+            <div className={classes.noItemsMessage}>
+              No {nameSingular}s defined yet
+            </div>
+            <Button color="default" onClick={onAddClick}>
+              Add {nameSingular}
+            </Button>
+          </div>
         </div>
       )}
       {allowAdding ? (
         <div className={classes.item}>
           <div className={classes.addButton}>
-            <CardButton label="Add" onClick={onAddClick} />
+            <CardButton label={`Add ${nameSingular}`} onClick={onAddClick} />
           </div>
         </div>
       ) : null}
