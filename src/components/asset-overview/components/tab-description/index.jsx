@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { AssetFieldNames } from '../../../../hooks/useDatabaseQuery'
@@ -12,8 +12,6 @@ import ImageGallery from '../../../image-gallery'
 import Expander from '../../../expander'
 
 import TabContext from '../../context'
-
-const heightBeforeCollapsed = 300
 
 const useStyles = makeStyles({
   sketchfabWrapper: {
@@ -29,8 +27,7 @@ const useStyles = makeStyles({
     }
   },
   description: {
-    '& A': { textDecoration: 'underline' },
-    '& img': { maxWidth: '100%' }
+    '& A': { textDecoration: 'underline' }
   }
 })
 

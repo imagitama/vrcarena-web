@@ -15,6 +15,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableBody from '@material-ui/core/TableBody'
 import MaterialTab from '@material-ui/core/Tab'
+import { makeStyles } from '@material-ui/core/styles'
 
 import { trackAction } from '../../analytics'
 import * as routes from '../../routes'
@@ -22,6 +23,10 @@ import * as routes from '../../routes'
 import Button from '../button'
 import SlimMessage from '../slim-message'
 import ImageWithCaption from '../image-with-caption'
+
+const useStyles = makeStyles({
+  image: { maxWidth: '50vw', maxHeight: '50vh', width: 'auto', height: 'auto' }
+})
 
 const getLabel = node => {
   try {
@@ -153,6 +158,11 @@ const TabContents = ({ contents, idx, groupIdx }) => {
   )
 }
 
+const Image = props => {
+  const classes = useStyles()
+  return <img className={classes.img} {...props} />
+}
+
 export default ({
   source = '',
   analyticsCategory = '',
@@ -170,6 +180,7 @@ export default ({
         rehypePlugins={enableHtml ? [rehypeRaw] : []}
         remarkPlugins={[remarkDirective, myRemarkDirectivePlugin, gfm]}
         components={{
+          img: props => <Image {...props} />,
           button: props => (
             <Button
               url={props.url}
