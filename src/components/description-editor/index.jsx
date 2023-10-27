@@ -140,7 +140,7 @@ export default ({
           )}
         </FormControls>
       </Paper>
-      <Markdown source={newDescriptionValue} />
+      <Markdown source={newDescriptionValue} replaceImagesWithButtons />
     </>
   )
 }

@@ -57,7 +57,10 @@ export default () => {
           </div>
         ) : null}
         <div className={classes.description}>
-          <Markdown source={asset ? asset[AssetFieldNames.description] : ''} />
+          <Markdown
+            source={asset ? asset[AssetFieldNames.description] : ''}
+            replaceImagesWithButtons
+          />
         </div>
         {hasPedestal ||
         nonImageFileUrls.length > maxNumberOfImagesShownInPrimaryGallery ? (

@@ -16,6 +16,7 @@ import TableRow from '@material-ui/core/TableRow'
 import TableBody from '@material-ui/core/TableBody'
 import MaterialTab from '@material-ui/core/Tab'
 import { makeStyles } from '@material-ui/core/styles'
+import ImageIcon from '@material-ui/icons/Image'
 
 import { trackAction } from '../../analytics'
 import * as routes from '../../routes'
@@ -159,15 +160,19 @@ const TabContents = ({ contents, idx, groupIdx }) => {
 }
 
 const Image = props => {
-  const classes = useStyles()
-  return <img className={classes.img} {...props} />
+  return (
+    <Button url={props.src} icon={<ImageIcon />}>
+      View Image
+    </Button>
+  )
 }
 
 export default ({
   source = '',
   analyticsCategory = '',
   enableHtml = false,
-  onClickLineWithContent = null
+  onClickLineWithContent = null,
+  replaceImagesWithButtons = false
 }) => {
   const [tabState, setTabState] = useState({})
   let tabIdx = 0
@@ -180,7 +185,6 @@ export default ({
         rehypePlugins={enableHtml ? [rehypeRaw] : []}
         remarkPlugins={[remarkDirective, myRemarkDirectivePlugin, gfm]}
         components={{
-          img: props => <Image {...props} />,
           button: props => (
             <Button
               url={props.url}
@@ -321,7 +325,12 @@ export default ({
                 groupIdx={groupIdx}
               />
             )
-          }
+          },
+          ...(replaceImagesWithButtons
+            ? {
+                img: props => <Image {...props} />
+              }
+            : {})
         }}
       />
     </TabContext.Provider>
