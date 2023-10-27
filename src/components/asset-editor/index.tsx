@@ -519,7 +519,7 @@ const SpeciesDisplay = ({
 
 const DescriptionDisplay = ({ value }: { value: string }) =>
   value ? (
-    <Markdown source={value} />
+    <Markdown source={value} replaceImagesWithButtons />
   ) : (
     <NoValueMessage>No description set</NoValueMessage>
   )

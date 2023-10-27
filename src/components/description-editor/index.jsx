@@ -16,7 +16,6 @@ import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
 import { trackAction } from '../../analytics'
 import {
   addQuotesToDescription,
