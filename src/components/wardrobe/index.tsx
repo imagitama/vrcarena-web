@@ -370,9 +370,13 @@ const Area = ({
     }
 
     try {
+      const newLeft = selectedAssetIdx * assetWidth + marginRight
+
+      console.debug(`Scrolling to ${newLeft}...`)
+
       windowRef.current.scroll({
         top: 0,
-        left: selectedAssetIdx * assetWidth + marginRight,
+        left: newLeft,
         behavior: 'smooth'
       })
     } catch (err) {

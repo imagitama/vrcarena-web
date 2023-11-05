@@ -8,7 +8,7 @@ export function scrollToTop(isSmooth: boolean = true): void {
 }
 
 export function scrollTo(x: number, isSmooth: boolean = true): void {
-  console.debug(`Scrolling to ${x}`)
+  console.debug(`Scrolling to ${x}...`)
   try {
     window.scrollTo({
       top: x,
@@ -33,7 +33,7 @@ export function scrollToSide(
   y: number,
   isSmooth: boolean = true
 ): void {
-  console.debug(`Scrolling to ${x},${y}`)
+  console.debug(`Scrolling to ${x},${y}...`)
   try {
     window.scrollTo({
       top: x,

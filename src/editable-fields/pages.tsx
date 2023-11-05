@@ -2,8 +2,9 @@ import React from 'react'
 import { PagesFieldNames, PlaylistsFieldNames } from '../data-store'
 import { fieldTypes } from '../generic-forms'
 import MarkdownEditor from '../components/markdown-editor'
+import { EditableField } from './'
 
-export default [
+const fields: EditableField<any>[] = [
   {
     name: PagesFieldNames.title,
     label: 'Title',
@@ -20,10 +21,12 @@ export default [
     name: PagesFieldNames.content,
     label: 'Content',
     type: fieldTypes.custom,
-    fieldProperties: {
+    customProperties: {
       renderer: ({ onChange, value }) => (
         <MarkdownEditor content={value} onChange={onChange} />
       )
     }
   }
 ]
+
+export default fields

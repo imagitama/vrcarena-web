@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { SearchableProperties } from '../../../../editable-fields'
 import useDataStoreItem from '../../../../hooks/useDataStoreItem'
 
 import Button from '../../../button'
 import LoadingIndicator from '../../../loading-indicator'
 import SearchForIdForm from '../../../search-for-id-form'
-
-export interface SearchableInputFieldProperties {
-  collectionName: string
-  fieldAsLabel: string
-  renderer: (props: { item: any }) => React.ReactElement
-}
 
 type SearchResult = { [prop: string]: any }
 
@@ -17,20 +12,20 @@ export default ({
   name,
   onChange,
   value,
-  fieldProperties
+  searchableProperties
 }: {
   name: string
   onChange: (id: string | null) => void
   value: any
-  fieldProperties: SearchableInputFieldProperties
+  searchableProperties: SearchableProperties
 }) => {
-  if (!fieldProperties.collectionName) {
+  if (!searchableProperties.collectionName) {
     throw new Error(`Needs collection name! Field ${name}`)
   }
-  if (!fieldProperties.fieldAsLabel) {
+  if (!searchableProperties.fieldAsLabel) {
     throw new Error(`Needs field name to use as label! Field ${name}`)
   }
-  if (!fieldProperties.renderer) {
+  if (!searchableProperties.renderer) {
     throw new Error(`Needs renderer! Field ${name}`)
   }
 
@@ -41,7 +36,7 @@ export default ({
     isErroredLoadingExisting,
     existingItem
   ] = useDataStoreItem<SearchResult>(
-    fieldProperties.collectionName,
+    searchableProperties.collectionName,
     value || false
   )
 
@@ -64,7 +59,7 @@ export default ({
           <br />
           <br />
           {valueData || existingItem ? (
-            <fieldProperties.renderer item={valueData || existingItem} />
+            <searchableProperties.renderer item={valueData || existingItem} />
           ) : (
             <LoadingIndicator />
           )}
@@ -84,8 +79,8 @@ export default ({
       )}
       {(isFormVisible || !value) && (
         <SearchForIdForm
-          collectionName={fieldProperties.collectionName}
-          fieldAsLabel={fieldProperties.fieldAsLabel}
+          collectionName={searchableProperties.collectionName}
+          fieldAsLabel={searchableProperties.fieldAsLabel}
           onClickWithIdAndDetails={(id: string, item: any) => {
             setIsFormVisible(false)
             setValueData(item)

@@ -4,7 +4,7 @@ import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 
 import { VrchatWorld } from '../../modules/vrchat-cache'
-import { paths, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../../config'
+import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../../config'
 import { trackAction } from '../../analytics'
 import { handleError } from '../../error-handling'
 
@@ -13,7 +13,7 @@ import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import ErrorMessage from '../error-message'
 import GetVrchatWorldDetails from '../get-vrchat-world-details'
-import ImageUploader from '../firebase-image-uploader'
+import ImageUploader from '../image-uploader'
 import FormControls from '../form-controls'
 import Button from '../button'
 import Heading from '../heading'
@@ -22,6 +22,7 @@ import { inDevelopment } from '../../environment'
 
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
 import AssetThumbnail from '../asset-thumbnail'
+import { bucketNames } from '../../file-uploading'
 
 const analyticsCategoryName = 'ViewAssetEditor'
 
@@ -101,12 +102,11 @@ const UseForAssetForm = ({
           preloadFile={previewImageFile}
           requiredWidth={THUMBNAIL_WIDTH}
           requiredHeight={THUMBNAIL_HEIGHT}
-          onUploadedWithUrl={(url: string) => {
-            console.debug(`New thumbnail has been uploaded: ${url}`)
-            setField(AssetFieldNames.thumbnailUrl, url)
+          onDone={urls => {
+            console.debug(`New thumbnail has been uploaded: ${urls[0]}`)
+            setField(AssetFieldNames.thumbnailUrl, urls[0])
           }}
-          directoryPath={paths.assetThumbnailDir}
-          generateFilePrefix
+          bucketName={bucketNames.assetThumbnails}
         />
       )}
       <FormControls>

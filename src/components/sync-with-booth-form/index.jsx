@@ -12,7 +12,7 @@ import Paper from '../paper'
 import LoadingIndicator from '../loading-indicator'
 import TagInput from '../tag-input'
 import TextInput from '../text-input'
-import ImageUploader from '../firebase-image-uploader'
+import ImageUploader from '../image-uploader'
 import FormControls from '../form-controls'
 import AssetThumbnail from '../asset-thumbnail'
 
@@ -25,13 +25,11 @@ import {
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { callFunction } from '../../firebase'
 import { scrollToElement } from '../../utils'
-import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, paths } from '../../config'
+import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '../../config'
 import {
   addQuotesToDescription,
   removeQuotesFromDescription
 } from '../../utils/formatting'
-// import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
-import { CommonFieldNames } from '../../data-store'
 import categoryMeta from '../../category-meta'
 import {
   getTagsFromDescription,
@@ -42,6 +40,7 @@ import {
 } from '../../utils/gumroad'
 import { getAuthorFromAuthorName } from '../../utils/booth'
 import { cleanupTags } from '../../utils/tags'
+import { bucketNames } from '../../file-uploading'
 
 const useStyles = makeStyles({
   field: {
@@ -339,13 +338,12 @@ export default ({
                     preloadFile={previewImageFile}
                     requiredWidth={THUMBNAIL_WIDTH}
                     requiredHeight={THUMBNAIL_HEIGHT}
-                    onUploadedWithUrl={url =>
+                    onDone={urls =>
                       updateFields({
-                        [AssetFieldNames.thumbnailUrl]: url
+                        [AssetFieldNames.thumbnailUrl]: urls[0]
                       })
                     }
-                    directoryPath={paths.assetThumbnailDir}
-                    generateFilePrefix
+                    bucketName={bucketNames.assetThumbnails}
                   />
                 </div>
               ))}

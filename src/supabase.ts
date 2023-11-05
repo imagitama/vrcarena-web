@@ -8,14 +8,21 @@ import { saveLastLoggedInDate } from './users'
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
 const supabaseKey = process.env.REACT_APP_SUPABASE_API_KEY
 
+if (!supabaseUrl) {
+  throw new Error('Supabase URL is empty')
+}
+if (!supabaseKey) {
+  throw new Error('Supabase key is empty')
+}
+
 export const client = createClient(supabaseUrl, supabaseKey)
 
-let loggedInUserId = null
-let onJwtTokenChangedCallbacks = []
-let activeJwt = null
-let nextJwtExpiryDate
+let loggedInUserId: null | string = null
+let onJwtTokenChangedCallbacks: ((newToken: string | null) => void)[] = []
+let activeJwt: string | null = null
+let nextJwtExpiryDate: Date | null = null
 const gapBeforeCheckingMs = 2000
-let jwtRefreshTimeout
+let jwtRefreshTimeout: NodeJS.Timeout
 
 const errorCodes = {
   NO_USERADMINMETA: 'NO_USERADMINMETA'
@@ -87,7 +94,9 @@ firebase.auth().onAuthStateChanged(async user => {
   try {
     if (!user) {
       console.debug(`Firebase user has signed out, signing out of Supabase...`)
-      await client.auth.setAuth(null)
+
+      // @ts-ignore
+      client.auth.setAuth(null)
 
       activeJwt = null
       loggedInUserId = null
@@ -112,7 +121,7 @@ firebase.auth().onAuthStateChanged(async user => {
     // TODO: Make this less fragile somehow
     if (errorCode && errorCode === errorCodes.NO_USERADMINMETA) {
       console.debug(`No user admin meta for user, waiting a few seconds...`)
-      await new Promise(resolve => setTimeout(() => resolve(), 3000))
+      await new Promise<void>(resolve => setTimeout(() => resolve(), 3000))
       console.debug(`Wait complete and hoping it is there!`)
 
       const { errorCode: newErrorCode } = await refreshJwt()
@@ -135,7 +144,9 @@ firebase.auth().onAuthStateChanged(async user => {
   }
 })
 
-export const onJwtTokenChanged = callback => {
+export const onJwtTokenChanged = (
+  callback: (newToken: string | null) => void
+) => {
   onJwtTokenChangedCallbacks.push(callback)
   return () => {
     onJwtTokenChangedCallbacks = onJwtTokenChangedCallbacks.filter(

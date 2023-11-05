@@ -118,6 +118,7 @@ export default ({ currentTags = [], onChange, className = '' }) => {
           keyCodes.ENTER
         ]}
         placeholder="Type a tag and press enter"
+        autofocus={false}
       />
     </div>
   )

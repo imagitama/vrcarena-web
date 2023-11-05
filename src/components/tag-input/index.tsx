@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { areasByCategory } from '../../areas'
@@ -54,7 +54,7 @@ const RecommendedTags = ({
   categoryName?: string
 }) => {
   const classes = useStyles()
-  const [isLoading, isError, allTagDetails] = useDataStoreItems<FullTag>(
+  const [, , allTagDetails] = useDataStoreItems<FullTag>(
     'getfulltags',
     'all-tags-browser'
   )
@@ -62,11 +62,6 @@ const RecommendedTags = ({
   if (!allTagDetails) {
     return null
   }
-
-  // const tagDetailsToUse =
-  //   categoryName && tagDetailsByCategory[categoryName]
-  //     ? tagDetailsByCategory[categoryName]
-  //     : defaultTagDetails
 
   return (
     <div>

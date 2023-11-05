@@ -1,15 +1,13 @@
 import { UserMetaFieldNames, BanStatuses } from '../hooks/useDatabaseQuery'
 import { fieldTypes } from '../generic-forms'
+import { EditableField } from './'
 
-export default [
+const fields: EditableField<any>[] = [
   {
     name: UserMetaFieldNames.banStatus,
     label: 'Ban Status',
     type: fieldTypes.singlechoice,
-    options: [
-      BanStatuses.Banned,
-      BanStatuses.Unbanned,
-    ].map(val => ({
+    options: [BanStatuses.Banned, BanStatuses.Unbanned].map(val => ({
       value: val,
       label: val
     }))
@@ -21,3 +19,5 @@ export default [
     default: ''
   }
 ]
+
+export default fields

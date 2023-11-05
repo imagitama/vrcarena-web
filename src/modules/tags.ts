@@ -36,7 +36,7 @@ export const CollectionNames = {
   TagsMeta: 'tagsmeta'
 }
 
-export const editableFields: EditableField[] = [
+export const editableFields: EditableField<Tag>[] = [
   {
     name: 'id',
     label: 'Tag',

@@ -8,6 +8,7 @@ import {
 } from '../config'
 import categoryMeta from '../category-meta'
 import events from '../events'
+import { bucketNames } from '../file-uploading'
 
 const saleReasonOptions: {
   value: string | null
@@ -50,7 +51,7 @@ export default [
     fieldProperties: {
       width: THUMBNAIL_WIDTH,
       height: THUMBNAIL_HEIGHT,
-      directoryName: 'author-avatars'
+      bucketName: bucketNames.authorAvatars
     },
     default: ''
   },
@@ -137,7 +138,7 @@ export default [
     fieldProperties: {
       width: BANNER_WIDTH,
       height: BANNER_HEIGHT,
-      directoryName: 'author-banners'
+      bucketName: bucketNames.authorBanners
     },
     default: ''
   },

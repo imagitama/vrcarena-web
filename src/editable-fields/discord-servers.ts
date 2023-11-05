@@ -1,7 +1,8 @@
 import { DiscordServerFieldNames } from '../hooks/useDatabaseQuery'
 import { fieldTypes } from '../generic-forms'
+import { EditableField } from '.'
 
-export default [
+const fields: EditableField<any>[] = [
   {
     name: DiscordServerFieldNames.name,
     label: 'Name',
@@ -53,3 +54,5 @@ export default [
     hint: 'The URL to the Patreon you need to be a sub for to join it'
   }
 ]
+
+export default fields

@@ -6,6 +6,8 @@ import ApproveButton from '../approve-button'
 import DeleteButton from '../delete-button'
 import PublicEditorNotesForm from '../public-editor-notes-form'
 import Button from '../button'
+import FeatureButton from '../feature-button'
+import { FeaturedStatus } from '../../modules/common'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -33,6 +35,7 @@ export default ({
   existingPublishStatus,
   existingAccessStatus,
   existingEditorNotes,
+  existingFeaturedStatus,
   // callbacks
   onDone = undefined,
   // visibility
@@ -40,6 +43,7 @@ export default ({
   // showPublishButtons = true,
   showAccessButtons = true,
   showEditorNotes = true,
+  showFeatureButtons = false,
   // hooks
   beforeApprove = undefined,
   // other
@@ -55,11 +59,13 @@ export default ({
   existingPublishStatus?: string
   existingAccessStatus?: string
   existingEditorNotes?: string
+  existingFeaturedStatus?: FeaturedStatus
   onDone?: () => void
   showApprovalButtons?: boolean
   showPublishButtons?: boolean
   showAccessButtons?: boolean
   showEditorNotes?: boolean
+  showFeatureButtons?: boolean
   beforeApprove?: () => void
   callOnDoneOnEditorNotes?: boolean
   allowDeclineOptions?: boolean
@@ -100,6 +106,16 @@ export default ({
             // @ts-ignore
             existingAccessStatus={existingAccessStatus}
             // @ts-ignore
+            onDone={onDone}
+          />
+        </div>
+      ) : null}
+      {showFeatureButtons ? (
+        <div className={classes.item}>
+          <FeatureButton
+            id={id}
+            metaCollectionName={metaCollectionName}
+            existingFeaturedStatus={existingFeaturedStatus}
             onDone={onDone}
           />
         </div>

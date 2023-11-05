@@ -69,7 +69,7 @@ const useStyles = makeStyles({
   }
 })
 
-const getHiddenFieldsForDb = (fields: EditableField[]) => {
+const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
   const hiddenFields = fields.filter(({ type }) => type === fieldTypes.hidden)
 
   if (!hiddenFields.length) {
@@ -87,12 +87,12 @@ const getHiddenFieldsForDb = (fields: EditableField[]) => {
 
 const validateFields = (
   newFields: Record,
-  fieldDefinitions: EditableField[]
+  fieldDefinitions: EditableField<any>[]
 ): boolean => {
   for (const fieldDef of fieldDefinitions) {
     if (fieldDef.isRequired) {
       // TODO: Better required check - "false" is provided but would fail this
-      if (!newFields[fieldDef.name]) {
+      if (!newFields[fieldDef.name.toString()]) {
         return false
       }
     }
@@ -119,7 +119,7 @@ export default ({
   overrideFields = null,
   onFieldChanged = undefined
 }: {
-  fields?: EditableField[]
+  fields?: EditableField<any>[]
   collectionName: string
   viewName?: string
   id?: string | null
@@ -175,9 +175,9 @@ export default ({
         return {
           ...newFormFields,
           [fieldConfig.name]:
-            result[fieldConfig.name] === false
+            result[fieldConfig.name.toString()] === false
               ? false
-              : result[fieldConfig.name] || fieldConfig.default
+              : result[fieldConfig.name.toString()] || fieldConfig.default
         }
       }, {})
     )
@@ -303,16 +303,18 @@ export default ({
 
           return (
             <Field
-              key={name}
+              key={name.toString()}
               label={type !== fieldTypes.checkbox ? label : null}>
               <Input
-                name={name}
+                name={name.toString()}
                 // @ts-ignore
                 value={formFields[name]}
                 defaultValue={defaultValue}
                 label={label}
                 {...rest}
-                onChange={(newVal: any) => onFieldChange(name, newVal)}
+                onChange={(newVal: any) =>
+                  onFieldChange(name.toString(), newVal)
+                }
                 // @ts-ignore
                 extraFormData={extraFormData}
                 setFieldsValues={onFieldsChange}

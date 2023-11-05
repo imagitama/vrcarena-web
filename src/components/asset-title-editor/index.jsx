@@ -49,6 +49,7 @@ export default ({
 
   useEffect(() => {
     if (titleRef.current) {
+      console.debug(`Focusing on title element...`)
       titleRef.current.focus()
     }
   }, [])

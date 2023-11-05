@@ -2,9 +2,11 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import LaunchIcon from '@material-ui/icons/Launch'
 import { makeStyles } from '@material-ui/core/styles'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import EditIcon from '@material-ui/icons/Edit'
 
 import * as routes from '../../routes'
-import { client as supabase } from '../../supabase'
+import { client, client as supabase } from '../../supabase'
 
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
@@ -22,6 +24,13 @@ import events from '../../events'
 import { FullAuthor } from '../../modules/authors'
 import AuthorResultsItem from '../../components/author-results-item'
 import SaleInfo from '../../components/sale-info'
+import { CollectionNames, FullEvent, ViewNames } from '../../modules/events'
+import LoadingIndicator from '../../components/loading-indicator'
+import NoResultsMessage from '../../components/no-results-message'
+import useIsEditor from '../../hooks/useIsEditor'
+import EditorRecordManager from '../../components/editor-record-manager'
+import PublicEditorNotes from '../../components/public-editor-notes'
+import CommentList from '../../components/comment-list'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
@@ -34,6 +43,11 @@ const useStyles = makeStyles({
     }
   },
   controls: {
+    position: 'absolute',
+    top: 0,
+    left: 0
+  },
+  callToAction: {
     marginTop: '2rem'
   },
   description: {
@@ -79,22 +93,6 @@ const useStyles = makeStyles({
     }
   }
 })
-
-const getUsersTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone
-
-// const DateWithTimezone = ({ date }: { date: Date }) => {
-//   const classes = useStyles()
-//   const momentDate = moment(date)
-
-//   return (
-//     <div className={classes.dateWrapper}>
-//       <span className={classes.date}>{momentDate.format('Do MMM YY')}</span>
-//       <span className={classes.timezone}>
-//         {momentDate.format('HH:mm')} ({getUsersTimezone()})
-//       </span>
-//     </div>
-//   )
-// }
 
 const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -169,9 +167,9 @@ const AuthorResults = ({ authors }: { authors: FullAuthor[] }) => {
   )
 }
 
-const AuthorsWithSales = ({ eventName }: { eventName: string }) => {
+const AuthorsWithSales = ({ eventSlug }: { eventSlug: string }) => {
   const getQuery = useCallback(() => {
-    const fixedReason = eventName.replaceAll('-', '_')
+    const fixedReason = eventSlug.replaceAll('-', '_')
 
     let query = supabase
       .from('getPublicAuthors'.toLowerCase())
@@ -179,7 +177,7 @@ const AuthorsWithSales = ({ eventName }: { eventName: string }) => {
       .eq(AuthorFieldNames.saleReason, fixedReason)
 
     return query
-  }, [eventName])
+  }, [eventSlug])
   const [isLoading, isErrored, authors] = useDataStore<FullAuthor>(
     getQuery,
     'authors-for-event'
@@ -206,31 +204,91 @@ const AuthorsWithSales = ({ eventName }: { eventName: string }) => {
 }
 
 const View = () => {
-  const { eventName } = useParams<{ eventName: string }>()
+  const { eventId: eventIdOrSlug } = useParams<{ eventId: string }>()
+  const getQuery = useCallback(
+    () =>
+      client
+        .from(ViewNames.GetFullEvents)
+        .select('*')
+        .or(`id.eq.${eventIdOrSlug},slug.eq.${eventIdOrSlug}`),
+    [eventIdOrSlug]
+  )
+  const [isLoading, isError, events, , hydrate] = useDataStore<FullEvent[]>(
+    getQuery,
+    'view-event'
+  )
   const classes = useStyles()
+  const isEditor = useIsEditor()
 
-  if (!(eventName in events)) {
-    return <ErrorMessage>Event not found</ErrorMessage>
+  if (isLoading) {
+    return <LoadingIndicator message="Loading event..." />
   }
 
-  const { title, description, thumbnailUrl, sourceUrl, assetTags } = events[
-    eventName
-  ]
+  if (isError) {
+    return <ErrorMessage>Failed to load event</ErrorMessage>
+  }
+
+  if (!events || !events.length) {
+    return <NoResultsMessage />
+  }
+
+  const {
+    id,
+    name,
+    description,
+    thumbnailurl,
+    sourceurl,
+    assettags,
+    slug,
+    approvalstatus,
+    accessstatus,
+    editornotes,
+    featuredstatus
+  } = events[0]
 
   return (
     <>
       <Helmet>
-        <title>{`${title} | VRCArena`}</title>
-        <meta name="description" content={description} />
+        <title>{`${name || '(unnamed)'} | VRCArena`}</title>
+        {description ? <meta name="description" content={description} /> : null}
       </Helmet>
       <div className={classes.root}>
+        <div className={classes.controls}>
+          <Button url={routes.events} icon={<ChevronLeftIcon />} switchIconSide>
+            Back To Events
+          </Button>{' '}
+          {isEditor ? (
+            <Button
+              url={routes.editEventWithVar.replace(':eventId', id)}
+              icon={<EditIcon />}>
+              Edit Event
+            </Button>
+          ) : null}
+          {isEditor && (
+            <EditorRecordManager
+              id={id}
+              collectionName={CollectionNames.Events}
+              metaCollectionName={CollectionNames.EventsMeta}
+              existingApprovalStatus={approvalstatus}
+              existingAccessStatus={accessstatus}
+              existingEditorNotes={editornotes}
+              existingFeaturedStatus={featuredstatus}
+              onDone={hydrate}
+              callOnDoneOnEditorNotes
+              showApprovalButtons={false}
+              showFeatureButtons={true}
+            />
+          )}
+        </div>
+        {editornotes ? <PublicEditorNotes notes={editornotes} /> : null}
         <div className={classes.primary}>
-          {thumbnailUrl ? (
-            <img src={thumbnailUrl} alt="Thumbnail for event" width={300} />
+          {thumbnailurl ? (
+            <img src={thumbnailurl} alt="Thumbnail for event" width={300} />
           ) : null}
           <Heading variant="h1">
-            <Link to={routes.viewEventWithVar.replace(':eventName', eventName)}>
-              {title}
+            <Link
+              to={routes.viewEventWithVar.replace(':eventId', eventIdOrSlug)}>
+              {name || '(unnamed)'}
             </Link>
           </Heading>
           {/* <div className={classes.dates}>
@@ -242,21 +300,27 @@ const View = () => {
             ) : null}
             {endsAt ? <DateWithTimezone date={endsAt} /> : null}
           </div> */}
-          {sourceUrl ? (
-            <div className={classes.controls}>
-              <Button size="large" icon={<LaunchIcon />} url={sourceUrl}>
+          {sourceurl ? (
+            <div className={classes.callToAction}>
+              <Button size="large" icon={<LaunchIcon />} url={sourceurl}>
                 Visit Website
               </Button>
             </div>
-          ) : null}
+          ) : (
+            <>No source URL set</>
+          )}
           {description ? (
             <div className={classes.description}>
               <Markdown source={description} />
             </div>
-          ) : null}
+          ) : (
+            <>No description set</>
+          )}
         </div>
-        <AuthorsWithSales eventName={eventName} />
-        <Assets tagsToSearch={assetTags || []} />
+        <Heading variant="h2">Comments</Heading>
+        <CommentList collectionName={CollectionNames.Events} parentId={id} />
+        <AuthorsWithSales eventSlug={slug} />
+        <Assets tagsToSearch={assettags || []} />
       </div>
     </>
   )

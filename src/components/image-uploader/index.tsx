@@ -7,15 +7,16 @@ import CheckIcon from '@material-ui/icons/Check'
 import PhotoIcon from '@material-ui/icons/Photo'
 
 import useFileUpload from '../../hooks/useFileUpload'
+import { handleError } from '../../error-handling'
+import {
+  FileTooLargeError,
+  SecurityError,
+  UnsupportedMimeTypeError
+} from '../../file-uploading'
 
 import FormControls from '../form-controls'
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
-import { handleError } from '../../error-handling'
-import {
-  FileTooLargeError,
-  UnsupportedMimeTypeError
-} from '../../file-uploading'
 import ErrorMessage from '../error-message'
 
 const useStyles = makeStyles({
@@ -71,6 +72,10 @@ const getErrorMessageForLastError = (error: Error): string => {
           })`
         : ''
     }`
+  }
+
+  if (error instanceof SecurityError) {
+    return `There was a problem with the security of uploading your file`
   }
 
   if (error instanceof UnsupportedMimeTypeError) {

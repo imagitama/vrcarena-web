@@ -83,6 +83,11 @@ export default [
     label: 'More',
     children: [
       {
+        id: 'events',
+        url: routes.events,
+        label: 'Events'
+      },
+      {
         id: AssetCategories.retexture,
         url: routes.viewCategoryWithVar.replace(
           ':categoryName',

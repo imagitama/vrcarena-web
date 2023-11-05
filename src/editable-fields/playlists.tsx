@@ -3,8 +3,10 @@ import { PlaylistsFieldNames } from '../data-store'
 import { fieldTypes } from '../generic-forms'
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '../config'
 import PlaylistItemsEditor from '../components/playlist-items-editor'
+import { bucketNames } from '../file-uploading'
+import { EditableField } from './'
 
-export default [
+const fields: EditableField<any>[] = [
   {
     name: PlaylistsFieldNames.title,
     label: 'Title',
@@ -21,10 +23,10 @@ export default [
     name: PlaylistsFieldNames.thumbnailUrl,
     label: 'Thumbnail',
     type: fieldTypes.imageUpload,
-    fieldProperties: {
+    imageUploadProperties: {
       width: THUMBNAIL_WIDTH,
       height: THUMBNAIL_HEIGHT,
-      directoryName: 'playlists-thumbnails'
+      bucketName: bucketNames.playlistThumbnails
     },
     default: ''
   },
@@ -32,7 +34,7 @@ export default [
     name: PlaylistsFieldNames.items,
     label: 'Assets',
     type: fieldTypes.custom,
-    fieldProperties: {
+    customProperties: {
       renderer: ({ onChange, value, databaseResult }) => (
         <PlaylistItemsEditor
           items={value}
@@ -43,3 +45,5 @@ export default [
     }
   }
 ]
+
+export default fields

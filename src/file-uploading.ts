@@ -26,6 +26,7 @@ export class FileTooLargeError extends Error {
 export class UnsupportedMimeTypeError extends Error {
   allowedMimeTypes?: string[]
 }
+export class SecurityError extends Error {}
 
 interface SupabaseStorageError {
   error: string
@@ -81,9 +82,8 @@ export const uploadFile = async (
   clearInterval(fakeProgressLoop)
 
   if (error) {
-    // I think our SDK version is outdated as too big file size returns this error instead of expected "file size too big"
     if (error.message.includes('new row violates row-level security policy')) {
-      throw new FileTooLargeError()
+      throw new SecurityError()
     }
 
     if (
@@ -114,5 +114,13 @@ export const bucketNames = {
   assetThumbnails: 'asset-thumbnails',
   userAvatars: 'user-avatars',
   attachments: 'attachments',
-  assetBanners: 'asset-banners'
+  assetBanners: 'asset-banners',
+  amendmentThumbnails: 'amendment-thumbnails',
+  amendmentBanners: 'amendment-banners',
+  speciesThumbnails: 'species-thumbnails',
+  authorAvatars: 'author-avatars',
+  authorBanners: 'author-banners',
+  playlistThumbnails: 'playlist-thumbnails',
+  eventThumbnails: 'event-thumbnails',
+  eventBanners: 'event-banners'
 }

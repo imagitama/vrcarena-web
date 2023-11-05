@@ -47,8 +47,8 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
     }
   }
 
-  if (!user) {
-    return null
+  if (!user || !userId) {
+    return <>Waiting for user</>
   }
 
   if (isSaving) {
@@ -70,10 +70,6 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
         height={AVATAR_HEIGHT}
       />
       <Heading variant="h3">Upload New Avatar</Heading>
-      <WarningMessage>
-        As of April 2023 we are migrating to a new way of uploading avatars.
-        Please contact me (Peanut#1756) if you experience any issues with this
-      </WarningMessage>
       <ImageUploader
         onDone={onUploadedWithUrls}
         bucketName={bucketNames.userAvatars}

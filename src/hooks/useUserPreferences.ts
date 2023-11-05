@@ -11,6 +11,6 @@ export default (): [
   const userId = useUserId()
   return useDataStoreItem<UserPreferences>(
     CollectionNames.UserPreferences,
-    userId
+    userId || false
   )
 }

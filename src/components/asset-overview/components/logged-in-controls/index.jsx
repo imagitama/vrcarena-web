@@ -13,7 +13,7 @@ import { canFeatureAssets } from '../../../../permissions'
 import Button from '../../../button'
 import SubscriptionEditor from '../../../subscription-editor'
 import ReportButton from '../../../report-button'
-import FeatureAssetButton from '../../../feature-asset-button'
+import FeatureButton from '../../../feature-button'
 import TabContext from '../../context'
 import Control from '../control'
 
@@ -73,9 +73,10 @@ export default () => {
       </Control>
       {isAbleToFeatureAssets && (
         <Control>
-          <FeatureAssetButton
-            assetId={assetId}
-            featuredStatus={asset[AssetMetaFieldNames.featuredStatus]}
+          <FeatureButton
+            id={assetId}
+            metaCollectionName={CollectionNames.AssetMeta}
+            existingFeaturedStatus={asset[AssetMetaFieldNames.featuredStatus]}
             onClick={() => trackAction('Click feature asset button', assetId)}
           />
         </Control>

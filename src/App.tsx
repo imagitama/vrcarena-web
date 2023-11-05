@@ -348,6 +348,16 @@ const Accessorize = lazy(() =>
   )
 )
 // events
+const Events = lazy(() =>
+  catchChunkDeaths(() =>
+    import(/* webpackChunkName: "events" */ './containers/events')
+  )
+)
+const EditEvent = lazy(() =>
+  catchChunkDeaths(() =>
+    import(/* webpackChunkName: "edit-event" */ './containers/edit-event')
+  )
+)
 const ViewEvent = lazy(() =>
   catchChunkDeaths(() =>
     import(/* webpackChunkName: "view-event" */ './containers/view-event')
@@ -628,7 +638,13 @@ const MainContent = () => {
         />
         <Route exact path={routes.brand} component={Brand} />
         <Route exact path={routes.accessorizeWithVar} component={Accessorize} />
+        <Route
+          exact
+          path={[routes.editEventWithVar, routes.createEvent]}
+          component={EditEvent}
+        />
         <Route exact path={routes.viewEventWithVar} component={ViewEvent} />
+        <Route exact path={routes.events} component={Events} />
         <Route
           exact
           path={routes.viewCollections}

@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import { useMediaQuery } from 'react-responsive'
 import MenuIcon from '@material-ui/icons/Menu'
-import TwitterIcon from '@material-ui/icons/Twitter'
 
 import * as routes from '../../routes'
 import { openMenu } from '../../modules/app'
@@ -19,15 +18,12 @@ import {
   mediaQueryForTabletsOrBelow
 } from '../../media-queries'
 import { trackAction } from '../../analytics'
-import {
-  TWITTER_URL,
-  DISCORD_URL,
-  PATREON_BECOME_PATRON_URL
-} from '../../config'
+import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '../../config'
 
 import MobileMenu from '../mobile-menu'
 import AccountMenu from '../account-menu'
 import { colors } from '../../brand'
+import HeaderCurrentEvents from '../header-current-events'
 
 // when the navigation starts obstructing the logo
 const mediaQueryForMenuLogoCollision = '@media (max-width: 1280px)'
@@ -176,52 +172,6 @@ const useStyles = makeStyles({
     [mediaQueryForTabletsOrBelow]: {
       display: 'flex'
     }
-  },
-  promoLogo: {
-    width: '100%',
-    transition: '100ms all',
-    display: 'block',
-    padding: '0.5rem',
-    '& a': {
-      color: 'inherit',
-      textShadow: '1px 1px 1px #000',
-      display: 'flex',
-      alignItems: 'center',
-      fontSize: '50%'
-    },
-    '& img': {
-      height: '75px'
-    },
-    [mediaQueryForTabletsOrBelow]: {
-      width: 'auto',
-      padding: 0,
-      '& img': {
-        height: '50px'
-      }
-    },
-    animation: '3s ease infinite alternate $pulseLogo',
-    '&:hover': {
-      animation: '100ms $hoverOverLogo forwards'
-    }
-  },
-  '@keyframes hoverOverLogo': {
-    '0%': {
-      transform: 'scale(1)'
-    },
-    '100%': {
-      transform: 'scale(1.1)'
-    }
-  },
-  '@keyframes pulseLogo': {
-    '0%': {
-      transform: 'scale(1)'
-    },
-    '75%': {
-      transform: 'scale(1)'
-    },
-    '100%': {
-      transform: 'scale(1.05)'
-    }
   }
 })
 
@@ -229,13 +179,6 @@ const SocialMediaIcons = () => {
   const classes = useStyles()
   return (
     <div className={classes.socialIcons}>
-      <a
-        href={TWITTER_URL}
-        title="Visit our Twitter"
-        onClick={() => trackAction('Header', 'Click visit Twitter icon')}
-        className={classes.twitterIconLink}>
-        <TwitterIcon className={classes.twitterIcon} />
-      </a>
       <a
         href={DISCORD_URL}
         title="Visit our Discord"
@@ -275,15 +218,9 @@ export default () => {
           <div>
             <SocialMediaIcons />
           </div>
-          {/* <div className={classes.promoLogo}>
-            <Link
-              to={routes.viewEventWithVar.replace(
-                ':eventName',
-                'hex-furry-festival'
-              )}>
-              <img src={promoLogoUrl} alt="Hex Furry Festival logo" />
-            </Link>
-          </div> */}
+          <div>
+            <HeaderCurrentEvents />
+          </div>
         </div>
       </div>
 

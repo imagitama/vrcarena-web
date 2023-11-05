@@ -20,7 +20,6 @@ import 'pure-react-carousel/dist/react-carousel.es.css'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import MoneyOffIcon from '@mui/icons-material/MoneyOff'
 import Checkbox from '@material-ui/core/Checkbox'
 
 import * as routes from '../../routes'

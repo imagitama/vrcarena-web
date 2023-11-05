@@ -117,7 +117,7 @@ const getLoggedOutMenuItems = (currentPath: string) => [
 
 const getMenu = (
   currentPath: string,
-  userId: string
+  userId: string | null
 ): { [id: string]: MenuItemDetails } => ({
   notifications: {
     icon: NotificationsIcon,

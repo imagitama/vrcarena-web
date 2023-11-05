@@ -1,7 +1,10 @@
 import { UserFieldNames } from '../hooks/useDatabaseQuery'
 import { fieldTypes } from '../generic-forms'
+import { bucketNames } from '../file-uploading'
+import { AVATAR_HEIGHT, AVATAR_WIDTH } from '../config'
+import { EditableField } from './'
 
-export default [
+const fields: EditableField<any>[] = [
   {
     name: UserFieldNames.username,
     label: 'Username',
@@ -12,11 +15,13 @@ export default [
     name: UserFieldNames.avatarUrl,
     label: 'Avatar image URL',
     type: fieldTypes.imageUpload,
-    fieldProperties: {
-      directoryName: 'avatars',
-      width: 200,
-      height: 200
+    imageUploadProperties: {
+      width: AVATAR_WIDTH,
+      height: AVATAR_HEIGHT,
+      bucketName: bucketNames.userAvatars
     },
     default: ''
   }
 ]
+
+export default fields
