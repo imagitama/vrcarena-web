@@ -63,7 +63,7 @@
     "react-helmet": "^6.0.0",
     "react-image-crop": "^8.6.2",
     "react-image-lightbox-custom": "^5.1.0",
-    "react-lazyload": "^2.6.7",
+    "react-lazyload": "^3.2.0",
     "react-markdown": "^7.0.1",
     "react-markdown-remark-directive": "^1.1.1",
     "react-mentions": "^4.3.1",
