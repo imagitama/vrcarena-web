@@ -7,7 +7,7 @@ import moment from 'moment'
 import Button from '../button'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
-import { getEventNameFromReason, getTitleForReason } from '../../events'
+import { getEventNameFromReason } from '../../events'
 import Paper from '../paper'
 
 const useStyles = makeStyles({
@@ -109,8 +109,6 @@ export default ({
 }) => {
   const classes = useStyles()
 
-  console.log('what is it?', expiresAt)
-
   if (expiresAt && expiresAt.getTime() < new Date().getTime()) {
     return null
   }
@@ -127,8 +125,7 @@ export default ({
         <div>
           {showTitle ? (
             <div className={classes.heading}>
-              <MonetizationOnIcon className={classes.icon} />{' '}
-              {getTitleForReason(reason)} Sale!
+              <MonetizationOnIcon className={classes.icon} /> Sale!
             </div>
           ) : null}
           {description && (

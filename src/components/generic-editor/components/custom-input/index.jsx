@@ -3,7 +3,7 @@ import React from 'react'
 export default ({
   onChange,
   value,
-  fieldProperties: { renderer: Renderer },
+  customProperties: { renderer: Renderer },
   databaseResult
 }) => (
   <Renderer
