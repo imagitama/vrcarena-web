@@ -9,27 +9,6 @@ import {
 import categoryMeta from '../category-meta'
 import { bucketNames } from '../file-uploading'
 
-const saleReasonOptions: {
-  value: string | null
-  label: string
-}[] = Object.entries(events)
-  .map<{ value: string | null; label: string }>(
-    ([eventName, eventDetails]) => ({
-      value: eventName.replaceAll('-', '_'),
-      label: eventDetails.title
-    })
-  )
-  .concat([
-    {
-      value: 'other',
-      label: 'Other'
-    },
-    {
-      value: null,
-      label: 'Disable'
-    }
-  ])
-
 export default [
   {
     name: AuthorFieldNames.name,
