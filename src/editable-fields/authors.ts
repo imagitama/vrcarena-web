@@ -7,7 +7,6 @@ import {
   BANNER_HEIGHT
 } from '../config'
 import categoryMeta from '../category-meta'
-import events from '../events'
 import { bucketNames } from '../file-uploading'
 
 const saleReasonOptions: {
@@ -171,10 +170,10 @@ export default [
   {
     name: AuthorFieldNames.saleReason,
     label: 'Sale reason',
-    type: fieldTypes.singlechoice,
+    type: fieldTypes.text,
     default: null,
-    options: saleReasonOptions,
-    hint: 'The event the sale is for (select "Disable" to hide all sale info)'
+    hint:
+      'The name of the sale which is the "slug" of the existing event. eg. furality-sylva or hex-furry-fest or whatever'
   },
   {
     name: AuthorFieldNames.saleDescription,
