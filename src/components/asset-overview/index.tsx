@@ -83,7 +83,6 @@ import SpeciesList from '../species-list'
 import Relations from '../relations'
 import useAssetOverview from './useAssetOverview'
 import OpenForCommissionsMessage from '../open-for-commissions-message'
-import { getTitleForReason } from '../../events'
 import TabMentions from './components/tab-mentions'
 import AssetResultsItemParent from '../asset-results-item-parent'
 
@@ -393,9 +392,7 @@ const MiniSaleInfo = () => {
     <Card className={classes.miniSaleInfo}>
       <CardActionArea>
         <Link to={routes.viewAuthorWithVar.replace(':authorId', asset.author)}>
-          <div className={classes.saleTitle}>
-            {getTitleForReason(asset.salereason)} Sale!
-          </div>
+          <div className={classes.saleTitle}>Sale!</div>
           Click here to view the author's sale info
         </Link>
       </CardActionArea>
