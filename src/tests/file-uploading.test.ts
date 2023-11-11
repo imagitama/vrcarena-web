@@ -11,11 +11,8 @@ describe('File uploading tests', () => {
   describe('getFullPathButWithUuidFilename', () => {
     it('returns the new path', () => {
       expect(
-        getFullPathButWithUuidFilename(
-          'image.png',
-          'my/path/inside/bucket/image.png'
-        )
-      ).toBe('my/path/inside/bucket/<UUIDV4>.png')
+        getFullPathButWithUuidFilename('1.png', 'my/path/inside/1/bucket/1.png')
+      ).toBe('my/path/inside/1/bucket/<UUIDV4>.png')
     })
   })
 })
