@@ -7,13 +7,16 @@ const getFilenameWithoutExtension = (filename: string): string =>
     .slice(0, -1)
     .join('.')
 
-const getFullPathButWithUuidFilename = (
+export const getFullPathButWithUuidFilename = (
   filename: string,
   fullPath: string
 ): string => {
+  console.debug('filename: ', filename)
   const filenameWithoutExt = getFilenameWithoutExtension(filename)
+  console.debug('without ext: ', filenameWithoutExt)
   const uuid = uuidv4()
   const newPath = fullPath.replace(filenameWithoutExt, uuid)
+  console.debug('newpath: ', newPath)
   return newPath
 }
 
@@ -47,6 +50,8 @@ export const uploadFile = async (
   if (!fullPathInsideBucket) {
     throw new Error('Need a full path inside bucket')
   }
+
+  console.debug(`uploadFile`, { file, bucketName, fullPathInsideBucket })
 
   let fakeProgressPercentage = 0
 
