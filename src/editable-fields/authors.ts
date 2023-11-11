@@ -8,8 +8,9 @@ import {
 } from '../config'
 import categoryMeta from '../category-meta'
 import { bucketNames } from '../file-uploading'
+import { EditableField } from './'
 
-export default [
+const fields: EditableField<any>[] = [
   {
     name: AuthorFieldNames.name,
     label: 'Name',
@@ -26,7 +27,7 @@ export default [
     name: AuthorFieldNames.avatarUrl,
     label: 'Avatar',
     type: fieldTypes.imageUpload,
-    fieldProperties: {
+    imageUploadProperties: {
       width: THUMBNAIL_WIDTH,
       height: THUMBNAIL_HEIGHT,
       bucketName: bucketNames.authorAvatars
@@ -113,7 +114,7 @@ export default [
     name: AuthorFieldNames.bannerUrl,
     label: 'Banner',
     type: fieldTypes.imageUpload,
-    fieldProperties: {
+    imageUploadProperties: {
       width: BANNER_WIDTH,
       height: BANNER_HEIGHT,
       bucketName: bucketNames.authorBanners
@@ -170,3 +171,5 @@ export default [
     hint: 'When does the sale expire? We will hide all sale info after this'
   }
 ]
+
+export default fields
