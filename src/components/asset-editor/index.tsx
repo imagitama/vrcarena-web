@@ -103,6 +103,7 @@ import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import { defaultBorderRadius } from '../../themes'
 import PerformanceEditor from '../performance-editor'
 import Tabs from '../tabs'
+import AssetFeatures from '../asset-features'
 
 interface EditorInfo {
   assetId: string | null
@@ -713,11 +714,11 @@ const GumroadSettingsDisplay = ({ fields }: { fields: FullAsset }) => {
   )
 }
 
-const FeaturesEditorAndDisplay = ({ fields }: { fields?: FullAsset }) => {
+const FeaturesDisplay = ({ fields }: { fields?: FullAsset }) => {
   if (!fields) {
     return null
   }
-  return <FeaturesEditor currentTags={fields.tags} />
+  return <FeaturesEditor currentTags={fields.tags || []} isEditing={false} />
 }
 
 const MainControls = () => {
@@ -1008,6 +1009,28 @@ const Editor = () => {
               ]
             : []),
           {
+            name: 'features',
+            label: 'Features',
+            contents: (
+              <>
+                <FormEditorArea
+                  title="Features"
+                  description="A feature is a special tag that helps people find the right asset for them."
+                  display={FeaturesDisplay}
+                  editor={
+                    <FeaturesEditor
+                      assetId={asset.id}
+                      currentTags={(asset && asset.tags) || []}
+                      onDone={hydrate}
+                      isEditing={true}
+                    />
+                  }
+                  icon={() => <ListStarsIcon />}
+                />
+              </>
+            )
+          },
+          {
             name: 'tags',
             label: 'Tags',
             contents: (
@@ -1016,7 +1039,7 @@ const Editor = () => {
                   fieldName={AssetFieldNames.tags}
                   isRequired
                   title="Tags"
-                  description="Correct tags are very helpful for finding the right asset. the site also uses them to display your asset in different ways."
+                  description="Correct tags are very helpful for finding the right asset."
                   icon={() => <LocalOfferIcon />}
                   display={TagsDisplay}
                   editor={
@@ -1031,20 +1054,6 @@ const Editor = () => {
               </>
             )
           },
-          // {
-          //   name: 'features',
-          //   label: 'Features',
-          //   contents: (
-          //     <FormEditorArea
-          //       title="Features"
-          //       description="Describe the features of the asset to help people make an educatated purchase and better find your asset."
-          //       displayAndEditor={
-          //         <FeaturesEditor currentTags={(asset && asset.tags) || []} />
-          //       }
-          //       icon={() => <ListStarsIcon />}
-          //     />
-          //   )
-          // },
           {
             name: 'relations',
             label: 'Relations',

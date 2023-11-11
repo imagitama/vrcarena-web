@@ -8,6 +8,7 @@ export interface Tag {
   category: string
   description: string
   isadult: boolean
+  oppositetag: string
   createdby: string
   createdat: Date
   lastmodifiedby: string
@@ -70,5 +71,12 @@ export const editableFields: EditableField<Tag>[] = [
     type: fieldTypes.checkbox,
     hint:
       'Hide this tag if you do not have adult content enabled (NOT CURRENTLY IN USE)'
+  },
+  {
+    name: 'oppositetag',
+    label: 'Opposite Tag',
+    type: fieldTypes.text,
+    hint:
+      'Another tag (that does not have to exist) that is the "opposite" of this tag. eg. "rigged" has opposite "unrigged"'
   }
 ]

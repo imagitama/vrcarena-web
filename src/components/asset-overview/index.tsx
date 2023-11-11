@@ -763,7 +763,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
             ) : null}
             <AssetFeatures
               tags={asset ? asset.tags : []}
-              tagsData={asset ? asset.tagsdata : []}
+              existingTagsData={asset ? asset.tagsdata : []}
               shimmer={isLoading}
             />
             <ParentControlGroup />

@@ -29,6 +29,7 @@ import survey from '../../surveys/creating-asset'
 import { CollectionNames } from '../../modules/assets'
 import PerformanceEditor from '../../components/performance-editor'
 import SpeciesSelector from '../../components/species-selector'
+import FeaturesEditor from '../../components/features-editor'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -152,6 +153,8 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <h2>Features Editor</h2>
+        <FeaturesEditor currentTags={[]} assetId="123" onDone={() => {}} />
         <h2>Species Selector</h2>
         <SpeciesSelector selectedSpeciesIds={['IpItSWT1QpwLB16IPz2e']} />
         <h2>Performance Editor</h2>

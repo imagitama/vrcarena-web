@@ -7,7 +7,8 @@ import LoadingShimmer from '../loading-shimmer'
 import { colorPalette } from '../../config'
 import * as routes from '../../routes'
 import Link from '../link'
-import { FullTag, Tag } from '../../modules/tags'
+import { CollectionNames, FullTag, Tag } from '../../modules/tags'
+import useDataStoreItems from '../../hooks/useDataStoreItems'
 
 const useStyles = makeStyles({
   items: {
@@ -97,16 +98,24 @@ const LoadingFeature = () => {
   )
 }
 
+const useTags = (existingTagsData?: Tag[]) =>
+  existingTagsData && existingTagsData.length
+    ? []
+    : useDataStoreItems<Tag>(CollectionNames.Tags, 'tags-for-features')
+
 const AssetFeatures = ({
   tags = [],
-  tagsData = [],
+  existingTagsData = [],
   shimmer = false
 }: {
   tags?: string[]
-  tagsData?: Tag[]
+  existingTagsData?: Tag[]
   shimmer?: boolean
 }) => {
   const classes = useStyles()
+  const [isLoadingFeatures, isErrorLoadingFeatures, tagsData] = useTags(
+    existingTagsData
+  )
 
   if (shimmer) {
     return (
@@ -118,20 +127,18 @@ const AssetFeatures = ({
     )
   }
 
-  if (!tags || !tags.length || !tagsData || !tagsData.length) {
+  const tagsDataToUse = existingTagsData || tagsData
+
+  if (!tags || !tags.length || !tagsDataToUse || !tagsDataToUse.length) {
     return null
   }
 
   return (
     <div className={classes.items}>
-      {tags
-        .filter(tag => tagsData.find(data => data.id === tag))
-        .map(tag => (
-          <Feature
-            key={tag}
-            tag={tag}
-            data={tagsData.find(data => data.id === tag)}
-          />
+      {tagsDataToUse
+        .filter(tagsData => tags.find(tag => tagsData.id === tag))
+        .map(tagsData => (
+          <Feature key={tagsData.id} tag={tagsData.id} data={tagsData} />
         ))}
     </div>
   )
