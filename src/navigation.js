@@ -168,7 +168,6 @@ export default [
         id: 'social',
         label: 'Social',
         url: routes.social,
-        requiresEditor: true,
       },
       {
         id: 'admin',

@@ -128,14 +128,14 @@ const SocialPost = ({
           </UsernameLink>
           {' ... '}
           <FormattedDate date={new Date(socialPost.createdat)} />
+          {socialPost.editornotes && (
+            <Paper>
+              <strong>Editor Notes: </strong>
+              {socialPost.editornotes}
+            </Paper>
+          )}
           {isEditor && (
             <>
-              {socialPost.editornotes && (
-                <Paper>
-                  <strong>Editor Notes (not public yet): </strong>
-                  {socialPost.editornotes}
-                </Paper>
-              )}
               <Button
                 color="default"
                 onClick={() =>

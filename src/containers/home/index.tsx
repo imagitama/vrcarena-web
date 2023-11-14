@@ -347,7 +347,6 @@ export default () => {
   const classes = useStyles()
   const searchTerm = useSearchTerm()
   const isLoggedIn = useIsLoggedIn()
-  const isEditor = useIsEditor()
 
   if (searchTerm) {
     return null
@@ -366,7 +365,7 @@ export default () => {
         />
       </Helmet>
       <div className={classes.root}>
-        {isLoggedIn && isEditor && (
+        {isLoggedIn && (
           <div className={classes.createSocialPostForm}>
             <CreateSocialPostForm />
           </div>

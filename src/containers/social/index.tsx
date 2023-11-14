@@ -17,6 +17,7 @@ import Center from '../../components/center'
 import useIsEditor from '../../hooks/useIsEditor'
 import NoResultsMessage from '../../components/no-results-message'
 import useTimer from '../../hooks/useTimer'
+import Message from '../../components/message'
 
 const useStyles = makeStyles({
   spinning: {
@@ -90,12 +91,6 @@ const SocialFeed = () => {
 }
 
 export default () => {
-  const isEditor = useIsEditor()
-
-  if (!isEditor) {
-    return null
-  }
-
   return (
     <>
       <Helmet>
@@ -105,6 +100,11 @@ export default () => {
           content="Discover what our community is talking about right now through our social feed of posts and reactions."
         />
       </Helmet>
+      <Message>
+        Welcome to the new social page - a way for you to share what you're
+        doing in VR games such as VRChat. Please message me on Discord if you
+        have any questions or feedback. -PB
+      </Message>
       <SocialFeed />
     </>
   )
