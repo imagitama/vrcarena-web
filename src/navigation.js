@@ -4,7 +4,7 @@ import categoriesMeta from './category-meta'
 import {
   AssetCategories,
   UserCacheFieldNames,
-  UserRoles
+  UserRoles,
 } from './hooks/useDatabaseQuery'
 import { UserPreferencesFieldNames } from './modules/user'
 
@@ -62,7 +62,7 @@ const categoriesNotToShow = [
   AssetCategories.article,
   AssetCategories.retexture,
   AssetCategories.content,
-  AssetCategories.alteration
+  AssetCategories.alteration,
 ]
 
 export default [
@@ -71,12 +71,12 @@ export default [
     .map(([name, meta]) => ({
       id: `category-${name}`,
       label: meta.name,
-      url: routes.viewCategoryWithVar.replace(':categoryName', name)
+      url: routes.viewCategoryWithVar.replace(':categoryName', name),
     })),
   {
     id: 'species',
     label: 'Species',
-    url: routes.viewAllSpecies
+    url: routes.viewAllSpecies,
   },
   {
     id: 'more',
@@ -85,7 +85,7 @@ export default [
       {
         id: 'events',
         url: routes.events,
-        label: 'Events'
+        label: 'Events',
       },
       {
         id: AssetCategories.retexture,
@@ -93,62 +93,62 @@ export default [
           ':categoryName',
           AssetCategories.retexture
         ),
-        label: categoriesMeta[AssetCategories.retexture].name
+        label: categoriesMeta[AssetCategories.retexture].name,
       },
       {
         id: 'collections',
         url: routes.viewCollections,
-        label: 'Collections'
+        label: 'Collections',
       },
       {
         id: 'news',
         url: routes.news,
-        label: 'News'
+        label: 'News',
       },
       {
         id: 'authors',
         url: routes.authors,
-        label: 'Authors'
+        label: 'Authors',
       },
       {
         id: 'users',
         url: routes.users,
-        label: 'Users'
+        label: 'Users',
       },
       {
         id: 'reviews',
         url: routes.reviews,
-        label: 'Reviews'
+        label: 'Reviews',
       },
       {
         id: 'new-assets',
         url: routes.newAssets,
-        label: 'New Assets'
+        label: 'New Assets',
       },
       {
         id: 'streams',
         url: routes.streams,
-        label: 'Streams'
+        label: 'Streams',
       },
       {
         id: 'discord-servers',
         label: 'Discord Servers',
-        url: routes.discordServers
+        url: routes.discordServers,
       },
       {
         id: 'about',
         url: routes.about,
-        label: 'About'
+        label: 'About',
       },
       {
         id: 'patreon',
         url: routes.patreon,
-        label: 'Patreon'
+        label: 'Patreon',
       },
       {
         id: 'tags',
         url: routes.tags,
-        label: 'Tags'
+        label: 'Tags',
       },
       {
         id: AssetCategories.world,
@@ -156,20 +156,26 @@ export default [
           ':categoryName',
           AssetCategories.world
         ),
-        label: categoriesMeta[AssetCategories.world].name
+        label: categoriesMeta[AssetCategories.world].name,
       },
       {
         id: 'adult',
         url: routes.nsfw,
         label: 'NSFW Content',
-        requiresAdultContentEnabled: true
+        requiresAdultContentEnabled: true,
+      },
+      {
+        id: 'social',
+        label: 'Social',
+        url: routes.social,
+        requiresEditor: true,
       },
       {
         id: 'admin',
         label: 'Admin',
         url: routes.admin,
-        requiresEditor: true
-      }
-    ]
-  }
+        requiresEditor: true,
+      },
+    ],
+  },
 ]
