@@ -250,7 +250,8 @@ const Cropper = ({
 
 const getSupabaseOptimizedUrl = (url: string): string => {
   if (!url.includes('storage/v1/object')) {
-    throw new Error(`Cannot get Supabase optimized URL: URL is weird: ${url}`)
+    console.warn(`Cannot get Supabase optimized URL: URL is weird: ${url}`)
+    return url
   }
 
   const chunks = url.split('storage/v1/object/public')
