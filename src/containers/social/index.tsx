@@ -69,7 +69,7 @@ const SocialFeed = () => {
       </Heading>
       {isError && <ErrorMessage>Failed to load social feed</ErrorMessage>}
       <div>
-        {result ? (
+        {result && result.length ? (
           result.map((socialPost) => (
             <SocialPost
               key={socialPost.id}
