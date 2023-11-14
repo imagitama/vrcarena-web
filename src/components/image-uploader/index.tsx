@@ -326,14 +326,21 @@ export default ({
       const imageUrl = await convertFileToUrl(file)
       setImageUrlToCrop(imageUrl)
     } else {
-      const results = []
+      const results: string[] = []
 
       console.debug(`Multi-upload of ${acceptedFiles.length} files`)
 
       for (const acceptedFile of acceptedFiles) {
         console.debug(`Uploading file "${acceptedFile.name}"...`)
 
-        results.push(await uploadImage(acceptedFile))
+        const uploadedUrl = await uploadImage(acceptedFile)
+
+        // NOTE: Supabase always serves our images as .webp if you use the "render" URL
+        // verify by seeing Content-Type header
+        // 1.91mb PNG becomes 125kb WEBP
+        const autoOptimizedUrl = getSupabaseOptimizedUrl(uploadedUrl)
+
+        results.push(autoOptimizedUrl)
       }
 
       console.debug(`All files have been uploaded`)
