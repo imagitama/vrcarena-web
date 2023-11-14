@@ -68,7 +68,7 @@ const SocialFeed = () => {
           className={isLoading ? classes.spinning : ''}
         />
       </Heading>
-      {isError && <ErrorMessage>Failed to load social feed</ErrorMessage>}
+      {isError && <ErrorMessage>Failed to load posts</ErrorMessage>}
       <div>
         {result && result.length ? (
           result.map((socialPost) => (
@@ -79,7 +79,7 @@ const SocialFeed = () => {
             />
           ))
         ) : !isLoading ? (
-          <NoResultsMessage />
+          <NoResultsMessage>No posts found</NoResultsMessage>
         ) : null}
       </div>
       <br />
