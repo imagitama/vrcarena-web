@@ -427,7 +427,12 @@ export default ({
 
       const uploadedUrl = await uploadImage(fileToUpload)
 
-      onDone([uploadedUrl])
+      // NOTE: Supabase always serves our images as .webp if you use the "render" URL
+      // verify by seeing Content-Type header
+      // 1.91mb PNG becomes 125kb WEBP
+      const autoOptimizedUrl = getSupabaseOptimizedUrl(uploadedUrl)
+
+      onDone([autoOptimizedUrl])
     } catch (err) {
       console.error(err)
       handleError(err)
