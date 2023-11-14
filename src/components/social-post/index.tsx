@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Avatar, { sizes } from '../avatar'
@@ -17,6 +17,8 @@ import Button from '../button'
 import EditorRecordManager from '../editor-record-manager'
 import Paper from '../paper'
 import SocialReactions from '../social-reactions'
+import useQueryParam from '../../hooks/useQueryParam'
+import { scrollToElement } from '../../utils'
 
 const useStyles = makeStyles({
   root: {
@@ -59,6 +61,12 @@ const useStyles = makeStyles({
     '& img': {
       width: '100%',
     },
+    '& a': {
+      display: 'block',
+    },
+  },
+  isActive: {
+    outline: '1px solid rgba(255, 255, 255, 0.9)',
   },
 })
 
@@ -88,9 +96,23 @@ const SocialPost = ({
   const [isExpanded, setIsExpanded] = useState(false)
   const isEditor = useIsEditor()
   const [isEditorControlsVisible, setIsEditorControlsVisible] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const activePostId = useQueryParam('post')
+
+  const isActive = activePostId === socialPost.id
+
+  useEffect(() => {
+    if (!isActive || !rootRef.current) {
+      return
+    }
+
+    scrollToElement(rootRef.current)
+  }, [isActive])
 
   return (
-    <div className={classes.root}>
+    <div
+      className={`${classes.root} ${isActive ? classes.isActive : ''}`}
+      ref={rootRef}>
       <div className={classes.avatar}>
         <UsernameLink id={socialPost.createdby}>
           <Avatar url={socialPost.createdbyavatarurl} size={sizes.TINY} />

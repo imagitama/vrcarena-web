@@ -10,7 +10,8 @@ export default <TFields>(
   boolean,
   boolean,
   (fields: TFields) => Promise<string | null>,
-  () => void
+  () => void,
+  null | string
 ] => {
   if (!collectionName) {
     throw new Error('Cannot create: no collection name provided')
@@ -19,6 +20,7 @@ export default <TFields>(
   const [isCreating, setIsCreating] = useState<boolean>(false)
   const [isSuccess, setIsSuccess] = useState<boolean>(false)
   const [isErrored, setIsErrored] = useState<boolean>(false)
+  const [id, setId] = useState<null | string>(null)
 
   const clear = () => {
     setIsSuccess(false)
@@ -42,7 +44,7 @@ export default <TFields>(
       const { data, error } = await supabase
         .from(collectionName)
         .insert(fieldsForInsert, {
-          returning: 'representation'
+          returning: 'representation',
         })
 
       if (!data || !data.length) {
@@ -67,6 +69,8 @@ export default <TFields>(
         return null
       }
 
+      setId(data[0].id as string)
+
       return data[0].id as string
     } catch (err) {
       setIsCreating(false)
@@ -80,5 +84,5 @@ export default <TFields>(
     }
   }
 
-  return [isCreating, isSuccess, isErrored, create, clear]
+  return [isCreating, isSuccess, isErrored, create, clear, id]
 }

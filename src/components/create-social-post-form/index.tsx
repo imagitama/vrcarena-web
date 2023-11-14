@@ -17,22 +17,28 @@ import CheckboxInput from '../checkbox-input'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
-import * as routes from '../../routes'
 import useUserId from '../../hooks/useUserId'
 import ImageUploader from '../image-uploader'
 import { bucketNames } from '../../file-uploading'
 import Paper from '../paper'
+import * as routes from '../../routes'
 
 const useStyles = makeStyles({
   root: {
     width: '100%',
   },
-  uploaderRoot: {},
-  paper: {
+  uploaderRoot: {
     width: '100%',
     maxWidth: '700px',
     display: 'flex',
-    alignItems: 'top',
+    flexWrap: 'wrap',
+    '& > *': {
+      width: '100%',
+    },
+  },
+  paper: {
+    width: '100%',
+    display: 'flex',
   },
   searchInputWrapper: {
     width: '100%',
@@ -81,6 +87,7 @@ const Attachment = ({
 const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
   const classes = useStyles()
   const {
+    createdId,
     newText,
     setNewText,
     isAdult,
@@ -110,7 +117,19 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
       ) : isErrorCreatingPost ? (
         <ErrorMessage>Failed to create post</ErrorMessage>
       ) : isCreatePostSuccess ? (
-        <SuccessMessage>Your post has been created :)</SuccessMessage>
+        <SuccessMessage>
+          Your post has been created :)
+          <br />
+          <br />
+          <Button
+            color="default"
+            url={routes.socialWithPostVar.replace(
+              ':postId',
+              createdId || '<none>'
+            )}>
+            View On Social
+          </Button>
+        </SuccessMessage>
       ) : null}
       <Paper className={classes.paper}>
         <div className={classes.searchInputWrapper}>
@@ -157,6 +176,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
 }
 
 interface FormContext {
+  createdId: string | null
   newText: string
   setNewText: (newText: string) => void
   isCreatingPost: boolean
@@ -177,8 +197,14 @@ const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
   const [newText, setNewText] = useState('')
   const [attachments, setAttachments] = useState<SocialAttachment[]>([])
   const [isAdult, setIsAdult] = useState(false)
-  const [isCreatingPost, isCreatePostSuccess, isErrorCreatingPost, create] =
-    useDataStoreCreate<SocialPostFields>(CollectionNames.SocialPosts)
+  const [
+    isCreatingPost,
+    isCreatePostSuccess,
+    isErrorCreatingPost,
+    create,
+    ,
+    createdId,
+  ] = useDataStoreCreate<SocialPostFields>(CollectionNames.SocialPosts)
   const myUserId = useUserId()
   const classes = useStyles()
 
@@ -224,6 +250,7 @@ const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
     <div className={classes.root}>
       <formContext.Provider
         value={{
+          createdId,
           newText,
           setNewText,
           isCreatingPost,

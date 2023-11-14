@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
+import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react'
 import AddIcon from '@material-ui/icons/Add'
 
 import {
@@ -204,6 +204,7 @@ const SocialReactions = ({
           <EmojiPicker
             onEmojiClick={onSelectEmoji}
             previewConfig={{ showPreview: false }}
+            emojiStyle={EmojiStyle.NATIVE}
           />
         </div>
       )}
