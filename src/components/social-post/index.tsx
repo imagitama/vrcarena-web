@@ -60,6 +60,7 @@ const useStyles = makeStyles({
     border: '1px solid rgba(255, 255, 255, 0.5)',
     '& img': {
       width: '100%',
+      display: 'block',
     },
     '& a': {
       display: 'block',
