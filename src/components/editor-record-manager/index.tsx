@@ -47,7 +47,7 @@ export default ({
   // hooks
   beforeApprove = undefined,
   // other
-  callOnDoneOnEditorNotes = false,
+  callOnDoneOnEditorNotes = true,
   allowDeclineOptions = false,
   showBox = true
 }: {

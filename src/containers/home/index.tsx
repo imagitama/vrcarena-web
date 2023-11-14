@@ -10,14 +10,14 @@ import { AssetCategories } from '../../hooks/useDatabaseQuery'
 
 import {
   mediaQueryForMobiles,
-  mediaQueryForTabletsOrBelow
+  mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
 import * as routes from '../../routes'
 import { trimDescription } from '../../utils/formatting'
 import {
   DISCORD_URL,
   PATREON_BECOME_PATRON_URL,
-  TWITTER_URL
+  TWITTER_URL,
 } from '../../config'
 import { freeAvatars, getPathForQueryString, questAvatars } from '../../queries'
 import { Asset } from '../../modules/assets'
@@ -36,13 +36,16 @@ import MostRecentDiscordAnnouncement from './components/most-recent-discord-anno
 import PatreonCosts from './components/patreon-costs'
 import LatestTweet from './components/latest-tweet'
 import RecentActivity from './components/recent-activity'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import CreateSocialPostForm from '../../components/create-social-post-form'
+import useIsEditor from '../../hooks/useIsEditor'
 
 const useStyles = makeStyles({
   root: {
     padding: '2rem 0',
     [mediaQueryForMobiles]: {
-      padding: '1rem 0'
-    }
+      padding: '1rem 0',
+    },
   },
   contentBlock: {
     width: 'calc(100% - 2rem)',
@@ -52,30 +55,30 @@ const useStyles = makeStyles({
     fontSize: '120%',
     margin: '0 auto',
     '& p:first-of-type': {
-      marginTop: 0
+      marginTop: 0,
     },
     '& p:last-of-type': {
-      marginBottom: 0
+      marginBottom: 0,
     },
     '& > div': {
       maxWidth: '900px',
-      margin: '0 auto'
+      margin: '0 auto',
     },
     '& $controls': {
-      marginTop: '2rem'
+      marginTop: '2rem',
     },
     [mediaQueryForMobiles]: {
       padding: '1rem',
       '& $controls': {
-        marginTop: '1rem'
-      }
-    }
+        marginTop: '1rem',
+      },
+    },
   },
   tiles: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'stretch',
-    padding: '0.5rem'
+    padding: '0.5rem',
   },
   tile: {
     display: 'flex',
@@ -84,15 +87,15 @@ const useStyles = makeStyles({
     padding: '0.5rem',
     width: '33.3%',
     [mediaQueryForTabletsOrBelow]: {
-      width: '50%'
+      width: '50%',
     },
     [mediaQueryForMobiles]: {
-      width: '100%'
+      width: '100%',
     },
     '& > a': {
       width: '100%',
       height: '100%',
-      color: 'inherit'
+      color: 'inherit',
     },
     '& $controls': {
       position: 'absolute',
@@ -100,14 +103,14 @@ const useStyles = makeStyles({
       bottom: 0,
       right: 0,
       [mediaQueryForMobiles]: {
-        padding: '1rem'
-      }
-    }
+        padding: '1rem',
+      },
+    },
   },
   title: {
     fontSize: '150%',
     textShadow: '1px 1px 1px #000',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   contents: {
     width: '100%',
@@ -118,18 +121,18 @@ const useStyles = makeStyles({
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     padding: '2rem 2rem 6rem 2rem',
     [mediaQueryForMobiles]: {
-      padding: '1rem 1rem 4rem 1rem'
+      padding: '1rem 1rem 4rem 1rem',
     },
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.2)',
       '& $bg': {
-        opacity: 0.15
+        opacity: 0.15,
       },
       '& $mainImage': {
-        transform: 'scale(1.1)'
-      }
+        transform: 'scale(1.1)',
+      },
     },
-    position: 'relative'
+    position: 'relative',
   },
   mainImage: {
     width: '6rem',
@@ -139,7 +142,7 @@ const useStyles = makeStyles({
     left: '2rem',
     transition: 'all 100ms',
     backgroundSize: 'contain',
-    backgroundRepeat: 'no-repeat'
+    backgroundRepeat: 'no-repeat',
   },
   bg: {
     position: 'absolute',
@@ -151,19 +154,25 @@ const useStyles = makeStyles({
     backgroundPosition: 'center',
     transition: 'all 100ms',
     opacity: 0.1,
-    zIndex: -5
+    zIndex: -5,
   },
   controls: {
     width: '100%',
     marginTop: '1rem',
     display: 'flex',
-    justifyContent: 'right'
-  }
+    justifyContent: 'right',
+  },
+  createSocialPostForm: {
+    padding: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 })
 
 const ActualLink = ({
   url,
-  children
+  children,
 }: {
   url?: string
   children: React.ReactNode
@@ -186,7 +195,7 @@ const Tile = ({
   buttonLabel,
   children,
   backgroundImageUrl = '',
-  background = undefined
+  background = undefined,
 }: {
   title: string
   url?: string
@@ -246,8 +255,8 @@ const useFeaturedAssetStyles = makeStyles({
     height: '100%',
     transform: 'translateY(-25%)',
     '& > div': {
-      height: '150%'
-    }
+      height: '150%',
+    },
   },
   newIndicator: {
     backgroundColor: 'rgb(255, 0, 0)',
@@ -261,8 +270,8 @@ const useFeaturedAssetStyles = makeStyles({
     fontWeight: 'bold',
     transform: 'translate(-50%, -50%)',
     cursor: 'default',
-    fontSize: '150%'
-  }
+    fontSize: '150%',
+  },
 })
 
 const FeaturedAssetTile = () => {
@@ -285,7 +294,7 @@ const FeaturedAssetTile = () => {
     shortdescription: shortDescription,
     thumbnailurl: thumbnailUrl,
     pedestalvideourl: pedestalVideoUrl,
-    pedestalfallbackimageurl: pedestalFallbackImageUrl
+    pedestalfallbackimageurl: pedestalFallbackImageUrl,
   } = asset
 
   return (
@@ -303,9 +312,7 @@ const FeaturedAssetTile = () => {
               noShadow
             />
           </div>
-        ) : (
-          undefined
-        )
+        ) : undefined
       }>
       {trimDescription(shortDescription || description || '')}
     </Tile>
@@ -315,7 +322,7 @@ const FeaturedAssetTile = () => {
 const ContentBlock = ({
   buttonUrl,
   buttonLabel,
-  children
+  children,
 }: {
   buttonUrl: string
   buttonLabel: string
@@ -339,6 +346,8 @@ const ContentBlock = ({
 export default () => {
   const classes = useStyles()
   const searchTerm = useSearchTerm()
+  const isLoggedIn = useIsLoggedIn()
+  const isEditor = useIsEditor()
 
   if (searchTerm) {
     return null
@@ -357,6 +366,11 @@ export default () => {
         />
       </Helmet>
       <div className={classes.root}>
+        {isLoggedIn && isEditor && (
+          <div className={classes.createSocialPostForm}>
+            <CreateSocialPostForm />
+          </div>
+        )}
         <ContentBlock buttonUrl={routes.about} buttonLabel="Learn More">
           <p>
             Browse our catalogue of avatars, accessories, tutorials, shaders,

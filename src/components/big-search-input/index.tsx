@@ -25,6 +25,7 @@ const useStyles = makeStyles({
     }
   },
   input: {
+    width: 'calc(100% - 50px)',
     fontSize: '1rem',
     padding: '0.25rem',
     marginLeft: 8,
@@ -67,7 +68,10 @@ export default ({
     <div className={classes.root}>
       <ThemeProvider theme={lightTheme}>
         <Paper className={classes.inputWrapper}>
-          <InputBase className={classes.input} {...inputProps} />
+          <InputBase
+            {...inputProps}
+            className={`${classes.input} ${inputProps.className || ''}`}
+          />
         </Paper>
         {isSearching ? (
           <div className={classes.searchingIcon}>

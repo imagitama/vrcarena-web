@@ -2,10 +2,7 @@ import { client } from './supabase'
 import { v4 as uuidv4 } from 'uuid'
 
 const getFilenameWithoutExtension = (filename: string): string =>
-  filename
-    .split('.')
-    .slice(0, -1)
-    .join('.')
+  filename.split('.').slice(0, -1).join('.')
 
 export const getFullPathButWithUuidFilename = (
   filename: string,
@@ -24,10 +21,7 @@ export const getFullPathButWithUuidFilename = (
 
   const newLastChunk = lastChunk.replace(filenameWithoutExt, uuidv4())
 
-  const newFullPath = chunks
-    .slice(0, -1)
-    .concat(newLastChunk)
-    .join('/')
+  const newFullPath = chunks.slice(0, -1).concat(newLastChunk).join('/')
 
   return newFullPath
 }
@@ -93,7 +87,7 @@ export const uploadFile = async (
   const { error } = await client.storage
     .from(bucketName)
     .upload(fullPathToUploadTo, file, {
-      upsert: false
+      upsert: false,
     })
 
   clearInterval(fakeProgressLoop)
@@ -104,7 +98,7 @@ export const uploadFile = async (
     }
 
     if (
-      ((error as unknown) as SupabaseStorageError).error === 'invalid_mime_type'
+      (error as unknown as SupabaseStorageError).error === 'invalid_mime_type'
     ) {
       throw new UnsupportedMimeTypeError()
     }
@@ -139,5 +133,6 @@ export const bucketNames = {
   authorBanners: 'author-banners',
   playlistThumbnails: 'playlist-thumbnails',
   eventThumbnails: 'event-thumbnails',
-  eventBanners: 'event-banners'
+  eventBanners: 'event-banners',
+  socialPostAttachments: 'socialpost-attachments',
 }

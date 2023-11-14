@@ -441,6 +441,11 @@ const QueryCheatsheetContainer = lazy(() =>
     )
   )
 )
+const Social = lazy(() =>
+  catchChunkDeaths(() =>
+    import(/* webpackChunkName: "social" */ './containers/social')
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -475,6 +480,7 @@ const MainContent = () => {
       ) : null}
       <Switch>
         <Route exact path={routes.home} component={Home} />
+        <Route exact path={routes.social} component={Social} />
         <Route exact path={routes.login} component={Login} />
         <Route exact path={routes.signUp} component={SignUp} />
         <Route exact path={routes.logout} component={Logout} />

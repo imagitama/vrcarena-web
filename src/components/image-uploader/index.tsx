@@ -11,7 +11,7 @@ import { handleError } from '../../error-handling'
 import {
   FileTooLargeError,
   SecurityError,
-  UnsupportedMimeTypeError
+  UnsupportedMimeTypeError,
 } from '../../file-uploading'
 
 import FormControls from '../form-controls'
@@ -29,33 +29,33 @@ const useStyles = makeStyles({
     fontSize: '125%',
     fontWeight: 'bold',
     cursor: 'pointer',
-    background: 'rgba(255, 255, 255, 0.1)'
+    background: 'rgba(255, 255, 255, 0.1)',
   },
   draggingFile: {
-    animation: '500ms $pulse infinite alternate'
+    animation: '500ms $pulse infinite alternate',
   },
   cropper: {
     border: '2px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '3px',
     padding: '1rem',
-    background: 'rgba(255, 255, 255, 0.1)'
+    background: 'rgba(255, 255, 255, 0.1)',
   },
   '@keyframes pulse': {
     from: {
-      backgroundColor: 'rgba(255, 255, 255, 0)'
+      backgroundColor: 'rgba(255, 255, 255, 0)',
     },
     to: {
-      backgroundColor: 'rgba(255, 255, 255, 0.2)'
-    }
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    },
   },
   message: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    '& svg': {
-      marginRight: '0.5rem'
-    }
-  }
+    '& > svg': {
+      marginRight: '0.5rem',
+    },
+  },
 })
 
 const bytesToMegabytes = (bytes: number): string =>
@@ -82,7 +82,7 @@ const getErrorMessageForLastError = (error: Error): string => {
     return `The file is not a valid filetype${
       error.allowedMimeTypes
         ? ` (${error.allowedMimeTypes
-            .map(mimeType => mimeType.replace('image/', ''))
+            .map((mimeType) => mimeType.replace('image/', ''))
             .join(', ')})`
         : ''
     }`
@@ -92,7 +92,7 @@ const getErrorMessageForLastError = (error: Error): string => {
 }
 
 const convertFileToUrl = async (file: File): Promise<string> => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const reader = new FileReader()
 
     reader.addEventListener('load', () => {
@@ -110,7 +110,7 @@ const cropImageToBlob = async (
   image: HTMLImageElement,
   cropSettings: Crop
 ): Promise<Blob> => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (cropSettings.width === undefined || cropSettings.height === undefined) {
       throw new Error('Cannot crop image to blob without width and height')
     }
@@ -143,7 +143,7 @@ const cropImageToBlob = async (
       cropSettings.height
     )
 
-    canvas.toBlob(blob => {
+    canvas.toBlob((blob) => {
       if (!blob) {
         throw new Error(
           'Cannot crop image to blob: failed to convert canvas to blob'
@@ -159,7 +159,7 @@ const Cropper = ({
   onDoneCropping,
   onCancel,
   requiredWidth = undefined,
-  requiredHeight = undefined
+  requiredHeight = undefined,
 }: {
   imageUrl: string
   onDoneCropping: (image: HTMLImageElement, crop: Crop) => void
@@ -174,7 +174,7 @@ const Cropper = ({
     aspect:
       requiredWidth && requiredHeight
         ? requiredWidth / requiredHeight
-        : undefined
+        : undefined,
   })
   const classes = useStyles()
 
@@ -194,7 +194,7 @@ const Cropper = ({
       clearTimeout(throttleTimeoutRef.current)
     }
     throttleTimeoutRef.current = setTimeout(
-      () => setCrop(currentVal => ({ ...currentVal, ...newCrop })),
+      () => setCrop((currentVal) => ({ ...currentVal, ...newCrop })),
       1
     )
   }
@@ -203,16 +203,16 @@ const Cropper = ({
     <div className={classes.cropper}>
       <ReactCrop
         src={imageUrl}
-        onChange={newCrop => onCrop(newCrop)}
+        onChange={(newCrop) => onCrop(newCrop)}
         ruleOfThirds
-        onImageLoaded={img => {
+        onImageLoaded={(img) => {
           // store their image so we can use it later
           imageRef.current = img
           imageRef.current.crossOrigin = 'anonymous' // allow us to render cross-domain images like Gumroad
 
           // need this delay because it is needed apparently
           onImageLoadedTimeoutRef.current = setTimeout(() => {
-            setCrop(currentVal => ({
+            setCrop((currentVal) => ({
               ...currentVal,
               x: 0,
               y: 0,
@@ -223,7 +223,7 @@ const Cropper = ({
               height:
                 requiredHeight && img.height > requiredHeight
                   ? requiredHeight
-                  : img.height
+                  : img.height,
             }))
           }, 50)
         }}
@@ -272,7 +272,10 @@ export default ({
   allowMultiple = false,
   allowCropping = true,
   preloadImageUrl = undefined,
-  preloadFile = undefined
+  preloadFile = undefined,
+  resetOnDone = false,
+  children,
+  clickToOpen = true,
 }: {
   onDone: (urls: string[]) => void
   bucketName: string
@@ -289,6 +292,9 @@ export default ({
   // for sync with gumroad
   preloadImageUrl?: string
   preloadFile?: File
+  resetOnDone?: boolean
+  clickToOpen?: boolean
+  children?: any // (props: { triggerOpen: () => void }) => React.ReactElement
 }) => {
   if (!onDone) {
     throw new Error('Need a onDone')
@@ -332,15 +338,20 @@ export default ({
 
       console.debug(`All files have been uploaded`)
 
+      if (resetOnDone) {
+        reset()
+      }
+
       onDone(results)
     }
   }, [])
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     multiple: allowMultiple,
     onDrop,
     maxSize: maxSizeBytes,
     accept: allowedMimeTypes,
-    onDropRejected: fileRejections => {
+    noClick: !clickToOpen,
+    onDropRejected: (fileRejections) => {
       console.error('Drop rejected', fileRejections)
       const firstRejection = fileRejections[0]
       const firstError = firstRejection.errors[0]
@@ -357,17 +368,11 @@ export default ({
         default:
           setLastCustomError(new Error('Drop rejected'))
       }
-    }
+    },
   })
   // @ts-ignore
-  const [
-    isUploading,
-    percentageDone,
-    lastError,
-    ,
-    upload,
-    clear
-  ] = useFileUpload()
+  const [isUploading, percentageDone, lastError, , upload, clear] =
+    useFileUpload()
 
   if (lastError || lastCustomError) {
     // @ts-ignore
@@ -395,6 +400,10 @@ export default ({
     // 1.91mb PNG becomes 125kb WEBP
     const autoOptimizedUrl = getSupabaseOptimizedUrl(uploadedUrl)
 
+    if (resetOnDone) {
+      reset()
+    }
+
     return autoOptimizedUrl
   }
 
@@ -413,7 +422,7 @@ export default ({
 
       const fileToUpload = new File([blob], fileNameWithExt, {
         // this is required for supabase
-        type: 'image/png'
+        type: 'image/png',
       })
 
       const uploadedUrl = await uploadImage(fileToUpload)
@@ -458,13 +467,15 @@ export default ({
     <div className={classes.root}>
       <div
         {...getRootProps()}
-        className={`${classes.dropzone} ${
-          isDragActive ? classes.draggingFile : ''
+        className={`${children ? '' : classes.dropzone} ${
+          isDragActive ? `${classes.dropzone} ${classes.draggingFile}` : ''
         }`}>
         <input {...getInputProps()} />
         <div className={classes.message}>
           {isDragActive ? (
             <>Drop your image here!</>
+          ) : children ? (
+            React.createElement(children, { triggerOpen: open })
           ) : (
             <>
               <PhotoIcon /> Drag and drop your image{allowMultiple ? 's' : ''}{' '}

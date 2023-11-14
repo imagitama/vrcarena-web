@@ -3,10 +3,10 @@ import Link from '../../components/link'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     whiteSpace: 'nowrap',
-    minWidth: 0
+    minWidth: 0,
   },
   icon: {
     marginLeft: '0.5rem',
@@ -14,18 +14,18 @@ const useStyles = makeStyles(theme => ({
     // fix non-Material icons
     '& svg': {
       width: '1em',
-      height: '1em'
-    }
+      height: '1em',
+    },
   },
   small: {
-    marginLeft: '0.25rem'
+    marginLeft: '0.25rem',
   },
   switchIconSide: {
     marginLeft: 0,
     marginRight: '0.5rem',
     '&$small': {
-      marginRight: '0.25rem'
-    }
+      marginRight: '0.25rem',
+    },
   },
   tertiary: {
     color: '#FFF',
@@ -39,29 +39,32 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.tertiary
         ? // @ts-ignore
           theme.palette.tertiary.dark
-        : '#111'
-    }
+        : '#111',
+    },
   },
   label: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   loading: {
-    filter: 'blur(2px)'
+    filter: 'blur(2px)',
   },
   noChildren: {
-    marginLeft: 0
+    marginLeft: 0,
   },
   noMargin: {
-    margin: 0
-  }
+    margin: 0,
+    '& svg': {
+      margin: 0,
+    },
+  },
 }))
 
 const ButtonContents = ({
   url,
   className,
   openInNewTab,
-  children
+  children,
 }: {
   url?: string
   className?: string

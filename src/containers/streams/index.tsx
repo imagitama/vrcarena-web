@@ -1,7 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import StreamsList from '../../components/streams-list'
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
 import LoadingIndicator from '../../components/loading-indicator'

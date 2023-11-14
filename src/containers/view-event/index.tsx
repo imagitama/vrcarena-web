@@ -273,7 +273,6 @@ const View = () => {
               existingEditorNotes={editornotes}
               existingFeaturedStatus={featuredstatus}
               onDone={hydrate}
-              callOnDoneOnEditorNotes
               showApprovalButtons={false}
               showFeatureButtons={true}
             />
