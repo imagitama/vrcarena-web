@@ -30,9 +30,6 @@ import { CollectionNames } from '../../modules/assets'
 import PerformanceEditor from '../../components/performance-editor'
 import SpeciesSelector from '../../components/species-selector'
 import FeaturesEditor from '../../components/features-editor'
-import useUserRecord from '../../hooks/useUserRecord'
-import useFirebaseFunction from '../../hooks/useFirebaseFunction'
-import { handleError } from '../../error-handling'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -144,80 +141,6 @@ const PerformanceEditorDemo = () => {
   )
 }
 
-interface WorldBuilderRecord {}
-
-const WorldBuilder = () => {
-  const [, , user] = useUserRecord()
-  const [userInput, setUserInput] = useState('')
-  const [isWorking, isError, lastResult, performCall] = useFirebaseFunction<
-    { record: WorldBuilderRecord },
-    { success: boolean }
-  >('updateWorldBuilderRecord')
-
-  if (!user) {
-    return <>Not logged in</>
-  }
-
-  const vrchatPlayerId = user.vrchatuserid || ''
-
-  if (!vrchatPlayerId) {
-    return (
-      <>
-        You need to set a VRChat player ID by going to My Account {'->'} Social{' '}
-        {'->'} VRChat user ID
-      </>
-    )
-  }
-
-  const save = async () => {
-    try {
-      if (!userInput) {
-        return
-      }
-
-      const record = JSON.parse(userInput)
-
-      const { success } = await performCall({
-        record,
-      })
-
-      if (success) {
-        setUserInput('')
-      }
-    } catch (err) {
-      console.error(err)
-      handleError(err)
-    }
-  }
-
-  if (isWorking) {
-    return <LoadingIndicator message="Saving..." />
-  }
-
-  if (isError) {
-    return <ErrorMessage>Failed to save</ErrorMessage>
-  }
-
-  return (
-    <>
-      {!isWorking && lastResult ? (
-        lastResult.success ? (
-          <SuccessMessage>Saved successfully</SuccessMessage>
-        ) : (
-          <ErrorMessage>Failed to save</ErrorMessage>
-        )
-      ) : null}
-      <TextInput
-        multiline
-        rows={5}
-        value={userInput}
-        onChange={(e) => setUserInput(e.target.value)}
-      />
-      <Button onClick={save}>Save</Button>
-    </>
-  )
-}
-
 const loremIpsum =
   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
 
@@ -229,7 +152,6 @@ export default () => {
         <meta name="description" content="Internal use." />
       </Helmet>
       <div>
-        <WorldBuilder />
         <h1>Components</h1>
         <h2>Features Editor</h2>
         <FeaturesEditor currentTags={[]} assetId="123" onDone={() => {}} />

@@ -36,14 +36,14 @@ import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
   queryForMobiles,
-  mediaQueryForTabletsOrAbove
+  mediaQueryForTabletsOrAbove,
 } from './media-queries'
 import useUserRecord from './hooks/useUserRecord'
 import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
-  functionToImport().catch(err => {
+  functionToImport().catch((err) => {
     if (err.message.includes('Loading chunk')) {
       // Warning: this could cause an infinite loop :)
       window.location.reload()
@@ -59,14 +59,14 @@ const useStyles = makeStyles({
     padding: '2rem',
     [mediaQueryForTabletsOrBelow]: {
       maxWidth: '100vw',
-      overflow: 'hidden'
+      overflow: 'hidden',
     },
     [mediaQueryForMobiles]: {
-      padding: '0.5rem'
-    }
+      padding: '0.5rem',
+    },
   },
   homeNotices: {
-    padding: '2rem'
+    padding: '2rem',
   },
   searchbarArea: {
     width: '50%',
@@ -78,16 +78,16 @@ const useStyles = makeStyles({
     zIndex: 100,
     [mediaQueryForTabletsOrBelow]: {
       width: '93%',
-      top: '85px'
+      top: '85px',
     },
     [mediaQueryForMobiles]: {
-      top: '75px'
-    }
+      top: '75px',
+    },
   },
   homepage: {
     [mediaQueryForTabletsOrAbove]: {
-      top: '37%'
-    }
+      top: '37%',
+    },
   },
   floatingLoadingIndicator: {
     position: 'fixed',
@@ -96,354 +96,391 @@ const useStyles = makeStyles({
     transform: 'translate(-25%, -25%)',
     padding: '2rem',
     background: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 999
-  }
+    zIndex: 999,
+  },
 })
 
 // Lazy load these to improve performance (downloading and processing JS)
 const Login = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "login" */ './containers/login')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "login" */ './containers/login')
   )
 )
 const SignUp = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "signup" */ './containers/signup')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "signup" */ './containers/signup')
   )
 )
 const Logout = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "logout" */ './containers/logout')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "logout" */ './containers/logout')
   )
 )
 const CreateAsset = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "create-asset" */ './containers/create-asset')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "create-asset" */ './containers/create-asset')
   )
 )
 const EditAsset = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "edit-asset" */ './containers/edit-asset')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "edit-asset" */ './containers/edit-asset')
   )
 )
 const MyAccount = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "my-account" */ './containers/my-account')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "my-account" */ './containers/my-account')
   )
 )
 const Admin = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "admin" */ './containers/admin')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "admin" */ './containers/admin')
   )
 )
 const PrivacyPolicy = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "privacy-policy" */ './containers/privacy-policy'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "privacy-policy" */ './containers/privacy-policy'
+      )
   )
 )
 const ErrorContainer = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "error" */ './containers/error')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "error" */ './containers/error')
   )
 )
 const News = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "news" */ './containers/news')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "news" */ './containers/news')
   )
 )
 const Tags = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "tags" */ './containers/tags')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "tags" */ './containers/tags')
   )
 )
 const EditTag = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "edit-tag" */ './containers/edit-tag')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "edit-tag" */ './containers/edit-tag')
   )
 )
 const ViewTag = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-tag" */ './containers/view-tag')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "view-tag" */ './containers/view-tag')
   )
 )
 const Search = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "search" */ './containers/search')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "search" */ './containers/search')
   )
 )
 const ViewUser = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-user" */ './containers/view-user')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "view-user" */ './containers/view-user')
   )
 )
 const Stats = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "stats" */ './containers/stats')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "stats" */ './containers/stats')
   )
 )
 const Users = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "users" */ './containers/users')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "users" */ './containers/users')
   )
 )
 const Activity = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "activity" */ './containers/activity')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "activity" */ './containers/activity')
   )
 )
 const Streams = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "streams" */ './containers/streams')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "streams" */ './containers/streams')
   )
 )
 const About = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "about" */ './containers/about')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "about" */ './containers/about')
   )
 )
 const Nsfw = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "adult-assets" */ './containers/adult-assets')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "adult-assets" */ './containers/adult-assets')
   )
 )
 const ViewAuthor = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-author" */ './containers/view-author')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "view-author" */ './containers/view-author')
   )
 )
 const EditAuthor = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "edit-author" */ './containers/edit-author')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "edit-author" */ './containers/edit-author')
   )
 )
 const Authors = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "authors" */ './containers/authors')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "authors" */ './containers/authors')
   )
 )
 const EditUser = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "edit-user" */ './containers/edit-user')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "edit-user" */ './containers/edit-user')
   )
 )
 const DiscordServers = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "discord-servers" */ './containers/discord-servers'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "discord-servers" */ './containers/discord-servers'
+      )
   )
 )
 const ViewDiscordServer = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "view-discord-server" */ './containers/view-discord-server'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "view-discord-server" */ './containers/view-discord-server'
+      )
   )
 )
 const EditDiscordServer = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "edit-discord-server" */ './containers/edit-discord-server'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "edit-discord-server" */ './containers/edit-discord-server'
+      )
   )
 )
 const EditSpecies = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "edit-species" */ './containers/edit-species')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "edit-species" */ './containers/edit-species')
   )
 )
 const Patreon = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "patreon" */ './containers/patreon')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "patreon" */ './containers/patreon')
   )
 )
 const ResetPassword = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "reset-password" */ './containers/reset-password'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "reset-password" */ './containers/reset-password'
+      )
   )
 )
 const Pedestals = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "pedestals" */ './containers/pedestals')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "pedestals" */ './containers/pedestals')
   )
 )
 const MemoryGame = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "memory" */ './containers/memory')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "memory" */ './containers/memory')
   )
 )
 const GuessTheAvatarGame = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "guess-the-avatar" */ './containers/guess-the-avatar'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "guess-the-avatar" */ './containers/guess-the-avatar'
+      )
   )
 )
 const LaunchWorld = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "launch-world" */ './containers/launch-world')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "launch-world" */ './containers/launch-world')
   )
 )
 const SetupProfile = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "setup-profile" */ './containers/setup-profile')
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "setup-profile" */ './containers/setup-profile'
+      )
   )
 )
 const CreateReport = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "create-report" */ './containers/create-report')
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "create-report" */ './containers/create-report'
+      )
   )
 )
 const ViewReport = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-report" */ './containers/view-report')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "view-report" */ './containers/view-report')
   )
 )
 const DmcaPolicy = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "dmca-policy" */ './containers/dmca-policy')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "dmca-policy" */ './containers/dmca-policy')
   )
 )
 const ViewAward = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-award" */ './containers/view-award')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "view-award" */ './containers/view-award')
   )
 )
 const Rules = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "rules" */ './containers/rules')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "rules" */ './containers/rules')
   )
 )
 const TakedownPolicy = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "takedowns" */ './containers/takedowns')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "takedowns" */ './containers/takedowns')
   )
 )
 const ViewAmendment = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "view-amendment" */ './containers/view-amendment'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "view-amendment" */ './containers/view-amendment'
+      )
   )
 )
 const CreateAmendment = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "create-amendment" */ './containers/create-amendment'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "create-amendment" */ './containers/create-amendment'
+      )
   )
 )
 const Brand = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "brand" */ './containers/brand')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "brand" */ './containers/brand')
   )
 )
 const Accessorize = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "accessorize" */ './containers/accessorize')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "accessorize" */ './containers/accessorize')
   )
 )
 // events
 const Events = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "events" */ './containers/events')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "events" */ './containers/events')
   )
 )
 const EditEvent = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "edit-event" */ './containers/edit-event')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "edit-event" */ './containers/edit-event')
   )
 )
 const ViewEvent = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-event" */ './containers/view-event')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "view-event" */ './containers/view-event')
   )
 )
 const ViewArea = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "view-area" */ './containers/view-area')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "view-area" */ './containers/view-area')
   )
 )
 const Dev = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "dev" */ './containers/dev')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "dev" */ './containers/dev')
   )
 )
 const NewAssets = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "new-assets" */ './containers/new-assets')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "new-assets" */ './containers/new-assets')
   )
 )
 const Reviews = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "reviews" */ './containers/reviews')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "reviews" */ './containers/reviews')
   )
 )
 // collections
 const ViewAllCollections = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "collections" */ './containers/collections')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "collections" */ './containers/collections')
   )
 )
 const ViewCollection = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "view-collection" */ './containers/view-collection'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "view-collection" */ './containers/view-collection'
+      )
   )
 )
 const Query = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "query" */ './containers/query')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "query" */ './containers/query')
   )
 )
 const Transparency = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "transparency" */ './containers/transparency')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "transparency" */ './containers/transparency')
   )
 )
 const Unsubscribe = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "unsubscribe" */ './containers/unsubscribe')
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "unsubscribe" */ './containers/unsubscribe')
   )
 )
 // pages
 const Pages = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "pages" */ './containers/pages')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "pages" */ './containers/pages')
   )
 )
 const EditPage = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "edit-page" */ './containers/edit-page')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "edit-page" */ './containers/edit-page')
   )
 )
 const RandomAvatars = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "random-avatars" */ './containers/random-avatars'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "random-avatars" */ './containers/random-avatars'
+      )
   )
 )
 const BulkAdd = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "bulk-add" */ './containers/bulk-add')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "bulk-add" */ './containers/bulk-add')
   )
 )
 const QueryCheatsheetContainer = lazy(() =>
-  catchChunkDeaths(() =>
-    import(
-      /* webpackChunkName: "query-cheatsheet" */ './containers/query-cheatsheet'
-    )
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "query-cheatsheet" */ './containers/query-cheatsheet'
+      )
   )
 )
 const Social = lazy(() =>
-  catchChunkDeaths(() =>
-    import(/* webpackChunkName: "social" */ './containers/social')
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "social" */ './containers/social')
+  )
+)
+const WorldBuilder = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "world-builder" */ './containers/world-builder'
+      )
   )
 )
 
@@ -480,6 +517,7 @@ const MainContent = () => {
       ) : null}
       <Switch>
         <Route exact path={routes.home} component={Home} />
+        <Route exact path={routes.worldBuilder} component={WorldBuilder} />
         <Route exact path={routes.social} component={Social} />
         <Route exact path={routes.login} component={Login} />
         <Route exact path={routes.signUp} component={SignUp} />
@@ -546,7 +584,7 @@ const MainContent = () => {
           path={[
             routes.viewSpeciesCategoryWithVar,
             routes.viewSpeciesCategoryWithVarAndPageNumberVar,
-            routes.viewSpeciesWithVar
+            routes.viewSpeciesWithVar,
           ]}
           component={ViewSpecies}
         />
@@ -692,7 +730,7 @@ const MainContent = () => {
           path={[
             routes.query,
             routes.queryWithVar,
-            routes.queryWithVarAndPageVar
+            routes.queryWithVarAndPageVar,
           ]}
           component={Query}
         />
