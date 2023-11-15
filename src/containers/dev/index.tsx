@@ -30,6 +30,9 @@ import { CollectionNames } from '../../modules/assets'
 import PerformanceEditor from '../../components/performance-editor'
 import SpeciesSelector from '../../components/species-selector'
 import FeaturesEditor from '../../components/features-editor'
+import useUserRecord from '../../hooks/useUserRecord'
+import useFirebaseFunction from '../../hooks/useFirebaseFunction'
+import { handleError } from '../../error-handling'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -38,7 +41,7 @@ const ErrorCodeDecoder = () => {
     <>
       <TextInput
         value={inputString}
-        onChange={e => setInputString(e.target.value)}
+        onChange={(e) => setInputString(e.target.value)}
       />
       <Button onClick={() => setDecodedString(parseBase64String(inputString))}>
         Decode
@@ -67,8 +70,8 @@ const ImageUploadTest = () => {
 
   return (
     <>
-      {lastUrls.length ? lastUrls.map(url => <img src={url} />) : null}
-      <Button onClick={() => setIsFormVisible(currentVal => !currentVal)}>
+      {lastUrls.length ? lastUrls.map((url) => <img src={url} />) : null}
+      <Button onClick={() => setIsFormVisible((currentVal) => !currentVal)}>
         Upload image
       </Button>
       {isFormVisible ? (
@@ -77,7 +80,7 @@ const ImageUploadTest = () => {
           allowCropping={false}
           bucketName="test"
           directoryPath="dev"
-          onDone={urls => setLastUrls(urls)}
+          onDone={(urls) => setLastUrls(urls)}
         />
       ) : null}
     </>
@@ -87,7 +90,7 @@ const ImageUploadTest = () => {
 const MarkdownEditorWrapper = () => {
   const [text, setText] = useState('Here is some *markdown*.')
   return (
-    <MarkdownEditor content={text} onChange={newText => setText(newText)} />
+    <MarkdownEditor content={text} onChange={(newText) => setText(newText)} />
   )
 }
 
@@ -102,7 +105,7 @@ const AssetEditorWrapper = () => {
     <EditorContext.Provider
       value={{
         // @ts-ignore
-        asset: {}
+        asset: {},
       }}>
       <AssetEditor />
     </EditorContext.Provider>
@@ -118,7 +121,7 @@ const FileUploaderDemo = () => {
       <FileUploader
         bucketName={bucketNames.assetThumbnails}
         directoryPath="2598f3fe-c9d3-45c7-bd86-a9ec258e1a7d"
-        onDone={url => setUploadedFileUrl(url)}
+        onDone={(url) => setUploadedFileUrl(url)}
         onError={console.error}
       />
     </>
@@ -134,9 +137,83 @@ const PerformanceEditorDemo = () => {
       <code>{newTags.join(' ')}</code>
       <PerformanceEditor
         currentTags={newTags}
-        overrideSave={newTags => setNewTags(newTags)}
+        overrideSave={(newTags) => setNewTags(newTags)}
         isEditing={isEditing}
       />
+    </>
+  )
+}
+
+interface WorldBuilderRecord {}
+
+const WorldBuilder = () => {
+  const [, , user] = useUserRecord()
+  const [userInput, setUserInput] = useState('')
+  const [isWorking, isError, lastResult, performCall] = useFirebaseFunction<
+    { record: WorldBuilderRecord },
+    { success: boolean }
+  >('updateWorldBuilderRecord')
+
+  if (!user) {
+    return <>Not logged in</>
+  }
+
+  const vrchatPlayerId = user.vrchatuserid || ''
+
+  if (!vrchatPlayerId) {
+    return (
+      <>
+        You need to set a VRChat player ID by going to My Account {'->'} Social{' '}
+        {'->'} VRChat user ID
+      </>
+    )
+  }
+
+  const save = async () => {
+    try {
+      if (!userInput) {
+        return
+      }
+
+      const record = JSON.parse(userInput)
+
+      const { success } = await performCall({
+        record,
+      })
+
+      if (success) {
+        setUserInput('')
+      }
+    } catch (err) {
+      console.error(err)
+      handleError(err)
+    }
+  }
+
+  if (isWorking) {
+    return <LoadingIndicator message="Saving..." />
+  }
+
+  if (isError) {
+    return <ErrorMessage>Failed to save</ErrorMessage>
+  }
+
+  return (
+    <>
+      {!isWorking && lastResult ? (
+        lastResult.success ? (
+          <SuccessMessage>Saved successfully</SuccessMessage>
+        ) : (
+          <ErrorMessage>Failed to save</ErrorMessage>
+        )
+      ) : null}
+      <TextInput
+        multiline
+        rows={5}
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+      />
+      <Button onClick={save}>Save</Button>
     </>
   )
 }
@@ -152,6 +229,7 @@ export default () => {
         <meta name="description" content="Internal use." />
       </Helmet>
       <div>
+        <WorldBuilder />
         <h1>Components</h1>
         <h2>Features Editor</h2>
         <FeaturesEditor currentTags={[]} assetId="123" onDone={() => {}} />
