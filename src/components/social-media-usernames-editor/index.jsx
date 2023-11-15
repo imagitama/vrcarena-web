@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import useDatabaseQuery, {
   CollectionNames,
-  UserFieldNames
+  UserFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -24,32 +24,32 @@ const useStyles = makeStyles({
     padding: '1rem 0',
     borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
     '&:last-child': {
-      borderBottom: 'none'
-    }
+      borderBottom: 'none',
+    },
   },
   label: {
     marginTop: '1rem',
     fontWeight: 'bold',
     width: '25%',
-    flexShrink: 0
+    flexShrink: 0,
   },
   input: {
     flex: 1,
     '& > div': {
-      width: '100%'
+      width: '100%',
     },
     '& input': {
-      paddingTop: '12px'
-    }
+      paddingTop: '12px',
+    },
   },
   hint: {
     fontSize: '75%',
     marginTop: '0.5rem',
-    opacity: '0.75'
+    opacity: '0.75',
   },
   controls: {
-    marginTop: '2rem'
-  }
+    marginTop: '2rem',
+  },
 })
 
 const Label = ({ children }) => {
@@ -93,7 +93,7 @@ export default ({ onSaveClick = null }) => {
     [UserFieldNames.telegramUsername]: '',
     [UserFieldNames.youtubeChannelId]: '',
     [UserFieldNames.twitchUsername]: '',
-    [UserFieldNames.patreonUsername]: ''
+    [UserFieldNames.patreonUsername]: '',
   })
 
   useEffect(() => {
@@ -116,7 +116,7 @@ export default ({ onSaveClick = null }) => {
       [UserFieldNames.twitchUsername]:
         profile[UserFieldNames.twitchUsername] || '',
       [UserFieldNames.patreonUsername]:
-        profile[UserFieldNames.patreonUsername] || ''
+        profile[UserFieldNames.patreonUsername] || '',
     })
   }, [profile && profile.id])
 
@@ -127,7 +127,7 @@ export default ({ onSaveClick = null }) => {
       }
 
       await save({
-        ...formFieldValues
+        ...formFieldValues,
       })
     } catch (err) {
       console.error('Failed to save social media fields to database', err)
@@ -138,7 +138,7 @@ export default ({ onSaveClick = null }) => {
   const updateFormFieldValue = (name, newVal) =>
     setFormFieldValues({
       ...formFieldValues,
-      [name]: newVal
+      [name]: newVal,
     })
 
   if (isLoadingProfile) {
@@ -157,7 +157,7 @@ export default ({ onSaveClick = null }) => {
           <TextField
             variant="filled"
             value={formFieldValues[UserFieldNames.vrchatUserId]}
-            onChange={e =>
+            onChange={(e) =>
               updateFormFieldValue(UserFieldNames.vrchatUserId, e.target.value)
             }
           />
@@ -174,14 +174,14 @@ export default ({ onSaveClick = null }) => {
           <TextField
             variant="filled"
             value={formFieldValues[UserFieldNames.vrchatUsername]}
-            onChange={e =>
+            onChange={(e) =>
               updateFormFieldValue(
                 UserFieldNames.vrchatUsername,
                 e.target.value
               )
             }
           />
-          <Hint>For display purposes only.</Hint>
+          <Hint>Displayed on your profile and for linking your account.</Hint>
         </Input>
       </Field>
       <Field>
@@ -190,7 +190,7 @@ export default ({ onSaveClick = null }) => {
           <TextField
             variant="filled"
             value={formFieldValues[UserFieldNames.discordUsername]}
-            onChange={e =>
+            onChange={(e) =>
               updateFormFieldValue(
                 UserFieldNames.discordUsername,
                 e.target.value
@@ -206,7 +206,7 @@ export default ({ onSaveClick = null }) => {
           <TextField
             variant="filled"
             value={formFieldValues[UserFieldNames.twitterUsername]}
-            onChange={e =>
+            onChange={(e) =>
               updateFormFieldValue(
                 UserFieldNames.twitterUsername,
                 e.target.value
@@ -222,7 +222,7 @@ export default ({ onSaveClick = null }) => {
           <TextField
             variant="filled"
             value={formFieldValues[UserFieldNames.telegramUsername]}
-            onChange={e =>
+            onChange={(e) =>
               updateFormFieldValue(
                 UserFieldNames.telegramUsername,
                 e.target.value
@@ -238,7 +238,7 @@ export default ({ onSaveClick = null }) => {
           <TextField
             variant="filled"
             value={formFieldValues[UserFieldNames.youtubeChannelId]}
-            onChange={e =>
+            onChange={(e) =>
               updateFormFieldValue(
                 UserFieldNames.youtubeChannelId,
                 e.target.value
@@ -257,7 +257,7 @@ export default ({ onSaveClick = null }) => {
           <TextField
             variant="filled"
             value={formFieldValues[UserFieldNames.twitchUsername]}
-            onChange={e =>
+            onChange={(e) =>
               updateFormFieldValue(
                 UserFieldNames.twitchUsername,
                 e.target.value
@@ -272,7 +272,7 @@ export default ({ onSaveClick = null }) => {
           <TextField
             variant="filled"
             value={formFieldValues[UserFieldNames.patreonUsername]}
-            onChange={e =>
+            onChange={(e) =>
               updateFormFieldValue(
                 UserFieldNames.patreonUsername,
                 e.target.value

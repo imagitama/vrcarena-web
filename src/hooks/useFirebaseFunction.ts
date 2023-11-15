@@ -8,7 +8,8 @@ export default <TPayload, TResult>(
   boolean,
   boolean,
   TResult | null,
-  (payload: TPayload) => Promise<TResult>
+  (payload: TPayload) => Promise<TResult>,
+  () => void
 ] => {
   const [result, setResult] = useState<TResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -22,7 +23,7 @@ export default <TPayload, TResult>(
 
       const data = await callFunction<TResult>(functionName, payload)
 
-      setResult((data.data as unknown) as TResult)
+      setResult(data.data as unknown as TResult)
       setIsLoading(false)
       setIsErrored(false)
 
@@ -36,5 +37,11 @@ export default <TPayload, TResult>(
     }
   }
 
-  return [isLoading, isErrored, result, performCall]
+  const clear = () => {
+    setResult(null)
+    setIsLoading(false)
+    setIsErrored(false)
+  }
+
+  return [isLoading, isErrored, result, performCall, clear]
 }

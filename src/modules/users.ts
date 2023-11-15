@@ -28,6 +28,8 @@ export interface User {
 
 export interface UserMeta {
   patreonstatus: string
+  linkedvrchatuserid: string
+  vrchatlinkcode: number
 }
 
 export interface UserAdminMeta {
@@ -40,5 +42,5 @@ export const CollectionNames = {
   Users: 'users',
   // TODO: Pluralize these
   UsersMeta: 'usermeta',
-  UsersAdminMeta: 'useradminmeta'
+  UsersAdminMeta: 'useradminmeta',
 }

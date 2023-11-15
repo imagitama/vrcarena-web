@@ -30,6 +30,7 @@ import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 import PatreonConnectForm from '../../components/patreon-connect-form'
 import VrPlatformChooser from '../../components/vr-platform-chooser'
+import LinkAccountWithVrchatForm from '../../components/link-with-vrchat-account-form'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -95,7 +96,7 @@ const View = () => {
                   }
                 />
               </>
-            )
+            ),
           },
           {
             name: 'avatar',
@@ -116,7 +117,7 @@ const View = () => {
                   }
                 />
               </>
-            )
+            ),
           },
           {
             name: 'profile',
@@ -138,7 +139,7 @@ const View = () => {
                 <Heading variant="h3">VR Games</Heading>
                 <VrPlatformChooser />
               </>
-            )
+            ),
           },
           {
             name: 'settings',
@@ -159,7 +160,7 @@ const View = () => {
                 <Heading variant="h3">Notifications</Heading>
                 <NotificationSettings />
               </>
-            )
+            ),
           },
           {
             name: 'social',
@@ -177,7 +178,17 @@ const View = () => {
                   }
                 />
               </>
-            )
+            ),
+          },
+          {
+            name: 'vrchat',
+            label: 'VRChat',
+            contents: (
+              <>
+                <Heading variant="h2">VRChat Account</Heading>
+                <LinkAccountWithVrchatForm />
+              </>
+            ),
           },
           {
             name: 'patreon',
@@ -189,7 +200,7 @@ const View = () => {
                 <Heading variant="h3">My Featured Assets</Heading>
                 <MyFeaturedAssets />
               </>
-            )
+            ),
           },
           {
             name: 'assets',
@@ -199,7 +210,7 @@ const View = () => {
                 <Heading variant="h2">My Assets</Heading>
                 <MyUploads />
               </>
-            )
+            ),
           },
           {
             name: 'amendments',
@@ -209,7 +220,7 @@ const View = () => {
                 <Heading variant="h2">My Amendments</Heading>
                 <MyAmendments />
               </>
-            )
+            ),
           },
           {
             name: 'wishlist',
@@ -219,7 +230,7 @@ const View = () => {
                 <Heading variant="h2">My Wishlist</Heading>
                 <MyWishlist />
               </>
-            )
+            ),
           },
           {
             name: 'collection',
@@ -228,7 +239,7 @@ const View = () => {
               <>
                 <MyCollections />
               </>
-            )
+            ),
           },
           {
             name: 'reports',
@@ -238,8 +249,8 @@ const View = () => {
                 <Heading variant="h2">My Reports</Heading>
                 <MyReports />
               </>
-            )
-          }
+            ),
+          },
         ]}
       />
     </>
