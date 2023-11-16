@@ -8,16 +8,16 @@ export const Operators = {
   EQUALS: 'eq',
   NOT_EQUALS: '!=',
   GREATER_THAN: '>',
-  ARRAY_CONTAINS: 'array-contains'
+  ARRAY_CONTAINS: 'array-contains',
 }
 
 export const WhereOperators = {
-  OR: 'OR'
+  OR: 'OR',
 }
 
 export const OrderDirections = {
   ASC: 'asc',
-  DESC: 'desc'
+  DESC: 'desc',
 }
 
 export const CollectionNames = {
@@ -32,7 +32,6 @@ export const CollectionNames = {
   DiscordUsers: 'discordusers',
   WishlistsForUsers: 'wishlistsforusers',
   CollectionsForUsers: 'collectionsforusers',
-  UploadsForUsers: 'uploadsforusers',
   // special
   Summaries: 'summaries',
   Special: 'special',
@@ -78,17 +77,17 @@ export const CollectionNames = {
   Reviews: 'reviews',
   Attachments: 'attachments',
   // subscriptions
-  Subscriptions: 'subscriptions'
+  Subscriptions: 'subscriptions',
 }
 
 export const VrchatAvatarsFieldNames = {
   avatar: 'avatar',
-  fetchedAt: 'fetchedat'
+  fetchedAt: 'fetchedat',
 }
 
 export const VrchatWorldsFieldNames = {
   world: 'world',
-  fetchedAt: 'fetchedat'
+  fetchedAt: 'fetchedat',
 }
 
 export const CollectionFieldNames = {
@@ -96,7 +95,7 @@ export const CollectionFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const UploadsFieldNames = {
@@ -105,20 +104,20 @@ export const UploadsFieldNames = {
   createdBy: 'createdBy',
   createdAt: 'createdAt',
   lastModifiedBy: 'lastModifiedBy',
-  lastModifiedAt: 'lastModifiedAt'
+  lastModifiedAt: 'lastModifiedAt',
 }
 
 export const UploadItemFieldNames = {
   parent: 'parent',
   type: 'type',
   url: 'url',
-  thumbnailUrl: 'thumbnailUrl'
+  thumbnailUrl: 'thumbnailUrl',
 }
 
 export const UploadItemTypes = {
   IMAGE: 'image',
   VIDEO: 'video',
-  YOUTUBE_VIDEO: 'youtube_video'
+  YOUTUBE_VIDEO: 'youtube_video',
 }
 
 export const WishlistFieldNames = {
@@ -126,11 +125,11 @@ export const WishlistFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const AwardsForUsersFieldNames = {
-  awards: 'awards'
+  awards: 'awards',
 }
 
 export const ReportFieldNames = {
@@ -143,12 +142,12 @@ export const ReportFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const ViewCacheNames = {
   CategoryAccessory: 'CategoryAccessory',
-  ViewAllSpecies: 'ViewAllSpecies'
+  ViewAllSpecies: 'ViewAllSpecies',
 }
 
 export const specialCollectionIds = {
@@ -157,18 +156,18 @@ export const specialCollectionIds = {
   homepage: 'homepage',
   avatarList: 'avatarList',
   avatarList1: 'avatarList1', // docs have a 1mb limit and we've hit that so a temporary workaround
-  avatarList2: 'avatarList2' // docs have a 1mb limit and we've hit that so a temporary workaround
+  avatarList2: 'avatarList2', // docs have a 1mb limit and we've hit that so a temporary workaround
 }
 
 export const AvatarListFieldNames = {
   avatars: 'avatars',
   lastModifiedAt: 'lastModifiedAt',
-  species: 'species'
+  species: 'species',
 }
 
 export const FeaturedStatuses = {
   Featured: 'featured',
-  Unfeatured: 'unfeatured'
+  Unfeatured: 'unfeatured',
 }
 
 /** START ASSETS */
@@ -205,12 +204,12 @@ export const AssetFieldNames = {
   priceCurrency: 'pricecurrency',
   gumroad: 'gumroad',
   ranks: 'ranks',
-  relations: 'relations'
+  relations: 'relations',
 }
 
 export const AssetGumroadFields = {
   sync: 'sync',
-  fields: 'fields'
+  fields: 'fields',
 }
 
 export const AssetMetaFieldNames = {
@@ -231,7 +230,7 @@ export const AssetMetaFieldNames = {
   queuedTweetRecordIds: 'queuedtweetrecordids',
   approvedAt: 'approvedat',
   publishedAt: 'publishedat',
-  approvedBy: 'approvedby'
+  approvedBy: 'approvedby',
 }
 
 export const AssetEditorMetaFieldNames = {
@@ -239,11 +238,11 @@ export const AssetEditorMetaFieldNames = {
   lastModifiedBy: 'lastModifiedBy',
   lastModifiedAt: 'lastModifiedAt',
   createdBy: 'createdBy',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
 }
 
 export const GetPublicAssetsFieldNames = {
-  authorName: 'authorname'
+  authorName: 'authorname',
 }
 
 export const GetFullAssetsFieldNames = {
@@ -267,28 +266,28 @@ export const GetFullAssetsFieldNames = {
   // stats
   endorsementCount: 'endorsementcount',
   commentCount: 'commentcount',
-  reviewCount: 'reviewcount'
+  reviewCount: 'reviewcount',
 }
 
 export const PublishStatuses = {
   Published: 'published',
-  Draft: 'draft'
+  Draft: 'draft',
 }
 
 export const AccessStatuses = {
   Public: 'public',
-  Deleted: 'deleted'
+  Deleted: 'deleted',
 }
 
 export const ApprovalStatuses = {
   Approved: 'approved',
   Waiting: 'waiting',
-  Declined: 'declined'
+  Declined: 'declined',
 }
 
 export const PinnedStatuses = {
   Pinned: 'pinned',
-  Unpinned: 'unpinned'
+  Unpinned: 'unpinned',
 }
 
 /** END ASSETS */
@@ -298,7 +297,7 @@ export const TutorialStepFieldNames = {
   title: 'title',
   description: 'description',
   imageUrls: 'imageUrls', // todo: rename to imageUrl
-  youtubeUrl: 'youtubeUrl'
+  youtubeUrl: 'youtubeUrl',
 }
 
 export const AssetCategories = {
@@ -313,12 +312,12 @@ export const AssetCategories = {
   worldAsset: 'worldAsset',
   tool: 'tool',
   alteration: 'alteration', // deprecated
-  content: 'content' // deprecated
+  content: 'content', // deprecated
 }
 
 export const deprecatedCategories = [
   AssetCategories.content,
-  AssetCategories.alteration
+  AssetCategories.alteration,
 ]
 
 export const UserFieldNames = {
@@ -344,7 +343,7 @@ export const UserFieldNames = {
   lastModifiedBy: 'lastmodifiedby',
   lastModifiedAt: 'lastmodifiedat',
   createdBy: 'createdby',
-  createdAt: 'createdat'
+  createdAt: 'createdat',
 }
 
 export const UserMetaFieldNames = {
@@ -357,30 +356,30 @@ export const UserMetaFieldNames = {
   lastModifiedAt: 'lastmodifiedat',
   lastModifiedBy: 'lastmodifiedby',
   createdBy: 'createdby',
-  createdAt: 'createdat'
+  createdAt: 'createdat',
 }
 
 export const PatreonStatuses = {
   Patron: 'patron',
   NotPatron: 'not_patron',
-  Unknown: 'unknown'
+  Unknown: 'unknown',
 }
 
 export const BanStatuses = {
   Banned: 'banned',
-  Unbanned: 'unbanned'
+  Unbanned: 'unbanned',
 }
 
 export const UserAdminMetaFieldNames = {
   role: 'role', // "user" | "editor" | "admin"
   lastModifiedAt: 'lastmodifiedat',
-  lastModifiedBy: 'lastmodifiedby'
+  lastModifiedBy: 'lastmodifiedby',
 }
 
 export const UserRoles = {
   User: 'user',
   Editor: 'editor',
-  Admin: 'admin'
+  Admin: 'admin',
 }
 
 export const UserCacheFieldNames = {
@@ -389,7 +388,7 @@ export const UserCacheFieldNames = {
   ...UserAdminMetaFieldNames,
   favoriteSpecies: 'favoriteSpecies', // UserFieldNames has one too
   lastModifiedAt: 'lastModifiedAt',
-  lastModifiedBy: 'lastModifiedBy'
+  lastModifiedBy: 'lastModifiedBy',
 }
 
 export const CommentFieldNames = {
@@ -401,7 +400,7 @@ export const CommentFieldNames = {
   // isDeleted: 'isdeleted', // deprecated
   isPrivate: 'isprivate',
   lastModifiedAt: 'lastmodifiedat',
-  lastModifiedBy: 'lastmodifiedby'
+  lastModifiedBy: 'lastmodifiedby',
 }
 
 export const HistoryFieldNames = {
@@ -410,19 +409,19 @@ export const HistoryFieldNames = {
   parentTable: 'parenttable',
   parent: 'parent',
   message: 'message',
-  data: 'data'
+  data: 'data',
 }
 
 export const EndorsementFieldNames = {
   asset: 'asset',
   createdBy: 'createdby',
-  createdAt: 'createdat'
+  createdAt: 'createdat',
 }
 
 export const DownloadsFieldNames = {
   asset: 'asset',
   createdBy: 'createdby',
-  createdAt: 'createdat'
+  createdAt: 'createdat',
 }
 
 export const NotificationsFieldNames = {
@@ -432,7 +431,7 @@ export const NotificationsFieldNames = {
   parentTable: 'parenttable',
   isRead: 'isread',
   data: 'data',
-  createdAt: 'createdat'
+  createdAt: 'createdat',
 }
 
 export const AuthorFieldNames = {
@@ -463,7 +462,7 @@ export const AuthorFieldNames = {
   // deprecated
   ownedBy: 'ownedby',
   inheritFields: 'inheritfields',
-  isDeleted: 'isdeleted'
+  isDeleted: 'isdeleted',
 }
 
 export const DiscordServerFieldNames = {
@@ -480,7 +479,7 @@ export const DiscordServerFieldNames = {
   createdAt: 'createdat',
   createdBy: 'createdby',
   isApproved: 'isapproved',
-  isDeleted: 'isdeleted'
+  isDeleted: 'isdeleted',
 }
 
 export const SpeciesFieldNames = {
@@ -498,13 +497,13 @@ export const SpeciesFieldNames = {
   createdBy: 'createdby',
   slug: 'slug',
   parent: 'parent',
-  redirectTo: 'redirectto'
+  redirectTo: 'redirectto',
 }
 
 export const HomepageFieldNames = {
   lastUpdatedAt: 'lastupdatedat',
   siteStats: 'siteStats',
-  patreon: 'patreon'
+  patreon: 'patreon',
 }
 
 export function getWhereClausesAsString(
@@ -521,7 +520,7 @@ export function getWhereClausesAsString(
   }
   if (Array.isArray(whereClauses)) {
     return whereClauses
-      .map(item =>
+      .map((item) =>
         Array.isArray(item) ? `[${item[0]},${item[1]},${item[2]}]` : item
       )
       .join(',')
@@ -570,7 +569,7 @@ export const options = {
   offset: 'offset',
   selectQuery: 'selectQuery',
   // special
-  supabase: 'supabase'
+  supabase: 'supabase',
 }
 
 const getOptionsIfProvided = (
@@ -623,7 +622,7 @@ export default <TResult>(
     limit: typeof limitOrOptions === 'number' ? limitOrOptions : undefined,
     orderBy,
     subscribe,
-    startAfter
+    startAfter,
   }
 
   const whereClausesAsString = getWhereClausesAsString(whereClauses)
@@ -660,12 +659,12 @@ export default <TResult>(
       // or an array of searches
       if (Array.isArray(whereClauses)) {
         const isOrStatement = whereClauses.find(
-          item => item === WhereOperators.OR
+          (item) => item === WhereOperators.OR
         )
 
         if (isOrStatement) {
           const orStatement = whereClauses
-            .filter(item => typeof item !== 'string')
+            .filter((item) => typeof item !== 'string')
             .map(
               // @ts-ignore
               ([field, operator, value]: WhereClause) =>
@@ -683,7 +682,7 @@ export default <TResult>(
             orStatement,
             options.supabase
               ? {
-                  foreignTable: options.supabase.foreignTable
+                  foreignTable: options.supabase.foreignTable,
                 }
               : {}
           )
@@ -721,7 +720,7 @@ export default <TResult>(
 
       if (options.orderBy) {
         queryChain = queryChain.order(options.orderBy[0], {
-          ascending: options.orderBy[1] === OrderDirections.ASC
+          ascending: options.orderBy[1] === OrderDirections.ASC,
         })
       }
 
@@ -752,9 +751,7 @@ export default <TResult>(
           setIsErrored(true)
         } else {
           throw new Error(
-            `Failed to query database! ${result.error.code}: ${
-              result.error.message
-            }`
+            `Failed to query database! ${result.error.code}: ${result.error.message}`
           )
         }
       } else {
@@ -795,7 +792,7 @@ export default <TResult>(
     startAfterAsString,
     limitAsString,
     offset,
-    options.supabase && options.supabase.foreignTable
+    options.supabase && options.supabase.foreignTable,
   ])
 
   const hydrate = () => {

@@ -10,7 +10,7 @@ import {
   UserFieldNames,
   SpeciesFieldNames,
   UserMetaFieldNames,
-  BanStatuses
+  BanStatuses,
 } from '../../hooks/useDatabaseQuery'
 import useUserRecord from '../../hooks/useUserRecord'
 
@@ -48,35 +48,35 @@ import useIsEditor from '../../hooks/useIsEditor'
 const useStyles = makeStyles({
   socialMediaItem: {
     display: 'block',
-    padding: '0.5rem'
+    padding: '0.5rem',
   },
   notUrl: {
-    cursor: 'default'
+    cursor: 'default',
   },
   icon: {
     verticalAlign: 'middle',
     width: 'auto',
-    height: '1em'
+    height: '1em',
   },
   avatar: {
     width: '200px',
-    height: '200px'
+    height: '200px',
   },
   img: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   username: {
     marginTop: '1rem',
-    display: 'flex'
+    display: 'flex',
   },
   bio: {
     '& img': {
-      maxWidth: '100%'
-    }
+      maxWidth: '100%',
+    },
   },
   isBanned: {
-    textDecoration: 'line-through'
+    textDecoration: 'line-through',
   },
   favoriteSpecies: {
     marginBottom: '1rem',
@@ -85,25 +85,25 @@ const useStyles = makeStyles({
     fontSize: '125%',
     '& img': {
       width: '100px',
-      marginRight: '1rem'
-    }
+      marginRight: '1rem',
+    },
   },
   favoriteSpeciesHeading: {
-    flex: 1
+    flex: 1,
   },
   awards: {
     display: 'flex',
-    marginLeft: '0.5rem'
+    marginLeft: '0.5rem',
   },
   staffBadge: {
-    marginLeft: '1rem'
+    marginLeft: '1rem',
   },
   controls: {
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: '0.5rem'
-  }
+    padding: '0.5rem',
+  },
 })
 
 const UserControls = ({ children }) => {
@@ -133,7 +133,7 @@ const Awards = ({ userId }) => {
 
   return (
     <div className={classes.awards}>
-      {result.awards.map(awardId => (
+      {result.awards.map((awardId) => (
         <Award key={awardId} awardId={awardId} />
       ))}
     </div>
@@ -141,7 +141,7 @@ const Awards = ({ userId }) => {
 }
 
 const GetFullUsersFieldNames = {
-  favoriteSpeciesData: 'favoritespeciesdata'
+  favoriteSpeciesData: 'favoritespeciesdata',
 }
 
 export default ({ userId }) => {
@@ -177,9 +177,8 @@ export default ({ userId }) => {
     [UserFieldNames.username]: username,
     [GetFullUsersFieldNames.favoriteSpeciesData]: favoriteSpeciesData,
 
-    // meta
+    // TODO: Get this working again as this data is no longer provided
     [UserMetaFieldNames.banStatus]: banStatus,
-    [UserMetaFieldNames.createdAt]: createdAt
   } = user
 
   const isBanned = banStatus === BanStatuses.Banned
@@ -230,15 +229,10 @@ export default ({ userId }) => {
             telegramUsername: telegramUsername,
             youtubeChannelId: youtubeChannelId,
             twitchUsername: twitchUsername,
-            patreonUsername: patreonUsername
+            patreonUsername: patreonUsername,
           }}
           actionCategory="ViewUser"
         />
-        {createdAt && (
-          <>
-            Signed up <FormattedDate date={createdAt} />
-          </>
-        )}
         {canEditUsers(currentUser) && (
           <UserControls>
             <Button
@@ -290,46 +284,46 @@ export default ({ userId }) => {
             {
               name: 'comments',
               label: 'Comments',
-              contents: <TabComments />
+              contents: <TabComments />,
             },
             {
               name: 'assets',
               label: 'Assets',
-              contents: <TabAssets />
+              contents: <TabAssets />,
             },
             {
               name: 'collection',
               label: 'Collection',
-              contents: <TabCollection />
+              contents: <TabCollection />,
             },
             {
               name: 'wishlist',
               label: 'Wishlist',
-              contents: <TabWishlist />
+              contents: <TabWishlist />,
             },
             {
               name: 'reviews',
               label: 'Reviews',
-              contents: <TabReviews />
+              contents: <TabReviews />,
             },
             {
               name: 'endorsements',
               label: 'Endorsements',
-              contents: <TabEndorsements />
+              contents: <TabEndorsements />,
             },
             {
               name: 'attachments',
               label: 'Attachments',
-              contents: <TabAttachments />
-            }
+              contents: <TabAttachments />,
+            },
           ].concat(
             isEditor
               ? [
                   {
                     name: 'history',
                     label: 'History',
-                    contents: <TabHistory />
-                  }
+                    contents: <TabHistory />,
+                  },
                 ]
               : []
           )}

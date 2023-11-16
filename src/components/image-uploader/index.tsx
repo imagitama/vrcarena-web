@@ -250,12 +250,12 @@ const Cropper = ({
 
 const getSupabaseOptimizedUrl = (url: string): string => {
   if (!url.includes('storage/v1/object')) {
-    console.warn(`Cannot get Supabase optimized URL: URL is weird: ${url}`)
-    return url
+    throw new Error(`Cannot get Supabase optimized URL: URL is weird: ${url}`)
   }
 
   const chunks = url.split('storage/v1/object/public')
 
+  // NOTE: Supabase returns it with .png extension but content-type is always WEBP
   const newUrl = `${chunks[0]}storage/v1/render/image/public${chunks[1]}`
 
   return newUrl
@@ -334,14 +334,9 @@ export default ({
       for (const acceptedFile of acceptedFiles) {
         console.debug(`Uploading file "${acceptedFile.name}"...`)
 
-        const uploadedUrl = await uploadImage(acceptedFile)
+        const optimizedUrl = await uploadImage(acceptedFile)
 
-        // NOTE: Supabase always serves our images as .webp if you use the "render" URL
-        // verify by seeing Content-Type header
-        // 1.91mb PNG becomes 125kb WEBP
-        const autoOptimizedUrl = getSupabaseOptimizedUrl(uploadedUrl)
-
-        results.push(autoOptimizedUrl)
+        results.push(optimizedUrl)
       }
 
       console.debug(`All files have been uploaded`)
@@ -433,14 +428,9 @@ export default ({
         type: 'image/png',
       })
 
-      const uploadedUrl = await uploadImage(fileToUpload)
+      const optimizedUrl = await uploadImage(fileToUpload)
 
-      // NOTE: Supabase always serves our images as .webp if you use the "render" URL
-      // verify by seeing Content-Type header
-      // 1.91mb PNG becomes 125kb WEBP
-      const autoOptimizedUrl = getSupabaseOptimizedUrl(uploadedUrl)
-
-      onDone([autoOptimizedUrl])
+      onDone([optimizedUrl])
     } catch (err) {
       console.error(err)
       handleError(err)
