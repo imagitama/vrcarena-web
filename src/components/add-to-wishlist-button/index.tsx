@@ -7,20 +7,21 @@ import Button from '../button'
 
 import {
   CollectionNames,
-  WishlistFieldNames
+  WishlistFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import { DataStoreError } from '../../data-store'
 
 const getLabel = (
   isLoggedIn: boolean,
   isLoading: boolean,
   isAssetInWishlist: boolean,
   isSaving: boolean,
-  isErrored: boolean,
+  lastError: null | DataStoreError,
   isSuccess: boolean
 ) => {
   if (!isLoggedIn) {
@@ -31,7 +32,7 @@ const getLabel = (
     return 'Loading...'
   }
 
-  if (isErrored) {
+  if (lastError) {
     return 'Error!'
   }
 
@@ -63,7 +64,7 @@ const getIcon = (
   isLoading: boolean,
   isAssetInWishlist: boolean,
   isSaving: boolean,
-  isErrored: boolean,
+  lastError: null | DataStoreError,
   isSuccess: boolean
 ) => {
   if (!isLoggedIn) {
@@ -74,7 +75,7 @@ const getIcon = (
     return undefined
   }
 
-  if (isErrored) {
+  if (lastError) {
     return undefined
   }
 
@@ -105,31 +106,24 @@ interface WishlistForUser {
 export default ({
   assetId,
   onClick,
-  isAssetLoading
+  isAssetLoading,
 }: {
   assetId: string
   isAssetLoading: boolean
   onClick?: (data: { newValue: boolean }) => void
 }) => {
   const userId = useUserId()
-  const [
-    isLoadingWishlist,
-    isErrorLoadingWishlist,
-    myWishlist
-  ] = useDataStoreItem<WishlistForUser>(
-    CollectionNames.WishlistsForUsers,
-    userId || false,
-    'add-to-wishlist-button'
-  )
-  const [
-    isSaving,
-    isSavingSuccess,
-    isSavingError,
-    saveOrCreate
-  ] = useDatabaseSave(
-    CollectionNames.WishlistsForUsers,
-    myWishlist ? userId : null
-  )
+  const [isLoadingWishlist, lastErrorLoadingWishlist, myWishlist] =
+    useDataStoreItem<WishlistForUser>(
+      CollectionNames.WishlistsForUsers,
+      userId || false,
+      'add-to-wishlist-button'
+    )
+  const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] =
+    useDatabaseSave(
+      CollectionNames.WishlistsForUsers,
+      myWishlist ? userId : null
+    )
   const isLoggedIn = !!userId
   const isAssetInWishlist =
     myWishlist && myWishlist.assets && myWishlist.assets.includes(assetId)
@@ -145,7 +139,7 @@ export default ({
       }
 
       const newAssetIds = isAssetInWishlist
-        ? currentAssetIds.filter(itemId => itemId !== assetId)
+        ? currentAssetIds.filter((itemId) => itemId !== assetId)
         : currentAssetIds.concat([assetId])
 
       if (onClick) {
@@ -154,7 +148,7 @@ export default ({
 
       await saveOrCreate({
         id: userId,
-        [WishlistFieldNames.assets]: newAssetIds
+        [WishlistFieldNames.assets]: newAssetIds,
       })
     } catch (err) {
       console.error('Failed to save wishlist', err)
@@ -170,7 +164,7 @@ export default ({
         isLoadingWishlist,
         isAssetInWishlist,
         isSaving,
-        isSavingError || isErrorLoadingWishlist,
+        lastSavingError || lastErrorLoadingWishlist,
         isSavingSuccess
       )}
       onClick={onClickBtn}
@@ -180,7 +174,7 @@ export default ({
         isLoadingWishlist,
         isAssetInWishlist,
         isSaving,
-        isSavingError || isErrorLoadingWishlist,
+        lastSavingError || lastErrorLoadingWishlist,
         isSavingSuccess
       )}
     </Button>

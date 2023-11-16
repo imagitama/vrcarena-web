@@ -12,23 +12,19 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 
 export default ({
-  onClick = undefined
+  onClick = undefined,
 }: {
   onClick?: ({ newValue }: { newValue: boolean }) => void
 }) => {
-  const [
-    isLoadingUser,
-    isErroredUser,
-    userPreferences,
-    hydrate
-  ] = useUserPreferences()
+  const [isLoadingUser, isErroredUser, userPreferences, hydrate] =
+    useUserPreferences()
   const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
     CollectionNames.UserPreferences,
     userPreferences ? userPreferences.id : null
   )
 
   if (isLoadingUser || !userPreferences || isSaving) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message={isSaving ? 'Saving...' : 'Loading...'} />
   }
 
   if (isErroredUser) {
@@ -50,7 +46,7 @@ export default ({
       }
 
       await save({
-        [UserPreferencesFieldNames.enabledAdultContent]: newValue
+        [UserPreferencesFieldNames.enabledAdultContent]: newValue,
       })
 
       hydrate()

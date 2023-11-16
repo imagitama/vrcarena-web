@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import Checkbox from '@material-ui/core/Checkbox'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import TextField from '@material-ui/core/TextField'
+import SaveIcon from '@material-ui/icons/Save'
 
 import { CollectionNames, UserFieldNames } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
@@ -31,55 +32,62 @@ const useStyles = makeStyles({
   cards: {
     display: 'flex',
     justifyContent: 'center',
-    marginBottom: '2rem'
+    marginBottom: '2rem',
   },
   card: {
     width: '33.3%',
     maxWidth: '400px',
     flexDirection: 'column',
     '&:nth-child(2)': {
-      margin: '0 1rem'
+      margin: '0 1rem',
     },
     [mediaQueryForMobiles]: {
       width: '100%',
-      margin: 0
-    }
+      margin: 0,
+    },
+    position: 'relative',
   },
   actionArea: {
-    flex: 1
+    flex: 1,
   },
   image: {
     width: '100%',
     '& img': {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   checkbox: {
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: '0.5rem'
+    padding: '0.5rem',
   },
   controls: {
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
   },
   usernameInputItem: {
     padding: '0.5rem',
     opacity: 0.5,
-    transition: 'all 100ms'
+    transition: 'all 100ms',
   },
   selected: {
-    opacity: 1
+    opacity: 1,
   },
   usernameInput: {
-    width: '100%'
-  }
+    width: '100%',
+  },
+  cardContent: {
+    marginBottom: '2rem',
+  },
 })
 
 const vrPlatformNames = {
   VRCHAT: 'VRCHAT',
   CHILLOUTVR: 'CHILLOUTVR',
-  NEOSVR: 'NEOSVR'
+  NEOSVR: 'NEOSVR',
 }
 
 const vrPlatforms = [
@@ -90,7 +98,7 @@ const vrPlatforms = [
     description:
       'A free-to-play massively multiplayer online virtual reality social platform created by Graham Gaylor and Jesse Joudrey.',
     imageUrl: vrchatImageUrl,
-    field: UserFieldNames.vrchatUsername
+    field: UserFieldNames.vrchatUsername,
   },
   {
     name: vrPlatformNames.CHILLOUTVR,
@@ -99,7 +107,7 @@ const vrPlatforms = [
     description:
       'A free-to-play massively multiplayer online virtual reality platform created by Alpha Blend Interactive.',
     imageUrl: chilloutVrImageUrl,
-    field: UserFieldNames.chilloutVrUsername
+    field: UserFieldNames.chilloutVrUsername,
   },
   {
     name: vrPlatformNames.NEOSVR,
@@ -108,11 +116,11 @@ const vrPlatforms = [
     description:
       'A free-to-play massively multiplayer online virtual reality metaverse created by Solirax.',
     imageUrl: neosVrImageUrl,
-    field: UserFieldNames.neosVrUsername
-  }
+    field: UserFieldNames.neosVrUsername,
+  },
 ]
 
-export default ({ analyticsCategory, onDone }) => {
+export default ({ analyticsCategory, onDone = undefined }) => {
   const classes = useStyles()
   const userId = useUserId()
   const [isLoadingUser, isErroredLoadingUser, user] = useUserRecord()
@@ -127,8 +135,8 @@ export default ({ analyticsCategory, onDone }) => {
         ...initialState,
         [platform.name]: {
           isSelected: false,
-          username: ''
-        }
+          username: '',
+        },
       }),
       {}
     )
@@ -142,30 +150,30 @@ export default ({ analyticsCategory, onDone }) => {
     setSelectedFields({
       [vrPlatformNames.VRCHAT]: {
         isSelected: !!user[UserFieldNames.vrchatUsername],
-        username: user[UserFieldNames.vrchatUsername] || ''
+        username: user[UserFieldNames.vrchatUsername] || '',
       },
       [vrPlatformNames.CHILLOUTVR]: {
         isSelected: !!user[UserFieldNames.chilloutVrUsername],
-        username: user[UserFieldNames.chilloutVrUsername] || ''
+        username: user[UserFieldNames.chilloutVrUsername] || '',
       },
       [vrPlatformNames.NEOSVR]: {
         isSelected: !!user[UserFieldNames.neosVrUsername],
-        username: user[UserFieldNames.neosVrUsername] || ''
-      }
+        username: user[UserFieldNames.neosVrUsername] || '',
+      },
     })
   }, [user && user.id])
 
   const areAnySelected = Object.values(selectedFields).find(
-    field => field.isSelected
+    (field) => field.isSelected
   )
 
-  const toggleSelectPlatform = platformName => {
-    setSelectedFields(currentVal => ({
+  const toggleSelectPlatform = (platformName) => {
+    setSelectedFields((currentVal) => ({
       ...currentVal,
       [platformName]: {
         ...currentVal[platformName],
-        isSelected: !currentVal[platformName].isSelected
-      }
+        isSelected: !currentVal[platformName].isSelected,
+      },
     }))
 
     trackAction(
@@ -178,12 +186,12 @@ export default ({ analyticsCategory, onDone }) => {
   }
 
   const setUsername = (platformName, newUsername) =>
-    setSelectedFields(currentVal => ({
+    setSelectedFields((currentVal) => ({
       ...currentVal,
       [platformName]: {
         ...currentVal[platformName],
-        username: newUsername
-      }
+        username: newUsername,
+      },
     }))
 
   const onSaveBtnClick = async () => {
@@ -194,10 +202,12 @@ export default ({ analyticsCategory, onDone }) => {
         [UserFieldNames.chilloutVrUsername]:
           selectedFields[vrPlatformNames.CHILLOUTVR].username || null,
         [UserFieldNames.neosVrUsername]:
-          selectedFields[vrPlatformNames.NEOSVR].username || null
+          selectedFields[vrPlatformNames.NEOSVR].username || null,
       })
 
-      onDone()
+      if (onDone) {
+        onDone()
+      }
     } catch (err) {
       console.error('Failed to save VR platforms to db', err)
       handleError(err)
@@ -213,10 +223,10 @@ export default ({ analyticsCategory, onDone }) => {
   }
 
   return (
-    <>
+    <div>
       <p>Select the VR games that you play (optional):</p>
       <div className={classes.cards}>
-        {vrPlatforms.map(platform => (
+        {vrPlatforms.map((platform) => (
           <Card className={classes.card}>
             <CardActionArea
               className={classes.actionArea}
@@ -227,7 +237,7 @@ export default ({ analyticsCategory, onDone }) => {
               <div className={classes.image}>
                 <img src={platform.imageUrl} />
               </div>
-              <CardContent>
+              <CardContent className={classes.cardContent}>
                 <Typography gutterBottom variant="h5" component="h2">
                   {platform.title}
                 </Typography>
@@ -239,7 +249,7 @@ export default ({ analyticsCategory, onDone }) => {
             <CardActions className={classes.controls}>
               <Button
                 size="small"
-                color="primary"
+                color="default"
                 url={platform.websiteUrl}
                 icon={<OpenInNewIcon />}
                 onClick={() =>
@@ -259,7 +269,7 @@ export default ({ analyticsCategory, onDone }) => {
         <>
           <p>Enter your usernames:</p>
           <div className={classes.cards}>
-            {vrPlatforms.map(platform => (
+            {vrPlatforms.map((platform) => (
               <div className={classes.card}>
                 <div
                   className={`${classes.usernameInputItem} ${
@@ -271,7 +281,7 @@ export default ({ analyticsCategory, onDone }) => {
                     value={selectedFields[platform.name].username}
                     label="Username"
                     variant="outlined"
-                    onChange={event =>
+                    onChange={(event) =>
                       setUsername(platform.name, event.target.value)
                     }
                     className={classes.usernameInput}
@@ -284,9 +294,12 @@ export default ({ analyticsCategory, onDone }) => {
         </>
       )}
       <FormControls>
-        <Button onClick={() => onSaveBtnClick()} isDisabled={isSaving}>
+        <Button
+          onClick={() => onSaveBtnClick()}
+          isDisabled={isSaving}
+          icon={<SaveIcon />}>
           Save
-        </Button>
+        </Button>{' '}
         {isSaving
           ? 'Saving...'
           : isSaveSuccess
@@ -295,6 +308,6 @@ export default ({ analyticsCategory, onDone }) => {
           ? ' Error'
           : ''}
       </FormControls>
-    </>
+    </div>
   )
 }

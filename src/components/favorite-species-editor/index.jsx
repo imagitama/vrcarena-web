@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import SaveIcon from '@material-ui/icons/Save'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
 
-import useDatabaseQuery, {
+import {
   CollectionNames,
   UserFieldNames,
-  options,
   SpeciesFieldNames,
-  OrderDirections
 } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -17,6 +17,7 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import Button from '../button'
 import FormControls from '../form-controls'
+import Select from '../select'
 
 import { handleError } from '../../error-handling'
 import { createRef } from '../../utils'
@@ -25,26 +26,26 @@ import useDataStoreItems from '../../hooks/useDataStoreItems'
 import useUserRecord from '../../hooks/useUserRecord'
 import { GetFullUsersFieldNames } from '../../data-store'
 
-const useStyles = makeStyles({
-  dropdown: {
-    width: '100%',
-    maxWidth: '500px'
-  }
-})
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+  },
+}))
 
-export default ({ analyticsCategory, onDone, saveOnSelect = false }) => {
+export default ({
+  analyticsCategory,
+  onDone = undefined,
+  saveOnSelect = false,
+}) => {
   const classes = useStyles()
   const userId = useUserId()
   const [isLoadingUser, isErroredLoadingUser, user] = useUserRecord()
-  const [
-    isLoadingSpecies,
-    isErroredLoadingSpecies,
-    species
-  ] = useDataStoreItems(
-    CollectionNames.Species,
-    'favorite-species-editor-species',
-    SpeciesFieldNames.pluralName
-  )
+  const [isLoadingSpecies, isErroredLoadingSpecies, species] =
+    useDataStoreItems(
+      CollectionNames.Species,
+      'favorite-species-editor-species',
+      SpeciesFieldNames.pluralName
+    )
   const [isSaving, isSaveSuccess, isSaveErrored, save] = useDatabaseSave(
     CollectionNames.Users,
     userId
@@ -63,7 +64,7 @@ export default ({ analyticsCategory, onDone, saveOnSelect = false }) => {
     )
   }, [user && user.id])
 
-  const onSaveBtnClick = async overrideSpeciesId => {
+  const onSaveBtnClick = async (overrideSpeciesId) => {
     try {
       trackAction(
         analyticsCategory,
@@ -78,7 +79,7 @@ export default ({ analyticsCategory, onDone, saveOnSelect = false }) => {
       await save({
         [UserFieldNames.favoriteSpecies]: speciesIdToUse
           ? createRef(CollectionNames.Species, speciesIdToUse)
-          : null
+          : null,
       })
 
       if (onDone) {
@@ -91,7 +92,7 @@ export default ({ analyticsCategory, onDone, saveOnSelect = false }) => {
   }
 
   if (isLoadingUser || isLoadingSpecies || !species) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message="Loading species..." />
   }
 
   if (isErroredLoadingUser) {
@@ -103,37 +104,44 @@ export default ({ analyticsCategory, onDone, saveOnSelect = false }) => {
   }
 
   return (
-    <>
-      <p>Select your favorite species (optional):</p>
-      <Select
-        className={classes.dropdown}
-        value={newFavoriteSpeciesId}
-        variant="outlined"
-        onChange={e => {
-          const newSpeciesId = e.target.value
-          setNewFavoriteSpeciesId(newSpeciesId)
+    <div>
+      <FormControl fullWidth variant="outlined" className={classes.formControl}>
+        <InputLabel id="fav-species-label">
+          Select your favorite species (optional)
+        </InputLabel>
+        <Select
+          fullWidth
+          labelId="fav-species-label"
+          value={newFavoriteSpeciesId}
+          onChange={(e) => {
+            const newSpeciesId = e.target.value
+            setNewFavoriteSpeciesId(newSpeciesId)
 
-          trackAction(
-            analyticsCategory,
-            'Select different species',
-            e.target.value
-          )
+            trackAction(
+              analyticsCategory,
+              'Select different species',
+              e.target.value
+            )
 
-          if (saveOnSelect) {
-            onSaveBtnClick(newSpeciesId)
-          }
-        }}>
-        {species.map(speciesDoc => (
-          <MenuItem key={speciesDoc.id} value={speciesDoc.id}>
-            {speciesDoc[SpeciesFieldNames.singularName]}
-          </MenuItem>
-        ))}
-      </Select>
+            if (saveOnSelect) {
+              onSaveBtnClick(newSpeciesId)
+            }
+          }}>
+          {species.map((speciesDoc) => (
+            <MenuItem key={speciesDoc.id} value={speciesDoc.id}>
+              {speciesDoc[SpeciesFieldNames.singularName]}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       {saveOnSelect !== true && (
         <FormControls>
-          <Button onClick={() => onSaveBtnClick()} isDisabled={isSaving}>
+          <Button
+            onClick={() => onSaveBtnClick()}
+            isDisabled={isSaving}
+            icon={<SaveIcon />}>
             Save
-          </Button>
+          </Button>{' '}
           {isSaving
             ? 'Saving...'
             : isSaveSuccess
@@ -143,6 +151,6 @@ export default ({ analyticsCategory, onDone, saveOnSelect = false }) => {
             : ''}
         </FormControls>
       )}
-    </>
+    </div>
   )
 }

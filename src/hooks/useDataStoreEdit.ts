@@ -1,73 +1,80 @@
+import { PostgrestError } from '@supabase/supabase-js'
 import { useState } from 'react'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 import { mapFieldsForDatabase } from '../utils'
+import { DataStoreError } from '../data-store'
 
-export default <TFields>(
-  collectionName: string,
+interface CommonRecordFields {
   id: string
+}
+
+export default <TRecord>(
+  collectionName: string,
+  id: string | false
 ): [
   boolean,
   boolean,
-  boolean,
-  (fields: TFields) => Promise<void>,
+  null | DataStoreError,
+  (fields: Partial<TRecord>) => Promise<void>,
   () => void
 ] => {
   if (!collectionName) {
     throw new Error('Cannot edit: no collection name provided')
   }
-  if (!id) {
-    throw new Error('Cannot edit: no ID provided!')
-  }
 
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isSuccess, setIsSuccess] = useState<boolean>(false)
-  const [isErrored, setIsErrored] = useState<boolean>(false)
+  const [lastError, setLastError] = useState<null | DataStoreError>(null)
 
   const clear = () => {
     setIsSuccess(false)
-    setIsErrored(false)
+    setLastError(null)
     setIsEditing(false)
   }
 
-  const save = async (fields: TFields) => {
+  const save = async (fields: Partial<TRecord>) => {
     try {
+      if (!id) {
+        return
+      }
+
       setIsSuccess(false)
-      setIsErrored(false)
+      setLastError(null)
       setIsEditing(true)
 
       // @ts-ignore
       if (fields.id) {
-        throw new Error(
-          `Cannot provide an id when performing update (use hook parameter)`
-        )
+        throw new Error(`Cannot provide an id property when performing update`)
       }
 
-      const fieldsForInsert = mapFieldsForDatabase(fields)
+      const fieldsForUpdate = mapFieldsForDatabase(fields) as TRecord
 
       const { error } = await supabase
-        .from(collectionName)
-        .insert(fieldsForInsert, {
-          returning: 'representation'
+        .from<TRecord & CommonRecordFields>(collectionName)
+        .update(fieldsForUpdate, {
+          returning: 'representation',
         })
+        // @ts-ignore
+        .eq('id', id)
 
       if (error) {
         console.error(error)
-        throw new Error(`API error`)
+        throw new DataStoreError('useDataStoreEdit failed', error)
       }
 
       setIsEditing(false)
       setIsSuccess(true)
-      setIsErrored(false)
+      setLastError(null)
     } catch (err) {
       setIsEditing(false)
       setIsSuccess(false)
-      setIsErrored(true)
+      setLastError(err as DataStoreError)
 
       console.error('Failed to save document', err)
       handleError(err)
     }
   }
 
-  return [isEditing, isSuccess, isErrored, save, clear]
+  return [isEditing, isSuccess, lastError, save, clear]
 }

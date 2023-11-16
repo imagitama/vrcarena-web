@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 
 import useDatabaseQuery, {
@@ -16,6 +15,7 @@ import Button from '../button'
 import { handleError } from '../../error-handling'
 import { createRef } from '../../utils'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import TextInput from '../text-input'
 
 const useStyles = makeStyles({
   field: {
@@ -154,8 +154,7 @@ export default ({ onSaveClick = null }) => {
       <Field>
         <Label>VRChat User ID</Label>
         <Input>
-          <TextField
-            variant="filled"
+          <TextInput
             value={formFieldValues[UserFieldNames.vrchatUserId]}
             onChange={(e) =>
               updateFormFieldValue(UserFieldNames.vrchatUserId, e.target.value)
@@ -171,8 +170,7 @@ export default ({ onSaveClick = null }) => {
       <Field>
         <Label>VRChat Username</Label>
         <Input>
-          <TextField
-            variant="filled"
+          <TextInput
             value={formFieldValues[UserFieldNames.vrchatUsername]}
             onChange={(e) =>
               updateFormFieldValue(
@@ -187,8 +185,7 @@ export default ({ onSaveClick = null }) => {
       <Field>
         <Label>Discord username</Label>
         <Input>
-          <TextField
-            variant="filled"
+          <TextInput
             value={formFieldValues[UserFieldNames.discordUsername]}
             onChange={(e) =>
               updateFormFieldValue(
@@ -203,8 +200,7 @@ export default ({ onSaveClick = null }) => {
       <Field>
         <Label>Twitter username</Label>
         <Input>
-          <TextField
-            variant="filled"
+          <TextInput
             value={formFieldValues[UserFieldNames.twitterUsername]}
             onChange={(e) =>
               updateFormFieldValue(
@@ -219,8 +215,7 @@ export default ({ onSaveClick = null }) => {
       <Field>
         <Label>Telegram username</Label>
         <Input>
-          <TextField
-            variant="filled"
+          <TextInput
             value={formFieldValues[UserFieldNames.telegramUsername]}
             onChange={(e) =>
               updateFormFieldValue(
@@ -235,8 +230,7 @@ export default ({ onSaveClick = null }) => {
       <Field>
         <Label>YouTube channel ID</Label>
         <Input>
-          <TextField
-            variant="filled"
+          <TextInput
             value={formFieldValues[UserFieldNames.youtubeChannelId]}
             onChange={(e) =>
               updateFormFieldValue(
@@ -254,8 +248,7 @@ export default ({ onSaveClick = null }) => {
       <Field>
         <Label>Twitch username</Label>
         <Input>
-          <TextField
-            variant="filled"
+          <TextInput
             value={formFieldValues[UserFieldNames.twitchUsername]}
             onChange={(e) =>
               updateFormFieldValue(
@@ -269,8 +262,7 @@ export default ({ onSaveClick = null }) => {
       <Field>
         <Label>Patreon username</Label>
         <Input>
-          <TextField
-            variant="filled"
+          <TextInput
             value={formFieldValues[UserFieldNames.patreonUsername]}
             onChange={(e) =>
               updateFormFieldValue(

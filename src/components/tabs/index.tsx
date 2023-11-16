@@ -3,7 +3,7 @@ import React, {
   useState,
   useContext,
   createContext,
-  Suspense
+  Suspense,
 } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import Tabs from '@material-ui/core/Tabs'
@@ -15,7 +15,7 @@ import { useParams } from 'react-router'
 import useHistory from '../../hooks/useHistory'
 import {
   mediaQueryForTabletsOrBelow,
-  queryForTabletsOrBelow
+  queryForTabletsOrBelow,
 } from '../../media-queries'
 import LoadingIndicator from '../loading-indicator'
 
@@ -25,29 +25,35 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     margin: '1rem 0',
     [mediaQueryForTabletsOrBelow]: {
-      display: 'block'
-    }
+      display: 'block',
+    },
   },
   tabs: {
     marginRight: '2rem',
     [mediaQueryForTabletsOrBelow]: {
-      margin: 0
-    }
+      margin: 0,
+    },
   },
   tabPanels: {
     flex: 1,
     [mediaQueryForTabletsOrBelow]: {
-      margin: '1rem 0'
-    }
+      margin: '1rem 0',
+    },
   },
   root: {},
   vertical: {
-    display: 'flex'
+    display: 'flex',
   },
-  horizontal: {}
+  horizontal: {},
 })
 
-interface TabContext {}
+interface TabContext {
+  count: number
+  activeTabIdx: number
+  setActiveTabIdx: (newIdx: number) => void
+  next: () => void
+  back: () => void
+}
 
 // @ts-ignore
 const tabsContext = createContext<TabContext>()
@@ -57,7 +63,7 @@ const TabPanel = ({
   activeTabIdx,
   index,
   children,
-  item
+  item,
 }: {
   activeTabIdx: number
   index: number
@@ -77,7 +83,7 @@ const TabPanel = ({
   )
 
 const getInitialTabIdx = (tabName: string, items: TabItem[]): number => {
-  const idx = items.findIndex(item => item.name === tabName)
+  const idx = items.findIndex((item) => item.name === tabName)
 
   if (idx === -1) {
     return 0
@@ -93,21 +99,20 @@ export interface TabItem {
   noLazy?: boolean
   isEnabled?: boolean
 }
+
 export default ({
   items,
   urlWithTabNameVar = '',
   horizontal = false,
-  overrideInitialTabIdx = undefined,
-  children
+  children,
 }: {
   items: TabItem[]
   urlWithTabNameVar?: string
   horizontal?: boolean
-  overrideInitialTabIdx?: number
   children?: React.ReactNode
 }) => {
   const enabledItems = items
-    .filter(item => item)
+    .filter((item) => item)
     .filter(({ isEnabled }) => isEnabled !== false)
 
   const { tabName } = useParams<{ tabName: string }>()
@@ -120,15 +125,21 @@ export default ({
     setActiveTabIdx(getInitialTabIdx(tabName, enabledItems))
   }, [items.length])
 
-  const next = () => setActiveTabIdx(currentIdx => currentIdx + 1)
-  const back = () => setActiveTabIdx(currentIdx => currentIdx - 1)
+  const next = () => setActiveTabIdx((currentIdx) => currentIdx + 1)
+  const back = () => setActiveTabIdx((currentIdx) => currentIdx - 1)
 
   const isHorizontal = isMobile || horizontal
 
   return (
     <Suspense fallback={null}>
       <tabsContext.Provider
-        value={{ activeTabIdx, setActiveTabIdx, next, back }}>
+        value={{
+          activeTabIdx,
+          setActiveTabIdx,
+          next,
+          back,
+          count: enabledItems.length,
+        }}>
         <div
           className={`${classes.root} ${
             isHorizontal ? classes.horizontal : classes.vertical

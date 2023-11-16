@@ -36,7 +36,7 @@ export default () => {
       <LoginForm
         onSuccess={() => {
           trackAction('Signup', 'Click sign-up button')
-          push(routes.myAccount)
+          push(routes.setupProfile)
         }}
       />
       <BodyText>

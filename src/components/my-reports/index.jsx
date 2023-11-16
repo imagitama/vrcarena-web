@@ -2,13 +2,14 @@ import React from 'react'
 
 import useDatabaseQuery, {
   ReportFieldNames,
-  Operators
+  Operators,
 } from '../../hooks/useDatabaseQuery'
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import ReportResults from '../report-results'
 import useUserId from '../../hooks/useUserId'
+import NoResultsMessage from '../no-results-message'
 
 export default () => {
   const myUserId = useUserId()
@@ -26,7 +27,7 @@ export default () => {
   }
 
   if (!results.length) {
-    return <ErrorMessage>You have not made any reports</ErrorMessage>
+    return <NoResultsMessage>You have not made any reports</NoResultsMessage>
   }
 
   return <ReportResults reports={results} />

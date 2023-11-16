@@ -25,7 +25,7 @@ const gapBeforeCheckingMs = 2000
 let jwtRefreshTimeout: NodeJS.Timeout
 
 const errorCodes = {
-  NO_USERADMINMETA: 'NO_USERADMINMETA'
+  NO_USERADMINMETA: 'NO_USERADMINMETA',
 }
 
 export const getUserId = () => loggedInUserId
@@ -34,7 +34,7 @@ const refreshJwt = async () => {
   console.debug(`Refreshing JWT...`)
 
   const {
-    data: { token, expiryTimestamp, errorCode }
+    data: { token, expiryTimestamp, errorCode },
   } = await callFunction('getSupabaseJwt')
 
   if (errorCode) {
@@ -57,7 +57,7 @@ currently: ${new Date()}`)
 
   activeJwt = token
   // let our React hooks (like useSupabaseUserId()) know
-  onJwtTokenChangedCallbacks.forEach(cb => cb(activeJwt))
+  onJwtTokenChangedCallbacks.forEach((cb) => cb(activeJwt))
 
   console.debug(`JWT has been refreshed`)
 
@@ -90,7 +90,9 @@ const stopRefreshingJwt = () => {
   nextJwtExpiryDate = null
 }
 
-firebase.auth().onAuthStateChanged(async user => {
+let waitForUserAdminMetaTimeout
+
+firebase.auth().onAuthStateChanged(async (user) => {
   try {
     if (!user) {
       console.debug(`Firebase user has signed out, signing out of Supabase...`)
@@ -104,12 +106,14 @@ firebase.auth().onAuthStateChanged(async user => {
       stopRefreshingJwt()
 
       // let our React hooks (like useSupabaseUserId()) know
-      onJwtTokenChangedCallbacks.forEach(cb => cb(null))
+      onJwtTokenChangedCallbacks.forEach((cb) => cb(null))
 
       await unloadUserFromStore()
 
       return
     }
+
+    console.debug(`Firebase user has signed in, getting a new JWT...`)
 
     const userId = user.uid
     loggedInUserId = userId
@@ -117,20 +121,26 @@ firebase.auth().onAuthStateChanged(async user => {
     const { errorCode } = await refreshJwt()
 
     // the only reportable error is userAdminMeta has not been created yet cause they just signed up
-    // so wait for 3 seconds and HOPE it has worked
     // TODO: Make this less fragile somehow
     if (errorCode && errorCode === errorCodes.NO_USERADMINMETA) {
       console.debug(`No user admin meta for user, waiting a few seconds...`)
-      await new Promise<void>(resolve => setTimeout(() => resolve(), 3000))
-      console.debug(`Wait complete and hoping it is there!`)
 
-      const { errorCode: newErrorCode } = await refreshJwt()
+      await new Promise<void>((resolve) => {
+        const wait = () => {
+          waitForUserAdminMetaTimeout = setTimeout(async () => {
+            const { errorCode: newErrorCode } = await refreshJwt()
 
-      if (newErrorCode) {
-        throw new Error(
-          `Tried to refresh JWT again and it failed again: ${newErrorCode}`
-        )
-      }
+            if (newErrorCode) {
+              console.debug(`Error code ${newErrorCode}, waiting again...`)
+              wait()
+            } else {
+              console.debug(`We finally found it! Proceeding...`)
+              resolve()
+            }
+          }, 2000)
+        }
+        wait()
+      })
     }
 
     queueRefreshJwt()
@@ -150,7 +160,7 @@ export const onJwtTokenChanged = (
   onJwtTokenChangedCallbacks.push(callback)
   return () => {
     onJwtTokenChangedCallbacks = onJwtTokenChangedCallbacks.filter(
-      cb => cb !== callback
+      (cb) => cb !== callback
     )
   }
 }

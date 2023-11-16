@@ -11,17 +11,17 @@ export default (
 ): [
   boolean,
   boolean,
-  boolean,
+  null | Error,
   (fields?: Fields, id?: string) => Promise<(null | Fields)[]>,
   () => void
 ] => {
   const [isSaving, setIsSaving] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastError, setLastError] = useState<null | Error>(null)
 
   const clear = () => {
     setIsSuccess(false)
-    setIsErrored(false)
+    setLastError(null)
     setIsSaving(false)
   }
 
@@ -52,7 +52,7 @@ export default (
     const idToSave = id || documentId
 
     setIsSuccess(false)
-    setIsErrored(false)
+    setLastError(null)
     setIsSaving(true)
 
     try {
@@ -82,8 +82,7 @@ export default (
             .eq('id', idToSave)
 
           if ((Array.isArray(error) && error.length > 0) || error) {
-            console.error(error)
-            throw new Error(`Failed to update doc`)
+            throw error
           }
         }
 
@@ -96,7 +95,7 @@ export default (
         const { data, error } = await supabase
           .from(collectionName)
           .insert(fields, {
-            returning: 'representation'
+            returning: 'representation',
           })
 
         if ((Array.isArray(error) && error.length > 0) || error) {
@@ -113,13 +112,13 @@ export default (
       }
 
       setIsSuccess(true)
-      setIsErrored(false)
+      setLastError(null)
       setIsSaving(false)
 
       return [returnData]
     } catch (err) {
       setIsSuccess(false)
-      setIsErrored(true)
+      setLastError(err as Error)
       setIsSaving(false)
       console.error('Failed to save document', err)
       handleError(err)
@@ -127,5 +126,5 @@ export default (
     }
   }
 
-  return [isSaving, isSuccess, isErrored, save, clear]
+  return [isSaving, isSuccess, lastError, save, clear]
 }

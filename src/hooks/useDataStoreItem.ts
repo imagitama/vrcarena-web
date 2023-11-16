@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { client as supabase } from '../supabase'
 import { handleError } from '../error-handling'
+import { DataStoreError } from '../data-store'
 
 type HydrateFunction = () => void
 
@@ -13,10 +14,15 @@ export default <TResult>(
   id: string | false,
   queryName: string = 'unnamed',
   select: string = '*'
-): [boolean, boolean, null | TResult | false, HydrateFunction] => {
+): [
+  boolean,
+  null | DataStoreError,
+  null | TResult | false,
+  HydrateFunction
+] => {
   const [result, setResult] = useState<null | TResult | false>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastError, setLastError] = useState<null | DataStoreError>(null)
   const isUnmountedRef = useRef(false)
 
   const doIt = async () => {
@@ -31,7 +37,7 @@ export default <TResult>(
       console.debug(`useDataStoreItem :: ${queryName} :: running getQuery`)
 
       setIsLoading(true)
-      setIsErrored(false)
+      setLastError(null)
 
       const { error, data } = await supabase
         .from(collectionName.toLowerCase())
@@ -45,17 +51,16 @@ export default <TResult>(
       )
 
       if (error) {
-        throw new Error(
-          `useDataStoreItem failed run query "${queryName}": ${error.code}: ${
-            error.message
-          } (${error.hint})`
+        throw new DataStoreError(
+          `useDataStoreItem failed run query "${queryName}"`,
+          error
         )
       }
 
       if (data && data.length !== 1) {
         setResult(false)
         setIsLoading(false)
-        setIsErrored(false)
+        setLastError(null)
         return
       }
 
@@ -68,12 +73,12 @@ export default <TResult>(
 
       setResult(data[0])
       setIsLoading(false)
-      setIsErrored(false)
+      setLastError(null)
     } catch (err) {
       console.error(err)
       handleError(err)
       setIsLoading(false)
-      setIsErrored(true)
+      setLastError(err as DataStoreError)
     }
   }
 
@@ -90,5 +95,5 @@ export default <TResult>(
 
   const hydrate = () => doIt()
 
-  return [isLoading, isErrored, result, hydrate]
+  return [isLoading, lastError, result, hydrate]
 }

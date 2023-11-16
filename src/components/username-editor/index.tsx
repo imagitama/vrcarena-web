@@ -1,35 +1,55 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@material-ui/icons/Save'
+import { PostgrestError } from '@supabase/supabase-js'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { CollectionNames, UserFieldNames } from '../../hooks/useDatabaseQuery'
 import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
+
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
+import { DataStoreError } from '../../data-store'
 
 const useStyles = makeStyles({
-  fieldWrapper: {
+  root: {
     display: 'flex',
-    '& > *:first-child': {
-      marginRight: '0.5rem'
-    }
-  }
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& button': {
+      height: '100%',
+      margin: '0 0.25rem',
+    },
+  },
 })
+
+const getMessageForError = (err: DataStoreError): string => {
+  if (!err.postgrestError) {
+    return 'unknown'
+  }
+  if (err.postgrestError.code === '23505') {
+    return 'Username is taken'
+  }
+  return `Failed: error code ${err.postgrestError.code}`
+}
 
 export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
   const userId = useUserId()
   const [isLoadingUser, isErrorLoadingUser, user, hydrate] = useUserRecord()
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
-    CollectionNames.Users,
-    userId
-  )
-  const [fieldValue, setFieldValue] = useState('')
+  const [isSaving, isSaveSuccess, lastSaveError, save] = useDataStoreEdit<{
+    username: string
+  }>(CollectionNames.Users, userId || false)
+  const { username } = user
+  const [fieldValue, setFieldValue] = useState(username)
   const classes = useStyles()
+
+  useEffect(() => {
+    setFieldValue(username)
+  }, [username])
 
   if (!userId || isLoadingUser || !user) {
     return <LoadingIndicator message="Loading your user details..." />
@@ -39,8 +59,6 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
     return <ErrorMessage>Failed to load your user account</ErrorMessage>
   }
 
-  const { username } = user
-
   const onSaveBtnClick = async () => {
     try {
       if (onSaveClick) {
@@ -48,11 +66,12 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
       }
 
       if (!fieldValue) {
+        console.warn('No field value set')
         return
       }
 
       await save({
-        [UserFieldNames.username]: fieldValue
+        [UserFieldNames.username]: fieldValue,
       })
 
       hydrate()
@@ -67,27 +86,28 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
   }
 
   return (
-    <>
-      <div className={classes.fieldWrapper}>
-        <TextField
-          defaultValue={username}
-          onChange={event => setFieldValue(event.target.value)}
-          variant="outlined"
-          fullWidth
-        />{' '}
-        <Button color="primary" onClick={onSaveBtnClick} size="large">
-          Save
-        </Button>
-      </div>
-      {isSaving ? (
-        <LoadingIndicator message="Saving..." />
-      ) : isSaveSuccess ? (
-        <SuccessMessage>Username saved successfully</SuccessMessage>
-      ) : isSaveError ? (
-        <ErrorMessage hintText={false}>
-          Failed to save your username - please try a different username
-        </ErrorMessage>
-      ) : null}
-    </>
+    <div className={classes.root}>
+      <TextField
+        value={fieldValue}
+        onChange={(event) => setFieldValue(event.target.value)}
+        variant="outlined"
+        fullWidth
+        label="Enter a username"
+      />{' '}
+      <Button
+        color="primary"
+        onClick={onSaveBtnClick}
+        size="large"
+        icon={<SaveIcon />}>
+        Save
+      </Button>{' '}
+      {isSaving
+        ? 'Saving...'
+        : isSaveSuccess
+        ? 'Saved!'
+        : lastSaveError
+        ? getMessageForError(lastSaveError)
+        : ''}
+    </div>
   )
 }

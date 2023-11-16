@@ -9,20 +9,21 @@ import useDatabaseQuery, {
   CollectionNames,
   EndorsementFieldNames,
   Operators,
-  options
+  options,
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
 import { createRef } from '../../utils'
+import { DataStoreError } from '../../data-store'
 
 const getLabel = (
   isLoggedIn: boolean,
   isLoading: boolean,
   isAlreadyEndorsed: boolean,
   isSaving: boolean,
-  isErrored: boolean,
+  lastError: null | boolean | DataStoreError,
   isSuccess: boolean
 ) => {
   if (!isLoggedIn) {
@@ -33,7 +34,7 @@ const getLabel = (
     return 'Loading...'
   }
 
-  if (isErrored) {
+  if (lastError) {
     return 'Error!'
   }
 
@@ -65,7 +66,7 @@ const getIcon = (
   isLoading: boolean,
   isAlreadyEndorsed: boolean,
   isSaving: boolean,
-  isErrored: boolean,
+  lastError: null | boolean | DataStoreError,
   isSuccess: boolean
 ) => {
   if (!isLoggedIn) {
@@ -76,7 +77,7 @@ const getIcon = (
     return undefined
   }
 
-  if (isErrored) {
+  if (lastError) {
     return undefined
   }
 
@@ -108,7 +109,7 @@ export default ({
   assetId,
   endorsementCount = '???',
   onClick = undefined,
-  onDone = undefined
+  onDone = undefined,
 }: {
   isAssetLoading: boolean
   assetId: string
@@ -117,47 +118,40 @@ export default ({
   onDone?: () => void | Promise<void>
 }) => {
   const userId = useUserId()
-  const [
-    isLoadingEndorsements,
-    isErrorLoadingEndorsements,
-    myEndorsements
-  ] = useDatabaseQuery<Endorsement>(
-    CollectionNames.Endorsements,
-    userId
-      ? [
-          [
-            EndorsementFieldNames.createdBy,
-            Operators.EQUALS,
-            createRef(CollectionNames.Users, userId)
-          ],
-          [
-            EndorsementFieldNames.asset,
-            Operators.EQUALS,
-            createRef(CollectionNames.Assets, assetId)
+  const [isLoadingEndorsements, lastErrorLoadingEndorsements, myEndorsements] =
+    useDatabaseQuery<Endorsement>(
+      CollectionNames.Endorsements,
+      userId
+        ? [
+            [
+              EndorsementFieldNames.createdBy,
+              Operators.EQUALS,
+              createRef(CollectionNames.Users, userId),
+            ],
+            [
+              EndorsementFieldNames.asset,
+              Operators.EQUALS,
+              createRef(CollectionNames.Assets, assetId),
+            ],
           ]
-        ]
-      : false,
-    {
-      [options.queryName]: 'get-my-endorsements'
-    }
-  )
+        : false,
+      {
+        [options.queryName]: 'get-my-endorsements',
+      }
+    )
 
   const isLoggedIn = !!userId
   const isAlreadyEndorsed =
     Array.isArray(myEndorsements) && myEndorsements.length === 1 ? true : false
 
-  const [
-    isSaving,
-    isSavingSuccess,
-    isSavingError,
-    createOrDelete
-  ] = useDatabaseSave(
-    CollectionNames.Endorsements,
-    isAlreadyEndorsed && Array.isArray(myEndorsements)
-      ? myEndorsements[0].id
-      : null,
-    isAlreadyEndorsed
-  )
+  const [isSaving, isSavingSuccess, lastSavingError, createOrDelete] =
+    useDatabaseSave(
+      CollectionNames.Endorsements,
+      isAlreadyEndorsed && Array.isArray(myEndorsements)
+        ? myEndorsements[0].id
+        : null,
+      isAlreadyEndorsed
+    )
 
   const addEndorsement = async () => {
     try {
@@ -167,7 +161,7 @@ export default ({
 
       if (onClick) {
         onClick({
-          newValue: true
+          newValue: true,
         })
       }
 
@@ -175,7 +169,7 @@ export default ({
         [EndorsementFieldNames.asset]: createRef(
           CollectionNames.Assets,
           assetId
-        )
+        ),
       })
 
       if (onDone) {
@@ -195,7 +189,7 @@ export default ({
 
       if (onClick) {
         onClick({
-          newValue: false
+          newValue: false,
         })
       }
 
@@ -230,7 +224,7 @@ export default ({
         isLoadingEndorsements,
         isAlreadyEndorsed,
         isSaving,
-        isSavingError || isErrorLoadingEndorsements,
+        lastSavingError || lastErrorLoadingEndorsements,
         isSavingSuccess
       )}
       onClick={onClickBtn}
@@ -240,7 +234,7 @@ export default ({
         isLoadingEndorsements,
         isAlreadyEndorsed,
         isSaving,
-        isSavingError || isErrorLoadingEndorsements,
+        lastSavingError || lastErrorLoadingEndorsements,
         isSavingSuccess
       )}{' '}
       ({endorsementCount})

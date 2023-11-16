@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@material-ui/icons/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
@@ -18,7 +19,7 @@ import FormControls from '../form-controls'
 import {
   NotificationEvents,
   NotificationMethods,
-  defaultNotificationPrefs
+  defaultNotificationPrefs,
 } from '../../notifications'
 import { callFunction } from '../../firebase'
 import SuccessMessage from '../success-message'
@@ -27,15 +28,15 @@ import { CollectionNames, UserPreferencesFieldNames } from '../../modules/user'
 
 const useStyles = makeStyles({
   root: {
-    width: '100%'
+    width: '100%',
   },
   output: {
     textAlign: 'center',
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 })
 
-const getLabelForEventName = eventName => {
+const getLabelForEventName = (eventName) => {
   switch (eventName) {
     case NotificationEvents.ASSET_AMENDED:
       return 'My assets are amended with new tags'
@@ -78,7 +79,7 @@ const getLabelForEventName = eventName => {
   }
 }
 
-const getLabelForMethodName = methodName => {
+const getLabelForMethodName = (methodName) => {
   switch (methodName) {
     case NotificationMethods.WEB:
       return 'Notification in the website (top right corner)'
@@ -89,7 +90,7 @@ const getLabelForMethodName = methodName => {
   }
 }
 
-const mergeInEvents = newEvents => {
+const mergeInEvents = (newEvents) => {
   const finalEvents = {}
 
   for (const eventName in defaultNotificationPrefs.events) {
@@ -103,11 +104,11 @@ const mergeInEvents = newEvents => {
   return finalEvents
 }
 
-const mergeInNotificationPrefs = newPrefs => {
+const mergeInNotificationPrefs = (newPrefs) => {
   return {
     // TODO: Merge in methods too? Only if we add a new one
     methods: newPrefs.methods,
-    events: mergeInEvents(newPrefs.events)
+    events: mergeInEvents(newPrefs.events),
   }
 }
 
@@ -116,13 +117,13 @@ const newPrefsButDisabled = {
   events: Object.keys(defaultNotificationPrefs.events).reduce(
     (newVal, key) => ({
       ...newVal,
-      [key]: false
+      [key]: false,
     }),
     {}
-  )
+  ),
 }
 
-const useAnonymousSave = anonymousDetails => {
+const useAnonymousSave = (anonymousDetails) => {
   const [isSaving, setIsSaving] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [isError, setIsError] = useState(false)
@@ -134,10 +135,10 @@ const useAnonymousSave = anonymousDetails => {
       setIsError(false)
 
       const {
-        data: { error }
+        data: { error },
       } = await callFunction('saveNotificationPrefs', {
         anonymousDetails,
-        newPrefs: unsubscribeFromEverything ? newPrefsButDisabled : newPrefs
+        newPrefs: unsubscribeFromEverything ? newPrefsButDisabled : newPrefs,
       })
 
       if (error) {
@@ -165,11 +166,8 @@ const useAnonymousSave = anonymousDetails => {
 
 export default ({ anonymousDetails }) => {
   const myUserId = useUserId()
-  const [
-    isLoadingPreferences,
-    isErrorLoadingPreferences,
-    userPreferences
-  ] = useUserPreferences()
+  const [isLoadingPreferences, isErrorLoadingPreferences, userPreferences] =
+    useUserPreferences()
   const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
     CollectionNames.UserPreferences,
     myUserId
@@ -181,7 +179,7 @@ export default ({ anonymousDetails }) => {
     isAnonymouslySaving,
     isAnonymouslySaveSuccess,
     isAnonymouslySaveError,
-    saveAnonymously
+    saveAnonymously,
   ] = useAnonymousSave(anonymousDetails)
 
   useEffect(() => {
@@ -215,22 +213,22 @@ export default ({ anonymousDetails }) => {
   }
 
   const onChangeEvent = (e, eventName) => {
-    setNewPrefs(currentVal => ({
+    setNewPrefs((currentVal) => ({
       ...currentVal,
       events: {
         ...currentVal.events,
-        [eventName]: e.target.checked
-      }
+        [eventName]: e.target.checked,
+      },
     }))
   }
 
   const onChangeMethod = (e, methodName) => {
-    setNewPrefs(currentVal => ({
+    setNewPrefs((currentVal) => ({
       ...currentVal,
       methods: {
         ...currentVal.methods,
-        [methodName]: e.target.checked
-      }
+        [methodName]: e.target.checked,
+      },
     }))
   }
 
@@ -247,7 +245,7 @@ export default ({ anonymousDetails }) => {
 
       await save({
         [UserPreferencesFieldNames.notificationPrefs]: newPrefs,
-        [UserPreferencesFieldNames.notificationEmail]: notificationEmail
+        [UserPreferencesFieldNames.notificationEmail]: notificationEmail,
       })
     } catch (err) {
       console.error('Failed to save user preferences', err)
@@ -291,14 +289,14 @@ export default ({ anonymousDetails }) => {
       ) : null}
       <Heading variant="h3">Events</Heading>
       <p>Choose what kind of events you want to subscribe to.</p>
-      {Object.keys(NotificationEvents).map(eventName => (
+      {Object.keys(NotificationEvents).map((eventName) => (
         <div key={eventName}>
           <FormControlLabel
             key={eventName}
             control={
               <Checkbox
                 checked={newPrefs.events[eventName] !== false}
-                onChange={e => onChangeEvent(e, eventName)}
+                onChange={(e) => onChangeEvent(e, eventName)}
               />
             }
             label={getLabelForEventName(eventName)}
@@ -308,15 +306,15 @@ export default ({ anonymousDetails }) => {
       <Heading variant="h3">Methods</Heading>
       <p>Choose how you want to receive your notifications.</p>
       {Object.keys(NotificationMethods)
-        .filter(methodName => methodName !== NotificationMethods.DISCORD)
-        .map(methodName => (
+        .filter((methodName) => methodName !== NotificationMethods.DISCORD)
+        .map((methodName) => (
           <div key={methodName}>
             <FormControlLabel
               key={methodName}
               control={
                 <Checkbox
                   checked={newPrefs.methods[methodName] !== false}
-                  onChange={e => onChangeMethod(e, methodName)}
+                  onChange={(e) => onChangeMethod(e, methodName)}
                 />
               }
               label={getLabelForMethodName(methodName)}
@@ -331,7 +329,7 @@ export default ({ anonymousDetails }) => {
             can enter it here (or leave it blank to use your sign up one).
           </p>
           <TextInput
-            onChange={e => setNotificationEmail(e.target.value)}
+            onChange={(e) => setNotificationEmail(e.target.value)}
             value={notificationEmail}
             placeholder="eg. notifyme@hotmail.com"
             fullWidth
@@ -341,7 +339,9 @@ export default ({ anonymousDetails }) => {
       <br />
       <br />
       <FormControls>
-        <Button onClick={onSaveClick}>Save</Button>
+        <Button onClick={onSaveClick} icon={<SaveIcon />}>
+          Save
+        </Button>
       </FormControls>
       <br />
       <br />

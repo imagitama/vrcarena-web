@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Menu from '@material-ui/core/Menu'
-import MenuItem, { MenuItemProps } from '@material-ui/core/MenuItem'
+import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/core/styles'
 import CheckIcon from '@material-ui/icons/Check'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
@@ -8,18 +8,18 @@ import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
 
 import {
   CollectionNames,
+  DataStoreError,
   PlaylistItemsFieldNames,
-  PlaylistsFieldNames
+  PlaylistsFieldNames,
 } from '../../data-store'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useMyCollections from '../../hooks/useMyCollections'
 import CreateCollectionForm from '../create-collection-form'
 import Button from '../button'
 import { handleError } from '../../error-handling'
-import useDatabaseQuery, {
+import {
   CollectionFieldNames,
-  options,
-  CollectionNames as OldCollectionNames
+  CollectionNames as OldCollectionNames,
 } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
@@ -27,19 +27,19 @@ import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 
 const useStyles = makeStyles({
   createForm: {
-    padding: '5px'
+    padding: '5px',
   },
   divider: {
     width: '100%',
     height: '1px',
-    background: 'rgba(255, 255, 255, 0.5)'
-  }
+    background: 'rgba(255, 255, 255, 0.5)',
+  },
 })
 
 const MenuItemWithIcon = ({
   icon,
   children,
-  onClick
+  onClick,
 }: {
   icon: React.ReactNode
   children: React.ReactNode
@@ -53,7 +53,7 @@ const MenuItemWithIcon = ({
 const CollectionMenuItem = ({
   assetId,
   collection: { id: collectionId, items, title },
-  onDone
+  onDone,
 }: {
   assetId: string
   collection: Collection
@@ -67,32 +67,28 @@ const CollectionMenuItem = ({
     items = []
   }
 
-  const [
-    isSaving,
-    isSavingSuccess,
-    isSavingError,
-    saveCollection
-  ] = useDatabaseSave(CollectionNames.Playlists, collectionId)
+  const [isSaving, isSavingSuccess, lastSavingError, saveCollection] =
+    useDatabaseSave(CollectionNames.Playlists, collectionId)
 
   const isAssetInCollection =
-    items.find(item => item.asset === assetId) !== undefined
+    items.find((item) => item.asset === assetId) !== undefined
 
   const onClick = async () => {
     try {
       const existingItems = items
 
       const newItems = isAssetInCollection
-        ? existingItems.filter(item => item.asset !== assetId)
+        ? existingItems.filter((item) => item.asset !== assetId)
         : [
             ...existingItems,
             {
               [PlaylistItemsFieldNames.asset]: assetId,
-              [PlaylistItemsFieldNames.comments]: '' // TODO: Allow them to set this?
-            }
+              [PlaylistItemsFieldNames.comments]: '', // TODO: Allow them to set this?
+            },
           ]
 
       await saveCollection({
-        [PlaylistsFieldNames.items]: newItems
+        [PlaylistsFieldNames.items]: newItems,
       })
 
       onDone(!isAssetInCollection)
@@ -107,7 +103,7 @@ const CollectionMenuItem = ({
         false,
         isAssetInCollection,
         isSaving,
-        isSavingError,
+        lastSavingError,
         isSavingSuccess
       )}
       onClick={onClick}>
@@ -116,7 +112,7 @@ const CollectionMenuItem = ({
         false,
         isAssetInCollection,
         isSaving,
-        isSavingError,
+        lastSavingError,
         isSavingSuccess
       )}
     </MenuItemWithIcon>
@@ -127,14 +123,14 @@ const getIcon = (
   isLoading: boolean,
   isAssetInCollection: boolean,
   isSaving: boolean,
-  isErrored: boolean,
+  lastSavingError: null | DataStoreError,
   isSuccess: boolean
 ) => {
   if (isLoading) {
     return undefined
   }
 
-  if (isErrored) {
+  if (lastSavingError) {
     return undefined
   }
 
@@ -162,14 +158,14 @@ const getLabel = (
   isLoading: boolean,
   isAssetInCollection: boolean,
   isSaving: boolean,
-  isErrored: boolean,
+  lastSavingError: null | DataStoreError,
   isSuccess: boolean
 ) => {
   if (isLoading) {
     return 'Loading...'
   }
 
-  if (isErrored) {
+  if (lastSavingError) {
     return 'Error!'
   }
 
@@ -194,29 +190,22 @@ const getLabel = (
 
 const MyCollectionMenuItem = ({
   assetId,
-  onDone
+  onDone,
 }: {
   assetId: string
   onDone: (newValue: boolean) => void
 }) => {
   const userId = useUserId()
-  const [
-    isLoadingCollection,
-    isErrorLoadingCollection,
-    myCollection
-  ] = useDataStoreItem<CollectionForUser>(
-    OldCollectionNames.CollectionsForUsers,
-    userId || false
-  )
-  const [
-    isSaving,
-    isSavingSuccess,
-    isSavingError,
-    saveOrCreate
-  ] = useDatabaseSave(
-    OldCollectionNames.CollectionsForUsers,
-    myCollection ? userId : null
-  )
+  const [isLoadingCollection, lastErrorLoadingCollection, myCollection] =
+    useDataStoreItem<CollectionForUser>(
+      OldCollectionNames.CollectionsForUsers,
+      userId || false
+    )
+  const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] =
+    useDatabaseSave(
+      OldCollectionNames.CollectionsForUsers,
+      myCollection ? userId : null
+    )
   const isLoggedIn = !!userId
   const isAssetInCollection = !!(
     myCollection &&
@@ -233,11 +222,11 @@ const MyCollectionMenuItem = ({
       }
 
       const newAssetIds = isAssetInCollection
-        ? currentAssetIds.filter(itemId => itemId !== assetId)
+        ? currentAssetIds.filter((itemId) => itemId !== assetId)
         : currentAssetIds.concat([assetId])
 
       await saveOrCreate({
-        [CollectionFieldNames.assets]: newAssetIds
+        [CollectionFieldNames.assets]: newAssetIds,
       })
 
       onDone(!isAssetInCollection)
@@ -253,7 +242,7 @@ const MyCollectionMenuItem = ({
         isLoadingCollection,
         isAssetInCollection,
         isSaving,
-        isSavingError || isErrorLoadingCollection,
+        lastSavingError || lastErrorLoadingCollection,
         isSavingSuccess
       )}
       onClick={onClickBtn}>
@@ -262,7 +251,7 @@ const MyCollectionMenuItem = ({
         isLoadingCollection,
         isAssetInCollection,
         isSaving,
-        isSavingError || isErrorLoadingCollection,
+        lastSavingError || lastErrorLoadingCollection,
         isSavingSuccess
       )}
     </MenuItemWithIcon>
@@ -292,7 +281,7 @@ interface Collection {
 export default ({
   assetId,
   isAssetLoading,
-  onClick
+  onClick,
 }: {
   assetId: string
   isAssetLoading: boolean
@@ -304,7 +293,8 @@ export default ({
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCreateFormVisible, setIsCreateFormVisible] = useState(false)
-  const [isLoading, isErrored, myCollections, , hydrate] = useMyCollections()
+  const [isLoading, lastSavingError, myCollections, , hydrate] =
+    useMyCollections()
   const rootRef = useRef<HTMLDivElement>(null)
   const classes = useStyles()
   const timerRef = useRef()
@@ -315,7 +305,7 @@ export default ({
       return
     }
 
-    setIsMenuOpen(currentVal => {
+    setIsMenuOpen((currentVal) => {
       if (!currentVal) {
         hydrate()
       }
@@ -359,11 +349,11 @@ export default ({
         open={isMenuOpen}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'left'
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'left'
+          horizontal: 'left',
         }}
         onClose={() => setIsMenuOpen(false)}>
         <div>
@@ -376,7 +366,7 @@ export default ({
               <Divider />
               {isLoading ? (
                 <MenuItem>Loading...</MenuItem>
-              ) : isErrored ? (
+              ) : lastSavingError ? (
                 <MenuItem>Failed to load</MenuItem>
               ) : null}
               {myCollections ? (

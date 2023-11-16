@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import Markdown from '../markdown'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
+import SaveIcon from '@material-ui/icons/Save'
 
 import {
   CollectionNames,
   UserFieldNames,
-  options
+  options,
 } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -20,12 +21,12 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 const useStyles = makeStyles({
   bioTextField: {
-    width: '100%'
+    width: '100%',
   },
   controls: {
     textAlign: 'center',
-    marginTop: '0.5rem'
-  }
+    marginTop: '0.5rem',
+  },
 })
 
 export default ({ onSaveClick = null }) => {
@@ -59,7 +60,7 @@ export default ({ onSaveClick = null }) => {
       }
 
       await save({
-        [UserFieldNames.bio]: bioValue
+        [UserFieldNames.bio]: bioValue,
       })
     } catch (err) {
       console.error('Failed to save social media fields to database', err)
@@ -79,7 +80,7 @@ export default ({ onSaveClick = null }) => {
     <>
       <TextField
         value={bioValue}
-        onChange={e => setBioValue(e.target.value)}
+        onChange={(e) => setBioValue(e.target.value)}
         rows={5}
         multiline
         variant="outlined"
@@ -110,7 +111,10 @@ export default ({ onSaveClick = null }) => {
             </Button>{' '}
           </>
         )}
-        <Button onClick={onSaveBtnClick} isDisabled={isSaving}>
+        <Button
+          onClick={onSaveBtnClick}
+          isDisabled={isSaving}
+          icon={<SaveIcon />}>
           Save
         </Button>
       </div>

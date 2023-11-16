@@ -7,6 +7,7 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import AssetResults from '../asset-results'
 import { AssetMetaFieldNames } from '../../hooks/useDatabaseQuery'
+import NoResultsMessage from '../no-results-message'
 
 export default () => {
   const userId = useUserId()
@@ -33,10 +34,10 @@ export default () => {
 
   if (!results || !results.length) {
     return (
-      <ErrorMessage>
+      <NoResultsMessage>
         You do not have any featured assets. If you are a patron you can view an
         asset and click Feature to add it to the rotation.
-      </ErrorMessage>
+      </NoResultsMessage>
     )
   }
 

@@ -1,9 +1,18 @@
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
+import { PostgrestError } from '@supabase/supabase-js'
 import { client as supabase } from './supabase'
 import { getIsUuid } from './utils'
 
+export class DataStoreError extends Error {
+  postgrestError?: PostgrestError
+  constructor(message: string, postgrestError?: PostgrestError) {
+    super(`${message}${postgrestError ? `: ${postgrestError.message}` : ''}`)
+    this.postgrestError = postgrestError
+  }
+}
+
 const standardFieldNames = {
-  id: 'id'
+  id: 'id',
 }
 
 export const CollectionNames = {
@@ -20,20 +29,20 @@ export const CollectionNames = {
   PublicAvatarSubmissions: 'publicavatarsubmissions',
   Amendments: 'amendments',
   AmendmentsMeta: 'amendmentsmeta',
-  UserPreferences: 'userpreferences'
+  UserPreferences: 'userpreferences',
 }
 
 export const SpecialFieldNames = {
   // SQL doesn't let us store arbitrary columns so dump it all in a JSONB column named "value"
   value: 'value',
   lastModifiedAt: 'lastmodifiedat',
-  lastModifiedBy: 'lastmodifiedby'
+  lastModifiedBy: 'lastmodifiedby',
 }
 
 export const FeaturedAssetsFieldNames = {
   activeAsset: 'activeAsset',
   rotation: 'rotation',
-  alreadyFeaturedAssets: 'alreadyFeaturedAssets'
+  alreadyFeaturedAssets: 'alreadyFeaturedAssets',
   // overrideAsset: 'overrideAsset'
 }
 
@@ -43,7 +52,7 @@ export const CommonFieldNames = {
   lastModifiedAt: 'lastmodifiedat',
   lastModifiedBy: 'lastmodifiedby',
   createdAt: 'createdat',
-  createdBy: 'createdby'
+  createdBy: 'createdby',
 }
 
 export const CommonMetaFieldNames = {
@@ -57,19 +66,19 @@ export const CommonMetaFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   approvedAt: 'approvedat',
-  approvedBy: 'approvedby'
+  approvedBy: 'approvedby',
 }
 
 export const GetFullPlaylistFieldNames = {
-  assets: 'itemsassetdata' // TODO: rename
+  assets: 'itemsassetdata', // TODO: rename
 }
 
 export const GetFullUsersFieldNames = {
-  favoriteSpeciesData: 'favoritespeciesdata'
+  favoriteSpeciesData: 'favoritespeciesdata',
 }
 
 export const GetFullReportsFieldNames = {
-  CreatedByUsername: 'createdbyusername'
+  CreatedByUsername: 'createdbyusername',
 }
 
 export const ReviewsFieldNames = {
@@ -80,13 +89,13 @@ export const ReviewsFieldNames = {
   lastModifiedAt: 'lastmodifiedat',
   lastModifiedBy: 'lastmodifiedby',
   createdAt: 'createdat',
-  createdBy: 'createdby'
+  createdBy: 'createdby',
 }
 
 export const ReviewsRatingsFieldNames = {
   name: 'name',
   rating: 'rating', // number - out of 10
-  comments: 'comments'
+  comments: 'comments',
 }
 
 export const AttachmentsMetaFieldNames = {
@@ -96,20 +105,20 @@ export const AttachmentsMetaFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const TweetsFieldNames = {
   status: 'status',
   tweetId: 'tweetid',
   tweetedAt: 'tweetedat',
-  createdAt: 'createdat'
+  createdAt: 'createdat',
 }
 
 export const TweetQueueFieldNames = {
   status: 'status',
   asset: 'asset',
-  queuedAt: 'queuedat'
+  queuedAt: 'queuedat',
 }
 
 export const EventsFieldNames = {
@@ -130,7 +139,7 @@ export const EventsFieldNames = {
   lastModifiedAt: 'lastmodifiedat',
   lastModifiedBy: 'lastmodifiedby',
   createdAt: 'createdat',
-  createdBy: 'createdby'
+  createdBy: 'createdby',
 }
 
 export const EventsMetaFieldNames = {
@@ -140,7 +149,7 @@ export const EventsMetaFieldNames = {
   lastModifiedAt: 'lastmodifiedat',
   lastModifiedBy: 'lastmodifiedby',
   createdAt: 'createdat',
-  createdBy: 'createdby'
+  createdBy: 'createdby',
 }
 
 export const AnalyticsFieldNames = {
@@ -150,7 +159,7 @@ export const AnalyticsFieldNames = {
   parent: 'parent',
   extraData: 'extradata',
   createdAt: 'createdat',
-  createdBy: 'createdby'
+  createdBy: 'createdby',
 }
 
 export const SubscriptionsFieldNames = {
@@ -160,7 +169,7 @@ export const SubscriptionsFieldNames = {
   createdAt: 'createdat',
   createdBy: 'createdby',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const PlaylistsFieldNames = {
@@ -171,12 +180,12 @@ export const PlaylistsFieldNames = {
   createdAt: 'createdat',
   createdBy: 'createdby',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const PlaylistItemsFieldNames = {
   asset: 'asset',
-  comments: 'comments'
+  comments: 'comments',
 }
 
 export const PageParentsFieldNames = {
@@ -188,7 +197,7 @@ export const PageParentsFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const PagesFieldNames = {
@@ -201,7 +210,7 @@ export const PagesFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const query = <TRecord>(
@@ -243,9 +252,7 @@ export const readRecord = async <TRecord>(
   if (error) {
     console.error(error)
     throw new Error(
-      `Could not get record in table ${tableName} by id ${id}: ${error.code} ${
-        error.message
-      } (${error.hint})`
+      `Could not get record in table ${tableName} by id ${id}: ${error.code} ${error.message} (${error.hint})`
     )
   }
 
@@ -255,9 +262,7 @@ export const readRecord = async <TRecord>(
 
   if (data.length !== 1) {
     throw new Error(
-      `Could not get record in table ${tableName} by id ${id}: length is ${
-        data.length
-      }`
+      `Could not get record in table ${tableName} by id ${id}: length is ${data.length}`
     )
   }
 
@@ -272,9 +277,7 @@ export const readAllRecords = async <TRecord>(
   if (error) {
     console.error(error)
     throw new Error(
-      `Could not read all records from table ${tableName}: ${error.code} ${
-        error.message
-      } (${error.hint})`
+      `Could not read all records from table ${tableName}: ${error.code} ${error.message} (${error.hint})`
     )
   }
 
@@ -299,9 +302,7 @@ export const simpleSearchRecords = async (
   if (error) {
     console.error(error)
     throw new Error(
-      `Could not simple search records in table ${tableName}: ${error.code} ${
-        error.message
-      } (${error.hint})`
+      `Could not simple search records in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
     )
   }
 
@@ -336,9 +337,7 @@ export const updateRecord = async <TFields>(
     }
 
     throw new Error(
-      `Could not update record in table ${tableName} by id ${id}: ${
-        errorToReport.code
-      } ${errorToReport.message} (${errorToReport.hint})`
+      `Could not update record in table ${tableName} by id ${id}: ${errorToReport.code} ${errorToReport.message} (${errorToReport.hint})`
     )
   }
 
@@ -353,7 +352,7 @@ export const updateRecords = async <TFields>(
   const { error, data } = await supabase
     .from(tableName)
     .update(newVal)
-    .or(ids.map(id => `id.eq.${id}`).join(','))
+    .or(ids.map((id) => `id.eq.${id}`).join(','))
 
   console.debug(`updateRecords`, tableName, ids, data, error)
 
@@ -372,9 +371,7 @@ export const updateRecords = async <TFields>(
     }
 
     throw new Error(
-      `Could not update records in table ${tableName} by ids: ${
-        errorToReport.code
-      } ${errorToReport.message} (${errorToReport.hint})`
+      `Could not update records in table ${tableName} by ids: ${errorToReport.code} ${errorToReport.message} (${errorToReport.hint})`
     )
   }
 
@@ -402,15 +399,11 @@ export const insertRecord = async <TFields, TReturnVal>(
     console.error(error)
     const firstError = error[0]
     throw new Error(
-      `Could not insert record in table ${tableName}: ${firstError.code} ${
-        firstError.message
-      } (${firstError.hint})`
+      `Could not insert record in table ${tableName}: ${firstError.code} ${firstError.message} (${firstError.hint})`
     )
   } else if (error) {
     throw new Error(
-      `Could not insert record in table ${tableName}: ${error.code} ${
-        error.message
-      } (${error.hint})`
+      `Could not insert record in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
     )
   }
 
@@ -423,10 +416,7 @@ export const deleteRecord = async (
   tableName: string,
   id: string
 ): Promise<null> => {
-  const { error, data } = await supabase
-    .from(tableName)
-    .delete()
-    .eq('id', id)
+  const { error, data } = await supabase.from(tableName).delete().eq('id', id)
 
   console.debug(`deleteRecord`, tableName, id, data, error)
 
@@ -435,15 +425,11 @@ export const deleteRecord = async (
     console.error(error)
     const firstError = error[0]
     throw new Error(
-      `Could not delete record in table ${tableName}: ${firstError.code} ${
-        firstError.message
-      } (${firstError.hint})`
+      `Could not delete record in table ${tableName}: ${firstError.code} ${firstError.message} (${firstError.hint})`
     )
   } else if (error) {
     throw new Error(
-      `Could not delete record in table ${tableName}: ${error.code} ${
-        error.message
-      } (${error.hint})`
+      `Could not delete record in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
     )
   }
 

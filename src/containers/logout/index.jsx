@@ -7,6 +7,7 @@ import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 import useUserRecord from '../../hooks/useUserRecord'
 import useQueryParams from '../../hooks/useQueryParams'
+import SuccessMessage from '../../components/success-message'
 
 export default () => {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -39,7 +40,7 @@ export default () => {
         <title>Logout of your account | VRCArena</title>
         <meta name="description" content="Logout of your account." />
       </Helmet>
-      You are now logged out. Redirecting...
+      <SuccessMessage>You are now logged out. Redirecting...</SuccessMessage>
     </>
   )
 }
