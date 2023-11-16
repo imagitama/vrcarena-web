@@ -14,7 +14,7 @@ import {
   formHideDelay,
   THUMBNAIL_WIDTH,
   THUMBNAIL_HEIGHT,
-  NONATTACHMENT_MAX_SIZE_BYTES
+  NONATTACHMENT_MAX_SIZE_BYTES,
 } from '../../config'
 import { bucketNames } from '../../file-uploading'
 
@@ -25,7 +25,7 @@ export default ({
   preloadImageUrl = undefined,
   preloadFile = undefined,
   overrideSave = undefined,
-  assetIdForBucket = undefined
+  assetIdForBucket = undefined,
 }: {
   assetId?: string
   onDone?: () => void
@@ -80,7 +80,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.thumbnailUrl]: url
+        [AssetFieldNames.thumbnailUrl]: url,
       })
 
       if (onDone) {
@@ -98,21 +98,15 @@ export default ({
   }
 
   return (
-    <>
-      <WarningMessage noTopMargin>
-        As of April 2023 we are migrating to a new way of uploading thumbnails.
-        Please contact me (Peanut#1756) if you experience any issues with this
-      </WarningMessage>
-      <ImageUploader
-        onDone={onUploaded}
-        bucketName={bucketNames.assetThumbnails}
-        directoryPath={assetIdForBucket || assetId || ''}
-        requiredWidth={THUMBNAIL_WIDTH}
-        requiredHeight={THUMBNAIL_HEIGHT}
-        preloadFile={preloadFile}
-        preloadImageUrl={preloadImageUrl}
-        maxSizeBytes={NONATTACHMENT_MAX_SIZE_BYTES}
-      />
-    </>
+    <ImageUploader
+      onDone={onUploaded}
+      bucketName={bucketNames.assetThumbnails}
+      directoryPath={assetIdForBucket || assetId || ''}
+      requiredWidth={THUMBNAIL_WIDTH}
+      requiredHeight={THUMBNAIL_HEIGHT}
+      preloadFile={preloadFile}
+      preloadImageUrl={preloadImageUrl}
+      maxSizeBytes={NONATTACHMENT_MAX_SIZE_BYTES}
+    />
   )
 }

@@ -17,7 +17,7 @@ export default ({
   onDone = undefined,
   actionCategory = undefined,
   overrideSave = undefined,
-  assetIdForBucket = undefined
+  assetIdForBucket = undefined,
 }: {
   assetId?: string
   onDone?: () => void
@@ -67,7 +67,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.bannerUrl]: url
+        [AssetFieldNames.bannerUrl]: url,
       })
 
       if (onDone) {
@@ -81,10 +81,6 @@ export default ({
 
   return (
     <>
-      <WarningMessage noTopMargin>
-        As of April 2023 we are migrating to a new way of uploading thumbnails.
-        Please contact me (Peanut#1756) if you experience any issues with this
-      </WarningMessage>
       <BannerUploader
         assetId={assetIdForBucket || assetId || ''}
         onDone={onUploadedWithUrls}

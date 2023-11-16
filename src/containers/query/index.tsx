@@ -9,7 +9,7 @@ import * as routes from '../../routes'
 import {
   convertSearchTermToUrlPath,
   getIsUuid,
-  parseSearchTermFromUrlPath
+  parseSearchTermFromUrlPath,
 } from '../../utils'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import {
@@ -17,7 +17,7 @@ import {
   AssetMetaFieldNames,
   AuthorFieldNames,
   SpeciesFieldNames,
-  UserFieldNames
+  UserFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import AssetResults from '../../components/asset-results'
 import PaginatedView from '../../components/paginated-view'
@@ -34,49 +34,49 @@ import WarningMessage from '../../components/warning-message'
 import useDataStore from '../../hooks/useDataStore'
 import { client as supabase } from '../../supabase'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    position: 'relative'
+    position: 'relative',
   },
   totalCount: {
     position: 'absolute',
     top: 0,
-    right: 0
+    right: 0,
   },
   operations: {
     display: 'flex',
     height: '32px',
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   operation: {
-    marginRight: '0.5rem'
+    marginRight: '0.5rem',
   },
   tagTextField: {
     '& input': {
-      padding: '5px'
-    }
+      padding: '5px',
+    },
   },
   autocompleteList: {
     position: 'absolute',
     zIndex: 50,
     width: '50vw',
     marginTop: '0.5rem',
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
   },
   autocompleteSuggestion: {
     padding: '0.25rem',
     '&:hover': {
       cursor: 'pointer',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)'
-    }
-  }
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    },
+  },
 }))
 
 const updateQueryStringInUrl = (newQueryString: string): void => {
   const queryStringToInsert = convertSearchTermToUrlPath(newQueryString)
   console.debug(`Query.updateQueryStringInUrl`, {
     newQueryString,
-    queryStringToInsert
+    queryStringToInsert,
   })
   window.history.replaceState(
     null,
@@ -91,7 +91,7 @@ export enum Operator {
   MINUS,
   WILDCARD,
   FILTER,
-  SORT
+  SORT,
 }
 
 export interface Operation {
@@ -103,13 +103,13 @@ export interface Operation {
 export const sortableFieldMap = {
   created: AssetFieldNames.createdAt,
   // updated: AssetFieldNames.lastModifiedAt,
-  approved: AssetMetaFieldNames.approvedAt
+  approved: AssetMetaFieldNames.approvedAt,
 }
 
 export enum Platforms {
   gumroad,
   booth,
-  github
+  github,
 }
 
 const getFieldNameFromSortField = (fieldName: string): keyof FullAsset => {
@@ -165,13 +165,13 @@ export const getOperationsFromUserInput = (userInput: string): Operation[] => {
       operations.push({
         fieldName: 'tags',
         operator: Operator.OR,
-        value: chunk.slice(1)
+        value: chunk.slice(1),
       })
     } else if (chunk[0] === '-') {
       operations.push({
         fieldName: 'tags',
         operator: Operator.MINUS,
-        value: chunk.slice(1)
+        value: chunk.slice(1),
       })
       // } else if (chunk.includes('*')) {
       //   operations.push({
@@ -184,37 +184,37 @@ export const getOperationsFromUserInput = (userInput: string): Operation[] => {
       operations.push({
         fieldName: getFieldNameFromSortField(subChunks[1]),
         operator: Operator.SORT,
-        value: subChunks[2]
+        value: subChunks[2],
       })
     } else if (chunk.includes('user:')) {
       operations.push({
         fieldName: 'createdby',
         operator: Operator.FILTER,
-        value: chunk.replace('user:', '')
+        value: chunk.replace('user:', ''),
       })
     } else if (chunk.includes('author:')) {
       operations.push({
         fieldName: 'author',
         operator: Operator.FILTER,
-        value: chunk.replace('author:', '')
+        value: chunk.replace('author:', ''),
       })
     } else if (chunk.includes('category:')) {
       operations.push({
         fieldName: 'category',
         operator: Operator.FILTER,
-        value: chunk.replace('category:', '')
+        value: chunk.replace('category:', ''),
       })
     } else if (chunk.includes('species:')) {
       operations.push({
         fieldName: 'species',
         operator: Operator.HAS,
-        value: chunk.replace('species:', '')
+        value: chunk.replace('species:', ''),
       })
     } else if (chunk.includes('source:')) {
       operations.push({
         fieldName: 'sourceurl',
         operator: Operator.WILDCARD,
-        value: chunk.replace('source:', '')
+        value: chunk.replace('source:', ''),
       })
       // } else if (chunk.includes('approved:')) {
       //   operations.push({
@@ -232,13 +232,13 @@ export const getOperationsFromUserInput = (userInput: string): Operation[] => {
       operations.push({
         fieldName: 'id',
         operator: Operator.OR,
-        value: chunk.replace('id:', '')
+        value: chunk.replace('id:', ''),
       })
     } else {
       operations.push({
         fieldName: 'tags',
         operator: Operator.HAS,
-        value: chunk
+        value: chunk,
       })
     }
   }
@@ -251,13 +251,13 @@ export const getOperationsFromUserInput = (userInput: string): Operation[] => {
         if (!orOperation) {
           orOperation = {
             ...operation,
-            value: [operation.value as string]
+            value: [operation.value as string],
           }
         } else {
           orOperation = {
             ...orOperation,
             // @ts-ignore
-            value: orOperation.value.concat([operation.value])
+            value: orOperation.value.concat([operation.value]),
           }
         }
         return results
@@ -324,7 +324,7 @@ const getIdIfNotId = async (
   console.debug(`Query.getID`, { collectionName, columnName, name: idOrName })
 
   const { data: results } = await query<{ id: string }>(collectionName, '*', {
-    [columnName]: idOrName
+    [columnName]: idOrName,
   })
 
   console.debug(`Query.getID.result`, { results })
@@ -365,7 +365,7 @@ export const extendQueryFromUserInput = (
         }
         const filters = operation.value
           .map(
-            value =>
+            (value) =>
               `${operation.fieldName}${
                 getIsFieldNameArray(operation.fieldName)
                   ? `.cs.{${value}}`
@@ -393,7 +393,7 @@ export const extendQueryFromUserInput = (
         break
       case Operator.SORT:
         const opts = {
-          ascending: operation.value === 'asc'
+          ascending: operation.value === 'asc',
         }
         methods.push(['order', operation.fieldName, opts])
         query = query.order(operation.fieldName, opts)
@@ -541,7 +541,7 @@ export default () => {
         for (const operation of newOperations) {
           const newValue = Array.isArray(operation.value)
             ? await Promise.all(
-                operation.value.map(value =>
+                operation.value.map((value) =>
                   getIdIfNotId(value, operation.fieldName)
                 )
               )
@@ -549,7 +549,7 @@ export default () => {
 
           finalOperations.push({
             ...operation,
-            value: newValue
+            value: newValue,
           })
         }
 
@@ -566,7 +566,7 @@ export default () => {
   }, [userInputToUse])
 
   const getQuery = useCallback(
-    query => {
+    (query) => {
       query = extendQueryFromUserInput(query, operations)
 
       if (isAdultContentEnabled !== true) {
@@ -594,11 +594,6 @@ export default () => {
         />
       </Helmet>
       <div className={classes.root}>
-        <WarningMessage>
-          Welcome to the new query page. I replaced the old query language with
-          a "booru"-style one. Please let me know in our Discord if it doesn't
-          work for you.
-        </WarningMessage>
         <BigSearchInput
           autoFocus
           onClear={clearQuery}
@@ -620,7 +615,7 @@ export default () => {
         />
         {isAutocompleting && suggestions && suggestions.length ? (
           <div className={classes.autocompleteList}>
-            {suggestions.map(suggestion => (
+            {suggestions.map((suggestion) => (
               <div
                 key={suggestion.tag}
                 className={classes.autocompleteSuggestion}
