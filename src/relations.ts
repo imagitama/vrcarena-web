@@ -6,12 +6,13 @@ import {
   CommentFieldNames,
   ReportFieldNames,
   SpeciesFieldNames,
-  UserFieldNames
+  UserFieldNames,
 } from './hooks/useDatabaseQuery'
 import * as routes from './routes'
 import { AmendmentsFieldNames } from './modules/amendments'
 import { CollectionNames as ReportsCollectionNames } from './modules/reports'
 import { CollectionNames as SpeciesCollectionNames } from './modules/species'
+import { CollectionNames as SocialCollectionNames } from './modules/social'
 
 const labelMaxLength = 100
 
@@ -54,6 +55,8 @@ export const getUrlForParent = (
       return routes.viewReportWithVar.replace(':reportId', parentId)
     case SpeciesCollectionNames.Species:
       return routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', parentId)
+    case SocialCollectionNames.SocialPostMeta:
+      return routes.socialWithPostVar.replace(':postId', parentData.id)
     default:
       throw new Error(
         `Could not get URL for parent ${parentTable} - not supported`
@@ -110,8 +113,10 @@ export const getLabelForParent = (
           ) || '(no report reason)'
         )
       }
-    case SpeciesCollectionNames.Species:
-      return parentData[SpeciesFieldNames.pluralName] || '(no name)'
+    case SocialCollectionNames.SocialPostMeta:
+      if (parentChildData) {
+        return parentChildData.text.substring(0, labelMaxLength)
+      }
     default:
       throw new Error(
         `Could not get label for parent ${parentTable} - not supported`
