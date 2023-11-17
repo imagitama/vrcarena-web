@@ -211,7 +211,7 @@ export default ({
         items={[
           {
             name: 'favorite-species',
-            label: 'Favorite Species',
+            label: 'Species',
             contents: (
               <TabPanel>
                 <FavoriteSpeciesEditor analyticsCategory={analyticsCategory} />
@@ -220,7 +220,7 @@ export default ({
           },
           {
             name: 'vr-platforms',
-            label: 'VR Platforms',
+            label: 'VR',
             contents: (
               <TabPanel>
                 <VrPlatformChooser analyticsCategory={analyticsCategory} />{' '}
@@ -229,7 +229,7 @@ export default ({
           },
           {
             name: 'newsletter',
-            label: 'Newsletter',
+            label: 'Settings',
             contents: (
               <TabPanel>
                 <div>

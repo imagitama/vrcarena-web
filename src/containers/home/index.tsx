@@ -27,18 +27,16 @@ import PedestalVideo from '../../components/pedestal-video'
 
 import avatarsImageUrl from './assets/avatars.webp'
 import accessoriesImageUrl from './assets/accessories.webp'
-import twitterImageUrl from './assets/twitter.webp'
 import discordImageUrl from './assets/discord.webp'
 import patreonImageUrl from './assets/patreon.webp'
 import oculusImageUrl from './assets/oculus.webp'
 import freeImageUrl from './assets/free.webp'
 import MostRecentDiscordAnnouncement from './components/most-recent-discord-announcement'
 import PatreonCosts from './components/patreon-costs'
-import LatestTweet from './components/latest-tweet'
 import RecentActivity from './components/recent-activity'
+import RecentSocialPosts from './components/recent-social-posts'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import CreateSocialPostForm from '../../components/create-social-post-form'
-import useIsEditor from '../../hooks/useIsEditor'
 
 const useStyles = makeStyles({
   root: {
@@ -428,13 +426,6 @@ export default () => {
             <MostRecentDiscordAnnouncement />
           </Tile>
           <Tile
-            title="Follow Us"
-            buttonUrl={TWITTER_URL}
-            buttonLabel="Follow Twitter"
-            backgroundImageUrl={twitterImageUrl}>
-            <LatestTweet />
-          </Tile>
-          <Tile
             title="Patreon"
             url={PATREON_BECOME_PATRON_URL}
             buttonLabel="Become Patron"
@@ -449,6 +440,9 @@ export default () => {
             url={routes.activity}
             buttonLabel="View All">
             <RecentActivity />
+          </Tile>
+          <Tile title="Social" url={routes.social} buttonLabel="View All">
+            <RecentSocialPosts />
           </Tile>
         </div>
       </div>

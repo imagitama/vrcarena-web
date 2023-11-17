@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import Badge from '@material-ui/core/Badge'
-
+import EditIcon from '@material-ui/icons/Edit'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
@@ -21,7 +21,7 @@ import { handleError } from '../../error-handling'
 import {
   cart as getItemsForCart,
   queue as getItemsForQueue,
-  notifications as getItemsForNotifications
+  notifications as getItemsForNotifications,
 } from './getItems'
 import { deleteRecord } from '../../data-store'
 import { cartIdsStorageKey, clear as clearCart } from '../../cart'
@@ -31,28 +31,28 @@ const useStyles = makeStyles({
   items: {
     display: 'flex',
     alignItems: 'center',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   item: {
     marginRight: '1rem',
     transition: 'all 100ms',
     cursor: 'pointer',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   iconItem: {
     '&:hover': {
-      transform: 'scale(1.1)'
-    }
+      transform: 'scale(1.1)',
+    },
   },
   mobileButton: {
     width: '100%',
     marginRight: 0,
     marginBottom: '0.5rem',
     '& > *': {
-      width: '100%'
-    }
-  }
+      width: '100%',
+    },
+  },
 })
 
 interface MenuItemDetails {
@@ -88,31 +88,31 @@ const getLoggedInMenuItems = (currentPath: string, userId: string) => [
   {
     id: 'my-account',
     url: routes.myAccount,
-    label: 'My Account'
+    label: 'My Account',
   },
   {
     id: 'my-profile',
     url: routes.viewUserWithVar.replace(':userId', userId),
-    label: 'My Profile'
+    label: 'My Profile',
   },
   {
     id: 'sign-out',
     url: routes.logoutWithVar.replace(':currentPath', currentPath),
-    label: 'Logout'
-  }
+    label: 'Logout',
+  },
 ]
 
 const getLoggedOutMenuItems = (currentPath: string) => [
   {
     id: 'login',
     url: routes.loginWithVar.replace(':currentPath', currentPath),
-    label: 'Log In'
+    label: 'Log In',
   },
   {
     id: 'sign-up',
     url: routes.signUp,
-    label: 'Sign Up'
-  }
+    label: 'Sign Up',
+  },
 ]
 
 const getMenu = (
@@ -123,7 +123,7 @@ const getMenu = (
     icon: NotificationsIcon,
     count: null,
     getItems: getItemsForNotifications,
-    onClick: async id => {
+    onClick: async (id) => {
       if (id === 'clear-all') {
         return
       }
@@ -147,17 +147,17 @@ const getMenu = (
         .delete()
         .eq('recipient', userId)
     },
-    subscribe: callback => {
+    subscribe: (callback) => {
       setInterval(() => {
         callback()
       }, 30 * 60 * 1000) // 30 seconds
-    }
+    },
   },
   queue: {
     icon: AssignmentTurnedInIcon,
     getItems: getItemsForQueue,
     hideIfNone: true,
-    loggedInOnly: true
+    loggedInOnly: true,
   },
   cart: {
     icon: ShoppingCartIcon,
@@ -166,7 +166,7 @@ const getMenu = (
     onClear: () => {
       clearCart()
     },
-    subscribe: callback => {
+    subscribe: (callback) => {
       window.addEventListener(
         'onLocalStorageChange',
         ({ detail: { key } }: any) => {
@@ -175,20 +175,20 @@ const getMenu = (
           }
         }
       )
-    }
+    },
   },
   user: {
     badge: false,
     label: <AvatarMenuItem />,
     items: userId
       ? getLoggedInMenuItems(currentPath, userId)
-      : getLoggedOutMenuItems(currentPath)
-  }
+      : getLoggedOutMenuItems(currentPath),
+  },
 })
 
 export default ({
   isMobile = false,
-  onClose = undefined
+  onClose = undefined,
 }: {
   isMobile?: boolean
   onClose?: () => void
@@ -233,9 +233,9 @@ export default ({
 
       const newItemsResult = await menuDetails.getItems()
 
-      setMenuItems(currentItems => ({
+      setMenuItems((currentItems) => ({
         ...currentItems,
-        [id]: newItemsResult
+        [id]: newItemsResult,
       }))
     } catch (err) {
       console.error(err)
@@ -267,12 +267,26 @@ export default ({
   return (
     <div className={classes.items}>
       {isLoggedIn ? (
-        <Button
-          url={routes.createAsset}
-          className={`${classes.item} ${isMobile ? classes.mobileButton : ''}`}
-          onClick={closeAllDropdowns}>
-          Upload
-        </Button>
+        <>
+          <Button
+            url={routes.social}
+            className={`${classes.item} ${
+              isMobile ? classes.mobileButton : ''
+            }`}
+            onClick={closeAllDropdowns}
+            color="default"
+            icon={<EditIcon />}>
+            Post
+          </Button>{' '}
+          <Button
+            url={routes.createAsset}
+            className={`${classes.item} ${
+              isMobile ? classes.mobileButton : ''
+            }`}
+            onClick={closeAllDropdowns}>
+            Upload
+          </Button>
+        </>
       ) : null}
       {Object.entries(menu)
         .filter(([id, { hideIfNone, loggedInOnly }]) => {
@@ -287,7 +301,7 @@ export default ({
         .map(([id, { label, icon: Icon, badge }]) => (
           <div
             key={id}
-            ref={elem => {
+            ref={(elem) => {
               if (!elem) {
                 return
               }
@@ -319,7 +333,7 @@ export default ({
 
               hydrateMenu(id)
             },
-            label: 'Clear All'
+            label: 'Clear All',
           }
           return (
             <Menu

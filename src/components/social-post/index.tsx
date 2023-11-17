@@ -40,6 +40,9 @@ const useStyles = makeStyles({
   },
   text: {
     margin: '0.5rem 0',
+    '& p:first-child': {
+      marginTop: 0,
+    },
     '& p:last-child': {
       marginBottom: 0,
     },
@@ -69,6 +72,16 @@ const useStyles = makeStyles({
   isActive: {
     outline: '1px solid rgba(255, 255, 255, 0.9)',
   },
+  small: {
+    marginTop: '0.5rem',
+    padding: '0.5rem',
+    '& $text': {
+      margin: '0.5rem 0 0.25rem',
+    },
+    '& $avatar': {
+      marginRight: '0.5rem',
+    },
+  },
 })
 
 const limitBeforeCollapse = 300
@@ -89,9 +102,11 @@ const Attachment = ({ attachment }: { attachment: SocialAttachment }) => {
 const SocialPost = ({
   socialPost,
   hydrate,
+  small = false,
 }: {
   socialPost: FullSocialPost
   hydrate?: () => void
+  small?: boolean
 }) => {
   const classes = useStyles()
   const [isExpanded, setIsExpanded] = useState(false)
@@ -112,7 +127,9 @@ const SocialPost = ({
 
   return (
     <div
-      className={`${classes.root} ${isActive ? classes.isActive : ''}`}
+      className={`${classes.root} ${isActive ? classes.isActive : ''} ${
+        small ? classes.small : ''
+      }`}
       ref={rootRef}>
       <div className={classes.avatar}>
         <UsernameLink id={socialPost.createdby}>
@@ -180,6 +197,7 @@ const SocialPost = ({
           myReactionEmoji={socialPost.myreactionemoji}
           reactionSummaries={socialPost.reactionsummaries}
           hydrate={hydrate}
+          small={small}
         />
       </div>
     </div>

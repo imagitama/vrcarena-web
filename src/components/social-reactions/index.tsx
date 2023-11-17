@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   chip: {
     padding: '0',
-    margin: '0.25rem 0.25rem',
+    margin: '0.25rem 0.25rem 0 0',
     border: `1px solid rgba(255, 255, 255, 0.2)`,
     '&:not($myEmoji)': {
       background: 'none',
@@ -86,11 +86,13 @@ const SocialReactions = ({
   myReactionEmoji,
   reactionSummaries,
   hydrate,
+  small = false,
 }: {
   socialPostId: string
   myReactionEmoji?: string
   reactionSummaries: ReactionSummary[]
   hydrate?: () => void
+  small?: boolean
 }) => {
   const classes = useStyles()
   const isLoggedIn = useIsLoggedIn()
@@ -186,6 +188,7 @@ const SocialReactions = ({
           label={'...'}
           onClick={onClickWantsToReact}
           className={classes.chip}
+          size={small ? 'small' : undefined}
         />
       )}
       {reactionSummaries
@@ -197,6 +200,7 @@ const SocialReactions = ({
             className={`${classes.chip} ${
               summary.emoji === myReactionEmoji ? classes.myEmoji : ''
             }`}
+            size={small ? 'small' : undefined}
           />
         ))}
       {wantsToReact && (
