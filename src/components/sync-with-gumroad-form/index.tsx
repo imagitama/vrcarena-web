@@ -358,8 +358,9 @@ export default ({
     setAttachmentsToOptimize(
       result.attachments.filter(
         (attachment) =>
-          getDoesAttachmentNeedOptimizing(attachment) ||
-          (attachment && attachment.type === attachmentItemTypes.EMBED)
+          attachment &&
+          (getDoesAttachmentNeedOptimizing(attachment) ||
+            (attachment && attachment.type === attachmentItemTypes.EMBED))
       )
     )
 
@@ -509,6 +510,8 @@ export default ({
 
   const validThumbnailAttachments =
     gumroadProduct &&
+    gumroadProduct &&
+    gumroadProduct.attachments &&
     gumroadProduct.attachments.filter(
       ({ type }) => type === attachmentItemTypes.IMAGE
     )
