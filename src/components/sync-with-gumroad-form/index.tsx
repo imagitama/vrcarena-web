@@ -513,7 +513,8 @@ export default ({
     gumroadProduct &&
     gumroadProduct.attachments &&
     gumroadProduct.attachments.filter(
-      ({ type }) => type === attachmentItemTypes.IMAGE
+      (attachment) =>
+        attachment && attachment.type === attachmentItemTypes.IMAGE
     )
 
   return (
