@@ -31,12 +31,12 @@ import {
   AssetCategories,
   AssetFieldNames,
   CollectionNames,
-  PatreonStatuses
+  PatreonStatuses,
 } from '../../hooks/useDatabaseQuery'
 
 import * as routes from '../../routes'
 import categoryMeta from '../../category-meta'
-import { nsfwRules, WEBSITE_FULL_URL } from '../../config'
+import { adultSearchTerms, nsfwRules, WEBSITE_FULL_URL } from '../../config'
 import { isGumroadUrl, isBoothUrl } from '../../utils'
 import { getDoesAssetNeedPublishing } from '../../utils/assets'
 import useUserRecord from '../../hooks/useUserRecord'
@@ -104,6 +104,7 @@ import { defaultBorderRadius } from '../../themes'
 import PerformanceEditor from '../performance-editor'
 import Tabs from '../tabs'
 import AssetFeatures from '../asset-features'
+import WarningMessage from '../warning-message'
 
 interface EditorInfo {
   assetId: string | null
@@ -126,49 +127,49 @@ interface EditorInfo {
 export const EditorContext = createContext<EditorInfo>({} as any)
 export const useEditor = () => useContext(EditorContext)
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   // global
   content: {
-    position: 'relative'
+    position: 'relative',
   },
   extraControls: {
     position: 'absolute',
     top: 0,
     right: 0,
     padding: '1rem',
-    zIndex: 100
+    zIndex: 100,
   },
   fakeLink: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
   },
   noValueMessage: {
     opacity: '0.5',
     fontSize: '110%',
     cursor: 'default',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   heading: {
     textAlign: 'center',
     padding: '2rem 0',
     fontSize: '150%',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   hydrating: {
-    opacity: 0.5
+    opacity: 0.5,
   },
   formControls: {
-    marginTop: '4rem'
+    marginTop: '4rem',
   },
   iconAndText: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   formEditorAreas: {
     width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
-    margin: '1rem 0'
+    margin: '1rem 0',
   },
   formEditorArea: {
     borderTop: '1px solid rgba(255, 255, 255, 0.1)',
@@ -176,8 +177,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '1rem',
     borderRadius: defaultBorderRadius,
     [mediaQueryForTabletsOrBelow]: {
-      width: '100%'
-    }
+      width: '100%',
+    },
     // '&:nth-child(1), &:nth-child(4), &:nth-child(5), &:nth-child(7), &:nth-child(9), &:nth-child(12)': {
     //   backgroundColor: 'rgba(0, 0, 0, 0.1)'
     // }
@@ -185,38 +186,38 @@ const useStyles = makeStyles(theme => ({
   formEditorAreaHeading: {
     fontWeight: 'bold',
     textAlign: 'center',
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
 
   // rules
   acceptRulesButton: {
     textAlign: 'center',
-    padding: '2rem 0'
+    padding: '2rem 0',
   },
 
   // basics
   authorHeading: {
-    fontSize: '50%'
+    fontSize: '50%',
   },
   banner: {
     width: '100%',
     '& img': {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
 
   // patreon
   pedestalVideo: {
     width: '300px',
-    height: '300px'
+    height: '300px',
   },
   patreonMessage: {
     padding: '1rem',
     fontSize: '150%',
     textAlign: 'center',
     '& img': {
-      maxWidth: '50%'
-    }
+      maxWidth: '50%',
+    },
   },
 
   // publish
@@ -224,13 +225,13 @@ const useStyles = makeStyles(theme => ({
     marginTop: '1rem',
     padding: '1rem',
     borderRadius: defaultBorderRadius,
-    border: '3px dashed rgba(255, 255, 255, 0.5)'
+    border: '3px dashed rgba(255, 255, 255, 0.5)',
   },
 
   sourceUrl: {
     '& svg': {
-      fontSize: '100%'
-    }
+      fontSize: '100%',
+    },
   },
 
   sectionButton: {
@@ -239,8 +240,8 @@ const useStyles = makeStyles(theme => ({
     padding: '1rem',
     cursor: 'pointer',
     '&:hover': {
-      background: 'rgba(255, 255, 255, 0.2)'
-    }
+      background: 'rgba(255, 255, 255, 0.2)',
+    },
   },
   section: {
     // borderRadius: defaultBorderRadius,
@@ -251,21 +252,21 @@ const useStyles = makeStyles(theme => ({
   invalid: {
     borderColor: 'rgba(255, 0, 0, 0.1)',
     '& $sectionButton': {
-      background: 'rgba(255, 0, 0, 0.1)'
-    }
+      background: 'rgba(255, 0, 0, 0.1)',
+    },
   },
   semiValid: {
     borderColor: 'rgba(255, 255, 0, 0.1)',
     '& $sectionButton': {
-      background: 'rgba(255, 255, 0, 0.1)'
-    }
+      background: 'rgba(255, 255, 0, 0.1)',
+    },
   },
   valid: {
     borderColor: 'rgba(0, 255, 0, 0.1)',
     '& $sectionButton': {
-      background: 'rgba(0, 255, 0, 0.1)'
-    }
-  }
+      background: 'rgba(0, 255, 0, 0.1)',
+    },
+  },
 }))
 
 const NoValueMessage = ({ children }: { children: React.ReactNode }) => {
@@ -306,7 +307,7 @@ const FormEditorArea = (props: {
     onAssetChanged,
     asset,
     newFields,
-    isEditingAllowed
+    isEditingAllowed,
   } = useEditor()
   const classes = useStyles()
 
@@ -369,11 +370,23 @@ const BecomePatronMessage = () => (
   </Message>
 )
 
+const ShouldBeAdultWarning = ({ asset }: { asset: Asset }) => {
+  const result = adultSearchTerms.find((adultSearchTerm) =>
+    asset.title.includes(adultSearchTerm)
+  )
+  return result ? (
+    <WarningMessage leftAlign noTopMargin>
+      Your asset should probably be marked as NSFW as the title includes the
+      phrase "{result}"
+    </WarningMessage>
+  ) : null
+}
+
 export const sourceTypes = {
   Gumroad: 'gumroad',
   Booth: 'booth',
   GitHub: 'github',
-  Unknown: 'unknown'
+  Unknown: 'unknown',
 }
 
 export const getSourceTypeFromUrl = (url: string): string => {
@@ -403,7 +416,7 @@ const PatreonOnlyMessage = () => (
 
 const SyncButton = ({
   sourceType,
-  onSync
+  onSync,
 }: {
   sourceType: string
   onSync: () => void
@@ -465,7 +478,7 @@ const TitleDisplay = ({ value }: { value: string }) => (
 
 const AuthorDisplay = ({
   value,
-  fields
+  fields,
 }: {
   value: string
   fields: FullAsset
@@ -497,7 +510,7 @@ const CategoryDisplay = ({ value }: { value: string }) => (
 
 const SpeciesDisplay = ({
   value,
-  fields
+  fields,
 }: {
   value: string
   fields: FullAsset
@@ -512,7 +525,7 @@ const SpeciesDisplay = ({
         .filter(
           (speciesName, idx) => fields.speciesnames.indexOf(speciesName) === idx
         )
-        .map(speciesName => (
+        .map((speciesName) => (
           <TagChip key={speciesName} tagName={speciesName} isDisabled />
         ))
     ) : (
@@ -577,7 +590,7 @@ const TutorialStepsDisplay = ({ value }: { value: string }) =>
 
 const RelationsDisplay = ({
   value,
-  fields
+  fields,
 }: {
   value: string[]
   fields: FullAsset
@@ -634,7 +647,7 @@ const IsAdultDisplay = ({ value }: { value: boolean }) => {
 
 const DiscordServerDisplay = ({
   value,
-  fields
+  fields,
 }: {
   value: string
   fields: FullAsset
@@ -741,13 +754,8 @@ const MainControls = () => {
 }
 
 const Editor = () => {
-  const {
-    asset,
-    assetId,
-    onFieldChanged,
-    hydrate,
-    originalAssetId
-  } = useEditor()
+  const { asset, assetId, onFieldChanged, hydrate, originalAssetId } =
+    useEditor()
   const [, , user] = useUserRecord()
   const classes = useStyles()
 
@@ -784,7 +792,7 @@ const Editor = () => {
                   />
                 }
               />
-            )
+            ),
           },
           {
             name: 'source',
@@ -834,7 +842,7 @@ const Editor = () => {
                   }
                 />
               </>
-            )
+            ),
           },
           {
             name: 'basics',
@@ -854,7 +862,7 @@ const Editor = () => {
                       assetIdForBucket={originalAssetId}
                       overrideSave={
                         onFieldChanged
-                          ? url =>
+                          ? (url) =>
                               onFieldChanged(AssetFieldNames.thumbnailUrl, url)
                           : undefined
                       }
@@ -914,12 +922,14 @@ const Editor = () => {
                   icon={() => <LoyaltyIcon />}
                   display={({ value }: { value: any }) => (
                     <>
+                      {asset ? <ShouldBeAdultWarning asset={asset} /> : null}
                       <IsAdultDisplay value={value} />
                     </>
                   )}
                   editor={
                     <>
                       <Markdown source={nsfwRules} />
+                      {asset ? <ShouldBeAdultWarning asset={asset} /> : null}
                       {assetId ? (
                         <ToggleAdultForm
                           assetId={assetId}
@@ -959,7 +969,7 @@ const Editor = () => {
                       assetIdForBucket={originalAssetId}
                       overrideSave={
                         onFieldChanged
-                          ? url =>
+                          ? (url) =>
                               onFieldChanged(AssetFieldNames.bannerUrl, url)
                           : undefined
                       }
@@ -980,7 +990,7 @@ const Editor = () => {
                   }
                 />
               </>
-            )
+            ),
           },
           ...(asset.category === AssetCategories.tutorial
             ? [
@@ -1004,8 +1014,8 @@ const Editor = () => {
                         }
                       />
                     </>
-                  )
-                }
+                  ),
+                },
               ]
             : []),
           {
@@ -1028,7 +1038,7 @@ const Editor = () => {
                   icon={() => <ListStarsIcon />}
                 />
               </>
-            )
+            ),
           },
           {
             name: 'tags',
@@ -1052,7 +1062,7 @@ const Editor = () => {
                   }
                 />
               </>
-            )
+            ),
           },
           {
             name: 'relations',
@@ -1071,7 +1081,7 @@ const Editor = () => {
                       currentRelations={asset.relations || []}
                       overrideSave={
                         onFieldChanged
-                          ? newRelations =>
+                          ? (newRelations) =>
                               onFieldChanged(
                                 AssetFieldNames.relations,
                                 newRelations
@@ -1082,7 +1092,7 @@ const Editor = () => {
                   }
                 />
               </>
-            )
+            ),
           },
           {
             name: 'avatars',
@@ -1139,7 +1149,7 @@ const Editor = () => {
                   }
                 />
               </>
-            )
+            ),
           },
           {
             name: 'patreon',
@@ -1220,7 +1230,7 @@ const Editor = () => {
                   }
                 />
               </>
-            )
+            ),
           },
           {
             name: 'extra',
@@ -1286,8 +1296,8 @@ const Editor = () => {
                   }
                 />
               </>
-            )
-          }
+            ),
+          },
         ]}
       />
       <MainControls />

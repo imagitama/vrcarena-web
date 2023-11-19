@@ -14,7 +14,7 @@ export default ({
   assetId,
   isAdult,
   onDone,
-  overrideSave = undefined
+  overrideSave = undefined,
 }: {
   assetId: string
   isAdult: boolean
@@ -41,7 +41,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.isAdult]: newIsAdultValue
+        [AssetFieldNames.isAdult]: newIsAdultValue,
       })
 
       if (onDone) {
@@ -55,12 +55,16 @@ export default ({
 
   return (
     <>
-      <WarningMessage>
+      <WarningMessage leftAlign>
         Please do not mark as NSFW if there is both a SFW and NSFW variation of
         the asset (use tags to indicate that)
       </WarningMessage>
       <Button icon={<LoyaltyIcon />} onClick={onToggleClick}>
-        {isSaving ? 'Saving...' : isAdult ? 'Mark as SFW' : 'Mark as NSFW'}
+        {isSaving
+          ? 'Saving...'
+          : isAdult
+          ? 'Mark as SFW (visible by default)'
+          : 'Mark as NSFW (hide by default)'}
       </Button>
     </>
   )

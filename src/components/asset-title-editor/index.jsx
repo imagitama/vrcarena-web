@@ -14,13 +14,13 @@ import LoadingIndicator from '../loading-indicator'
 import FormControls from '../form-controls'
 import Heading from '../heading'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     color: theme.palette.primary.light,
     '&:focus': {
-      outline: 'none'
-    }
-  }
+      outline: 'none',
+    },
+  },
 }))
 
 export default ({
@@ -28,11 +28,11 @@ export default ({
   title = null,
   onDone = null,
   actionCategory,
-  overrideSave = null
+  overrideSave = null,
 }) => {
   const [newTitleValue, setNewTitleValue] = useState(title)
   const [searchTerm, setSearchTerm] = useState('')
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
+  const [isSaving, isSaveSuccess, lastError, save] = useDatabaseSave(
     CollectionNames.Assets,
     assetId
   )
@@ -90,7 +90,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.title]: newTitleValue
+        [AssetFieldNames.title]: newTitleValue,
       })
 
       if (onDone) {
@@ -150,7 +150,7 @@ export default ({
         <span
           ref={titleRef}
           contentEditable={!isSaving}
-          onKeyUp={e => setNewTitleValue(e.target.innerText)}
+          onKeyUp={(e) => setNewTitleValue(e.target.innerText)}
           className={classes.title}>
           {title}
         </span>
@@ -159,7 +159,7 @@ export default ({
         <LoadingIndicator message="Saving..." />
       ) : isSaveSuccess ? (
         'Saved!'
-      ) : isSaveError ? (
+      ) : lastError ? (
         'Failed to save'
       ) : (
         <FormControls>

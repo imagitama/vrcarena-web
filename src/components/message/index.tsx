@@ -10,6 +10,9 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  leftAlign: {
+    justifyContent: 'flex-start',
+  },
   noMargin: {
     margin: 0,
   },
@@ -41,9 +44,6 @@ const useStyles = makeStyles(() => ({
   icon: {
     marginRight: '1rem',
     display: 'flex',
-  },
-  leftAlign: {
-    textAlign: 'left',
   },
   chariot: {
     position: 'absolute',
@@ -102,15 +102,14 @@ export default ({
 
   return (
     <div
-      className={`${classes.root} ${noMargin ? classes.noMargin : ''} ${
-        noTopMargin ? classes.noTopMargin : ''
-      }`}>
+      className={`${classes.root} ${leftAlign ? classes.leftAlign : ''} ${
+        noMargin ? classes.noMargin : ''
+      } ${noTopMargin ? classes.noTopMargin : ''}`}>
       <Paper className={classes.paper} style={{ backgroundColor: color }}>
         <div className={classes.chariot}>
           <Chariot />
         </div>
-        <div
-          className={`${classes.text} ${leftAlign ? classes.leftAlign : ''}`}>
+        <div className={`${classes.text}`}>
           {title || icon ? (
             <div className={classes.title}>
               {' '}

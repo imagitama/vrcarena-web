@@ -82,7 +82,11 @@ export default (
             .eq('id', idToSave)
 
           if ((Array.isArray(error) && error.length > 0) || error) {
-            throw error
+            if (Array.isArray(error)) {
+              throw error[0]
+            } else {
+              throw error
+            }
           }
         }
 
