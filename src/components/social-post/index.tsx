@@ -145,6 +145,7 @@ const SocialPost = ({
           </UsernameLink>
           {' ... '}
           <FormattedDate date={new Date(socialPost.createdat)} />
+          {socialPost.isadult ? ' 🔞' : ''}
           {socialPost.editornotes && (
             <Paper>
               <strong>Editor Notes: </strong>
