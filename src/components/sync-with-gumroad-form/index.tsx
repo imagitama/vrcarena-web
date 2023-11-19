@@ -18,19 +18,19 @@ import { handleError } from '../../error-handling'
 import {
   AssetFieldNames,
   AuthorFieldNames,
-  CollectionNames
+  CollectionNames,
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '../../config'
 import {
   addQuotesToDescription,
-  removeQuotesFromDescription
+  removeQuotesFromDescription,
 } from '../../utils/formatting'
 import categoryMeta from '../../category-meta'
 import {
   getCategoryFromNameAndDescription,
   defaultTags,
-  getAuthorByNameOrUrl
+  getAuthorByNameOrUrl,
 } from '../../utils/gumroad'
 import { isUrlAYoutubeVideo, scrollToElement } from '../../utils'
 import { bucketNames } from '../../file-uploading'
@@ -41,25 +41,25 @@ import { getImageUrlAsFile } from '../../utils/files'
 
 const useStyles = makeStyles({
   field: {
-    width: '100%'
+    width: '100%',
   },
   row: {
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   btns: {
     textAlign: 'center',
-    marginTop: '1rem'
+    marginTop: '1rem',
   },
   thumbnailUploader: {
-    width: '50%'
+    width: '50%',
   },
   attachments: {
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'center',
     '& > div': {
-      margin: '0 0.5rem 0.5rem 0'
-    }
+      margin: '0 0.5rem 0.5rem 0',
+    },
   },
   thumbnailAttachmentSelector: {
     display: 'flex',
@@ -67,9 +67,9 @@ const useStyles = makeStyles({
     alignItems: 'center',
     '& > div': {
       margin: '0 0.5rem 0.5rem 0',
-      cursor: 'pointer'
-    }
-  }
+      cursor: 'pointer',
+    },
+  },
 })
 
 type AssetFields = { [fieldName: string]: any }
@@ -92,7 +92,7 @@ const getFieldsToSave = (
 const attachmentItemTypes = {
   IMAGE: 'IMAGE',
   HOSTED_VIDEO: 'HOSTED_VIDEO',
-  EMBED: 'EMBED'
+  EMBED: 'EMBED',
 }
 
 interface GetGumroadProductAttachment {
@@ -113,7 +113,7 @@ interface GetGumroadProductResult {
 
 const ThumbnailAttachmentSelector = ({
   attachments,
-  onSelect
+  onSelect,
 }: {
   attachments: GetGumroadProductAttachment[]
   onSelect: (selectedAttachment: GetGumroadProductAttachment) => void
@@ -121,7 +121,7 @@ const ThumbnailAttachmentSelector = ({
   const classes = useStyles()
   return (
     <div className={classes.thumbnailAttachmentSelector}>
-      {attachments.map(attachment => (
+      {attachments.map((attachment) => (
         <img
           src={attachment.url}
           width={200}
@@ -135,7 +135,7 @@ const ThumbnailAttachmentSelector = ({
 const getDoesAttachmentNeedOptimizing = (
   attachment: GetGumroadProductAttachment
 ): boolean =>
-  attachment.mimeType
+  attachment && attachment.mimeType
     ? attachment.mimeType === 'image/png' ||
       attachment.mimeType === 'image/jpg' ||
       attachment.mimeType === 'image/jpeg'
@@ -143,7 +143,7 @@ const getDoesAttachmentNeedOptimizing = (
 
 const AttachmentsOptimizer = ({
   attachmentsToOptimize,
-  onDone
+  onDone,
 }: {
   attachmentsToOptimize: GetGumroadProductAttachment[]
   onDone: (newFileUrls: string[]) => void
@@ -160,19 +160,19 @@ const AttachmentsOptimizer = ({
   const classes = useStyles()
 
   const setIsLoading = (index: number, newValue: boolean) =>
-    setLoadingStates(currentStates => {
+    setLoadingStates((currentStates) => {
       const newStates = [...currentStates]
       newStates[index] = newValue
       return newStates
     })
   const setIsError = (index: number, newValue: boolean) =>
-    setErrorStates(currentStates => {
+    setErrorStates((currentStates) => {
       const newStates = [...currentStates]
       newStates[index] = newValue
       return newStates
     })
   const setOptimizedImageUrl = (index: number, newValue: string) =>
-    setOptimizedImageUrls(currentStates => {
+    setOptimizedImageUrls((currentStates) => {
       const newStates = [...currentStates]
       newStates[index] = newValue
       return newStates
@@ -187,11 +187,11 @@ const AttachmentsOptimizer = ({
       setIsError(index, false)
 
       const {
-        data: { optimizedUrl }
+        data: { optimizedUrl },
       } = await callFunction('downloadAndOptimizeImage', {
         imageUrl,
         bucketName: bucketNames.attachments,
-        bucketPath: ''
+        bucketPath: '',
       })
 
       setIsLoading(index, false)
@@ -231,9 +231,7 @@ const AttachmentsOptimizer = ({
       )
 
       console.debug(
-        `optimization complete, returning ${
-          optimizedUrlsToReturn.length
-        } urls...`
+        `optimization complete, returning ${optimizedUrlsToReturn.length} urls...`
       )
 
       onDone(optimizedUrlsToReturn)
@@ -270,7 +268,7 @@ const AttachmentsOutput = ({ urls }: { urls: string[] }) => {
   const classes = useStyles()
   return (
     <div className={classes.attachments}>
-      {urls.map(url => (
+      {urls.map((url) => (
         <div key={url}>
           {isUrlAYoutubeVideo(url) ? (
             <YoutubePlayer url={url} />
@@ -290,7 +288,7 @@ export default ({
   onCancel = undefined,
   onFieldChanged = undefined,
   onFieldsChanged = undefined,
-  overrideSaveWithNewFields = undefined
+  overrideSaveWithNewFields = undefined,
 }: {
   assetId: string
   existingGumroadUrl?: string
@@ -310,7 +308,7 @@ export default ({
     [AssetFieldNames.thumbnailUrl]: true,
     [AssetFieldNames.fileUrls]: true,
     [AssetFieldNames.category]: true,
-    [AssetFieldNames.author]: true
+    [AssetFieldNames.author]: true,
   })
   const [isSaving, , isErrored, save] = useDatabaseSave(
     CollectionNames.Assets,
@@ -320,14 +318,10 @@ export default ({
   const [isUsingQuotes, setIsUsingQuotes] = useState(true)
   const [authorName, setAuthorName] = useState<string | null>(null)
 
-  const [
-    selectedThumbnailAttachment,
-    setSelectedThumbnailAttachment
-  ] = useState<null | GetGumroadProductAttachment>(null)
-  const [
-    selectedThumbnailAttachmentFile,
-    setSelectedThumbnailAttachmentFile
-  ] = useState<null | File>(null)
+  const [selectedThumbnailAttachment, setSelectedThumbnailAttachment] =
+    useState<null | GetGumroadProductAttachment>(null)
+  const [selectedThumbnailAttachmentFile, setSelectedThumbnailAttachmentFile] =
+    useState<null | File>(null)
   const [attachmentsToOptimize, setAttachmentsToOptimize] = useState<
     null | GetGumroadProductAttachment[]
   >(null)
@@ -353,17 +347,17 @@ export default ({
     isGettingProduct,
     isFailedGettingProduct,
     gumroadProduct,
-    callGetGumroadProductFunction
+    callGetGumroadProductFunction,
   ] = useGumroadProduct()
 
   const populateFromGumroad = async () => {
     const result = await callGetGumroadProductFunction({
-      gumroadProductUrl: gumroadUrl
+      gumroadProductUrl: gumroadUrl,
     })
 
     setAttachmentsToOptimize(
       result.attachments.filter(
-        attachment =>
+        (attachment) =>
           getDoesAttachmentNeedOptimizing(attachment) ||
           attachment.type === attachmentItemTypes.EMBED
       )
@@ -378,7 +372,7 @@ export default ({
       [AssetFieldNames.category]: getCategoryFromNameAndDescription(
         result.title,
         result.descriptionMarkdown
-      )
+      ),
     })
 
     const author = await getAuthorByNameOrUrl(
@@ -405,7 +399,7 @@ export default ({
 
       const fieldsToSave: AssetFields = {
         ...getFieldsToSave(newFields, whichFieldsAreEnabled),
-        [AssetFieldNames.sourceUrl]: gumroadUrl // set this here so newly created assets have it
+        [AssetFieldNames.sourceUrl]: gumroadUrl, // set this here so newly created assets have it
       }
 
       if (overrideSaveWithNewFields) {
@@ -418,7 +412,7 @@ export default ({
       }
 
       await save({
-        ...fieldsToSave
+        ...fieldsToSave,
       })
 
       // note: on save this component is re-mounted so cannot rely on isSuccess
@@ -434,7 +428,7 @@ export default ({
   const updateField = (fieldName: string, newValue: any) => {
     setNewFields({
       ...(newFields ? newFields : {}),
-      [fieldName]: newValue
+      [fieldName]: newValue,
     })
 
     if (onFieldChanged) {
@@ -443,10 +437,10 @@ export default ({
   }
 
   const updateFields = (fieldsToInsert: AssetFields) => {
-    setNewFields(currentFields => {
+    setNewFields((currentFields) => {
       const returnVal = {
         ...(currentFields ? currentFields : {}),
-        ...fieldsToInsert
+        ...fieldsToInsert,
       }
 
       if (onFieldsChanged) {
@@ -458,12 +452,12 @@ export default ({
   }
 
   const toggleIsFieldEnabled = (fieldName: string) => {
-    setWhichFieldsAreEnabled(currentEnabledFields => {
+    setWhichFieldsAreEnabled((currentEnabledFields) => {
       const newVal = !currentEnabledFields[fieldName]
 
       const returnVal = {
         ...currentEnabledFields,
-        [fieldName]: newVal
+        [fieldName]: newVal,
       }
 
       if (onFieldChanged && newFields) {
@@ -503,7 +497,7 @@ export default ({
         <p>Enter the Gumroad product page URL:</p>
         <TextInput
           value={urlValue}
-          onChange={e => setUrlValue(e.target.value)}
+          onChange={(e) => setUrlValue(e.target.value)}
         />
         <br />
         <FormControls>
@@ -540,7 +534,7 @@ export default ({
                 {validThumbnailAttachments ? (
                   <ThumbnailAttachmentSelector
                     attachments={validThumbnailAttachments}
-                    onSelect={async selectedAttachment => {
+                    onSelect={async (selectedAttachment) => {
                       try {
                         setSelectedThumbnailAttachment(selectedAttachment)
                         setSelectedThumbnailAttachmentFile(
@@ -568,9 +562,9 @@ export default ({
                 preloadImageUrl={selectedThumbnailAttachment.url}
                 requiredWidth={THUMBNAIL_WIDTH}
                 requiredHeight={THUMBNAIL_HEIGHT}
-                onDone={urls =>
+                onDone={(urls) =>
                   updateFields({
-                    [AssetFieldNames.thumbnailUrl]: urls[0]
+                    [AssetFieldNames.thumbnailUrl]: urls[0],
                   })
                 }
                 onCancel={() => setSelectedThumbnailAttachment(null)}
@@ -591,7 +585,7 @@ export default ({
             These images are being optimized (this takes up to a minute):
             <AttachmentsOptimizer
               attachmentsToOptimize={attachmentsToOptimize}
-              onDone={newFileUrls => {
+              onDone={(newFileUrls) => {
                 setAttachmentsToOptimize(null)
                 updateField(AssetFieldNames.fileUrls, newFileUrls)
               }}
@@ -612,7 +606,9 @@ export default ({
             <br />
             <TextField
               value={newFields[AssetFieldNames.title]}
-              onChange={e => updateField(AssetFieldNames.title, e.target.value)}
+              onChange={(e) =>
+                updateField(AssetFieldNames.title, e.target.value)
+              }
               className={classes.field}
             />
           </>
@@ -629,7 +625,7 @@ export default ({
             <br />
             <TextField
               value={newFields[AssetFieldNames.description]}
-              onChange={e =>
+              onChange={(e) =>
                 updateField(AssetFieldNames.description, e.target.value)
               }
               multiline
