@@ -47,6 +47,7 @@ const useStyles = makeStyles({
     },
   },
   contentBlock: {
+    fontWeight: 200, // 100 for message titles, 400 for body
     width: 'calc(100% - 2rem)',
     padding: '2rem 0.5rem',
     borderRadius: '0.5rem',
@@ -80,6 +81,7 @@ const useStyles = makeStyles({
     padding: '0.5rem',
   },
   tile: {
+    fontWeight: 200, // 100 for message titles, 400 for body
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
