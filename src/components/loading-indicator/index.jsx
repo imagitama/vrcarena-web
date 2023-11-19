@@ -5,38 +5,40 @@ import { ReactComponent as Chariot } from '../../assets/images/chariot.svg'
 const useStyles = makeStyles(() => ({
   progress: {
     display: 'block',
-    margin: '0 auto'
+    margin: '0 auto',
   },
   message: {
     marginTop: '1rem',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: 100,
+    fontSize: '125%',
   },
   iconWrapper: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   icon: {
     width: '7.5rem',
     height: '7.5rem',
     '& svg': {
       width: '100%',
-      height: '100%'
+      height: '100%',
     },
     '& #g23412': {
       transformOrigin: 'center',
       transformBox: 'fill-box',
-      animation: '$spinWheel 1s linear infinite'
-    }
+      animation: '$spinWheel 1s linear infinite',
+    },
   },
   '@keyframes spinWheel': {
     '0%': {
-      transform: 'rotate(0deg)'
+      transform: 'rotate(0deg)',
     },
     '100%': {
-      transform: 'rotate(360deg)'
-    }
-  }
+      transform: 'rotate(360deg)',
+    },
+  },
 }))
 
 function LoadingIndicator({ message = '' }) {

@@ -5,7 +5,7 @@ import Message from '../message'
 export default ({
   children,
   leftAlign = false,
-  noTopMargin = false
+  noTopMargin = false,
 }: {
   children: React.ReactChild | React.ReactChild[]
   leftAlign?: boolean
@@ -15,7 +15,7 @@ export default ({
     icon={<WarningIcon />}
     color="#332700"
     leftAlign={leftAlign}
-    noTopMargin={noTopMargin}>
-    {children}
-  </Message>
+    noTopMargin={noTopMargin}
+    title={children}
+  />
 )

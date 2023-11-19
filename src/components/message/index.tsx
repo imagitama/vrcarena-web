@@ -1,42 +1,98 @@
 import React from 'react'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
+import { ReactComponent as Chariot } from '../../assets/images/chariot.svg'
 
 const useStyles = makeStyles(() => ({
   root: {
     margin: '1rem 0',
-    padding: '1rem',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   noMargin: {
-    margin: 0
+    margin: 0,
   },
   noTopMargin: {
-    marginTop: 0
+    marginTop: 0,
+  },
+  paper: {
+    position: 'relative',
+    padding: '1rem',
+    width: '100%',
+    maxWidth: '750px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
-    width: '100%'
+    width: '100%',
+    zIndex: 10,
+    '& > *': {
+      margin: '1rem 0',
+      '&:first-child': {
+        marginTop: 0,
+      },
+      '&:last-child': {
+        marginBottom: 0,
+      },
+    },
   },
   icon: {
     marginRight: '1rem',
-    display: 'flex'
+    display: 'flex',
   },
   leftAlign: {
-    textAlign: 'left'
-  }
+    textAlign: 'left',
+  },
+  chariot: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    overflow: 'hidden',
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
+    '& svg': {
+      width: 'auto',
+      height: '150%',
+      position: 'absolute',
+      top: '-25%',
+      right: '2.5%',
+      opacity: 0.05,
+    },
+  },
+  title: {
+    fontSize: '125%',
+    fontWeight: 100,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  children: {},
+  controls: {
+    marginTop: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+    '& > *': {
+      margin: '0 0.25rem',
+    },
+  },
 }))
 
 export default ({
+  title,
   children,
   icon,
+  controls,
   color = '',
   leftAlign = false,
   noMargin = false,
-  noTopMargin = false
+  noTopMargin = false,
 }: {
-  children: React.ReactNode
+  children?: React.ReactNode
+  title?: React.ReactNode
   icon?: React.ReactNode
+  controls?: React.ReactNode
   color?: string
   leftAlign?: boolean
   noMargin?: boolean
@@ -45,15 +101,26 @@ export default ({
   const classes = useStyles()
 
   return (
-    <Paper
+    <div
       className={`${classes.root} ${noMargin ? classes.noMargin : ''} ${
         noTopMargin ? classes.noTopMargin : ''
-      }`}
-      style={{ backgroundColor: color }}>
-      {icon ? <div className={classes.icon}>{icon}</div> : null}
-      <div className={`${classes.text} ${leftAlign ? classes.leftAlign : ''}`}>
-        {children}
-      </div>
-    </Paper>
+      }`}>
+      <Paper className={classes.paper} style={{ backgroundColor: color }}>
+        <div className={classes.chariot}>
+          <Chariot />
+        </div>
+        <div
+          className={`${classes.text} ${leftAlign ? classes.leftAlign : ''}`}>
+          {title || icon ? (
+            <div className={classes.title}>
+              {' '}
+              {icon ? <div className={classes.icon}>{icon}</div> : null} {title}
+            </div>
+          ) : null}
+          {children ? <div className={classes.children}>{children}</div> : null}
+          {controls ? <div className={classes.controls}>{controls}</div> : null}
+        </div>
+      </Paper>
+    </div>
   )
 }

@@ -6,7 +6,6 @@ import CheckIcon from '@material-ui/icons/Check'
 import { DISCORD_URL, EMAIL } from '../../config'
 import { base64EncodeString } from '../../utils'
 import Message from '../message'
-import FormControls from '../form-controls'
 import Button from '../button'
 
 const getErrorCodeForError = (error: Error): string =>
@@ -17,7 +16,7 @@ export default ({
   error,
   hintText,
   onRetry,
-  onOkay
+  onOkay,
 }: {
   children: React.ReactNode
   error?: Error
@@ -25,12 +24,28 @@ export default ({
   onRetry?: () => void
   onOkay?: () => void
 }) => (
-  <Message icon={<ErrorIcon />} color="#1c0002">
-    <strong>{children}</strong>
+  <Message
+    icon={<ErrorIcon />}
+    color="#1c0002"
+    title={children}
+    controls={
+      onRetry || onOkay ? (
+        <>
+          {onRetry ? (
+            <Button onClick={onRetry} icon={<ReplayIcon />}>
+              Retry
+            </Button>
+          ) : null}{' '}
+          {onOkay ? (
+            <Button onClick={onOkay} icon={<CheckIcon />}>
+              Okay
+            </Button>
+          ) : null}
+        </>
+      ) : undefined
+    }>
     {hintText || hintText === undefined ? (
       <>
-        <br />
-        <br />
         {hintText || (
           <>
             If you believe this error is wrong or unexpected please{' '}
@@ -45,23 +60,9 @@ export default ({
       <>
         <br />
         <br />
-        <strong>Please give us this error code:</strong>{' '}
-        {getErrorCodeForError(error)}
+        <strong>Please copy and paste this error code: </strong>{' '}
+        <code>{getErrorCodeForError(error)}</code>
       </>
-    ) : null}
-    {onRetry || onOkay ? (
-      <FormControls>
-        {onRetry ? (
-          <Button onClick={onRetry} icon={<ReplayIcon />}>
-            Retry
-          </Button>
-        ) : null}{' '}
-        {onOkay ? (
-          <Button onClick={onOkay} icon={<CheckIcon />}>
-            Okay
-          </Button>
-        ) : null}
-      </FormControls>
     ) : null}
   </Message>
 )
