@@ -37,6 +37,7 @@ import RecentActivity from './components/recent-activity'
 import RecentSocialPosts from './components/recent-social-posts'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import CreateSocialPostForm from '../../components/create-social-post-form'
+import EditorTeam from './components/editor-team'
 
 const useStyles = makeStyles({
   root: {
@@ -378,6 +379,7 @@ export default () => {
             We are a 100% volunteer team that depends on our community for
             funding and to keep our catalogue up-to-date.
           </p>
+          <EditorTeam />
         </ContentBlock>
         <div className={classes.tiles}>
           <Tile

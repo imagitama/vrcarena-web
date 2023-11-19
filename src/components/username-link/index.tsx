@@ -5,13 +5,13 @@ import * as routes from '../../routes'
 export default ({
   id,
   username = undefined,
-  children = undefined
+  children = undefined,
 }: {
   id: string
   username?: string
   children?: React.ReactNode
 }) => (
-  <Link to={routes.viewUserWithVar.replace(':userId', id)}>
-    {username || children}
+  <Link to={routes.viewUserWithVar.replace(':userId', id)} title={username}>
+    {children || username}
   </Link>
 )

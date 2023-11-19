@@ -13,7 +13,7 @@ export function scrollTo(x: number, isSmooth: boolean = true): void {
     window.scrollTo({
       top: x,
       left: 0,
-      behavior: isSmooth ? 'smooth' : 'auto'
+      behavior: isSmooth ? 'smooth' : 'auto',
     })
   } catch (err) {
     if (
@@ -38,7 +38,7 @@ export function scrollToSide(
     window.scrollTo({
       top: x,
       left: y,
-      behavior: isSmooth ? 'smooth' : 'auto'
+      behavior: isSmooth ? 'smooth' : 'auto',
     })
   } catch (err) {
     if (
@@ -67,10 +67,7 @@ export function getDescriptionForHtmlMeta(desc: string): string {
     return ''
   }
 
-  let newDesc = desc
-    .split('\n')
-    .join(' ')
-    .replace(/\s\s+/g, ' ')
+  let newDesc = desc.split('\n').join(' ').replace(/\s\s+/g, ' ')
   if (newDesc.length > 255) {
     return `${newDesc.substr(0, 255)}...`
   }
@@ -300,10 +297,7 @@ export const getAvatarIdFromUserInput = (userInput: string): string | null => {
   let result = ''
 
   if (isUrl(userInput)) {
-    const parsedResult = userInput
-      .split('?')[0]
-      .split('/')
-      .pop()
+    const parsedResult = userInput.split('?')[0].split('/').pop()
 
     if (!parsedResult) {
       return null
@@ -327,7 +321,7 @@ export const mapFieldsForDatabase = (fields: {
   Object.entries(fields).reduce(
     (newFields, [key, val]) => ({
       ...newFields,
-      [key.toLowerCase()]: val
+      [key.toLowerCase()]: val,
     }),
     {}
   )
@@ -461,4 +455,25 @@ export const findItemAndParents = <
   }
 
   return findItem(items, id) || []
+}
+
+// https://stackoverflow.com/a/2450976/1215393
+export function shuffle<TArray extends Array<any>>(array: TArray): TArray {
+  var currentIndex = array.length,
+    temporaryValue,
+    randomIndex
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex -= 1
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex]
+    array[currentIndex] = array[randomIndex]
+    array[randomIndex] = temporaryValue
+  }
+
+  return array
 }

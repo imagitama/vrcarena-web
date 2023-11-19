@@ -4,9 +4,9 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import useDatabaseQuery, {
   CollectionNames,
-  SpeciesFieldNames
+  SpeciesFieldNames,
 } from '../../hooks/useDatabaseQuery'
-import { fixAccessingImagesUsingToken } from '../../utils'
+import { fixAccessingImagesUsingToken, shuffle } from '../../utils'
 import Button from '../../components/button'
 import Heading from '../../components/heading'
 
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   items: {
     display: 'flex',
     flexWrap: 'wrap',
-    paddingLeft: '4rem'
+    paddingLeft: '4rem',
   },
   item: {
     width: '100px',
@@ -29,10 +29,10 @@ const useStyles = makeStyles({
       userSelect: 'none',
       userDrag: 'none',
       pointerEvents: 'none',
-      transition: 'all 100ms'
+      transition: 'all 100ms',
     },
     transformStyle: 'preserve-3d',
-    transform: 'rotateY(0deg)'
+    transform: 'rotateY(0deg)',
   },
   side: {
     width: '100%',
@@ -41,7 +41,7 @@ const useStyles = makeStyles({
     position: 'absolute',
     top: 0,
     left: 0,
-    borderRadius: '0.5rem'
+    borderRadius: '0.5rem',
   },
   front: {
     background: '#d2d2d2',
@@ -53,12 +53,12 @@ const useStyles = makeStyles({
       width: 'calc(100% - 0.5rem)',
       height: 'calc(100% - 0.5rem)',
       background: '#490000',
-      borderRadius: '0.5rem'
-    }
+      borderRadius: '0.5rem',
+    },
   },
   back: {
     transform: 'rotateY(180deg)',
-    background: '#FFF'
+    background: '#FFF',
   },
   inner: {
     position: 'absolute',
@@ -70,7 +70,7 @@ const useStyles = makeStyles({
     overflow: 'hidden',
     display: 'flex',
     justifyContent: 'center',
-    background: '#000'
+    background: '#000',
   },
   title: {
     width: '100%',
@@ -82,17 +82,17 @@ const useStyles = makeStyles({
     opacity: 0,
     transition: 'all 100ms',
     transform: 'rotate(-76deg)',
-    fontSize: '150%'
+    fontSize: '150%',
   },
   scored: {
     transform: 'rotateY(180deg)',
     '& $inner img': {
-      opacity: '0.2'
-    }
+      opacity: '0.2',
+    },
   },
   revealed: {
-    transform: 'rotateY(180deg)'
-  }
+    transform: 'rotateY(180deg)',
+  },
 })
 
 const Species = ({
@@ -103,7 +103,7 @@ const Species = ({
   onSpeciesClick = null,
   isFullWidth = false,
   isScored = false,
-  isRevealed = false
+  isRevealed = false,
 }) => {
   const classes = useStyles()
 
@@ -128,27 +128,6 @@ const Species = ({
       </div>
     </div>
   )
-}
-
-// https://stackoverflow.com/a/2450976/1215393
-function shuffle(array) {
-  var currentIndex = array.length,
-    temporaryValue,
-    randomIndex
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex)
-    currentIndex -= 1
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex]
-    array[currentIndex] = array[randomIndex]
-    array[randomIndex] = temporaryValue
-  }
-
-  return array
 }
 
 const delay = 1000
@@ -179,9 +158,9 @@ const View = () => {
     setSpeciesToRender(
       shuffle(
         speciesIdsToUse.concat(
-          speciesIdsToUse.map(item => ({
+          speciesIdsToUse.map((item) => ({
             ...item,
-            isBrother: true
+            isBrother: true,
           }))
         )
       )
@@ -225,14 +204,14 @@ const View = () => {
       </div>
     )
 
-  const scoreSpeciesIds = ids => {
+  const scoreSpeciesIds = (ids) => {
     console.log(`score species ids`, ids)
-    setSpeciesIdsThatAreScored(currentVal => currentVal.concat(ids))
+    setSpeciesIdsThatAreScored((currentVal) => currentVal.concat(ids))
   }
 
-  const revealSpeciesId = id => {
+  const revealSpeciesId = (id) => {
     console.log(`reveal species id`, id)
-    setSpeciesIdsThatAreRevealed(currentVal => {
+    setSpeciesIdsThatAreRevealed((currentVal) => {
       const newVal = currentVal.concat([id])
 
       if (
@@ -248,7 +227,7 @@ const View = () => {
     })
   }
 
-  const onSpeciesClick = id => {
+  const onSpeciesClick = (id) => {
     if (hideRevealedCardsTimeoutRef.current) {
       return
     }
@@ -300,7 +279,7 @@ const View = () => {
             id,
             [SpeciesFieldNames.nameSingular]: nameSingular,
             [SpeciesFieldNames.thumbnailUrl]: thumbnailUrl,
-            isBrother = false
+            isBrother = false,
           }) => {
             const newId = `${id}_${isBrother ? 'brother' : 'sister'}`
             console.log(newId)
