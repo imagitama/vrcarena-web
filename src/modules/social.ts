@@ -56,6 +56,7 @@ export interface SocialReaction extends SocialReactionInsertFields {
 export interface ReactionSummary {
   emoji: string
   count: number
+  usernames: string[]
 }
 
 export const CollectionNames = {

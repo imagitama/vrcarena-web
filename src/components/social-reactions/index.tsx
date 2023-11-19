@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
 import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react'
 import AddIcon from '@material-ui/icons/Add'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import {
   CollectionNames,
@@ -194,14 +195,20 @@ const SocialReactions = ({
       {reactionSummaries
         .filter((reactionSummaries) => reactionSummaries)
         .map((summary) => (
-          <Chip
-            label={`${summary.emoji} ${summary.count}`}
-            onClick={() => onClickExistingEmoji(summary)}
-            className={`${classes.chip} ${
-              summary.emoji === myReactionEmoji ? classes.myEmoji : ''
-            }`}
-            size={small ? 'small' : undefined}
-          />
+          <Tooltip
+            arrow
+            placement="top"
+            title={`${summary.usernames.join(', ')}`}
+            key={summary.emoji}>
+            <Chip
+              label={`${summary.emoji} ${summary.count}`}
+              onClick={() => onClickExistingEmoji(summary)}
+              className={`${classes.chip} ${
+                summary.emoji === myReactionEmoji ? classes.myEmoji : ''
+              }`}
+              size={small ? 'small' : undefined}
+            />
+          </Tooltip>
         ))}
       {wantsToReact && (
         <div className={classes.picker}>
