@@ -359,7 +359,7 @@ export default ({
       result.attachments.filter(
         (attachment) =>
           getDoesAttachmentNeedOptimizing(attachment) ||
-          attachment.type === attachmentItemTypes.EMBED
+          (attachment && attachment.type === attachmentItemTypes.EMBED)
       )
     )
 
