@@ -26,10 +26,14 @@ import SlimMessage from '../slim-message'
 import ImageWithCaption from '../image-with-caption'
 
 const useStyles = makeStyles({
-  image: { maxWidth: '50vw', maxHeight: '50vh', width: 'auto', height: 'auto' }
+  root: {
+    '& h2': {
+      marginTop: '2rem',
+    },
+  },
 })
 
-const getLabel = node => {
+const getLabel = (node) => {
   try {
     return node.children.pop().children[0].value
   } catch (err) {
@@ -37,7 +41,7 @@ const getLabel = node => {
   }
 }
 
-const getUrlFromAttributes = attributes => {
+const getUrlFromAttributes = (attributes) => {
   if (attributes.url) {
     return attributes.url
   }
@@ -49,38 +53,38 @@ const getUrlFromAttributes = attributes => {
   return '#unknown'
 }
 
-const onContainerDirective = node => {
+const onContainerDirective = (node) => {
   switch (node.name) {
     case 'button':
       node.data.hName = 'button'
       node.data.hProperties = {
         url: getUrlFromAttributes(node.attributes),
-        label: getLabel(node)
+        label: getLabel(node),
       }
       break
     case 'warning':
       node.data.hName = 'warning'
       node.data.hProperties = {
-        message: getLabel(node)
+        message: getLabel(node),
       }
       break
     case 'info':
       node.data.hName = 'info'
       node.data.hProperties = {
-        message: getLabel(node)
+        message: getLabel(node),
       }
       break
     case 'image':
       node.data.hName = 'image'
       node.data.hProperties = {
         url: getUrlFromAttributes(node.attributes),
-        caption: getLabel(node)
+        caption: getLabel(node),
       }
       break
     case 'tab':
       node.data.hName = 'tab'
       node.data.hProperties = {
-        label: getLabel(node)
+        label: getLabel(node),
       }
       break
     case 'tabContents':
@@ -92,8 +96,8 @@ const onContainerDirective = node => {
 }
 
 function myRemarkDirectivePlugin() {
-  return tree => {
-    visit(tree, node => {
+  return (tree) => {
+    visit(tree, (node) => {
       node.data = node.data || {}
 
       if (node.type == 'containerDirective') {
@@ -103,7 +107,7 @@ function myRemarkDirectivePlugin() {
   }
 }
 
-const getIconFromUrl = url =>
+const getIconFromUrl = (url) =>
   url.includes('http') ? <LaunchIcon /> : <ChevronRight />
 
 const ComponentReplacement = ({ type, props, onClickLineWithContent }) =>
@@ -112,10 +116,10 @@ const ComponentReplacement = ({ type, props, onClickLineWithContent }) =>
     onClick: onClickLineWithContent
       ? () => onClickLineWithContent(getTextFromProps(props))
       : null,
-    className: onClickLineWithContent ? 'clickable' : ''
+    className: onClickLineWithContent ? 'clickable' : '',
   })
 
-const getTextFromProps = props => {
+const getTextFromProps = (props) => {
   try {
     if (typeof props.children[0] === 'string') {
       return props.children[0]
@@ -128,13 +132,13 @@ const getTextFromProps = props => {
 }
 
 const TabContext = createContext()
-const useTabs = idx => {
+const useTabs = (idx) => {
   const [tabState, setTabState] = useContext(TabContext)
   const selectedIdx = tabState[idx] || 0
-  const setSelectedIdx = newIdx =>
+  const setSelectedIdx = (newIdx) =>
     setTabState({
       ...tabState,
-      [idx]: newIdx
+      [idx]: newIdx,
     })
   return [selectedIdx, setSelectedIdx]
 }
@@ -159,7 +163,7 @@ const TabContents = ({ contents, idx, groupIdx }) => {
   )
 }
 
-const Image = props => {
+const Image = (props) => {
   return (
     <Button url={props.src} icon={<ImageIcon />}>
       View Image
@@ -172,9 +176,10 @@ export default ({
   analyticsCategory = '',
   enableHtml = false,
   onClickLineWithContent = null,
-  replaceImagesWithButtons = false
+  replaceImagesWithButtons = false,
 }) => {
   const [tabState, setTabState] = useState({})
+  const classes = useStyles()
   let tabIdx = 0
   let tabContentsIdx = 0
   let groupIdx = -1
@@ -184,8 +189,9 @@ export default ({
         children={source}
         rehypePlugins={enableHtml ? [rehypeRaw] : []}
         remarkPlugins={[remarkDirective, myRemarkDirectivePlugin, gfm]}
+        className={classes.root}
         components={{
-          button: props => (
+          button: (props) => (
             <Button
               url={props.url}
               icon={getIconFromUrl(props.url)}
@@ -198,7 +204,7 @@ export default ({
               {props.label}
             </Button>
           ),
-          warning: props => (
+          warning: (props) => (
             <SlimMessage
               onClick={
                 onClickLineWithContent
@@ -209,7 +215,7 @@ export default ({
               <WarningIcon /> {props.message}
             </SlimMessage>
           ),
-          info: props => (
+          info: (props) => (
             <SlimMessage
               onClick={
                 onClickLineWithContent
@@ -220,11 +226,11 @@ export default ({
               <InfoIcon /> {props.message}
             </SlimMessage>
           ),
-          image: props => (
+          image: (props) => (
             <div
               onClick={
                 onClickLineWithContent
-                  ? e => {
+                  ? (e) => {
                       onClickLineWithContent(props.caption)
                       e.preventDefault()
                       e.stopPropagation()
@@ -236,7 +242,7 @@ export default ({
               <ImageWithCaption caption={props.caption} src={props.url} />
             </div>
           ),
-          link: props => (
+          link: (props) => (
             <a
               href={props.href}
               target="_blank"
@@ -259,46 +265,46 @@ export default ({
               {props.children} <OpenInNewIcon style={{ fontSize: '1em' }} />
             </a>
           ),
-          h1: props => (
+          h1: (props) => (
             <ComponentReplacement
               type="h1"
               props={props}
               onClickLineWithContent={onClickLineWithContent}
             />
           ),
-          h2: props => (
+          h2: (props) => (
             <ComponentReplacement
               type="h2"
               props={props}
               onClickLineWithContent={onClickLineWithContent}
             />
           ),
-          h3: props => (
+          h3: (props) => (
             <ComponentReplacement
               type="h3"
               props={props}
               onClickLineWithContent={onClickLineWithContent}
             />
           ),
-          p: props => (
+          p: (props) => (
             <ComponentReplacement
               type="p"
               props={props}
               onClickLineWithContent={onClickLineWithContent}
             />
           ),
-          table: props => (
+          table: (props) => (
             <div>
               <Table size="small" className="markdown-table">
                 {props.children}
               </Table>
             </div>
           ),
-          tr: props => <TableRow>{props.children}</TableRow>,
-          tbody: props => <TableBody>{props.children}</TableBody>,
-          td: props => <TableCell>{props.children}</TableCell>,
-          thead: props => <TableHead>{props.children}</TableHead>,
-          tab: props => {
+          tr: (props) => <TableRow>{props.children}</TableRow>,
+          tbody: (props) => <TableBody>{props.children}</TableBody>,
+          td: (props) => <TableCell>{props.children}</TableCell>,
+          thead: (props) => <TableHead>{props.children}</TableHead>,
+          tab: (props) => {
             const oldTabIdx = tabIdx
 
             if (oldTabIdx === 0) {
@@ -312,7 +318,7 @@ export default ({
               <Tab label={props.label} idx={oldTabIdx} groupIdx={groupIdx} />
             )
           },
-          tabContents: props => {
+          tabContents: (props) => {
             const oldTabContentsIdx = tabContentsIdx
             tabContentsIdx++
 
@@ -328,9 +334,9 @@ export default ({
           },
           ...(replaceImagesWithButtons
             ? {
-                img: props => <Image {...props} />
+                img: (props) => <Image {...props} />,
               }
-            : {})
+            : {}),
         }}
       />
     </TabContext.Provider>

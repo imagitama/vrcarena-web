@@ -6,23 +6,24 @@ import {
   areasByCategory,
   groupAssetsIntoAreas,
   standardAreaNames,
-  standardAreas
+  standardAreas,
 } from '../../areas'
 import * as routes from '../../routes'
 
 import AssetResults from '../asset-results'
 import Heading from '../heading'
 import { PublicAsset } from '../../modules/assets'
+import { AssetCategories } from '../../hooks/useDatabaseQuery'
 
 const useStyles = makeStyles({
   tags: {
-    fontSize: '50%'
-  }
+    fontSize: '50%',
+  },
 })
 
 export default ({
   assets,
-  categoryName
+  categoryName,
 }: {
   assets?: PublicAsset[]
   categoryName: string
@@ -56,7 +57,24 @@ export default ({
                 areas[areaName].namePlural
               )}{' '}
               <span className={classes.tags}>
-                {areaName in areas ? areas[areaName].tags.join(', ') : ''}
+                {areaName in areas ? (
+                  <>
+                    {areas[areaName].tags.map((tag, idx) => (
+                      <Fragment key={tag}>
+                        {idx > 0 ? ', ' : ''}
+                        <Link
+                          to={routes.queryWithVar.replace(
+                            ':query',
+                            `category:${AssetCategories.accessory} ${tag}`
+                          )}>
+                          {tag}
+                        </Link>
+                      </Fragment>
+                    ))}
+                  </>
+                ) : (
+                  ''
+                )}
               </span>
             </Heading>
             <AssetResults assets={assets} showAddToCart />
