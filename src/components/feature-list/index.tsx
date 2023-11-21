@@ -1,14 +1,13 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Tooltip from '@material-ui/core/Tooltip'
-import HelpIcon from '@material-ui/icons/Help'
 import { getLabelForTag } from '../../utils/tags'
 import LoadingShimmer from '../loading-shimmer'
-import { colorPalette } from '../../config'
 import * as routes from '../../routes'
 import Link from '../link'
-import { CollectionNames, FullTag, Tag } from '../../modules/tags'
+import { CollectionNames, Tag } from '../../modules/tags'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
+import * as icons from '../../icons'
 
 const useStyles = makeStyles((theme) => ({
   items: {
@@ -45,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
     '& svg': {
       width: '100%',
       height: '100%',
+      fill: '#FFF',
     },
   },
   loading: {
@@ -96,7 +96,11 @@ const Feature = ({
   }
 
   const classes = useStyles()
-  const iconString = data.icon || `<span>${tag.substring(0, 3)}</div>`
+  const Icon =
+    data.icon in icons
+      ? // @ts-ignore
+        icons[data.icon]
+      : () => <span>{tag.substring(0, 3)}</span>
 
   return (
     <div
@@ -105,7 +109,7 @@ const Feature = ({
         title={`${data.label || getLabelForTag(tag)} - ${data.description}`}>
         <div>
           <Link to={routes.queryWithVar.replace(':query', tag)}>
-            <div dangerouslySetInnerHTML={{ __html: iconString }}></div>{' '}
+            <Icon />
           </Link>
         </div>
       </Tooltip>

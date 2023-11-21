@@ -27,6 +27,7 @@ import AssetsInput from './components/assets-input'
 import DateInput from './components/date-input'
 import CustomInput from './components/custom-input'
 import TagsInput from './components/tags-input'
+import DropdownInput from './components/dropdown-input'
 
 function getInputForFieldType(type: keyof typeof fieldTypes) {
   switch (type) {
@@ -52,6 +53,8 @@ function getInputForFieldType(type: keyof typeof fieldTypes) {
       return CustomInput
     case fieldTypes.tags:
       return TagsInput
+    case fieldTypes.dropdown:
+      return DropdownInput
     default:
       throw new Error(`Invalid field type "${type}"`)
   }
@@ -60,13 +63,13 @@ function getInputForFieldType(type: keyof typeof fieldTypes) {
 const useStyles = makeStyles({
   saveBtn: {
     textAlign: 'center',
-    marginTop: '1rem'
+    marginTop: '1rem',
   },
   hint: {
     fontSize: '75%',
     fontStyle: 'italic',
-    marginTop: '5px'
-  }
+    marginTop: '5px',
+  },
 })
 
 const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
@@ -79,7 +82,7 @@ const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
   return hiddenFields.reduce(
     (newObj, fieldData) => ({
       ...newObj,
-      [fieldData.name]: fieldData.default
+      [fieldData.name]: fieldData.default,
     }),
     {}
   )
@@ -117,7 +120,7 @@ export default ({
   getSuccessUrl = undefined,
   // amendments
   overrideFields = null,
-  onFieldChanged = undefined
+  onFieldChanged = undefined,
 }: {
   fields?: EditableField<any>[]
   collectionName: string
@@ -157,7 +160,7 @@ export default ({
       : fieldsToUse.reduce((newFormFields, fieldConfig) => {
           return {
             ...newFormFields,
-            [fieldConfig.name]: fieldConfig.default
+            [fieldConfig.name]: fieldConfig.default,
           }
         }, {})
   )
@@ -177,7 +180,7 @@ export default ({
           [fieldConfig.name]:
             result[fieldConfig.name.toString()] === false
               ? false
-              : result[fieldConfig.name.toString()] || fieldConfig.default
+              : result[fieldConfig.name.toString()] || fieldConfig.default,
         }
       }, {})
     )
@@ -194,7 +197,7 @@ export default ({
 
     setFormFields({
       ...formFields,
-      [name]: newVal
+      [name]: newVal,
     })
     setIsInvalid(false)
   }
@@ -202,7 +205,7 @@ export default ({
   const onFieldsChange = (updates: Record) => {
     setFormFields({
       ...formFields,
-      ...updates
+      ...updates,
     })
     setIsInvalid(false)
   }
@@ -227,7 +230,7 @@ export default ({
 
       const [newDocument] = await save({
         ...formFields,
-        ...getHiddenFieldsForDb(fieldsToUse)
+        ...getHiddenFieldsForDb(fieldsToUse),
       })
 
       setCreatedDocId(newDocument ? newDocument.id : null)

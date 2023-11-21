@@ -12,7 +12,8 @@ export enum fieldTypes {
   assets = 'assets',
   custom = 'custom',
   tags = 'tags',
+  dropdown = 'dropdown',
   // for diffs
   url = 'url',
-  email = 'email'
+  email = 'email',
 }

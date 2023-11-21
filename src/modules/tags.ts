@@ -1,6 +1,7 @@
 import { EditableField } from '../editable-fields'
 import { fieldTypes } from '../generic-forms'
 import { categories } from '../utils/tags'
+import * as icons from '../icons'
 
 export interface Tag {
   id: string
@@ -67,10 +68,13 @@ export const editableFields: EditableField<Tag>[] = [
   },
   {
     name: 'icon',
-    label: 'Icon (SVG)',
-    type: fieldTypes.text,
-    multiline: true,
-    hint: 'HTML SVG of the icon to use. Leave blank to use an acronym using the tag itself.',
+    label: 'Icon',
+    type: fieldTypes.dropdown,
+    options: Object.keys(icons).map((importName) => ({
+      label: importName,
+      value: importName,
+    })),
+    hint: 'The name of an icon',
   },
   {
     name: 'isadult',
