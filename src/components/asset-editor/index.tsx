@@ -103,7 +103,6 @@ import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import { defaultBorderRadius } from '../../themes'
 import PerformanceEditor from '../performance-editor'
 import Tabs from '../tabs'
-import AssetFeatures from '../asset-features'
 import WarningMessage from '../warning-message'
 
 interface EditorInfo {

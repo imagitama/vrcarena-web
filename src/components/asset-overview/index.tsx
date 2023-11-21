@@ -29,13 +29,12 @@ import {
   isTwitterUrl,
   isDiscordUrl,
   isUrlAYoutubeVideo,
-  insertItemInbetweenAllItems
 } from '../../utils'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 import {
   mediaQueryForMobiles,
-  mediaQueryForTabletsOrBelow
+  mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
 import { getCanUserEditAsset } from '../../assets'
 import Link from '../../components/link'
@@ -48,7 +47,7 @@ import Heading from '../heading'
 import ErrorMessage from '../error-message'
 import LoadingShimmer from '../loading-shimmer'
 import ImageGallery from '../image-gallery'
-import AssetFeatures from '../asset-features'
+import FeatureList from '../feature-list'
 import PedestalVideo from '../pedestal-video'
 import Price from '../price'
 import TagChips from '../tag-chips'
@@ -87,20 +86,23 @@ import TabMentions from './components/tab-mentions'
 import AssetResultsItemParent from '../asset-results-item-parent'
 
 // controls
-const LoggedInControls = React.lazy(() =>
-  import(
-    /* webpackChunkName: "asset-overview-logged-in-controls" */ './components/logged-in-controls'
-  )
+const LoggedInControls = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "asset-overview-logged-in-controls" */ './components/logged-in-controls'
+    )
 )
-const EditorControls = React.lazy(() =>
-  import(
-    /* webpackChunkName: "asset-overview-editor-controls" */ './components/editor-controls'
-  )
+const EditorControls = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "asset-overview-editor-controls" */ './components/editor-controls'
+    )
 )
-const CreatorControls = React.lazy(() =>
-  import(
-    /* webpackChunkName: "asset-overview-creator-controls" */ './components/creator-controls'
-  )
+const CreatorControls = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "asset-overview-creator-controls" */ './components/creator-controls'
+    )
 )
 
 const useStyles = makeStyles({
@@ -111,13 +113,13 @@ const useStyles = makeStyles({
     flexDirection: 'row',
 
     [mediaQueryForMobiles]: {
-      flexDirection: 'column-reverse'
-    }
+      flexDirection: 'column-reverse',
+    },
   },
   leftCol: {
     paddingTop: '1rem',
     width: '100%',
-    minWidth: 0 // fix flex shrink issue
+    minWidth: 0, // fix flex shrink issue
   },
   rightCol: {
     maxWidth: '300px',
@@ -125,8 +127,8 @@ const useStyles = makeStyles({
     marginLeft: '1rem',
     [mediaQueryForMobiles]: {
       width: '100%',
-      margin: '2rem 0 0'
-    }
+      margin: '2rem 0 0',
+    },
   },
   // content
   pedestalWrapper: {
@@ -135,26 +137,26 @@ const useStyles = makeStyles({
     cursor: 'pointer',
     transition: 'all 200ms',
     [mediaQueryForTabletsOrBelow]: {
-      width: '50%'
+      width: '50%',
     },
     [mediaQueryForMobiles]: {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   expanded: {
     width: '60%',
     [mediaQueryForTabletsOrBelow]: {
-      width: '80%'
+      width: '80%',
     },
     [mediaQueryForMobiles]: {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   authorName: {
-    fontSize: '50%'
+    fontSize: '50%',
   },
   primaryImageGallery: {
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   primaryMetadata: {
     display: 'flex',
@@ -164,39 +166,39 @@ const useStyles = makeStyles({
     marginTop: '1rem',
 
     [mediaQueryForMobiles]: {
-      flexDirection: 'column'
-    }
+      flexDirection: 'column',
+    },
   },
   thumbnailWrapper: {
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   titleAndAuthor: {
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   // controls
   controlGroup: {
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   // parent
   parent: {
     margin: '2rem 0',
     position: 'relative',
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   parentWrapper: {
-    position: 'relative'
+    position: 'relative',
   },
   vrchatIcon: {
     fontSize: '200%',
-    display: 'flex'
+    display: 'flex',
   },
   area: {
     border: '1px solid rgba(255, 255, 255, 0.25)',
     borderRadius: '5px',
     padding: '1rem',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   areaLabel: {
     fontSize: '150%',
@@ -204,23 +206,23 @@ const useStyles = makeStyles({
     '& a': {
       color: 'inherit',
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     '&:hover $areaIcon': {
-      opacity: 1
-    }
+      opacity: 1,
+    },
   },
   areaIcon: {
     opacity: 0,
     transition: 'all 100ms',
-    marginLeft: '0.5rem'
+    marginLeft: '0.5rem',
   },
   riskyFileNotice: {
     fontSize: '75%',
     padding: '0.25rem 0',
     '& svg': {
-      fontSize: '100%'
-    }
+      fontSize: '100%',
+    },
   },
   miniSaleInfo: {
     marginTop: '0.5rem',
@@ -228,13 +230,13 @@ const useStyles = makeStyles({
     '& a': {
       display: 'block',
       padding: '1rem',
-      color: 'inherit'
-    }
+      color: 'inherit',
+    },
   },
   saleTitle: {
     fontSize: '150%',
-    marginBottom: '0.25rem'
-  }
+    marginBottom: '0.25rem',
+  },
 })
 
 const ParentControlGroup = () => {
@@ -244,14 +246,14 @@ const ParentControlGroup = () => {
   const parent =
     asset &&
     asset.relations &&
-    asset.relations.find(relation => relation.type === RelationType.Parent)
+    asset.relations.find((relation) => relation.type === RelationType.Parent)
 
   if (!parent) {
     return null
   }
 
   const parentData = asset.relationsdata.find(
-    relation => relation.id === parent.asset
+    (relation) => relation.id === parent.asset
   )
 
   if (!parentData) {
@@ -314,7 +316,7 @@ const analyticsCategoryName = 'ViewAsset'
 const Area = ({
   name,
   label,
-  children
+  children,
 }: {
   name: string
   label?: string
@@ -442,7 +444,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
   const attachedImagesAndYouTubeUrls =
     asset && asset.fileurls && asset.fileurls.length
       ? asset.fileurls.filter(
-          url => isUrlAnImage(url) || isUrlAYoutubeVideo(url)
+          (url) => isUrlAnImage(url) || isUrlAYoutubeVideo(url)
         )
       : []
 
@@ -456,7 +458,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
           trackAction: (action: string, payload: any) =>
             trackAction(analyticsCategoryName, action, payload),
           hydrate,
-          analyticsCategoryName
+          analyticsCategoryName,
         }}>
         {isLoading ? (
           <Helmet>
@@ -498,7 +500,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
             className={`${classes.pedestalWrapper} ${
               isPedestalExpanded ? classes.expanded : ''
             }`}
-            onClick={() => setIsPedestalExpanded(currentVal => !currentVal)}>
+            onClick={() => setIsPedestalExpanded((currentVal) => !currentVal)}>
             <PedestalVideo
               videoUrl={asset.pedestalvideourl}
               fallbackImageUrl={asset.pedestalfallbackimageurl}
@@ -512,8 +514,8 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                 : attachedImagesAndYouTubeUrls
                     .slice(0, 3)
                     // .concat(['https://www.youtube.com/watch?v=uMboDekgvz0'])
-                    .map(url => ({
-                      url
+                    .map((url) => ({
+                      url,
                     }))
             }
             onClickImage={() =>
@@ -611,7 +613,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                       ? []
                       : attachedImagesAndYouTubeUrls
                           .slice(3)
-                          .map(url => ({ url }))
+                          .map((url) => ({ url }))
                   }
                   onClickImage={() =>
                     trackAction(
@@ -724,13 +726,13 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
             asset.fileurls &&
             asset.fileurls
               .filter(isUrlNotAnImageOrVideo)
-              .filter(url => !isUrlAYoutubeVideo(url)).length ? (
+              .filter((url) => !isUrlAYoutubeVideo(url)).length ? (
               <ControlGroup>
                 <Control>
                   <Button
                     url={asset.fileurls
                       .filter(isUrlNotAnImageOrVideo)
-                      .filter(url => !isUrlAYoutubeVideo(url))
+                      .filter((url) => !isUrlAYoutubeVideo(url))
                       .shift()}>
                     Download
                   </Button>
@@ -761,7 +763,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                 </Control>
               </ControlGroup>
             ) : null}
-            <AssetFeatures
+            <FeatureList
               tags={asset ? asset.tags : []}
               existingTagsData={asset ? asset.tagsdata : []}
               shimmer={isLoading}

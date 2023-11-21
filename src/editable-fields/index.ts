@@ -48,6 +48,7 @@ export interface EditableField<TData> {
   options?: Option[]
   isEditable?: boolean
   length?: number
+  multiline?: true
 }
 
 // @ts-ignore
@@ -59,7 +60,7 @@ const editableFieldsByCollectionName: {
   [OldCollectionNames.DiscordServers]: discordServers,
   [OldCollectionNames.UserMeta]: userMeta,
   [CollectionNames.Playlists]: playlists,
-  [CollectionNames.Pages]: pages
+  [CollectionNames.Pages]: pages,
 }
 
 export default editableFieldsByCollectionName

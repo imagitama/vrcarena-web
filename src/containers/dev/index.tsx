@@ -8,7 +8,7 @@ import { parseBase64String } from '../../utils'
 // components
 
 import TagInput from '../../components/tag-input'
-import AssetFeatures from '../../components/asset-features'
+import FeatureList from '../../components/feature-list'
 import ErrorMessage from '../../components/error-message'
 import SuccessMessage from '../../components/success-message'
 import NoPermissionMessage from '../../components/no-permission-message'
@@ -169,8 +169,8 @@ export default () => {
         <LoadingIndicator message="Loading items..." />
         <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} />
-        <h2>Asset Features</h2>
-        <AssetFeatures tags={[]} />
+        <h2>Feature List</h2>
+        <FeatureList tags={['fbx_included', 'blendfile_included', 'paid']} />
         <h2>Text Diff</h2>
         <TextDiff
           oldValue={loremIpsum}
