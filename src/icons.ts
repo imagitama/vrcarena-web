@@ -23,6 +23,7 @@ export const Booth = React.lazy(() => import('./assets/images/icons/booth.svg').
 export const ChilloutVR = React.lazy(() => import('./assets/images/icons/chilloutvr.svg').then(result => ({ default: result.ReactComponent })))
 export const Discord = React.lazy(() => import('./assets/images/icons/discord.svg').then(result => ({ default: result.ReactComponent })))
 export const FileFbx = React.lazy(() => import('./assets/images/icons/file_fbx.svg').then(result => ({ default: result.ReactComponent })))
+export const Fur = React.lazy(() => import('./assets/images/icons/fur.svg').then(result => ({ default: result.ReactComponent })))
 export const Gumroad = React.lazy(() => import('./assets/images/icons/gumroad.svg').then(result => ({ default: result.ReactComponent })))
 export const NeosVR = React.lazy(() => import('./assets/images/icons/neosvr.svg').then(result => ({ default: result.ReactComponent })))
 export const Oculus = React.lazy(() => import('./assets/images/icons/oculus.svg').then(result => ({ default: result.ReactComponent })))
