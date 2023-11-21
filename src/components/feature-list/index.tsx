@@ -33,8 +33,10 @@ const useStyles = makeStyles((theme) => ({
       color: 'inherit',
       width: '100%',
       height: '100%',
-      display: 'block',
       padding: '0.5rem',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       '& > div': {
         display: 'flex',
         justifyContent: 'center',
@@ -85,11 +87,11 @@ const useStyles = makeStyles((theme) => ({
 const Feature = ({
   tag,
   data,
-  hasTag,
-}: {
+}: // hasTag,
+{
   tag: string
   data?: Tag
-  hasTag: boolean
+  hasTag?: boolean
 }) => {
   if (!data) {
     throw new Error(`Tag ${tag} has no data`)
@@ -104,7 +106,8 @@ const Feature = ({
 
   return (
     <div
-      className={`${classes.feature} ${hasTag ? classes.good : classes.bad}`}>
+      // TODO: Show it is bad
+      className={`${classes.feature}`}>
       <Tooltip
         title={`${data.label || getLabelForTag(tag)} - ${data.description}`}>
         <div>
@@ -156,23 +159,25 @@ const FeatureList = ({
     )
   }
 
-  const tagsDataToUse = tagsData || existingTagsData
+  const tagsDataToUse =
+    tagsData && tagsData.length
+      ? tagsData
+      : existingTagsData.length
+      ? existingTagsData
+      : []
 
-  if (!tags || !tags.length || !tagsDataToUse || !tagsDataToUse.length) {
+  if (!tagsDataToUse.length) {
     return null
   }
 
   return (
     <div className={classes.items}>
       {tagsDataToUse
-        .filter((tagsData) => tags.find((tag) => tagsData.id === tag))
+        .filter((tagsData) =>
+          tags.length ? tags.find((tag) => tagsData.id === tag) : true
+        )
         .map((tagsData) => (
-          <Feature
-            key={tagsData.id}
-            tag={tagsData.id}
-            data={tagsData}
-            hasTag={tags.includes(tagsData.id)}
-          />
+          <Feature key={tagsData.id} tag={tagsData.id} data={tagsData} />
         ))}
     </div>
   )

@@ -15,6 +15,7 @@ export const HappyFace = React.lazy(() => import('@emotion-icons/material/TagFac
 export const Map = React.lazy(() => import('@emotion-icons/bootstrap/Map').then(result => ({ default: result.Map }))) // uvmapped
 export const FemaleSign = React.lazy(() => import('@emotion-icons/boxicons-regular/FemaleSign').then(result => ({ default: result.FemaleSign })))
 export const MaleSign = React.lazy(() => import('@emotion-icons/boxicons-regular/MaleSign').then(result => ({ default: result.MaleSign })))
+export const Tshirt = React.lazy(() => import('@emotion-icons/fa-solid/Tshirt').then(result => ({ default: result.Tshirt })))
 
 export const SubstancePainter = React.lazy(() => import('./assets/images/icons/substancepainter.svg').then(result => ({ default: result.ReactComponent })))
 export const Blender = React.lazy(() => import('./assets/images/icons/blender.svg').then(result => ({ default: result.ReactComponent })))
@@ -30,5 +31,6 @@ export const Photoshop = React.lazy(() => import('./assets/images/icons/photosho
 export const Poiyomi = React.lazy(() => import('./assets/images/icons/poiyomi.svg').then(result => ({ default: result.ReactComponent })))
 export const Twitch = React.lazy(() => import('./assets/images/icons/twitch.svg').then(result => ({ default: result.ReactComponent })))
 export const Unity = React.lazy(() => import('./assets/images/icons/unity.svg').then(result => ({ default: result.ReactComponent })))
+export const Under18 = React.lazy(() => import('./assets/images/icons/under18.svg').then(result => ({ default: result.ReactComponent }))) // nsfw_included
 export const VRChat = React.lazy(() => import('./assets/images/icons/vrchat.svg').then(result => ({ default: result.ReactComponent })))
 export const VRCFury = React.lazy(() => import('./assets/images/icons/vrcfury.svg').then(result => ({ default: result.ReactComponent })))

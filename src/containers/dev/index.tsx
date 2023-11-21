@@ -170,7 +170,7 @@ export default () => {
         <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} />
         <h2>Feature List</h2>
-        <FeatureList tags={['fbx_included', 'blendfile_included', 'paid']} />
+        <FeatureList />
         <h2>Text Diff</h2>
         <TextDiff
           oldValue={loremIpsum}
