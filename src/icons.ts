@@ -34,8 +34,10 @@ export const Patreon = React.lazy(() => import('./assets/images/icons/patreon.sv
 export const Photoshop = React.lazy(() => import('./assets/images/icons/photoshop.svg').then(result => ({ default: result.ReactComponent })))
 export const Poiyomi = React.lazy(() => import('./assets/images/icons/poiyomi.svg').then(result => ({ default: result.ReactComponent })))
 export const Puppet = React.lazy(() => import('./assets/images/icons/puppet.svg').then(result => ({ default: result.ReactComponent })))
+export const Skeleton = React.lazy(() => import('./assets/images/icons/skeleton.svg').then(result => ({ default: result.ReactComponent })))
 export const Twitch = React.lazy(() => import('./assets/images/icons/twitch.svg').then(result => ({ default: result.ReactComponent })))
 export const Unity = React.lazy(() => import('./assets/images/icons/unity.svg').then(result => ({ default: result.ReactComponent })))
+export const UnityPrefab = React.lazy(() => import('./assets/images/icons/unity_prefab.svg').then(result => ({ default: result.ReactComponent })))
 export const Under18 = React.lazy(() => import('./assets/images/icons/under18.svg').then(result => ({ default: result.ReactComponent }))) // nsfw_included
 export const VRChat = React.lazy(() => import('./assets/images/icons/vrchat.svg').then(result => ({ default: result.ReactComponent })))
 export const VRCFury = React.lazy(() => import('./assets/images/icons/vrcfury.svg').then(result => ({ default: result.ReactComponent })))
