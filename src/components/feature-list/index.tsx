@@ -10,8 +10,10 @@ import useDataStoreItems from '../../hooks/useDataStoreItems'
 import * as icons from '../../icons'
 
 const useStyles = makeStyles((theme) => ({
-  items: {
+  root: {
     margin: '2rem 0',
+  },
+  items: {
     display: 'flex',
     flexWrap: 'wrap',
   },
@@ -20,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
     height: '2.5rem',
     margin: '0rem 0.25rem 0.25rem 0',
     border: '1px solid rgba(255, 255, 255, 0.5)',
-    // color: 'rgba(255, 255, 255, 0.75)',
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
     textTransform: 'uppercase',
@@ -132,7 +133,8 @@ const LoadingFeature = () => {
 const useTags = (existingTagsData?: Tag[]) =>
   useDataStoreItems<Tag>(
     existingTagsData && existingTagsData.length ? '' : CollectionNames.Tags,
-    'tags-for-features'
+    'tags-for-features',
+    'id'
   )
 
 const FeatureList = ({
@@ -170,15 +172,31 @@ const FeatureList = ({
     return null
   }
 
+  const tagsDataToDisplay = tagsDataToUse.filter((tagsData) =>
+    tags.length ? tags.find((tag) => tagsData.id === tag) : true
+  )
+
+  const tagDataByCategory = tagsDataToDisplay.reduce<{
+    [categoryName: string]: Tag[]
+  }>(
+    (result, tagData) => ({
+      ...result,
+      [tagData.category]: result[tagData.category]
+        ? result[tagData.category].concat([tagData])
+        : [tagData],
+    }),
+    {}
+  )
+
   return (
-    <div className={classes.items}>
-      {tagsDataToUse
-        .filter((tagsData) =>
-          tags.length ? tags.find((tag) => tagsData.id === tag) : true
-        )
-        .map((tagsData) => (
-          <Feature key={tagsData.id} tag={tagsData.id} data={tagsData} />
-        ))}
+    <div className={classes.root}>
+      {Object.entries(tagDataByCategory).map(([categoryName, tagsData]) => (
+        <div key={categoryName} className={classes.items}>
+          {tagsData.map((tagsData) => (
+            <Feature key={tagsData.id} tag={tagsData.id} data={tagsData} />
+          ))}
+        </div>
+      ))}
     </div>
   )
 }
