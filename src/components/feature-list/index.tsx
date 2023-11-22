@@ -11,11 +11,12 @@ import * as icons from '../../icons'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '2rem 0',
+    margin: '2rem 0 1.5rem',
   },
   items: {
     display: 'flex',
     flexWrap: 'wrap',
+    marginBottom: '0.5rem',
   },
   feature: {
     width: '2.5rem',
