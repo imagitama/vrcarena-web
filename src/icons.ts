@@ -18,6 +18,7 @@ export const FemaleSign = React.lazy(() => import('@emotion-icons/boxicons-regul
 export const MaleSign = React.lazy(() => import('@emotion-icons/boxicons-regular/MaleSign').then(result => ({ default: result.MaleSign })))
 export const Tshirt = React.lazy(() => import('@emotion-icons/fa-solid/Tshirt').then(result => ({ default: result.Tshirt })))
 
+export const Animation = React.lazy(() => import('./assets/images/icons/animation.svg').then(result => ({ default: result.ReactComponent })))
 export const SubstancePainter = React.lazy(() => import('./assets/images/icons/substancepainter.svg').then(result => ({ default: result.ReactComponent })))
 export const Blender = React.lazy(() => import('./assets/images/icons/blender.svg').then(result => ({ default: result.ReactComponent })))
 export const Bone = React.lazy(() => import('./assets/images/icons/bone.svg').then(result => ({ default: result.ReactComponent })))
