@@ -2,27 +2,27 @@ import React from 'react'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
     transition: 'all 100ms',
-    margin: '1rem 0'
+    margin: '1rem 0',
   },
   noMargin: {
-    margin: '0 !important'
+    margin: '0',
   },
   hover: {
     '&:hover': {
       backgroundColor: 'grey',
       // @ts-ignore
-      boxShadow: `0px 0px 10px ${theme.palette.paper.hover.shadow}`
-    }
+      boxShadow: `0px 0px 10px ${theme.palette.paper.hover.shadow}`,
+    },
   },
   selected: {
     backgroundColor: 'grey',
     // @ts-ignore
-    boxShadow: `0px 0px 10px ${theme.palette.paper.selected.shadow}`
-  }
+    boxShadow: `0px 0px 10px ${theme.palette.paper.selected.shadow}`,
+  },
 }))
 
 export default ({
@@ -30,7 +30,7 @@ export default ({
   hover = false,
   selected = false,
   margin = false,
-  className = ''
+  className = '',
 }: {
   children: React.ReactNode
   hover?: boolean

@@ -15,7 +15,8 @@ import {
   PublishStatuses,
   ApprovalStatuses,
   AccessStatuses,
-  CollectionNames
+  CollectionNames,
+  AssetCategories,
 } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
@@ -33,14 +34,14 @@ import Link from '../link'
 
 const useStyles = makeStyles({
   pass: {
-    color: colorPalette.positive
+    color: colorPalette.positive,
   },
   fail: {
-    color: colorPalette.negative
+    color: colorPalette.negative,
   },
   notImportant: {
-    color: 'rgba(255, 0, 0, 0.5)'
-  }
+    color: 'rgba(255, 0, 0, 0.5)',
+  },
 })
 
 const AssetApprovalChecklistItem = ({
@@ -48,7 +49,7 @@ const AssetApprovalChecklistItem = ({
   isValid,
   isNotImportant,
   validLabel,
-  url
+  url,
 }: {
   label: string
   isValid: boolean
@@ -83,7 +84,7 @@ const AssetApprovalChecklistItem = ({
 
 function AssetsTable({
   assets,
-  hydrate
+  hydrate,
 }: {
   assets?: FullAsset[]
   hydrate?: () => void
@@ -100,7 +101,7 @@ function AssetsTable({
         </TableHead>
         <TableBody>
           {assets ? (
-            assets.map(asset => {
+            assets.map((asset) => {
               const {
                 id,
                 title,
@@ -117,7 +118,7 @@ function AssetsTable({
                 species,
                 speciesnames,
                 publishedat,
-                sourceurl
+                sourceurl,
               } = asset
               return (
                 <TableRow key={id}>
@@ -186,16 +187,18 @@ function AssetsTable({
                         isValid={Array.isArray(tags) && tags.length > 0}
                         validLabel={tags ? `${tags.length} tags` : ''}
                       />
-                      <AssetApprovalChecklistItem
-                        label="Species"
-                        isValid={Array.isArray(species) && species.length > 0}
-                        isNotImportant
-                        validLabel={
-                          speciesnames && speciesnames.length
-                            ? speciesnames.join(', ')
-                            : ''
-                        }
-                      />
+                      {category === AssetCategories.avatar && (
+                        <AssetApprovalChecklistItem
+                          label="Species"
+                          isValid={Array.isArray(species) && species.length > 0}
+                          isNotImportant
+                          validLabel={
+                            speciesnames && speciesnames.length
+                              ? speciesnames.join(', ')
+                              : ''
+                          }
+                        />
+                      )}
                     </ul>
                   </TableCell>
                   <TableCell>
@@ -229,7 +232,7 @@ function AssetsTable({
 
 const Renderer = ({
   items,
-  hydrate
+  hydrate,
 }: {
   items?: FullAsset[]
   hydrate?: () => void
@@ -237,7 +240,7 @@ const Renderer = ({
 
 const subViews = {
   PENDING: 0,
-  DELETED: 1
+  DELETED: 1,
 }
 
 const analyticsCategoryName = 'AdminAssets'
@@ -247,7 +250,7 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
   return (
     <>
       <TextInput
-        onChange={e => setVal(e.target.value)}
+        onChange={(e) => setVal(e.target.value)}
         value={val}
         placeholder="User ID"
         size="small"
@@ -261,7 +264,7 @@ export default () => {
   const [selectedSubView, setSelectedSubView] = useState(subViews.PENDING)
   const [userIdToFilter, setUserIdToFilter] = useState('')
   const getQuery = useCallback(
-    query => {
+    (query) => {
       if (userIdToFilter) {
         query = query.eq(AssetFieldNames.createdBy, userIdToFilter)
       }
@@ -294,7 +297,7 @@ export default () => {
   )
 
   const toggleSubView = (subView: number) =>
-    setSelectedSubView(currentVal => {
+    setSelectedSubView((currentVal) => {
       if (currentVal === subView) {
         return subViews.PENDING
       }
@@ -311,16 +314,16 @@ export default () => {
       sortOptions={[
         {
           label: 'Publish date',
-          fieldName: AssetMetaFieldNames.publishedAt
+          fieldName: AssetMetaFieldNames.publishedAt,
         },
         {
           label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt
+          fieldName: AssetFieldNames.createdAt,
         },
         {
           label: 'Title',
-          fieldName: AssetFieldNames.title
-        }
+          fieldName: AssetFieldNames.title,
+        },
       ]}
       defaultFieldName={AssetMetaFieldNames.publishedAt}
       urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
@@ -358,7 +361,7 @@ export default () => {
           color="default">
           Deleted
         </Button>,
-        <UserIdFilter onChange={newVal => setUserIdToFilter(newVal)} />
+        <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,
       ]}>
       <Renderer />
     </PaginatedView>

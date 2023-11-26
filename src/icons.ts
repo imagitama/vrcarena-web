@@ -11,6 +11,13 @@ export const Visibility = React.lazy(() => import('@material-ui/icons/Visibility
 export const Link = React.lazy(() => import('@material-ui/icons/Link')) // requires linked asset
 export const Tune = React.lazy(() => import('@material-ui/icons/Tune')) // body sliders
 
+// social list
+export const Email = React.lazy(() => import('@material-ui/icons/Email'))
+export const YouTube = React.lazy(() => import('@material-ui/icons/YouTube'))
+export const Telegram = React.lazy(() => import('@material-ui/icons/Telegram'))
+export const Twitter = React.lazy(() => import('@material-ui/icons/Twitter'))
+export const Website = React.lazy(() => import('@material-ui/icons/Language'))
+
 export const Copy = React.lazy(() => import('@emotion-icons/entypo/Copy').then(result => ({ default: result.Copy }))) // prefabs
 export const HappyFace = React.lazy(() => import('@emotion-icons/material/TagFaces').then(result => ({ default: result.TagFaces }))) // custom gestures
 export const Map = React.lazy(() => import('@emotion-icons/bootstrap/Map').then(result => ({ default: result.Map }))) // uvmapped
@@ -42,3 +49,5 @@ export const UnityPrefab = React.lazy(() => import('./assets/images/icons/unity_
 export const Under18 = React.lazy(() => import('./assets/images/icons/under18.svg').then(result => ({ default: result.ReactComponent }))) // nsfw_included
 export const VRChat = React.lazy(() => import('./assets/images/icons/vrchat.svg').then(result => ({ default: result.ReactComponent })))
 export const VRCFury = React.lazy(() => import('./assets/images/icons/vrcfury.svg').then(result => ({ default: result.ReactComponent })))
+
+
