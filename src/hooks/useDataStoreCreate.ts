@@ -3,13 +3,16 @@ import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 import { mapFieldsForDatabase } from '../utils'
 
-export default <TFields>(
+export default <TFields, TRecord = void>(
   collectionName: string
 ): [
   boolean,
   boolean,
   boolean,
-  (fields: TFields) => Promise<string | null>,
+  (
+    fields: TFields,
+    returnEntireDocument?: boolean
+  ) => Promise<string | TRecord>,
   () => void,
   null | string
 ] => {
@@ -28,7 +31,10 @@ export default <TFields>(
     setIsCreating(false)
   }
 
-  const create = async (fields: TFields) => {
+  const create = async (
+    fields: TFields,
+    returnEntireDocument: boolean = false
+  ): Promise<string | TRecord> => {
     try {
       setIsSuccess(false)
       setIsErrored(false)
@@ -63,15 +69,14 @@ export default <TFields>(
       const createdRecord = data[0]
 
       if (!createdRecord.id) {
-        console.warn(
-          'Created record did NOT have an "id" field, returning null...'
-        )
-        return null
+        throw new Error('Created record did NOT have an "id" field')
       }
 
       setId(data[0].id as string)
 
-      return data[0].id as string
+      return returnEntireDocument
+        ? (data[0] as TRecord)
+        : (data[0].id as string)
     } catch (err) {
       setIsCreating(false)
       setIsSuccess(false)
@@ -80,7 +85,7 @@ export default <TFields>(
       console.error('Failed to create document', err)
       handleError(err)
 
-      return null
+      throw err
     }
   }
 

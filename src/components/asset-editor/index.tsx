@@ -87,6 +87,8 @@ import RelationsEditor from '../relations-editor'
 import Relations from '../relations'
 import LicenseEditor from '../license-editor'
 import FeaturesEditor from '../features-editor'
+import VrcFurySettings from '../vrcfury-settings'
+import VrcFurySettingsEditor from '../vrcfury-settings-editor'
 
 // @ts-ignore assets
 import placeholderPedestalVideoUrl from '../../assets/videos/placeholder-pedestal.webm'
@@ -104,6 +106,10 @@ import { defaultBorderRadius } from '../../themes'
 import PerformanceEditor from '../performance-editor'
 import Tabs from '../tabs'
 import WarningMessage from '../warning-message'
+import { VRCFury as VrcFuryIcon } from '../../icons'
+import InfoMessage from '../info-message'
+import useNotices from '../../hooks/useNotices'
+import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 
 interface EditorInfo {
   assetId: string | null
@@ -281,7 +287,7 @@ const NoValueMessage = ({ children }: { children: React.ReactNode }) => {
 const FormEditorArea = (props: {
   fieldName?: string
   title: string
-  description: string
+  description?: string
   icon: React.ReactNode
   display?: React.ReactNode
   editor?: React.ReactNode
@@ -656,7 +662,10 @@ const DiscordServerDisplay = ({
       <>
         <strong>Preview:</strong>
         <br />
-        <DiscordServerInfo discordServer={fields.discordserverdata} />
+        <DiscordServerMustJoinNotice
+          discordServerId={fields.discordserver}
+          discordServerData={fields.discordserverdata || undefined}
+        />
       </>
     ) : (
       <NoValueMessage>No Discord server set</NoValueMessage>
@@ -752,11 +761,14 @@ const MainControls = () => {
   )
 }
 
+const vrcFuryInfoNoticeId = 'asset-editor-vrcfury-info'
+
 const Editor = () => {
   const { asset, assetId, onFieldChanged, hydrate, originalAssetId } =
     useEditor()
   const [, , user] = useUserRecord()
   const classes = useStyles()
+  const [hiddenNotices, hideNotice] = useNotices()
 
   if (!asset) {
     return null
@@ -1094,6 +1106,92 @@ const Editor = () => {
             ),
           },
           {
+            name: 'vrcfury',
+            label: 'VRCFury',
+            contents: (
+              <>
+                {!hiddenNotices.includes(vrcFuryInfoNoticeId) && (
+                  <InfoMessage
+                    onOkay={() => hideNotice(vrcFuryInfoNoticeId)}
+                    title={
+                      <>
+                        <a
+                          href="https://vrcfury.com"
+                          target="_blank"
+                          rel="noopener noreferrer">
+                          VRCFury
+                        </a>{' '}
+                        is a free non-destructive tool for VRChat avatars. It is
+                        our recommended way to add accessories to avatars.
+                      </>
+                    }>
+                    <p>
+                      Accessory creators can create a Unity prefab with a
+                      VRCFury component to make adding accessories really easy.
+                    </p>
+                    <p>
+                      Avatar creators can include VRCFury components in their
+                      avatar prefabs to help people use their avatar.
+                    </p>
+                    <p>
+                      <strong>
+                        VRCArena has no affiliation with VRCFury at all. We just
+                        love the tool!
+                      </strong>
+                    </p>
+                  </InfoMessage>
+                )}
+                <FormEditorArea
+                  title="VRCFury Compatibility"
+                  icon={() => <VrcFuryIcon />}
+                  isEditable={false}
+                  display={() => (
+                    <>
+                      Use the "Features" tab to indicate that this asset is
+                      ready and tested with VRCFury.
+                    </>
+                  )}
+                />
+                <FormEditorArea
+                  title="VRCFury Prefabs"
+                  description={`Link third-party prefabs people have created for this avatar or accessory.`}
+                  icon={() => <VrcFuryIcon />}
+                  display={() =>
+                    asset.extradata &&
+                    asset.extradata.vrcfury &&
+                    asset.extradata.vrcfury.prefabs ? (
+                      <VrcFurySettings
+                        prefabs={asset.extradata.vrcfury.prefabs}
+                      />
+                    ) : (
+                      <NoValueMessage>
+                        No VRCFury settings have been set
+                      </NoValueMessage>
+                    )
+                  }
+                  editor={
+                    <VrcFurySettingsEditor
+                      assetId={assetId || undefined}
+                      currentExtraData={
+                        asset && asset.extradata ? asset.extradata : undefined
+                      }
+                      overrideSave={
+                        onFieldChanged
+                          ? (newExtraData) =>
+                              onFieldChanged(
+                                // TODO: Type-safety this
+                                'extradata',
+                                newExtraData
+                              )
+                          : undefined
+                      }
+                    />
+                  }
+                />
+              </>
+            ),
+          },
+          {
             name: 'avatars',
             label: 'Avatars',
             contents: (
@@ -1263,9 +1361,11 @@ const Editor = () => {
                   editor={
                     <ChangeDiscordServerForm
                       collectionName={CollectionNames.Assets}
-                      id={assetId}
+                      id={assetId || undefined}
                       existingDiscordServerId={asset.discordserver}
-                      existingDiscordServerData={asset.discordserverdata}
+                      existingDiscordServerData={
+                        asset.discordserverdata || undefined
+                      }
                     />
                   }
                 />

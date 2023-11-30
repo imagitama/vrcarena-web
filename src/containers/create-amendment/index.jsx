@@ -5,14 +5,18 @@ import { Helmet } from 'react-helmet'
 import Heading from '../../components/heading'
 import ErrorMessage from '../../components/error-message'
 import NoPermissionMessage from '../../components/no-permission-message'
-import Message from '../../components/message'
 import AmendmentEditor from '../../components/amendment-editor'
 
 import useUserRecord from '../../hooks/useUserRecord'
+import useNotices from '../../hooks/useNotices'
+import InfoMessage from '../../components/info-message'
+
+const noticeId = 'create-amendment-info'
 
 const View = () => {
   const { parentTable, parentId } = useParams()
   const [, , user] = useUserRecord()
+  const [hiddenNotices, hideNotice] = useNotices()
 
   if (!parentTable || !parentId) {
     return <ErrorMessage>Must provide a parent</ErrorMessage>
@@ -25,11 +29,12 @@ const View = () => {
   return (
     <>
       <Heading variant="h1">Create Amendment</Heading>
-      <Message>
-        Use this form to "amend" an asset or author. A staff member will review
-        your amendment and will either apply your changes or reject them for
-        whatever reason.
-      </Message>
+      {!hiddenNotices.includes(noticeId) && (
+        <InfoMessage onOkay={() => hideNotice(noticeId)}>
+          Use this form to amend an existing record. Our staff members will
+          review your amendment usually within 48 hours.
+        </InfoMessage>
+      )}
       <AmendmentEditor parentTable={parentTable} parentId={parentId} />
     </>
   )

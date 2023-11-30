@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
+import CheckIcon from '@material-ui/icons/Check'
 
 import {
   CollectionNames as OldCollectionNames,
-  AssetFieldNames
+  AssetFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 
@@ -20,12 +21,8 @@ import { CollectionNames } from '../../data-store'
 import { AmendmentFields } from '../../modules/amendments'
 
 export default ({ assetId }: { assetId: string }) => {
-  const [
-    isSaving,
-    isSuccess,
-    isErroredSaving,
-    createAmendment
-  ] = useDatabaseSave(CollectionNames.Amendments)
+  const [isSaving, isSuccess, isErroredSaving, createAmendment] =
+    useDatabaseSave(CollectionNames.Amendments)
   const [newAvatarId, setNewAvatarId] = useState('')
   const [newAvatarData, setNewAvatarData] = useState<VrchatAvatar | undefined>()
   const [comments, setComments] = useState('')
@@ -60,9 +57,9 @@ export default ({ assetId }: { assetId: string }) => {
         parenttable: OldCollectionNames.Assets,
         parent: assetId,
         fields: {
-          [AssetFieldNames.vrchatClonableAvatarIds]: [newAvatarId]
+          [AssetFieldNames.vrchatClonableAvatarIds]: [newAvatarId],
         },
-        comments
+        comments,
       }
 
       await createAmendment(newAmendment)
@@ -105,12 +102,16 @@ export default ({ assetId }: { assetId: string }) => {
         multiline
         rows={5}
         value={comments}
-        onChange={e => setComments(e.target.value)}
+        onChange={(e) => setComments(e.target.value)}
         fullWidth
       />
       <FormControls>
-        <Button onClick={onCreate} isDisabled={!newAvatarId || !comments}>
-          Create Amendment
+        <Button
+          onClick={onCreate}
+          isDisabled={!newAvatarId || !comments}
+          icon={<CheckIcon />}
+          size={'large'}>
+          Submit Amendment For Approval
         </Button>
       </FormControls>
     </div>

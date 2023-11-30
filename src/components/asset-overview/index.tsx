@@ -84,6 +84,8 @@ import useAssetOverview from './useAssetOverview'
 import OpenForCommissionsMessage from '../open-for-commissions-message'
 import TabMentions from './components/tab-mentions'
 import AssetResultsItemParent from '../asset-results-item-parent'
+import VrcFurySettings from '../vrcfury-settings'
+import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -105,7 +107,7 @@ const CreatorControls = React.lazy(
     )
 )
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   // columns
   cols: {
     maxWidth: '100vw',
@@ -195,8 +197,8 @@ const useStyles = makeStyles({
     display: 'flex',
   },
   area: {
-    border: '1px solid rgba(255, 255, 255, 0.25)',
-    borderRadius: '5px',
+    border: `1px solid ${theme.palette.background.paper}`,
+    borderRadius: theme.shape.borderRadius,
     padding: '1rem',
     marginBottom: '1rem',
   },
@@ -237,7 +239,7 @@ const useStyles = makeStyles({
     fontSize: '150%',
     marginBottom: '0.25rem',
   },
-})
+}))
 
 const ParentControlGroup = () => {
   const { asset } = useAssetOverview()
@@ -758,8 +760,25 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                     analyticsEvent="Click visit source button"
                   />
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
-                  <DiscordServerInfo />
                   <MiniSaleInfo />
+                </Control>
+                <Control>
+                  {asset?.discordserver ? (
+                    <DiscordServerMustJoinNotice
+                      discordServerId={asset?.discordserver}
+                      discordServerData={asset?.discordserverdata || undefined}
+                    />
+                  ) : null}
+                </Control>
+                <Control>
+                  {asset &&
+                    asset.extradata &&
+                    asset.extradata.vrcfury &&
+                    asset.extradata.vrcfury.prefabs.length && (
+                      <VrcFurySettings
+                        prefabs={asset.extradata.vrcfury.prefabs}
+                      />
+                    )}
                 </Control>
               </ControlGroup>
             ) : null}

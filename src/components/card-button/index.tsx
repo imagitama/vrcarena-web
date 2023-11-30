@@ -7,7 +7,7 @@ import Link from '../link'
 const useStyles = makeStyles({
   root: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   cardActionArea: {
     height: '100%',
@@ -17,24 +17,26 @@ const useStyles = makeStyles({
       justifyContent: 'center',
       padding: '0 3rem',
       height: '100%',
-      color: 'inherit'
-    }
+      color: 'inherit',
+    },
   },
   text: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
-    fontSize: '125%'
+    fontSize: '125%',
   },
   subtext: {
-    marginTop: '1rem'
-  }
+    marginTop: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+  },
 })
 
 const OptionalLink = ({
   to,
-  children
+  children,
 }: {
   to?: string
   children: React.ReactNode
@@ -44,9 +46,9 @@ export default ({
   icon: Icon,
   label,
   onClick = undefined,
-  url = undefined
+  url = undefined,
 }: {
-  label: string
+  label: string | React.ReactElement
   icon?: React.ReactElement
   onClick?: () => void
   url?: string

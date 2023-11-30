@@ -4,21 +4,21 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import { makeStyles } from '@material-ui/core/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import AddIcon from '@material-ui/icons/Add'
+
 import CardButton from '../card-button'
 import { moveItemToLeft, moveItemToRight } from '../../utils'
 import { defaultBorderRadius } from '../../themes'
 import Button from '../button'
 
-export type Item<T> = {
-  id: string
-} & T
+export type Item<T> = {} & T
 
 const useStyles = makeStyles({
   items: {
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'wrap',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   item: {
     display: 'flex',
@@ -29,18 +29,18 @@ const useStyles = makeStyles({
     minHeight: '400px',
     margin: '0 0.25rem',
     '& > *': {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   emptyItem: {
     borderRadius: defaultBorderRadius,
-    border: '0.1rem dashed rgba(255, 255, 255, 0.5)'
+    border: '0.1rem dashed rgba(255, 255, 255, 0.5)',
   },
   sideControl: {
     display: 'flex',
     alignItems: 'center',
     padding: '0 0.5rem',
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   centerControls: {
     display: 'flex',
@@ -48,33 +48,40 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     '& > *': {
       padding: '0.5rem',
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
   controls: {},
   addButton: {
     width: '100%',
-    height: '400px'
+    height: '400px',
   },
   noItemsMessage: {
+    width: '100%',
     fontStyle: 'italic',
     textAlign: 'center',
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
+  },
+  noItemsMessageWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
   },
   activeForEditing: {
     width: '100%',
     padding: '0.5rem',
-    backgroundColor: 'rgba(0,0,0,0.1)'
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
   disabledControl: {
     opacity: '0.5',
-    cursor: 'not-allowed'
-  }
+    cursor: 'not-allowed',
+  },
 })
 
 // generic editor for "items" that can be individually edited, re-arranged, added and deleted
 
-export default ({
+const ItemsEditor = <TItem,>({
   items,
   onChange,
   editor,
@@ -85,27 +92,27 @@ export default ({
   allowEditing = true,
   allowAdding = true,
   onAdd = undefined,
-  commonProps = {}
+  commonProps = undefined,
 }: {
-  // ensure all items have an "id" property (used for key prop but maybe for modifying array later)
-  items: Item<any>[]
-  onChange: (newItems: Item<any>[]) => void
-  editor: React.ReactElement<{
-    item: Item<any>
+  items: Item<TItem>[]
+  onChange: (newItems: Item<TItem>[]) => void
+  editor: React.ComponentType<{
+    item: Item<TItem>
     index: number
-    onChange?: (newFields: Item<any>) => void
-    onDone?: (newFields: Item<any>) => void
+    onChange: (newFields: Item<TItem>) => void
+    onDone: (newFields: Item<TItem>) => void
   }>
-  renderer: React.ReactElement<{
-    item: Item<any>
+  renderer: React.ComponentType<{
+    item: Item<TItem>
+    index: number
   }>
   nameSingular?: string
-  emptyItem?: Item<any>
+  emptyItem?: TItem
   allowDelete?: boolean
   allowEditing?: boolean
   allowAdding?: boolean
   onAdd?: () => void
-  commonProps?: any
+  commonProps?: TItem
 }) => {
   const classes = useStyles()
   const [activeIndexToEdit, setActiveIndexToEdit] = useState<number | null>(
@@ -119,24 +126,25 @@ export default ({
       onAdd()
     } else if (emptyItem) {
       onChange(items.concat([emptyItem]))
+      setActiveIndexToEdit(items.length)
     } else {
-      console.warn('Cannot add without an onAdd handler OR an empty item')
+      throw new Error('Cannot add without an onAdd handler OR an empty item')
     }
   }
 
-  const onIdxChange = (indexToChange: number, newItem: Item<any>) => {
+  const onIdxChange = (indexToChange: number, newItem: Item<TItem>) => {
     console.debug(`Changing item ${indexToChange}...`, {
       old: items[indexToChange],
-      new: newItem
+      new: newItem,
     })
     const newItems = [...items]
     newItems[indexToChange] = newItem
     onChange(newItems)
   }
-  const onIdxEdited = (indexToChange: number, newItem: Item<any>) => {
+  const onIdxEdited = (indexToChange: number, newItem: Item<TItem>) => {
     console.debug(`Editing item ${indexToChange}...`, {
       old: items[indexToChange],
-      new: newItem
+      new: newItem,
     })
     const newItems = [...items]
     newItems[indexToChange] = newItem
@@ -146,14 +154,14 @@ export default ({
   const onMoveIdxLeftClick = (indexToMove: number) => {
     console.debug(`Moving item ${indexToMove} left...`)
 
-    const newArray = moveItemToLeft<Item<any>>(items, indexToMove)
+    const newArray = moveItemToLeft<Item<TItem>>(items, indexToMove)
 
     onChange(newArray)
   }
   const onMoveIdxRightClick = (indexToMove: number) => {
     console.debug(`Moving item ${indexToMove} right...`)
 
-    const newArray = moveItemToRight<Item<any>>(items, indexToMove)
+    const newArray = moveItemToRight<Item<TItem>>(items, indexToMove)
 
     onChange(newArray)
   }
@@ -170,21 +178,22 @@ export default ({
   return (
     <div className={classes.items}>
       {items.length ? (
-        items.map((item: Item<any>, idx) => (
+        items.map((item: Item<TItem>, idx) => (
           <div
-            key={item.id}
+            key={idx}
             className={`${classes.item} ${
               idx === activeIndexToEdit ? classes.activeForEditing : ''
             }`}>
             {idx === activeIndexToEdit ? (
               <div>
-                {React.cloneElement(editor, {
+                {React.createElement(editor, {
                   item,
                   index: idx,
-                  onChange: (newFields: Item<any>) =>
+                  onChange: (newFields: Item<TItem>) =>
                     onIdxChange(idx, newFields),
-                  onDone: (newFields: Item<any>) => onIdxEdited(idx, newFields),
-                  ...commonProps
+                  onDone: (newFields: Item<TItem>) =>
+                    onIdxEdited(idx, newFields),
+                  ...(commonProps || {}),
                 })}
               </div>
             ) : (
@@ -199,10 +208,10 @@ export default ({
                 </div>
                 <div>
                   <div>
-                    {React.cloneElement(renderer, {
+                    {React.createElement(renderer, {
                       item,
                       index: idx,
-                      ...commonProps
+                      ...commonProps,
                     })}
                   </div>
                   <div className={`${classes.centerControls}`}>
@@ -231,11 +240,11 @@ export default ({
         ))
       ) : (
         <div className={`${classes.item} ${classes.emptyItem}`}>
-          <div>
+          <div className={classes.noItemsMessageWrapper}>
             <div className={classes.noItemsMessage}>
               No {nameSingular}s defined yet
             </div>
-            <Button color="default" onClick={onAddClick}>
+            <Button color="default" onClick={onAddClick} icon={<AddIcon />}>
               Add {nameSingular}
             </Button>
           </div>
@@ -244,10 +253,19 @@ export default ({
       {allowAdding ? (
         <div className={classes.item}>
           <div className={classes.addButton}>
-            <CardButton label={`Add ${nameSingular}`} onClick={onAddClick} />
+            <CardButton
+              label={
+                <>
+                  <AddIcon /> Add {nameSingular}
+                </>
+              }
+              onClick={onAddClick}
+            />
           </div>
         </div>
       ) : null}
     </div>
   )
 }
+
+export default ItemsEditor

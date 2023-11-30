@@ -109,3 +109,6 @@ export const colorPalette = {
   negative: 'rgb(255, 200, 200)',
   warning: 'rgb(255, 255, 200)',
 }
+
+export const vrcFuryOrange = '#e90'
+export const discordPurple = '#5865F2'

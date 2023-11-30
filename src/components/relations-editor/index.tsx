@@ -24,20 +24,20 @@ import { formHideDelay } from '../../config'
 
 const useStyles = makeStyles({
   editor: {
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   label: {
     fontSize: '150%',
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   formLabel: {
-    margin: '0.5rem 0'
-  }
+    margin: '0.5rem 0',
+  },
 })
 
 const RelationEditorForm = ({
   relation,
-  onDone
+  onDone,
 }: {
   onDone: (newRelation: Relation) => void
   relation?: Relation
@@ -47,7 +47,7 @@ const RelationEditorForm = ({
     relation || {
       asset: '',
       type: '',
-      comments: ''
+      comments: '',
     }
   )
   const [assetsData, setAssetsData] = useState<Asset[]>([])
@@ -56,9 +56,9 @@ const RelationEditorForm = ({
     console.debug(`Selected asset ${newAsset.id} for relation`)
     setNewRelation({
       ...newRelation,
-      asset: newAsset.id
+      asset: newAsset.id,
     })
-    setAssetsData(currentData => currentData.concat([newAsset]))
+    setAssetsData((currentData) => currentData.concat([newAsset]))
   }
 
   const onCommentsChange = (newComments: string) =>
@@ -77,7 +77,7 @@ const RelationEditorForm = ({
       <div className={classes.formLabel}>1. Search for an asset</div>
       <AssetSearch
         selectedAsset={assetsData.find(
-          assetData => assetData.id === newRelation.asset
+          (assetData) => assetData.id === newRelation.asset
         )}
         onSelect={onSelectedAsset}
         limit={10}
@@ -87,10 +87,10 @@ const RelationEditorForm = ({
       </div>
       <Select
         fullWidth
-        onChange={e =>
-          setNewRelation(currentVal => ({
+        onChange={(e) =>
+          setNewRelation((currentVal) => ({
             ...currentVal,
-            type: e.target.value as string
+            type: e.target.value as string,
           }))
         }
         value={newRelation.type}
@@ -113,7 +113,7 @@ const RelationEditorForm = ({
         rows={2}
         fullWidth
         value={newRelation.comments}
-        onChange={e => onCommentsChange(e.target.value)}
+        onChange={(e) => onCommentsChange(e.target.value)}
         placeholder="Comments (optional)"
       />
       <FormControls>
@@ -127,13 +127,13 @@ const RelationEditorForm = ({
 
 const Editor = ({
   item,
-  onDone
+  onDone,
 }: {
   item: Item<Relation>
   onDone: (newItem: Item<Relation>) => void
 }) => (
   <RelationEditorForm
-    relation={(item as unknown) as Relation}
+    relation={item as unknown as Relation}
     onDone={(newRelation: Relation) => onDone(newRelation as Item<Relation>)}
   />
 )
@@ -182,7 +182,7 @@ export default ({
   currentRelations = [],
   onDone = undefined,
   onCancel = undefined,
-  overrideSave = undefined
+  overrideSave = undefined,
 }: {
   assetId?: string
   currentRelations?: Relation[]
@@ -230,7 +230,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.relations]: newRelations
+        [AssetFieldNames.relations]: newRelations,
       })
 
       startSaveDoneTimer()
@@ -257,18 +257,16 @@ export default ({
   return (
     <div>
       {isAddFormVisible ? <RelationEditorForm onDone={onAddRelation} /> : null}
-      <ItemsEditor
+      <ItemsEditor<Relation>
         nameSingular="relation"
-        // @ts-ignore
-        editor={<Editor />}
-        // @ts-ignore
-        renderer={<Renderer />}
+        editor={Editor}
+        renderer={Renderer}
         items={newRelations}
         onChange={onNewRelations}
         emptyItem={{
           asset: '',
           type: '',
-          comments: ''
+          comments: '',
         }}
         onAdd={onAddClick}
       />

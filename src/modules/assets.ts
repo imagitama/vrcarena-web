@@ -4,7 +4,7 @@ import {
   ApprovalStatuses,
   FeaturedStatuses,
   PinnedStatuses,
-  PublishStatuses
+  PublishStatuses,
 } from '../hooks/useDatabaseQuery'
 import { Tag } from './tags'
 
@@ -14,7 +14,7 @@ export const RelationType = {
   // Sibling: 'sibling'
   Suggested: 'suggested',
   Similar: 'similar',
-  Other: 'other'
+  Other: 'other',
 }
 
 export interface Relation {
@@ -52,14 +52,35 @@ export interface Asset {
   relations: Relation[]
   tutorialsteps: TutorialStep[]
   ranks: string[]
+  extradata: ExtraData
   createdat: Date
 }
 
-interface TutorialStep {}
+export interface ExtraData {
+  vrcfury: VrcFurySettings
+}
 
-interface DiscordServer {}
+export interface VrcFurySettings {
+  prefabs: VrcFuryPrefabInfo[]
+}
 
-interface VrchatWorld {}
+export interface VrcFuryPrefabInfo {
+  url: string
+  discordServerId?: string
+  // when full:
+  discordserverdata?: DiscordServerData | null
+}
+
+export interface TutorialStep {}
+
+export interface DiscordServerData {
+  name: string
+  inviteurl?: string
+  requirespatreon?: boolean
+  patreonurl?: string
+}
+
+export interface VrchatWorld {}
 
 export interface AssetMeta {
   editornotes: string
@@ -105,7 +126,7 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   lastmodifiedbyusername: string
   linkedassets: Asset[]
   incominglinkedassets: Asset[]
-  discordserverdata: DiscordServer | null
+  discordserverdata: DiscordServerData | null
   clonableworlddata: VrchatWorld | null
   relationsdata: Asset[]
   approvedbyusername: string
@@ -115,5 +136,5 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
 export const CollectionNames = {
   Assets: 'assets',
   AssetsMeta: 'assetmeta',
-  TagStats: 'tagstats'
+  TagStats: 'tagstats',
 }

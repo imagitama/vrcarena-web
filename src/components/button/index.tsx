@@ -3,6 +3,29 @@ import Link from '../../components/link'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 
+interface ButtonProps {
+  children?: React.ReactNode
+  onClick?: (e: SyntheticEvent) => Promise<void> | void
+  url?: string
+  icon?: React.ReactElement
+  isDisabled?: boolean
+  className?: string
+  openInNewTab?: boolean
+  switchIconSide?: boolean
+  isLoading?: boolean
+  size?: 'small' | 'medium' | 'large'
+  // tertiary does not exist
+  color?:
+    | 'inherit'
+    | 'primary'
+    | 'secondary'
+    | 'default'
+    | undefined
+    | 'tertiary'
+  title?: string
+  iconOnly?: boolean
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     whiteSpace: 'nowrap',
@@ -11,8 +34,11 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     marginLeft: '0.5rem',
     display: 'flex', // fix line height issue
-    // fix non-Material icons
     '& svg': {
+      fill: (props: ButtonProps) =>
+        props.color === 'default'
+          ? theme.palette.common.black
+          : theme.palette.common.white,
       width: '1em',
       height: '1em',
     },
@@ -108,29 +134,8 @@ export default ({
   title,
   iconOnly,
   ...props
-}: {
-  children?: React.ReactNode
-  onClick?: (e: SyntheticEvent) => Promise<void> | void
-  url?: string
-  icon?: React.ReactElement
-  isDisabled?: boolean
-  className?: string
-  openInNewTab?: boolean
-  switchIconSide?: boolean
-  isLoading?: boolean
-  size?: 'small' | 'medium' | 'large'
-  // tertiary does not exist
-  color?:
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'default'
-    | undefined
-    | 'tertiary'
-  title?: string
-  iconOnly?: boolean
-}) => {
-  const classes = useStyles()
+}: ButtonProps) => {
+  const classes = useStyles(props)
 
   return (
     <ButtonContents url={url} openInNewTab={openInNewTab} className={className}>

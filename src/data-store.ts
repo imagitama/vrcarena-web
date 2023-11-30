@@ -244,10 +244,9 @@ export const readRecord = async <TRecord>(
   id: string,
   defaultVal?: TRecord
 ): Promise<TRecord> => {
-  const { error, data } = await supabase
-    .from(tableName)
-    .select('*')
-    .eq('id', id)
+  let query = supabase.from(tableName).select('*').eq('id', id)
+
+  const { error, data } = await query
 
   if (error) {
     console.error(error)
@@ -267,6 +266,29 @@ export const readRecord = async <TRecord>(
   }
 
   return data[0]
+}
+
+export const readRecordsById = async <TRecord>(
+  tableName: string,
+  ids: string[]
+): Promise<TRecord[]> => {
+  let query = supabase
+    .from<TRecord>(tableName)
+    .select('*')
+    .or(ids.map((id) => `id.eq.${id}`).join(','))
+
+  const { error, data } = await query
+
+  if (error) {
+    console.error(error)
+    throw new Error(
+      `Could not get records in table ${tableName} by ids ${ids.join(', ')}: ${
+        error.code
+      } ${error.message} (${error.hint})`
+    )
+  }
+
+  return data
 }
 
 export const readAllRecords = async <TRecord>(

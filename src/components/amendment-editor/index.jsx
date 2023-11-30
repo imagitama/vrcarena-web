@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import CheckIcon from '@material-ui/icons/Check'
 
 import { CollectionNames as OldCollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 import {
   getChangedFieldNames,
-  mergeNewFieldsIntoParent
+  mergeNewFieldsIntoParent,
 } from '../../utils/amendments'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { getFieldNameAndValueForOutput } from '../../assets'
@@ -23,52 +24,54 @@ import SuccessMessage from '../success-message'
 import { AmendmentsFieldNames } from '../../modules/amendments'
 import ShortDiff from '../short-diff'
 import GenericEditor from '../generic-editor'
+import WarningMessage from '../warning-message'
+import Heading from '../heading'
 
 const useStyles = makeStyles({
   cols: {
     display: 'flex',
-    marginBottom: '2rem'
+    marginBottom: '2rem',
   },
   title: {
     fontSize: '200%',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   thumbnail: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   label: {
     fontWeight: 'bold',
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   field: {
     border: '1px solid rgba(255, 255, 255, 0.5)',
     padding: '0.5rem',
     marginBottom: '0.5rem',
-    opacity: '0.5'
+    opacity: '0.5',
   },
   diff: {
     display: 'flex',
     '& > *': {
-      width: '50%'
-    }
+      width: '50%',
+    },
   },
   changed: {
     border: '2px solid yellow',
-    opacity: 1
+    opacity: 1,
   },
   controls: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   commentsField: {
-    width: '100%'
+    width: '100%',
   },
   fieldsChangedCount: {
     textAlign: 'center',
     fontSize: '150%',
     fontWeight: 'bold',
     padding: '0.5rem',
-    color: 'rgb(255, 200, 200)'
-  }
+    color: 'rgb(255, 200, 200)',
+  },
 })
 
 const ParentEditor = ({ type, id, fields, onFieldChanged }) => {
@@ -79,7 +82,7 @@ const ParentEditor = ({ type, id, fields, onFieldChanged }) => {
           value={{
             asset: fields,
             originalAssetId: id,
-            onFieldChanged: onFieldChanged
+            onFieldChanged: onFieldChanged,
           }}>
           <AssetEditor />
         </EditorContext.Provider>
@@ -100,7 +103,7 @@ const ParentEditor = ({ type, id, fields, onFieldChanged }) => {
   }
 }
 
-const getViewNameForParentTable = parentTable => {
+const getViewNameForParentTable = (parentTable) => {
   switch (parentTable) {
     case OldCollectionNames.Assets:
       return 'getfullassets'
@@ -115,7 +118,7 @@ export default ({
   amendmentId = null,
   parentTable = null,
   parentId = null,
-  returnUrl = ''
+  returnUrl = '',
 }) => {
   const classes = useStyles()
   const [isLoadingParent, isErroredLoadingParent, parent] = useDataStoreItem(
@@ -143,7 +146,7 @@ export default ({
   if (isSuccess) {
     return (
       <SuccessMessage>
-        Amendment {amendmentId ? 'saved' : 'created'} successfully!
+        Amendment {amendmentId ? 'saved' : 'created'} successfully
         <br />
         <br />
         Our editors have been notified of your pending amendment and will try to
@@ -183,7 +186,7 @@ export default ({
         [AmendmentsFieldNames.parentTable]: parentTable,
         [AmendmentsFieldNames.parent]: parentId,
         [AmendmentsFieldNames.fields]: newFieldsForSaving,
-        [AmendmentsFieldNames.comments]: comments
+        [AmendmentsFieldNames.comments]: comments,
       })
     } catch (err) {
       console.error('Failed to save amendment', err)
@@ -205,15 +208,15 @@ export default ({
       newValue
     )
 
-    setNewFieldsForSaving(currentFields => ({
-      ...currentFields,
-      [fieldName]: newValue
-    }))
-
-    setNewFieldsForOutput(currentFields => ({
+    setNewFieldsForSaving((currentFields) => ({
       ...currentFields,
       [fieldName]: newValue,
-      [outputFieldName]: outputValue
+    }))
+
+    setNewFieldsForOutput((currentFields) => ({
+      ...currentFields,
+      [fieldName]: newValue,
+      [outputFieldName]: outputValue,
     }))
   }
 
@@ -230,35 +233,43 @@ export default ({
   if (isPreviewVisible) {
     return (
       <div className={classes.root}>
-        <div className={classes.fieldsChangedCount}>
-          {changedFieldNames.length} fields changed
-        </div>
+        <WarningMessage>
+          Please review ALL fields to ensure your amendment is correct before
+          submitting it for approval
+          <br />
+          <br />
+          You are changing {changedFieldNames.length} fields
+        </WarningMessage>
+        <Heading variant="h2">Fields</Heading>
         <ShortDiff
           type={parentTable}
           oldFields={parent}
           newFields={parentWithFieldsForOutput}
           onlyNewFields={newFieldsForSaving}
         />
-        <div>
-          Comments:
-          <br />
-          <TextInput
-            multiline
-            rows={5}
-            value={comments}
-            onChange={e => setComments(e.target.value)}
-            className={classes.commentsField}
-          />
-          (please include a link to the source of your amendment - how did you
-          find out about it?)
-        </div>
+        <Heading variant="h2">Comments</Heading>
+        <p>Why are you changing this asset? What is wrong with it?</p>
+        <TextInput
+          multiline
+          rows={5}
+          value={comments}
+          onChange={(e) => setComments(e.target.value)}
+          className={classes.commentsField}
+        />
         <FormControls>
           {amendmentId ? (
-            <Button onClick={onEdit}>Edit Amendment</Button>
+            <Button onClick={onEdit} icon={<CheckIcon />} size={'large'}>
+              Edit Amendment
+            </Button>
           ) : (
-            <Button onClick={onCreate}>Create Amendment</Button>
+            <Button onClick={onCreate} icon={<CheckIcon />} size={'large'}>
+              Submit Amendment For Approval
+            </Button>
           )}{' '}
-          <Button onClick={() => setIsPreviewVisible(false)} color="default">
+          <Button
+            onClick={() => setIsPreviewVisible(false)}
+            size="large"
+            color="default">
             Back to Editor
           </Button>
         </FormControls>
@@ -269,11 +280,11 @@ export default ({
       <>
         <Message>
           To proceed with your amendment you must click this button:
-          <div className={classes.controls}>
+          <FormControls>
             <Button onClick={() => setIsPreviewVisible(true)} size="large">
               View Preview
             </Button>
-          </div>
+          </FormControls>
         </Message>
         <ParentEditor
           type={parentTable}

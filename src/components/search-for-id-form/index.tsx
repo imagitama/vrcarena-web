@@ -10,35 +10,36 @@ import {
   CollectionNames,
   DiscordServerFieldNames,
   SpeciesFieldNames,
-  UserFieldNames
+  UserFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
 
 const useStyles = makeStyles({
   textInput: {
-    width: '100%'
+    width: '100%',
   },
   row: {
-    marginTop: '1rem'
+    marginTop: '1rem',
+    '&:first-child': {
+      marginTop: 0,
+    },
   },
   assets: {
-    display: 'flex'
+    display: 'flex',
   },
   button: {
-    margin: '0 0.5rem 0.5rem 0'
+    margin: '0 0.5rem 0.5rem 0',
   },
   results: {
     display: 'flex',
-    flexWrap: 'wrap'
-  }
+    flexWrap: 'wrap',
+  },
 })
 
 const getSearchStatementForCollectionName = (collectionName: string) => {
   switch (collectionName) {
     case CollectionNames.Assets:
-      return `${AssetFieldNames.title}, ${AssetFieldNames.description}, ${
-        AssetFieldNames.thumbnailUrl
-      }, ${AssetFieldNames.tags}, ${AssetFieldNames.isAdult}`
+      return `${AssetFieldNames.title}, ${AssetFieldNames.description}, ${AssetFieldNames.thumbnailUrl}, ${AssetFieldNames.tags}, ${AssetFieldNames.isAdult}`
     case CollectionNames.Users:
       return `${UserFieldNames.username}, ${UserFieldNames.avatarUrl}`
     case CollectionNames.Authors:
@@ -94,12 +95,12 @@ function SearchForm({
   searchTerm,
   fieldAsLabel,
   onClickWithIdAndDetails,
-  renderer: Renderer = undefined
+  renderer: Renderer = undefined,
 }: {
   existingId?: string
   collectionName: string
   searchTerm: string
-  fieldAsLabel: string
+  fieldAsLabel?: string
   onClickWithIdAndDetails: (id: string, details: any) => void
   renderer?: (props: { result: any; onClick: () => void }) => React.ReactElement
 }) {
@@ -132,7 +133,7 @@ function SearchForm({
     <>
       Select a result:
       <div className={classes.results}>
-        {results.map(result =>
+        {results.map((result) =>
           Renderer ? (
             <Renderer
               key={result.id}
@@ -145,7 +146,7 @@ function SearchForm({
               onClick={() => onClickWithIdAndDetails(result.id, result)}
               color="default"
               className={classes.button}>
-              {result[fieldAsLabel]}
+              {fieldAsLabel ? result[fieldAsLabel] : '(no label)'}
             </Button>
           )
         )}
@@ -155,13 +156,15 @@ function SearchForm({
 }
 
 export default ({
+  label = 'Search',
   collectionName,
   fieldAsLabel,
   onClickWithIdAndDetails,
-  renderer = undefined
+  renderer = undefined,
 }: {
+  label?: string
   collectionName: string
-  fieldAsLabel: string
+  fieldAsLabel?: string
   onClickWithIdAndDetails: (id: string, details: any) => void
   renderer?: (props: { result: any }) => React.ReactElement
 }) => {
@@ -170,26 +173,25 @@ export default ({
 
   return (
     <>
-      <div className={classes.row}>
-        {searchTerm && (
-          <>
-            <SearchForm
-              collectionName={collectionName}
-              searchTerm={searchTerm}
-              fieldAsLabel={fieldAsLabel}
-              onClickWithIdAndDetails={onClickWithIdAndDetails}
-              renderer={renderer}
-            />
-          </>
-        )}
-      </div>
+      {searchTerm && (
+        <div className={classes.row}>
+          <SearchForm
+            collectionName={collectionName}
+            searchTerm={searchTerm}
+            fieldAsLabel={fieldAsLabel}
+            onClickWithIdAndDetails={onClickWithIdAndDetails}
+            renderer={renderer}
+          />
+        </div>
+      )}
 
       <div className={classes.row}>
-        Search:
         <TextInput
-          onChange={e => setSearchTerm(e.target.value)}
+          label={label}
+          onChange={(e) => setSearchTerm(e.target.value)}
           value={searchTerm || ''}
           className={classes.textInput}
+          placeholder="Enter a search term"
         />
       </div>
     </>

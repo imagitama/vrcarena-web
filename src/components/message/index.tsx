@@ -113,7 +113,8 @@ export default ({
           {title || icon ? (
             <div className={classes.title}>
               {' '}
-              {icon ? <div className={classes.icon}>{icon}</div> : null} {title}
+              {icon ? <div className={classes.icon}>{icon}</div> : null}{' '}
+              <span>{title}</span>
             </div>
           ) : null}
           {children ? <div className={classes.children}>{children}</div> : null}

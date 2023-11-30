@@ -4,10 +4,10 @@ import AddIcon from '@material-ui/icons/Add'
 import CheckIcon from '@material-ui/icons/Check'
 import { makeStyles } from '@material-ui/core/styles'
 
-import useDatabaseQuery, {
+import {
   CollectionNames,
   DiscordServerFieldNames,
-  AssetFieldNames
+  AssetFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -22,23 +22,39 @@ import DiscordServerResults from '../discord-server-results'
 import DiscordServerResultsItem from '../discord-server-results-item'
 import Button from '../button'
 import FormControls from '../form-controls'
+import {
+  DiscordServer,
+  DiscordServerFields,
+} from '../../modules/discordservers'
+import useDataStoreItems from '../../hooks/useDataStoreItems'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import { DiscordServerData } from '../../modules/assets'
 
-const useStyles = makeStyles({
-  form: {
-    border: '1px solid rgba(255, 255, 255, 0.5)',
-    padding: '0.5rem'
+const useStyles = makeStyles((theme) => ({
+  root: {
+    outline: `3px dashed ${theme.palette.background.paper}`,
+    borderRadius: theme.shape.borderRadius,
+    padding: '1rem',
   },
   textInput: {
-    width: '100%'
-  }
-})
+    width: '100%',
+  },
+}))
 
-const SearchResultRenderer = ({ result, onClick }) => {
+const SearchResultRenderer = ({
+  result,
+  onClick,
+}: {
+  result: DiscordServer
+  onClick?: () => void
+}) => {
   return (
     <DiscordServerResultsItem
       discordServer={result}
-      onClick={e => {
-        onClick()
+      onClick={(e) => {
+        if (onClick) {
+          onClick()
+        }
         e.preventDefault()
         return false
       }}
@@ -46,29 +62,40 @@ const SearchResultRenderer = ({ result, onClick }) => {
   )
 }
 
-const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
+const CreateForm = ({
+  onClickWithIdAndDetails,
+  actionCategory,
+}: {
+  onClickWithIdAndDetails: (id: string, details: DiscordServer) => void
+  actionCategory?: string
+}) => {
   const [name, setName] = useState('')
   const [inviteUrl, setInviteUrl] = useState('')
   const [widgetId, setWidgetId] = useState('')
-  const [isSaving, isSuccess, isErrored, create, clear] = useDatabaseSave(
-    CollectionNames.DiscordServers
+  const [isSaving, isSuccess, isErrored, create, clear] = useDataStoreCreate<
+    DiscordServerFields,
+    DiscordServer
+  >(CollectionNames.DiscordServers)
+  const [createdDocument, setCreatedDocument] = useState<DiscordServer | null>(
+    null
   )
-  const classes = useStyles()
-  const [createdDocument, setCreatedDocument] = useState(null)
 
   const onCreate = async () => {
     try {
       trackAction(actionCategory, 'Click create Discord Server button')
 
-      const newFields = {
-        [DiscordServerFieldNames.name]: name,
-        [DiscordServerFieldNames.inviteUrl]: inviteUrl,
-        [DiscordServerFieldNames.widgetId]: widgetId
+      const justCreatedDocument = await create(
+        {
+          name,
+          inviteurl: inviteUrl,
+          widgetid: widgetId,
+        },
+        true
+      )
+
+      if (typeof justCreatedDocument !== 'string') {
+        setCreatedDocument(justCreatedDocument)
       }
-
-      const document = await create(newFields)
-
-      setCreatedDocument(document)
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -80,6 +107,9 @@ const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
   }
 
   const onDone = () => {
+    if (!createdDocument) {
+      throw new Error('Cannot onDone without a created document')
+    }
     onClickWithIdAndDetails(createdDocument.id, createdDocument)
   }
 
@@ -112,19 +142,19 @@ const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
   }
 
   return (
-    <div className={classes.form}>
+    <>
       <p>Enter the name of the Discord server:</p>{' '}
       <TextInput
-        onChange={e => setName(e.target.value)}
+        onChange={(e) => setName(e.target.value)}
         value={name}
-        className={classes.textInput}
+        fullWidth
       />
       <br />
       <p>Enter the invite URL (ensure it does not expire):</p>
       <TextInput
-        onChange={e => setInviteUrl(e.target.value)}
+        onChange={(e) => setInviteUrl(e.target.value)}
         value={inviteUrl}
-        className={classes.textInput}
+        fullWidth
       />
       <br />
       <p>
@@ -132,26 +162,32 @@ const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
         we can try and populate the data automatically:
       </p>
       <TextInput
-        onChange={e => setWidgetId(e.target.value)}
+        onChange={(e) => setWidgetId(e.target.value)}
         value={widgetId}
-        className={classes.textInput}
+        fullWidth
       />
       <FormControls>
         <Button onClick={() => onCreate()} icon={<CheckIcon />}>
           Create
         </Button>
       </FormControls>
-    </div>
+    </>
   )
 }
 
-const AllDiscordServers = ({ onClickWithIdAndDetails, onCancel }) => {
-  const [isLoading, isErrored, results] = useDatabaseQuery(
+const AllDiscordServers = ({
+  onClickWithIdAndDetails,
+  onCancel,
+}: {
+  onClickWithIdAndDetails: (id: string, details: DiscordServer) => void
+  onCancel: () => void
+}) => {
+  const [isLoading, isErrored, results] = useDataStoreItems<DiscordServer>(
     'getpublicdiscordservers',
-    []
+    'get-discord-servers-for-form'
   )
 
-  if (isLoading) {
+  if (isLoading || !results) {
     return <LoadingIndicator message="Finding Discord Servers..." />
   }
 
@@ -185,30 +221,33 @@ const AllDiscordServers = ({ onClickWithIdAndDetails, onCancel }) => {
   )
 }
 
-export default ({
-  collectionName,
-  id,
-  existingDiscordServerId,
-  existingDiscordServerData,
-  overrideSave = null,
-  onDone = null,
-  actionCategory = null
-}) => {
-  if (!collectionName) {
-    throw new Error('Cannot change discord server without collection name!')
-  }
-  if (!id) {
-    throw new Error('Cannot change discord server without ID!')
-  }
+interface FormProps {
+  collectionName?: string
+  id?: string
+  existingDiscordServerId?: string
+  existingDiscordServerData?: DiscordServerData
+  overrideSave?: (newId: string | undefined) => void
+  onDone?: () => void
+  actionCategory?: string
+}
 
-  const [selectedDiscordServerId, setSelectedDiscordServerId] = useState(
-    existingDiscordServerId
-  )
-  const [selectedDiscordServerData, setSelectedDiscordServerData] = useState(
-    existingDiscordServerData
-  )
+const Form = ({
+  collectionName = undefined,
+  id = undefined,
+  existingDiscordServerId = undefined,
+  existingDiscordServerData = undefined,
+  overrideSave = undefined,
+  onDone = undefined,
+  actionCategory = undefined,
+}: FormProps) => {
+  const [selectedDiscordServerId, setSelectedDiscordServerId] = useState<
+    string | undefined
+  >(existingDiscordServerId)
+  const [selectedDiscordServerData, setSelectedDiscordServerData] = useState<
+    DiscordServerData | undefined
+  >(existingDiscordServerData)
   const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave(
-    collectionName,
+    collectionName || false,
     id
   )
   const [isCreating, setIsCreating] = useState(false)
@@ -217,22 +256,28 @@ export default ({
   const restart = () => {
     setIsCreating(false)
     setIsBrowsingAll(false)
-    setSelectedDiscordServerId(null)
-    setSelectedDiscordServerData(null)
+    setSelectedDiscordServerId(undefined)
+    setSelectedDiscordServerData(undefined)
     clear()
   }
 
-  const onIdAndDetails = (id, data) => {
+  const onIdAndDetails = (id: string, data: DiscordServer) => {
     setIsCreating(false)
     setIsBrowsingAll(false)
     setSelectedDiscordServerId(id)
     setSelectedDiscordServerData(data)
   }
 
-  const onSave = async (overrideValue = undefined) => {
+  const onSave = async (overrideValue?: string) => {
     try {
       const newValue =
         overrideValue !== undefined ? overrideValue : selectedDiscordServerId
+
+      trackAction(actionCategory, 'Click save Discord Server button', {
+        collectionName,
+        id,
+        discordServerId: newValue,
+      })
 
       if (overrideSave) {
         overrideSave(newValue)
@@ -243,14 +288,8 @@ export default ({
         return
       }
 
-      trackAction(actionCategory, 'Click save Discord Server button', {
-        collectionName,
-        id,
-        discordServerId: newValue
-      })
-
       await save({
-        [AssetFieldNames.discordServer]: newValue
+        [AssetFieldNames.discordServer]: newValue,
       })
 
       if (onDone) {
@@ -262,7 +301,7 @@ export default ({
     }
   }
 
-  const onClear = () => onSave(null)
+  const onClear = () => onSave(undefined)
 
   const create = () => setIsCreating(true)
   const browseAll = () => setIsBrowsingAll(true)
@@ -301,7 +340,6 @@ export default ({
     return (
       <AllDiscordServers
         onClickWithIdAndDetails={onIdAndDetails}
-        actionCategory={actionCategory}
         onCancel={() => restart()}
       />
     )
@@ -322,8 +360,11 @@ export default ({
         <>
           You have selected:
           <DiscordServerResultsItem
-            discordServer={selectedDiscordServerData}
-            onClick={e => {
+            discordServer={{
+              id: selectedDiscordServerId,
+              ...selectedDiscordServerData,
+            }}
+            onClick={(e) => {
               e.preventDefault()
               return false
             }}
@@ -334,7 +375,7 @@ export default ({
             </Button>{' '}
             <Button onClick={() => restart()} color="default">
               Try Again
-            </Button>
+            </Button>{' '}
             <Button onClick={() => onClear()} color="default">
               Clear
             </Button>
@@ -343,12 +384,9 @@ export default ({
       )
     } else {
       return (
-        <ErrorMessage>
+        <ErrorMessage onRetry={() => restart()}>
           There is an ID but there is no data for that Discord Server. This
           should not happen
-          <br />
-          <br />
-          <Button onClick={() => restart()}>Start Again</Button>
         </ErrorMessage>
       )
     }
@@ -357,19 +395,29 @@ export default ({
   return (
     <>
       <SearchForIdForm
+        label="Search for a Discord server"
         collectionName={CollectionNames.DiscordServers}
         renderer={SearchResultRenderer}
         onClickWithIdAndDetails={onIdAndDetails}
       />
       <br />
-      <br />
-      <p>Can't find the Discord Server?</p>
-      <FormControls>
-        <Button onClick={() => browseAll()}>Browse All</Button>{' '}
-        <Button onClick={() => create()} icon={<AddIcon />} color="default">
-          Create It
-        </Button>
-      </FormControls>
+      <Button onClick={() => create()} icon={<AddIcon />} color="default">
+        Add Server
+      </Button>{' '}
+      <Button onClick={() => browseAll()} color="default">
+        List All Servers
+      </Button>
     </>
   )
 }
+
+const ChangeDiscordServerForm = (props: FormProps) => {
+  const classes = useStyles()
+  return (
+    <div className={classes.root}>
+      <Form {...props} />
+    </div>
+  )
+}
+
+export default ChangeDiscordServerForm

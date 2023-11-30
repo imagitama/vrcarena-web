@@ -8,19 +8,19 @@ import { colorPalette } from '../../config'
 
 const useStyles = makeStyles({
   root: {
-    position: 'relative'
+    position: 'relative',
   },
   title: {
     fontSize: '150%',
     marginBottom: '0.25rem',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   description: {
     fontStyle: 'italic',
     fontSize: '80%',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   icon: {
     display: 'flex',
@@ -28,10 +28,11 @@ const useStyles = makeStyles({
     marginRight: '0.5rem',
     '& svg': {
       fontSize: '100%',
+      fill: '#FFF',
       // for vrc icon
       width: '1em',
-      height: '1em'
-    }
+      height: '1em',
+    },
   },
   editIcon: {
     width: '40px',
@@ -46,14 +47,14 @@ const useStyles = makeStyles({
     zIndex: 100,
     transition: 'all 100ms',
     '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.4)'
-    }
+      backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    },
   },
   requiredLabel: {
-    color: colorPalette.negative
+    color: colorPalette.negative,
   },
   cols: {
-    display: 'flex'
+    display: 'flex',
   },
   col: {
     padding: '1rem',
@@ -64,19 +65,19 @@ const useStyles = makeStyles({
       padding: '1rem',
       display: 'flex',
       alignItems: 'center',
-      border: 'none'
-    }
+      border: 'none',
+    },
   },
   fullWidth: {
-    width: '100%'
+    width: '100%',
   },
   arrowToRightIcon: {
     '& svg': {
       display: 'flex',
       fontSize: '400%',
-      color: 'rgba(255, 255, 255, 0.2)'
-    }
-  }
+      color: 'rgba(255, 255, 255, 0.2)',
+    },
+  },
 })
 
 const EditorArea = ({
@@ -97,7 +98,7 @@ const EditorArea = ({
   isRequired = false,
   isEditable = true,
   fields,
-  newFields
+  newFields,
 }) => {
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const classes = useStyles()
@@ -132,7 +133,7 @@ const EditorArea = ({
                   trackAction(analyticsCategoryName, analyticsAction)
                 }
 
-                setIsEditorOpen(currentVal => !currentVal)
+                setIsEditorOpen((currentVal) => !currentVal)
               }}>
               <EditIcon />
             </div>
@@ -145,44 +146,45 @@ const EditorArea = ({
           className={`${classes.col} ${
             isTwoColumnLayout ? '' : classes.fullWidth
           }`}>
-          {React.cloneElement(
-            DisplayAndEditor ? (
-              DisplayAndEditor
-            ) : isEditorOpen && Editor ? (
-              Editor
-            ) : Display ? (
-              <Display />
-            ) : (
-              <>Nothing to render</>
-            ),
-            isEditorOpen
-              ? {
-                  onDone: () => {
-                    setIsEditorOpen(false)
+          {DisplayAndEditor || Editor || Display
+            ? React.cloneElement(
+                DisplayAndEditor ? (
+                  DisplayAndEditor
+                ) : isEditorOpen && Editor ? (
+                  Editor
+                ) : (
+                  <Display />
+                ),
+                isEditorOpen
+                  ? {
+                      onDone: () => {
+                        setIsEditorOpen(false)
 
-                    if (onDone) {
-                      onDone()
+                        if (onDone) {
+                          onDone()
+                        }
+                      },
+                      onCancel: () => {
+                        setIsEditorOpen(false)
+                      },
+                      ...(overrideSave && fieldName
+                        ? {
+                            // asset amendment form
+                            overrideSave: (newVal) =>
+                              overrideSave(fieldName, newVal),
+                          }
+                        : {}),
+                      // sync with gumroad form
+                      overrideSaveWithNewFields: overrideSaveWithNewFields
+                        ? (newVals) => overrideSaveWithNewFields(newVals)
+                        : undefined,
                     }
-                  },
-                  onCancel: () => {
-                    setIsEditorOpen(false)
-                  },
-                  ...(overrideSave && fieldName
-                    ? {
-                        // asset amendment form
-                        overrideSave: newVal => overrideSave(fieldName, newVal)
-                      }
-                    : {}),
-                  // sync with gumroad form
-                  overrideSaveWithNewFields: overrideSaveWithNewFields
-                    ? newVals => overrideSaveWithNewFields(newVals)
-                    : undefined
-                }
-              : {
-                  value: fields[fieldName],
-                  fields
-                }
-          )}
+                  : {
+                      value: fields[fieldName],
+                      fields,
+                    }
+              )
+            : null}
         </div>
         {isTwoColumnLayout && newFields[fieldName] !== undefined ? (
           <>
@@ -194,7 +196,7 @@ const EditorArea = ({
             <div className={`${classes.col} ${classes.rightCol}`}>
               {React.cloneElement(<Display />, {
                 value: newFields[fieldName],
-                fields: newFields
+                fields: newFields,
               })}
             </div>
           </>

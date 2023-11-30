@@ -10,6 +10,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 import * as routes from '../../routes'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import defaultAvatarUrl from '../../assets/images/default-avatar.png'
+import { DiscordServer } from '../../modules/discordservers'
 
 const useStyles = makeStyles({
   root: {
@@ -18,27 +19,32 @@ const useStyles = makeStyles({
     position: 'relative',
     [mediaQueryForTabletsOrBelow]: {
       width: '160px',
-      margin: '0.25rem'
-    }
+      margin: '0.25rem',
+    },
   },
   media: {
     height: '200px',
     [mediaQueryForTabletsOrBelow]: {
-      height: '160px'
-    }
+      height: '160px',
+    },
   },
   content: {
     '&, &:last-child': {
-      padding: 16
-    }
+      padding: 16,
+    },
   },
   cats: {
-    marginTop: '0.35rem'
-  }
+    marginTop: '0.35rem',
+  },
 })
 
-// TODO: Use field name constants
-export default ({ discordServer: { id, name, iconurl }, onClick }) => {
+export default ({
+  discordServer: { id, name, iconurl },
+  onClick,
+}: {
+  discordServer: DiscordServer
+  onClick?: (e: any) => void
+}) => {
   const classes = useStyles()
 
   return (

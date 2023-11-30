@@ -9,11 +9,21 @@ import YoutubePlayer from '../youtube-player'
 const types = {
   YOUTUBE_VIDEO: 'youtube-video',
   VIDEO: 'video',
-  OTHER: 'other'
+  OTHER: 'other',
 }
 
-export default ({ onDone }: { onDone: (url: string) => void }) => {
-  const [textInput, setTextInput] = useState('')
+export default ({
+  label = 'URL',
+  existingUrl,
+  onDone,
+  onChange,
+}: {
+  label?: string
+  existingUrl?: string
+  onDone?: (url: string) => void
+  onChange?: (url: string) => void
+}) => {
+  const [textInput, setTextInput] = useState(existingUrl || '')
   const [finalUrl, setFinalUrl] = useState('')
   const [type, setType] = useState<string | null>(null)
 
@@ -77,16 +87,26 @@ export default ({ onDone }: { onDone: (url: string) => void }) => {
   return (
     <div>
       <TextInput
+        label={label}
         fullWidth
         value={textInput}
-        onChange={e => setTextInput(e.target.value)}
-        placeholder="Paste a URL"
+        onChange={(e) => {
+          setTextInput(e.target.value)
+          if (onChange) {
+            onChange(e.target.value)
+          }
+        }}
+        placeholder="Enter a URL"
       />
-      <FormControls>
-        <Button isDisabled={textInput === ''} onClick={() => proceedWithUrl()}>
-          Proceed
-        </Button>
-      </FormControls>
+      {onDone && (
+        <FormControls>
+          <Button
+            isDisabled={textInput === ''}
+            onClick={() => proceedWithUrl()}>
+            Proceed
+          </Button>
+        </FormControls>
+      )}
     </div>
   )
 }

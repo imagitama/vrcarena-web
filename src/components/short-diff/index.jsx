@@ -9,7 +9,7 @@ import {
   GetFullAssetsFieldNames,
   AssetGumroadFields,
   CollectionNames,
-  SpeciesFieldNames
+  SpeciesFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import categoryMeta from '../../category-meta'
 
@@ -31,73 +31,74 @@ import TextDiff from '../text-diff'
 import TagDiff from '../tag-diff'
 import Relations from '../relations'
 import authorsEditableFields from '../../editable-fields/authors'
+import VrcFurySettings from '../vrcfury-settings'
 
 const useStyles = makeStyles({
   output: {
-    width: '100%'
+    width: '100%',
   },
   cols: {
     display: 'flex',
-    marginBottom: '2rem'
+    marginBottom: '2rem',
   },
   title: {
     fontSize: '200%',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   thumbnail: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   label: {
     fontWeight: 'bold',
-    fontSize: '125%'
+    fontSize: '125%',
   },
   field: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     '& > *': {
-      padding: '0.5rem'
+      padding: '0.5rem',
     },
     marginBottom: '0.5rem',
     '&:nth-child(odd)': {
-      background: 'rgba(0, 0, 0, 0.1)'
-    }
+      background: 'rgba(0, 0, 0, 0.1)',
+    },
   },
   controls: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   commentsField: {
-    width: '100%'
+    width: '100%',
   },
   pedestalVideo: {
-    width: '100%'
+    width: '100%',
   },
   banner: {
     '& img': {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   explanation: {
     display: 'flex',
     '& > *': {
-      width: '50%'
-    }
+      width: '50%',
+    },
   },
   files: {
     display: 'flex',
     '& img': {
-      maxHeight: '150px'
-    }
+      maxHeight: '150px',
+    },
   },
   noValue: {
-    opacity: '0.5'
+    opacity: '0.5',
   },
   linkedAssets: {
     display: 'flex',
     flexWrap: 'wrap',
     '& > *': {
-      marginRight: '0.5rem'
-    }
+      marginRight: '0.5rem',
+    },
   },
   changed: {
     // outline: '1px solid rgba(255, 255, 0, 0.2)'
@@ -105,8 +106,8 @@ const useStyles = makeStyles({
   divider: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 })
 
 function Label({ children }) {
@@ -114,7 +115,7 @@ function Label({ children }) {
   return <div className={classes.label}>{children}</div>
 }
 
-const getLabelForValue = value => {
+const getLabelForValue = (value) => {
   if (Array.isArray(value)) {
     return value.map(getLabelForValue).join(', ')
   } else if (value === true) {
@@ -158,7 +159,7 @@ function Field({
   extra,
   oldFields,
   newFields,
-  hasChanged = false
+  hasChanged = false,
 }) {
   const classes = useStyles()
   return (
@@ -272,7 +273,7 @@ function TagOutput({ fields }) {
   return (
     <div>
       {fields[AssetFieldNames.tags] && fields[AssetFieldNames.tags].length ? (
-        fields[AssetFieldNames.tags].map(tag => (
+        fields[AssetFieldNames.tags].map((tag) => (
           <TagChip key={tag} tagName={tag} />
         ))
       ) : (
@@ -363,7 +364,7 @@ const LinkedAssets = ({ ids }) => {
   const classes = useStyles()
   return (
     <div className={classes.linkedAssets}>
-      {ids.map(id => (
+      {ids.map((id) => (
         <Asset key={id} id={id} />
       ))}
     </div>
@@ -421,7 +422,7 @@ function FilesOutput({ fields }) {
       {fields[AssetFieldNames.fileUrls] &&
       fields[AssetFieldNames.fileUrls].length ? (
         <div className={classes.files}>
-          {fields[AssetFieldNames.fileUrls].map(url =>
+          {fields[AssetFieldNames.fileUrls].map((url) =>
             isUrlAnImage(url) ? (
               <a href={url} target="_blank" rel="noopener noreferrer">
                 <img src={url} />
@@ -512,33 +513,47 @@ function CategoryOutput({ categories }) {
   return <div>{categories ? categories.join(', ') : '(none)'}</div>
 }
 
+// interface FieldConfig {
+//   label: string
+//   renderer: React.Component
+// }
+
+// RenderersForFields: {
+//   assets: {
+//     [fieldName: keyof Asset]: FieldConfig,
+//   },
+//   authors: {
+//     [fieldName: keyof Author]: FieldConfig,
+//   }
+// }
+
 // order is loosely based off assetoverview
 const RenderersForFields = {
-  [CollectionNames.Assets]: {
+  assets: {
     [AssetFieldNames.bannerUrl]: {
       label: 'Banner',
-      renderer: ({ fields }) => <BannerOutput fields={fields} />
+      renderer: ({ fields }) => <BannerOutput fields={fields} />,
     },
     [AssetFieldNames.pedestalVideoUrl]: {
       label: 'Pedestal Video',
-      renderer: ({ fields }) => <PedestalVideoValue fields={fields} />
+      renderer: ({ fields }) => <PedestalVideoValue fields={fields} />,
     },
     [AssetFieldNames.pedestalFallbackImageUrl]: {
       label: 'Pedestal Image',
-      renderer: ({ fields }) => <PedestalFallbackImageValue fields={fields} />
+      renderer: ({ fields }) => <PedestalFallbackImageValue fields={fields} />,
     },
     // title stuff
     [AssetFieldNames.thumbnailUrl]: {
       label: 'Thumbnail',
-      renderer: ({ fields }) => <ThumbnailValue fields={fields} />
+      renderer: ({ fields }) => <ThumbnailValue fields={fields} />,
     },
     [AssetFieldNames.title]: {
       label: 'Title',
-      renderer: ({ fields }) => <Value value={fields[AssetFieldNames.title]} />
+      renderer: ({ fields }) => <Value value={fields[AssetFieldNames.title]} />,
     },
     [AssetFieldNames.author]: {
       label: 'Author',
-      renderer: ({ fields }) => <AuthorOutput fields={fields} />
+      renderer: ({ fields }) => <AuthorOutput fields={fields} />,
     },
     [AssetFieldNames.category]: {
       label: 'Category',
@@ -549,97 +564,112 @@ const RenderersForFields = {
             categoryMeta[fields[AssetFieldNames.category]].nameSingular
           }
         />
-      )
+      ),
     },
     [AssetFieldNames.species]: {
       label: 'Species',
-      renderer: ({ fields }) => <SpeciesOutput fields={fields} />
+      renderer: ({ fields }) => <SpeciesOutput fields={fields} />,
     },
     // sidebar
     [AssetFieldNames.priceUsd]: {
       label: 'Price (USD)',
       renderer: ({ fields }) => (
         <Value value={fields[AssetFieldNames.priceUsd]} />
-      )
+      ),
     },
     [AssetFieldNames.sourceUrl]: {
       label: 'Source URL',
       renderer: ({ fields }) => (
         <Value value={fields[AssetFieldNames.sourceUrl]} />
-      )
+      ),
     },
     [AssetFieldNames.discordServer]: {
       label: 'Discord Server',
-      renderer: ({ fields }) => <DiscordServerOutput fields={fields} />
+      renderer: ({ fields }) => <DiscordServerOutput fields={fields} />,
     },
     [AssetFieldNames.tags]: {
       label: 'Tags',
-      renderer: ({ fields }) => <TagOutput fields={fields} />
+      renderer: ({ fields }) => <TagOutput fields={fields} />,
     },
     [AssetFieldNames.isAdult]: {
       label: 'Adult (NSFW)',
       renderer: ({ fields }) => (
         <Value value={fields[AssetFieldNames.isAdult]} />
-      )
+      ),
     },
     // tabs
     [AssetFieldNames.description]: {
       label: 'Description',
       renderer: ({ fields }) => (
         <DescriptionOutput fields={fields} isDescriptionExpanded />
-      )
+      ),
     },
     [AssetFieldNames.vrchatClonableWorldIds]: {
       label: 'VRChat Clonable World IDs',
-      renderer: ({ fields }) => <VrchatClonableWorldsOutput fields={fields} />
+      renderer: ({ fields }) => <VrchatClonableWorldsOutput fields={fields} />,
     },
     [AssetFieldNames.vrchatClonableAvatarIds]: {
       label: 'VRChat Clonable Avatar IDs',
-      renderer: ({ fields }) => <VrchatClonableAvatarsOutput fields={fields} />
+      renderer: ({ fields }) => <VrchatClonableAvatarsOutput fields={fields} />,
     },
     // other
     [AssetFieldNames.relations]: {
       label: 'Relations',
-      renderer: ({ fields }) => <RelationsOutput fields={fields} />
+      renderer: ({ fields }) => <RelationsOutput fields={fields} />,
     },
     [AssetFieldNames.fileUrls]: {
       label: 'Files',
-      renderer: ({ fields }) => <FilesOutput fields={fields} />
+      renderer: ({ fields }) => <FilesOutput fields={fields} />,
     },
     [AssetFieldNames.gumroad]: {
       label: 'Gumroad Settings',
       renderer: ({ fields }) => (
         <GumroadSettings settings={fields[AssetFieldNames.gumroad]} />
-      )
+      ),
     },
     [AssetFieldNames.sketchfabEmbedUrl]: {
       label: 'Sketchfab',
-      renderer: ({ fields }) => <SketchfabOutput fields={fields} />
+      renderer: ({ fields }) => <SketchfabOutput fields={fields} />,
     },
     [AssetFieldNames.tutorialSteps]: {
       label: 'Tutorial Steps',
-      renderer: ({ fields }) => <TutorialStepsOutput fields={fields} />
+      renderer: ({ fields }) => <TutorialStepsOutput fields={fields} />,
     },
     [AssetFieldNames.slug]: {
       label: 'Slug',
-      renderer: ({ fields }) => <Value value={fields[AssetFieldNames.slug]} />
+      renderer: ({ fields }) => <Value value={fields[AssetFieldNames.slug]} />,
     },
     [AssetFieldNames.clonableWorld]: {
       label: 'Clonable World (Asset)',
-      renderer: ({ fields }) => <ClonableWorldOutput fields={fields} />
+      renderer: ({ fields }) => <ClonableWorldOutput fields={fields} />,
     },
     [AssetFieldNames.shortDescription]: {
       label: 'Short Description (for featured assets)',
       renderer: ({ fields }) => (
         <Value value={fields[AssetFieldNames.shortDescription]} />
-      )
+      ),
     },
     [AssetFieldNames.videoUrl]: {
       label: 'Video',
-      renderer: ({ fields }) => <div>{fields[AssetFieldNames.videoUrl]}</div>
-    }
+      renderer: ({ fields }) => <div>{fields[AssetFieldNames.videoUrl]}</div>,
+    },
+    // TODO: type-safety sometime
+    extradata: {
+      label: 'Extra Data',
+      renderer: ({ fields }) => (
+        <div>
+          {fields.extradata &&
+          fields.extradata.vrcfury &&
+          fields.extradata.vrcfury.prefabs ? (
+            <VrcFurySettings prefabs={fields.extradata.vrcfury.prefabs} />
+          ) : (
+            <NoValueLabel />
+          )}
+        </div>
+      ),
+    },
   },
-  [CollectionNames.Authors]: authorsEditableFields
+  authors: authorsEditableFields,
 }
 
 const getRendererByType = (type, fieldName) => {
@@ -654,7 +684,7 @@ const getRendererByType = (type, fieldName) => {
           value={
             fields[fieldName]
               ? fields[fieldName].map(
-                  selectedValue =>
+                  (selectedValue) =>
                     rendererInfo.options.find(
                       ({ value }) => value === selectedValue
                     ).label
@@ -724,7 +754,7 @@ const textDiffFieldNames = [
   AssetFieldNames.description,
   AssetFieldNames.sourceUrl,
   AuthorFieldNames.name,
-  AuthorFieldNames.description
+  AuthorFieldNames.description,
 ]
 
 export default ({
@@ -732,7 +762,7 @@ export default ({
   oldFields = {},
   newFields,
   onlyNewFields,
-  extraData = {}
+  extraData = {},
 }) => {
   const classes = useStyles()
 
@@ -750,10 +780,10 @@ export default ({
 
   return (
     <div className={classes.output}>
-      {keys.map(fieldNameThatChanged => {
+      {keys.map((fieldNameThatChanged) => {
         const fieldNameToUse = fieldNameThatChanged.toLowerCase()
         const rendererInfo = Array.isArray(renderers)
-          ? renderers.find(renderer => renderer.name === fieldNameToUse)
+          ? renderers.find((renderer) => renderer.name === fieldNameToUse)
           : renderers[fieldNameToUse]
 
         if (fieldNameThatChanged === 'id') {
@@ -792,14 +822,14 @@ export default ({
             {React.cloneElement(
               renderer({
                 fields: { ...oldFields },
-                rendererInfo
+                rendererInfo,
               })
             )}
             <Divider />
             {React.cloneElement(
               renderer({
                 fields: { ...newFields, ...extraData },
-                rendererInfo
+                rendererInfo,
               })
             )}
           </Field>
