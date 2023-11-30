@@ -30,7 +30,7 @@ export default ({
   actionCategory,
   overrideSave = null,
 }) => {
-  const [newTitleValue, setNewTitleValue] = useState(title)
+  const [newTitleValue, setNewTitleValue] = useState(title || '(no title)')
   const [searchTerm, setSearchTerm] = useState('')
   const [isSaving, isSaveSuccess, lastError, save] = useDatabaseSave(
     CollectionNames.Assets,
