@@ -384,6 +384,7 @@ export default () => {
           </p>
           <EditorTeam />
         </ContentBlock>
+        <br />
         <SocialFeed />
         {/* <div className={classes.tiles}>
           <Tile

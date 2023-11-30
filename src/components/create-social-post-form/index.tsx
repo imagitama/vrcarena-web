@@ -22,6 +22,7 @@ import ImageUploader from '../image-uploader'
 import { bucketNames } from '../../file-uploading'
 import Paper from '../paper'
 import * as routes from '../../routes'
+import EmojiPicker from '../emoji-picker'
 
 const useStyles = makeStyles({
   root: {
@@ -147,6 +148,11 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
             onChange={(e) => setIsAdult(!isAdult)}
             label="Is NSFW"
           />
+          <EmojiPicker
+            onSelectEmoji={(emoji) =>
+              setNewText((currentVal) => `${currentVal}${emoji}`)
+            }
+          />
           <div className={classes.attachments}>
             {attachments.map((attachment) => (
               <Attachment
@@ -178,7 +184,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
 interface FormContext {
   createdId: string | null
   newText: string
-  setNewText: (newText: string) => void
+  setNewText: (newText: string | ((currentVal: string) => string)) => void
   isCreatingPost: boolean
   isCreatePostSuccess: boolean
   isErrorCreatingPost: boolean
@@ -214,7 +220,7 @@ const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
 
   const onClickCreate = async () => {
     try {
-      if (!newText) {
+      if (!newText && !attachments.length) {
         console.warn('new text is empty')
         return
       }
