@@ -152,7 +152,7 @@ export default ({
           contentEditable={!isSaving}
           onKeyUp={(e) => setNewTitleValue(e.target.innerText)}
           className={classes.title}>
-          {title}
+          {title || '(no title)'}
         </span>
       </Heading>
       {isSaving ? (
