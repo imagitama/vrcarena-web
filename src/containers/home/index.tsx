@@ -367,11 +367,11 @@ export default () => {
         />
       </Helmet>
       <div className={classes.root}>
-        {isLoggedIn && (
+        {/* {isLoggedIn && (
           <div className={classes.createSocialPostForm}>
             <CreateSocialPostForm />
           </div>
-        )}
+        )} */}
         <ContentBlock buttonUrl={routes.about} buttonLabel="Learn More">
           <p>
             Browse our catalogue of avatars, accessories, tutorials, shaders,
