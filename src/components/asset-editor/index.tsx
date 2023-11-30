@@ -376,8 +376,8 @@ const BecomePatronMessage = () => (
 )
 
 const ShouldBeAdultWarning = ({ asset }: { asset: Asset }) => {
-  const result = adultSearchTerms.find((adultSearchTerm) =>
-    asset.title.includes(adultSearchTerm)
+  const result = adultSearchTerms.find(
+    (adultSearchTerm) => asset.title && asset.title.includes(adultSearchTerm)
   )
   return result ? (
     <WarningMessage leftAlign noTopMargin>
