@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   },
 })
 
-const SocialFeed = () => {
+export const SocialFeed = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
     (query: PostgrestFilterBuilder<FullSocialPost>) => {

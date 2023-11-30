@@ -38,6 +38,7 @@ import RecentSocialPosts from './components/recent-social-posts'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import CreateSocialPostForm from '../../components/create-social-post-form'
 import EditorTeam from './components/editor-team'
+import { SocialFeed } from '../social'
 
 const useStyles = makeStyles({
   root: {
@@ -383,7 +384,8 @@ export default () => {
           </p>
           <EditorTeam />
         </ContentBlock>
-        <div className={classes.tiles}>
+        <SocialFeed />
+        {/* <div className={classes.tiles}>
           <Tile
             title="Avatars"
             url={routes.viewAvatars}
@@ -447,8 +449,8 @@ export default () => {
           </Tile>
           <Tile title="Social" url={routes.social} buttonLabel="View All">
             <RecentSocialPosts />
-          </Tile>
-        </div>
+          </Tile> */}
+        {/* </div> */}
       </div>
     </>
   )
