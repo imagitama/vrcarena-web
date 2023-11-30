@@ -777,6 +777,7 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                     asset.extradata.vrcfury.prefabs.length && (
                       <VrcFurySettings
                         prefabs={asset.extradata.vrcfury.prefabs}
+                        analyticsCategory={analyticsCategoryName}
                       />
                     )}
                 </Control>

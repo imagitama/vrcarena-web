@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import { makeStyles } from '@material-ui/core/styles'
@@ -12,10 +12,14 @@ import { isDiscordUrl } from '../../utils'
 import { CollectionNames, DiscordServer } from '../../modules/discordservers'
 import { readRecordsById } from '../../data-store'
 import { handleError } from '../../error-handling'
+import * as routes from '../../routes'
+import { trackAction } from '../../analytics'
 import Box from '../box'
+import Link from '../link'
 
 const useStyles = makeStyles({
   root: {
+    height: '100%',
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'wrap',
@@ -42,7 +46,15 @@ const useStyles = makeStyles({
   },
 })
 
-const VrcFurySettings = ({ prefabs }: { prefabs: VrcFuryPrefabInfo[] }) => {
+const vrcFuryAssetId = '21def-vrcfury'
+
+const VrcFurySettings = ({
+  prefabs,
+  analyticsCategory = undefined,
+}: {
+  prefabs: VrcFuryPrefabInfo[]
+  analyticsCategory?: string
+}) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [discordServerDatas, setDiscordServerDatas] = useState<
     null | DiscordServer[]
@@ -75,35 +87,56 @@ const VrcFurySettings = ({ prefabs }: { prefabs: VrcFuryPrefabInfo[] }) => {
               populateDiscordServerData()
             }
             setIsExpanded((currentVal) => !currentVal)
+            if (analyticsCategory && isExpanded === false) {
+              trackAction(analyticsCategory, 'Expand VRCFury prefabs box')
+            }
           }}>
           {prefabs.length} third-party VRCFury prefab
           {prefabs.length > 1 ? 's' : ''}{' '}
           {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </div>
         {isExpanded ? (
-          <div className={classes.prefabs}>
-            {prefabs.map((prefabInfo) => (
-              <div key={prefabInfo.url}>
-                <Button
-                  url={prefabInfo.url}
-                  icon={<VrcFuryIcon />}
-                  color="default">
-                  View {isDiscordUrl(prefabInfo.url) ? 'Discord' : 'website'}{' '}
-                  prefab
-                </Button>
-                {prefabInfo.discordServerId && (
-                  <DiscordServerMustJoinNotice
-                    discordServerId={prefabInfo.discordServerId}
-                    discordServerData={discordServerDatas?.find(
-                      (discordServerData) =>
-                        discordServerData.id === prefabInfo.discordServerId
-                    )}
-                    className={classes.discordNotice}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+          <>
+            <Link
+              to={routes.viewAssetWithVar.replace(':assetId', vrcFuryAssetId)}>
+              Click here to learn about VRCFury
+            </Link>
+            <br />
+            <div className={classes.prefabs}>
+              {prefabs.map((prefabInfo) => (
+                <div key={prefabInfo.url}>
+                  <Button
+                    url={prefabInfo.url}
+                    icon={<VrcFuryIcon />}
+                    color="default"
+                    onClick={
+                      analyticsCategory
+                        ? () => {
+                            trackAction(
+                              analyticsCategory,
+                              'Click view VRCFury prefab button',
+                              { url: prefabInfo.url }
+                            )
+                          }
+                        : undefined
+                    }>
+                    View {isDiscordUrl(prefabInfo.url) ? 'Discord' : 'website'}{' '}
+                    prefab
+                  </Button>
+                  {prefabInfo.discordServerId && (
+                    <DiscordServerMustJoinNotice
+                      discordServerId={prefabInfo.discordServerId}
+                      discordServerData={discordServerDatas?.find(
+                        (discordServerData) =>
+                          discordServerData.id === prefabInfo.discordServerId
+                      )}
+                      className={classes.discordNotice}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
         ) : null}
       </div>
     </Box>
