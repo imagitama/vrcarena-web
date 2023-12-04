@@ -99,11 +99,6 @@ export default () => {
           content="Discover what our community is talking about right now through our social feed of posts and reactions."
         />
       </Helmet>
-      <Message>
-        Welcome to the new social page - a way for you to share what you're
-        doing in VR games such as VRChat. Please message me on Discord if you
-        have any questions or feedback. -PB
-      </Message>
       <SocialFeed />
     </>
   )

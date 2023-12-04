@@ -10,28 +10,21 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    justifyItems: 'center'
+    justifyItems: 'center',
   },
-  youtubeIcon: {}
+  youtubeIcon: {},
 })
 
 export default ({
   url,
   index,
-  renderer = undefined
+  renderer = undefined,
 }: {
   url: string
   index: number
   renderer?: React.ComponentType<{ url: string; index: number }>
 }) => {
   const classes = useStyles()
-
-  console.debug(
-    `ImageGalleryItemContent.render`,
-    url,
-    renderer,
-    `youtube=${isUrlAYoutubeVideo(url) ? 'yes' : 'no'}`
-  )
 
   return isUrlAYoutubeVideo(url) ? (
     <div className={classes.customContent}>
@@ -41,7 +34,7 @@ export default ({
     <div className={classes.customContent}>
       {React.createElement(renderer, {
         url,
-        index
+        index,
       })}
     </div>
   ) : // NOTE: Cannot return undefined as it throws React error

@@ -170,8 +170,6 @@ const MentionsInput = ({
   const usernameMapping = useRef<UsernameMapping>({})
   const outputRef = useRef<HTMLDivElement>(null)
 
-  console.debug(`MentionsInput.render`, { rootRef: rootRef.current })
-
   const onSelectUserSuggestion = (option: AutocompleteOption<string>) => {
     console.debug(`User selected option ${option.data} "${option.label}"`)
 
@@ -183,15 +181,11 @@ const MentionsInput = ({
       option.data
     }] `
 
-    console.debug(`onChange ${newInternalText}`)
-
     onChange(newInternalText)
   }
 
   const onChangeCustom = (newText: string) => {
     const newInternalText = getValueForSaving(newText, usernameMapping.current)
-
-    console.debug(`onChange: ${newInternalText}`)
 
     onChange(newInternalText)
   }
@@ -240,7 +234,8 @@ const MentionsInput = ({
           vertical: 'top',
           horizontal: 'left',
         }}
-        open={userSuggestions !== null && userSuggestions.length > 0}>
+        open={userSuggestions !== null && userSuggestions.length > 0}
+        onClose={() => resetSuggestions()}>
         {userSuggestions &&
           userSuggestions.length &&
           userSuggestions.map((userSuggestion) => (
