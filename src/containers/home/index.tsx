@@ -385,7 +385,9 @@ export default () => {
           <EditorTeam />
         </ContentBlock>
         <br />
-        <SocialFeed />
+        <div style={{ padding: '0.5rem' }}>
+          <SocialFeed />
+        </div>
         {/* <div className={classes.tiles}>
           <Tile
             title="Avatars"
