@@ -6,7 +6,13 @@ import { CollectionNames, User } from '../modules/users'
 
 const useUserTagging = (
   internalText: string
-): [AutocompleteOption<string>[] | null, boolean, number, () => void] => {
+): [
+  AutocompleteOption<string>[] | null,
+  boolean,
+  number,
+  () => void,
+  () => void
+] => {
   const [isLoading, setIsLoading] = useState(false)
   const [users, setUsers] = useState<User[] | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout>()
@@ -26,11 +32,12 @@ const useUserTagging = (
       return
     }
     if (internalText.charAt(atSymbolIndex) !== '@') {
+      console.debug(
+        `@ symbol at ${atSymbolIndex} no longer there - quitting mentioning`
+      )
       setAtSymbolIndex(-1)
     }
   }, [internalText])
-
-  // console.debug(`useUserTagging: "${internalText}"`)
 
   const userNowWantsToTag = internalText.endsWith('@')
 
@@ -47,6 +54,8 @@ const useUserTagging = (
 
     setAtSymbolIndex(newAtSymbolIndex)
   }, [userNowWantsToTag])
+
+  console.debug(`useUserMentioning`, atSymbolIndex, internalText)
 
   useEffect(() => {
     if (atSymbolIndex === -1) {
@@ -113,8 +122,10 @@ const useUserTagging = (
     }
   }
 
-  const reset = () => {
-    setUsers(null)
+  const clearSuggestions = () => setUsers(null)
+
+  const stopMentioningAndClear = () => {
+    clearSuggestions()
     setAtSymbolIndex(-1)
   }
 
@@ -126,7 +137,13 @@ const useUserTagging = (
         }))
       : users
 
-  return [results, isLoading, atSymbolIndex, reset]
+  return [
+    results,
+    isLoading,
+    atSymbolIndex,
+    clearSuggestions,
+    stopMentioningAndClear,
+  ]
 }
 
 export default useUserTagging

@@ -1,11 +1,12 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import Menu from '@material-ui/core/Menu'
+import MenuList from '@material-ui/core/MenuList'
 import MenuItem from '@material-ui/core/MenuItem'
 
-import useUserTagging from '../../hooks/useUserTagging'
+import useUserMentioning from '../../hooks/useUserMentioning'
 import { AutocompleteOption } from '../autocomplete-input'
 import EmojiPicker from '../emoji-picker'
+import Paper from '@material-ui/core/Paper'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,6 +91,12 @@ const useStyles = makeStyles((theme) => ({
   emojiPicker: {
     padding: '10px',
   },
+  menu: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    zIndex: 100,
+  },
 }))
 
 type UsernameMapping = { [username: string]: string }
@@ -165,15 +172,21 @@ const MentionsInput = ({
     userSuggestions,
     isLoadingUserSuggestions,
     atSymbolIndexInText,
-    resetSuggestions,
-  ] = useUserTagging(value)
+    clearSuggestions,
+    stopMentioningAndClear,
+  ] = useUserMentioning(value)
   const usernameMapping = useRef<UsernameMapping>({})
   const outputRef = useRef<HTMLDivElement>(null)
+  const [selectedSuggestionIdx, setSelectedSuggestionIdx] = useState<number>(0)
+
+  useEffect(() => {
+    setSelectedSuggestionIdx(0)
+  }, [userSuggestions && userSuggestions.length])
 
   const onSelectUserSuggestion = (option: AutocompleteOption<string>) => {
     console.debug(`User selected option ${option.data} "${option.label}"`)
 
-    resetSuggestions()
+    stopMentioningAndClear()
 
     usernameMapping.current[option.label] = option.data
 
@@ -196,6 +209,32 @@ const MentionsInput = ({
     outputRef.current!.scrollTop = event.target.scrollTop
   }
 
+  const onKeyDown: React.KeyboardEventHandler = (e) => {
+    if (!userSuggestions || !userSuggestions.length) {
+      return
+    }
+
+    if (e.key === 'Escape') {
+      clearSuggestions()
+      e.preventDefault()
+    } else if (e.key === 'ArrowDown') {
+      setSelectedSuggestionIdx((currentVal) =>
+        userSuggestions && currentVal < userSuggestions.length - 1
+          ? currentVal + 1
+          : currentVal
+      )
+      e.preventDefault()
+    } else if (e.key === 'ArrowUp') {
+      setSelectedSuggestionIdx((currentVal) =>
+        userSuggestions && currentVal > 0 ? currentVal - 1 : 0
+      )
+      e.preventDefault()
+    } else if (e.key === 'Enter') {
+      onSelectUserSuggestion(userSuggestions[selectedSuggestionIdx])
+      e.preventDefault()
+    }
+  }
+
   return (
     <div className={classes.root} ref={rootRef}>
       <div className={classes.inputWrapper}>
@@ -205,6 +244,7 @@ const MentionsInput = ({
           onScroll={onScroll}
           placeholder="Type anything"
           disabled={isDisabled}
+          onKeyDown={onKeyDown}
         />
         <div className={classes.display} ref={outputRef}>
           <Output value={value} map={usernameMapping.current} />
@@ -223,29 +263,44 @@ const MentionsInput = ({
           ? 'Keep typing...'
           : 'Type @ and at least 3 characters to mention someone'}
       </div>
-      <Menu
-        anchorEl={outputRef.current}
-        getContentAnchorEl={null}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        open={userSuggestions !== null && userSuggestions.length > 0}
-        onClose={() => resetSuggestions()}>
-        {userSuggestions &&
-          userSuggestions.length &&
-          userSuggestions.map((userSuggestion) => (
-            <MenuItem
-              value={userSuggestion.data}
-              onClick={() => onSelectUserSuggestion(userSuggestion)}>
-              {userSuggestion.label}
-            </MenuItem>
-          ))}
-      </Menu>
+      {userSuggestions !== null && userSuggestions.length > 0 && (
+        <MenuList
+          className={classes.menu}
+          autoFocus={false}
+          // anchorEl={outputRef.current}
+          // getContentAnchorEl={null}
+          // anchorOrigin={{
+          //   vertical: 'bottom',
+          //   horizontal: 'left',
+          // }}
+          // transformOrigin={{
+          //   vertical: 'top',
+          //   horizontal: 'left',
+          // }}
+          // BackdropProps={{
+          //   invisible: true,
+          // }}
+          // disableAutoFocus={true}
+          // hideBackdrop={true}
+          // autoFocus={false}
+          // open={userSuggestions !== null && userSuggestions.length > 0}
+          // onClose={() => clearSuggestions()}
+        >
+          <Paper>
+            {userSuggestions &&
+              userSuggestions.length &&
+              userSuggestions.map((userSuggestion, idx) => (
+                <MenuItem
+                  key={userSuggestion.data}
+                  value={userSuggestion.data}
+                  onClick={() => onSelectUserSuggestion(userSuggestion)}
+                  selected={idx === selectedSuggestionIdx}>
+                  {userSuggestion.label}
+                </MenuItem>
+              ))}
+          </Paper>
+        </MenuList>
+      )}
     </div>
   )
 }
