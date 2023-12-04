@@ -190,7 +190,7 @@ const SocialPost = ({
         small ? classes.small : ''
       }`}
       ref={rootRef}
-      title={socialPost.id}>
+      data-id={socialPost.id}>
       <div className={classes.avatar}>
         <UsernameLink id={socialPost.createdby}>
           <Avatar url={socialPost.createdbyavatarurl} size={sizes.TINY} />
