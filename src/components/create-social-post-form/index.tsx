@@ -11,7 +11,6 @@ import {
   SocialAttachmentType,
   SocialPostFields,
 } from '../../modules/social'
-import BigSearchInput from '../big-search-input'
 import Button from '../button'
 import CheckboxInput from '../checkbox-input'
 import ErrorMessage from '../error-message'
@@ -22,7 +21,7 @@ import ImageUploader from '../image-uploader'
 import { bucketNames } from '../../file-uploading'
 import Paper from '../paper'
 import * as routes from '../../routes'
-import EmojiPicker from '../emoji-picker'
+import MentionsInput from '../mentions-input'
 
 const useStyles = makeStyles({
   root: {
@@ -41,12 +40,9 @@ const useStyles = makeStyles({
     width: '100%',
     display: 'flex',
   },
-  searchInputWrapper: {
+  inputs: {
     width: '100%',
     marginRight: '1rem',
-    '& textarea::placeholder': {
-      lineHeight: '2.25rem',
-    },
   },
   attachments: {
     display: 'flex',
@@ -89,8 +85,8 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
   const classes = useStyles()
   const {
     createdId,
-    newText,
-    setNewText,
+    internalText,
+    setInternalText,
     isAdult,
     setIsAdult,
     isCreatingPost,
@@ -133,25 +129,18 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
         </SuccessMessage>
       ) : null}
       <Paper className={classes.paper}>
-        <div className={classes.searchInputWrapper}>
-          <BigSearchInput
-            value={newText}
-            onChange={(e) => setNewText(e.target.value)}
-            onClear={() => setNewText('')}
-            disabled={isDoingSomething}
-            placeholder="Type anything..."
-            multiline
-            rows={2}
-          />
+        <div className={classes.inputs}>
+          <div>
+            <MentionsInput
+              value={internalText}
+              onChange={(newValue) => setInternalText(newValue)}
+              isDisabled={isCreatingPost}
+            />
+          </div>
           <CheckboxInput
             value={isAdult}
             onChange={(e) => setIsAdult(!isAdult)}
             label="Is NSFW"
-          />
-          <EmojiPicker
-            onSelectEmoji={(emoji) =>
-              setNewText((currentVal) => `${currentVal}${emoji}`)
-            }
           />
           <div className={classes.attachments}>
             {attachments.map((attachment) => (
@@ -183,8 +172,10 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
 
 interface FormContext {
   createdId: string | null
-  newText: string
-  setNewText: (newText: string | ((currentVal: string) => string)) => void
+  internalText: string
+  setInternalText: (
+    userInputHtml: string | ((currentVal: string) => string)
+  ) => void
   isCreatingPost: boolean
   isCreatePostSuccess: boolean
   isErrorCreatingPost: boolean
@@ -200,7 +191,7 @@ const formContext = createContext<FormContext>()
 const useForm = () => useContext(formContext)
 
 const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
-  const [newText, setNewText] = useState('')
+  const [internalText, setInternalText] = useState('')
   const [attachments, setAttachments] = useState<SocialAttachment[]>([])
   const [isAdult, setIsAdult] = useState(false)
   const [
@@ -220,17 +211,20 @@ const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
 
   const onClickCreate = async () => {
     try {
-      if (!newText && !attachments.length) {
+      if (!internalText && !attachments.length) {
         console.warn('new text is empty')
         return
       }
 
       await create({
-        text: newText,
+        text: internalText,
         isadult: isAdult,
         tags: [],
         attachments: attachments,
       })
+
+      setInternalText('')
+      setAttachments([])
 
       if (onDone) {
         onDone()
@@ -257,8 +251,8 @@ const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
       <formContext.Provider
         value={{
           createdId,
-          newText,
-          setNewText,
+          internalText,
+          setInternalText,
           isCreatingPost,
           isCreatePostSuccess,
           isErrorCreatingPost,

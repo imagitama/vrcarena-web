@@ -306,13 +306,14 @@ export const readAllRecords = async <TRecord>(
   return data
 }
 
-export const simpleSearchRecords = async (
+export const simpleSearchRecords = async <TRecord>(
   tableName: string,
-  searchTermsByField: { [fieldName: string]: string } = {},
-  limit: number = 1000
-) => {
-  const { error, data } = await supabase
-    .from(tableName)
+  searchTermsByField: { [fieldName in keyof Partial<TRecord>]: string },
+  limit: number = 1000,
+  orderBy?: keyof TRecord
+): Promise<TRecord[] | null> => {
+  let query = supabase
+    .from<TRecord>(tableName)
     .select('*')
     .or(
       Object.entries(searchTermsByField)
@@ -320,6 +321,12 @@ export const simpleSearchRecords = async (
         .join(',')
     )
     .limit(limit)
+
+  if (orderBy) {
+    query = query.order(orderBy, { ascending: false })
+  }
+
+  const { error, data } = await query
 
   if (error) {
     console.error(error)

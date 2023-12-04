@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/styles'
 import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
+import useClickAway from '../../hooks/useClickAway'
 
 const useStyles = makeStyles({
   root: {
@@ -21,27 +22,39 @@ const useStyles = makeStyles({
   },
 })
 
-export default (props: { onSelectEmoji: (emoji: string) => void }) => {
+export default ({
+  onSelectEmoji,
+  className,
+}: {
+  onSelectEmoji: (emoji: string) => void
+  className?: string
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const classes = useStyles()
+  const rootRef = useRef<HTMLDivElement | null>(null)
+
+  const onClickAway = useCallback(() => setIsOpen(false), [])
+
+  useClickAway(rootRef, onClickAway)
+
   return (
-    <span className={classes.root}>
-      <span
-        className={classes.btn}
+    <div className={`${classes.root}`} ref={rootRef}>
+      <div
+        className={`${classes.btn} ${className}`}
         onClick={() => setIsOpen((currentVal) => !currentVal)}>
         😀
-      </span>
+      </div>
       {isOpen && (
         <div className={classes.picker}>
           <EmojiPicker
             onEmojiClick={(emojiClickData) =>
-              props.onSelectEmoji(emojiClickData.emoji)
+              onSelectEmoji(emojiClickData.emoji)
             }
             previewConfig={{ showPreview: false }}
             emojiStyle={EmojiStyle.NATIVE}
           />
         </div>
       )}
-    </span>
+    </div>
   )
 }

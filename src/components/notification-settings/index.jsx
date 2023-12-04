@@ -55,7 +55,7 @@ const getLabelForEventName = (eventName) => {
     case NotificationEvents.COMMENT_ON_REPORT:
       return 'Someone comments on my report'
     case NotificationEvents.TAGGED_IN_COMMENT:
-      return 'Someone tags me in a comment'
+      return 'Someone mentions me in a comment or social post'
     case NotificationEvents.AWARD_GIVEN:
       return 'You are given an award'
     case NotificationEvents.ASSET_NEEDS_APPROVAL:

@@ -40,7 +40,6 @@ export interface FullUser extends User, UserMeta, UserAdminMeta {}
 
 export const CollectionNames = {
   Users: 'users',
-  // TODO: Pluralize these
   UsersMeta: 'usermeta',
   UsersAdminMeta: 'useradminmeta',
 }

@@ -477,3 +477,14 @@ export function shuffle<TArray extends Array<any>>(array: TArray): TArray {
 
   return array
 }
+
+export const moveCursorToEnd = (element: HTMLElement) => {
+  const range = document.createRange()
+  const selection = window.getSelection()
+  range.setStart(element, element.childNodes.length)
+  range.collapse(true)
+  // @ts-ignore
+  selection.removeAllRanges()
+  // @ts-ignore
+  selection.addRange(range)
+}

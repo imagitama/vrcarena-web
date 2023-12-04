@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
 import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react'
@@ -17,6 +17,7 @@ import { handleError } from '../../error-handling'
 import useUserId from '../../hooks/useUserId'
 import { insertRecord } from '../../data-store'
 import ErrorMessage from '../error-message'
+import useClickAway from '../../hooks/useClickAway'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -101,23 +102,11 @@ const SocialReactions = ({
   const [isWorking, setIsWorking] = useState(false)
   const [isFailed, setIsFailed] = useState(false)
   const myUserId = useUserId()
-  const pickerRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
 
-  const onClickAway = () => setWantsToReact(false)
+  const onClickAway = useCallback(() => setWantsToReact(false), [])
 
-  useEffect(() => {
-    const handler = (event: any) => {
-      // @ts-ignore
-      if (!pickerRef.current?.contains(event.target)) {
-        console.debug('Click away')
-        onClickAway()
-      }
-    }
-
-    document.body.addEventListener('click', handler)
-
-    return () => document.body.removeEventListener('click', handler)
-  }, [])
+  useClickAway(rootRef, onClickAway)
 
   if (!myUserId) {
     return null
@@ -181,7 +170,7 @@ const SocialReactions = ({
     onEmojiInteract(summary.emoji)
 
   return (
-    <div className={classes.root} ref={pickerRef}>
+    <div className={classes.root} ref={rootRef}>
       {isFailed && <ErrorMessage>Failed to save reaction</ErrorMessage>}
       {isLoggedIn && !hasAlreadyReacted && (
         <Chip

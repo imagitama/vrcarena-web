@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import TextInput, {
-  ReactAutocompleteComponentProps
+  ReactAutocompleteComponentProps,
 } from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
 import CreateIcon from '@material-ui/icons/Create'
@@ -11,7 +11,7 @@ import useDatabaseSave from '../../hooks/useDatabaseSave'
 import {
   CollectionNames,
   CommentFieldNames,
-  UserFieldNames
+  UserFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 
@@ -30,18 +30,18 @@ const useStyles = makeStyles({
     position: 'relative',
     marginTop: '1rem',
     '& li': {
-      color: 'black'
-    }
+      color: 'black',
+    },
   },
   input: {
-    width: '100%'
+    width: '100%',
   },
   button: {
-    marginTop: '0.5rem'
+    marginTop: '0.5rem',
   },
   tagHint: {
-    fontSize: '75%'
-  }
+    fontSize: '75%',
+  },
 })
 
 const mapUserToRecord = (user: User): string => user.username
@@ -70,7 +70,7 @@ export default ({
   parentId,
   onAddClick = undefined,
   onDone = undefined,
-  asPrivate = false
+  asPrivate = false,
 }: {
   collectionName: string
   parentId: string
@@ -115,21 +115,25 @@ export default ({
         return
       }
 
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         timeoutRef.current = setTimeout(resolve, 250)
       })
 
-      const data = await simpleSearchRecords(
+      const data = await simpleSearchRecords<User>(
         CollectionNames.Users,
         { [UserFieldNames.username]: searchTerm },
         10
       )
 
+      if (!data) {
+        throw new Error('Simple search returned null')
+      }
+
       const newRecords = data.map(mapUserToRecord)
 
-      setAutoCompleteOptions(currentRecords =>
+      setAutoCompleteOptions((currentRecords) =>
         currentRecords
-          .filter(currentRecord => !newRecords.includes(currentRecord))
+          .filter((currentRecord) => !newRecords.includes(currentRecord))
           .concat(newRecords)
       )
     } catch (err) {
@@ -177,7 +181,7 @@ export default ({
         [CommentFieldNames.parentTable]: collectionName,
         [CommentFieldNames.parent]: parentId,
         [CommentFieldNames.comment]: textFieldValue,
-        [CommentFieldNames.isPrivate]: asPrivate
+        [CommentFieldNames.isPrivate]: asPrivate,
       })
 
       if (onDone) {
@@ -194,7 +198,7 @@ export default ({
       <TextInput
         Component={TextInputComponent}
         value={textFieldValue}
-        onChange={newVal => setTextFieldValue(newVal)}
+        onChange={(newVal) => setTextFieldValue(newVal)}
         options={autoCompleteOptions}
         onRequestOptions={populateAutoCompleteOptions}
         matchAny

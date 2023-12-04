@@ -38,6 +38,7 @@ import useFirebaseFunction from '../../hooks/useFirebaseFunction'
 import { callFunction } from '../../firebase'
 import YoutubePlayer from '../youtube-player'
 import { getImageUrlAsFile } from '../../utils/files'
+import { Author } from '../../modules/authors'
 
 const useStyles = makeStyles({
   field: {
@@ -376,13 +377,15 @@ export default ({
       ),
     })
 
-    const author = await getAuthorByNameOrUrl(
+    // @ts-ignore
+    const author: Author | null = await getAuthorByNameOrUrl(
       result.authorName,
       result.authorUrl
     )
-    setAuthorName(author ? author[AuthorFieldNames.name] : null)
 
-    if (!author || !author[AuthorFieldNames.name]) {
+    setAuthorName(author !== null ? author.name : null)
+
+    if (!author || !author.name) {
       toggleIsFieldEnabled(AssetFieldNames.author)
     }
   }

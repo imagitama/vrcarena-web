@@ -15,7 +15,7 @@ import useDatabaseQuery, {
   Operators,
   options,
   OrderDirections,
-  SpeciesFieldNames
+  SpeciesFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import LoadingIndicator from '../../components/loading-indicator'
@@ -26,7 +26,7 @@ import AutocompleteInput from '../../components/autocomplete-input'
 import {
   mediaQueryForMobiles,
   mediaQueryForTablets,
-  mediaQueryForTabletsOrBelow
+  mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
 import { findItemAndParents } from '../../utils'
 
@@ -38,7 +38,7 @@ const useStyles = makeStyles({
   speciesResults: {
     marginTop: '0.5rem',
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   speciesItem: {
     width: '33.3%',
@@ -47,18 +47,18 @@ const useStyles = makeStyles({
       color: 'inherit',
       display: 'block',
       '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)'
-      }
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      },
     },
     [mediaQueryForTablets]: {
-      width: '50%'
+      width: '50%',
     },
     [mediaQueryForMobiles]: {
-      width: '100%'
+      width: '100%',
     },
     '& $speciesItem': {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   speciesItemTitle: {
     display: 'flex',
@@ -66,28 +66,28 @@ const useStyles = makeStyles({
     '& img': {
       width: '100px',
       height: '100px',
-      marginRight: '0.5rem'
-    }
+      marginRight: '0.5rem',
+    },
   },
   name: {
     fontSize: '150%',
-    marginBottom: '0.1rem'
+    marginBottom: '0.1rem',
   },
   description: {
     fontSize: '75%',
-    fontStyle: 'italic'
+    fontStyle: 'italic',
   },
   autocompleteWrapper: {
     marginBottom: '1rem',
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   autocomplete: {
     width: '50%',
     [mediaQueryForTabletsOrBelow]: {
-      width: '100%'
-    }
-  }
+      width: '100%',
+    },
+  },
 })
 
 interface SpeciesWithChildren extends FullSpecies {
@@ -113,7 +113,7 @@ function convertToNestedArray(
 
 const SpeciesResult = ({
   speciesItem,
-  indent = 0
+  indent = 0,
 }: {
   speciesItem: SpeciesWithChildren
   indent?: number
@@ -141,7 +141,7 @@ const SpeciesResult = ({
         </div>
       </Link>
       {speciesItem.children
-        ? speciesItem.children.map(speciesChild => (
+        ? speciesItem.children.map((speciesChild) => (
             <SpeciesResult speciesItem={speciesChild} indent={1} />
           ))
         : null}
@@ -155,7 +155,7 @@ const View = () => {
     ViewNames.GetFullSpecies,
     isEditor ? [] : [[SpeciesFieldNames.redirectTo, 'is', null]],
     {
-      [options.orderBy]: [SpeciesFieldNames.singularName, OrderDirections.ASC]
+      [options.orderBy]: [SpeciesFieldNames.singularName, OrderDirections.ASC],
     }
   )
   const [filterId, setFilterId] = useState<string | null>(null)
@@ -179,17 +179,26 @@ const View = () => {
       <div className={classes.autocompleteWrapper}>
         <AutocompleteInput
           label="Search for species"
-          options={species.map(speciesItem => ({
+          options={species.map((speciesItem) => ({
             label: speciesItem.pluralname,
-            data: speciesItem.id
+            data: speciesItem.id,
           }))}
-          onSelectedOption={newOption => setFilterId(newOption.data)}
+          filterOptions={(options, searchTerm) =>
+            options.filter((option) =>
+              option.label.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          }
+          onSelectedOption={(newOption) => setFilterId(newOption.data)}
           className={classes.autocomplete}
           onClear={() => setFilterId(null)}
+          textFieldProps={{
+            fullWidth: true,
+            autoFocus: true,
+          }}
         />
       </div>
       <div className={classes.speciesResults}>
-        {speciesHierarchy.map(speciesItem => (
+        {speciesHierarchy.map((speciesItem) => (
           <SpeciesResult key={speciesItem.id} speciesItem={speciesItem} />
         ))}
       </div>
@@ -222,11 +231,6 @@ export default () => {
           </Button>
         </>
       )}
-      <SuccessMessage>
-        23 October update - all species have been re-organised into a
-        multi-tiered system. Some have been renamed, split up or moved around.
-        Please message on Discord if you like or dislike the new system!
-      </SuccessMessage>
       <View />
     </>
   )

@@ -2,11 +2,12 @@ import { getNameForAwardId } from './awards'
 import {
   AssetFieldNames,
   CollectionNames,
-  UserFieldNames
+  UserFieldNames,
 } from './hooks/useDatabaseQuery'
 import { getRouteForTopic, getSubscriptionMessage } from './subscriptions'
 import * as routes from './routes'
 import { getUserId } from './supabase'
+import { CollectionNames as SocialCollectionNames } from './modules/social'
 
 export const NotificationEvents = {
   ASSET_APPROVED: 'ASSET_APPROVED',
@@ -27,13 +28,13 @@ export const NotificationEvents = {
   ASSET_AMENDMENT_REJECTED: 'ASSET_AMENDMENT_REJECTED',
   DIGEST: 'DIGEST',
   SUBSCRIPTION_ALERT: 'SUBSCRIPTION_ALERT',
-  REPORT_RESOLUTION_CHANGED: 'REPORT_RESOLUTION_CHANGED'
+  REPORT_RESOLUTION_CHANGED: 'REPORT_RESOLUTION_CHANGED',
 }
 
 export const NotificationMethods = {
   WEB: 'WEB',
   EMAIL: 'EMAIL',
-  DISCORD: 'DISCORD'
+  DISCORD: 'DISCORD',
 }
 
 export const defaultNotificationPrefs = {
@@ -58,20 +59,20 @@ export const defaultNotificationPrefs = {
 
     // editors only
     [NotificationEvents.ASSET_NEEDS_APPROVAL]: true,
-    [NotificationEvents.REPORT_CREATED]: true
+    [NotificationEvents.REPORT_CREATED]: true,
   },
   methods: {
     [NotificationMethods.WEB]: true,
     [NotificationMethods.EMAIL]: true,
-    [NotificationMethods.DISCORD]: true
-  }
+    [NotificationMethods.DISCORD]: true,
+  },
 }
 
 export const getLabelForNotification = ({
   parentdata: parentData,
   parenttable: collectionName,
   message,
-  data
+  data,
 }) => {
   // I screwed up the message field so temporary thing until those notifications are purged
   if (message.indexOf('has created an amendment for your asset') !== -1) {
@@ -87,48 +88,51 @@ export const getLabelForNotification = ({
           : 'Unknown'
       }" was approved`
     case NotificationEvents.COMMENT_ON_ASSET_AMENDMENT:
-      return `${(data && data.author && data.author.username) ||
-        'Someone'} commented on your amendment`
+      return `${
+        (data && data.author && data.author.username) || 'Someone'
+      } commented on your amendment`
     case NotificationEvents.COMMENT_ON_ASSET:
-      return `${(data && data.author && data.author.username) ||
-        'Someone'} commented on asset "${
+      return `${
+        (data && data.author && data.author.username) || 'Someone'
+      } commented on asset "${
         parentData[AssetFieldNames.title]
           ? parentData[AssetFieldNames.title]
           : 'Unknown'
       }"`
     case NotificationEvents.COMMENT_ON_USER:
-      return `${(data && data.author && data.author.username) ||
-        'Someone'} commented on your profile`
+      return `${
+        (data && data.author && data.author.username) || 'Someone'
+      } commented on your profile`
     case NotificationEvents.TAGGED_IN_COMMENT:
       switch (collectionName) {
         case CollectionNames.Assets:
-          return `${(data &&
-            data.author &&
-            data.author[UserFieldNames.username]) ||
-            'Someone'} tagged you in a comment of asset "${
+          return `${
+            (data && data.author && data.author[UserFieldNames.username]) ||
+            'Someone'
+          } tagged you in a comment of asset "${
             parentData[AssetFieldNames.title]
               ? parentData[AssetFieldNames.title]
               : 'Unknown'
           }"`
         case CollectionNames.Users:
-          return `${(data &&
-            data.author &&
-            data.author[UserFieldNames.username]) ||
-            'Someone'} tagged you in a comment for user ${
+          return `${
+            (data && data.author && data.author[UserFieldNames.username]) ||
+            'Someone'
+          } tagged you in a comment for user ${
             parentData[UserFieldNames.username]
               ? parentData[UserFieldNames.username]
               : 'Unknown'
           }`
         case CollectionNames.AssetAmendments:
-          return `${(data &&
-            data.author &&
-            data.author[UserFieldNames.username]) ||
-            'Someone'} tagged you in a comment for an asset amendment`
+          return `${
+            (data && data.author && data.author[UserFieldNames.username]) ||
+            'Someone'
+          } tagged you in a comment for an asset amendment`
         default:
-          return `${(data &&
-            data.author &&
-            data.author[UserFieldNames.username]) ||
-            'Someone'} tagged you in a comment`
+          return `${
+            (data && data.author && data.author[UserFieldNames.username]) ||
+            'Someone'
+          } tagged you in a comment`
       }
     case NotificationEvents.ASSET_AMENDED:
       return `User "${
@@ -179,7 +183,7 @@ export const getLinkUrl = ({
   parent: parentId,
   parenttable: collectionName,
   message,
-  data
+  data,
 }) => {
   const userId = getUserId()
   switch (message) {
@@ -204,7 +208,7 @@ export const getLinkUrl = ({
         case CollectionNames.Assets:
           return routes.viewAssetWithVarAndCommentVar
             .replace(':assetId', parentId)
-            .replace(':commentId', data.comment)
+            .replace(':commentId', data.itemId)
         case CollectionNames.Users:
           return routes.viewUserWithVar.replace(':userId', parentId)
         case CollectionNames.AssetAmendments:
@@ -212,7 +216,12 @@ export const getLinkUrl = ({
         case CollectionNames.Reports:
           return routes.viewReportWithVar.replace(':reportId', parentId)
         default:
-          return `/#unknown-collection-${collectionName}`
+          switch (collectionName) {
+            case SocialCollectionNames.SocialPosts:
+              return routes.socialWithPostVar.replace(':postId', parentId)
+            default:
+              return `/#unknown-collection-${collectionName}`
+          }
       }
     case NotificationEvents.COMMENT_ON_ASSET_AMENDMENT:
       return routes.viewAmendmentWithVar.replace(':amendmentId', parentId)

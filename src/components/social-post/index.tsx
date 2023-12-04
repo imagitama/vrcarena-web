@@ -10,7 +10,6 @@ import {
 import { trimDescription } from '../../utils/formatting'
 import useIsEditor from '../../hooks/useIsEditor'
 
-import Markdown from '../markdown'
 import FormattedDate from '../formatted-date'
 import UsernameLink from '../username-link'
 import Button from '../button'
@@ -99,6 +98,66 @@ const Attachment = ({ attachment }: { attachment: SocialAttachment }) => {
   )
 }
 
+const Line = ({ line, mentions }: { line: string; mentions: string[] }) => {
+  const regex = /\[user:(\w+)\]/g
+  let mentionIdx = 0
+
+  // Split the input string based on the regex
+  const parts = line.split(regex)
+
+  // Map each part to a React element
+  const elements = parts.map((part, index) => {
+    if (index % 2 === 1) {
+      // If it's an odd index, it's a user ID, so render a React element
+      const userId = part
+      const username = mentions[mentionIdx]
+      mentionIdx++
+      return (
+        <UsernameLink key={index} id={userId}>
+          @{username}
+        </UsernameLink>
+      )
+    } else {
+      // If it's an even index, it's just plain text
+      return part
+    }
+  })
+
+  return <>{elements}</>
+}
+
+const InternalTextToHtml = ({
+  string,
+  mentions,
+}: {
+  string: string
+  mentions: string[]
+}) => {
+  let elements: React.ReactElement[] = []
+
+  const lines = string.split('\n')
+
+  for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
+    if (lineIdx > 0) {
+      elements.push(<br />)
+    }
+
+    const line = lines[lineIdx]
+
+    elements.push(<Line key={lineIdx} line={line} mentions={mentions} />)
+  }
+
+  return <>{elements}</>
+}
+
+const SocialPostContents = ({
+  text,
+  mentions,
+}: {
+  text: string
+  mentions: string[]
+}) => <InternalTextToHtml string={text} mentions={mentions} />
+
 const SocialPost = ({
   socialPost,
   hydrate,
@@ -130,7 +189,8 @@ const SocialPost = ({
       className={`${classes.root} ${isActive ? classes.isActive : ''} ${
         small ? classes.small : ''
       }`}
-      ref={rootRef}>
+      ref={rootRef}
+      title={socialPost.id}>
       <div className={classes.avatar}>
         <UsernameLink id={socialPost.createdby}>
           <Avatar url={socialPost.createdbyavatarurl} size={sizes.TINY} />
@@ -175,17 +235,23 @@ const SocialPost = ({
           )}
         </div>
         <div className={classes.text}>
-          <Markdown
-            source={
+          <SocialPostContents
+            text={
               isExpanded
                 ? socialPost.text
                 : trimDescription(socialPost.text, limitBeforeCollapse)
             }
+            mentions={socialPost.mentions}
           />
           {socialPost.text.length > limitBeforeCollapse && (
-            <Button color="default" onClick={() => setIsExpanded(false)}>
-              View More
-            </Button>
+            <>
+              <br />
+              <Button
+                color="default"
+                onClick={() => setIsExpanded((currentVal) => !currentVal)}>
+                Expand
+              </Button>
+            </>
           )}
         </div>
         <div className={classes.attachments}>

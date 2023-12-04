@@ -36,6 +36,7 @@ export interface FullSocialPost extends SocialPost, SocialPostMeta {
   createdbyavatarurl: string
   reactionsummaries: ReactionSummary[]
   myreactionemoji: string
+  mentions: string[]
 }
 
 export interface SocialReactionUpdateFields {

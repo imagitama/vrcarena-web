@@ -15,14 +15,14 @@ interface SpeciesWithChildren extends Species {
 const useStyles = makeStyles({
   speciesResults: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   speciesItem: {
     padding: '0.25rem',
     '&:hover': {
       cursor: 'pointer',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)'
-    }
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    },
   },
   speciesItemTitle: {
     display: 'flex',
@@ -30,12 +30,12 @@ const useStyles = makeStyles({
     '& img': {
       width: '50px',
       height: '50px',
-      marginRight: '0.5rem'
-    }
+      marginRight: '0.5rem',
+    },
   },
   selected: {
-    outline: '2px solid yellow'
-  }
+    outline: '2px solid yellow',
+  },
 })
 
 function convertToNestedArray(
@@ -59,7 +59,7 @@ const SpeciesOutput = ({
   speciesItem,
   indent,
   selectedSpeciesIds,
-  onSpeciesClickWithId
+  onSpeciesClickWithId,
 }: {
   speciesItem: SpeciesWithChildren
   indent?: number
@@ -76,7 +76,7 @@ const SpeciesOutput = ({
       style={{ marginLeft: indent ? indent * 10 : 0 }}
       onClick={
         onSpeciesClickWithId
-          ? e => {
+          ? (e) => {
               e.stopPropagation()
               e.preventDefault()
               onSpeciesClickWithId(speciesItem.id)
@@ -89,7 +89,7 @@ const SpeciesOutput = ({
         <span>{speciesItem.pluralname}</span>
       </div>
       {speciesItem.children
-        ? speciesItem.children.map(speciesChild => (
+        ? speciesItem.children.map((speciesChild) => (
             <SpeciesOutput
               speciesItem={speciesChild}
               indent={1}
@@ -104,7 +104,7 @@ const SpeciesOutput = ({
 
 const SpeciesSelector = ({
   selectedSpeciesIds,
-  onSpeciesClickWithId
+  onSpeciesClickWithId,
 }: {
   selectedSpeciesIds?: string[]
   onSpeciesClickWithId?: (id: string) => void
@@ -136,18 +136,26 @@ const SpeciesSelector = ({
     <>
       <AutocompleteInput
         label="Search for species"
-        options={allSpecies.map(speciesItem => ({
+        options={allSpecies.map((speciesItem) => ({
           label: speciesItem.pluralname,
-          data: speciesItem.id
+          data: speciesItem.id,
         }))}
+        filterOptions={(options, searchTerm) =>
+          options.filter((option) =>
+            option.label.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        }
         onSelectedOption={(newOption: { data: string }) =>
           setFilterId(newOption.data)
         }
         onClear={() => setFilterId(null)}
+        textFieldProps={{
+          fullWidth: true,
+        }}
       />
 
       <div className={classes.speciesResults}>
-        {speciesHierarchy.map(speciesItem => (
+        {speciesHierarchy.map((speciesItem) => (
           <SpeciesOutput
             key={speciesItem.id}
             speciesItem={speciesItem}
