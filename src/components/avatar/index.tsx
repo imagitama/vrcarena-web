@@ -40,22 +40,33 @@ export default ({
   username = undefined,
   size = sizes.MEDIUM,
   className = undefined,
+  lazy = true,
 }: {
   url?: string
   username?: string
   size?: string
   className?: string
+  lazy?: boolean
 }) => {
   const classes = useStyles()
+
+  const elem = (
+    <img
+      src={url ? fixAccessingImagesUsingToken(url) : defaultAvatarUrl}
+      alt={`Avatar for ${username || 'a user'}`}
+      className={classes.image}
+    />
+  )
+
   return (
     <div className={`${classes.root} ${classes[size]} ${className}`}>
-      <LazyLoad placeholder={<LoadingIndicator />}>
-        <img
-          src={url ? fixAccessingImagesUsingToken(url) : defaultAvatarUrl}
-          alt={`Avatar for ${username || 'a user'}`}
-          className={classes.image}
-        />
-      </LazyLoad>
+      {lazy ? (
+        <LazyLoad placeholder={<LoadingIndicator />} once>
+          {elem}
+        </LazyLoad>
+      ) : (
+        elem
+      )}
     </div>
   )
 }

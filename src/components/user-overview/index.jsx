@@ -204,6 +204,7 @@ export default ({ userId }) => {
               ? user[UserFieldNames.avatarUrl]
               : null
           }
+          lazy={false}
         />
         <Heading
           variant="h1"
