@@ -204,23 +204,35 @@ export const getLinkUrl = ({
       }
     case NotificationEvents.COMMENT_ON_ASSET:
     case NotificationEvents.TAGGED_IN_COMMENT:
-      switch (collectionName) {
-        case CollectionNames.Assets:
-          return routes.viewAssetWithVarAndCommentVar
-            .replace(':assetId', parentId)
-            .replace(':commentId', data.itemId)
-        case CollectionNames.Users:
-          return routes.viewUserWithVar.replace(':userId', parentId)
-        case CollectionNames.AssetAmendments:
-          return routes.viewAmendmentWithVar.replace(':userId', parentId)
-        case CollectionNames.Reports:
-          return routes.viewReportWithVar.replace(':reportId', parentId)
-        default:
-          switch (collectionName) {
-            case SocialCollectionNames.SocialPosts:
-              return routes.socialWithPostVar.replace(':postId', parentId)
+      const commentOrSocialPostId = parentId
+      const commentOrSocialPostCollectionName = collectionName
+
+      switch (commentOrSocialPostCollectionName) {
+        case SocialCollectionNames.SocialPosts:
+          return routes.socialWithPostVar.replace(':postId', actualParentId)
+        case CollectionNames.Comments:
+          const actualParentCollectionName = data.parentType
+          const actualParentId = data.parent
+
+          switch (actualParentCollectionName) {
+            case CollectionNames.Assets:
+              return routes.viewAssetWithVarAndCommentVar
+                .replace(':assetId', actualParentId)
+                .replace(':commentId', commentOrSocialPostId)
+            case CollectionNames.Users:
+              return routes.viewUserWithVar.replace(':userId', actualParentId)
+            case CollectionNames.AssetAmendments:
+              return routes.viewAmendmentWithVar.replace(
+                ':userId',
+                actualParentId
+              )
+            case CollectionNames.Reports:
+              return routes.viewReportWithVar.replace(
+                ':reportId',
+                actualParentId
+              )
             default:
-              return `/#unknown-collection-${collectionName}`
+              return `/#unknown-collection-${actualParentCollectionName}`
           }
       }
     case NotificationEvents.COMMENT_ON_ASSET_AMENDMENT:
