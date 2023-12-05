@@ -20,14 +20,20 @@ const useStyles = makeStyles({
     left: 0,
     zIndex: 100,
   },
+  fromRight: {
+    left: 'auto',
+    right: 0,
+  },
 })
 
 export default ({
   onSelectEmoji,
   className,
+  fromRight = false,
 }: {
   onSelectEmoji: (emoji: string) => void
   className?: string
+  fromRight?: boolean
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const classes = useStyles()
@@ -45,7 +51,8 @@ export default ({
         😀
       </div>
       {isOpen && (
-        <div className={classes.picker}>
+        <div
+          className={`${classes.picker} ${fromRight ? classes.fromRight : ''}`}>
           <EmojiPicker
             onEmojiClick={(emojiClickData) =>
               onSelectEmoji(emojiClickData.emoji)

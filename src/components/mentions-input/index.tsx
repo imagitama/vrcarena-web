@@ -258,6 +258,7 @@ const MentionsInput = ({
         <EmojiPicker
           onSelectEmoji={(emoji) => onChange(`${value}${emoji}`)}
           className={classes.emojiPicker}
+          fromRight
         />
       </div>
       <div className={classes.hint}>
