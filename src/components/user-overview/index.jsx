@@ -286,6 +286,7 @@ export default ({ userId }) => {
               name: 'comments',
               label: 'Comments',
               contents: <TabComments />,
+              noLazy: true,
             },
             {
               name: 'assets',
