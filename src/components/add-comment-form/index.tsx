@@ -7,7 +7,7 @@ import TextInput, {
 import 'react-autocomplete-input/dist/bundle.css'
 import CreateIcon from '@material-ui/icons/Create'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 import {
   CollectionNames,
   CommentFieldNames,
@@ -21,49 +21,12 @@ import LoadingIndicator from '../loading-indicator'
 import Button from '../button'
 
 import { handleError } from '../../error-handling'
-import { simpleSearchRecords } from '../../data-store'
 import FormControls from '../form-controls'
 import { User } from '../../modules/users'
-
-const useStyles = makeStyles({
-  root: {
-    position: 'relative',
-    marginTop: '1rem',
-    '& li': {
-      color: 'black',
-    },
-  },
-  input: {
-    width: '100%',
-  },
-  button: {
-    marginTop: '0.5rem',
-  },
-  tagHint: {
-    fontSize: '75%',
-  },
-})
+import { Comment } from '../../modules/comments'
+import MentionsInput from '../mentions-input'
 
 const mapUserToRecord = (user: User): string => user.username
-
-const TextInputComponent = React.forwardRef(
-  (props: ReactAutocompleteComponentProps, ref) => {
-    const classes = useStyles()
-    return (
-      <TextField
-        inputRef={ref}
-        value={props.value}
-        onChange={props.onChange}
-        onBlur={props.onBlur}
-        onKeyDown={props.onKeyDown}
-        multiline
-        rows={2}
-        variant="outlined"
-        className={classes.input}
-      />
-    )
-  }
-)
 
 export default ({
   collectionName,
@@ -87,12 +50,9 @@ export default ({
 
   const [textFieldValue, setTextFieldValue] = useState('')
   const userId = useUserId()
-  const [isSaving, isSuccess, isErrored, create, clear] = useDatabaseSave(
-    CollectionNames.Comments
-  )
-  const classes = useStyles()
+  const [isSaving, isSuccess, isErrored, create, clear] =
+    useDataStoreCreate<Comment>(CollectionNames.Comments)
   const timeoutRef = useRef<NodeJS.Timeout | undefined>()
-  const [autoCompleteOptions, setAutoCompleteOptions] = useState<string[]>([])
 
   useEffect(
     () => () => {
@@ -102,45 +62,6 @@ export default ({
     },
     []
   )
-
-  const populateAutoCompleteOptions = async (searchTerm: string) => {
-    try {
-      console.debug(`Populate auto complete!`)
-
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-
-      if (!searchTerm) {
-        return
-      }
-
-      await new Promise((resolve) => {
-        timeoutRef.current = setTimeout(resolve, 250)
-      })
-
-      const data = await simpleSearchRecords<User>(
-        CollectionNames.Users,
-        { [UserFieldNames.username]: searchTerm },
-        10
-      )
-
-      if (!data) {
-        throw new Error('Simple search returned null')
-      }
-
-      const newRecords = data.map(mapUserToRecord)
-
-      setAutoCompleteOptions((currentRecords) =>
-        currentRecords
-          .filter((currentRecord) => !newRecords.includes(currentRecord))
-          .concat(newRecords)
-      )
-    } catch (err) {
-      console.error(err)
-      handleError(err)
-    }
-  }
 
   if (!userId) {
     return (
@@ -178,11 +99,13 @@ export default ({
       }
 
       await create({
-        [CommentFieldNames.parentTable]: collectionName,
-        [CommentFieldNames.parent]: parentId,
-        [CommentFieldNames.comment]: textFieldValue,
-        [CommentFieldNames.isPrivate]: asPrivate,
+        parenttable: collectionName,
+        parent: parentId,
+        comment: textFieldValue,
+        isprivate: asPrivate,
       })
+
+      setTextFieldValue('')
 
       if (onDone) {
         onDone()
@@ -194,21 +117,17 @@ export default ({
   }
 
   return (
-    <div className={classes.root}>
-      <TextInput
-        Component={TextInputComponent}
+    <div>
+      <MentionsInput
         value={textFieldValue}
         onChange={(newVal) => setTextFieldValue(newVal)}
-        options={autoCompleteOptions}
-        onRequestOptions={populateAutoCompleteOptions}
-        matchAny
+        isDisabled={isSaving}
       />
-      <div className={classes.tagHint}>
-        Use @ to mention another user (notifies them)
-      </div>
-      <Button className={classes.button} onClick={onAddCommentBtnClick}>
-        Add{asPrivate ? ' Private' : ''} Comment
-      </Button>
+      <FormControls extraTopMargin>
+        <Button onClick={onAddCommentBtnClick}>
+          Add{asPrivate ? ' Private' : ''} Comment
+        </Button>
+      </FormControls>
     </div>
   )
 }

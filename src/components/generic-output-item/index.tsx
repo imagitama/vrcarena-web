@@ -4,18 +4,18 @@ import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import AssetResultsItem from '../../components/asset-results-item'
 import { Asset } from '../../modules/assets'
 import Comment from '../comment'
-import { Comment as CommentData } from '../../modules/comments'
+import { FullComment } from '../../modules/comments'
 import Link from '../link'
 import { getUrlForParent } from '../../relations'
 
 export default ({
   type,
   id,
-  data
+  data,
 }: {
   type: string
   id: string
-  data?: Asset | CommentData
+  data?: Asset | FullComment
 }) => {
   if (!data) {
     return (
@@ -29,7 +29,7 @@ export default ({
       return <AssetResultsItem asset={data as Asset} isLandscape />
     case CollectionNames.Comments:
       return (
-        <Comment comment={data as CommentData} showControls={false} shorten />
+        <Comment comment={data as FullComment} showControls={false} shorten />
       )
     default:
       return <>Invalid type "{type}"</>

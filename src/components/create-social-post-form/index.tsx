@@ -9,6 +9,7 @@ import {
   CollectionNames,
   SocialAttachment,
   SocialAttachmentType,
+  SocialPost,
   SocialPostFields,
 } from '../../modules/social'
 import Button from '../button'
@@ -201,7 +202,7 @@ const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
     create,
     ,
     createdId,
-  ] = useDataStoreCreate<SocialPostFields>(CollectionNames.SocialPosts)
+  ] = useDataStoreCreate<SocialPost>(CollectionNames.SocialPosts)
   const myUserId = useUserId()
   const classes = useStyles()
 

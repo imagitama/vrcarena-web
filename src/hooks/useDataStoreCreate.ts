@@ -3,14 +3,14 @@ import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 import { mapFieldsForDatabase } from '../utils'
 
-export default <TFields, TRecord = void>(
+export default <TRecord>(
   collectionName: string
 ): [
   boolean,
   boolean,
   boolean,
   (
-    fields: TFields,
+    fields: Partial<TRecord>,
     returnEntireDocument?: boolean
   ) => Promise<string | TRecord>,
   () => void,
@@ -32,7 +32,7 @@ export default <TFields, TRecord = void>(
   }
 
   const create = async (
-    fields: TFields,
+    fields: Partial<TRecord>,
     returnEntireDocument: boolean = false
   ): Promise<string | TRecord> => {
     try {

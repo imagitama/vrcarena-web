@@ -72,10 +72,8 @@ const CreateForm = ({
   const [name, setName] = useState('')
   const [inviteUrl, setInviteUrl] = useState('')
   const [widgetId, setWidgetId] = useState('')
-  const [isSaving, isSuccess, isErrored, create, clear] = useDataStoreCreate<
-    DiscordServerFields,
-    DiscordServer
-  >(CollectionNames.DiscordServers)
+  const [isSaving, isSuccess, isErrored, create, clear] =
+    useDataStoreCreate<DiscordServer>(CollectionNames.DiscordServers)
   const [createdDocument, setCreatedDocument] = useState<DiscordServer | null>(
     null
   )

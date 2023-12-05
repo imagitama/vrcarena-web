@@ -48,14 +48,10 @@ const useUserTagging = (
 
     const newAtSymbolIndex = internalText.length - 1
 
-    console.debug(
-      `########################  @ symbol is at index ${newAtSymbolIndex}`
-    )
+    console.debug(`@ symbol is at index ${newAtSymbolIndex}`)
 
     setAtSymbolIndex(newAtSymbolIndex)
   }, [userNowWantsToTag])
-
-  console.debug(`useUserMentioning`, atSymbolIndex, internalText)
 
   useEffect(() => {
     if (atSymbolIndex === -1) {

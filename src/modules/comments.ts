@@ -1,15 +1,21 @@
 export interface Comment {
   id: string
   comment: string
-  isprivate: string
+  isprivate: boolean
   parenttable: string
   parent: string
+  lastmodifiedat: string
+  lastmodifiedby: string
+  createdat: string
+  createdby: string
 }
 
 export interface CommentMeta {
   accessstatus: string
   editornotes: string
-  createdat: Date
+  lastmodifiedat: string
+  lastmodifiedby: string
+  createdat: string
   createdby: string
 }
 
@@ -17,6 +23,7 @@ export interface FullComment extends Comment, CommentMeta {
   createdbyusername: string
   createdbyavatarurl: string
   createdbyrole: string
+  mentions: string[]
 }
 
 // deprecated
@@ -25,9 +32,9 @@ export const CollectionNameCommentsMeta = 'commentsmeta'
 
 export const CollectionNames = {
   Comments: 'comments',
-  CommentsMeta: 'commentsmeta'
+  CommentsMeta: 'commentsmeta',
 }
 
 export const CommentsMetaFieldNames = {
-  accessStatus: 'accessstatus'
+  accessStatus: 'accessstatus',
 }

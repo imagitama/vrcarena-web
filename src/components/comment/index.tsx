@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import useUserRecord from '../../hooks/useUserRecord'
 import {
   CollectionNames as OldCollectionNames,
-  AccessStatuses
+  AccessStatuses,
 } from '../../hooks/useDatabaseQuery'
 import { CollectionNames } from '../../data-store'
 
@@ -23,47 +23,52 @@ import EditorRecordManager from '../editor-record-manager'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import { Comment, FullComment } from '../../modules/comments'
 import ReportButton from '../report-button'
+import { mediaQueryForTabletsOrBelow } from '../../media-queries'
+import MentionsOutput from '../mentions-output'
 
 const useStyles = makeStyles({
   cols: {
     marginBottom: '1rem',
     position: 'relative',
-    display: 'flex'
+    display: 'flex',
   },
   deleted: {
-    opacity: '0.5'
+    opacity: '0.5',
   },
   colLeft: {
     width: '50px',
-    marginRight: '0.5rem'
+    marginRight: '1rem',
+    [mediaQueryForTabletsOrBelow]: {
+      marginRight: '0.5rem',
+    },
   },
   colRight: {
-    flex: 1
+    flex: 1,
   },
   content: {
     marginTop: '0.25rem',
     flex: 1,
     '& p:first-child': {
-      marginTop: 0
+      marginTop: 0,
     },
     '& p:last-child': {
-      marginBottom: 0
-    }
+      marginBottom: 0,
+    },
   },
   deletedMessage: {
-    fontStyle: 'italic'
+    fontStyle: 'italic',
   },
   date: {},
   contentWrapper: {
-    display: 'flex'
+    display: 'flex',
   },
   controls: {
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   control: {},
   meta: {
-    display: 'inline-block'
+    display: 'inline-block',
   },
   metaItems: {
     marginLeft: '0.25rem',
@@ -72,13 +77,13 @@ const useStyles = makeStyles({
     alignItems: 'center',
     '& > div': {
       display: 'inline-block',
-      marginRight: '1rem'
-    }
+      marginRight: '1rem',
+    },
   },
   highlighted: {
     border: '1px dashed rgb(255, 255, 0)',
-    padding: '0.25rem'
-  }
+    padding: '0.25rem',
+  },
 })
 
 const maxLength = 100
@@ -97,9 +102,9 @@ export default ({
   shimmer = false,
   hydrate = undefined,
   showControls = true,
-  shorten = false
+  shorten = false,
 }: {
-  comment?: Comment | FullComment
+  comment: FullComment
   isHighlighted?: boolean
   performScroll?: boolean
   shimmer?: boolean
@@ -117,7 +122,7 @@ export default ({
       return
     }
 
-    console.debug(`Scrolling to comment ${id}...`)
+    console.debug(`Scrolling to comment "${id}"...`)
 
     if (htmlElementRef.current) {
       scrollToElement(htmlElementRef.current)
@@ -126,21 +131,18 @@ export default ({
 
   const {
     id,
-    comment: commentContents
-    // isprivate: isPrivate,
-  } = comment || {}
-
-  const {
+    comment: commentText,
     // meta
     accessstatus: accessStatus,
     editornotes: editorNotes,
     createdat: createdAt,
     createdby: createdBy,
     // view
+    mentions,
     createdbyusername: createdByUsername,
     createdbyavatarurl: createdByAvatarUrl,
-    createdbyrole: createdByRole
-  } = (comment as FullComment) || {}
+    createdbyrole: createdByRole,
+  } = comment
 
   const isDeleted = accessStatus === AccessStatuses.Deleted
 
@@ -182,12 +184,11 @@ export default ({
         <div className={classes.contentWrapper}>
           {shimmer ? (
             <LoadingShimmer width={400} height={25} />
-          ) : (!isDeleted || canEditComments(user)) && commentContents ? (
+          ) : (!isDeleted || canEditComments(user)) && commentText ? (
             <div className={classes.content}>
-              <Markdown
-                source={
-                  shorten ? shortenComment(commentContents) : commentContents
-                }
+              <MentionsOutput
+                text={shorten ? shortenComment(commentText) : commentText}
+                mentions={mentions}
               />
             </div>
           ) : null}

@@ -96,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
     top: '100%',
     left: 0,
     zIndex: 100,
+    color: theme.palette.common.white,
   },
 }))
 
@@ -124,7 +125,6 @@ const getValueForSaving = (value: string, map: UsernameMapping) => {
 
 const Output = ({ value, map }: { value: string; map: UsernameMapping }) => {
   const regex = /\[user:(\w+)\]/g
-  let mentionIdx = 0
 
   const lines = value.split('\n')
 
@@ -141,10 +141,13 @@ const Output = ({ value, map }: { value: string; map: UsernameMapping }) => {
         const result = Object.entries(map).find(([name, id]) => id === userId)
 
         if (!result) {
-          throw new Error(`Could not find match for ${userId}`)
+          console.warn(
+            `Could not find user map for "${userId}"`,
+            JSON.stringify(map, null, '  ')
+          )
+          return <em>@...</em>
         }
 
-        mentionIdx++
         return <em>@{result[0]}</em>
       } else {
         return <span>{part}</span>
@@ -186,9 +189,10 @@ const MentionsInput = ({
   const onSelectUserSuggestion = (option: AutocompleteOption<string>) => {
     console.debug(`User selected option ${option.data} "${option.label}"`)
 
-    stopMentioningAndClear()
-
+    // make sure this happens first for race condition
     usernameMapping.current[option.label] = option.data
+
+    stopMentioningAndClear()
 
     const newInternalText = `${value.substring(0, atSymbolIndexInText)}[user:${
       option.data
@@ -264,28 +268,7 @@ const MentionsInput = ({
           : 'Type @ and at least 3 characters to mention someone'}
       </div>
       {userSuggestions !== null && userSuggestions.length > 0 && (
-        <MenuList
-          className={classes.menu}
-          autoFocus={false}
-          // anchorEl={outputRef.current}
-          // getContentAnchorEl={null}
-          // anchorOrigin={{
-          //   vertical: 'bottom',
-          //   horizontal: 'left',
-          // }}
-          // transformOrigin={{
-          //   vertical: 'top',
-          //   horizontal: 'left',
-          // }}
-          // BackdropProps={{
-          //   invisible: true,
-          // }}
-          // disableAutoFocus={true}
-          // hideBackdrop={true}
-          // autoFocus={false}
-          // open={userSuggestions !== null && userSuggestions.length > 0}
-          // onClose={() => clearSuggestions()}
-        >
+        <MenuList className={classes.menu} autoFocus={false}>
           <Paper>
             {userSuggestions &&
               userSuggestions.length &&

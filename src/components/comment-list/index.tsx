@@ -8,7 +8,7 @@ import { client as supabase } from '../../supabase'
 import { getQueryParam } from '../../utils'
 import { trackAction } from '../../analytics'
 import { CollectionNames } from '../../modules/assets'
-import { Comment } from '../../modules/comments'
+import { Comment, FullComment } from '../../modules/comments'
 
 import CommentItem from '../comment'
 import ErrorMessage from '../error-message'
@@ -21,7 +21,7 @@ export default ({
   parentId,
   shimmer = false,
   className = '',
-  getPrivate = false
+  getPrivate = false,
 }: {
   collectionName: string
   parentId: string
@@ -46,17 +46,19 @@ export default ({
     [collectionName, parentId, shimmer, isEditor, getPrivate]
   )
 
-  const [isLoading, isErrored, results, , hydrate] = useDataStore<Comment[]>(
-    shimmer ? null : getQuery,
-    'get-comments'
-  )
+  const [isLoading, isErrored, results, , hydrate] = useDataStore<
+    FullComment[]
+  >(shimmer ? null : getQuery, 'get-comments')
 
   if (isLoading || shimmer) {
     return (
       <div className={className}>
-        <CommentItem shimmer />
-        <CommentItem shimmer />
-        <CommentItem shimmer />
+        {/* @ts-ignore */}
+        <CommentItem shimmer comment={{}} />
+        {/* @ts-ignore */}
+        <CommentItem shimmer comment={{}} />
+        {/* @ts-ignore */}
+        <CommentItem shimmer comment={{}} />
       </div>
     )
   }
@@ -75,7 +77,7 @@ export default ({
     <div className={className}>
       <div>
         {results && results.length ? (
-          results.map(result => (
+          results.map((result) => (
             <CommentItem
               key={result.id}
               comment={result}
@@ -104,7 +106,7 @@ export default ({
         onAddClick={() =>
           trackAction('CommentList', 'Click add comment button', {
             collectionName,
-            parentId
+            parentId,
           })
         }
         onDone={() => hydrate()}

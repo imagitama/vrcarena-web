@@ -3,7 +3,7 @@ import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 import {
   CollectionNames,
   SurveyQuestionResponse,
-  SurveyResponse
+  SurveyResponse,
 } from '../../modules/surveys'
 import { Survey, SurveyQuestion } from '../../surveys'
 import Button from '../button'
@@ -19,7 +19,7 @@ import TextInput from '../text-input'
 const Question = ({
   question,
   currentResponse,
-  onResponseChange
+  onResponseChange,
 }: {
   question: SurveyQuestion
   currentResponse: SurveyQuestionResponse
@@ -28,7 +28,7 @@ const Question = ({
   const onClickOption = (option: string) => {
     onResponseChange({
       ...currentResponse,
-      options: [option]
+      options: [option],
     })
   }
 
@@ -37,7 +37,7 @@ const Question = ({
   ) => {
     onResponseChange({
       ...currentResponse,
-      comments: event.target.value
+      comments: event.target.value,
     })
   }
 
@@ -45,7 +45,7 @@ const Question = ({
     <div>
       <Heading variant="h4">{question.question}</Heading>
       {question.options
-        ? question.options.map(option => (
+        ? question.options.map((option) => (
             <CheckboxInput
               key={option}
               onChange={() => onClickOption(option)}
@@ -80,7 +80,7 @@ const finalCommentsQuestion = 'Additional comments'
 const SurveyForm = ({
   survey,
   parentTable,
-  parentId
+  parentId,
 }: {
   survey: Survey
   parentTable: string
@@ -89,7 +89,7 @@ const SurveyForm = ({
   const [questionResponses, setQuestionResponses] = useState<
     SurveyQuestionResponse[]
   >([])
-  const [isCreating, isSuccess, isErrored, create, clear] = useDataStoreCreate(
+  const [isCreating, isSuccess, isErrored, create] = useDataStoreCreate(
     CollectionNames.SurveyResponses
   )
 
@@ -97,19 +97,19 @@ const SurveyForm = ({
     const surveyResponseRecord: SurveyResponse = {
       parenttable: parentTable,
       parent: parentId,
-      questionresponses: questionResponses
+      questionresponses: questionResponses,
     }
 
     create(surveyResponseRecord)
   }
 
   const onQuestionChange = (newResponse: SurveyQuestionResponse) => {
-    setQuestionResponses(currentResponses =>
+    setQuestionResponses((currentResponses) =>
       currentResponses.find(
-        currentResponse =>
+        (currentResponse) =>
           currentResponse.originalQuestion === newResponse.originalQuestion
       )
-        ? currentResponses.map(currentResponse =>
+        ? currentResponses.map((currentResponse) =>
             currentResponse.originalQuestion === newResponse.originalQuestion
               ? newResponse
               : currentResponse
@@ -138,18 +138,18 @@ const SurveyForm = ({
         </ErrorMessage>
       ) : (
         <>
-          {survey.questions.map(question => (
+          {survey.questions.map((question) => (
             <Question
               key={question.question}
               question={question}
               currentResponse={
                 questionResponses.find(
-                  currentResponse =>
+                  (currentResponse) =>
                     currentResponse.originalQuestion === question.question
                 ) || {
                   originalQuestion: question.question,
                   options: [],
-                  comments: ''
+                  comments: '',
                 }
               }
               onResponseChange={onQuestionChange}
@@ -160,7 +160,7 @@ const SurveyForm = ({
               question={{ question: finalCommentsQuestion }}
               currentResponse={
                 questionResponses.find(
-                  questionResponse =>
+                  (questionResponse) =>
                     questionResponse.originalQuestion === finalCommentsQuestion
                 ) || { originalQuestion: finalCommentsQuestion }
               }
