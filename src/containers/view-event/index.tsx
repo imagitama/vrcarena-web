@@ -296,14 +296,12 @@ const View = () => {
             ) : null}
             {endsAt ? <DateWithTimezone date={endsAt} /> : null}
           </div> */}
-          {sourceurl ? (
+          {sourceurl && (
             <div className={classes.callToAction}>
               <Button size="large" icon={<LaunchIcon />} url={sourceurl}>
                 Visit Website
               </Button>
             </div>
-          ) : (
-            <>No source URL set</>
           )}
           {description ? (
             <div className={classes.description}>
