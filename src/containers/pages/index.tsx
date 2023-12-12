@@ -18,7 +18,7 @@ import { CollectionNames, PagesFieldNames } from '../../data-store'
 import useDatabaseQuery, {
   Operators,
   options,
-  OrderDirections
+  OrderDirections,
 } from '../../hooks/useDatabaseQuery'
 
 import * as routes from '../../routes'
@@ -49,51 +49,51 @@ const PageContext = createContext<PageContext>({
   toggleHelpMode: () => undefined,
   selectedLineOfText: '',
   setSelectedLineOfText: () => undefined,
-  isInHelpMode: false
+  isInHelpMode: false,
 })
 const usePageContext = () => useContext(PageContext)
 
 const useStyles = makeStyles({
   root: {
     maxWidth: '900px',
-    margin: '0 auto'
+    margin: '0 auto',
   },
   headings: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   pageControls: {
     display: 'flex',
     alignItems: 'center',
     marginTop: '2rem',
     paddingTop: '2rem',
-    borderTop: '1px solid rgba(255, 255, 255, 0.5)'
+    borderTop: '1px solid rgba(255, 255, 255, 0.5)',
   },
   control: {
     width: '33.3%',
     '&:last-child': {
-      textAlign: 'right'
-    }
+      textAlign: 'right',
+    },
   },
   tableOfContentsBtn: {
     margin: '0 auto',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   heading: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   icon: {
     display: 'flex',
     alignItems: 'center',
-    marginRight: '0.5rem'
+    marginRight: '0.5rem',
   },
   helpInputWrapper: {
     display: 'flex',
     '& > *:first-child': {
-      marginRight: '0.5rem'
-    }
-  }
+      marginRight: '0.5rem',
+    },
+  },
 })
 
 const PageControls = () => {
@@ -187,7 +187,7 @@ const TableOfContents = () => {
 }
 
 const EditorControls = ({
-  page: { id, parent: parentName }
+  page: { id, parent: parentName },
 }: {
   page: Page
 }) => {
@@ -208,12 +208,8 @@ const EditorControls = ({
 }
 
 const HelpModeInfo = () => {
-  const {
-    selectedLineOfText,
-    pagesInParent,
-    pageName,
-    toggleHelpMode
-  } = usePageContext()
+  const { selectedLineOfText, pagesInParent, pageName, toggleHelpMode } =
+    usePageContext()
   const classes = useStyles()
 
   const thisPage = pagesInParent.find(({ id }) => id === pageName)
@@ -251,9 +247,10 @@ const HelpModeInfo = () => {
 
 const PageView = ({ page }: { page: Page }) => {
   const {
+    parentName,
     description: parentDescription,
     isInHelpMode,
-    setSelectedLineOfText
+    setSelectedLineOfText,
   } = usePageContext()
   const classes = useStyles()
   const { title, description, content } = page
@@ -263,7 +260,7 @@ const PageView = ({ page }: { page: Page }) => {
         <title>{title} | VRCArena</title>
         <meta name="description" content={description || parentDescription} />
       </Helmet>
-      <PageControls />
+      {parentName === 'avatar-tutorial' && <PageControls />}
       <div className={classes.headings}>
         <Heading variant="h2">{title}</Heading>
       </div>
@@ -273,7 +270,7 @@ const PageView = ({ page }: { page: Page }) => {
         // @ts-ignore
         onClickLineWithContent={isInHelpMode ? setSelectedLineOfText : null}
       />
-      <PageControls />
+      {parentName === 'avatar-tutorial' && <PageControls />}
       <EditorControls page={page} />
     </>
   )
@@ -315,13 +312,13 @@ export default () => {
     collectionNamePages,
     [[PagesFieldNames.parent, Operators.EQUALS, parentName]],
     {
-      [options.orderBy]: [PagesFieldNames.pageOrder, OrderDirections.ASC]
+      [options.orderBy]: [PagesFieldNames.pageOrder, OrderDirections.ASC],
     }
   )
   const [selectedLineOfText, setSelectedLineOfText] = useState<string>('')
   const [isInHelpMode, setIsInHelpMode] = useState<boolean>(false)
 
-  const toggleHelpMode = () => setIsInHelpMode(currentVal => !currentVal)
+  const toggleHelpMode = () => setIsInHelpMode((currentVal) => !currentVal)
 
   if (
     isLoading ||
@@ -353,10 +350,15 @@ export default () => {
         <title>{title} | VRCArena</title>
         <meta name="description" content={description} />
       </Helmet>
-      <Heading variant="h1" style={{ textAlign: 'center' }}>
-        {title}
-      </Heading>
-      <p style={{ textAlign: 'center' }}>{description}</p>
+
+      {parentName === 'avatar-tutorial' && (
+        <>
+          <Heading variant="h1" style={{ textAlign: 'center' }}>
+            {title}
+          </Heading>
+          <p style={{ textAlign: 'center' }}>{description}</p>
+        </>
+      )}
       <PageContext.Provider
         value={{
           pagesInParent,
@@ -366,7 +368,7 @@ export default () => {
           toggleHelpMode,
           selectedLineOfText,
           setSelectedLineOfText,
-          isInHelpMode
+          isInHelpMode,
         }}>
         <ViewContents />
       </PageContext.Provider>

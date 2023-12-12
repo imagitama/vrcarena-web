@@ -28,6 +28,7 @@ import DateInput from './components/date-input'
 import CustomInput from './components/custom-input'
 import TagsInput from './components/tags-input'
 import DropdownInput from './components/dropdown-input'
+import ItemInput from './components/item-input'
 
 function getInputForFieldType(type: keyof typeof fieldTypes) {
   switch (type) {
@@ -55,6 +56,8 @@ function getInputForFieldType(type: keyof typeof fieldTypes) {
       return TagsInput
     case fieldTypes.dropdown:
       return DropdownInput
+    case fieldTypes.item:
+      return ItemInput
     default:
       throw new Error(`Invalid field type "${type}"`)
   }

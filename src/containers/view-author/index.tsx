@@ -25,7 +25,7 @@ import {
   CollectionNames as OldCollectionNames,
   AssetFieldNames,
   AccessStatuses,
-  OrderDirections
+  OrderDirections,
 } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
@@ -46,7 +46,7 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => (
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
-    query => {
+    (query) => {
       query = query.eq(AssetFieldNames.author, author.id)
       if (!isAdultContentEnabled) {
         query = query.eq(AssetFieldNames.isAdult, false)
@@ -72,42 +72,42 @@ const useStyles = makeStyles({
   categories: {
     marginTop: '0',
     marginBottom: '1rem',
-    fontSize: '150%'
+    fontSize: '150%',
   },
   findMoreAuthorsBtn: {
     marginTop: '3rem',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   icon: {
     '& svg': {
       verticalAlign: 'middle',
       width: 'auto',
-      height: '1em'
-    }
+      height: '1em',
+    },
   },
   cols: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   col: {
     width: 'calc(50% - 0.5rem)',
     margin: '0 0.5rem 0 0',
     '&:last-child': {
-      margin: '0 0 0 0.5rem'
+      margin: '0 0 0 0.5rem',
     },
     [mediaQueryForTabletsOrBelow]: {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   title: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   avatar: {
-    display: 'inline-block'
+    display: 'inline-block',
   },
   desc: {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 })
 
 function FindMoreAuthorsBtn() {
@@ -180,7 +180,7 @@ const View = () => {
     accessstatus: accessStatus,
     approvalstatus: approvalStatus,
     editornotes: editorNotes,
-    createdby: createdBy
+    createdby: createdBy,
   } = author
 
   const isDeleted = accessStatus === AccessStatuses.Deleted
@@ -251,7 +251,7 @@ const View = () => {
               twitterUsername: twitterUsername,
               patreonUsername: patreonUsername,
               discordServerInviteUrl: discordServerInviteUrl,
-              boothUsername: boothUsername
+              boothUsername: boothUsername,
             }}
             actionCategory={analyticsCategory}
           />
@@ -259,7 +259,7 @@ const View = () => {
           {saleReason !== null ? (
             <SaleInfo
               authorId={authorId}
-              reason={saleReason}
+              eventId={saleReason}
               description={saleDescription}
               expiresAt={saleExpiresAt}
               showViewAuthorButton={false}

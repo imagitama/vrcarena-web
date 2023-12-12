@@ -35,6 +35,12 @@ export interface CustomProperties {
   }) => React.ReactElement
 }
 
+export interface ItemProperties {
+  collectionName: string
+  fieldAsLabel: string
+  // renderer: (props: { item: any }) => React.ReactElement
+}
+
 export interface EditableField<TData> {
   name: keyof TData
   label?: string // optional for hidden fields
@@ -44,6 +50,7 @@ export interface EditableField<TData> {
   imageUploadProperties?: ImageUploadProperties
   searchableProperties?: SearchableProperties
   customProperties?: CustomProperties
+  itemProperties?: ItemProperties
   isRequired?: boolean
   options?: Option[]
   isEditable?: boolean

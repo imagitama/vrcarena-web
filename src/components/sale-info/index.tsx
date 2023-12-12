@@ -13,33 +13,33 @@ import Paper from '../paper'
 const useStyles = makeStyles({
   root: {
     margin: '1rem 0',
-    padding: '1rem'
+    padding: '1rem',
   },
   withButton: {
-    display: 'flex'
+    display: 'flex',
   },
   heading: {
     width: '100%',
     fontSize: '150%',
     fontWeight: 100,
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   icon: {
-    marginRight: '0.5rem'
+    marginRight: '0.5rem',
   },
   info: {
     width: '100%',
     padding: '1rem 1rem 0',
     '& p:first-child': {
-      marginTop: 0
+      marginTop: 0,
     },
     '& p:last-child': {
-      marginBottom: 0
-    }
+      marginBottom: 0,
+    },
   },
   noPadding: {
-    padding: 0
+    padding: 0,
   },
   expiry: {
     marginTop: '0.5rem',
@@ -48,27 +48,27 @@ const useStyles = makeStyles({
     '& > span': {
       padding: '1rem',
       border: '1px solid rgba(255, 255, 255, 0.5)',
-      borderRadius: '3px'
+      borderRadius: '3px',
     },
     textAlign: 'center',
     fontSize: '150%',
-    animation: '1s ease infinite alternate $pulseExpiry'
+    animation: '1s ease infinite alternate $pulseExpiry',
   },
   '@keyframes pulseExpiry': {
     '0%': {
-      opacity: 0.5
+      opacity: 0.5,
     },
     '100%': {
-      opacity: 1
-    }
+      opacity: 1,
+    },
   },
   cols: {
     display: 'flex',
     alignItems: 'center',
     '& > :first-child': {
-      width: '100%'
-    }
-  }
+      width: '100%',
+    },
+  },
 })
 
 const getTimeRemaining = (date: Date): string => {
@@ -90,16 +90,16 @@ const getTimeRemaining = (date: Date): string => {
 
 export default ({
   authorId,
-  reason,
+  eventId,
   description,
   expiresAt,
   showTitle = true,
   showViewAuthorButton = true,
   showViewEventButton = true,
-  analyticsCategory = ''
+  analyticsCategory = '',
 }: {
   authorId: string
-  reason: string
+  eventId: string
   description: string
   expiresAt: Date | null
   showTitle?: boolean
@@ -112,8 +112,6 @@ export default ({
   if (expiresAt && expiresAt.getTime() < new Date().getTime()) {
     return null
   }
-
-  const eventName = getEventNameFromReason(reason)
 
   return (
     <Paper
@@ -154,9 +152,9 @@ export default ({
               View Author
             </Button>
           )}
-          {showViewEventButton && reason !== 'other' && (
+          {showViewEventButton && eventId !== 'other' && (
             <Button
-              url={routes.viewEventWithVar.replace(':eventName', eventName)}
+              url={routes.viewEventWithVar.replace(':eventId', eventId)}
               onClick={
                 analyticsCategory
                   ? () =>

@@ -38,49 +38,49 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     '& > *': {
-      alignSelf: 'center'
-    }
+      alignSelf: 'center',
+    },
   },
   controls: {
     position: 'absolute',
     top: 0,
-    left: 0
+    left: 0,
   },
   callToAction: {
-    marginTop: '2rem'
+    marginTop: '2rem',
   },
   description: {
-    marginTop: '2rem'
+    marginTop: '2rem',
   },
   dates: {
     marginTop: '2rem',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   dateWrapper: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   date: {
     display: 'block',
-    fontSize: '150%'
+    fontSize: '150%',
   },
   separator: {
     fontSize: '150%',
-    margin: '0 2rem'
+    margin: '0 2rem',
   },
   timezone: {
     display: 'block',
     marginTop: '0.5rem',
-    fontSize: '100%'
+    fontSize: '100%',
   },
   meta: {
     marginTop: '5rem',
     fontSize: '75%',
     opacity: '0.8',
     '& dd': {
-      margin: 0
-    }
+      margin: 0,
+    },
   },
   authors: {},
   authorItem: {
@@ -88,9 +88,9 @@ const useStyles = makeStyles({
     marginBottom: '0.5rem',
     '& > :last-child': {
       width: '100%',
-      padding: '0.5rem'
-    }
-  }
+      padding: '0.5rem',
+    },
+  },
 })
 
 const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
@@ -142,7 +142,7 @@ const AuthorResults = ({ authors }: { authors: FullAuthor[] }) => {
 
   return (
     <div className={classes.authors}>
-      {authors.map(author => (
+      {authors.map((author) => (
         <div key={author.id} className={classes.authorItem}>
           <div>
             <AuthorResultsItem author={author} />
@@ -150,7 +150,7 @@ const AuthorResults = ({ authors }: { authors: FullAuthor[] }) => {
           <div>
             <SaleInfo
               authorId={author.id}
-              reason={author.salereason}
+              eventId={author.salereason}
               description={author.saledescription}
               expiresAt={
                 author.saleexpiresat ? new Date(author.saleexpiresat) : null
@@ -242,7 +242,7 @@ const View = () => {
     approvalstatus,
     accessstatus,
     editornotes,
-    featuredstatus
+    featuredstatus,
   } = events[0]
 
   return (

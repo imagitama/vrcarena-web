@@ -49,12 +49,12 @@ export interface FullEvent extends Event, EventMeta {}
 
 export const CollectionNames = {
   Events: 'events',
-  EventsMeta: 'eventsmeta'
+  EventsMeta: 'eventsmeta',
 }
 
 export const ViewNames = {
   GetFullEvents: 'getfullevents',
-  GetPublicEvents: 'getpublicevents'
+  GetPublicEvents: 'getpublicevents',
 }
 
 export const EditableFields: EditableField<Event>[] = [
@@ -62,26 +62,27 @@ export const EditableFields: EditableField<Event>[] = [
     name: 'name',
     label: 'Name',
     type: fieldTypes.text,
-    hint: 'The name of the event. Keep it short but descriptive.'
+    hint: 'The name of the event. Keep it short but descriptive.',
   },
-  {
-    name: 'slug',
-    label: 'Slug',
-    type: fieldTypes.text,
-    hint:
-      'A shortened name for the event. Used in the URL. Replace spaces with dashes. eg. "furality-aqua-2023"'
-  },
+  // TODO: Delete this and replace with auto-generated from name like we do for assets
+  // authors with sales etc. should just use the ID
+  // {
+  //   name: 'slug',
+  //   label: 'Slug',
+  //   type: fieldTypes.text,
+  //   hint: 'A shortened name for the event. Used in the URL. Replace spaces with dashes. eg. "furality-aqua-2023"',
+  // },
   {
     name: 'description',
     label: 'Description',
     type: fieldTypes.textMarkdown,
-    hint: 'Explain what your event is, who can come, how to join.'
+    hint: 'Explain what your event is, who can come, how to join.',
   },
   {
     name: 'sourceurl',
     label: 'URL',
     type: fieldTypes.text,
-    hint: 'The URL to the website for the event. Must contain https://'
+    hint: 'The URL to the website for the event. Must contain https://',
   },
   {
     name: 'thumbnailurl',
@@ -90,9 +91,9 @@ export const EditableFields: EditableField<Event>[] = [
     imageUploadProperties: {
       width: THUMBNAIL_WIDTH,
       height: THUMBNAIL_HEIGHT,
-      bucketName: bucketNames.eventThumbnails
+      bucketName: bucketNames.eventThumbnails,
     },
-    hint: 'A thumbnail used for your event. Used in search results etc.'
+    hint: 'A thumbnail used for your event. Used in search results etc.',
   },
   {
     name: 'bannerurl',
@@ -101,34 +102,32 @@ export const EditableFields: EditableField<Event>[] = [
     imageUploadProperties: {
       width: EVENT_BANNER_WIDTH,
       height: EVENT_BANNER_HEIGHT,
-      bucketName: bucketNames.eventBanners
+      bucketName: bucketNames.eventBanners,
     },
-    hint:
-      'The image to display in the header of the site if it is featured. Transparent background.'
+    hint: `The image to display in the header of the site if it is featured. ${EVENT_BANNER_WIDTH} width ${EVENT_BANNER_HEIGHT} height with transparent background.`,
   },
   {
     name: 'isadult',
     label: 'Is Adult',
     type: fieldTypes.checkbox,
     default: false,
-    hint:
-      'If the event is NSFW. If enabled the event will never be shown to users unless they opt-in to NSFW content.'
+    hint: 'If the event is NSFW. If enabled the event will never be shown to users unless they opt-in to NSFW content.',
   },
   {
     name: 'startsat',
     label: 'Starts At',
     type: fieldTypes.date,
-    hint: 'When the event starts. In your local timezone.'
+    hint: 'When the event starts. In your local timezone.',
   },
   {
     name: 'endsat',
     label: 'Ends At',
     type: fieldTypes.date,
-    hint: 'When the event ends. In your local timezone.'
+    hint: 'When the event ends. In your local timezone.',
   },
   {
     name: 'assettags',
     label: 'Display any assets that have these tags',
-    type: fieldTypes.tags
-  }
+    type: fieldTypes.tags,
+  },
 ]

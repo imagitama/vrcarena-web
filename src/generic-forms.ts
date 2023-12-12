@@ -16,4 +16,5 @@ export enum fieldTypes {
   // for diffs
   url = 'url',
   email = 'email',
+  item = 'item', // a single item eg. asset by ID
 }
