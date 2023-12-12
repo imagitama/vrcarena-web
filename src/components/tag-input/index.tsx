@@ -1,53 +1,58 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
+import { client as supabase } from '../../supabase'
 import { areasByCategory } from '../../areas'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
-import { FullTag } from '../../modules/tags'
+import { FullTag, Tag } from '../../modules/tags'
 
 import FormControls from '../form-controls'
 import Button from '../button'
 import Heading from '../heading'
 import TagChip from '../tag-chip'
-import TagTextField from '../tag-text-field'
+import AutocompleteInput from '../autocomplete-input'
+import useDataStore from '../../hooks/useDataStore'
+import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
+import TagChips from '../tag-chips'
+import useDelimit from '../../hooks/useDelimit'
 
 const useStyles = makeStyles({
   recommendedTags: {
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   textInput: {
     width: '100%',
-    margin: '0.5rem 0'
+    margin: '0.5rem 0',
   },
   btns: {
     textAlign: 'center',
-    marginTop: '1rem'
+    marginTop: '1rem',
   },
   categories: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   category: {
     padding: '0.25rem 0.5rem 0.25rem 0.5rem',
     margin: '0.25rem',
-    borderLeft: '1px solid rgba(255, 255, 255, 0.1)'
+    borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
   },
   categoryName: {
     fontWeight: 'bold',
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   hint: {
     fontSize: '75%',
     textAlign: 'center',
     display: 'block',
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 })
 
 const RecommendedTags = ({
   newTags,
   onClickWithTag,
-  categoryName = undefined
+  categoryName = undefined,
 }: {
   newTags: string[]
   onClickWithTag: (tag: string) => void
@@ -72,7 +77,7 @@ const RecommendedTags = ({
               ...result,
               [tagDetails.category]: result[tagDetails.category]
                 ? result[tagDetails.category].concat([tagDetails])
-                : [tagDetails]
+                : [tagDetails],
             }),
             {}
           )
@@ -103,7 +108,7 @@ const RecommendedTags = ({
                 <div className={classes.category} key={areaName}>
                   <div className={classes.categoryName}>{namePlural}</div>
                   <div>
-                    {tags.map(tagName => {
+                    {tags.map((tagName) => {
                       return (
                         <TagChip
                           key={tagName}
@@ -130,7 +135,7 @@ export default ({
   onChange = undefined,
   onDone = undefined,
   categoryName = undefined,
-  showRecommendedTags = true
+  showRecommendedTags = true,
 }: {
   currentTags?: string[]
   onChange?: (newTags: string[]) => void
@@ -138,8 +143,29 @@ export default ({
   categoryName?: string
   showRecommendedTags?: boolean
 }) => {
+  const [textInput, setTextInput] = useState('')
   const [newTags, setNewTags] = useState(currentTags || [])
   const classes = useStyles()
+
+  const isAdultContentEnabled = useIsAdultContentEnabled()
+
+  const getQuery = useDelimit(() => {
+    if (textInput.length < 2) {
+      return null
+    }
+
+    let query = supabase
+      .rpc<FullTag>('autocompletetags', {
+        input: textInput,
+      })
+      .select('*')
+
+    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
+
+    return query
+  }, [textInput, isAdultContentEnabled])
+
+  const [isLoading, isError, searchResults] = useDataStore<FullTag[]>(getQuery)
 
   useEffect(() => {
     if (currentTags) {
@@ -147,13 +173,20 @@ export default ({
     }
   }, [currentTags ? currentTags.join('+') : null])
 
-  const onNewTags = (tags: string[]) => {
-    setNewTags(tags)
-    onChange && onChange(tags)
+  const addTag = (tag: string) => {
+    if (newTags.includes(tag)) {
+      return
+    }
+
+    const newVal = newTags.concat(tag)
+
+    setNewTags(newVal)
+
+    onChange && onChange(newVal)
   }
 
-  const addTag = (item: { id: string }) => {
-    const newVal = newTags.concat([item.id])
+  const removeTag = (tagToRemove: string) => {
+    const newVal = newTags.filter((tag) => tag !== tagToRemove)
 
     setNewTags(newVal)
 
@@ -166,21 +199,40 @@ export default ({
     }
   }
 
+  const autoCompleteOptions = searchResults
+    ? searchResults
+        .filter((tagInfo) => !newTags.includes(tagInfo.id))
+        .map((tagInfo) => ({
+          data: tagInfo.id,
+          label: `${tagInfo.id} (${tagInfo.count || 0})`,
+        }))
+    : []
+
   return (
     <div>
+      <TagChips tags={newTags} onDelete={removeTag} />
+      <AutocompleteInput
+        value={textInput}
+        onNewValue={(newValue) => setTextInput(newValue)}
+        options={autoCompleteOptions}
+        onSelectedOption={(option) => {
+          setTextInput('')
+          addTag(option.data)
+        }}
+        label={isLoading ? 'Searching...' : 'Start typing a tag...'}
+        textFieldProps={{
+          fullWidth: true,
+        }}
+      />
       {showRecommendedTags && (
         <div className={classes.recommendedTags}>
-          <span className={classes.hint}>
-            Hover over any tag to learn about it
-          </span>
           <RecommendedTags
             newTags={newTags}
-            onClickWithTag={tag => addTag({ id: tag })}
+            onClickWithTag={(tag) => addTag(tag)}
             categoryName={categoryName}
           />
         </div>
       )}
-      <TagTextField currentTags={newTags} onChange={onNewTags} />
       {onDone && (
         <FormControls>
           <Button onClick={onDoneClick}>Done</Button>

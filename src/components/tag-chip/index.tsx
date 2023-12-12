@@ -8,8 +8,8 @@ import * as routes from '../../routes'
 const useStyles = makeStyles({
   chip: { margin: '0 0.25rem 0.25rem 0' },
   loading: {
-    filter: 'blur(2px)'
-  }
+    filter: 'blur(2px)',
+  },
 })
 
 interface Props {
@@ -21,6 +21,7 @@ interface Props {
   icon?: React.ReactElement
   isLoading?: boolean
   label?: string
+  onDelete?: () => void
 }
 
 const ChipWithTooltip = ({
@@ -31,7 +32,8 @@ const ChipWithTooltip = ({
   isDisabled = false,
   onClick = undefined,
   icon = undefined,
-  isLoading = false
+  isLoading = false,
+  onDelete = undefined,
 }: Props) => {
   const classes = useStyles()
   const [isOpen, setIsOpen] = useState(false)
@@ -65,6 +67,16 @@ const ChipWithTooltip = ({
         clickable={!isDisabled}
         onClick={isDisabled !== true ? onClickToUse : undefined}
         icon={icon}
+        onDelete={
+          onDelete
+            ? (e) => {
+                onDelete()
+                e.preventDefault()
+                e.stopPropagation()
+                return false
+              }
+            : undefined
+        }
       />
     </Tooltip>
   )

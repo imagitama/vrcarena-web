@@ -4,11 +4,13 @@ import TagChip from '../tag-chip'
 export default ({
   tags,
   shimmer = false,
-  isFilled = true
+  isFilled = true,
+  onDelete = undefined,
 }: {
   tags: string[]
   shimmer?: boolean
   isFilled?: boolean
+  onDelete?: (tag: string) => void
 }) => {
   if (shimmer) {
     return (
@@ -26,8 +28,14 @@ export default ({
 
   return (
     <>
-      {tags.map(tagName => (
-        <TagChip key={tagName} tagName={tagName} isFilled={isFilled} />
+      {tags.map((tagName) => (
+        <TagChip
+          key={tagName}
+          tagName={tagName}
+          isFilled={isFilled}
+          onDelete={onDelete ? () => onDelete(tagName) : undefined}
+          onClick={onDelete ? () => {} : undefined}
+        />
       ))}
     </>
   )
