@@ -4,16 +4,14 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import Markdown from '../markdown'
+import Chariot from '../chariot'
 
-import Avatar, { sizes } from '../avatar'
-import UsernameLink from '../username-link'
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2, 2),
     position: 'relative',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   leftCol: {
     flexShrink: 0,
@@ -25,18 +23,22 @@ const useStyles = makeStyles(theme => ({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      flexWrap: 'wrap'
-    }
+      flexWrap: 'wrap',
+    },
+  },
+  chariot: {
+    width: '100px',
+    height: 'auto',
   },
   rightCol: {},
   header: {
-    lineHeight: 1
+    lineHeight: 1,
   },
   message: {
     marginTop: '-8px',
     '& p:last-child': {
-      marginBottom: 0
-    }
+      marginBottom: 0,
+    },
   },
   hideBtn: {
     position: 'absolute',
@@ -44,38 +46,30 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     right: 0,
     '&:hover': {
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
   username: {
     marginTop: '0.25rem',
-    width: '100%'
-  }
+    width: '100%',
+  },
 }))
 
 export default ({
   title,
   message,
-  createdby,
-  creatorusername,
-  creatoravatarurl,
-  hide
+  hide,
+}: {
+  title: string
+  message: string
+  hide: () => void
 }) => {
   const classes = useStyles()
 
   return (
     <Paper className={classes.root}>
       <div className={classes.leftCol}>
-        {creatorusername ? (
-          <UsernameLink id={createdby}>
-            <Avatar
-              url={creatoravatarurl}
-              username={creatorusername}
-              size={sizes.TINY}
-            />
-            <div className={classes.username}>{creatorusername}</div>
-          </UsernameLink>
-        ) : null}
+        <Chariot className={classes.chariot} spinOnHover />
       </div>
       <div className={classes.rightCol}>
         <Typography variant="h5" component="h3" className={classes.header}>

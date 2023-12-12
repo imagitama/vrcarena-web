@@ -1,7 +1,7 @@
 import React from 'react'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
-import { ReactComponent as Chariot } from '../../assets/images/chariot.svg'
+import Chariot from '../chariot'
 
 const useStyles = makeStyles(() => ({
   root: {

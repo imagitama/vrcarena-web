@@ -153,6 +153,8 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <h2>Tag Input</h2>
+        <TagInput currentTags={['free', 'paid', 'rigged']} />
         <h2>Features Editor</h2>
         <FeaturesEditor currentTags={[]} assetId="123" onDone={() => {}} />
         <h2>Species Selector</h2>
@@ -167,8 +169,6 @@ export default () => {
         />
         <h2>Loading</h2>
         <LoadingIndicator message="Loading items..." />
-        <h2>Tag Input</h2>
-        <TagInput currentTags={['free', 'paid', 'rigged']} />
         <h2>Feature List</h2>
         <FeatureList />
         <h2>Text Diff</h2>
