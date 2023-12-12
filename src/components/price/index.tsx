@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { defaultCurrency, popularCurrencies } from '../../currency'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'inline-block',
 
@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
       'border-top': '19px solid transparent',
       'border-bottom': '19px solid transparent',
       // @ts-ignore
-      'border-right': `19px solid ${theme.palette.tertiary.main}`
+      'border-right': `19px solid ${theme.palette.tertiary.main}`,
     },
 
     '&:after': {
@@ -53,28 +53,41 @@ const useStyles = makeStyles(theme => ({
       display: 'block',
       position: 'absolute',
       left: '-9px',
-      top: '17px'
-    }
+      top: '17px',
+    },
   },
   price: {
     fontSize: '150%',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   currency: {
-    fontSize: '75%'
+    fontSize: '75%',
   },
   loading: {
     // more blur than everything else as price is sensitive and we dont want to give the wrong price!
-    filter: 'blur(3px)'
-  }
+    filter: 'blur(3px)',
+  },
 }))
+
+const isDollars = (currency: keyof typeof popularCurrencies) => {
+  // probably use NPM package for this
+  switch (currency) {
+    case 'USD':
+    case 'AUD':
+    case 'CAD':
+    case 'NZD':
+      return true
+  }
+
+  return false
+}
 
 // show "+" symbol as some gumroad products have multiple variants
 // and the API only gives us a price for one of them (which is random?)
 export default ({
   price,
   priceCurrency,
-  isLoading = false
+  isLoading = false,
 }: {
   price: number
   priceCurrency: keyof typeof popularCurrencies
@@ -86,16 +99,18 @@ export default ({
     return null
   }
 
+  const currency = priceCurrency || defaultCurrency
+
   return (
     <div className={classes.root}>
       <span className={`${isLoading ? classes.loading : ''}`}>
         <span className={classes.price}>
-          {price === 0 ? 'Free' : `$${price.toFixed(2)}`}
+          {price === 0
+            ? 'Free'
+            : `${isDollars(currency) ? '$' : ''}${price.toFixed(2)}`}
         </span>{' '}
         {price === 0 ? null : (
-          <span className={classes.currency}>
-            {priceCurrency || defaultCurrency}
-          </span>
+          <span className={classes.currency}>{currency}</span>
         )}
       </span>
     </div>
