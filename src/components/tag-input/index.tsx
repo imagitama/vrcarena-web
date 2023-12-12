@@ -4,17 +4,20 @@ import { makeStyles } from '@material-ui/core/styles'
 import { client as supabase } from '../../supabase'
 import { areasByCategory } from '../../areas'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
-import { FullTag, Tag } from '../../modules/tags'
+import { FullTag } from '../../modules/tags'
+import useDelimit from '../../hooks/useDelimit'
+import categoryMeta from '../../category-meta'
+import { renamedTags } from '../../utils/tags'
+
+import useDataStore from '../../hooks/useDataStore'
+import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
 import FormControls from '../form-controls'
 import Button from '../button'
 import Heading from '../heading'
 import TagChip from '../tag-chip'
-import AutocompleteInput from '../autocomplete-input'
-import useDataStore from '../../hooks/useDataStore'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
+import AutocompleteInput, { AutocompleteOption } from '../autocomplete-input'
 import TagChips from '../tag-chips'
-import useDelimit from '../../hooks/useDelimit'
 
 const useStyles = makeStyles({
   recommendedTags: {
@@ -130,6 +133,79 @@ const RecommendedTags = ({
   )
 }
 
+const getActualAutocompleteTagName = (tagName: string): string => {
+  for (const [goodTag, badTags] of Object.entries(renamedTags)) {
+    if (badTags.includes(tagName)) {
+      return goodTag
+    }
+  }
+  return tagName
+}
+
+const getActualAutocompleteText = (
+  tagName: string,
+  intendedText: string
+): string => {
+  for (const [goodTag, badTags] of Object.entries(renamedTags)) {
+    if (badTags.includes(tagName)) {
+      return `${tagName} => ${goodTag}`
+    }
+  }
+  return intendedText
+}
+
+const areaSuggestions = Object.entries(areasByCategory).reduce<Suggestion[]>(
+  (finalTags, [categoryName, areas]) =>
+    finalTags.concat(
+      Object.values(areas).reduce<Suggestion[]>(
+        (tags, area) =>
+          tags.concat(
+            area.tags.map((tagName) => ({
+              id: getActualAutocompleteTagName(tagName),
+              text: getActualAutocompleteText(
+                tagName,
+                `[${categoryMeta[categoryName].name}/${area.namePlural}] ${tagName}`
+              ),
+            }))
+          ),
+        []
+      )
+    ),
+  []
+)
+
+interface Suggestion {
+  id: string
+  text: string
+}
+
+const renamedSuggestions = Object.entries(renamedTags).reduce<Suggestion[]>(
+  (finalTags, [goodTag, badTags]) =>
+    finalTags.concat([
+      { id: goodTag, text: `${badTags.join('|')} => ${goodTag}` },
+    ]),
+  []
+)
+
+const suggestions: Suggestion[] = areaSuggestions.concat(renamedSuggestions)
+
+const filterSuggestions = (
+  suggestions: Suggestion[],
+  textInput: string
+): Suggestion[] =>
+  suggestions.sort((a, b) => {
+    const aIncludesInput = String(a.id).includes(textInput)
+    const bIncludesInput = String(b.id).includes(textInput)
+
+    if (aIncludesInput && !bIncludesInput) {
+      return -1
+    } else if (!aIncludesInput && bIncludesInput) {
+      return 1
+    } else {
+      return 0
+    }
+  })
+
 export default ({
   currentTags = [],
   onChange = undefined,
@@ -165,7 +241,7 @@ export default ({
     return query
   }, [textInput, isAdultContentEnabled])
 
-  const [isLoading, isError, searchResults] = useDataStore<FullTag[]>(getQuery)
+  const [isLoading, , searchResults] = useDataStore<FullTag[]>(getQuery)
 
   useEffect(() => {
     if (currentTags) {
@@ -199,14 +275,37 @@ export default ({
     }
   }
 
-  const autoCompleteOptions = searchResults
-    ? searchResults
-        .filter((tagInfo) => !newTags.includes(tagInfo.id))
-        .map((tagInfo) => ({
-          data: tagInfo.id,
-          label: `${tagInfo.id} (${tagInfo.count || 0})`,
-        }))
-    : []
+  const autoCompleteOptions = ([] as AutocompleteOption<any>[])
+    .concat(
+      searchResults
+        ? searchResults
+            .filter((tagInfo) => !newTags.includes(tagInfo.id))
+            .map((tagInfo) => ({
+              data: tagInfo.id,
+              label: `${tagInfo.id} (${tagInfo.count || 0})`,
+            }))
+        : []
+    )
+    .concat(
+      textInput.length > 1
+        ? (
+            [
+              {
+                data: '',
+                label: 'Category or area:',
+                isDisabled: true,
+              },
+            ] as AutocompleteOption<any>[]
+          ).concat(
+            filterSuggestions(suggestions, textInput)
+              .slice(0, 4)
+              .map((suggestion) => ({
+                data: suggestion.id,
+                label: suggestion.text,
+              }))
+          )
+        : []
+    )
 
   return (
     <div>

@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 export interface AutocompleteOption<T> {
   label: string
   data: T
+  isDisabled?: boolean
 }
 
 // @ts-ignore
@@ -130,6 +131,7 @@ const AutocompleteInput = <TOption,>({
   return (
     <Autocomplete
       options={options}
+      getOptionDisabled={(option) => option.isDisabled === true}
       getOptionLabel={(option: AutocompleteOption<TOption>) => option.label}
       renderInput={(params) => (
         <MyTextField
