@@ -166,17 +166,15 @@ const AuthorResults = ({ authors }: { authors: FullAuthor[] }) => {
   )
 }
 
-const AuthorsWithSales = ({ eventSlug }: { eventSlug: string }) => {
+const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
   const getQuery = useCallback(() => {
-    const fixedReason = eventSlug.replaceAll('-', '_')
-
     let query = supabase
       .from('getPublicAuthors'.toLowerCase())
       .select('*')
-      .eq(AuthorFieldNames.saleReason, fixedReason)
+      .eq(AuthorFieldNames.saleReason, eventId)
 
     return query
-  }, [eventSlug])
+  }, [eventId])
   const [isLoading, isErrored, authors] = useDataStore<FullAuthor>(
     getQuery,
     'authors-for-event'
@@ -317,7 +315,7 @@ const View = () => {
         </div>
         <Heading variant="h2">Comments</Heading>
         <CommentList collectionName={CollectionNames.Events} parentId={id} />
-        <AuthorsWithSales eventSlug={slug} />
+        <AuthorsWithSales eventId={id} />
         <Assets tagsToSearch={assettags || []} />
       </div>
     </>

@@ -7,11 +7,11 @@ import { colorPalette } from '../../config'
 
 const useStyles = makeStyles({
   waiting: {
-    color: colorPalette.warning
+    color: colorPalette.warning,
   },
   resolved: {
-    color: colorPalette.positive
-  }
+    color: colorPalette.positive,
+  },
 })
 
 export default ({
@@ -19,7 +19,7 @@ export default ({
   resolvedAt,
   resolvedBy,
   // view
-  resolvedByUsername
+  resolvedByUsername,
 }: {
   resolutionStatus: string // waiting | resolved
   resolvedAt: Date | null
@@ -46,7 +46,12 @@ export default ({
             id={resolvedBy as string}
             username={resolvedByUsername}
           />{' '}
-          at <FormattedDate date={resolvedAt} />
+          at{' '}
+          {resolvedAt !== null ? (
+            <FormattedDate date={resolvedAt} />
+          ) : (
+            '(no date)'
+          )}
         </>
       ) : (
         '(unknown resolution status)'

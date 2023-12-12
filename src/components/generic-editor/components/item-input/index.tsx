@@ -34,7 +34,11 @@ export default ({
 
   const options = items.map((item) => ({
     value: item.id,
-    label: item[itemProperties.fieldAsLabel],
+    label: itemProperties.fieldAsLabel
+      ? item[itemProperties.fieldAsLabel]
+      : itemProperties.getLabel
+      ? itemProperties.getLabel(item)
+      : item.id,
   }))
 
   return (

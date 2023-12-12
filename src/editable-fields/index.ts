@@ -37,7 +37,8 @@ export interface CustomProperties {
 
 export interface ItemProperties {
   collectionName: string
-  fieldAsLabel: string
+  fieldAsLabel?: string
+  getLabel?: (item: any) => string
   // renderer: (props: { item: any }) => React.ReactElement
 }
 

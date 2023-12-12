@@ -205,6 +205,7 @@ export default ({ userId }) => {
               : null
           }
           lazy={false}
+          noHat
         />
         <Heading
           variant="h1"

@@ -4,13 +4,14 @@ import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
 import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 
 import * as routes from '../../routes'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import categoryMeta from '../../category-meta'
-import Avatar from '../avatar'
-import { AuthorFieldNames } from '../../hooks/useDatabaseQuery'
+import { Author } from '../../modules/authors'
+import defaultAvatarUrl from '../../assets/images/default-avatar.png'
 
 const useStyles = makeStyles({
   root: {
@@ -19,33 +20,31 @@ const useStyles = makeStyles({
     position: 'relative',
     [mediaQueryForTabletsOrBelow]: {
       width: '160px',
-      margin: '0.25rem'
-    }
+      margin: '0.25rem',
+    },
   },
   media: {
     height: '200px',
     [mediaQueryForTabletsOrBelow]: {
-      height: '160px'
-    }
+      height: '160px',
+    },
   },
   content: {
     '&, &:last-child': {
-      padding: 16
-    }
+      padding: 16,
+    },
   },
   cats: {
-    marginTop: '0.35rem'
-  }
+    marginTop: '0.35rem',
+  },
 })
 
 export default ({
-  author: {
-    id,
-    [AuthorFieldNames.name]: name,
-    [AuthorFieldNames.categories]: categories = [],
-    [AuthorFieldNames.avatarUrl]: avatarUrl = ''
-  },
-  onClick = undefined
+  author: { id, name, categories = [], avatarurl },
+  onClick = undefined,
+}: {
+  author: Author
+  onClick?: () => void
 }) => {
   const classes = useStyles()
 
@@ -56,7 +55,10 @@ export default ({
           <Link
             to={routes.viewAuthorWithVar.replace(':authorId', id)}
             onClick={onClick}>
-            <Avatar url={avatarUrl} username={name} />
+            <CardMedia
+              className={classes.media}
+              image={avatarurl || defaultAvatarUrl}
+              title={`Avatar for author ${name}`}></CardMedia>
             <CardContent className={classes.content}>
               <Typography variant="h5" component="h2">
                 {name}
@@ -64,7 +66,7 @@ export default ({
               <div className={classes.cats}>
                 {categories && categories.length
                   ? categories
-                      .map(categoryName => categoryMeta[categoryName].name)
+                      .map((categoryName) => categoryMeta[categoryName].name)
                       .join(', ')
                   : '\u00A0'}
               </div>

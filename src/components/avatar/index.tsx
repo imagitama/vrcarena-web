@@ -3,7 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import LazyLoad from 'react-lazyload'
 import LoadingIndicator from '../loading-indicator'
 import defaultAvatarUrl from '../../assets/images/default-avatar.png'
-import { fixAccessingImagesUsingToken } from '../../utils'
+import { ReactComponent as ChristmasHat } from '../../assets/images/christmas-hat.svg'
+import { fixAccessingImagesUsingToken, getIsChristmasTime } from '../../utils'
 
 export const sizes = {
   TINY: 'tiny',
@@ -14,6 +15,11 @@ export const sizes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
+    '&:hover $hat': {
+      top: '-5%',
+    },
+  },
+  imageWrapper: {
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
   },
@@ -33,6 +39,15 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
   },
+  hat: {
+    width: '100%',
+    height: 'auto',
+    position: 'absolute',
+    top: 0,
+    transition: '100ms all',
+    left: '50%',
+    transform: 'translate(-32%, -75%) scale(1.75, 1) rotate(-5deg)',
+  },
 }))
 
 export default ({
@@ -41,21 +56,30 @@ export default ({
   size = sizes.MEDIUM,
   className = undefined,
   lazy = true,
+  noHat = false,
 }: {
   url?: string
   username?: string
   size?: string
   className?: string
   lazy?: boolean
+  noHat?: boolean
 }) => {
   const classes = useStyles()
 
   const elem = (
-    <img
-      src={url ? fixAccessingImagesUsingToken(url) : defaultAvatarUrl}
-      alt={`Avatar for ${username || 'a user'}`}
-      className={classes.image}
-    />
+    <>
+      {getIsChristmasTime() && noHat !== true && (
+        <ChristmasHat className={classes.hat} />
+      )}
+      <div className={classes.imageWrapper}>
+        <img
+          src={url ? fixAccessingImagesUsingToken(url) : defaultAvatarUrl}
+          alt={`Avatar for ${username || 'a user'}`}
+          className={classes.image}
+        />
+      </div>
+    </>
   )
 
   return (

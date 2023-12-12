@@ -16,3 +16,11 @@ export const isDateInbetweenTwoDates = (
   startDate: Date,
   endDate: Date
 ): boolean => dateToCheck >= startDate && dateToCheck <= endDate
+
+export const getFriendlyDate = (
+  date: Date | string,
+  isRelative: boolean = true
+): string =>
+  isRelative
+    ? moment(date).fromNow()
+    : moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')

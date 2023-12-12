@@ -9,7 +9,8 @@ import {
 import categoryMeta from '../category-meta'
 import { bucketNames } from '../file-uploading'
 import { EditableField } from './'
-import { CollectionNames } from '../modules/events'
+import { CollectionNames, Event } from '../modules/events'
+import { getFriendlyDate } from '../utils/dates'
 
 const fields: EditableField<any>[] = [
   {
@@ -147,7 +148,8 @@ const fields: EditableField<any>[] = [
     default: null,
     itemProperties: {
       collectionName: CollectionNames.Events,
-      fieldAsLabel: 'name',
+      getLabel: (event: Event) =>
+        `${event.name} (${getFriendlyDate(event.startsat, false)})`,
     },
     hint: 'The name of the event that it is related to. If an event is missing please contact us and ask to add it.',
   },

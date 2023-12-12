@@ -488,3 +488,7 @@ export const moveCursorToEnd = (element: HTMLElement) => {
   // @ts-ignore
   selection.addRange(range)
 }
+
+let isChristmasTime = new Date().getMonth() === 11
+
+export const getIsChristmasTime = () => isChristmasTime
