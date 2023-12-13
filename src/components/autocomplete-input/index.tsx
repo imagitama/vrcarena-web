@@ -161,6 +161,15 @@ const AutocompleteInput = <TOption,>({
               onSelectedOption(value as AutocompleteOption<any>)
             }
             break
+          case 'create-option':
+            console.debug(`Autocomplete.create-option`, value)
+            if (onSelectedOption && value) {
+              onSelectedOption({
+                label: value,
+                data: value,
+              } as AutocompleteOption<any>)
+            }
+            break
           default:
           // ignore
         }
