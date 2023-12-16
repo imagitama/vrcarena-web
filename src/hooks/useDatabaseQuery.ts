@@ -318,6 +318,7 @@ export const AssetCategories = {
 export const deprecatedCategories = [
   AssetCategories.content,
   AssetCategories.alteration,
+  AssetCategories.world,
 ]
 
 export const UserFieldNames = {

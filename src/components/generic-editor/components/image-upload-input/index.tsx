@@ -1,4 +1,5 @@
 import React from 'react'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import ImageUploader from '../../../image-uploader'
 import { fixAccessingImagesUsingToken } from '../../../../utils'
 import Button from '../../../button'
@@ -7,7 +8,7 @@ import { ImageUploadProperties } from '../../../../editable-fields'
 export default ({
   onChange,
   value,
-  imageUploadProperties: { bucketName, width, height, directoryName }
+  imageUploadProperties: { bucketName, width, height, directoryName },
 }: {
   onChange: (newUrl: string | null) => void
   value: string
@@ -29,13 +30,18 @@ export default ({
           </Button>
         </div>
       ) : (
-        <ImageUploader
-          onDone={urls => onChange(urls[0])}
-          bucketName={bucketName}
-          requiredWidth={width}
-          requiredHeight={height}
-          directoryPath={directoryName}
-        />
+        <>
+          <ImageUploader
+            onDone={(urls) => onChange(urls[0])}
+            bucketName={bucketName}
+            requiredWidth={width}
+            requiredHeight={height}
+            directoryPath={directoryName}
+          />
+          <FormHelperText>
+            {width} x {height}
+          </FormHelperText>
+        </>
       )}
     </>
   )
