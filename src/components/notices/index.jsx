@@ -1,7 +1,7 @@
 import React from 'react'
 import useDatabaseQuery, {
   OrderDirections,
-  Operators
+  Operators,
 } from '../../hooks/useDatabaseQuery'
 import { makeStyles } from '@material-ui/core/styles'
 import { views, NoticesFieldNames } from '../../modules/notices'
@@ -10,14 +10,28 @@ import { trackAction } from '../../analytics'
 import Notice from '../notice'
 import { write as writeStorage } from '../../utils/storage'
 import ErrorMessage from '../error-message'
+import {
+  mediaQueryForMobiles,
+  mediaQueryForTabletsOrBelow,
+} from '../../media-queries'
 
 const useStyles = makeStyles({
   home: {
-    padding: '2rem'
+    with: '100vw',
+    padding: '2rem',
+    [mediaQueryForTabletsOrBelow]: {
+      padding: '1rem',
+    },
+    [mediaQueryForMobiles]: {
+      padding: '0.5rem',
+    },
   },
   notice: {
-    marginBottom: '1rem'
-  }
+    marginBottom: '1rem',
+    [mediaQueryForMobiles]: {
+      marginBottom: '0.5rem',
+    },
+  },
 })
 
 export default ({ isHome = false }) => {
@@ -30,7 +44,7 @@ export default ({ isHome = false }) => {
   const classes = useStyles()
   const [hiddenNotices] = useStorage(storageKeys.hiddenNotices, [])
 
-  const hideNotice = hideId => {
+  const hideNotice = (hideId) => {
     writeStorage(storageKeys.hiddenNotices, hiddenNotices.concat([hideId]))
     trackAction('Global', 'Click hide notice', hideId)
   }
@@ -43,7 +57,7 @@ export default ({ isHome = false }) => {
     return null
   }
 
-  const filterHidden = notice => !hiddenNotices.includes(notice.hideid)
+  const filterHidden = (notice) => !hiddenNotices.includes(notice.hideid)
 
   const noticesToShow = results.filter(filterHidden)
 
@@ -53,7 +67,7 @@ export default ({ isHome = false }) => {
 
   return (
     <div className={isHome ? classes.home : ''}>
-      {noticesToShow.map(notice => (
+      {noticesToShow.map((notice) => (
         <div className={classes.notice} key={notice.id}>
           <Notice {...notice} hide={() => hideNotice(notice.hideid)} />
         </div>
