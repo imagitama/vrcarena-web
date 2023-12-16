@@ -4,6 +4,7 @@ import LaunchIcon from '@material-ui/icons/Launch'
 import { makeStyles } from '@material-ui/core/styles'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import EditIcon from '@material-ui/icons/Edit'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 
 import * as routes from '../../routes'
 import { client, client as supabase } from '../../supabase'
@@ -30,27 +31,38 @@ import useIsEditor from '../../hooks/useIsEditor'
 import EditorRecordManager from '../../components/editor-record-manager'
 import PublicEditorNotes from '../../components/public-editor-notes'
 import CommentList from '../../components/comment-list'
+import Paper from '../../components/paper'
+import Block from '../../components/block'
+import FormattedDate from '../../components/formatted-date'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
-  primary: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    '& > *': {
-      alignSelf: 'center',
-    },
-  },
-  controls: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
+  primary: {},
+  // primary: {
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  //   justifyContent: 'center',
+  //   '& > *': {
+  //     alignSelf: 'center',
+  //   },
+  // },
+  controls: {},
+  // controls: {
+  //   position: 'absolute',
+  //   top: 0,
+  //   left: 0,
+  // },
   callToAction: {
     marginTop: '2rem',
   },
   description: {
-    marginTop: '2rem',
+    margin: '2rem 0',
+    '& p:first-child': {
+      marginTop: 0,
+    },
+    '& p:last-child': {
+      marginBottom: 0,
+    },
   },
   dates: {
     marginTop: '2rem',
@@ -117,20 +129,30 @@ const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
   )
 
   if (isLoading) {
-    return null
+    return <LoadingIndicator message="Loading assets with tags..." />
   }
 
   if (isErrored) {
-    return <ErrorMessage>Failed to get assets</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to get assets with tags {tagsToSearch.join(', ')}
+      </ErrorMessage>
+    )
   }
 
   if (!Array.isArray(results) || !results.length) {
-    return null
+    return (
+      <NoResultsMessage>
+        No assets with tags {tagsToSearch.join(', ')}
+        <br />
+        <br />
+        Hint: Add one of the tags to have your asset show up here
+      </NoResultsMessage>
+    )
   }
 
   return (
     <>
-      <Heading variant="h2">Assets Tagged For This Event</Heading>
       <TagChips tags={tagsToSearch} />
       <AssetResults assets={results} />
     </>
@@ -181,20 +203,26 @@ const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
   )
 
   if (isLoading) {
-    return null
+    return <LoadingIndicator message="Loading authors with sales..." />
   }
 
   if (isErrored) {
-    return <ErrorMessage>Failed to get authors</ErrorMessage>
+    return <ErrorMessage>Failed to get authors with sales</ErrorMessage>
   }
 
   if (!Array.isArray(authors) || !authors.length) {
-    return null
+    return (
+      <NoResultsMessage>
+        No authors with a sale found
+        <br />
+        <br />
+        Hint: Add a sale to your author page to have it show here
+      </NoResultsMessage>
+    )
   }
 
   return (
     <>
-      <Heading variant="h2">Event Sales</Heading>
       <AuthorResults authors={authors} />
     </>
   )
@@ -241,6 +269,8 @@ const View = () => {
     accessstatus,
     editornotes,
     featuredstatus,
+    startsat,
+    endsat,
   } = events[0]
 
   return (
@@ -261,20 +291,6 @@ const View = () => {
               Edit Event
             </Button>
           ) : null}
-          {isEditor && (
-            <EditorRecordManager
-              id={id}
-              collectionName={CollectionNames.Events}
-              metaCollectionName={CollectionNames.EventsMeta}
-              existingApprovalStatus={approvalstatus}
-              existingAccessStatus={accessstatus}
-              existingEditorNotes={editornotes}
-              existingFeaturedStatus={featuredstatus}
-              onDone={hydrate}
-              showApprovalButtons={false}
-              showFeatureButtons={true}
-            />
-          )}
         </div>
         {editornotes ? <PublicEditorNotes notes={editornotes} /> : null}
         <div className={classes.primary}>
@@ -287,15 +303,17 @@ const View = () => {
               {name || '(unnamed)'}
             </Link>
           </Heading>
-          {/* <div className={classes.dates}>
-            {startsAt ? <DateWithTimezone date={startsAt} /> : null}
-            {startsAt && endsAt ? (
+          <div className={classes.dates}>
+            {startsat ? (
+              <FormattedDate date={startsat} isRelative={false} />
+            ) : null}
+            {startsat && endsat ? (
               <div className={classes.separator}>
                 <ArrowForwardIcon />
               </div>
             ) : null}
-            {endsAt ? <DateWithTimezone date={endsAt} /> : null}
-          </div> */}
+            {endsat ? <FormattedDate date={endsat} isRelative={false} /> : null}
+          </div>
           {sourceurl && (
             <div className={classes.callToAction}>
               <Button size="large" icon={<LaunchIcon />} url={sourceurl}>
@@ -304,17 +322,36 @@ const View = () => {
             </div>
           )}
           {description ? (
-            <div className={classes.description}>
+            <Paper className={classes.description}>
               <Markdown source={description} />
-            </div>
+            </Paper>
           ) : (
-            <>No description set</>
+            <NoResultsMessage>No description set</NoResultsMessage>
           )}
         </div>
-        <Heading variant="h2">Comments</Heading>
-        <CommentList collectionName={CollectionNames.Events} parentId={id} />
-        <AuthorsWithSales eventId={id} />
-        <Assets tagsToSearch={assettags || []} />
+        <Block title="Sales">
+          <AuthorsWithSales eventId={id} />
+        </Block>
+        <Block title="Comments">
+          <CommentList collectionName={CollectionNames.Events} parentId={id} />
+        </Block>
+        <Block title="Tagged Events">
+          <Assets tagsToSearch={assettags || []} />
+        </Block>
+        {isEditor && (
+          <EditorRecordManager
+            id={id}
+            collectionName={CollectionNames.Events}
+            metaCollectionName={CollectionNames.EventsMeta}
+            existingApprovalStatus={approvalstatus}
+            existingAccessStatus={accessstatus}
+            existingEditorNotes={editornotes}
+            existingFeaturedStatus={featuredstatus}
+            onDone={hydrate}
+            showApprovalButtons={false}
+            showFeatureButtons={true}
+          />
+        )}
       </div>
     </>
   )

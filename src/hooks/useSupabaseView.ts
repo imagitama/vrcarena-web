@@ -3,11 +3,11 @@ import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { client as supabase } from '../supabase'
 import useDataStore from './useDataStore'
 
-export default <TResult>(
+export default <TResult, TItem = any>(
   viewName: string,
   getQuery?:
     | null
-    | ((query: PostgrestFilterBuilder<any>) => PostgrestFilterBuilder<any>),
+    | ((query: PostgrestFilterBuilder<TItem>) => PostgrestFilterBuilder<TItem>),
   queryName?: string
 ): [boolean, boolean, null | TResult, null | number, () => void] => {
   const mainGetQuery = useCallback(() => {
@@ -19,8 +19,7 @@ export default <TResult>(
 
     return query
   }, [viewName, getQuery])
-  const [isLoading, isError, result, totalCount, hydrate] = useDataStore<
-    TResult
-  >(mainGetQuery, queryName)
+  const [isLoading, isError, result, totalCount, hydrate] =
+    useDataStore<TResult>(mainGetQuery, queryName)
   return [isLoading, isError, result, totalCount, hydrate]
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useCallback, useState } from 'react'
+import React, { useRef, useCallback, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Helmet } from 'react-helmet'
 import LinkIcon from '@material-ui/icons/Link'
@@ -86,6 +86,7 @@ import TabMentions from './components/tab-mentions'
 import AssetResultsItemParent from '../asset-results-item-parent'
 import VrcFurySettings from '../vrcfury-settings'
 import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
+import Block from '../block'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -196,29 +197,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '200%',
     display: 'flex',
   },
-  area: {
-    border: `1px solid ${theme.palette.background.paper}`,
-    borderRadius: theme.shape.borderRadius,
-    padding: '1rem',
-    marginBottom: '1rem',
-  },
-  areaLabel: {
-    fontSize: '150%',
-    marginBottom: '0.5rem',
-    '& a': {
-      color: 'inherit',
-      display: 'flex',
-      alignItems: 'center',
-    },
-    '&:hover $areaIcon': {
-      opacity: 1,
-    },
-  },
-  areaIcon: {
-    opacity: 0,
-    transition: 'all 100ms',
-    marginLeft: '0.5rem',
-  },
   riskyFileNotice: {
     fontSize: '75%',
     padding: '0.25rem 0',
@@ -315,43 +293,6 @@ const getVrchatWorldLaunchUrlForId = (worldId: string): string => {
 
 const analyticsCategoryName = 'ViewAsset'
 
-const Area = ({
-  name,
-  label,
-  children,
-}: {
-  name: string
-  label?: string
-  children: React.ReactNode
-}) => {
-  const classes = useStyles()
-  const ref = useRef<HTMLDivElement>(null)
-  const { assetId, asset } = useAssetOverview()
-
-  return (
-    <div ref={ref}>
-      <LazyLoad height={300} placeholder={<LoadingIndicator />}>
-        <div className={classes.area}>
-          {label ? (
-            <div className={classes.areaLabel}>
-              <Link
-                to={routes.viewAssetWithVarAndTabVar
-                  .replace(
-                    ':assetId',
-                    asset && asset.slug ? asset.slug : assetId
-                  )
-                  .replace(':tabName', name)}>
-                {label} <LinkIcon className={classes.areaIcon} />
-              </Link>
-            </div>
-          ) : null}
-          {children}
-        </div>
-      </LazyLoad>
-    </div>
-  )
-}
-
 const isRiskyUrl = (url: string): boolean => {
   if (
     isGoogleDriveUrl(url) ||
@@ -401,6 +342,29 @@ const MiniSaleInfo = () => {
         </Link>
       </CardActionArea>
     </Card>
+  )
+}
+
+const Area = ({
+  name,
+  label,
+  children,
+}: {
+  name: string
+  label?: string
+  children: React.ReactNode
+}) => {
+  const { assetId, asset } = useAssetOverview()
+
+  return (
+    <Block
+      url={routes.viewAssetWithVarAndTabVar
+        .replace(':assetId', asset && asset.slug ? asset.slug : assetId)
+        .replace(':tabName', name)}
+      title={label}
+      icon={<LinkIcon />}>
+      {children}
+    </Block>
   )
 }
 

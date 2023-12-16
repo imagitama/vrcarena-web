@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@material-ui/icons/Save'
+import AddIcon from '@material-ui/icons/Add'
 
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -29,6 +31,7 @@ import CustomInput from './components/custom-input'
 import TagsInput from './components/tags-input'
 import DropdownInput from './components/dropdown-input'
 import ItemInput from './components/item-input'
+import Tabs from '../tabs'
 
 function getInputForFieldType(type: keyof typeof fieldTypes) {
   switch (type) {
@@ -108,7 +111,7 @@ const validateFields = (
 
 type Record = { [fieldName: string]: string | boolean | number }
 
-export default ({
+const GenericEditor = ({
   fields = undefined,
   collectionName,
   viewName = '',
@@ -290,6 +293,62 @@ export default ({
     )
   }
 
+  const fieldsBySection =
+    fieldsToUse[0].section !== undefined
+      ? fieldsToUse.reduce<{ [sectionName: string]: EditableField<any>[] }>(
+          (newFieldsBySection, field) => {
+            if (!field.section) {
+              throw new Error(
+                `Sections enabled but field ${
+                  field.name as string
+                } does not have a section`
+              )
+            }
+
+            return {
+              ...newFieldsBySection,
+              [field.section]:
+                field.section in newFieldsBySection
+                  ? newFieldsBySection[field.section].concat([field])
+                  : [field],
+            }
+          },
+          {}
+        )
+      : undefined
+
+  const mapEditableFieldToFieldOutput = ({
+    name,
+    type,
+    default: defaultValue,
+    label,
+    hint,
+    ...rest
+  }: EditableField<any>) => {
+    const Input = getInputForFieldType(type)
+
+    return (
+      <Field
+        key={name.toString()}
+        label={type !== fieldTypes.checkbox ? label : null}>
+        <Input
+          name={name.toString()}
+          // @ts-ignore
+          value={formFields[name]}
+          defaultValue={defaultValue}
+          label={label}
+          {...rest}
+          onChange={(newVal: any) => onFieldChange(name.toString(), newVal)}
+          // @ts-ignore
+          extraFormData={extraFormData}
+          setFieldsValues={onFieldsChange}
+          databaseResult={result}
+        />
+        {hint && <div className={classes.hint}>{hint}</div>}
+      </Field>
+    )
+  }
+
   return (
     <>
       {isInvalid && (
@@ -299,37 +358,24 @@ export default ({
         </ErrorMessage>
       )}
 
-      {fieldsToUse
-        .filter(({ type }) => type !== fieldTypes.hidden)
-        .filter(({ isEditable }) =>
-          id ? (isEditable !== false ? true : false) : true
-        )
-        .map(({ name, type, default: defaultValue, label, hint, ...rest }) => {
-          const Input = getInputForFieldType(type)
-
-          return (
-            <Field
-              key={name.toString()}
-              label={type !== fieldTypes.checkbox ? label : null}>
-              <Input
-                name={name.toString()}
-                // @ts-ignore
-                value={formFields[name]}
-                defaultValue={defaultValue}
-                label={label}
-                {...rest}
-                onChange={(newVal: any) =>
-                  onFieldChange(name.toString(), newVal)
-                }
-                // @ts-ignore
-                extraFormData={extraFormData}
-                setFieldsValues={onFieldsChange}
-                databaseResult={result}
-              />
-              {hint && <div className={classes.hint}>{hint}</div>}
-            </Field>
+      {fieldsBySection ? (
+        <Tabs
+          items={Object.entries(fieldsBySection).map(
+            ([sectionName, fields]) => ({
+              name: sectionName,
+              label: sectionName,
+              contents: <div>{fields.map(mapEditableFieldToFieldOutput)}</div>,
+            })
+          )}
+        />
+      ) : (
+        fieldsToUse
+          .filter(({ type }) => type !== fieldTypes.hidden)
+          .filter(({ isEditable }) =>
+            id ? (isEditable !== false ? true : false) : true
           )
-        })}
+          .map(mapEditableFieldToFieldOutput)
+      )}
       {onFieldChanged ? null : (
         <div className={classes.saveBtn}>
           <Button
@@ -338,9 +384,15 @@ export default ({
             onClick={() => trackAction(analyticsCategory, cancelBtnAction, id)}>
             Cancel
           </Button>{' '}
-          <Button onClick={onSaveBtnClick}>{id ? 'Save' : 'Create'}</Button>
+          <Button
+            onClick={onSaveBtnClick}
+            icon={id ? <SaveIcon /> : <AddIcon />}>
+            {id ? 'Save' : 'Create'}
+          </Button>
         </div>
       )}
     </>
   )
 }
+
+export default GenericEditor

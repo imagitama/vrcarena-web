@@ -7,6 +7,12 @@ import LoadingIndicator from '../../../loading-indicator'
 import ErrorMessage from '../../../error-message'
 import NoResultsMessage from '../../../no-results-message'
 
+interface ItemInputOption {
+  value: string
+  label: string
+  disabled?: boolean
+}
+
 export default ({
   onChange,
   value = null,
@@ -32,14 +38,33 @@ export default ({
     return <NoResultsMessage />
   }
 
-  const options = items.map((item) => ({
-    value: item.id,
-    label: itemProperties.fieldAsLabel
-      ? item[itemProperties.fieldAsLabel]
-      : itemProperties.getLabel
-      ? itemProperties.getLabel(item)
-      : item.id,
-  }))
+  const options: ItemInputOption[] = items
+    .map((item) => ({
+      value: item.id,
+      label: itemProperties.fieldAsLabel
+        ? item[itemProperties.fieldAsLabel]
+        : itemProperties.getLabel
+        ? itemProperties.getLabel(item)
+        : item.id,
+      disabled: false,
+    }))
+    .concat([
+      {
+        value: '',
+        label: 'Special',
+        disabled: true,
+      },
+      {
+        value: 'other',
+        label: 'Other (not listed)',
+        disabled: false,
+      },
+      {
+        value: null,
+        label: 'None',
+        disabled: false,
+      },
+    ])
 
   return (
     <Select
@@ -47,7 +72,10 @@ export default ({
       value={value}
       onChange={(e: any) => onChange(e.target.value)}>
       {options.map((option) => (
-        <MenuItem key={option.value} value={option.value || undefined}>
+        <MenuItem
+          key={option.value}
+          value={option.value || undefined}
+          disabled={option.disabled}>
           {option.label}
         </MenuItem>
       ))}

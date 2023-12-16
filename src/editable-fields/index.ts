@@ -57,6 +57,7 @@ export interface EditableField<TData> {
   isEditable?: boolean
   length?: number
   multiline?: true
+  section?: string
 }
 
 // @ts-ignore

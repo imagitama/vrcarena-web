@@ -3,17 +3,17 @@ import { trackAction } from '../analytics'
 import { write as writeStorage } from '../utils/storage'
 
 const useNotices = (): [string[], (idToHide: string) => void] => {
-  const [hiddenNotices] = useStorage<string[]>(storageKeys.hiddenNotices, [])
+  const [hiddenNoticeIds] = useStorage<string[]>(storageKeys.hiddenNotices, [])
 
-  const hideNotice = (hideId: string) => {
+  const hideNoticeById = (hideId: string) => {
     writeStorage(
       storageKeys.hiddenNotices,
-      (hiddenNotices || []).concat([hideId])
+      (hiddenNoticeIds || []).concat([hideId])
     )
     trackAction('Global', 'Click hide notice', hideId)
   }
 
-  return [hiddenNotices || [], hideNotice]
+  return [hiddenNoticeIds || [], hideNoticeById]
 }
 
 export default useNotices
