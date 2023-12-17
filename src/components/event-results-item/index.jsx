@@ -9,7 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 
 import * as routes from '../../routes'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import defaultAvatarUrl from '../../assets/images/default-avatar.png'
+import DefaultAvatar from '../default-avatar'
 import { EventsFieldNames } from '../../data-store'
 import FormattedDate from '../formatted-date'
 
@@ -20,23 +20,23 @@ const useStyles = makeStyles({
     position: 'relative',
     [mediaQueryForTabletsOrBelow]: {
       width: '160px',
-      margin: '0.25rem'
-    }
+      margin: '0.25rem',
+    },
   },
   media: {
     height: '200px',
     [mediaQueryForTabletsOrBelow]: {
-      height: '160px'
-    }
+      height: '160px',
+    },
   },
   content: {
     '&, &:last-child': {
-      padding: 16
-    }
+      padding: 16,
+    },
   },
   cats: {
-    marginTop: '0.35rem'
-  }
+    marginTop: '0.35rem',
+  },
 })
 
 export default ({
@@ -44,8 +44,8 @@ export default ({
     id,
     [EventsFieldNames.name]: name,
     [EventsFieldNames.thumbnailUrl]: thumbnailUrl,
-    [EventsFieldNames.startsAt]: startsAt
-  }
+    [EventsFieldNames.startsAt]: startsAt,
+  },
 }) => {
   const classes = useStyles()
 
@@ -56,9 +56,10 @@ export default ({
           <Link to={routes.viewEventWithVar.replace(':eventId', id)}>
             <CardMedia
               className={classes.media}
-              image={thumbnailUrl || defaultAvatarUrl}
-              title={`Thumbnail for ${name}`}
-            />
+              image={thumbnailUrl}
+              title={`Thumbnail for ${name}`}>
+              {!thumbnailUrl && <DefaultAvatar stringForDecision={name} />}
+            </CardMedia>
             <CardContent className={classes.content}>
               <Typography variant="h5" component="h2">
                 {name}

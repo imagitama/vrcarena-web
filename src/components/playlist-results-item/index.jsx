@@ -9,7 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 
 import * as routes from '../../routes'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import defaultAvatarUrl from '../../assets/images/default-avatar.png'
+import DefaultAvatar from '../default-avatar'
 import { PlaylistsFieldNames } from '../../data-store'
 
 const useStyles = makeStyles({
@@ -19,23 +19,23 @@ const useStyles = makeStyles({
     position: 'relative',
     [mediaQueryForTabletsOrBelow]: {
       width: '160px',
-      margin: '0.25rem'
-    }
+      margin: '0.25rem',
+    },
   },
   media: {
     height: '200px',
     [mediaQueryForTabletsOrBelow]: {
-      height: '160px'
-    }
+      height: '160px',
+    },
   },
   content: {
     '&, &:last-child': {
-      padding: 16
-    }
+      padding: 16,
+    },
   },
   cats: {
-    marginTop: '0.35rem'
-  }
+    marginTop: '0.35rem',
+  },
 })
 
 // TODO: Use field name constants
@@ -44,8 +44,8 @@ export default ({
     id,
     [PlaylistsFieldNames.title]: title,
     [PlaylistsFieldNames.thumbnailUrl]: thumbnailUrl,
-    [PlaylistsFieldNames.items]: items = []
-  }
+    [PlaylistsFieldNames.items]: items = [],
+  },
 }) => {
   const classes = useStyles()
 
@@ -56,9 +56,10 @@ export default ({
           <Link to={routes.viewPlaylistWithVar.replace(':playlistId', id)}>
             <CardMedia
               className={classes.media}
-              image={thumbnailUrl || defaultAvatarUrl}
-              title={`Thumbnail for ${title}`}
-            />
+              image={thumbnailUrl}
+              title={`Thumbnail for ${title}`}>
+              {!thumbnailUrl && <DefaultAvatar stringForDecision={title} />}
+            </CardMedia>
             <CardContent className={classes.content}>
               <Typography variant="h5" component="h2">
                 {title} ({items ? items.length : '0'})

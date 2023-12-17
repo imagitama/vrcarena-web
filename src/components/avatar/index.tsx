@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import LazyLoad from 'react-lazyload'
 import LoadingIndicator from '../loading-indicator'
-import defaultAvatarUrl from '../../assets/images/default-avatar.png'
+import DefaultAvatar from '../default-avatar'
 import { ReactComponent as ChristmasHat } from '../../assets/images/christmas-hat.svg'
 import { fixAccessingImagesUsingToken, getIsChristmasTime } from '../../utils'
 
@@ -73,11 +73,15 @@ export default ({
         <ChristmasHat className={classes.hat} />
       )}
       <div className={classes.imageWrapper}>
-        <img
-          src={url ? fixAccessingImagesUsingToken(url) : defaultAvatarUrl}
-          alt={`Avatar for ${username || 'a user'}`}
-          className={classes.image}
-        />
+        {url ? (
+          <img
+            src={fixAccessingImagesUsingToken(url)}
+            alt={`Avatar for ${username || 'a user'}`}
+            className={classes.image}
+          />
+        ) : (
+          <DefaultAvatar stringForDecision={username} />
+        )}
       </div>
     </>
   )

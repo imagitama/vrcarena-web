@@ -30,6 +30,7 @@ import { CollectionNames } from '../../modules/assets'
 import PerformanceEditor from '../../components/performance-editor'
 import SpeciesSelector from '../../components/species-selector'
 import FeaturesEditor from '../../components/features-editor'
+import DefaultAvatar from '../../components/default-avatar'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -153,6 +154,10 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <h2>Default Avatar</h2>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar />
+        </div>
         <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} />
         <h2>Features Editor</h2>

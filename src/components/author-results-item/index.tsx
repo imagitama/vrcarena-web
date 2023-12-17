@@ -11,7 +11,7 @@ import * as routes from '../../routes'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import categoryMeta from '../../category-meta'
 import { Author } from '../../modules/authors'
-import defaultAvatarUrl from '../../assets/images/default-avatar.png'
+import DefaultAvatar from '../default-avatar'
 
 const useStyles = makeStyles({
   root: {
@@ -57,8 +57,10 @@ export default ({
             onClick={onClick}>
             <CardMedia
               className={classes.media}
-              image={avatarurl || defaultAvatarUrl}
-              title={`Avatar for author ${name}`}></CardMedia>
+              image={avatarurl}
+              title={`Avatar for author ${name}`}>
+              {!avatarurl && <DefaultAvatar stringForDecision={name} />}
+            </CardMedia>
             <CardContent className={classes.content}>
               <Typography variant="h5" component="h2">
                 {name}

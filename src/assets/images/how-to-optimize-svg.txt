@@ -1,0 +1,1 @@
+npx svgo ./src/assets/images/*.svg

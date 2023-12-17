@@ -11,11 +11,11 @@ import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
-import defaultAvatarUrl from '../../assets/images/default-avatar.png'
+import DefaultAvatar from '../default-avatar'
 import {
   AVATAR_HEIGHT,
   AVATAR_WIDTH,
-  NONATTACHMENT_MAX_SIZE_BYTES
+  NONATTACHMENT_MAX_SIZE_BYTES,
 } from '../../config'
 import { bucketNames } from '../../file-uploading'
 import WarningMessage from '../warning-message'
@@ -37,7 +37,7 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
       }
 
       await save({
-        [UserFieldNames.avatarUrl]: url
+        [UserFieldNames.avatarUrl]: url,
       })
 
       hydrate()
@@ -63,12 +63,16 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
     <>
       <Heading variant="h3">Current Avatar</Heading>
       <br />
-      <img
-        src={user.avatarurl || defaultAvatarUrl}
-        alt="Your avatar"
-        width={AVATAR_WIDTH}
-        height={AVATAR_HEIGHT}
-      />
+      {user.avatarurl ? (
+        <img
+          src={user.avatarurl}
+          alt="Your avatar"
+          width={AVATAR_WIDTH}
+          height={AVATAR_HEIGHT}
+        />
+      ) : (
+        <DefaultAvatar stringForDecision={user.username} />
+      )}
       <Heading variant="h3">Upload New Avatar</Heading>
       <ImageUploader
         onDone={onUploadedWithUrls}

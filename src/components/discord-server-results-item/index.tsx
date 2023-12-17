@@ -9,7 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 
 import * as routes from '../../routes'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import defaultAvatarUrl from '../../assets/images/default-avatar.png'
+import DefaultAvatar from '../default-avatar'
 import { DiscordServer } from '../../modules/discordservers'
 
 const useStyles = makeStyles({
@@ -56,9 +56,10 @@ export default ({
             onClick={onClick}>
             <CardMedia
               className={classes.media}
-              image={iconurl || defaultAvatarUrl}
-              title={`Thumbnail for ${name}`}
-            />
+              image={iconurl}
+              title={`Thumbnail for ${name}`}>
+              {!iconurl && <DefaultAvatar stringForDecision={name} />}
+            </CardMedia>
             <CardContent className={classes.content}>
               <Typography variant="h5" component="h2">
                 {name}
