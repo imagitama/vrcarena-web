@@ -5,7 +5,7 @@ import { ReactComponent as TaidumLineart } from '../../assets/images/lineart/tai
 import { ReactComponent as RexouiumLineart } from '../../assets/images/lineart/rexouium.svg'
 import { ReactComponent as AvaliLineart } from '../../assets/images/lineart/avali.svg'
 import { ReactComponent as ProtogenLineart } from '../../assets/images/lineart/protogen.svg'
-import { ReactComponent as WickerbeastLineart } from '../../assets/images/lineart/protogen.svg'
+import { ReactComponent as WickerbeastLineart } from '../../assets/images/lineart/wickerbeast.svg'
 
 const options = [
   AwtterLineart,
