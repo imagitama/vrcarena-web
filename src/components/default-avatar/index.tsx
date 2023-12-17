@@ -4,8 +4,15 @@ import { ReactComponent as AwtterLineart } from '../../assets/images/lineart/awt
 import { ReactComponent as TaidumLineart } from '../../assets/images/lineart/taidum.svg'
 import { ReactComponent as RexouiumLineart } from '../../assets/images/lineart/rexouium.svg'
 import { ReactComponent as AvaliLineart } from '../../assets/images/lineart/avali.svg'
+import { ReactComponent as ProtogenLineart } from '../../assets/images/lineart/protogen.svg'
 
-const options = [AwtterLineart, TaidumLineart, RexouiumLineart, AvaliLineart]
+const options = [
+  AwtterLineart,
+  TaidumLineart,
+  RexouiumLineart,
+  AvaliLineart,
+  ProtogenLineart,
+]
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,7 +89,6 @@ export const DefaultAvatar = ({
       const index = stringForDecision
         ? await generateRandomIndex(stringForDecision, options.length)
         : getRandomInt(0, options.length - 1)
-      console.debug(`INDEX`, stringForDecision, index)
       setIdx(index)
     })()
   }, [stringForDecision])
