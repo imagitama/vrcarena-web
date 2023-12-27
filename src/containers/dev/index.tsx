@@ -156,7 +156,58 @@ export default () => {
         <h1>Components</h1>
         <h2>Default Avatar</h2>
         <div style={{ width: '300px', height: '300px' }}>
-          <DefaultAvatar />
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
+        </div>
+        <div style={{ width: '300px', height: '300px' }}>
+          <DefaultAvatar stringForDecision="HelloWorld" />
         </div>
         <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} />

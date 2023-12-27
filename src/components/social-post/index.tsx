@@ -134,7 +134,11 @@ const SocialPost = ({
       data-id={socialPost.id}>
       <div className={classes.avatar}>
         <UsernameLink id={socialPost.createdby}>
-          <Avatar url={socialPost.createdbyavatarurl} size={sizes.TINY} />
+          <Avatar
+            url={socialPost.createdbyavatarurl}
+            username={socialPost.createdbyusername}
+            size={sizes.TINY}
+          />
         </UsernameLink>
       </div>
       <div className={classes.content}>
