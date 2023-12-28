@@ -483,6 +483,17 @@ const WorldBuilder = lazy(() =>
       )
   )
 )
+const Promos = lazy(() =>
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "promos" */ './containers/promos')
+  )
+)
+const ImageAtlas = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "image-atlas" */ './containers/image-atlas')
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -735,6 +746,8 @@ const MainContent = () => {
           component={Query}
         />
         <Route exact path={routes.bulkAdd} component={BulkAdd} />
+        <Route exact path={routes.promos} component={Promos} />
+        <Route exact path={routes.imageAtlas} component={ImageAtlas} />
         <Route
           exact
           path={routes.editPageWithParentAndPageVar}

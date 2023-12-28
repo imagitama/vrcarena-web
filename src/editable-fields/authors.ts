@@ -1,30 +1,30 @@
-import {
-  AuthorFieldNames,
-  deprecatedCategories,
-} from '../hooks/useDatabaseQuery'
+import { deprecatedCategories } from '../hooks/useDatabaseQuery'
 import { fieldTypes } from '../generic-forms'
 import {
   THUMBNAIL_WIDTH,
   THUMBNAIL_HEIGHT,
   BANNER_WIDTH,
   BANNER_HEIGHT,
+  PROMO_WIDTH,
 } from '../config'
 import categoryMeta from '../category-meta'
 import { bucketNames } from '../file-uploading'
 import { EditableField } from './'
 import { CollectionNames, Event } from '../modules/events'
 import { getFriendlyDate } from '../utils/dates'
+import { Author } from '../modules/authors'
 
 enum SectionNames {
   Basic = 'Basic',
+  Promo = 'Promo',
   Social = 'Social',
   Commissions = 'Commissions',
   Sales = 'Sales',
 }
 
-const fields: EditableField<any>[] = [
+const fields: EditableField<Author>[] = [
   {
-    name: AuthorFieldNames.name,
+    name: 'name',
     label: 'Name',
     type: fieldTypes.text,
     isRequired: true,
@@ -32,7 +32,7 @@ const fields: EditableField<any>[] = [
     hint: 'The full name of the author. Usually their store page like Gumroad username. If more than one person but together you made something combine your names together.',
   },
   {
-    name: AuthorFieldNames.categories,
+    name: 'categories',
     label: 'Categories',
     type: fieldTypes.multichoice,
     options: Object.entries(categoryMeta)
@@ -46,7 +46,7 @@ const fields: EditableField<any>[] = [
     hint: 'Help people find authors related to categories they are interested in.',
   },
   {
-    name: AuthorFieldNames.description,
+    name: 'description',
     label: 'Description',
     type: fieldTypes.textMarkdown,
     default: '',
@@ -54,7 +54,7 @@ const fields: EditableField<any>[] = [
     hint: 'Explain a little about the author.',
   },
   {
-    name: AuthorFieldNames.avatarUrl,
+    name: 'avatarurl',
     label: 'Avatar',
     type: fieldTypes.imageUpload,
     imageUploadProperties: {
@@ -66,7 +66,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Basic,
   },
   {
-    name: AuthorFieldNames.bannerUrl,
+    name: 'bannerurl',
     label: 'Banner',
     type: fieldTypes.imageUpload,
     imageUploadProperties: {
@@ -76,16 +76,30 @@ const fields: EditableField<any>[] = [
     },
     default: '',
     section: SectionNames.Basic,
+    hint: 'A short, wide image displayed at the top of the author page as a background image.',
   },
   {
-    name: AuthorFieldNames.websiteUrl,
+    name: 'promourl',
+    label: 'Promo Image',
+    type: fieldTypes.imageUpload,
+    imageUploadProperties: {
+      width: PROMO_WIDTH,
+      height: PROMO_WIDTH,
+      bucketName: bucketNames.authorPromos,
+    },
+    default: '',
+    section: SectionNames.Promo,
+    hint: "This image will be rendered inside the VRChat VRCArena world with buttons to clone the author's avatars.",
+  },
+  {
+    name: 'websiteurl',
     label: 'Website URL',
     type: fieldTypes.text,
     default: '',
     section: SectionNames.Basic,
   },
   {
-    name: AuthorFieldNames.email,
+    name: 'email',
     label: 'Email',
     type: fieldTypes.text,
     default: '',
@@ -93,14 +107,14 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Basic,
   },
   {
-    name: AuthorFieldNames.twitterUsername,
+    name: 'twitterusername',
     label: 'Twitter Username (without @)',
     type: fieldTypes.text,
     default: '',
     section: SectionNames.Social,
   },
   {
-    name: AuthorFieldNames.gumroadUsername,
+    name: 'gumroadusername',
     label: 'Gumroad Username',
     type: fieldTypes.text,
     default: '',
@@ -108,7 +122,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Social,
   },
   {
-    name: AuthorFieldNames.discordUsername,
+    name: 'discordusername',
     label: 'Discord Username',
     type: fieldTypes.text,
     default: '',
@@ -116,7 +130,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Social,
   },
   {
-    name: AuthorFieldNames.discordServerInviteUrl,
+    name: 'discordserverinviteurl',
     label: 'Discord Server Invite URL',
     type: fieldTypes.text,
     default: '',
@@ -124,7 +138,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Social,
   },
   {
-    name: AuthorFieldNames.discordServerId,
+    name: 'discordserverid',
     label: 'Discord Server ID',
     type: fieldTypes.text,
     default: '',
@@ -132,7 +146,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Social,
   },
   {
-    name: AuthorFieldNames.patreonUsername,
+    name: 'patreonusername',
     label: 'Patreon username',
     type: fieldTypes.text,
     default: '',
@@ -140,7 +154,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Social,
   },
   {
-    name: AuthorFieldNames.boothUsername,
+    name: 'boothusername',
     label: 'Booth username',
     type: fieldTypes.text,
     default: '',
@@ -149,7 +163,7 @@ const fields: EditableField<any>[] = [
   },
   // commissions
   {
-    name: AuthorFieldNames.isOpenForCommission,
+    name: 'isopenforcommission',
     label: 'Open for commissions',
     type: fieldTypes.checkbox,
     default: false,
@@ -157,7 +171,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Commissions,
   },
   {
-    name: AuthorFieldNames.showCommissionStatusForAssets,
+    name: 'showcommissionstatusforassets',
     label: 'Show in assets',
     type: fieldTypes.checkbox,
     default: true,
@@ -165,7 +179,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Commissions,
   },
   {
-    name: AuthorFieldNames.commissionInfo,
+    name: 'commissioninfo',
     label: 'Commission info',
     type: fieldTypes.textMarkdown,
     default: '',
@@ -174,7 +188,7 @@ const fields: EditableField<any>[] = [
   },
   // sales
   {
-    name: AuthorFieldNames.saleReason,
+    name: 'salereason',
     label: 'Sale reason',
     type: fieldTypes.item,
     default: null,
@@ -187,7 +201,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Sales,
   },
   {
-    name: AuthorFieldNames.saleDescription,
+    name: 'saledescription',
     label: 'Sale description/info',
     type: fieldTypes.textMarkdown,
     default: '',
@@ -195,7 +209,7 @@ const fields: EditableField<any>[] = [
     section: SectionNames.Sales,
   },
   {
-    name: AuthorFieldNames.saleExpiresAt,
+    name: 'saleexpiresat',
     label: 'Sale expiry',
     type: fieldTypes.date,
     default: null,

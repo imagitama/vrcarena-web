@@ -15,47 +15,46 @@ import defaultAvatarImageUrl from '../../assets/images/default-avatar.png'
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
 import Button from '../button'
+import { viewVrchatAvatarUrlWithVar } from '../../config'
 
 const chipMargin = '0.25rem'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '200px',
     margin: '0.5rem',
     position: 'relative',
     [mediaQueryForTabletsOrBelow]: {
       width: '160px',
-      margin: '0.25rem'
+      margin: '0.25rem',
     },
-    overflow: 'visible'
+    overflow: 'visible',
   },
   media: {
-    height: '200px'
+    height: '200px',
   },
   chips: {
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: chipMargin
+    padding: chipMargin,
   },
   chip: {
     cursor: 'pointer',
-    marginLeft: chipMargin
+    marginLeft: chipMargin,
   },
   date: {
     margin: '0.25rem 0 0.5rem',
-    color: theme.palette.text.secondary
+    color: theme.palette.text.secondary,
   },
   icon: {
     '& svg': {
-      fontSize: '1rem'
-    }
-  }
+      fontSize: '1rem',
+    },
+  },
 }))
 
 // avatar: https://vrchatapi.github.io/docs/api#get-/avatars/-avatarId-
-
-const viewVrchatAvatarUrlWithVar = 'https://vrchat.com/home/avatar/:avatarId'
 
 const getDateFromVrchatApiDate = (vrchatApiDate: string): Date =>
   new Date(vrchatApiDate)
@@ -85,7 +84,7 @@ export interface VrchatAvatar {
 export default ({
   avatarId,
   avatarData,
-  allowFetch = false
+  allowFetch = false,
 }: {
   avatarId: string
   avatarData?: VrchatAvatar
@@ -103,7 +102,7 @@ export default ({
     updated_at,
     description,
     release_status,
-    unityPackages = []
+    unityPackages = [],
   } = newData || avatarData || {}
 
   const fetchData = async (e: React.SyntheticEvent) => {
@@ -115,9 +114,9 @@ export default ({
 
       // NOTE: This function also dumps it into a cache for later retrieval
       const {
-        data: { avatar }
+        data: { avatar },
       } = await callFunction('getVrchatAvatarDetails', {
-        avatarId
+        avatarId,
       })
 
       setNewData(avatar)

@@ -135,4 +135,5 @@ export const bucketNames = {
   eventThumbnails: 'event-thumbnails',
   eventBanners: 'event-banners',
   socialPostAttachments: 'socialpost-attachments',
+  authorPromos: 'author-promos',
 }

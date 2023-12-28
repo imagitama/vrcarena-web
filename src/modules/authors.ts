@@ -21,10 +21,11 @@ export interface Author {
   salereason: string
   saledescription: string
   saleexpiresat: Date
-  lastModifiedAt: Date
-  lastModifiedBy: string
-  createdAt: Date
-  createdBy: string
+  promourl: string
+  lastmodifiedat: Date
+  lastmodifiedby: string
+  createdat: Date
+  createdby: string
 }
 
 export interface AuthorMeta {
@@ -50,5 +51,5 @@ export interface FullAuthor extends AuthorMeta, Author {
 
 export const CollectionNames = {
   Authors: 'authors',
-  AuthorsMeta: 'authormeta' // TODO: Rename collection
+  AuthorsMeta: 'authormeta', // TODO: Rename collection
 }

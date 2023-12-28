@@ -15,6 +15,9 @@ export const BANNER_HEIGHT = 300
 export const THUMBNAIL_WIDTH = 300
 export const THUMBNAIL_HEIGHT = 300
 
+export const PROMO_WIDTH = 512
+export const PROMO_HEIGHT = 512
+
 export const AVATAR_WIDTH = THUMBNAIL_WIDTH
 export const AVATAR_HEIGHT = THUMBNAIL_HEIGHT
 
@@ -107,3 +110,6 @@ export const colorPalette = {
 
 export const vrcFuryOrange = '#e90'
 export const discordPurple = '#5865F2'
+
+export const viewVrchatAvatarUrlWithVar =
+  'https://vrchat.com/home/avatar/:avatarId'
