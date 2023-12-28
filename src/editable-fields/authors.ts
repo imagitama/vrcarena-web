@@ -89,7 +89,7 @@ const fields: EditableField<Author>[] = [
     },
     default: '',
     section: SectionNames.Promo,
-    hint: "This image will be rendered inside the VRChat VRCArena world with buttons to clone the author's avatars.",
+    hint: "Experimental. This image will be rendered inside the VRChat VRCArena world with buttons to clone the author's avatars. Updated every 30 minutes.",
   },
   {
     name: 'websiteurl',

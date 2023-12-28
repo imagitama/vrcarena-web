@@ -213,7 +213,7 @@ const View = () => {
         <div className={classes.col}>
           <div className={classes.title}>
             <div className={classes.avatar}>
-              <Avatar url={avatarUrl} username={name} noHat />
+              <Avatar url={avatarUrl} username={name} noHat lazy={false} />
             </div>
             <Heading variant="h1">
               <Link
