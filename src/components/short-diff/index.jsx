@@ -717,7 +717,7 @@ const getRendererByType = (type, fieldName) => {
       return ({ fields, rendererInfo }) => (
         <Value
           value={
-            fields[fieldName]
+            fields[fieldName] && rendererInfo.options
               ? rendererInfo.options.find(
                   ({ value }) => value === fields[fieldName]
                 ).label
