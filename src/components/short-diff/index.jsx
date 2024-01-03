@@ -688,11 +688,11 @@ const getRendererByType = (type, fieldName) => {
                     ({ value }) => value === selectedValue
                   )
                   if (!match) {
-                    throw new Error(
+                    console.warn(
                       `No match for field ${fieldName} with ${selectedValue}`
                     )
                   }
-                  return match.label
+                  return '(no label found)'
                 })
               : '(no options)'
           }
