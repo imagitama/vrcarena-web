@@ -687,12 +687,14 @@ const getRendererByType = (type, fieldName) => {
                   const match = rendererInfo.options.find(
                     ({ value }) => value === selectedValue
                   )
-                  if (!match) {
+                  if (match) {
+                    return match.label
+                  } else {
                     console.warn(
                       `No match for field ${fieldName} with ${selectedValue}`
                     )
+                    return '(no label found)'
                   }
-                  return '(no label found)'
                 })
               : '(no options)'
           }
@@ -741,7 +743,7 @@ const getRendererByType = (type, fieldName) => {
     case fieldTypes.email:
       return ({ fields }) => <Value value={`Email: ${fields[fieldName]}`} />
     case fieldTypes.item:
-      return ({ fields }) => <Value value={`Item: ${fields[fieldName]}`} />
+      return ({ fields }) => <Value value={`ID: ${fields[fieldName]}`} />
     default:
       throw new Error(`Cannot get renderer by type "${type}" - unsupported`)
   }
