@@ -36,7 +36,7 @@ export const Discord = React.lazy(() => import('./assets/images/icons/discord.sv
 export const FileFbx = React.lazy(() => import('./assets/images/icons/file_fbx.svg').then(result => ({ default: result.ReactComponent })))
 export const Fur = React.lazy(() => import('./assets/images/icons/fur.svg').then(result => ({ default: result.ReactComponent })))
 export const Gumroad = React.lazy(() => import('./assets/images/icons/gumroad.svg').then(result => ({ default: result.ReactComponent })))
-export const NeosVR = React.lazy(() => import('./assets/images/icons/neosvr.svg').then(result => ({ default: result.ReactComponent })))
+export const Resonite = React.lazy(() => import('./assets/images/icons/resonite.svg').then(result => ({ default: result.ReactComponent })))
 export const Oculus = React.lazy(() => import('./assets/images/icons/oculus.svg').then(result => ({ default: result.ReactComponent })))
 export const Patreon = React.lazy(() => import('./assets/images/icons/patreon.svg').then(result => ({ default: result.ReactComponent })))
 export const Photoshop = React.lazy(() => import('./assets/images/icons/photoshop.svg').then(result => ({ default: result.ReactComponent })))

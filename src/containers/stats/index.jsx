@@ -25,18 +25,18 @@ function VrGameStats() {
     {
       label: 'VRChat',
       value: stats.vrchatusername,
-      fill: 'darkblue'
+      fill: 'darkblue',
     },
     {
       label: 'ChilloutVR',
       value: stats.chilloutvrusername,
-      fill: 'darkgreen'
+      fill: 'darkgreen',
     },
     {
-      label: 'NeosVR',
+      label: 'Resonite',
       value: stats.neosvrusername,
-      fill: 'darkred'
-    }
+      fill: 'darkred',
+    },
   ]
 
   return <PieChart data={chartData} />
@@ -55,10 +55,10 @@ function FavSpeciesStats() {
 
   const chartData = stats
     .sort((itemA, itemB) => (itemA.count > itemB.count ? -1 : 1))
-    .map(item => ({
+    .map((item) => ({
       name: item.singularname,
       label: item.singularname,
-      value: item.count
+      value: item.count,
     }))
 
   return <BarChart data={chartData} />
@@ -81,13 +81,13 @@ function AdultContentEnabledStats() {
     {
       label: 'Enabled',
       value: stats.enabled,
-      fill: 'darkgreen'
+      fill: 'darkgreen',
     },
     {
       label: 'Disabled (default)',
       value: stats.total - stats.enabled,
-      fill: 'darkred'
-    }
+      fill: 'darkred',
+    },
   ]
 
   return <PieChart data={chartData} />

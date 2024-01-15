@@ -1218,7 +1218,7 @@ const Editor = () => {
                 <FormEditorArea
                   fieldName={AssetFieldNames.vrchatClonableWorldIds}
                   title="VRChat World"
-                  description="The VRChat world for this asset. NeosVR and ChilloutVR coming soon."
+                  description="The VRChat world for this asset."
                   icon={() => <VRChatIcon />}
                   doWeRender={asset.category === AssetCategories.world}
                   display={VrchatWorldsDisplay}

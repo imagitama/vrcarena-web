@@ -24,7 +24,7 @@ import FormControls from '../form-controls'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 
-import neosVrImageUrl from './assets/images/neosvr.webp'
+import resoniteImageUrl from './assets/images/resonite.webp'
 import chilloutVrImageUrl from './assets/images/chilloutvr.webp'
 import vrchatImageUrl from './assets/images/vrchat.webp'
 
@@ -103,7 +103,7 @@ const vrPlatforms = [
   {
     name: vrPlatformNames.CHILLOUTVR,
     title: 'ChilloutVR',
-    websiteUrl: 'https://store.steampowered.com/app/661130/ChilloutVR/',
+    websiteUrl: 'https://store.steampowered.com/app/661130/ChilloutVR',
     description:
       'A free-to-play massively multiplayer online virtual reality platform created by Alpha Blend Interactive.',
     imageUrl: chilloutVrImageUrl,
@@ -111,11 +111,11 @@ const vrPlatforms = [
   },
   {
     name: vrPlatformNames.NEOSVR,
-    title: 'NeosVR',
-    websiteUrl: 'https://neos.com/',
+    title: 'Resonite/Neos',
+    websiteUrl: 'https://store.steampowered.com/app/2519830/Resonite',
     description:
-      'A free-to-play massively multiplayer online virtual reality metaverse created by Solirax.',
-    imageUrl: neosVrImageUrl,
+      'A free-to-play massively multiplayer online virtual reality metaverse created by Yellow Dog Man Studios.',
+    imageUrl: resoniteImageUrl,
     field: UserFieldNames.neosVrUsername,
   },
 ]

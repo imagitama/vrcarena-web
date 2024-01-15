@@ -376,7 +376,7 @@ export default () => {
           <p>
             Browse our catalogue of avatars, accessories, tutorials, shaders,
             retextures, tools of VR social games like VRChat, ChilloutVR and
-            NeosVR.
+            Resonite.
           </p>
           <p>
             We are a 100% volunteer team that depends on our community for

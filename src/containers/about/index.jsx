@@ -5,7 +5,7 @@ import { PATREON_BECOME_PATRON_URL } from '../../config'
 
 const aboutContent = `# About VRCArena
 
-VRCArena is a completely community and volunteer-maintained catalogue of assets for the popular VR social games like VRChat, ChilloutVR and NeosVR.
+VRCArena is a completely community and volunteer-maintained catalogue of assets for the popular VR social games like VRChat, ChilloutVR and Resonite.
 
 It was created in May 2020 by me (PeanutBuddha) to make it easier to find avatars and accessories scattered on different websites like Gumroad and deep inside Discord servers. 
 

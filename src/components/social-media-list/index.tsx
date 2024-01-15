@@ -6,7 +6,7 @@ import {
   ChilloutVR as ChilloutVRIcon,
   Discord as DiscordIcon,
   Gumroad as GumroadIcon,
-  NeosVR as NeosVRIcon,
+  Resonite as ResoniteIcon,
   Patreon as PatreonIcon,
   Twitch as TwitchIcon,
   VRChat as VRChatIcon,
@@ -208,7 +208,7 @@ export default ({
     },
     {
       id: 'neosVrUsername',
-      icon: NeosVRIcon,
+      icon: ResoniteIcon,
       label: neosVrUsername,
       type: 'neosvr',
     },

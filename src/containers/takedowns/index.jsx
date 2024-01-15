@@ -9,7 +9,7 @@ const rules = `# Takedown Policy
 
 ## How do I takedown an asset from this site?
 
-VRCArena is intended to be a not-for-profit **search engine** and **wiki** of 3D models and materials for VR video games such as VRChat, ChilloutVR and NeosVR.
+VRCArena is intended to be a not-for-profit **search engine** and **wiki** of 3D models and materials for VR video games such as VRChat, ChilloutVR and Resonite.
 
 We rarely host the actual source files of any asset and encourage users to link directly to publically available store pages such as Gumroad.
 
@@ -22,9 +22,7 @@ Copyrighted material such as thumbnails, screenshots and videos of your asset ar
 
 The only way to truly remove an asset from this site is you can **prove you are the original creator of the asset** and you either:
 
-1. Submit a valid and legal DMCA claim ([do it here](https://www.vrcarena.com${
-  routes.dmcaPolicy
-}))
+1. Submit a valid and legal DMCA claim ([do it here](https://www.vrcarena.com${routes.dmcaPolicy}))
 2. Can prove the source of your asset has been removed from public access (such as the Gumroad store page has been removed or a direct link should not be accessible)
 
 In the case of point 2 please use the standard "Report" button available on every asset and select the "Takedown" option.

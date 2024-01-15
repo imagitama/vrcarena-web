@@ -14,11 +14,11 @@ const useStyles = makeStyles({
   filters: {
     display: 'flex',
     flexWrap: 'wrap',
-    paddingLeft: '0.5rem'
+    paddingLeft: '0.5rem',
   },
   filter: {
-    marginRight: '0.5rem'
-  }
+    marginRight: '0.5rem',
+  },
 })
 
 const avatarsFiltersStorageKey = 'avatar-filters'
@@ -26,32 +26,32 @@ const avatarsFiltersStorageKey = 'avatar-filters'
 const allFilters = [
   {
     label: 'Quest compatible',
-    tag: 'quest'
+    tag: 'quest',
   },
   {
     label: 'Full-body ready',
-    tag: 'full_body_ready'
+    tag: 'full_body_ready',
   },
   {
     label: 'VRChat SDK3',
-    tag: 'sdk3'
+    tag: 'sdk3',
   },
   // {
   //   label: 'VRChat Ready',
   //   tag: 'vrchat_ready'
   // },
   {
-    label: 'NeosVR Ready',
-    tag: importantTags.neosvr_compatible
+    label: 'Resonite/NeosVR Ready',
+    tag: importantTags.neosvr_compatible,
   },
   {
     label: 'ChilloutVR Ready',
-    tag: importantTags.chilloutvr_compatible
+    tag: importantTags.chilloutvr_compatible,
   },
   {
     label: 'Free',
-    tag: importantTags.free
-  }
+    tag: importantTags.free,
+  },
 ]
 
 function Filter({ label, isEnabled, onClick }) {
@@ -85,7 +85,7 @@ export default () => {
             onClick={() => {
               const isActive = activeFilters.includes(tag)
               const newActiveFilters = isActive
-                ? activeFilters.filter(item => item !== tag)
+                ? activeFilters.filter((item) => item !== tag)
                 : activeFilters.concat([tag])
               storeActiveFilters(newActiveFilters)
               trackAction(
