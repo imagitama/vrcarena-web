@@ -36,7 +36,7 @@ export const SocialFeed = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
     (query: PostgrestFilterBuilder<FullSocialPost>) => {
-      query = query.eq('parent', null)
+      query = query.is('parent', null)
       if (!isAdultContentEnabled) {
         query = query.eq('isadult', false)
       }
