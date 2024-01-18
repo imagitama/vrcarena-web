@@ -19,6 +19,9 @@ import SocialReactions from '../social-reactions'
 import useQueryParam from '../../hooks/useQueryParam'
 import { scrollToElement } from '../../utils'
 import MentionsOutput from '../mentions-output'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import ReplyToSocialPostForm from '../reply-to-social-post-form'
+import SocialPostReplies from '../social-post-replies'
 
 const useStyles = makeStyles({
   root: {
@@ -31,7 +34,9 @@ const useStyles = makeStyles({
     padding: '1rem',
     background: 'rgba(0, 0, 0, 0.2)',
   },
-  content: {},
+  content: {
+    width: '100%',
+  },
   avatar: {
     marginRight: '1rem',
   },
@@ -82,6 +87,20 @@ const useStyles = makeStyles({
       marginRight: '0.5rem',
     },
   },
+  options: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  option: {
+    padding: '0.5rem',
+    opacity: 0.5,
+    transition: '100ms all',
+    cursor: 'pointer',
+    '&:hover': {
+      opacity: 1,
+    },
+  },
 })
 
 const limitBeforeCollapse = 300
@@ -103,10 +122,12 @@ const SocialPost = ({
   socialPost,
   hydrate,
   small = false,
+  allowReplies = true,
 }: {
   socialPost: FullSocialPost
   hydrate?: () => void
   small?: boolean
+  allowReplies?: boolean
 }) => {
   const classes = useStyles()
   const [isExpanded, setIsExpanded] = useState(false)
@@ -114,6 +135,9 @@ const SocialPost = ({
   const [isEditorControlsVisible, setIsEditorControlsVisible] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const activePostId = useQueryParam('post')
+  const isLoggedIn = useIsLoggedIn()
+  const [isRepliesVisible, setIsRepliesVisible] = useState(false)
+  const [isAddReplyFormVisible, setIsAddReplyFormVisible] = useState(false)
 
   const isActive = activePostId === socialPost.id
 
@@ -204,13 +228,46 @@ const SocialPost = ({
             <Attachment key={attachment.url} attachment={attachment} />
           ))}
         </div>
-        <SocialReactions
-          socialPostId={socialPost.id}
-          myReactionEmoji={socialPost.myreactionemoji}
-          reactionSummaries={socialPost.reactionsummaries}
-          hydrate={hydrate}
-          small={small}
-        />
+        <div className={classes.options}>
+          <SocialReactions
+            socialPostId={socialPost.id}
+            myReactionEmoji={socialPost.myreactionemoji}
+            reactionSummaries={socialPost.reactionsummaries}
+            hydrate={hydrate}
+            small={small}
+          />
+          {allowReplies && socialPost.replycount > 0 ? (
+            <span
+              onClick={() => setIsRepliesVisible((currentVal) => !currentVal)}
+              className={classes.option}>
+              {socialPost.replycount} replies
+            </span>
+          ) : null}
+          {allowReplies && isLoggedIn ? (
+            <span
+              onClick={() =>
+                setIsAddReplyFormVisible((currentVal) => !currentVal)
+              }
+              className={classes.option}>
+              Reply
+            </span>
+          ) : null}
+        </div>
+        {isAddReplyFormVisible && (
+          <ReplyToSocialPostForm
+            postId={socialPost.id}
+            originalUserId={socialPost.createdby}
+            originalUsername={socialPost.createdbyusername}
+            hydrate={() => {
+              setIsAddReplyFormVisible(false)
+              setIsRepliesVisible(true)
+              if (hydrate) {
+                hydrate()
+              }
+            }}
+          />
+        )}
+        {isRepliesVisible && <SocialPostReplies postId={socialPost.id} />}
       </div>
     </div>
   )

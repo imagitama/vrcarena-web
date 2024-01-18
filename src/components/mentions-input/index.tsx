@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-type UsernameMapping = { [username: string]: string }
+export type UsernameMapping = { [username: string]: string }
 
 const getValueForRendering = (value: string, map: UsernameMapping) => {
   const regex = /\[user:(\w+)\]/g
@@ -164,10 +164,12 @@ const MentionsInput = ({
   value,
   onChange,
   isDisabled = false,
+  initialUsernameMapping,
 }: {
   value: string
   onChange: (newValue: string) => void
   isDisabled?: boolean
+  initialUsernameMapping?: UsernameMapping
 }) => {
   const rootRef = useRef<HTMLDivElement>(null)
   const classes = useStyles()
@@ -178,13 +180,23 @@ const MentionsInput = ({
     clearSuggestions,
     stopMentioningAndClear,
   ] = useUserMentioning(value)
-  const usernameMapping = useRef<UsernameMapping>({})
+  const usernameMapping = useRef<UsernameMapping>(initialUsernameMapping || {})
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const outputRef = useRef<HTMLDivElement>(null)
   const [selectedSuggestionIdx, setSelectedSuggestionIdx] = useState<number>(0)
 
   useEffect(() => {
     setSelectedSuggestionIdx(0)
   }, [userSuggestions && userSuggestions.length])
+
+  useEffect(() => {
+    if (inputRef.current == null) {
+      return
+    }
+    console.debug(`Focusing on textarea...`)
+    inputRef.current.focus()
+    inputRef.current.selectionStart = inputRef.current.value.length
+  }, [])
 
   const onSelectUserSuggestion = (option: AutocompleteOption<string>) => {
     console.debug(`User selected option ${option.data} "${option.label}"`)
@@ -243,6 +255,7 @@ const MentionsInput = ({
     <div className={classes.root} ref={rootRef}>
       <div className={classes.inputWrapper}>
         <textarea
+          ref={inputRef}
           onChange={(e) => onChangeCustom(e.target.value)}
           value={valueForTextarea}
           onScroll={onScroll}

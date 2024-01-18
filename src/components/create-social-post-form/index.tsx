@@ -10,7 +10,6 @@ import {
   SocialAttachment,
   SocialAttachmentType,
   SocialPost,
-  SocialPostFields,
 } from '../../modules/social'
 import Button from '../button'
 import CheckboxInput from '../checkbox-input'
@@ -22,7 +21,7 @@ import ImageUploader from '../image-uploader'
 import { bucketNames } from '../../file-uploading'
 import Paper from '../paper'
 import * as routes from '../../routes'
-import MentionsInput from '../mentions-input'
+import MentionsInput, { UsernameMapping } from '../mentions-input'
 
 const useStyles = makeStyles({
   root: {
@@ -96,6 +95,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
     attachments,
     setAttachments,
     onClickCreate,
+    initialUsernameMapping,
   } = useForm()
   const myUserId = useUserId()
 
@@ -136,6 +136,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
               value={internalText}
               onChange={(newValue) => setInternalText(newValue)}
               isDisabled={isCreatingPost}
+              initialUsernameMapping={initialUsernameMapping}
             />
           </div>
           <CheckboxInput
@@ -185,14 +186,25 @@ interface FormContext {
   isAdult: boolean
   setIsAdult: (newVal: boolean) => void
   onClickCreate: () => void
+  initialUsernameMapping?: UsernameMapping
 }
 
 // @ts-ignore
 const formContext = createContext<FormContext>()
 const useForm = () => useContext(formContext)
 
-const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
-  const [internalText, setInternalText] = useState('')
+const CreateSocialPostForm = ({
+  initialText,
+  replyParentId,
+  onDone,
+  initialUsernameMapping,
+}: {
+  initialText?: string
+  replyParentId?: string
+  onDone?: () => void
+  initialUsernameMapping?: UsernameMapping
+}) => {
+  const [internalText, setInternalText] = useState(initialText || '')
   const [attachments, setAttachments] = useState<SocialAttachment[]>([])
   const [isAdult, setIsAdult] = useState(false)
   const [
@@ -222,6 +234,7 @@ const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
         isadult: isAdult,
         tags: [],
         attachments: attachments,
+        parent: replyParentId || null,
       })
 
       setInternalText('')
@@ -262,6 +275,7 @@ const CreateSocialPostForm = ({ onDone }: { onDone?: () => void }) => {
           isAdult,
           setIsAdult,
           onClickCreate,
+          initialUsernameMapping,
         }}>
         <ImageUploader
           onDone={(urls) => onDoneAttachingUrls(urls)}

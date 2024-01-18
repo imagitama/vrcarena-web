@@ -8,6 +8,7 @@ export interface SocialAttachment {
 }
 
 export interface SocialPostFields {
+  parent: string | null
   text: string
   isadult: boolean
   tags: string[]
@@ -37,6 +38,7 @@ export interface FullSocialPost extends SocialPost, SocialPostMeta {
   reactionsummaries: ReactionSummary[]
   myreactionemoji: string
   mentions: string[]
+  replycount: number
 }
 
 export interface SocialReactionUpdateFields {
