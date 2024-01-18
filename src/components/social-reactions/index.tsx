@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
 import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react'
@@ -19,7 +19,7 @@ import { insertRecord } from '../../data-store'
 import ErrorMessage from '../error-message'
 import useClickAway from '../../hooks/useClickAway'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
     position: 'relative',
   },
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   myEmoji: {},
-}))
+})
 
 const updateMyReaction = async (
   socialPostId: string,

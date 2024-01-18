@@ -10,7 +10,6 @@ import Paper from '@material-ui/core/Paper'
 
 import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useSupabaseView from '../../hooks/useSupabaseView'
-
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 
@@ -21,8 +20,8 @@ import ApproveButton from '../approve-button'
 
 const useStyles = makeStyles({
   table: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 })
 
 function AssetsTable({ assets, hydrate }) {

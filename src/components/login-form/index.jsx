@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({ onSuccess }) => {
+const LoginForm = ({ onSuccess }) => {
   const classes = useStyles()
 
   const uiConfig = {
@@ -52,3 +52,5 @@ export default ({ onSuccess }) => {
     </>
   )
 }
+
+export default LoginForm

@@ -1,14 +1,14 @@
 import { useLocalStorage } from '@rehooks/local-storage'
 import { isError } from '../error-handling'
 
+// TODO: Move to each module/component who cares about them
 export const keys = {
   hiddenNotices: 'hiddenNotices',
-  darkModeEnabled: 'darkModeEnabled',
   assetsSortByFieldName: 'assetsSortByFieldName',
   assetsSortByDirection: 'assetsSortByDirection',
   hiddenSpecialEventNames: 'hiddenSpecialEventNames',
   useTabbedAssetOverview: 'useTabbedAssetOverview',
-  seenQueuedAssets: 'seenQueuedAssets'
+  seenQueuedAssets: 'seenQueuedAssets',
 }
 
 /**
@@ -20,11 +20,8 @@ export default <TResult>(
 ): [TResult | null, (newValue: TResult) => void, () => void] => {
   try {
     // @ts-ignore this 3rd party hook tries to encode/parse JSON for us NOT strings
-    const [value, ...rest]: [
-      TResult,
-      (newValue: TResult) => void,
-      () => void
-    ] = useLocalStorage(key)
+    const [value, ...rest]: [TResult, (newValue: TResult) => void, () => void] =
+      useLocalStorage(key)
 
     if (!value && defaultValue) {
       return [defaultValue, ...rest]

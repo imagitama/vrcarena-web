@@ -1,12 +1,17 @@
-export interface Notice {
-  id: string
+export interface NoticeFields {
   hideid: string
   title: string
   message: string
   orderby: number
   isvisible: boolean
+}
+
+export interface Notice extends NoticeFields {
+  id: string
   createdby: string
 }
+
+export interface FullNotice extends Notice {}
 
 export const collectionName = 'notices'
 
@@ -16,9 +21,9 @@ export const NoticesFieldNames = {
   message: 'message',
   orderby: 'orderby',
   createdAt: 'createdat',
-  isVisible: 'isvisible'
+  isVisible: 'isvisible',
 }
 
 export const views = {
-  getFullNotices: 'getFullNotices'
+  getFullNotices: 'getFullNotices',
 }

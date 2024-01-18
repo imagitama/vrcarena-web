@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 
-import useSearching from '../../hooks/useSearching'
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import AssetResults from '../asset-results'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
@@ -12,12 +10,12 @@ import useAssetSearch from '../../hooks/useAssetSearch'
 
 const useStyles = makeStyles({
   input: {
-    width: '100%'
+    width: '100%',
   },
   controls: {
     textAlign: 'center',
-    margin: '0.5rem 0'
-  }
+    margin: '0.5rem 0',
+  },
 })
 
 export default ({ categoryName, onDone }) => {
@@ -30,7 +28,7 @@ export default ({ categoryName, onDone }) => {
       <p>Enter the title of the asset below:</p>
       <TextField
         value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
+        onChange={(e) => setSearchTerm(e.target.value)}
         variant="outlined"
         className={classes.input}
       />

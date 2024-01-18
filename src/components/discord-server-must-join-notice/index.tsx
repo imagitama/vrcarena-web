@@ -2,12 +2,11 @@ import React from 'react'
 
 import { trackAction } from '../../analytics'
 import { DiscordServerData } from '../../modules/assets'
-import ErrorMessage from '../error-message'
 import Box from '../box'
 import { Discord as DiscordIcon } from '../../icons'
 import { discordPurple } from '../../config'
 
-export default ({
+const DiscordServerMustJoinNotice = ({
   discordServerId,
   discordServerData,
   analyticsCategoryName = undefined,
@@ -64,3 +63,5 @@ export default ({
     </Box>
   )
 }
+
+export default DiscordServerMustJoinNotice

@@ -3,18 +3,14 @@ import CheckIcon from '@material-ui/icons/Check'
 import AddToQueueIcon from '@material-ui/icons/AddToQueue'
 import RemoveFromQueueIcon from '@material-ui/icons/RemoveFromQueue'
 
-import Button from '../button'
-
-import {
-  CollectionNames,
-  WishlistFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
-
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { DataStoreError } from '../../data-store'
+
+import Button from '../button'
+import { CollectionNames, WishlistForUser } from '../../modules/wishlists'
 
 const getLabel = (
   isLoggedIn: boolean,
@@ -98,11 +94,6 @@ const getIcon = (
   return <AddToQueueIcon />
 }
 
-interface WishlistForUser {
-  id: string
-  assets: string[]
-}
-
 export default ({
   assetId,
   onClick,
@@ -146,10 +137,12 @@ export default ({
         onClick({ newValue: isAssetInWishlist })
       }
 
-      await saveOrCreate({
+      const record: WishlistForUser = {
         id: userId,
-        [WishlistFieldNames.assets]: newAssetIds,
-      })
+        assets: newAssetIds,
+      }
+
+      await saveOrCreate(record)
     } catch (err) {
       console.error('Failed to save wishlist', err)
       handleError(err)

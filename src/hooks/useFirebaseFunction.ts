@@ -14,7 +14,6 @@ export default <TPayload, TResult>(
   const [result, setResult] = useState<TResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isErrored, setIsErrored] = useState(false)
-  //   const timerRef = useRef<NodeJS.Timeout>()
 
   const performCall = async (payload: TPayload): Promise<TResult> => {
     try {

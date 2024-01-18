@@ -12,32 +12,30 @@ import Button from '../button'
 import TextInput from '../text-input'
 import SketchfabEmbed from '../sketchfab-embed'
 
-import { createRef } from '../../utils'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 
 const useStyles = makeStyles({
   root: {
-    margin: '1rem 0'
+    margin: '1rem 0',
   },
   textInput: {
     width: '100%',
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   btns: {
     textAlign: 'center',
-    marginTop: '1rem'
-  }
+    marginTop: '1rem',
+  },
 })
 
 export default ({
   assetId,
   existingUrl = null,
   onDone,
-  overrideSave = null
+  overrideSave = null,
 }) => {
-  const userId = useUserId()
   const [textFieldVal, setTextFieldVal] = useState(existingUrl || '')
   const [embedUrl, setEmbedUrl] = useState('')
   const [isSaving, , isSaveError, save] = useDatabaseSave(
@@ -57,7 +55,7 @@ export default ({
       trackAction('ViewAsset', 'Click save sketchfab embed button', assetId)
 
       await save({
-        [AssetFieldNames.sketchfabEmbedUrl]: embedUrl
+        [AssetFieldNames.sketchfabEmbedUrl]: embedUrl,
       })
 
       onDone()
@@ -93,7 +91,7 @@ export default ({
         <li>Click Apply to preview then click Save</li>
       </ol>
       <TextInput
-        onChange={e => setTextFieldVal(e.target.value)}
+        onChange={(e) => setTextFieldVal(e.target.value)}
         variant="filled"
         className={classes.textInput}
       />{' '}

@@ -11,7 +11,7 @@ import {
   getAvatarPcPerformanceRankFromTags,
   getAvatarQuestPerformanceRankFromTags,
   PerformanceRank,
-  getPerformanceRankLabel
+  getPerformanceRankLabel,
 } from '../../avatar-performance'
 import { handleError } from '../../error-handling'
 import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
@@ -20,7 +20,6 @@ import { CollectionNames } from '../../modules/assets'
 import Button from '../button'
 import ErrorMessage from '../error-message'
 import FormControls from '../form-controls'
-import Heading from '../heading'
 import LoadingIndicator from '../loading-indicator'
 import Select from '../select'
 import SuccessMessage from '../success-message'
@@ -33,12 +32,12 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     marginBottom: '0.5rem',
     '&:last-child': {
-      marginBottom: 0
+      marginBottom: 0,
     },
     '& svg': {
       height: '1em',
-      fontSize: '100%'
-    }
+      fontSize: '100%',
+    },
   },
   platformName: {
     fontSize: '125%',
@@ -48,20 +47,20 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'flex-end',
     '& svg': {
-      marginRight: '0.5rem'
-    }
+      marginRight: '0.5rem',
+    },
   },
   quest: {
     '& svg path': {
-      fill: '#FFF'
-    }
+      fill: '#FFF',
+    },
   },
   contents: {
     width: '80%',
     margin: '0 1rem',
     display: 'flex',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 })
 
 const PerformanceRankIcon = styled('div')(({ color }: { color: string }) => ({
@@ -71,7 +70,7 @@ const PerformanceRankIcon = styled('div')(({ color }: { color: string }) => ({
   textAlign: 'center',
   backgroundColor: color,
   marginRight: '0.5rem',
-  display: 'inline-block'
+  display: 'inline-block',
 }))
 
 const PerformanceRankOutput = ({ rank }: { rank: PerformanceRank | null }) => {
@@ -113,7 +112,7 @@ const PerformanceRankOutput = ({ rank }: { rank: PerformanceRank | null }) => {
 
 const PerformanceRankSelector = ({
   currentRank,
-  onChange
+  onChange,
 }: {
   currentRank: PerformanceRank | null
   onChange: (newRank: PerformanceRank | null) => void
@@ -129,14 +128,14 @@ const PerformanceRankSelector = ({
       //   )
       // }
       displayEmpty
-      renderValue={value => (
+      renderValue={(value) => (
         <>
           {getPerformanceRankLabel(value as PerformanceRank) || 'Select a rank'}
         </>
       )}>
       {Object.values(PerformanceRank)
-        .filter(item => typeof item === 'number')
-        .map(performanceRank => (
+        .filter((item) => typeof item === 'number')
+        .map((performanceRank) => (
           <MenuItem
             key={performanceRank}
             value={performanceRank as PerformanceRank}
@@ -153,7 +152,7 @@ const PerformanceRankSelector = ({
 
 enum Platform {
   PC,
-  Quest
+  Quest,
 }
 
 const getTagForPerformanceRank = (
@@ -176,7 +175,7 @@ const PerformanceEditor = ({
   actionCategory,
   // asset editor fields
   onDone,
-  overrideSave
+  overrideSave,
 }: {
   assetId?: string
   currentTags: string[]
@@ -226,7 +225,7 @@ const PerformanceEditor = ({
       }
 
       await save({
-        [AssetFieldNames.tags]: newTags
+        [AssetFieldNames.tags]: newTags,
       })
 
       if (onDone) {
@@ -239,9 +238,8 @@ const PerformanceEditor = ({
   }
 
   const currentPcPerformanceRank = getAvatarPcPerformanceRankFromTags(newTags)
-  const currentQuestPerformanceRank = getAvatarQuestPerformanceRankFromTags(
-    newTags
-  )
+  const currentQuestPerformanceRank =
+    getAvatarQuestPerformanceRankFromTags(newTags)
 
   const onChange = (
     platform: Platform,
@@ -250,7 +248,7 @@ const PerformanceEditor = ({
   ) => {
     console.log('ONCHANGE', platform, oldRank, newRank)
 
-    setNewTags(tags => {
+    setNewTags((tags) => {
       let tagsToStore = [...tags]
 
       const oldTag =
@@ -259,7 +257,7 @@ const PerformanceEditor = ({
         newRank !== null ? getTagForPerformanceRank(platform, newRank) : null
 
       if (oldTag !== null) {
-        tagsToStore = tagsToStore.filter(tag => tag !== oldTag)
+        tagsToStore = tagsToStore.filter((tag) => tag !== oldTag)
       }
 
       if (newTag !== null) {
@@ -283,7 +281,7 @@ const PerformanceEditor = ({
           {isEditing ? (
             <PerformanceRankSelector
               currentRank={currentPcPerformanceRank}
-              onChange={newRank =>
+              onChange={(newRank) =>
                 onChange(Platform.PC, currentPcPerformanceRank, newRank)
               }
             />
@@ -303,7 +301,7 @@ const PerformanceEditor = ({
           {isEditing ? (
             <PerformanceRankSelector
               currentRank={currentQuestPerformanceRank}
-              onChange={newRank =>
+              onChange={(newRank) =>
                 onChange(Platform.Quest, currentQuestPerformanceRank, newRank)
               }
             />

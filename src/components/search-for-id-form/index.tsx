@@ -90,7 +90,6 @@ const getTableOrViewNameForCollectionName = (collectionName: string) => {
 type SearchResult = { [prop: string]: any }
 
 function SearchForm({
-  existingId,
   collectionName,
   searchTerm,
   fieldAsLabel,

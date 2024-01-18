@@ -3,7 +3,9 @@ import { handleError } from '../../error-handling'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import {
   collectionName as collectionNameNotices,
-  NoticesFieldNames
+  Notice,
+  NoticeFields,
+  NoticesFieldNames,
 } from '../../modules/notices'
 import Button from '../button'
 import CheckboxInput from '../checkbox-input'
@@ -15,27 +17,19 @@ import Paper from '../paper'
 import SuccessMessage from '../success-message'
 import TextInput from '../text-input'
 
-interface NoticeFields {
-  title: string
-  hideid: string
-  message: string
-  orderby: number
-  isvisible: boolean
-}
-
 export default ({
   id = undefined,
-  notice
+  notice,
 }: {
   id?: string
-  notice?: NoticeFields
+  notice?: Notice
 }) => {
   const [fields, setFields] = useState<NoticeFields>({
     title: '',
     hideid: '',
     message: '',
     orderby: 0,
-    isvisible: false
+    isvisible: false,
   })
   const [isSaving, isSuccess, isError, createOrEdit] = useDatabaseSave(
     collectionNameNotices,
@@ -51,7 +45,7 @@ export default ({
       hideid: notice.hideid,
       message: notice.message,
       orderby: notice.orderby,
-      isvisible: notice.isvisible
+      isvisible: notice.isvisible,
     })
   }, [id, notice !== undefined])
 
@@ -91,9 +85,9 @@ export default ({
   }
 
   const setField = (fieldName: string, newVal: any) =>
-    setFields(currentFields => ({
+    setFields((currentFields) => ({
       ...currentFields,
-      [fieldName]: newVal
+      [fieldName]: newVal,
     }))
 
   return (
@@ -103,7 +97,7 @@ export default ({
       </Heading>
       <TextInput
         value={fields.hideid}
-        onChange={e => setField(NoticesFieldNames.hideid, e.target.value)}
+        onChange={(e) => setField(NoticesFieldNames.hideid, e.target.value)}
         label="Hide ID"
         fullWidth
         helperText="Unique ID (all lowercase letters) used to know if notice hidden in browser"
@@ -111,7 +105,7 @@ export default ({
       <br />
       <TextInput
         value={fields.title}
-        onChange={e => setField(NoticesFieldNames.title, e.target.value)}
+        onChange={(e) => setField(NoticesFieldNames.title, e.target.value)}
         label="Title"
         fullWidth
         helperText="Shown at top"
@@ -119,7 +113,7 @@ export default ({
       <br />
       <TextInput
         value={fields.message}
-        onChange={e => setField(NoticesFieldNames.message, e.target.value)}
+        onChange={(e) => setField(NoticesFieldNames.message, e.target.value)}
         label="Message"
         fullWidth
         multiline
@@ -130,13 +124,13 @@ export default ({
       <CheckboxInput
         value={fields.isvisible}
         // @ts-ignore
-        onChange={newVal => setField(NoticesFieldNames.isVisible, newVal)}
+        onChange={(newVal) => setField(NoticesFieldNames.isVisible, newVal)}
         label="Is visible"
       />
       <br />
       <TextInput
         value={fields.orderby}
-        onChange={e =>
+        onChange={(e) =>
           setField(NoticesFieldNames.orderby, parseInt(e.target.value))
         }
         label="Order"

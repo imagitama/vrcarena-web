@@ -8,11 +8,14 @@ const useStyles = makeStyles({
   root: {
     marginBottom: '0.5rem',
     fontWeight: 'bold',
-    padding: '0.5rem'
-  }
+    padding: '0.5rem',
+  },
 })
 
-export default ({ discordServer, analyticsCategoryName = undefined }) => {
+const DiscordServerInfo = ({
+  discordServer,
+  analyticsCategoryName = undefined,
+}) => {
   const classes = useStyles()
 
   if (!discordServer) {
@@ -22,11 +25,9 @@ export default ({ discordServer, analyticsCategoryName = undefined }) => {
   const {
     id: discordServerId,
     [DiscordServerFieldNames.name]: name,
-    // [DiscordServerFieldNames.widgetId]: widgetId,
-    // [DiscordServerFieldNames.iconUrl]: iconUrl,
     [DiscordServerFieldNames.inviteUrl]: inviteUrl,
     [DiscordServerFieldNames.requiresPatreon]: requiresPatreon,
-    [DiscordServerFieldNames.patreonUrl]: patreonUrl
+    [DiscordServerFieldNames.patreonUrl]: patreonUrl,
   } = discordServer
 
   return (
@@ -75,3 +76,5 @@ export default ({ discordServer, analyticsCategoryName = undefined }) => {
     </div>
   )
 }
+
+export default DiscordServerInfo

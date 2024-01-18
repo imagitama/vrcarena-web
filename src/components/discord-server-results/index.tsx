@@ -7,7 +7,7 @@ const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
 })
 
-export default ({
+const DiscordServerResults = ({
   discordServers,
   onClickWithEventAndIdAndDetails,
 }: {
@@ -41,3 +41,5 @@ export default ({
     </div>
   )
 }
+
+export default DiscordServerResults

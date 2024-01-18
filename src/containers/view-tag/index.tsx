@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
+
 import Heading from '../../components/heading'
 import AssetsPaginatedView from '../../components/assets-paginated-view'
 import ErrorMessage from '../../components/error-message'
@@ -18,7 +19,7 @@ import Message from '../../components/message'
 
 const AssetsForTag = ({ tag }: { tag: string }) => {
   const getQuery = useCallback(
-    query => query.contains(AssetFieldNames.tags, `{${tag}}`),
+    (query) => query.contains(AssetFieldNames.tags, `{${tag}}`),
     [tag]
   )
   return <AssetsPaginatedView getQuery={getQuery} />

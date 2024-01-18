@@ -6,24 +6,21 @@ import CheckIcon from '@material-ui/icons/Check'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
 
-import {
-  CollectionNames,
-  DataStoreError,
-  PlaylistItemsFieldNames,
-  PlaylistsFieldNames,
-} from '../../data-store'
+import { DataStoreError } from '../../data-store'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useMyCollections from '../../hooks/useMyCollections'
 import CreateCollectionForm from '../create-collection-form'
-import Button from '../button'
 import { handleError } from '../../error-handling'
-import {
-  CollectionFieldNames,
-  CollectionNames as OldCollectionNames,
-} from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import Button from '../button'
+import {
+  CollectionNames,
+  CollectionForUser,
+  Collection,
+  CollectionItem,
+} from '../../modules/collections'
 
 const useStyles = makeStyles({
   createForm: {
@@ -68,7 +65,7 @@ const CollectionMenuItem = ({
   }
 
   const [isSaving, isSavingSuccess, lastSavingError, saveCollection] =
-    useDatabaseSave(CollectionNames.Playlists, collectionId)
+    useDatabaseSave<Collection>(CollectionNames.Collections, collectionId)
 
   const isAssetInCollection =
     items.find((item) => item.asset === assetId) !== undefined
@@ -77,18 +74,17 @@ const CollectionMenuItem = ({
     try {
       const existingItems = items
 
-      const newItems = isAssetInCollection
+      const newItems: CollectionItem[] = isAssetInCollection
         ? existingItems.filter((item) => item.asset !== assetId)
         : [
             ...existingItems,
             {
-              [PlaylistItemsFieldNames.asset]: assetId,
-              [PlaylistItemsFieldNames.comments]: '', // TODO: Allow them to set this?
+              asset: assetId,
             },
           ]
 
       await saveCollection({
-        [PlaylistsFieldNames.items]: newItems,
+        items: newItems,
       })
 
       onDone(!isAssetInCollection)
@@ -198,12 +194,12 @@ const MyCollectionMenuItem = ({
   const userId = useUserId()
   const [isLoadingCollection, lastErrorLoadingCollection, myCollection] =
     useDataStoreItem<CollectionForUser>(
-      OldCollectionNames.CollectionsForUsers,
+      CollectionNames.CollectionsForUsers,
       userId || false
     )
   const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] =
-    useDatabaseSave(
-      OldCollectionNames.CollectionsForUsers,
+    useDatabaseSave<CollectionForUser>(
+      CollectionNames.CollectionsForUsers,
       myCollection ? userId : null
     )
   const isLoggedIn = !!userId
@@ -226,7 +222,7 @@ const MyCollectionMenuItem = ({
         : currentAssetIds.concat([assetId])
 
       await saveOrCreate({
-        [CollectionFieldNames.assets]: newAssetIds,
+        assets: newAssetIds,
       })
 
       onDone(!isAssetInCollection)
@@ -261,21 +257,6 @@ const MyCollectionMenuItem = ({
 const Divider = () => {
   const classes = useStyles()
   return <div className={classes.divider} />
-}
-
-interface CollectionForUser {
-  id: string
-  assets: string[]
-}
-
-interface CollectionItem {
-  asset: string
-}
-
-interface Collection {
-  id: string
-  items: CollectionItem[]
-  title: string
 }
 
 export default ({

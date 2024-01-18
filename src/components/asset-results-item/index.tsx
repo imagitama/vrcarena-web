@@ -14,7 +14,7 @@ import {
   Slide,
   ButtonBack,
   ButtonNext,
-  Image
+  Image,
 } from 'pure-react-carousel'
 import 'pure-react-carousel/dist/react-carousel.es.css'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -31,7 +31,7 @@ import useDatabaseQuery, {
   ApprovalStatuses,
   CollectionNames,
   PinnedStatuses,
-  PublishStatuses
+  PublishStatuses,
 } from '../../hooks/useDatabaseQuery'
 import PedestalVideo from '../pedestal-video'
 import { isUrlAnImage } from '../../utils'
@@ -46,87 +46,87 @@ import SelectedTick from '../selected-tick'
 
 const chipMargin = '0.25rem'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '200px',
     height: '100%',
     position: 'relative',
     [mediaQueryForTabletsOrBelow]: {
-      width: '160px'
+      width: '160px',
     },
-    overflow: 'visible'
+    overflow: 'visible',
   },
   landscape: {
     width: '100%',
     '& $media': {
-      width: '200px'
-    }
+      width: '200px',
+    },
   },
   landscapeLink: {
-    display: 'flex'
+    display: 'flex',
   },
   media: {
     position: 'relative', // nsfw chip
     zIndex: -1,
     height: '200px',
     [mediaQueryForTabletsOrBelow]: {
-      height: '160px'
+      height: '160px',
     },
-    flexShrink: 0
+    flexShrink: 0,
   },
   actions: {
     position: 'absolute',
     bottom: 0,
-    left: 0
+    left: 0,
   },
   categoryChip: {
     position: 'absolute',
     top: 0,
-    left: 0
+    left: 0,
   },
   categoryChipWithMargin: {
     margin: chipMargin,
     '&:hover': {
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
   extraChips: {
     position: 'absolute',
     top: 0,
     right: 0,
-    display: 'flex'
+    display: 'flex',
   },
   extraChip: {
     margin: chipMargin,
     marginLeft: '0.1rem',
     '&:hover': {
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
   extraChipWithIcon: {
-    width: '32px' // make rounded
+    width: '32px', // make rounded
   },
   date: {
     margin: '0.25rem 0 0.5rem',
-    color: theme.palette.text.secondary
+    color: theme.palette.text.secondary,
   },
   costChipWrapper: {
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: chipMargin
+    padding: chipMargin,
   },
   costChip: {
-    background: '#333333' // todo: grab from theme?
+    background: '#333333', // todo: grab from theme?
   },
   nsfwChip: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    margin: '0.25rem'
+    margin: '0.25rem',
   },
   actionArea: {
-    zIndex: 1
+    zIndex: 1,
   },
   hoverOnEffect: {
     position: 'absolute',
@@ -137,23 +137,23 @@ const useStyles = makeStyles(theme => ({
     height: '300px',
     background: '#000',
     '& img': {
-      height: '100%'
+      height: '100%',
     },
     zIndex: 100,
-    boxShadow: '1px 1px 5px #000'
+    boxShadow: '1px 1px 5px #000',
   },
   pedestal: {
     width: '100%',
     '& video': {
-      background: 'rgba(0,0,0,1)'
-    }
+      background: 'rgba(0,0,0,1)',
+    },
   },
   slideContent: {
     position: 'absolute',
     top: '50%',
     left: 0,
     zIndex: 110,
-    transform: 'translateY(-50%)'
+    transform: 'translateY(-50%)',
   },
   slideLoadingSpinner: {
     width: '100%',
@@ -161,7 +161,7 @@ const useStyles = makeStyles(theme => ({
     top: '50%',
     left: 0,
     zIndex: 109,
-    transform: 'translateY(-50%)'
+    transform: 'translateY(-50%)',
   },
   carouselBtn: {
     border: 'none', // is a "button"
@@ -177,47 +177,47 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     '&:disabled': {
-      opacity: '0'
-    }
+      opacity: '0',
+    },
   },
   carouselNextBtn: {
-    right: '10px'
+    right: '10px',
   },
   carouselBackBtn: {
-    left: '10px'
+    left: '10px',
   },
   '@keyframes fadeInHoverOnEffect': {
     from: {
-      opacity: 0
+      opacity: 0,
     },
     to: {
-      opacity: 1
-    }
+      opacity: 1,
+    },
   },
   slide: {
-    position: 'relative'
+    position: 'relative',
   },
   dim: {
-    opacity: '0.3'
+    opacity: '0.3',
   },
   addToCartButton: {
     position: 'absolute',
     top: 0,
-    left: 0
+    left: 0,
   },
   toggleBulkEditButton: {
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   description: {
-    overflowX: 'hidden'
+    overflowX: 'hidden',
   },
   freeChip: {
-    backgroundColor: 'rgb(100, 150, 100)'
+    backgroundColor: 'rgb(100, 150, 100)',
   },
   pushDownIcons: {
-    paddingTop: '2.5rem'
-  }
+    paddingTop: '2.5rem',
+  },
 }))
 
 function truncateTextAndAddEllipsis(text: string): string {
@@ -231,7 +231,7 @@ function ExtraChips({
   showCost = false,
   isFree,
   isPaid,
-  pushDown
+  pushDown,
 }: {
   asset: FullAsset
   showCategory: boolean
@@ -319,7 +319,7 @@ function HoverOnContent({ asset }: { asset: Asset }) {
   const attachedImageUrls = asset.fileurls.filter(isUrlAnImage)
 
   if (attachedImageUrls.length) {
-    attachedImageUrls.forEach(url => {
+    attachedImageUrls.forEach((url) => {
       carouselItems.push(
         <Image src={url} alt="Attachment" hasMasterSpinner={false} />
       )
@@ -397,7 +397,7 @@ const ToggleBulkEditButton = ({ asset }: { asset: Asset }) => {
   return (
     <Checkbox
       checked={ids.includes(asset.id)}
-      onClick={e => {
+      onClick={(e) => {
         toggleAsset(asset)
         e.stopPropagation()
         e.preventDefault()
@@ -426,7 +426,7 @@ const AssetResultsItem = ({
   shimmer = false,
   showAddToCart = false,
   showSelectedTick = false,
-  pushDownIcons = false
+  pushDownIcons = false,
 }: {
   asset?: Asset
   showCategory?: boolean

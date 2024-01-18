@@ -4,10 +4,7 @@ import StarIcon from '@material-ui/icons/Star'
 import StarOutlineIcon from '@material-ui/icons/StarOutline'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import useDatabaseQuery, {
-  CollectionNames,
-  Operators
-} from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
@@ -22,38 +19,38 @@ import Message from '../message'
 import TextInput from '../text-input'
 import Paper from '../paper'
 import FormControls from '../form-controls'
-import { Rating, Review } from '../../modules/reviews'
+import { CollectionNames, Rating, Review } from '../../modules/reviews'
 
 const useStyles = makeStyles({
   root: {},
   rating: {
-    marginTop: '0.5rem'
+    marginTop: '0.5rem',
   },
   stars: {
-    display: 'flex'
+    display: 'flex',
   },
   star: {
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   active: {},
   inactive: {
-    opacity: 0.6
+    opacity: 0.6,
   },
   input: {
-    width: '100%'
+    width: '100%',
   },
   overallRating: {
-    padding: '1rem'
+    padding: '1rem',
   },
   ratingInputWrapper: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   label: {
     marginRight: '1rem',
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 })
 
 interface RatingsContext {
@@ -65,13 +62,13 @@ interface RatingsContext {
 const ratingsContext = createContext<RatingsContext>({
   newRatings: [],
   addOrEdit: () => {},
-  remove: () => {}
+  remove: () => {},
 })
 const useRatings = () => useContext(ratingsContext)
 
 function RatingInput({
   currentRatingOutOf5,
-  onChange
+  onChange,
 }: {
   currentRatingOutOf5: number | null
   onChange: (newIdx: number) => void
@@ -138,7 +135,7 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
   const classes = useStyles()
 
   const currentRating = newRatings.find(
-    rating => rating.name === ratingMeta.name
+    (rating) => rating.name === ratingMeta.name
   )
   const isActive = !!currentRating
 
@@ -158,7 +155,7 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
       {
         name: '',
         rating: newRatingNumber,
-        comments: newComments
+        comments: newComments,
       },
       currentRating
     )
@@ -174,14 +171,14 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
       <br />
       <RatingInput
         currentRatingOutOf5={newRatingNumber ? newRatingNumber / 2 : null}
-        onChange={newNumber => setNewRatingNumber(newNumber * 2)}
+        onChange={(newNumber) => setNewRatingNumber(newNumber * 2)}
       />
       <br />
       Your comments (Markdown enabled):
       <br />
       <TextInput
         value={newComments}
-        onChange={e => setNewComments(e.target.value)}
+        onChange={(e) => setNewComments(e.target.value)}
         rows={3}
         multiline
         className={classes.input}
@@ -205,7 +202,7 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
                 addOrEdit(ratingMeta.name, {
                   name: ratingMeta.name,
                   rating: newRatingNumber,
-                  comments: newComments
+                  comments: newComments,
                 })
               }}>
               {isActive ? 'Save Changes' : 'Add'}
@@ -225,7 +222,7 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
 function Ratings() {
   return (
     <div>
-      {allowedRatings.map(ratingMeta => (
+      {allowedRatings.map((ratingMeta) => (
         <RatingOutput key={ratingMeta.name} ratingMeta={ratingMeta} />
       ))}
     </div>
@@ -234,7 +231,7 @@ function Ratings() {
 
 export default ({
   assetId,
-  onDone = undefined
+  onDone = undefined,
 }: {
   assetId: string
   onDone?: () => void
@@ -246,14 +243,11 @@ export default ({
   const [newRatings, setNewRatings] = useState<Rating[]>([])
   const userId = useUserId()
 
-  const [
-    isLoadingMyReview,
-    isErrorLoadingMyReview,
-    myReview
-  ] = useDatabaseQuery<Review>(CollectionNames.Reviews, [
-    [ReviewsFieldNames.asset, Operators.EQUALS, assetId],
-    [ReviewsFieldNames.createdBy, Operators.EQUALS, userId]
-  ])
+  const [isLoadingMyReview, isErrorLoadingMyReview, myReview] =
+    useDatabaseQuery<Review>(CollectionNames.Reviews, [
+      [ReviewsFieldNames.asset, Operators.EQUALS, assetId],
+      [ReviewsFieldNames.createdBy, Operators.EQUALS, userId],
+    ])
 
   const reviewToEdit =
     myReview !== null && Array.isArray(myReview) ? myReview[0] : null
@@ -337,7 +331,7 @@ export default ({
         [ReviewsFieldNames.asset]: assetId,
         [ReviewsFieldNames.comments]: newComments,
         [ReviewsFieldNames.overallRating]: newOverallRatingNumber,
-        [ReviewsFieldNames.ratings]: newRatings
+        [ReviewsFieldNames.ratings]: newRatings,
       })
 
       if (onDone) {
@@ -350,9 +344,9 @@ export default ({
   }
 
   const onAddOrEditRating = (ratingName: string, newRating: Rating) => {
-    setNewRatings(currentVal => {
-      if (currentVal.find(rating => rating.name === ratingName)) {
-        return currentVal.map(rating => {
+    setNewRatings((currentVal) => {
+      if (currentVal.find((rating) => rating.name === ratingName)) {
+        return currentVal.map((rating) => {
           if (rating.name === ratingName) {
             return newRating
           } else {
@@ -366,8 +360,8 @@ export default ({
   }
 
   const onRemoveRating = (ratingName: string) => {
-    setNewRatings(currentVal =>
-      currentVal.filter(rating => rating.name !== ratingName)
+    setNewRatings((currentVal) =>
+      currentVal.filter((rating) => rating.name !== ratingName)
     )
   }
 
@@ -389,7 +383,7 @@ export default ({
         Your comments (Markdown enabled):
         <TextInput
           value={newComments}
-          onChange={e => setNewComments(e.target.value)}
+          onChange={(e) => setNewComments(e.target.value)}
           rows={5}
           multiline
           className={classes.input}
@@ -399,7 +393,7 @@ export default ({
         value={{
           newRatings,
           addOrEdit: onAddOrEditRating,
-          remove: onRemoveRating
+          remove: onRemoveRating,
         }}>
         <Ratings />
       </ratingsContext.Provider>

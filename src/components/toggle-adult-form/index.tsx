@@ -2,10 +2,8 @@ import React from 'react'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 
 import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
-import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
 
 import Button from '../button'
 import WarningMessage from '../warning-message'

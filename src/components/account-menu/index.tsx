@@ -13,7 +13,6 @@ import * as routes from '../../routes'
 import Menu, { MenuItemData } from '../menu'
 import Button from '../button'
 import useUserRecord from '../../hooks/useUserRecord'
-import { CollectionNames, UserFieldNames } from '../../hooks/useDatabaseQuery'
 import Avatar, { sizes } from '../avatar'
 import useUserId from '../../hooks/useUserId'
 import { useLocation } from 'react-router'
@@ -26,6 +25,7 @@ import {
 import { deleteRecord } from '../../data-store'
 import { cartIdsStorageKey, clear as clearCart } from '../../cart'
 import { client, getUserId } from '../../supabase'
+import { CollectionNames } from '../../modules/notifications'
 
 const useStyles = makeStyles({
   items: {

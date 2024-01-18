@@ -4,7 +4,7 @@ import useDatabaseQuery, {
   Operators,
 } from '../../hooks/useDatabaseQuery'
 import { makeStyles } from '@material-ui/core/styles'
-import { views, NoticesFieldNames } from '../../modules/notices'
+import { views, NoticesFieldNames, FullNotice } from '../../modules/notices'
 import useStorage, { keys as storageKeys } from '../../hooks/useStorage'
 import { trackAction } from '../../analytics'
 import Notice from '../notice'
@@ -34,18 +34,21 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({ isHome = false }) => {
-  const [isLoading, isErrored, results] = useDatabaseQuery(
+const Notices = ({ isHome = false }: { isHome: boolean }) => {
+  const [isLoading, isErrored, results] = useDatabaseQuery<FullNotice>(
     views.getFullNotices,
-    [[NoticesFieldNames.isVisible, Operators.EQUALS, true]],
+    [['isvisible', Operators.EQUALS, true]],
     100,
-    [NoticesFieldNames.orderby, OrderDirections.ASC]
+    ['orderby', OrderDirections.ASC]
   )
   const classes = useStyles()
-  const [hiddenNotices] = useStorage(storageKeys.hiddenNotices, [])
+  const [hiddenNotices] = useStorage<string[]>(storageKeys.hiddenNotices, [])
 
-  const hideNotice = (hideId) => {
-    writeStorage(storageKeys.hiddenNotices, hiddenNotices.concat([hideId]))
+  const hideNotice = (hideId: string) => {
+    writeStorage(
+      storageKeys.hiddenNotices,
+      hiddenNotices !== null ? hiddenNotices.concat([hideId]) : [hideId]
+    )
     trackAction('Global', 'Click hide notice', hideId)
   }
 
@@ -57,9 +60,9 @@ export default ({ isHome = false }) => {
     return null
   }
 
-  const filterHidden = (notice) => !hiddenNotices.includes(notice.hideid)
-
-  const noticesToShow = results.filter(filterHidden)
+  const noticesToShow = results.filter(
+    (notice) => hiddenNotices && !hiddenNotices.includes(notice.hideid)
+  )
 
   if (!noticesToShow.length) {
     return null
@@ -75,3 +78,5 @@ export default ({ isHome = false }) => {
     </div>
   )
 }
+
+export default Notices

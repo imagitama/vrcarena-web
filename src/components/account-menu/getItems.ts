@@ -1,18 +1,17 @@
 import { deleteRecord } from '../../data-store'
-import { Asset, FullAsset } from '../../modules/assets'
+import { Asset, CollectionNames, FullAsset } from '../../modules/assets'
 import { handleError } from '../../error-handling'
 import { cartIdsStorageKey } from '../../cart'
 import {
   AccessStatuses,
   ApprovalStatuses,
-  AssetFieldNames,
-  CollectionNames,
-  PublishStatuses
+  PublishStatuses,
 } from '../../hooks/useDatabaseQuery'
 import { retrieveFromLocalStorage } from '../../storage'
 import { client, getUserId } from '../../supabase'
 import * as routes from '../../routes'
 import { getLabelForNotification, getLinkUrl } from '../../notifications'
+import { CollectionNames as NotificationsCollectionNames } from '../../modules/notifications'
 
 import { MenuItemData } from '../menu'
 
@@ -26,8 +25,9 @@ export const cart = async (): Promise<MenuItemData[]> => {
 
     const { data, error } = await client
       .from<Asset>(CollectionNames.Assets)
-      .select(`id, ${AssetFieldNames.title}, ${AssetFieldNames.thumbnailUrl}`)
-      .or(ids.map(id => `id.eq.${id}`).join(','))
+      // TODO: Better type safety
+      .select(`id, title, thumbnailurl`)
+      .or(ids.map((id) => `id.eq.${id}`).join(','))
 
     if (!data) {
       console.warn(`Failed to get assets for cart: no data`, { ids })
@@ -38,11 +38,11 @@ export const cart = async (): Promise<MenuItemData[]> => {
       throw new Error('Failed to get cart items')
     }
 
-    return data.map(asset => ({
+    return data.map((asset) => ({
       id: asset.id,
       url: routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id),
       label: asset.title,
-      imageUrl: asset.thumbnailurl
+      imageUrl: asset.thumbnailurl,
     }))
   } catch (err) {
     console.error(err)
@@ -67,7 +67,7 @@ export const queue = async (): Promise<MenuItemData[]> => {
       .eq('approvalstatus', ApprovalStatuses.Waiting)
       .eq('accessstatus', AccessStatuses.Public)
       .order('createdat', {
-        ascending: false
+        ascending: false,
       })
       .limit(25)
 
@@ -80,11 +80,11 @@ export const queue = async (): Promise<MenuItemData[]> => {
       throw new Error('Failed to get queued assets')
     }
 
-    return data.map(asset => ({
+    return data.map((asset) => ({
       id: asset.id,
       url: routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id),
       label: asset.title,
-      imageUrl: asset.thumbnailurl
+      imageUrl: asset.thumbnailurl,
     }))
   } catch (err) {
     console.error(err)
@@ -130,15 +130,18 @@ export const notifications = async (): Promise<MenuItemData[]> => {
       throw new Error('Failed to get notifications')
     }
 
-    return data.map(notification => ({
+    return data.map((notification) => ({
       id: notification.id,
       url: getLinkUrl(notification),
       label: getLabelForNotification(notification),
       date: notification.createdat,
       onRemove: async () => {
         console.debug(`Removing notification ${notification.id}...`)
-        await deleteRecord(CollectionNames.Notifications, notification.id)
-      }
+        await deleteRecord(
+          NotificationsCollectionNames.Notifications,
+          notification.id
+        )
+      },
     }))
   } catch (err) {
     console.error(err)

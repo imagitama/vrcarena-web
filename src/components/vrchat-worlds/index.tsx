@@ -2,10 +2,7 @@ import React, { useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-import {
-  CollectionNames,
-  VrchatWorldsFieldNames
-} from '../../hooks/useDatabaseQuery'
+import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
 import { client as supabase } from '../../supabase'
 import LoadingIndicator from '../loading-indicator'
@@ -13,19 +10,19 @@ import ErrorMessage from '../error-message'
 import VrchatWorld from '../vrchat-world'
 import {
   CachedVrchatWorldRecord,
-  VrchatWorld as VrchatWorldStructure
+  VrchatWorld as VrchatWorldStructure,
 } from '../../modules/vrchat-cache'
 import Button from '../button'
 
 const useStyles = makeStyles({
-  root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' }
+  root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
 })
 
 export default ({
   worldIds,
   showControls = false,
   onRemove,
-  onUseForAsset
+  onUseForAsset,
 }: {
   worldIds: string[]
   showControls?: boolean
@@ -39,7 +36,7 @@ export default ({
         : supabase
             .from(CollectionNames.VrchatWorlds)
             .select('*')
-            .or(worldIds.map(worldId => `id.eq.${worldId}`).join(',')),
+            .or(worldIds.map((worldId) => `id.eq.${worldId}`).join(',')),
     [worldIds.join(',')]
   )
   const [isLoading, isErrored, results] = useDataStore<
@@ -61,9 +58,9 @@ export default ({
 
   return (
     <div className={classes.root}>
-      {worldIds.map(worldId => {
+      {worldIds.map((worldId) => {
         const cachedRecord = results
-          ? results.find(result => result.id === worldId)
+          ? results.find((result) => result.id === worldId)
           : undefined
 
         const worldData = cachedRecord ? cachedRecord.world : null

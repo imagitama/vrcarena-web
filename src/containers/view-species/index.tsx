@@ -19,10 +19,9 @@ import Button from '../../components/button'
 import {
   AssetCategories,
   AssetFieldNames,
-  SpeciesFieldNames
+  SpeciesFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
 import useIsEditor from '../../hooks/useIsEditor'
 import useDataStore from '../../hooks/useDataStore'
 
@@ -31,7 +30,7 @@ import {
   CollectionNames,
   FullSpecies,
   Species,
-  ViewNames
+  ViewNames,
 } from '../../modules/species'
 
 import * as routes from '../../routes'
@@ -47,7 +46,7 @@ const analyticsCategoryName = 'ViewSpecies'
 
 const AssetsForSpecies = ({
   species,
-  childSpecies
+  childSpecies,
 }: {
   species: Species
   childSpecies: Species[]
@@ -58,8 +57,8 @@ const AssetsForSpecies = ({
   const speciesIdsToSearchFor = [
     species.id,
     ...(includeChildren
-      ? childSpecies.map(childSpeciesItem => childSpeciesItem.id)
-      : [])
+      ? childSpecies.map((childSpeciesItem) => childSpeciesItem.id)
+      : []),
   ]
 
   const getQuery = useCallback(
@@ -83,12 +82,12 @@ const AssetsForSpecies = ({
       sortOptions={[
         {
           label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt
+          fieldName: AssetFieldNames.createdAt,
         },
         {
           label: 'Title',
-          fieldName: AssetFieldNames.title
-        }
+          fieldName: AssetFieldNames.title,
+        },
       ]}
       defaultFieldName={AssetFieldNames.createdAt}
       urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
@@ -105,7 +104,7 @@ const AssetsForSpecies = ({
             includeChildren ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
           }
           onClick={() => {
-            setIncludeChildren(currentVal => !currentVal)
+            setIncludeChildren((currentVal) => !currentVal)
             trackAction(
               analyticsCategoryName,
               'Click on toggle include children'
@@ -113,7 +112,7 @@ const AssetsForSpecies = ({
           }}
           color="default">
           Child Species
-        </Button>
+        </Button>,
       ]}>
       <Renderer />
     </PaginatedView>
@@ -132,17 +131,12 @@ const View = () => {
         .from<Species>(ViewNames.GetFullSpecies)
         .select('*')
         .or(
-          `id.eq.${speciesIdOrSlug},${
-            SpeciesFieldNames.slug
-          }.eq.${speciesIdOrSlug}`
+          `id.eq.${speciesIdOrSlug},${SpeciesFieldNames.slug}.eq.${speciesIdOrSlug}`
         ),
     [speciesIdOrSlug]
   )
-  const [
-    isLoadingSpecies,
-    isErrorLoadingSpecies,
-    speciesResults
-  ] = useDataStore<FullSpecies[]>(getSpeciesQuery, 'view-species')
+  const [isLoadingSpecies, isErrorLoadingSpecies, speciesResults] =
+    useDataStore<FullSpecies[]>(getSpeciesQuery, 'view-species')
 
   const species =
     speciesResults && speciesResults.length === 1 ? speciesResults[0] : null
@@ -157,14 +151,11 @@ const View = () => {
       .eq('parent', species.id)
     return query
   }, [species && species.id])
-  const [
-    isLoadingChildren,
-    isErrorLoadingChildren,
-    childSpecies
-  ] = useDataStore<Species[]>(
-    species ? getChildrenQuery : null,
-    'view-species-children'
-  )
+  const [isLoadingChildren, isErrorLoadingChildren, childSpecies] =
+    useDataStore<Species[]>(
+      species ? getChildrenQuery : null,
+      'view-species-children'
+    )
   const { push } = useHistory()
 
   useEffect(() => {

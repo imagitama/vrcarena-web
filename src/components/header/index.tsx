@@ -15,7 +15,7 @@ import {
   queryForMobiles,
   mediaQueryForMobiles,
   mediaQueryForDesktopsOnly,
-  mediaQueryForTabletsOrBelow
+  mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
 import { trackAction } from '../../analytics'
 import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '../../config'
@@ -35,12 +35,12 @@ const useStyles = makeStyles({
     padding: '1rem 1rem 0',
     height: '125px',
     [mediaQueryForTabletsOrBelow]: {
-      height: '160px'
+      height: '160px',
     },
     [mediaQueryForMobiles]: {
       height: '120px',
-      padding: '0.5rem 0.5rem 0'
-    }
+      padding: '0.5rem 0.5rem 0',
+    },
   },
   background: {
     position: 'absolute',
@@ -49,46 +49,44 @@ const useStyles = makeStyles({
     width: '100%',
     height: '100%',
     zIndex: -5,
-    background: `linear-gradient(180deg, ${
-      colors.BrandVeryDark
-    }, rgba(0,0,0,0))`,
-    transition: 'all 1000ms'
+    background: `linear-gradient(180deg, ${colors.BrandVeryDark}, rgba(0,0,0,0))`,
+    transition: 'all 1000ms',
   },
   withBanner: {
-    opacity: 0
+    opacity: 0,
   },
   cols: {
     display: 'flex',
     [mediaQueryForMobiles]: {
-      flexWrap: 'wrap'
-    }
+      flexWrap: 'wrap',
+    },
   },
   leftCol: {
     flexShrink: 1,
-    marginRight: '2%'
+    marginRight: '2%',
   },
   rightCol: {
-    width: '100%'
+    width: '100%',
   },
   floatingMenu: {
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: '1rem'
+    padding: '1rem',
   },
   searchBar: {
-    width: '100%'
+    width: '100%',
   },
   searchBarInner: {
     width: '50%',
     margin: '0.5rem auto 0',
     [mediaQueryForMobiles]: {
       width: '100%',
-      marginBottom: '0.5rem'
-    }
+      marginBottom: '0.5rem',
+    },
   },
   desktopMenu: {
-    width: '100%'
+    width: '100%',
   },
   logoWrapper: {
     display: 'flex',
@@ -97,8 +95,8 @@ const useStyles = makeStyles({
     left: 0,
     [mediaQueryForMobiles]: {
       position: 'relative',
-      padding: 0
-    }
+      padding: 0,
+    },
   },
   socialIcons: {
     marginLeft: '0.25rem',
@@ -111,42 +109,42 @@ const useStyles = makeStyles({
       opacity: '0.75',
       transition: 'all 100ms',
       '&:hover': {
-        opacity: 1
-      }
+        opacity: 1,
+      },
     },
     '& $twitterIconLink': {
-      paddingRight: '0.25rem'
+      paddingRight: '0.25rem',
     },
     '& svg': {
       width: 'auto', // fix patreon icon
-      height: '2em'
+      height: '2em',
     },
     '& $twitterIcon': {
-      height: '1.5em'
+      height: '1.5em',
     },
     '& path': {
-      fill: '#FFF'
-    }
+      fill: '#FFF',
+    },
   },
   twitterIconLink: {},
   twitterIcon: {},
   logo: {
     '& path': {
-      fill: colors.BrandLight
+      fill: colors.BrandLight,
     },
     height: '75px',
     width: 'auto',
     opacity: '0.75',
     transition: 'all 100ms',
     '&:hover': {
-      opacity: 1
+      opacity: 1,
     },
     [mediaQueryForMenuLogoCollision]: {
-      height: '50px'
+      height: '50px',
     },
     [mediaQueryForMobiles]: {
-      height: '50px'
-    }
+      height: '50px',
+    },
   },
   menuToggleButton: {
     position: 'absolute',
@@ -154,25 +152,25 @@ const useStyles = makeStyles({
     right: 0,
 
     [mediaQueryForDesktopsOnly]: {
-      display: 'none'
-    }
+      display: 'none',
+    },
   },
   menuToggleIcon: {
     width: '4rem',
     height: '3rem',
-    fill: '#FFF'
+    fill: '#FFF',
   },
   invisible: {
-    visibility: 'hidden'
+    visibility: 'hidden',
   },
   homepage: {
-    top: '100%'
+    top: '100%',
   },
   socialMediaRows: {
     [mediaQueryForTabletsOrBelow]: {
-      display: 'flex'
-    }
-  }
+      display: 'flex',
+    },
+  },
 })
 
 const SocialMediaIcons = () => {

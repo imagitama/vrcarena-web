@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 
-type Fields = { [fieldName: string]: any }
-
-export default (
+export default <TRecord>(
   collectionName: string | false,
   documentId: string | null = null,
   isDelete: boolean = false
@@ -12,7 +10,7 @@ export default (
   boolean,
   boolean,
   null | Error,
-  (fields?: Fields, id?: string) => Promise<(null | Fields)[]>,
+  (fields?: Partial<TRecord>, id?: string) => Promise<(null | TRecord)[]>,
   () => void
 ] => {
   const [isSaving, setIsSaving] = useState(false)
@@ -25,7 +23,7 @@ export default (
     setIsSaving(false)
   }
 
-  const save = async (fields?: Fields, id?: string) => {
+  const save = async (fields?: Partial<TRecord>, id?: string) => {
     // for amendments
     if (!collectionName) {
       return []
@@ -35,15 +33,23 @@ export default (
       if (!fields) {
         throw new Error('Need to pass fields')
       }
+
+      // @ts-ignore
       if (fields.lastModifiedAt || fields.lastmodifiedat) {
         throw new Error('Never set the "lastModifiedAt" field when saving')
       }
+
+      // @ts-ignore
       if (fields.lastModifiedBy || fields.lastmodifiedby) {
         throw new Error('Never set the "lastModifiedBy" field when saving')
       }
+
+      // @ts-ignore
       if (fields.createdAt || fields.createdAt) {
         throw new Error('Never set the "createdAt" field when saving')
       }
+
+      // @ts-ignore
       if (fields.createdBy || fields.createdBy) {
         throw new Error('Never set the "createdBy" field when saving')
       }
@@ -58,7 +64,7 @@ export default (
     try {
       console.debug('useDatabaseSave', collectionName, idToSave, fields)
 
-      let returnData: null | Fields
+      let returnData: null | TRecord
 
       if (idToSave) {
         if (isDelete) {

@@ -58,8 +58,6 @@ const useStyles = makeStyles({
   },
   col: {
     padding: '1rem',
-    // borderRadius: '4px',
-    // border: '2px solid rgba(255, 255, 255, 0.2)',
     '&:nth-child(2)': {
       margin: '0 0.25rem',
       padding: '1rem',

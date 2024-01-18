@@ -1,3 +1,5 @@
+// TODO: Move to utils
+
 export function getUrlForVrChatAvatarId(avatarId) {
   return `https://vrchat.com/home/avatar/${avatarId}`
 }

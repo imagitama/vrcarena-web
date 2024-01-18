@@ -1,11 +1,10 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Link from '../../components/link'
 
+import Link from '../../components/link'
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
 import PaginatedView from '../../components/paginated-view'
-
 import { OrderDirections } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import { PlaylistsFieldNames } from '../../data-store'

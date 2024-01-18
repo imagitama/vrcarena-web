@@ -2,10 +2,10 @@ import { popularCurrencies } from '../currency'
 import {
   AccessStatuses,
   ApprovalStatuses,
-  FeaturedStatuses,
   PinnedStatuses,
   PublishStatuses,
 } from '../hooks/useDatabaseQuery'
+import { FeaturedStatus as FeaturedStatuses } from './common'
 import { Tag } from './tags'
 
 export const RelationType = {
@@ -84,12 +84,12 @@ export interface VrchatWorld {}
 
 export interface AssetMeta {
   editornotes: string
-  publishstatus: keyof typeof PublishStatuses
+  publishstatus: PublishStatuses
   publishedby: string // user ref
-  accessstatus: keyof typeof AccessStatuses
-  approvalstatus: keyof typeof ApprovalStatuses
-  pinnedstatus: keyof typeof PinnedStatuses
-  featuredstatus: keyof typeof FeaturedStatuses
+  accessstatus: AccessStatuses
+  approvalstatus: ApprovalStatuses
+  pinnedstatus: PinnedStatuses
+  featuredstatus: FeaturedStatuses
   featuredby: string // user ref
   lastmodifiedby: string // user ref
   lastmodifiedat: Date
@@ -137,4 +137,41 @@ export const CollectionNames = {
   Assets: 'assets',
   AssetsMeta: 'assetmeta',
   TagStats: 'tagstats',
+}
+
+// legacy
+
+export const AssetFieldNames = {
+  title: 'title',
+  isAdult: 'isadult',
+  tags: 'tags',
+  createdBy: 'createdby',
+  createdAt: 'createdat',
+  category: 'category',
+  species: 'species',
+  sourceUrl: 'sourceurl',
+  videoUrl: 'videourl',
+  lastModifiedBy: 'lastmodifiedby',
+  lastModifiedAt: 'lastmodifiedat',
+  thumbnailUrl: 'thumbnailurl',
+  fileUrls: 'fileurls',
+  description: 'description',
+  author: 'author',
+  children: 'children',
+  discordServer: 'discordserver',
+  bannerUrl: 'bannerurl',
+  tutorialSteps: 'tutorialsteps',
+  pedestalVideoUrl: 'pedestalvideourl',
+  pedestalFallbackImageUrl: 'pedestalfallbackimageurl',
+  sketchfabEmbedUrl: 'sketchfabembedurl',
+  slug: 'slug',
+  clonableWorld: 'clonableworld',
+  vrchatClonableWorldIds: 'vrchatclonableworldids',
+  vrchatClonableAvatarIds: 'vrchatclonableavatarids',
+  shortDescription: 'shortdescription',
+  price: 'price',
+  priceCurrency: 'pricecurrency',
+  gumroad: 'gumroad',
+  ranks: 'ranks',
+  relations: 'relations',
 }

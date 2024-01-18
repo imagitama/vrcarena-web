@@ -9,16 +9,16 @@ import FormattedDate from '../formatted-date'
 
 const useStyles = makeStyles({
   noPadding: {
-    padding: 0
+    padding: 0,
   },
   withPadding: {
-    padding: '0.25rem 1rem'
+    padding: '0.25rem 1rem',
   },
   link: {
     width: '100%',
     color: 'inherit',
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   labelWithImage: {
     display: 'flex',
@@ -26,16 +26,16 @@ const useStyles = makeStyles({
     '& img': {
       width: '40px',
       height: '40px',
-      marginRight: '0.5rem'
-    }
+      marginRight: '0.5rem',
+    },
   },
   date: {
     width: '100%',
-    fontSize: '50%'
+    fontSize: '50%',
   },
   removeIcon: {
-    marginRight: '1rem'
-  }
+    marginRight: '1rem',
+  },
 })
 
 export interface MenuItemData {
@@ -56,7 +56,7 @@ export default ({
   onClose,
   children,
   onClickItem,
-  onRemove: onRemoveAnyItem
+  onRemove: onRemoveAnyItem,
 }: {
   isOpen: boolean
   buttonRef: Element
@@ -79,11 +79,11 @@ export default ({
       open={isOpen}
       anchorOrigin={{
         vertical: 'bottom',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       transformOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'right',
       }}
       onClose={onClose}>
       {items
@@ -96,7 +96,7 @@ export default ({
               imageUrl,
               date,
               disabled,
-              onRemove
+              onRemove,
             }) => {
               const labelToUse = (
                 <>
@@ -117,9 +117,7 @@ export default ({
               return (
                 <MenuItem
                   key={id}
-                  onClick={e => {
-                    // onClickItem ? e => onClickItem(id, e) : undefined}
-
+                  onClick={(e) => {
                     if (onClick) {
                       onClick(e)
                     }
@@ -145,7 +143,7 @@ export default ({
                   {onRemove ? (
                     <div
                       className={classes.removeIcon}
-                      onClick={async e => {
+                      onClick={async (e) => {
                         e.preventDefault()
                         e.stopPropagation()
 

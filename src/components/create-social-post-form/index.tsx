@@ -96,6 +96,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
     setAttachments,
     onClickCreate,
     initialUsernameMapping,
+    autoFocus,
   } = useForm()
   const myUserId = useUserId()
 
@@ -137,6 +138,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
               onChange={(newValue) => setInternalText(newValue)}
               isDisabled={isCreatingPost}
               initialUsernameMapping={initialUsernameMapping}
+              autoFocus={autoFocus}
             />
           </div>
           <CheckboxInput
@@ -187,6 +189,7 @@ interface FormContext {
   setIsAdult: (newVal: boolean) => void
   onClickCreate: () => void
   initialUsernameMapping?: UsernameMapping
+  autoFocus?: boolean
 }
 
 // @ts-ignore
@@ -198,11 +201,13 @@ const CreateSocialPostForm = ({
   replyParentId,
   onDone,
   initialUsernameMapping,
+  autoFocus,
 }: {
   initialText?: string
   replyParentId?: string
   onDone?: () => void
   initialUsernameMapping?: UsernameMapping
+  autoFocus?: boolean
 }) => {
   const [internalText, setInternalText] = useState(initialText || '')
   const [attachments, setAttachments] = useState<SocialAttachment[]>([])
@@ -276,6 +281,7 @@ const CreateSocialPostForm = ({
           setIsAdult,
           onClickCreate,
           initialUsernameMapping,
+          autoFocus,
         }}>
         <ImageUploader
           onDone={(urls) => onDoneAttachingUrls(urls)}

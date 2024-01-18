@@ -5,11 +5,11 @@ const heightBeforeCollapsed = 300
 
 const useStyles = makeStyles({
   root: {
-    position: 'relative'
+    position: 'relative',
   },
   collapsed: {
     height: `${heightBeforeCollapsed}px`,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   overlay: {
     height: '100%',
@@ -28,15 +28,15 @@ const useStyles = makeStyles({
       textAlign: 'center',
       fontWeight: 'bold',
       padding: '2rem',
-      background: 'rgba(0, 0, 0, 0.25)'
-    }
-  }
+      background: 'rgba(0, 0, 0, 0.25)',
+    },
+  },
 })
 
-export default ({
+const Expander = ({
   message = 'Click to expand description',
   children,
-  isLoaded
+  isLoaded,
 }: {
   message: string
   children: React.ReactNode
@@ -46,7 +46,7 @@ export default ({
   const [isExpanded, setIsExpanded] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const expand = () => setIsExpanded(currentVal => !currentVal)
+  const expand = () => setIsExpanded((currentVal) => !currentVal)
 
   useEffect(() => {
     if (isLoaded === false) {
@@ -71,3 +71,5 @@ export default ({
     </div>
   )
 }
+
+export default Expander

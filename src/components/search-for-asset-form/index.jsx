@@ -8,41 +8,41 @@ import AssetResults from '../asset-results'
 import {
   AssetCategories,
   AssetFieldNames,
-  CollectionNames
+  CollectionNames,
 } from '../../hooks/useDatabaseQuery'
 import categoryMeta from '../../category-meta'
 
 const useStyles = makeStyles({
   textInput: {
-    width: '100%'
+    width: '100%',
   },
   row: {
-    marginTop: '1rem'
+    marginTop: '1rem',
   },
   assets: {
     marginTop: '1rem',
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   button: {
-    margin: '0 0.5rem 0.5rem 0'
+    margin: '0 0.5rem 0.5rem 0',
   },
   categories: {
-    display: 'flex'
+    display: 'flex',
   },
   category: {
-    margin: '0 0.25rem 0.25rem 0'
-  }
+    margin: '0 0.25rem 0.25rem 0',
+  },
 })
 
 function SearchForm({
   selectedCategoryNames,
   searchTerm,
   onSelectIdWithDetails,
-  filterResults = null
+  filterResults = null,
 }) {
   const getQuery = useCallback(
-    query => query.in(AssetFieldNames.category, selectedCategoryNames),
+    (query) => query.in(AssetFieldNames.category, selectedCategoryNames),
     [selectedCategoryNames.join(',')]
   )
   const [isSearching, isErrored, results] = useSearching(
@@ -52,7 +52,6 @@ function SearchForm({
     [AssetFieldNames.title],
     getQuery
   )
-  const classes = useStyles()
 
   if (isSearching) {
     return 'Searching...'
@@ -90,11 +89,11 @@ function SearchForm({
 export default ({
   onSelectIdWithDetails,
   category = null,
-  filterResults = null
+  filterResults = null,
 }) => {
   const [searchTerm, setSearchTerm] = useState(null)
   const [selectedCategoryNames, setSelectedCategoryNames] = useState([
-    category ? category : AssetCategories.avatar
+    category ? category : AssetCategories.avatar,
   ])
   const classes = useStyles()
 
@@ -107,16 +106,16 @@ export default ({
     <>
       {category ? null : (
         <div className={classes.categories}>
-          {Object.keys(AssetCategories).map(categoryName => (
+          {Object.keys(AssetCategories).map((categoryName) => (
             <div key={categoryName} className={classes.category}>
               <CheckboxInput
                 value={selectedCategoryNames.includes(categoryName)}
                 label={categoryMeta[categoryName].name}
-                onChange={newVal =>
-                  setSelectedCategoryNames(currentNames =>
+                onChange={(newVal) =>
+                  setSelectedCategoryNames((currentNames) =>
                     newVal
                       ? currentNames.concat([categoryName])
-                      : currentNames.filter(name => name !== categoryName)
+                      : currentNames.filter((name) => name !== categoryName)
                   )
                 }
               />
@@ -142,7 +141,7 @@ export default ({
       <div className={classes.row}>
         Search:
         <TextInput
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           value={searchTerm}
           variant="filled"
           className={classes.textInput}

@@ -3,7 +3,7 @@ import React, {
   useContext,
   createContext,
   useCallback,
-  useState
+  useState,
 } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@material-ui/core/styles'
@@ -30,8 +30,6 @@ import {
   AccessStatuses,
   PublishStatuses,
   ApprovalStatuses,
-  SpeciesFieldNames,
-  AssetFieldNames
 } from '../../hooks/useDatabaseQuery'
 import { CommonMetaFieldNames } from '../../data-store'
 import useScrollMemory from '../../hooks/useScrollMemory'
@@ -40,21 +38,21 @@ import { scrollToTop } from '../../utils'
 
 const useStyles = makeStyles({
   root: {
-    marginTop: '0.5rem'
+    marginTop: '0.5rem',
   },
   controls: {
     display: 'flex',
     '& > *:first-child': {
-      marginLeft: 'auto'
-    }
+      marginLeft: 'auto',
+    },
   },
   controlGroup: {
     display: 'flex',
-    marginLeft: '1rem'
+    marginLeft: '1rem',
   },
   control: {
-    marginLeft: '0.5rem'
-  }
+    marginLeft: '0.5rem',
+  },
 })
 
 const limitPerPage = 50
@@ -79,7 +77,7 @@ interface PaginatedViewData {
   getQuery?: GetQueryFn
   sortKey: string
   defaultFieldName: string
-  defaultDirection?: string
+  defaultDirection?: OrderDirections
   renderer: React.ReactElement
   urlWithPageNumberVar: string
   selectedSubView: string | null
@@ -115,7 +113,7 @@ const Page = () => {
     filters,
     internalPageNumber,
     setInternalPageNumber,
-    getQueryString
+    getQueryString,
   } = usePaginatedView()
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
   const [sorting] = useSorting(sortKey, defaultFieldName, defaultDirection)
@@ -173,14 +171,14 @@ const Page = () => {
 
     if (sorting) {
       query = query.order(sorting.fieldName.toLowerCase(), {
-        ascending: isAscending
+        ascending: isAscending,
       })
     }
 
     // hack
-    if (sorting && sorting.fieldName === SpeciesFieldNames.pluralName) {
-      query = query.order(AssetFieldNames.title.toLowerCase(), {
-        ascending: true
+    if (sorting && sorting.fieldName === 'pluralname') {
+      query = query.order('title', {
+        ascending: true,
       })
     }
 
@@ -192,7 +190,7 @@ const Page = () => {
     sorting ? sorting.direction : null,
     selectedSubView,
     Object.values(filters).join('+'),
-    isEditor
+    isEditor,
   ])
   const [isLoading, isErrored, items, totalCount, hydrate] = useDataStore<
     any[]
@@ -216,13 +214,13 @@ const Page = () => {
     <>
       {React.cloneElement(renderer, {
         items,
-        hydrate
+        hydrate,
       })}
       {totalCount ? (
         <PagesNavigation
           currentPageNumber={currentPageNumber}
           pageCount={Math.ceil(totalCount / limitPerPage)}
-          onClickWithPageNumber={newPageNumber => {
+          onClickWithPageNumber={(newPageNumber) => {
             if (urlWithPageNumberVar) {
               push(
                 urlWithPageNumberVar.replace(
@@ -261,7 +259,7 @@ const clearId = 'clear'
 const CommonMetaControl = ({
   label,
   fieldName,
-  fieldMap
+  fieldMap,
 }: {
   label: string
   fieldName: string
@@ -271,7 +269,7 @@ const CommonMetaControl = ({
 
   const onSelect = (newVal: string) =>
     setFilters({
-      [fieldName]: newVal === clearId ? null : newVal
+      [fieldName]: newVal === clearId ? null : newVal,
     })
 
   return (
@@ -314,8 +312,8 @@ const CommonMetaControls = () => {
 const subViewConfigAll: SubViewConfig[] = [
   {
     label: 'All',
-    id: null
-  }
+    id: null,
+  },
 ]
 
 export interface PaginatedViewProps {
@@ -327,7 +325,7 @@ export interface PaginatedViewProps {
   sortKey?: string
   sortOptions?: SortOption[]
   defaultFieldName?: string
-  defaultDirection?: string
+  defaultDirection?: OrderDirections
   children?: React.ReactElement
   extraControls?: React.ReactElement[]
   urlWithPageNumberVar?: string
@@ -355,7 +353,7 @@ export default ({
   subViews,
   showCommonMetaControls = false,
   getQueryString = undefined,
-  limit = undefined
+  limit = undefined,
 }: PaginatedViewProps) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
@@ -395,7 +393,7 @@ export default ({
         setFilters,
         internalPageNumber,
         setInternalPageNumber,
-        getQueryString
+        getQueryString,
       }}>
       <div className={classes.root}>
         <div className={classes.controls}>

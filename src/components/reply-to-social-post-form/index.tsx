@@ -15,11 +15,11 @@ const ReplyToSocialPostForm = ({
   return (
     <CreateSocialPostForm
       replyParentId={postId}
-      // initialText={`[user:${originalUserId}] `}
       initialUsernameMapping={{
         [originalUsername]: originalUserId,
       }}
       onDone={hydrate}
+      autoFocus={true}
     />
   )
 }

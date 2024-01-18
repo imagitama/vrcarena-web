@@ -11,7 +11,6 @@ import Button from '../../components/button'
 import { trackAction } from '../../analytics'
 import useIsEditor from '../../hooks/useIsEditor'
 import useDatabaseQuery, {
-  CollectionNames,
   Operators,
   options,
   OrderDirections,
@@ -21,7 +20,6 @@ import * as routes from '../../routes'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import { FullSpecies, Species, ViewNames } from '../../modules/species'
-import SuccessMessage from '../../components/success-message'
 import AutocompleteInput from '../../components/autocomplete-input'
 import {
   mediaQueryForMobiles,
@@ -151,17 +149,17 @@ const SpeciesResult = ({
 
 const View = () => {
   const isEditor = useIsEditor()
-  const [isLoading, isError, species] = useDatabaseQuery<Species>(
+  const [isLoading, isError, speciesItems] = useDatabaseQuery<Species>(
     ViewNames.GetFullSpecies,
-    isEditor ? [] : [[SpeciesFieldNames.redirectTo, 'is', null]],
+    isEditor ? [] : [['redirectto', Operators.IS, null]],
     {
-      [options.orderBy]: [SpeciesFieldNames.singularName, OrderDirections.ASC],
+      [options.orderBy]: ['singularname', OrderDirections.ASC],
     }
   )
   const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()
 
-  if (isLoading || !Array.isArray(species)) {
+  if (isLoading || !Array.isArray(speciesItems)) {
     return <LoadingIndicator message="Loading species..." />
   }
 
@@ -170,7 +168,9 @@ const View = () => {
   }
 
   const filteredSpecies =
-    filterId !== null ? findItemAndParents<Species>(species, filterId) : species
+    filterId !== null
+      ? findItemAndParents<Species>(speciesItems, filterId)
+      : speciesItems
 
   const speciesHierarchy = convertToNestedArray(filteredSpecies)
 
@@ -179,7 +179,7 @@ const View = () => {
       <div className={classes.autocompleteWrapper}>
         <AutocompleteInput
           label="Search for species"
-          options={species.map((speciesItem) => ({
+          options={speciesItems.map((speciesItem) => ({
             label: speciesItem.pluralname,
             data: speciesItem.id,
           }))}

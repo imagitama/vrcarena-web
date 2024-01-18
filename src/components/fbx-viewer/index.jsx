@@ -48,17 +48,6 @@ export default ({ url, onClick = null }) => {
       light.shadow.camera.right = 120
       scene.add(light)
 
-      // scene.add( new CameraHelper( light.shadow.camera ) );
-
-      // ground
-      // var mesh = new THREE.Mesh(
-      //   new THREE.PlaneBufferGeometry(2000, 2000),
-      //   new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
-      // )
-      // mesh.rotation.x = -Math.PI / 2
-      // mesh.receiveShadow = true
-      // scene.add(mesh)
-
       var grid = new THREE.GridHelper(2000, 20, 0x000000, 0x000000)
       grid.material.opacity = 0.2
       grid.material.transparent = true
@@ -100,8 +89,8 @@ export default ({ url, onClick = null }) => {
       // model
       var loader = new FBXLoader()
       loader.setRequestHeader({ Origin: WEBSITE_FULL_URL })
-      loader.load(url, function(object) {
-        object.traverse(function(child) {
+      loader.load(url, function (object) {
+        object.traverse(function (child) {
           if (child.isMesh) {
             child.castShadow = true
             child.receiveShadow = true

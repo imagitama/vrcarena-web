@@ -19,17 +19,17 @@ const useStyles = makeStyles({
   item: {
     marginBottom: '1rem',
     '&:last-child': {
-      margin: 0
-    }
+      margin: 0,
+    },
   },
   controls: {
     marginTop: '0.5rem',
-    textAlign: 'right'
+    textAlign: 'right',
   },
   label: {
     fontWeight: 'bold',
-    marginTop: '0.5rem'
-  }
+    marginTop: '0.5rem',
+  },
 })
 
 function Label({ children }) {
@@ -45,7 +45,6 @@ function ItemEditor({
   onMoveUp,
   onMoveDown,
   onDelete,
-  itemsAssetData
 }) {
   const classes = useStyles()
   const [foundAssetData, setFoundAssetData] = useState(null)
@@ -85,7 +84,7 @@ function ItemEditor({
         <Label>Comments</Label>
         <TextInput
           value={item[PlaylistItemsFieldNames.comments]}
-          onChange={e =>
+          onChange={(e) =>
             updateItemField(PlaylistItemsFieldNames.comments, e.target.value)
           }
           rows={10}
@@ -136,21 +135,21 @@ export default ({ items: newItems = [], onChange, itemsAssetData = [] }) => {
       newItems.concat([
         {
           [PlaylistItemsFieldNames.comments]: '',
-          [PlaylistItemsFieldNames.asset]: null
-        }
+          [PlaylistItemsFieldNames.asset]: null,
+        },
       ])
     )
   }
 
-  const moveItemUp = itemIdx => {
+  const moveItemUp = (itemIdx) => {
     onChange(moveItemInArray(itemIdx, itemIdx - 1, newItems))
   }
 
-  const moveItemDown = itemIdx => {
+  const moveItemDown = (itemIdx) => {
     onChange(moveItemInArray(itemIdx, itemIdx + 1, newItems))
   }
 
-  const deleteItem = itemIdx => {
+  const deleteItem = (itemIdx) => {
     const itemsToSave = [...newItems]
     itemsToSave.splice(itemIdx, 1)
     onChange(itemsToSave)
@@ -160,7 +159,7 @@ export default ({ items: newItems = [], onChange, itemsAssetData = [] }) => {
     const item = newItems[itemIdx]
     const newItem = {
       ...item,
-      ...newItemFields
+      ...newItemFields,
     }
 
     const newItemsToSave = [...newItems]
@@ -180,10 +179,10 @@ export default ({ items: newItems = [], onChange, itemsAssetData = [] }) => {
                   ...item,
                   assetData:
                     itemsAssetData.find(
-                      itemAssetData => itemAssetData.id === item.asset
-                    ) || null
+                      (itemAssetData) => itemAssetData.id === item.asset
+                    ) || null,
                 }}
-                onChange={newItemFields => saveItem(idx, newItemFields)}
+                onChange={(newItemFields) => saveItem(idx, newItemFields)}
                 onMoveUp={() => moveItemUp(idx)}
                 onMoveDown={() => moveItemDown(idx)}
                 onDelete={() => deleteItem(idx)}

@@ -154,7 +154,7 @@ const GenericEditor = ({
     id || false,
     `generic-editor-${viewName || collectionName}`
   )
-  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave(
+  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave<Record>(
     collectionName,
     id
   )
@@ -239,6 +239,7 @@ const GenericEditor = ({
         ...getHiddenFieldsForDb(fieldsToUse),
       })
 
+      // @ts-ignore
       setCreatedDocId(newDocument ? newDocument.id : null)
     } catch (err) {
       console.error(`Failed to save ${id} to ${collectionName}`, err)

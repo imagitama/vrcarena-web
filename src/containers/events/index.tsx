@@ -13,7 +13,6 @@ import LoadingIndicator from '../../components/loading-indicator'
 import NoResultsMessage from '../../components/no-results-message'
 
 import * as routes from '../../routes'
-import { CollectionNames } from '../../data-store'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useDataStore from '../../hooks/useDataStore'
 import { client as supabase } from '../../supabase'
@@ -24,8 +23,8 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
 const useStyles = makeStyles({
   root: {
-    position: 'relative'
-  }
+    position: 'relative',
+  },
 })
 
 function Events() {
@@ -61,26 +60,26 @@ function Events() {
       if (getIsDateInFuture(startsAt) && getIsDateInFuture(endsAt)) {
         return {
           ...newOutput,
-          futureEvents: newOutput.futureEvents.concat([event])
+          futureEvents: newOutput.futureEvents.concat([event]),
         }
       }
 
       if (getIsDateInPast(startsAt) && getIsDateInFuture(endsAt)) {
         return {
           ...newOutput,
-          currentEvents: newOutput.currentEvents.concat([event])
+          currentEvents: newOutput.currentEvents.concat([event]),
         }
       }
 
       return {
         ...newOutput,
-        pastEvents: newOutput.pastEvents.concat([event])
+        pastEvents: newOutput.pastEvents.concat([event]),
       }
     },
     {
       pastEvents: [],
       currentEvents: [],
-      futureEvents: []
+      futureEvents: [],
     }
   )
 

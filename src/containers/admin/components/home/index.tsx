@@ -5,7 +5,10 @@ import Markdown from '../../../../components/markdown'
 import LoadingIndicator from '../../../../components/loading-indicator'
 import ErrorMessage from '../../../../components/error-message'
 import useDataStoreItem from '../../../../hooks/useDataStoreItem'
-import { collectionNamePages, Page } from '../../../../modules/pages'
+import {
+  CollectionNames as PagesCollectionNames,
+  Page,
+} from '../../../../modules/pages'
 import Button from '../../../../components/button'
 import * as routes from '../../../../routes'
 import Heading from '../../../../components/heading'
@@ -29,7 +32,7 @@ const Controls = () => (
 
 export default () => {
   const [isLoading, isError, page] = useDataStoreItem<Page>(
-    collectionNamePages,
+    PagesCollectionNames.Pages,
     pageName,
     'admin-home'
   )

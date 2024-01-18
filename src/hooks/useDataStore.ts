@@ -4,6 +4,10 @@ import { SupabaseQueryBuilder } from '@supabase/supabase-js'
 import { handleError } from '../error-handling'
 import { inDevelopment } from '../environment'
 
+/**
+ * TODO: Delete this hook and return to useDatabaseQuery as it abstracts Supabase
+ */
+
 export default <TResult>(
   getQuery:
     | null
@@ -42,9 +46,7 @@ export default <TResult>(
 
       if (error) {
         throw new Error(
-          `useDataStore failed run query "${queryName}": ${error.code}: ${
-            error.message
-          } (${error.hint})`
+          `useDataStore failed run query "${queryName}": ${error.code}: ${error.message} (${error.hint})`
         )
       }
 

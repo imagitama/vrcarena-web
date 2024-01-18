@@ -16,7 +16,7 @@ const getLabelForSelectedSortOption = (
   }
 
   const match = sortOptions.find(
-    option =>
+    (option) =>
       option.fieldName === sorting.fieldName &&
       (option.withDirections === false ||
         option.direction === sorting.direction)
@@ -32,7 +32,7 @@ const getLabelForSelectedSortOption = (
 export interface SortOption {
   fieldName: string
   label: string
-  direction?: string
+  direction?: OrderDirections
   withDirections?: boolean
 }
 
@@ -44,7 +44,7 @@ const appendDirections = (options: SortOption[]): SortOption[] => {
       newOptions.push({
         fieldName,
         label,
-        withDirections: false
+        withDirections: false,
       })
       continue
     }
@@ -52,13 +52,13 @@ const appendDirections = (options: SortOption[]): SortOption[] => {
     newOptions.push({
       fieldName,
       label: `${label} (${OrderDirections.ASC})`,
-      direction: OrderDirections.ASC
+      direction: OrderDirections.ASC,
     })
 
     newOptions.push({
       fieldName,
       label: `${label} (${OrderDirections.DESC})`,
-      direction: OrderDirections.DESC
+      direction: OrderDirections.DESC,
     })
   }
 
@@ -68,7 +68,7 @@ const appendDirections = (options: SortOption[]): SortOption[] => {
 export default ({
   sortKey,
   options,
-  defaultFieldName = ''
+  defaultFieldName = '',
 }: {
   sortKey: string
   options: SortOption[]
@@ -80,16 +80,16 @@ export default ({
 
   const optionsWithDirections = appendDirections(options)
 
-  const onClickItem = (fieldName: string, direction: string) =>
+  const onClickItem = (fieldName: string, direction: OrderDirections) =>
     setSorting({
       fieldName,
-      direction
+      direction,
     })
 
   return (
     <>
       <span ref={buttonRef}>
-        <Button onClick={() => setIsDropdownOpen(currentVal => !currentVal)}>
+        <Button onClick={() => setIsDropdownOpen((currentVal) => !currentVal)}>
           Sort by{' '}
           {getLabelForSelectedSortOption(sorting, optionsWithDirections)}
           <KeyboardArrowDownIcon />
@@ -101,11 +101,11 @@ export default ({
           open={isDropdownOpen}
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'center'
+            horizontal: 'center',
           }}
           transformOrigin={{
             vertical: 'top',
-            horizontal: 'center'
+            horizontal: 'center',
           }}
           onClose={() => setIsDropdownOpen(false)}>
           {optionsWithDirections.map(({ fieldName, label, direction }) => (

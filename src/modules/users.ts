@@ -1,11 +1,4 @@
-export interface User {
-  id: string
-
-  // basic stuff
-  username: string
-  avatarurl: string
-  favoritespecies: string
-
+export interface SocialMediaUsernames {
   // profile
   vrchatuserid: string
   vrchatusername: string
@@ -14,10 +7,19 @@ export interface User {
   telegramusername: string
   youtubechannelid: string
   twitchusername: string
-  bio: string
   neosvrusername: string
   chilloutvrusername: string
   patreonusername: string
+}
+
+export interface User extends SocialMediaUsernames {
+  id: string
+
+  // basic stuff
+  username: string
+  avatarurl: string
+  favoritespecies: string
+  bio: string
 
   // meta
   lastmodifiedby: string

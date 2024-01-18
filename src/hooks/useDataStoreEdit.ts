@@ -1,4 +1,3 @@
-import { PostgrestError } from '@supabase/supabase-js'
 import { useState } from 'react'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'

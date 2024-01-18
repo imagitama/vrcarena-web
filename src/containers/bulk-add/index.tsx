@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+
 import Button from '../../components/button'
 import FormControls from '../../components/form-controls'
 import Heading from '../../components/heading'
@@ -15,7 +16,7 @@ import {
   AssetMetaFieldNames,
   AccessStatuses,
   PublishStatuses,
-  ApprovalStatuses
+  ApprovalStatuses,
 } from '../../hooks/useDatabaseQuery'
 import { VrchatWorld } from '../../modules/vrchat-cache'
 import { insertRecord, updateRecords } from '../../data-store'
@@ -33,15 +34,15 @@ const fetchWorldDataAndThumbnailById = async (
 ): Promise<{ world: VrchatWorld; thumbnailUrl: string }> => {
   // NOTE: This function also dumps it into a cache for later retrieval
   const {
-    data: { world, thumbnailUrl }
+    data: { world, thumbnailUrl },
   } = await callFunction('getVrchatWorldDetails', {
     worldId: id,
-    convertThumbnail: true // note: 300x300
+    convertThumbnail: true, // note: 300x300
   })
 
   return {
     world,
-    thumbnailUrl
+    thumbnailUrl,
   }
 }
 
@@ -52,7 +53,7 @@ interface VrchatWorldWithOurThumbnail extends VrchatWorld {
 const VrchatWorldOutput = ({
   worldIds,
   onDoneWithWorldDatas,
-  onCancel
+  onCancel,
 }: {
   worldIds: string[]
   onDoneWithWorldDatas: (worldDataById: {
@@ -79,24 +80,22 @@ const VrchatWorldOutput = ({
 
         // do this 1 by 1 to avoid DDOSing the VRChat API
         for (const worldId of worldIds) {
-          setProgressByWorldId(currentVal => ({
+          setProgressByWorldId((currentVal) => ({
             ...currentVal,
-            [worldId]: false
+            [worldId]: false,
           }))
 
-          const {
-            world: worldData,
-            thumbnailUrl
-          } = await fetchWorldDataAndThumbnailById(worldId)
+          const { world: worldData, thumbnailUrl } =
+            await fetchWorldDataAndThumbnailById(worldId)
 
           worldDataById[worldId] = {
             ...worldData,
-            ourThumbnailUrl: thumbnailUrl
+            ourThumbnailUrl: thumbnailUrl,
           }
 
-          setProgressByWorldId(currentVal => ({
+          setProgressByWorldId((currentVal) => ({
             ...currentVal,
-            [worldId]: true
+            [worldId]: true,
           }))
         }
 
@@ -111,7 +110,7 @@ const VrchatWorldOutput = ({
   return (
     <div>
       <ul>
-        {worldIds.map(id => (
+        {worldIds.map((id) => (
           <li key={id}>
             {id} -{' '}
             {progressByWorldId[id] === true
@@ -126,7 +125,7 @@ const VrchatWorldOutput = ({
         <Button
           isDisabled={
             worldIds.length > 0 &&
-            Object.values(progressByWorldId).filter(status => status === true)
+            Object.values(progressByWorldId).filter((status) => status === true)
               .length === worldIds.length
           }>
           Proceed
@@ -150,13 +149,13 @@ const foo = {
     'cabin',
     'room',
     'villa',
-    'rain'
+    'rain',
   ],
   game: ['game', 'horror'],
   club: ['club', 'party', 'dance'],
   movie_world: ['movie'],
   music: ['album', 'song', 'listen'],
-  wip: ['work in progress', 'wip']
+  wip: ['work in progress', 'wip'],
 }
 
 const detectTagsFromVrchatWorld = (worldData: VrchatWorld): string[] => {
@@ -185,7 +184,7 @@ const formatDesc = (desc: string): string => `> ${desc}`
 const Form = ({
   worldData,
   newFields,
-  onNewFields
+  onNewFields,
 }: {
   worldData: VrchatWorldWithOurThumbnail
   newFields: FieldsData
@@ -195,7 +194,7 @@ const Form = ({
     <AssetEditorMini
       newFields={{
         ...newFields,
-        [AssetFieldNames.thumbnailUrl]: worldData.ourThumbnailUrl
+        [AssetFieldNames.thumbnailUrl]: worldData.ourThumbnailUrl,
       }}
       onNewFields={onNewFields}
     />
@@ -216,7 +215,7 @@ const getInitialFields = (worldDataById: {
       [AssetFieldNames.description]: formatDesc(worldData.description),
       [AssetFieldNames.tags]: detectTagsFromVrchatWorld(worldData),
       [AssetFieldNames.thumbnailUrl]: worldData.ourThumbnailUrl,
-      [AssetFieldNames.category]: AssetCategories.world
+      [AssetFieldNames.category]: AssetCategories.world,
     }
   }
 
@@ -224,7 +223,7 @@ const getInitialFields = (worldDataById: {
 }
 
 const Forms = ({
-  worldDataById
+  worldDataById,
 }: {
   worldDataById: { [worldId: string]: VrchatWorldWithOurThumbnail }
 }) => {
@@ -249,14 +248,14 @@ const Forms = ({
       const assetIds: string[] = []
 
       for (const [worldId, fields] of Object.entries(newFieldsByWorldId)) {
-        setAssetIdsByWorldId(currentVal => ({
+        setAssetIdsByWorldId((currentVal) => ({
           ...currentVal,
-          [worldId]: null
+          [worldId]: null,
         }))
 
         const fieldsToInsert = {
           ...fields,
-          [AssetFieldNames.vrchatClonableWorldIds]: [worldId]
+          [AssetFieldNames.vrchatClonableWorldIds]: [worldId],
         }
 
         const asset = await insertRecord<any, Asset>(
@@ -265,9 +264,9 @@ const Forms = ({
           false // ensure we do a SELECT to get ID
         )
 
-        setAssetIdsByWorldId(currentVal => ({
+        setAssetIdsByWorldId((currentVal) => ({
           ...currentVal,
-          [worldId]: asset.id
+          [worldId]: asset.id,
         }))
 
         assetIds.push(asset.id)
@@ -278,7 +277,7 @@ const Forms = ({
 
         await updateRecords(CollectionNames.AssetMeta, assetIds, {
           [AssetMetaFieldNames.publishStatus]: PublishStatuses.Published,
-          [AssetMetaFieldNames.approvalStatus]: ApprovalStatuses.Approved
+          [AssetMetaFieldNames.approvalStatus]: ApprovalStatuses.Approved,
         })
       }
 
@@ -290,9 +289,9 @@ const Forms = ({
   }
 
   const onNewFieldsByWorldId = (worldId: string, newFields: any) =>
-    setNewFieldsByWorldId(currentVal => ({
+    setNewFieldsByWorldId((currentVal) => ({
       ...currentVal,
-      [worldId]: newFields
+      [worldId]: newFields,
     }))
 
   if (hasStarted) {
@@ -328,7 +327,7 @@ const Forms = ({
           <br />
           <CheckboxInput
             value={automaticallyApprove}
-            onChange={newVal => setAutomaticallyApprove(newVal)}
+            onChange={(newVal) => setAutomaticallyApprove(newVal)}
             label="Automatically approve them (warning: this triggers automatic tweet or Discord/email notifications!)"
           />
         </Message>
@@ -350,7 +349,9 @@ const Forms = ({
           <Form
             worldData={worldData}
             newFields={newFieldsByWorldId[worldId]}
-            onNewFields={newFields => onNewFieldsByWorldId(worldId, newFields)}
+            onNewFields={(newFields) =>
+              onNewFieldsByWorldId(worldId, newFields)
+            }
           />
         </div>
       ))}
@@ -376,8 +377,8 @@ const BulkAddVrchatWorlds = () => {
     const newWorldIds = textValue
       .trim()
       .split('\n')
-      .map(line => line.trim())
-      .filter(line => getIsVrchatWorldId(line))
+      .map((line) => line.trim())
+      .filter((line) => getIsVrchatWorldId(line))
     console.debug(`${textValue} => ${newWorldIds.join(',')}`)
     setWorldIds(newWorldIds)
   }
@@ -419,7 +420,7 @@ const BulkAddVrchatWorlds = () => {
       <>
         <p>Detected these world IDs from your input:</p>
         <ul>
-          {worldIds.map(id => (
+          {worldIds.map((id) => (
             <li key={id}>{id}</li>
           ))}
         </ul>
@@ -446,7 +447,7 @@ const BulkAddVrchatWorlds = () => {
         rows={10}
         fullWidth
         value={textValue}
-        onChange={e => setTextValue(e.target.value)}
+        onChange={(e) => setTextValue(e.target.value)}
       />
       <FormControls>
         <Button onClick={onDetectIds}>Detect IDs</Button>{' '}

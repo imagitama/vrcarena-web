@@ -16,15 +16,14 @@ import { PATREON_BECOME_PATRON_URL } from '../../config'
 import patreonLogoUrl from '../../assets/images/patreon-logo.png'
 
 const sortKey = 'patreon'
-const analyticsCategory = 'patreon'
 
 const useStyles = makeStyles({
   logo: {
     '& a': {
       display: 'block',
-      textAlign: 'center'
-    }
-  }
+      textAlign: 'center',
+    },
+  },
 })
 
 const Renderer = ({ items }) => <UserList users={items} />

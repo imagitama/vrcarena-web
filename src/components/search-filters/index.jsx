@@ -1,20 +1,17 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import Chip from '@material-ui/core/Chip'
-import Checkbox from '@material-ui/core/Checkbox'
 import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
 import FilterListIcon from '@material-ui/icons/FilterList'
 
 import Button from '../button'
 import { trackAction } from '../../analytics'
-import { searchFilters } from '../../config'
 import { AssetCategories } from '../../hooks/useDatabaseQuery'
 import {
   removeSearchFilter,
   addSearchFilter,
-  clearSearchFilters
+  clearSearchFilters,
 } from '../../modules/app'
 import categoryMeta from '../../category-meta'
 
@@ -24,31 +21,31 @@ const useStyles = makeStyles({
   availableFilters: {
     marginTop: '0.5rem',
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   availableFilter: {
-    margin: '0 0.5rem 0.5rem 0'
-  }
+    margin: '0 0.5rem 0.5rem 0',
+  },
 })
 
 const availableFilters = [
-  ...Object.values(AssetCategories).map(categoryName => ({
+  ...Object.values(AssetCategories).map((categoryName) => ({
     id: `category:${categoryName}`,
-    label: `Category - ${categoryMeta[categoryName].name}`
+    label: `Category - ${categoryMeta[categoryName].name}`,
   })),
   {
     id: 'field:tags',
-    label: 'Search tags only'
-  }
+    label: 'Search tags only',
+  },
 ]
 
 const AvailableFilters = ({ hideFilters }) => {
   const { searchFilters } = useSelector(({ app: { searchFilters } }) => ({
-    searchFilters
+    searchFilters,
   }))
   const dispatch = useDispatch()
-  const addFilter = id => dispatch(addSearchFilter(id))
-  const removeFilter = id => dispatch(removeSearchFilter(id))
+  const addFilter = (id) => dispatch(addSearchFilter(id))
+  const removeFilter = (id) => dispatch(removeSearchFilter(id))
   const clearAllFilters = () => dispatch(clearSearchFilters())
   const classes = useStyles()
 
@@ -102,7 +99,7 @@ export default () => {
   const classes = useStyles()
   const [areFiltersVisible, setAreFiltersVisible] = useState(false)
   const { searchFilters } = useSelector(({ app: { searchFilters } }) => ({
-    searchFilters
+    searchFilters,
   }))
 
   return (
@@ -110,7 +107,7 @@ export default () => {
       <Button
         icon={<FilterListIcon />}
         onClick={() => {
-          setAreFiltersVisible(currentVal => !currentVal)
+          setAreFiltersVisible((currentVal) => !currentVal)
           trackAction(analyticsCategoryName, 'Click toggle filters button')
         }}>
         Filters{searchFilters.length ? ` (${searchFilters.length})` : ''}

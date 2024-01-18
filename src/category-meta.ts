@@ -10,6 +10,7 @@ import BrushIcon from '@mui/icons-material/Brush'
 
 import { AssetCategories } from './hooks/useDatabaseQuery'
 
+// TODO: Load on demand
 import accessoryOptimizedImageUrl from './assets/images/categories/optimized/accessory.webp'
 import animationOptimizedImageUrl from './assets/images/categories/optimized/animation.webp'
 import articleOptimizedImageUrl from './assets/images/categories/optimized/article.webp'
@@ -39,7 +40,7 @@ const categories: { [name: string]: Category } = {
     nameSingular: 'Accessory',
     shortDescription: `Add clothes, jewelry, glasses and more to your avatar using these accessories.`,
     optimizedImageUrl: accessoryOptimizedImageUrl,
-    icon: CheckroomIcon
+    icon: CheckroomIcon,
   },
   [AssetCategories.animation]: {
     id: AssetCategories.animation,
@@ -48,7 +49,7 @@ const categories: { [name: string]: Category } = {
     shortDescription:
       'Make your avatar dance, wave or run on the spot using one of these pre-made animations.',
     optimizedImageUrl: animationOptimizedImageUrl,
-    icon: DirectionsRunIcon
+    icon: DirectionsRunIcon,
   },
   [AssetCategories.avatar]: {
     id: AssetCategories.avatar,
@@ -56,7 +57,7 @@ const categories: { [name: string]: Category } = {
     nameSingular: 'Avatar',
     shortDescription: `Discover new avatars for you to use in your favorite VR game.`,
     optimizedImageUrl: avatarOptimizedImageUrl,
-    icon: AccessibilityIcon
+    icon: AccessibilityIcon,
   },
   [AssetCategories.tutorial]: {
     id: AssetCategories.tutorial,
@@ -64,7 +65,7 @@ const categories: { [name: string]: Category } = {
     nameSingular: 'Tutorial',
     shortDescription: `Learn how to use software such as Unity, Blender or Substance Painter. Learn how to make changes to your avatar or build worlds.`,
     optimizedImageUrl: tutorialOptimizedImageUrl,
-    icon: SchoolIcon
+    icon: SchoolIcon,
   },
   [AssetCategories.article]: {
     id: AssetCategories.article,
@@ -72,7 +73,7 @@ const categories: { [name: string]: Category } = {
     nameSingular: 'Article',
     shortDescription: `Read recent news article about VRChat and the different species.`,
     optimizedImageUrl: articleOptimizedImageUrl,
-    icon: ReceiptIcon
+    icon: ReceiptIcon,
   },
   [AssetCategories.tool]: {
     id: AssetCategories.tool,
@@ -81,7 +82,7 @@ const categories: { [name: string]: Category } = {
     shortDescription:
       'Mods, scripts, Unity plugins and other tools to help users create content for VR games.',
     optimizedImageUrl: toolOptimizedImageUrl,
-    icon: ConstructionIcon
+    icon: ConstructionIcon,
   },
   [AssetCategories.shader]: {
     id: AssetCategories.shader,
@@ -90,7 +91,7 @@ const categories: { [name: string]: Category } = {
     shortDescription:
       'Shaders that modify the appearance of an avatar or world.',
     optimizedImageUrl: shaderOptimizedImageUrl,
-    icon: FormatColorFillIcon
+    icon: FormatColorFillIcon,
   },
   [AssetCategories.retexture]: {
     id: AssetCategories.retexture,
@@ -98,21 +99,21 @@ const categories: { [name: string]: Category } = {
     nameSingular: 'Retexture',
     shortDescription: 'New textures for existing avatars or accessories.',
     optimizedImageUrl: retextureOptimizedImageUrl,
-    icon: BrushIcon
+    icon: BrushIcon,
   },
   [AssetCategories.world]: {
     id: AssetCategories.world,
     name: 'Worlds',
     nameSingular: 'World',
     shortDescription: `Worlds you can visit in any VR social game.`,
-    optimizedImageUrl: worldOptimizedImageUrl
+    optimizedImageUrl: worldOptimizedImageUrl,
   },
   [AssetCategories.worldAsset]: {
     id: AssetCategories.worldAsset,
     name: 'World Assets',
     nameSingular: 'World Asset',
     shortDescription: `Assets that you can use in your worlds such as buttons, games, video players, etc.`,
-    optimizedImageUrl: worldAssetOptimizedImageUrl
+    optimizedImageUrl: worldAssetOptimizedImageUrl,
   },
   // deprecated
   [AssetCategories.content]: {
@@ -121,7 +122,7 @@ const categories: { [name: string]: Category } = {
     nameSingular: 'Content',
     shortDescription:
       'Screenshots, videos, tweets or ANYTHING to do with another asset.',
-    optimizedImageUrl: contentOptimizedImageUrl
+    optimizedImageUrl: contentOptimizedImageUrl,
   },
   [AssetCategories.alteration]: {
     id: AssetCategories.alteration,
@@ -129,8 +130,8 @@ const categories: { [name: string]: Category } = {
     nameSingular: 'Alteration',
     shortDescription:
       'An alteration or modification of an existing avatar or accessory.',
-    optimizedImageUrl: alterationOptimizedImageUrl
-  }
+    optimizedImageUrl: alterationOptimizedImageUrl,
+  },
 }
 
 export default categories

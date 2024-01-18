@@ -7,18 +7,6 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import useSearching from '../../hooks/useSearching'
 import useAssetSearch from '../../hooks/useAssetSearch'
-
-import ErrorMessage from '../error-message'
-import AssetResults from '../asset-results'
-import AuthorResults from '../author-results'
-import NoResultsMessage from '../no-results-message'
-import Message from '../message'
-import Button from '../button'
-import PageControls from '../page-controls'
-import UserList from '../user-list'
-import SearchFilters from '../search-filters'
-import Heading from '../heading'
-
 import { searchIndexNameLabels, changeSearchTableName } from '../../modules/app'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
@@ -27,7 +15,7 @@ import {
   AuthorFieldNames,
   CollectionNames,
   UserFieldNames,
-  AssetCategories
+  AssetCategories,
 } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { mediaQueryForMobiles } from '../../media-queries'
@@ -39,9 +27,19 @@ import { Species } from '../../modules/species'
 import { Asset } from '../../modules/assets'
 import { getPathForQueryString } from '../../queries'
 
+import ErrorMessage from '../error-message'
+import AssetResults from '../asset-results'
+import AuthorResults from '../author-results'
+import NoResultsMessage from '../no-results-message'
+import Message from '../message'
+import Button from '../button'
+import PageControls from '../page-controls'
+import UserList from '../user-list'
+import SearchFilters from '../search-filters'
+
 const useStyles = makeStyles({
   tableWrapper: {
-    position: 'relative'
+    position: 'relative',
   },
   tables: {
     display: 'flex',
@@ -50,27 +48,27 @@ const useStyles = makeStyles({
     top: 0,
     right: 0,
     [mediaQueryForMobiles]: {
-      position: 'relative'
-    }
+      position: 'relative',
+    },
   },
   tableButton: {
-    margin: '0 0.5rem 0.5rem 0'
+    margin: '0 0.5rem 0.5rem 0',
   },
   poweredByAlgoliaLogo: {
     marginTop: '1rem',
     fontSize: '300%',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   waitingForResultsMsg: {
     marginTop: '1rem',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   adultContentMessage: {
     textAlign: 'center',
-    fontSize: '125%'
-  }
+    fontSize: '125%',
+  },
 })
 
 function ViewAllAuthorsBtn() {
@@ -96,7 +94,7 @@ const reduceAssetResultsIntoBestAndWorst = (hits: AssetHit[]) =>
     (hitsByScore, hit) => ({
       best: hit.rank >= 0.5 ? hitsByScore.best.concat([hit]) : hitsByScore.best,
       worst:
-        hit.rank < 0.5 ? hitsByScore.worst.concat([hit]) : hitsByScore.worst
+        hit.rank < 0.5 ? hitsByScore.worst.concat([hit]) : hitsByScore.worst,
     }),
     { best: [], worst: [] }
   )
@@ -117,7 +115,7 @@ function Results({
   isLoading,
   isErrored,
   tableName,
-  hits
+  hits,
 }: {
   isLoading: boolean
   isErrored: boolean
@@ -162,7 +160,7 @@ function Results({
           <Button
             color="default"
             url={getPathForQueryString(
-              hits.map(hit => `id:${hit.id}`).join(' ')
+              hits.map((hit) => `id:${hit.id}`).join(' ')
             )}>
             Export Assets To Query
           </Button>
@@ -210,11 +208,7 @@ const AdultContentMessage = () => {
 const getSearchStatementForTable = (tableName: string): string => {
   switch (tableName) {
     case CollectionNames.Assets:
-      return `${AssetFieldNames.title}, ${AssetFieldNames.description}, ${
-        AssetFieldNames.thumbnailUrl
-      }, ${AssetFieldNames.tags}, ${AssetFieldNames.isAdult}, ${
-        AssetFieldNames.category
-      }`
+      return `${AssetFieldNames.title}, ${AssetFieldNames.description}, ${AssetFieldNames.thumbnailUrl}, ${AssetFieldNames.tags}, ${AssetFieldNames.isAdult}, ${AssetFieldNames.category}`
     case CollectionNames.Users:
       return `${UserFieldNames.username}, ${UserFieldNames.avatarUrl}`
     case CollectionNames.Authors:
@@ -266,7 +260,7 @@ const PoweredByAlgoliaLogo = () => {
 function IndexFilters() {
   // @ts-ignore
   const { searchTableName } = useSelector(({ app: { searchTableName } }) => ({
-    searchTableName
+    searchTableName,
   }))
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -321,7 +315,7 @@ const TagSearchHint = ({ searchTerm }: { searchTerm: string }) => {
           categoryName,
           areaName,
           areaNamePlural: namePlural,
-          tagName: searchTerm
+          tagName: searchTerm,
         })
       }
     }
@@ -357,7 +351,7 @@ const TagSearchHint = ({ searchTerm }: { searchTerm: string }) => {
 }
 
 const CategoryAndSpeciesSearchHint = ({
-  searchTerm
+  searchTerm,
 }: {
   searchTerm: string
 }) => {
@@ -435,26 +429,24 @@ const useAppSearch = (): {
   searchFilters: string[]
   searchCount: number
 } => {
-  const {
-    searchTerm,
-    searchTableName,
-    searchFilters,
-    searchCount
-  } = useSelector(
-    // @ts-ignore
-    ({ app: { searchTerm, searchTableName, searchFilters, searchCount } }) => ({
-      searchTerm,
-      searchTableName,
-      searchFilters,
-      searchCount
-    })
-  )
+  const { searchTerm, searchTableName, searchFilters, searchCount } =
+    useSelector(
+      ({
+        // @ts-ignore
+        app: { searchTerm, searchTableName, searchFilters, searchCount },
+      }) => ({
+        searchTerm,
+        searchTableName,
+        searchFilters,
+        searchCount,
+      })
+    )
 
   return {
     searchTerm,
     searchTableName,
     searchFilters,
-    searchCount
+    searchCount,
   }
 }
 
@@ -497,16 +489,12 @@ const AssetSearch = () => {
 }
 
 const NonAssetSearch = () => {
-  const {
-    searchTerm,
-    searchTableName,
-    searchFilters,
-    searchCount
-  } = useAppSearch()
+  const { searchTerm, searchTableName, searchFilters, searchCount } =
+    useAppSearch()
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
   const getQuery = useCallback(
-    query => {
+    (query) => {
       if (searchTableName !== CollectionNames.Assets) {
         return query
       }
@@ -533,7 +521,7 @@ const NonAssetSearch = () => {
 
       for (const [fieldName, values] of Object.entries(filtersByFieldName)) {
         query = query.or(
-          values.map(value => `${fieldName}.eq.${value}`).join(',')
+          values.map((value) => `${fieldName}.eq.${value}`).join(',')
         )
       }
 
@@ -543,7 +531,7 @@ const NonAssetSearch = () => {
       searchTableName,
       isAdultContentEnabled,
       searchFilters.join(','),
-      searchCount
+      searchCount,
     ]
   )
   const [isLoading, isErrored, hits] = useSearching<any[]>(
@@ -569,7 +557,7 @@ export default () => {
     // @ts-ignore
     ({ app: { searchTerm, searchTableName } }) => ({
       searchTerm,
-      searchTableName
+      searchTableName,
     })
   )
   const isAdultContentEnabled = useIsAdultContentEnabled()

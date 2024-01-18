@@ -7,8 +7,9 @@ import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
 import { client as supabase } from '../../supabase'
+import { Asset } from '../../modules/assets'
 
-export default ({ userId }) => {
+const CollectionForUser = ({ userId }: { userId: string }) => {
   const getQuery = useCallback(
     () =>
       supabase
@@ -17,7 +18,7 @@ export default ({ userId }) => {
         .eq('userid', userId),
     [userId]
   )
-  const [isLoading, isErrored, assetsInCollection] = useDataStore(
+  const [isLoading, isErrored, assetsInCollection] = useDataStore<Asset[]>(
     getQuery,
     'collection-for-user'
   )
@@ -40,3 +41,5 @@ export default ({ userId }) => {
 
   return <AssetResults assets={assetsInCollection} showCategory />
 }
+
+export default CollectionForUser

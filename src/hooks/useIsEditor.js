@@ -1,9 +1,4 @@
-import {
-  UserAdminMetaFieldNames,
-  UserFieldNames,
-  UserMetaFieldNames,
-  UserRoles
-} from './useDatabaseQuery'
+import { UserAdminMetaFieldNames, UserRoles } from './useDatabaseQuery'
 import useUserRecord from './useUserRecord'
 
 export default () => {

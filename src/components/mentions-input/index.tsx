@@ -165,11 +165,13 @@ const MentionsInput = ({
   onChange,
   isDisabled = false,
   initialUsernameMapping,
+  autoFocus = false,
 }: {
   value: string
   onChange: (newValue: string) => void
   isDisabled?: boolean
   initialUsernameMapping?: UsernameMapping
+  autoFocus?: boolean
 }) => {
   const rootRef = useRef<HTMLDivElement>(null)
   const classes = useStyles()
@@ -190,7 +192,7 @@ const MentionsInput = ({
   }, [userSuggestions && userSuggestions.length])
 
   useEffect(() => {
-    if (inputRef.current == null) {
+    if (inputRef.current == null || autoFocus === false) {
       return
     }
     console.debug(`Focusing on textarea...`)

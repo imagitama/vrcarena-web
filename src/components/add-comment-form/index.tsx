@@ -1,32 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import TextInput, {
-  ReactAutocompleteComponentProps,
-} from 'react-autocomplete-input'
-import 'react-autocomplete-input/dist/bundle.css'
 import CreateIcon from '@material-ui/icons/Create'
 
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import {
-  CollectionNames,
-  CommentFieldNames,
-  UserFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
+import { handleError } from '../../error-handling'
+import { CollectionNames, Comment } from '../../modules/comments'
 
+import FormControls from '../form-controls'
+import MentionsInput from '../mentions-input'
 import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 import Button from '../button'
-
-import { handleError } from '../../error-handling'
-import FormControls from '../form-controls'
-import { User } from '../../modules/users'
-import { Comment } from '../../modules/comments'
-import MentionsInput from '../mentions-input'
-
-const mapUserToRecord = (user: User): string => user.username
 
 export default ({
   collectionName,

@@ -11,12 +11,12 @@ import LoadingIndicator from '../loading-indicator'
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 
-export default ({
+const DeleteButton = ({
   id,
   metaCollectionName,
   existingAccessStatus = undefined,
   onClick = undefined,
-  onDone = undefined
+  onDone = undefined,
 }) => {
   const [isLoading, isErroredLoading, metaRecord] = useDataStoreItem(
     metaCollectionName,
@@ -63,7 +63,7 @@ export default ({
       }
 
       await save({
-        [CommonMetaFieldNames.accessStatus]: newValue
+        [CommonMetaFieldNames.accessStatus]: newValue,
       })
 
       if (onDone) {
@@ -83,3 +83,5 @@ export default ({
     </Button>
   )
 }
+
+export default DeleteButton

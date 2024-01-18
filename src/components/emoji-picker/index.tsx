@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/styles'
-import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
+import EmojiPickerReact, { EmojiStyle } from 'emoji-picker-react'
 import { useCallback, useRef, useState } from 'react'
 import useClickAway from '../../hooks/useClickAway'
 
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const EmojiPicker = ({
   onSelectEmoji,
   className,
   fromRight = false,
@@ -53,7 +53,7 @@ export default ({
       {isOpen && (
         <div
           className={`${classes.picker} ${fromRight ? classes.fromRight : ''}`}>
-          <EmojiPicker
+          <EmojiPickerReact
             onEmojiClick={(emojiClickData) =>
               onSelectEmoji(emojiClickData.emoji)
             }
@@ -65,3 +65,5 @@ export default ({
     </div>
   )
 }
+
+export default EmojiPicker

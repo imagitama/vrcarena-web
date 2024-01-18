@@ -15,15 +15,14 @@ import Heading from '../heading'
 import Button from '../button'
 
 import useDatabaseQuery, {
-  CollectionNames,
-  HistoryFieldNames,
   OrderDirections,
   Operators,
-  options
+  options,
 } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import UsernameLink from '../username-link'
 import { HistoryEntry } from '../../modules/history'
+import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 
 function HistoryData({ data }: { data: any }) {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -40,7 +39,7 @@ function HistoryData({ data }: { data: any }) {
         </div>
       )}
       {!isExpanded && (
-        <Button onClick={() => setIsExpanded(currentVal => !currentVal)}>
+        <Button onClick={() => setIsExpanded((currentVal) => !currentVal)}>
           View
         </Button>
       )}
@@ -50,7 +49,7 @@ function HistoryData({ data }: { data: any }) {
 
 function ParentLabel({
   parentTable,
-  parentId
+  parentId,
 }: {
   parentTable: string
   parentId: string
@@ -58,8 +57,8 @@ function ParentLabel({
   const collectionName = parentTable
 
   if (
-    collectionName === CollectionNames.Assets ||
-    collectionName === CollectionNames.AssetMeta
+    collectionName === AssetsCollectionNames.Assets ||
+    collectionName === AssetsCollectionNames.AssetsMeta
   ) {
     return (
       <Link to={routes.viewAssetWithVar.replace(':assetId', parentId)}>
@@ -95,7 +94,7 @@ const Results = ({ results }: { results: HistoryEntry[] }) => (
             parenttable: parentTable,
             data,
             createdat: createdAt,
-            createdby: createdBy
+            createdby: createdBy,
           }) => (
             <TableRow key={id} title={id}>
               <TableCell>
@@ -127,7 +126,7 @@ const Results = ({ results }: { results: HistoryEntry[] }) => (
 const History = ({
   id,
   type,
-  limit
+  limit,
 }: {
   id: string
   type: string
@@ -137,14 +136,14 @@ const History = ({
     'getAllHistory',
     id
       ? [
-          [HistoryFieldNames.parent, Operators.EQUALS, id],
-          [HistoryFieldNames.parentTable, Operators.EQUALS, type]
+          ['parent', Operators.EQUALS, id],
+          ['parenttable', Operators.EQUALS, type],
         ]
       : false,
     {
       [options.limit]: limit,
-      [options.orderBy]: [HistoryFieldNames.createdAt, OrderDirections.DESC],
-      [options.queryName]: 'admin-history'
+      [options.orderBy]: ['createdat', OrderDirections.DESC],
+      [options.queryName]: 'admin-history',
     }
   )
 
@@ -166,7 +165,7 @@ const History = ({
 const MetaHistory = ({
   id,
   type,
-  limit
+  limit,
 }: {
   id: string
   type: string
@@ -176,14 +175,14 @@ const MetaHistory = ({
     'getAllHistory',
     id
       ? [
-          [HistoryFieldNames.parent, Operators.EQUALS, id],
-          [HistoryFieldNames.parentTable, Operators.EQUALS, type]
+          ['parent', Operators.EQUALS, id],
+          ['parenttable', Operators.EQUALS, type],
         ]
       : [],
     {
       [options.limit]: limit,
-      [options.orderBy]: [HistoryFieldNames.createdAt, OrderDirections.DESC],
-      [options.queryName]: 'admin-history'
+      [options.orderBy]: ['createdat', OrderDirections.DESC],
+      [options.queryName]: 'admin-history',
     }
   )
 
@@ -202,11 +201,11 @@ const MetaHistory = ({
   return <Results results={results} />
 }
 
-export default ({
+const AdminHistory = ({
   id,
   type,
   metaType,
-  limit = 20
+  limit = 20,
 }: {
   id: string
   type: string
@@ -222,3 +221,5 @@ export default ({
     </>
   )
 }
+
+export default AdminHistory

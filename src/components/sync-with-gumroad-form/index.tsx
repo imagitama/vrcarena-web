@@ -15,11 +15,7 @@ import FormControls from '../form-controls'
 import AssetThumbnail from '../asset-thumbnail'
 
 import { handleError } from '../../error-handling'
-import {
-  AssetFieldNames,
-  AuthorFieldNames,
-  CollectionNames,
-} from '../../hooks/useDatabaseQuery'
+import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '../../config'
 import {

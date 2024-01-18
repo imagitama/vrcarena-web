@@ -24,8 +24,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
 
     color: 'white',
-    // 'font-weight': '300',
-    // 'font-size': '22px',
     'line-height': '38px',
 
     padding: '0 10px 0 10px',

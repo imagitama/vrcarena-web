@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
-// import FormControl from '@material-ui/core/FormControl'
 import { makeStyles } from '@material-ui/core/styles'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
 import useDatabaseQuery, {
   CollectionNames,
-  Operators
+  Operators,
 } from '../../hooks/useDatabaseQuery'
 
 import { handleError } from '../../error-handling'
@@ -24,12 +23,12 @@ import { SubscriptionsFieldNames } from '../../data-store'
 const useStyles = makeStyles({
   root: {
     border: '1px dashed rgba(255, 255, 255, 0.5)',
-    padding: '0.25rem'
+    padding: '0.25rem',
   },
   output: {
     textAlign: 'center',
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 })
 
 // TODO: Get this per table
@@ -38,15 +37,12 @@ const defaultTopics = []
 export default ({ parentTable, parentId }) => {
   const myUserId = useUserId()
   // TODO: Search by parenttable/parentid/userid
-  const [
-    isLoadingProfile,
-    isErrorLoadingProfile,
-    existingSubscriptions
-  ] = useDatabaseQuery(CollectionNames.Subscriptions, [
-    [SubscriptionsFieldNames.parentTable, Operators.EQUALS, parentTable],
-    [SubscriptionsFieldNames.parent, Operators.EQUALS, parentId],
-    [SubscriptionsFieldNames.createdBy, Operators.EQUALS, myUserId]
-  ])
+  const [isLoadingProfile, isErrorLoadingProfile, existingSubscriptions] =
+    useDatabaseQuery(CollectionNames.Subscriptions, [
+      [SubscriptionsFieldNames.parentTable, Operators.EQUALS, parentTable],
+      [SubscriptionsFieldNames.parent, Operators.EQUALS, parentId],
+      [SubscriptionsFieldNames.createdBy, Operators.EQUALS, myUserId],
+    ])
   const existingSubscription =
     existingSubscriptions && existingSubscriptions.length
       ? existingSubscriptions[0]
@@ -78,10 +74,10 @@ export default ({ parentTable, parentId }) => {
   }
 
   const onNewValue = (topic, nowEnabled) => {
-    setNewTopics(currentTopics =>
+    setNewTopics((currentTopics) =>
       nowEnabled
         ? currentTopics.concat([topic])
-        : currentTopics.filter(item => item !== topic)
+        : currentTopics.filter((item) => item !== topic)
     )
   }
 
@@ -90,7 +86,7 @@ export default ({ parentTable, parentId }) => {
       await save({
         [SubscriptionsFieldNames.parentTable]: parentTable,
         [SubscriptionsFieldNames.parent]: parentId,
-        [SubscriptionsFieldNames.topics]: newTopics
+        [SubscriptionsFieldNames.topics]: newTopics,
       })
     } catch (err) {
       console.error('Failed to save subscription', err)
@@ -101,13 +97,13 @@ export default ({ parentTable, parentId }) => {
   return (
     <div className={classes.root}>
       <p>Choose what kind of events you want to subscribe to:</p>
-      {Object.keys(topics).map(topic => (
+      {Object.keys(topics).map((topic) => (
         <FormControlLabel
           key={topic}
           control={
             <Checkbox
               checked={newTopics.includes(topic)}
-              onChange={e => onNewValue(topic, !newTopics.includes(topic))}
+              onChange={(e) => onNewValue(topic, !newTopics.includes(topic))}
             />
           }
           label={getLabelForTopic(topic)}

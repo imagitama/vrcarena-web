@@ -19,28 +19,28 @@ import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import {
   addQuotesToDescription,
-  removeQuotesFromDescription
+  removeQuotesFromDescription,
 } from '../../utils/formatting'
 import FormControls from '../form-controls'
 
 const useStyles = makeStyles({
   input: {
     width: '100%',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   controls: {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 })
 
-export default ({
+const DescriptionEditor = ({
   assetId,
   description = '',
   onChange = null,
   onDone = null,
   onCancel = null,
   actionCategory,
-  overrideSave = null
+  overrideSave = null,
 }) => {
   const userId = useUserId()
   const [newDescriptionValue, setNewDescriptionValue] = useState(description)
@@ -81,7 +81,7 @@ export default ({
       trackAction(actionCategory, 'Click save description button')
 
       await save({
-        [AssetFieldNames.description]: newDescriptionValue
+        [AssetFieldNames.description]: newDescriptionValue,
       })
 
       if (onDone) {
@@ -98,7 +98,7 @@ export default ({
       <Paper>
         <TextField
           value={newDescriptionValue}
-          onChange={e => {
+          onChange={(e) => {
             setNewDescriptionValue(e.target.value)
 
             if (onChange) {
@@ -112,7 +112,7 @@ export default ({
         <Checkbox
           checked={isUsingQuotes}
           onClick={() => {
-            setNewDescriptionValue(currentVal => {
+            setNewDescriptionValue((currentVal) => {
               const newDescription = isUsingQuotes
                 ? removeQuotesFromDescription(currentVal)
                 : addQuotesToDescription(currentVal)
@@ -143,3 +143,5 @@ export default ({
     </>
   )
 }
+
+export default DescriptionEditor

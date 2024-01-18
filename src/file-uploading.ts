@@ -8,12 +8,7 @@ export const getFullPathButWithUuidFilename = (
   filename: string,
   fullPath: string
 ): string => {
-  // console.debug('filename: ', filename)
   const filenameWithoutExt = getFilenameWithoutExtension(filename)
-  // console.debug('without ext: ', filenameWithoutExt)
-  // const uuid = uuidv4()
-  // const newPath = fullPath.replace(filenameWithoutExt, uuid)
-  // console.debug('newpath: ', newPath)
 
   const chunks = fullPath.split('/')
 

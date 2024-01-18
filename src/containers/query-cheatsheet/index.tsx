@@ -1,7 +1,7 @@
 import React from 'react'
 import Heading from '../../components/heading'
 import { AssetCategories } from '../../hooks/useDatabaseQuery'
-import { Platforms, sortableFieldMap } from '../query'
+import { sortableFieldMap } from '../query'
 
 const QueryCheatsheet = () => {
   return (

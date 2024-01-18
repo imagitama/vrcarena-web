@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@material-ui/icons/Save'
 
-import useDatabaseQuery, {
-  CollectionNames,
-  UserFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
+import { handleError } from '../../error-handling'
+import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import Button from '../button'
-
-import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
 import TextInput from '../text-input'
+import { CollectionNames } from '../../modules/user'
+import { SocialMediaUsernames, User } from '../../modules/users'
+import FormControls from '../form-controls'
+import SuccessMessage from '../success-message'
 
 const useStyles = makeStyles({
   field: {
@@ -52,71 +51,70 @@ const useStyles = makeStyles({
   },
 })
 
-const Label = ({ children }) => {
+const Label = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   return <div className={classes.label}>{children}</div>
 }
 
-const Input = ({ children }) => {
+const Input = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   return <div className={classes.input}>{children}</div>
 }
 
-const Hint = ({ children }) => {
+const Hint = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   return <div className={classes.hint}>{children}</div>
 }
 
-const Field = ({ children }) => {
+const Field = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   return <div className={classes.field}>{children}</div>
 }
 
-export default ({ onSaveClick = null }) => {
-  const classes = useStyles()
+export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
   const userId = useUserId()
-  const [isLoadingProfile, isErroredLoadingProfile, profile] = useDataStoreItem(
-    CollectionNames.Users,
-    userId,
-    'social-media-usernames-editor'
-  )
+  const [isLoadingProfile, isErroredLoadingProfile, profile] =
+    useDataStoreItem<User>(
+      CollectionNames.Users,
+      userId || false,
+      'social-media-usernames-editor'
+    )
   const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
     CollectionNames.Users,
     userId
   )
 
-  const [formFieldValues, setFormFieldValues] = useState({
-    [UserFieldNames.vrchatUserId]: '',
-    [UserFieldNames.vrchatUsername]: '',
-    [UserFieldNames.discordUsername]: '',
-    [UserFieldNames.twitterUsername]: '',
-    [UserFieldNames.telegramUsername]: '',
-    [UserFieldNames.youtubeChannelId]: '',
-    [UserFieldNames.twitchUsername]: '',
-    [UserFieldNames.patreonUsername]: '',
+  const [formFieldValues, setFormFieldValues] = useState<SocialMediaUsernames>({
+    vrchatuserid: '',
+    vrchatusername: '',
+    discordusername: '',
+    twitterusername: '',
+    telegramusername: '',
+    youtubechannelid: '',
+    twitchusername: '',
+    patreonusername: '',
+    neosvrusername: '',
+    chilloutvrusername: '',
   })
 
   useEffect(() => {
     if (!profile) {
       return
     }
+
     console.debug(`Updating editor with fields...`, profile)
+
     setFormFieldValues({
-      [UserFieldNames.vrchatUserId]: profile[UserFieldNames.vrchatUserId] || '',
-      [UserFieldNames.vrchatUsername]:
-        profile[UserFieldNames.vrchatUsername] || '',
-      [UserFieldNames.discordUsername]:
-        profile[UserFieldNames.discordUsername] || '',
-      [UserFieldNames.twitterUsername]:
-        profile[UserFieldNames.twitterUsername] || '',
-      [UserFieldNames.telegramUsername]:
-        profile[UserFieldNames.telegramUsername] || '',
-      [UserFieldNames.youtubeChannelId]:
-        profile[UserFieldNames.youtubeChannelId] || '',
-      [UserFieldNames.twitchUsername]:
-        profile[UserFieldNames.twitchUsername] || '',
-      [UserFieldNames.patreonUsername]:
-        profile[UserFieldNames.patreonUsername] || '',
+      vrchatuserid: profile.vrchatuserid || '',
+      vrchatusername: profile.vrchatusername || '',
+      discordusername: profile.discordusername || '',
+      twitterusername: profile.twitterusername || '',
+      telegramusername: profile.telegramusername || '',
+      youtubechannelid: profile.youtubechannelid || '',
+      twitchusername: profile.twitchusername || '',
+      patreonusername: profile.patreonusername || '',
+      neosvrusername: profile.neosvrusername || '',
+      chilloutvrusername: profile.chilloutvrusername || '',
     })
   }, [profile && profile.id])
 
@@ -135,14 +133,21 @@ export default ({ onSaveClick = null }) => {
     }
   }
 
-  const updateFormFieldValue = (name, newVal) =>
+  const updateFormFieldValue = (
+    name: keyof SocialMediaUsernames,
+    newVal: string
+  ) =>
     setFormFieldValues({
       ...formFieldValues,
       [name]: newVal,
     })
 
-  if (isLoadingProfile) {
-    return <LoadingIndicator />
+  if (isLoadingProfile || isSaving) {
+    return (
+      <LoadingIndicator
+        message={`${isSaving ? 'Saving' : 'Loading'} your profile...`}
+      />
+    )
   }
 
   if (isErroredLoadingProfile) {
@@ -155,9 +160,9 @@ export default ({ onSaveClick = null }) => {
         <Label>VRChat User ID</Label>
         <Input>
           <TextInput
-            value={formFieldValues[UserFieldNames.vrchatUserId]}
+            value={formFieldValues.vrchatuserid}
             onChange={(e) =>
-              updateFormFieldValue(UserFieldNames.vrchatUserId, e.target.value)
+              updateFormFieldValue('vrchatuserid', e.target.value)
             }
           />
           <Hint>
@@ -171,12 +176,9 @@ export default ({ onSaveClick = null }) => {
         <Label>VRChat Username</Label>
         <Input>
           <TextInput
-            value={formFieldValues[UserFieldNames.vrchatUsername]}
+            value={formFieldValues.vrchatusername}
             onChange={(e) =>
-              updateFormFieldValue(
-                UserFieldNames.vrchatUsername,
-                e.target.value
-              )
+              updateFormFieldValue('vrchatusername', e.target.value)
             }
           />
           <Hint>Displayed on your profile and for linking your account.</Hint>
@@ -186,12 +188,9 @@ export default ({ onSaveClick = null }) => {
         <Label>Discord username</Label>
         <Input>
           <TextInput
-            value={formFieldValues[UserFieldNames.discordUsername]}
+            value={formFieldValues.discordusername}
             onChange={(e) =>
-              updateFormFieldValue(
-                UserFieldNames.discordUsername,
-                e.target.value
-              )
+              updateFormFieldValue('discordusername', e.target.value)
             }
           />
           <Hint>eg. MyName#1234</Hint>
@@ -201,12 +200,9 @@ export default ({ onSaveClick = null }) => {
         <Label>Twitter username</Label>
         <Input>
           <TextInput
-            value={formFieldValues[UserFieldNames.twitterUsername]}
+            value={formFieldValues.twitterusername}
             onChange={(e) =>
-              updateFormFieldValue(
-                UserFieldNames.twitterUsername,
-                e.target.value
-              )
+              updateFormFieldValue('twitterusername', e.target.value)
             }
           />
           <Hint>Without the @ symbol eg. MyTwitterName</Hint>
@@ -216,12 +212,9 @@ export default ({ onSaveClick = null }) => {
         <Label>Telegram username</Label>
         <Input>
           <TextInput
-            value={formFieldValues[UserFieldNames.telegramUsername]}
+            value={formFieldValues.telegramusername}
             onChange={(e) =>
-              updateFormFieldValue(
-                UserFieldNames.telegramUsername,
-                e.target.value
-              )
+              updateFormFieldValue('telegramusername', e.target.value)
             }
           />
           <Hint>Without @ symbol eg. MyTelegramUsername</Hint>
@@ -231,12 +224,9 @@ export default ({ onSaveClick = null }) => {
         <Label>YouTube channel ID</Label>
         <Input>
           <TextInput
-            value={formFieldValues[UserFieldNames.youtubeChannelId]}
+            value={formFieldValues.youtubechannelid}
             onChange={(e) =>
-              updateFormFieldValue(
-                UserFieldNames.youtubeChannelId,
-                e.target.value
-              )
+              updateFormFieldValue('youtubechannelid', e.target.value)
             }
           />
           <Hint>
@@ -249,12 +239,9 @@ export default ({ onSaveClick = null }) => {
         <Label>Twitch username</Label>
         <Input>
           <TextInput
-            value={formFieldValues[UserFieldNames.twitchUsername]}
+            value={formFieldValues.twitchusername}
             onChange={(e) =>
-              updateFormFieldValue(
-                UserFieldNames.twitchUsername,
-                e.target.value
-              )
+              updateFormFieldValue('twitchusername', e.target.value)
             }
           />
         </Input>
@@ -263,28 +250,27 @@ export default ({ onSaveClick = null }) => {
         <Label>Patreon username</Label>
         <Input>
           <TextInput
-            value={formFieldValues[UserFieldNames.patreonUsername]}
+            value={formFieldValues.patreonusername}
             onChange={(e) =>
-              updateFormFieldValue(
-                UserFieldNames.patreonUsername,
-                e.target.value
-              )
+              updateFormFieldValue('patreonusername', e.target.value)
             }
           />
           <Hint>The name in the URL like https://patreon.com/[username]</Hint>
         </Input>
       </Field>
-      <div className={classes.controls}>
-        {isSaving && 'Saving...'}
-        {isSaveSuccess
-          ? 'Success!'
-          : isSaveError
-          ? 'Failed to save. Maybe try again?'
-          : null}
-        <Button onClick={onSaveBtnClick} isDisabled={isSaving}>
+      <FormControls>
+        <Button
+          onClick={onSaveBtnClick}
+          isDisabled={isSaving}
+          icon={<SaveIcon />}>
           Save
         </Button>
-      </div>
+      </FormControls>
+      {isSaveError ? (
+        <ErrorMessage>Failed to save. Please try again</ErrorMessage>
+      ) : isSaveSuccess ? (
+        <SuccessMessage>Saved successfully</SuccessMessage>
+      ) : null}
     </>
   )
 }

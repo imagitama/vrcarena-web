@@ -28,7 +28,10 @@ import Message from '../../components/message'
 import { DISCORD_URL } from '../../config'
 import TextInput from '../../components/text-input'
 import CopyButton from '../../components/copy-button'
-import { collectionNamePages, Page } from '../../modules/pages'
+import {
+  CollectionNames as PagesCollectionNames,
+  Page,
+} from '../../modules/pages'
 
 interface PageContext {
   pagesInParent: Page[]
@@ -292,7 +295,7 @@ const ViewContents = () => {
   return <PageView page={thisPage} />
 }
 
-export default () => {
+const Pages = () => {
   const classes = useStyles()
   const { parentName, pageName } = useParams<{
     parentName: string
@@ -303,18 +306,14 @@ export default () => {
     parentName,
     'parent-overview'
   )
-  // @ts-ignore
-  const [isLoadingPages, isErrorLoadingPages, pagesInParent]: [
-    boolean,
-    boolean,
-    null | Page[]
-  ] = useDatabaseQuery(
-    collectionNamePages,
-    [[PagesFieldNames.parent, Operators.EQUALS, parentName]],
-    {
-      [options.orderBy]: [PagesFieldNames.pageOrder, OrderDirections.ASC],
-    }
-  )
+  const [isLoadingPages, isErrorLoadingPages, pagesInParent] =
+    useDatabaseQuery<Page>(
+      PagesCollectionNames.Pages,
+      [[PagesFieldNames.parent, Operators.EQUALS, parentName]],
+      {
+        [options.orderBy]: [PagesFieldNames.pageOrder, OrderDirections.ASC],
+      }
+    )
   const [selectedLineOfText, setSelectedLineOfText] = useState<string>('')
   const [isInHelpMode, setIsInHelpMode] = useState<boolean>(false)
 
@@ -375,3 +374,5 @@ export default () => {
     </div>
   )
 }
+
+export default Pages

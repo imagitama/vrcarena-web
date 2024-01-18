@@ -1,3 +1,5 @@
+// TODO: Move to utils/index.ts
+
 import { validate as validateUuid } from 'uuid'
 import { PatreonStatuses, UserRoles } from './hooks/useDatabaseQuery'
 import { FullUser } from './modules/users'

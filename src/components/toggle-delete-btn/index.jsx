@@ -1,17 +1,12 @@
 import React from 'react'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import useDatabaseQuery, {
-  CollectionNames,
-  options
-} from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { options } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
+import { handleError } from '../../error-handling'
+import { CommonFieldNames } from '../../data-store'
 
 import Button from '../button'
-
-import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
-import { CommonFieldNames } from '../../data-store'
 
 /**
  * Assumes the item has an "isDeleted" field.
@@ -22,14 +17,14 @@ export default ({
   id,
   collectionName,
   isAlreadyDeleted = null,
-  onClick = null
+  onClick = null,
 }) => {
   const userId = useUserId()
   const [isLoadingAsset, isErroredLoadingAsset, item] = useDatabaseQuery(
     collectionName,
     isAlreadyDeleted !== null ? false : id,
     {
-      [options.queryName]: 'toggle-delete-btn'
+      [options.queryName]: 'toggle-delete-btn',
     }
   )
   const [isSaving, , isErroredSaving, save] = useDatabaseSave(
@@ -56,7 +51,7 @@ export default ({
       }
 
       await save({
-        [CommonFieldNames.isDeleted]: newValue
+        [CommonFieldNames.isDeleted]: newValue,
       })
     } catch (err) {
       console.error('Failed to edit asset to delete or undelete', err)

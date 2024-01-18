@@ -5,13 +5,11 @@ import { makeStyles } from '@material-ui/core/styles'
 import {
   AssetFieldNames,
   CollectionNames,
-  AssetGumroadFields
+  AssetGumroadFields,
 } from '../../hooks/useDatabaseQuery'
-import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 
 import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
 import { trackAction } from '../../analytics'
 // import * as routes from '../../routes'
 
@@ -26,8 +24,8 @@ const actionCategory = 'AssetOverviewEditor'
 
 const useStyles = makeStyles({
   fields: {
-    marginLeft: '1rem'
-  }
+    marginLeft: '1rem',
+  },
 })
 
 export default ({
@@ -35,9 +33,8 @@ export default ({
   isEnabled = false,
   settings = null,
   onDone = null,
-  overrideSave = null
+  overrideSave = null,
 }) => {
-  const userId = useUserId()
   const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
     CollectionNames.Assets,
     assetId
@@ -47,7 +44,7 @@ export default ({
     [AssetGumroadFields.fields]:
       settings && settings[AssetGumroadFields.fields]
         ? settings[AssetGumroadFields.fields]
-        : {}
+        : {},
   })
   const classes = useStyles()
 
@@ -62,7 +59,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.gumroad]: newGumroadSettings
+        [AssetFieldNames.gumroad]: newGumroadSettings,
       })
 
       if (onDone) {
@@ -87,12 +84,12 @@ export default ({
   }
 
   const setField = (fieldName, newVal) => {
-    setNewGumroadSettings(currentVal => ({
+    setNewGumroadSettings((currentVal) => ({
       ...currentVal,
       [AssetGumroadFields.fields]: {
         ...currentVal[AssetGumroadFields.fields],
-        [fieldName]: newVal
-      }
+        [fieldName]: newVal,
+      },
     }))
   }
 
@@ -101,10 +98,10 @@ export default ({
       <Checkbox
         label="Automatically sync with Gumroad"
         value={newGumroadSettings[AssetGumroadFields.sync]}
-        onChange={newVal => {
-          setNewGumroadSettings(currentVal => ({
+        onChange={(newVal) => {
+          setNewGumroadSettings((currentVal) => ({
             ...currentVal,
-            [AssetGumroadFields.sync]: newVal
+            [AssetGumroadFields.sync]: newVal,
           }))
         }}
       />
@@ -121,7 +118,7 @@ export default ({
                   AssetFieldNames.title
                 ] || false
               }
-              onChange={newVal => setField(AssetFieldNames.title, newVal)}
+              onChange={(newVal) => setField(AssetFieldNames.title, newVal)}
               label="Title"
             />
             <br />
@@ -131,7 +128,9 @@ export default ({
                   AssetFieldNames.description
                 ] || false
               }
-              onChange={newVal => setField(AssetFieldNames.description, newVal)}
+              onChange={(newVal) =>
+                setField(AssetFieldNames.description, newVal)
+              }
               label="Description"
             />
             <p>

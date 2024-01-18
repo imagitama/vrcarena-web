@@ -71,16 +71,6 @@ const useStyles = makeStyles({
     height: '1em',
     fill: 'currentColor',
   },
-  vrchatIcon: {},
-  boothIcon: {},
-  // vrchatIcon: {
-  //   fontSize: '200%',
-  // },
-  // boothIcon: {
-  //   fontSize: '150%',
-  //   '& path': {
-  //   },
-  // },
 })
 
 interface SocialMediaItem {
@@ -202,7 +192,6 @@ export default ({
         : vrchatUserId
         ? 'VRChat Profile'
         : undefined,
-      iconClass: classes.vrchatIcon,
       url: vrchatUserId ? getUrlForVrChatUserId(vrchatUserId) : undefined,
       type: 'vrchat',
     },
@@ -272,7 +261,6 @@ export default ({
       label: boothUsername,
       url: getUrlForBoothByUsername(boothUsername),
       type: 'booth',
-      iconClass: classes.boothIcon,
     },
   ]
   return (

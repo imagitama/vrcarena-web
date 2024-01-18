@@ -4,10 +4,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 
 import useDatabaseQuery, {
-  CollectionNames,
   AssetFieldNames,
   Operators,
-  AssetCategories
+  AssetCategories,
 } from '../../hooks/useDatabaseQuery'
 import Button from '../../components/button'
 import Heading from '../../components/heading'
@@ -18,7 +17,7 @@ const useStyles = makeStyles({
   items: {
     display: 'flex',
     flexWrap: 'wrap',
-    paddingLeft: '4rem'
+    paddingLeft: '4rem',
   },
   item: {
     width: '100px',
@@ -32,10 +31,10 @@ const useStyles = makeStyles({
       userSelect: 'none',
       userDrag: 'none',
       pointerEvents: 'none',
-      transition: 'all 100ms'
+      transition: 'all 100ms',
     },
     transformStyle: 'preserve-3d',
-    transform: 'rotateY(0deg)'
+    transform: 'rotateY(0deg)',
   },
   side: {
     width: '100%',
@@ -44,7 +43,7 @@ const useStyles = makeStyles({
     position: 'absolute',
     top: 0,
     left: 0,
-    borderRadius: '0.5rem'
+    borderRadius: '0.5rem',
   },
   front: {
     background: '#d2d2d2',
@@ -56,12 +55,12 @@ const useStyles = makeStyles({
       width: 'calc(100% - 0.5rem)',
       height: 'calc(100% - 0.5rem)',
       background: '#490000',
-      borderRadius: '0.5rem'
-    }
+      borderRadius: '0.5rem',
+    },
   },
   back: {
     transform: 'rotateY(180deg)',
-    background: '#FFF'
+    background: '#FFF',
   },
   inner: {
     position: 'absolute',
@@ -73,7 +72,7 @@ const useStyles = makeStyles({
     overflow: 'hidden',
     display: 'flex',
     justifyContent: 'center',
-    background: '#000'
+    background: '#000',
   },
   title: {
     width: '100%',
@@ -85,17 +84,17 @@ const useStyles = makeStyles({
     opacity: 0,
     transition: 'all 100ms',
     transform: 'rotate(-76deg)',
-    fontSize: '150%'
+    fontSize: '150%',
   },
   scored: {
     transform: 'rotateY(180deg)',
     '& $inner img': {
-      opacity: '0.2'
-    }
+      opacity: '0.2',
+    },
   },
   revealed: {
-    transform: 'rotateY(180deg)'
-  }
+    transform: 'rotateY(180deg)',
+  },
 })
 
 const getIsCorrectGuess = (guess, assetTitle) => {
@@ -132,7 +131,7 @@ const delay = 2000
 const View = () => {
   const classes = useStyles()
   const [isLoading, isError, avatars] = useDatabaseQuery('getpublicassets', [
-    [AssetFieldNames.category, Operators.EQUALS, AssetCategories.avatar]
+    [AssetFieldNames.category, Operators.EQUALS, AssetCategories.avatar],
   ])
   const [selectedAvatar, setSelectedAvatar] = useState(null)
   const [guess, setGuess] = useState('')
@@ -182,38 +181,38 @@ const View = () => {
       selectedAvatar[AssetFieldNames.title]
     )
 
-    setGuessesByAvatarId(currentVal => ({
+    setGuessesByAvatarId((currentVal) => ({
       ...currentVal,
       [selectedAvatar.id]:
         selectedAvatar.id in currentVal
           ? currentVal[selectedAvatar.id].concat([guess])
-          : [guess]
+          : [guess],
     }))
 
-    setTotalNumberOfGuesses(currentVal => currentVal + 1)
+    setTotalNumberOfGuesses((currentVal) => currentVal + 1)
 
     if (isCorrect) {
-      setTotalNumberOfCorrect(currentVal => currentVal + 1)
+      setTotalNumberOfCorrect((currentVal) => currentVal + 1)
 
       autoSelectNewAvatarTimeoutRef.current = setTimeout(() => {
         selectNewAvatar()
       }, delay)
     } else {
-      setTotalNumberOfIncorrect(currentVal => currentVal + 1)
+      setTotalNumberOfIncorrect((currentVal) => currentVal + 1)
     }
 
     setIsCorrect(isCorrect)
   }
 
   const giveUp = () => {
-    setTotalNumberOfGiveUps(currentVal => currentVal + 1)
+    setTotalNumberOfGiveUps((currentVal) => currentVal + 1)
 
-    setGuessesByAvatarId(currentVal => ({
+    setGuessesByAvatarId((currentVal) => ({
       ...currentVal,
       [selectedAvatar.id]:
         selectedAvatar.id in currentVal
           ? currentVal[selectedAvatar.id].concat([''])
-          : ['']
+          : [''],
     }))
 
     selectNewAvatar()
@@ -251,7 +250,7 @@ const View = () => {
           <Button onClick={() => resetGame()}>Play Again</Button>
           <ul>
             {Object.entries(guessesByAvatarId).map(([avatarId, guesses]) => {
-              const asset = avatars.find(avatar => avatar.id === avatarId)
+              const asset = avatars.find((avatar) => avatar.id === avatarId)
               return (
                 <li key={avatarId}>
                   <img
@@ -262,7 +261,7 @@ const View = () => {
                   <br />
                   {asset[AssetFieldNames.title]}
                   <ul>
-                    {guesses.map(guess => (
+                    {guesses.map((guess) => (
                       <li key={guess}>{guess}</li>
                     ))}
                   </ul>
@@ -289,8 +288,8 @@ const View = () => {
             <TextField
               size="large"
               variant="outlined"
-              onChange={e => setGuess(e.target.value)}
-              onKeyDown={e => {
+              onChange={(e) => setGuess(e.target.value)}
+              onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   onClickGuess()
                 }

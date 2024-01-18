@@ -2,21 +2,16 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import SaveIcon from '@material-ui/icons/Save'
-import firebase from 'firebase/app'
 
 import {
   AssetFieldNames,
   CollectionNames,
-  Operators,
-  SpeciesFieldNames,
-  UserFieldNames
+  UserFieldNames,
 } from '../../hooks/useDatabaseQuery'
-import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserRecord from '../../hooks/useUserRecord'
 
 import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
 import { trackAction } from '../../analytics'
 import * as routes from '../../routes'
 import { WEBSITE_FULL_URL } from '../../config'
@@ -30,32 +25,29 @@ import SuccessMessage from '../success-message'
 
 const useStyles = makeStyles(() => ({
   input: {
-    width: '100%'
+    width: '100%',
   },
   demo: {
-    textDecoration: 'underline'
+    textDecoration: 'underline',
   },
   saveBtn: {
-    cursor: 'pointer'
-  }
+    cursor: 'pointer',
+  },
 }))
 
 // regex: https://stackoverflow.com/a/51365309/1215393
-const validateSlug = slug =>
+const validateSlug = (slug) =>
   /^[a-z](-?[a-z])*$/g.test(slug) && slug.length < 20 && slug.length >= 3
-
-const convertSpeciesNameForCheck = speciesName =>
-  speciesName.toLowerCase().replaceAll(' ', '-')
 
 const ERRORS = {
   TAKEN: 'TAKEN',
   SPECIES_NAME_CONFLICT: 'SPECIES_NAME_CONFLICT',
   INVALID: 'INVALID',
   UNCHANGED: 'UNCHANGED',
-  EMPTY: 'EMPTY'
+  EMPTY: 'EMPTY',
 }
 
-const getErrorIfSlugIsTaken = async slug => {
+const getErrorIfSlugIsTaken = async (slug) => {
   const { data: assetsWithSlug } = await supabase
     .from(CollectionNames.Assets)
     .select(AssetFieldNames.slug)
@@ -90,9 +82,8 @@ export default ({
   slug,
   onDone,
   actionCategory,
-  overrideSave = null
+  overrideSave = null,
 }) => {
-  const userId = useUserId()
   const [newSlugValue, setNewSlugValue] = useState(slug)
   const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
     CollectionNames.Assets,
@@ -115,7 +106,7 @@ export default ({
       trackAction(actionCategory, 'Click save slug button', assetId)
 
       await save({
-        [AssetFieldNames.slug]: newSlugValue
+        [AssetFieldNames.slug]: newSlugValue,
       })
 
       onDone()
@@ -240,7 +231,7 @@ export default ({
       <TextField
         className={classes.input}
         value={newSlugValue}
-        onChange={e => {
+        onChange={(e) => {
           setError(null)
           setNewSlugValue(e.target.value)
         }}

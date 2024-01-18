@@ -12,8 +12,7 @@ import Button from '../../components/button'
 import PaginatedView from '../../components/paginated-view'
 
 import { alreadyOver18Key } from '../../config'
-import { AssetFieldNames, UserFieldNames } from '../../hooks/useDatabaseQuery'
-import useUserRecord from '../../hooks/useUserRecord'
+import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useStorage from '../../hooks/useStorage'
 import { trackAction } from '../../analytics'
 import categoryMeta from '../../category-meta'
@@ -45,7 +44,7 @@ const Renderer = ({ items }) => {
 
 const Assets = () => {
   const getQuery = useCallback(
-    query => query.is(AssetFieldNames.isAdult, true),
+    (query) => query.is(AssetFieldNames.isAdult, true),
     []
   )
   return (
@@ -56,12 +55,12 @@ const Assets = () => {
       sortOptions={[
         {
           label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt
+          fieldName: AssetFieldNames.createdAt,
         },
         {
           label: 'Title',
-          fieldName: AssetFieldNames.title
-        }
+          fieldName: AssetFieldNames.title,
+        },
       ]}
       defaultFieldName={AssetFieldNames.title}
       urlWithPageNumberVar={routes.nsfwWithPageNumberVar}>
@@ -73,8 +72,8 @@ const Assets = () => {
 const useStyles = makeStyles({
   over18message: {
     padding: '5rem 0',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 })
 
 export default () => {

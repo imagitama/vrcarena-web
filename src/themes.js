@@ -1,6 +1,7 @@
 import { createTheme } from '@material-ui/core/styles'
 import { mediaQueryForTabletsOrBelow } from './media-queries'
 
+// TODO: Take from src/brand.ts
 export const colorBrand = '#6e4a9e'
 export const colorBrandLight = '#9E85C4'
 export const colorEditor = '#a67250'

@@ -37,21 +37,6 @@ import FormattedDate from '../../components/formatted-date'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
-  primary: {},
-  // primary: {
-  //   display: 'flex',
-  //   flexDirection: 'column',
-  //   justifyContent: 'center',
-  //   '& > *': {
-  //     alignSelf: 'center',
-  //   },
-  // },
-  controls: {},
-  // controls: {
-  //   position: 'absolute',
-  //   top: 0,
-  //   left: 0,
-  // },
   callToAction: {
     marginTop: '2rem',
   },
@@ -280,7 +265,7 @@ const View = () => {
         {description ? <meta name="description" content={description} /> : null}
       </Helmet>
       <div className={classes.root}>
-        <div className={classes.controls}>
+        <div>
           <Button url={routes.events} icon={<ChevronLeftIcon />} switchIconSide>
             Back To Events
           </Button>{' '}
@@ -293,7 +278,7 @@ const View = () => {
           ) : null}
         </div>
         {editornotes ? <PublicEditorNotes notes={editornotes} /> : null}
-        <div className={classes.primary}>
+        <div>
           {thumbnailurl ? (
             <img src={thumbnailurl} alt="Thumbnail for event" width={300} />
           ) : null}

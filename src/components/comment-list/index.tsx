@@ -8,7 +8,7 @@ import { client as supabase } from '../../supabase'
 import { getQueryParam } from '../../utils'
 import { trackAction } from '../../analytics'
 import { CollectionNames } from '../../modules/assets'
-import { Comment, FullComment } from '../../modules/comments'
+import { FullComment } from '../../modules/comments'
 
 import CommentItem from '../comment'
 import ErrorMessage from '../error-message'

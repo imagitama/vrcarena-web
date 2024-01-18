@@ -27,7 +27,8 @@ import { DISCORD_URL } from '../../config'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import {
   getReasonsForCollectionName,
-  reportReasonsKeysByCollection
+  Report,
+  reportReasonsKeysByCollection,
 } from '../../modules/reports'
 import GenericOutputItem from '../../components/generic-output-item'
 
@@ -37,8 +38,8 @@ const useStyles = makeStyles({
   input: { width: '100%', marginBottom: '1rem' },
   label: {
     fontSize: '150%',
-    margin: '0.5rem 0'
-  }
+    margin: '0.5rem 0',
+  },
 })
 
 const View = () => {
@@ -52,14 +53,14 @@ const View = () => {
     parentId,
     'create-report'
   )
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
+  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Report>(
     CollectionNames.Reports
   )
   const [fieldData, setFieldData] = useState({
     [ReportFieldNames.reason]: null,
-    [ReportFieldNames.comments]: ''
+    [ReportFieldNames.comments]: '',
   })
-  const [createdDocId, setCreatedDocId] = useState(null)
+  const [createdDocId, setCreatedDocId] = useState<string | null>(null)
   const classes = useStyles()
 
   if (!userId) {
@@ -111,7 +112,7 @@ const View = () => {
   const onFieldChange = (fieldName: string, newValue: string) =>
     setFieldData({
       ...fieldData,
-      [fieldName]: newValue
+      [fieldName]: newValue,
     })
 
   const onCreateBtnClick = async () => {
@@ -126,7 +127,7 @@ const View = () => {
       const [createdReport] = await save({
         ...fieldData,
         [ReportFieldNames.parentTable]: parentTable,
-        [ReportFieldNames.parent]: parentId
+        [ReportFieldNames.parent]: parentId,
       })
 
       if (!createdReport) {
@@ -160,10 +161,10 @@ const View = () => {
         className={classes.input}
         value={fieldData[ReportFieldNames.reason]}
         variant="outlined"
-        onChange={e =>
+        onChange={(e) =>
           onFieldChange(ReportFieldNames.reason, e.target.value as string)
         }>
-        {getReasonsForCollectionName(parentTable).map(reason => (
+        {getReasonsForCollectionName(parentTable).map((reason) => (
           <MenuItem key={reason.value} value={reason.value}>
             {reason.label}
           </MenuItem>
@@ -181,7 +182,9 @@ const View = () => {
       <p>Explain your reasoning. Provide evidence if necessary.</p>
       <TextInput
         className={classes.input}
-        onChange={e => onFieldChange(ReportFieldNames.comments, e.target.value)}
+        onChange={(e) =>
+          onFieldChange(ReportFieldNames.comments, e.target.value)
+        }
         multiline
         rows={5}
       />

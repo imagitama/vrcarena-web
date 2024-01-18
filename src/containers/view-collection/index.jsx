@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
@@ -14,7 +14,7 @@ import PageControls from '../../components/page-controls'
 import { trackAction } from '../../analytics'
 import {
   GetFullPlaylistFieldNames,
-  PlaylistsFieldNames
+  PlaylistsFieldNames,
 } from '../../data-store'
 import AssetResults from '../../components/asset-results'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
@@ -45,9 +45,7 @@ const View = () => {
     id: playlistId,
     [PlaylistsFieldNames.title]: title,
     [PlaylistsFieldNames.description]: description,
-    [PlaylistsFieldNames.createdAt]: createdAt,
-    [PlaylistsFieldNames.createdBy]: createdBy,
-    [GetFullPlaylistFieldNames.assets]: assets
+    [GetFullPlaylistFieldNames.assets]: assets,
   } = result
 
   return (

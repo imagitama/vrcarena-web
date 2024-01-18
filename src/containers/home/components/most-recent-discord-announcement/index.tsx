@@ -2,12 +2,12 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import LoadingIndicator from '../../../../components/loading-indicator'
 import useDatabaseQuery, {
-  OrderDirections
+  OrderDirections,
 } from '../../../../hooks/useDatabaseQuery'
 import {
   CachedDiscordMessage,
   collectionNames,
-  discordMessageCacheFieldNames
+  discordMessageCacheFieldNames,
 } from '../../../../modules/discordmessagecache'
 import FormattedDate from '../../../../components/formatted-date'
 import { trimDescription } from '../../../../utils/formatting'
@@ -15,35 +15,35 @@ import Markdown from '../../../../components/markdown'
 
 const useStyles = makeStyles({
   root: {
-    position: 'relative'
+    position: 'relative',
   },
   meta: {
     display: 'flex',
     alignItems: 'baseline',
-    position: 'relative'
+    position: 'relative',
   },
   author: {
-    color: '#FFF'
+    color: '#FFF',
   },
   date: {
     width: '100%',
     fontSize: '60%',
-    marginLeft: '0.25rem'
+    marginLeft: '0.25rem',
   },
   message: {
     color: '#C3C3C3',
     fontSize: '80%',
     '& :first-child': {
-      marginTop: 0
-    }
+      marginTop: 0,
+    },
   },
   channelName: {},
   fetchedat: {
     fontSize: '50%',
     opacity: '0.25',
-    textAlign: 'right'
+    textAlign: 'right',
   },
-  extradata: {}
+  extradata: {},
 })
 
 const DefaultMessage = () => (
@@ -55,12 +55,12 @@ const DefaultMessage = () => (
 
 export default () => {
   // TODO: Filter by channel
-  const [isLoading, isError, messages] = useDatabaseQuery<
-    CachedDiscordMessage[]
-  >(collectionNames.discordMessageCache, [], 1, [
-    discordMessageCacheFieldNames.sentAt,
-    OrderDirections.DESC
-  ])
+  const [isLoading, isError, messages] = useDatabaseQuery<CachedDiscordMessage>(
+    collectionNames.discordMessageCache,
+    [],
+    1,
+    [discordMessageCacheFieldNames.sentAt, OrderDirections.DESC]
+  )
   const classes = useStyles()
 
   if (isLoading) {

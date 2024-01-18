@@ -8,7 +8,7 @@ import { handleError } from '../../error-handling'
 
 const useStyles = makeStyles({
   container: {
-    position: 'relative'
+    position: 'relative',
   },
   input: {
     position: 'absolute',
@@ -17,8 +17,8 @@ const useStyles = makeStyles({
     width: '100%',
     height: '100%',
     opacity: 0,
-    zIndex: 100
-  }
+    zIndex: 100,
+  },
 })
 
 export default ({
@@ -26,16 +26,14 @@ export default ({
   bucketName,
   directoryPath,
   children = undefined,
-  // maxSizeBytes = undefined,
   allowedMimeTypes = [],
   onCancel = undefined,
-  onError = undefined
+  onError = undefined,
 }: {
   onDone: (url: string) => void
   bucketName: string
   directoryPath: string
   children?: React.ReactChild
-  // maxSizeBytes?: number
   allowedMimeTypes?: string[]
   onCancel?: () => void
   onError?: (err: Error) => void
@@ -87,7 +85,7 @@ export default ({
         <input
           className={classes.input}
           type="file"
-          onChange={event => onFileChange(event.target.files)}
+          onChange={(event) => onFileChange(event.target.files)}
           multiple={false}
           accept={allowedMimeTypes.join(',')}
         />
@@ -100,7 +98,7 @@ export default ({
     <>
       <input
         type="file"
-        onChange={event => onFileChange(event.target.files)}
+        onChange={(event) => onFileChange(event.target.files)}
         multiple={false}
         accept={allowedMimeTypes.join(',')}
       />

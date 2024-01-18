@@ -7,47 +7,31 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import SaveIcon from '@material-ui/icons/Save'
 
-import useDatabaseQuery, {
-  AssetFieldNames,
-  CollectionNames as OldCollectionNames,
-  Operators
-} from '../../hooks/useDatabaseQuery'
-import { CollectionNames, updateRecords } from '../../data-store'
+import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
+import { updateRecords } from '../../data-store'
+import SuccessMessage from '../success-message'
+import { handleError } from '../../error-handling'
+import { callFunction } from '../../firebase'
+import useTimer from '../../hooks/useTimer'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import VrchatAvatar, {
-  VrchatAvatar as VrchatAvatarData
+  VrchatAvatar as VrchatAvatarData,
 } from '../vrchat-avatar'
 import AssetResultsItem from '../asset-results-item'
 import Button from '../button'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
-import SuccessMessage from '../success-message'
-import { handleError } from '../../error-handling'
-import { callFunction } from '../../firebase'
 import CheckboxInput from '../checkbox-input'
 import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useTimer from '../../hooks/useTimer'
-
-export interface CachedVrchatAvatarRecord {
-  id: string
-  avatar: VrchatAvatarData
-}
-
-interface GetFullPublicAvatarSubmissions {
-  id: string
-  asset: string
-  vrchatavatarid: string
-  createdat: Date
-  createdby: string
-  // joined
-  creatorname: string
-  title: string
-  thumbnailurl: string
-  existingavatarids: string[]
-  existingavatardata: CachedVrchatAvatarRecord[]
-  avatar?: VrchatAvatarData
-}
+import {
+  CollectionNames,
+  CachedVrchatAvatarRecord,
+  FullPublicAvatarSubmission,
+} from '../../modules/public-avatars'
 
 interface SyncMissingAvatarSubmissionsResult {
   success: boolean
@@ -67,7 +51,7 @@ const SyncForm = ({ onDone }: { onDone: () => void }) => {
       setLastErrorMessage('')
 
       const {
-        data: { error, successfulAvatarIds }
+        data: { error, successfulAvatarIds },
       } = await callFunction<SyncMissingAvatarSubmissionsResult>(
         'syncMissingAvatarSubmissions'
       )
@@ -112,23 +96,19 @@ const SyncForm = ({ onDone }: { onDone: () => void }) => {
 const AddToAssetButton = ({
   assetId,
   newAvatarIds,
-  onDone
+  onDone,
 }: {
   assetId: string
   newAvatarIds: string[]
   onDone: () => void
 }) => {
-  const [
-    isSavingAsset,
-    isSavingSuccessAsset,
-    isSavingErrorAsset,
-    saveAsset
-  ] = useDatabaseSave(OldCollectionNames.Assets, assetId)
+  const [isSavingAsset, isSavingSuccessAsset, isSavingErrorAsset, saveAsset] =
+    useDataStoreEdit<Asset>(AssetsCollectionNames.Assets, assetId)
 
   const add = async () => {
     try {
       await saveAsset({
-        [AssetFieldNames.vrchatClonableAvatarIds]: newAvatarIds
+        vrchatclonableavatarids: newAvatarIds,
       })
 
       onDone()
@@ -158,7 +138,7 @@ const AddToAssetButton = ({
 }
 
 const PublicAvatarSubmissionsFieldNames = {
-  isDeleted: 'isdeleted'
+  isDeleted: 'isdeleted',
 }
 
 interface AvatarListItem {
@@ -173,12 +153,12 @@ const ApplyAvatarsForm = ({
   existingAvatarIds,
   existingAvatarData,
   submissions,
-  onDone
+  onDone,
 }: {
   assetId: string
   existingAvatarIds: string[]
   existingAvatarData: CachedVrchatAvatarRecord[]
-  submissions: GetFullPublicAvatarSubmissions[]
+  submissions: FullPublicAvatarSubmission[]
   onDone: () => void
 }) => {
   const [selectedAvatarIds, setSelectedAvatarIds] = useState<string[]>(
@@ -189,16 +169,16 @@ const ApplyAvatarsForm = ({
   const onDoneAfterDelay = useTimer(() => onDone(), 2000)
 
   const onSelect = (id: string) =>
-    setSelectedAvatarIds(currentIds => currentIds.concat([id]))
+    setSelectedAvatarIds((currentIds) => currentIds.concat([id]))
   const onDeselect = (id: string) =>
-    setSelectedAvatarIds(currentIds =>
-      currentIds.filter(currentId => currentId !== id)
+    setSelectedAvatarIds((currentIds) =>
+      currentIds.filter((currentId) => currentId !== id)
     )
 
   const deleteSubmissions = async () => {
     console.debug(
       `Deleting submissions ${submissions
-        .map(submission => submission.id)
+        .map((submission) => submission.id)
         .join(', ')}...`
     )
 
@@ -207,9 +187,9 @@ const ApplyAvatarsForm = ({
 
     await updateRecords<{ isdeleted: boolean }>(
       CollectionNames.PublicAvatarSubmissions,
-      submissions.map(submission => submission.id),
+      submissions.map((submission) => submission.id),
       {
-        isdeleted: true
+        isdeleted: true,
       }
     )
 
@@ -222,13 +202,13 @@ const ApplyAvatarsForm = ({
   }
 
   const avatarListItems: AvatarListItem[] = existingAvatarIds
-    ? existingAvatarIds.map(avatarId => {
-        const result = existingAvatarData.find(data => data.id === avatarId)
+    ? existingAvatarIds.map((avatarId) => {
+        const result = existingAvatarData.find((data) => data.id === avatarId)
         return {
           key: `${assetId}_${avatarId}`,
           isNew: false,
           avatarId: avatarId,
-          avatar: result ? result.avatar : undefined
+          avatar: result ? result.avatar : undefined,
         }
       })
     : []
@@ -238,7 +218,7 @@ const ApplyAvatarsForm = ({
       key: submission.id,
       isNew: true,
       avatarId: submission.vrchatavatarid,
-      avatar: submission.avatar
+      avatar: submission.avatar,
     })
   }
 
@@ -248,7 +228,7 @@ const ApplyAvatarsForm = ({
         {avatarListItems.map((avatarListItem, idx) => {
           const isDuplicate =
             avatarListItems.findIndex(
-              item => item.avatarId === avatarListItem.avatarId
+              (item) => item.avatarId === avatarListItem.avatarId
             ) !== idx
           return (
             <div key={avatarListItem.key}>
@@ -295,10 +275,11 @@ const ApplyAvatarsForm = ({
 }
 
 const Avatars = () => {
-  const [isLoading, isErrored, results, hydrate] = useDatabaseQuery(
-    'getFullPublicAvatarSubmissions'.toLowerCase(),
-    [[PublicAvatarSubmissionsFieldNames.isDeleted, Operators.EQUALS, false]]
-  )
+  const [isLoading, isErrored, results, hydrate] =
+    useDatabaseQuery<FullPublicAvatarSubmission>(
+      'getFullPublicAvatarSubmissions'.toLowerCase(),
+      [[PublicAvatarSubmissionsFieldNames.isDeleted, Operators.EQUALS, false]]
+    )
 
   if (isLoading || !Array.isArray(results)) {
     return <LoadingIndicator message="Loading avatars..." />
@@ -313,17 +294,17 @@ const Avatars = () => {
   }
 
   const resultsByAssetId: {
-    [assetId: string]: GetFullPublicAvatarSubmissions[]
+    [assetId: string]: FullPublicAvatarSubmission[]
   } = results.reduce(
     (
-      finalResults: { [assetId: string]: GetFullPublicAvatarSubmissions[] },
-      result: GetFullPublicAvatarSubmissions
+      finalResults: { [assetId: string]: FullPublicAvatarSubmission[] },
+      result: FullPublicAvatarSubmission
     ) => ({
       ...finalResults,
       [result.asset]:
         result.asset in finalResults
           ? finalResults[result.asset].concat([result])
-          : [result]
+          : [result],
     }),
     {}
   )
@@ -346,15 +327,8 @@ const Avatars = () => {
             {Object.entries(resultsByAssetId).map(([assetId, submissions]) => (
               <TableRow key={assetId}>
                 <TableCell>
-                  <AssetResultsItem
-                    // @ts-ignore
-                    asset={{
-                      id: submissions[0].asset,
-                      [AssetFieldNames.title]: submissions[0].title,
-                      [AssetFieldNames.thumbnailUrl]:
-                        submissions[0].thumbnailurl
-                    }}
-                  />
+                  {/* @ts-ignore */}
+                  <AssetResultsItem asset={submissions[0]} />
                 </TableCell>
                 <TableCell>
                   <ApplyAvatarsForm

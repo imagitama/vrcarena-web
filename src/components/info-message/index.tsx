@@ -16,7 +16,6 @@ export default ({
 }) => (
   <Message
     icon={<InfoIcon />}
-    // color="#1c0002"
     title={title || children}
     controls={
       onOkay ? (

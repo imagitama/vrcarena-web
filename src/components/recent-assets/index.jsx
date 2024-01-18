@@ -7,10 +7,6 @@ import useDatabaseQuery, {
   AssetFieldNames,
   OrderDirections,
   options,
-  AssetMetaFieldNames,
-  ApprovalStatuses,
-  AccessStatuses,
-  PublishStatuses
 } from '../../hooks/useDatabaseQuery'
 import useUserRecord from '../../hooks/useUserRecord'
 
@@ -42,7 +38,7 @@ export default ({
   categoryName = null,
   showPinned,
   limit = 10,
-  title = ''
+  title = '',
 }) => {
   const [, , user] = useUserRecord()
 
@@ -52,7 +48,7 @@ export default ({
     whereClauses.push([
       AssetFieldNames.species,
       Operators.ARRAY_CONTAINS,
-      createRef(CollectionNames.Species, speciesId)
+      createRef(CollectionNames.Species, speciesId),
     ])
   }
 
@@ -64,7 +60,7 @@ export default ({
     whereClauses.push([
       AssetFieldNames.category,
       Operators.EQUALS,
-      categoryName
+      categoryName,
     ])
   }
 
@@ -74,7 +70,7 @@ export default ({
     {
       [options.limit]: limit,
       [options.orderBy]: [AssetFieldNames.createdAt, OrderDirections.DESC],
-      [options.queryName]: `recent-assets-${speciesId}-${categoryName}`
+      [options.queryName]: `recent-assets-${speciesId}-${categoryName}`,
     }
   )
 

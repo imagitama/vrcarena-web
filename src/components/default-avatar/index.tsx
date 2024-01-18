@@ -66,11 +66,6 @@ async function generateRandomIndex(
   randomSeed = randomSeed < 0 ? randomSeed + options.length : randomSeed
 
   return randomSeed
-
-  // // Use the seeded random number to pick an option
-  // const selectedOption = options[randomSeed];
-
-  // return selectedOption;
 }
 
 function getRandomInt(min: number, max: number): number {

@@ -16,7 +16,6 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import Center from '../../components/center'
 import NoResultsMessage from '../../components/no-results-message'
 import useTimer from '../../hooks/useTimer'
-import Message from '../../components/message'
 
 const useStyles = makeStyles({
   spinning: {

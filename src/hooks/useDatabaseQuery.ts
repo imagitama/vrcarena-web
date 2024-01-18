@@ -3,21 +3,42 @@ import { inDevelopment } from '../environment'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 
-export const Operators = {
-  IS: 'IS', // works for NULL vals
-  EQUALS: 'eq',
-  NOT_EQUALS: '!=',
-  GREATER_THAN: '>',
-  ARRAY_CONTAINS: 'array-contains',
+export enum Operators {
+  IS = 'IS', // works for NULL vals
+  EQUALS = 'eq',
+  NOT_EQUALS = '!=',
+  GREATER_THAN = '>',
+  ARRAY_CONTAINS = 'array-contains',
 }
 
-export const WhereOperators = {
-  OR: 'OR',
+export enum WhereOperators {
+  OR,
 }
 
-export const OrderDirections = {
-  ASC: 'asc',
-  DESC: 'desc',
+export enum OrderDirections {
+  ASC,
+  DESC,
+}
+
+export enum PublishStatuses {
+  Published = 'published',
+  Draft = 'draft',
+}
+
+export enum AccessStatuses {
+  Public = 'public',
+  Deleted = 'deleted',
+}
+
+export enum ApprovalStatuses {
+  Approved = 'approved',
+  Waiting = 'waiting',
+  Declined = 'declined',
+}
+
+export enum PinnedStatuses {
+  Pinned = 'pinned',
+  Unpinned = 'unpinned',
 }
 
 export const CollectionNames = {
@@ -267,27 +288,6 @@ export const GetFullAssetsFieldNames = {
   endorsementCount: 'endorsementcount',
   commentCount: 'commentcount',
   reviewCount: 'reviewcount',
-}
-
-export const PublishStatuses = {
-  Published: 'published',
-  Draft: 'draft',
-}
-
-export const AccessStatuses = {
-  Public: 'public',
-  Deleted: 'deleted',
-}
-
-export const ApprovalStatuses = {
-  Approved: 'approved',
-  Waiting: 'waiting',
-  Declined: 'declined',
-}
-
-export const PinnedStatuses = {
-  Pinned: 'pinned',
-  Unpinned: 'unpinned',
 }
 
 /** END ASSETS */
@@ -551,9 +551,7 @@ function getLimitAsString(limit: number | undefined): string {
   return limit.toString()
 }
 
-export function getOrderByAsString(
-  orderBy: [string, string] | undefined
-): string {
+export function getOrderByAsString(orderBy?: OrderBy): string {
   if (!orderBy) {
     return ''
   }
@@ -583,9 +581,9 @@ const getOptionsIfProvided = (
   }
 }
 
-export type WhereClause = [string, string, string | boolean | null]
+export type WhereClause = [string, Operators, string | boolean | null]
 
-type OrderBy = [string, string]
+type OrderBy = [string, OrderDirections]
 
 interface OptionsMap {
   queryName?: string
@@ -600,7 +598,7 @@ interface OptionsMap {
   subscribe?: boolean // not supported in supabase (without setup)
 }
 
-type PossibleWhereClauses = (WhereClause | string)[] | false
+type PossibleWhereClauses = (WhereClause | string | WhereOperators.OR)[] | false
 
 export default <TResult>(
   collectionName: string,
@@ -609,7 +607,7 @@ export default <TResult>(
   orderBy?: OrderBy,
   subscribe = true,
   startAfter = undefined
-): [boolean, boolean, TResult | TResult[] | null, () => void] => {
+): [boolean, boolean, TResult[] | null, () => void] => {
   if (typeof whereClauses === 'string') {
     throw new Error('Cannot pass id to this hook anymore')
   }
@@ -693,7 +691,7 @@ export default <TResult>(
             switch (operator) {
               case Operators.NOT_EQUALS:
                 // @ts-ignore
-                queryChain = queryChain.not(field, Operators.EQUALS, value)
+                queryChain = queryChain.not(field, 'eq', value)
                 break
               case Operators.IS:
                 // supports "IS NULL" SQL operator

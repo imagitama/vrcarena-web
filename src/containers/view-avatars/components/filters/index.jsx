@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
-import useStorage, { keys as storageKeys } from '../../../../hooks/useStorage'
+import useStorage from '../../../../hooks/useStorage'
 import { trackAction } from '../../../../analytics'
 import { importantTags } from '../../../../config'
 import Heading from '../../../../components/heading'

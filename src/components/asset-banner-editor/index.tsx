@@ -5,14 +5,13 @@ import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import ErrorMessage from '../error-message'
 import Button from '../button'
-import WarningMessage from '../warning-message'
 
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
+import { Asset, CollectionNames } from '../../modules/assets'
 
-export default ({
+const AssetBannerEditor = ({
   assetId = undefined,
   onDone = undefined,
   actionCategory = undefined,
@@ -26,10 +25,8 @@ export default ({
   // for amendments to work
   assetIdForBucket?: string
 }) => {
-  const [isSaving, isSaveSuccess, isSaveError, save, clear] = useDatabaseSave(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, isSaveError, save, clear] =
+    useDatabaseSave<Asset>(CollectionNames.Assets, assetId)
 
   if (isSaving) {
     return <LoadingIndicator />
@@ -67,7 +64,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.bannerUrl]: url,
+        bannerurl: url,
       })
 
       if (onDone) {
@@ -88,3 +85,5 @@ export default ({
     </>
   )
 }
+
+export default AssetBannerEditor

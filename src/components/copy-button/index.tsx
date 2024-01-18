@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
 import Button from '../button'
 import { copyTextToClipboard } from '../../utils'
 import useTimer from '../../hooks/useTimer'
 
-export default ({ text }: { text: string }) => {
+const CopyButton = ({ text }: { text: string }) => {
   const [hasCopied, setHasCopied] = useState(false)
   const startTimer = useTimer(() => setHasCopied(false), 2000)
 
@@ -22,3 +22,5 @@ export default ({ text }: { text: string }) => {
     </Button>
   )
 }
+
+export default CopyButton

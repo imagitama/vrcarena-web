@@ -201,7 +201,11 @@ export default ({ anonymousDetails }) => {
   }, [userPreferences !== null])
 
   if (isLoadingPreferences || !userPreferences || isSaving) {
-    return <LoadingIndicator />
+    return (
+      <LoadingIndicator
+        message={`${isSaving ? 'Saving' : 'Loading'} preferences...`}
+      />
+    )
   }
 
   if (isErrorLoadingPreferences) {
@@ -339,17 +343,15 @@ export default ({ anonymousDetails }) => {
       <br />
       <br />
       <FormControls>
-        <Button onClick={onSaveClick} icon={<SaveIcon />}>
+        <Button onClick={onSaveClick} isDisabled={isSaving} icon={<SaveIcon />}>
           Save
         </Button>
       </FormControls>
-      <br />
-      <br />
-      <div className={classes.output}>
-        {isSaving ? 'Saving...' : ''}
-        {isSaveError ? 'Failed to save. Please try again' : ''}
-        {isSaveSuccess ? 'Saved successfully' : ''}
-      </div>
+      {isSaveError ? (
+        <ErrorMessage>Failed to save. Please try again</ErrorMessage>
+      ) : isSaveSuccess ? (
+        <SuccessMessage>Saved successfully</SuccessMessage>
+      ) : null}
     </div>
   )
 }

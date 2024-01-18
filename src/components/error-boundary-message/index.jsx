@@ -1,9 +1,8 @@
 import React from 'react'
 import ErrorMessage from '../error-message'
 import { DISCORD_URL, EMAIL } from '../../config'
-import Button from '../button'
 
-export default props => (
+export default (props) => (
   <ErrorMessage
     hintText={
       <>

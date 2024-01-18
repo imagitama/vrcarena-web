@@ -1,18 +1,28 @@
-import { CollectionNames, PagesFieldNames } from './data-store'
 import {
-  AssetFieldNames,
-  AuthorFieldNames,
-  CollectionNames as OldCollectionNames,
-  CommentFieldNames,
-  ReportFieldNames,
-  SpeciesFieldNames,
-  UserFieldNames,
-} from './hooks/useDatabaseQuery'
-import * as routes from './routes'
-import { AmendmentsFieldNames } from './modules/amendments'
-import { CollectionNames as ReportsCollectionNames } from './modules/reports'
+  AmendmentsFieldNames,
+  CollectionNames as AmendmentsCollectionNames,
+} from './modules/amendments'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+} from './modules/assets'
+import {
+  Author,
+  CollectionNames as AuthorsCollectionNames,
+} from './modules/authors'
+import {
+  Report,
+  CollectionNames as ReportsCollectionNames,
+} from './modules/reports'
 import { CollectionNames as SpeciesCollectionNames } from './modules/species'
 import { CollectionNames as SocialCollectionNames } from './modules/social'
+import {
+  Comment,
+  CollectionNames as CommentsCollectionNames,
+} from './modules/comments'
+import { User, CollectionNames as UsersCollectionNames } from './modules/users'
+import { Page, CollectionNames as PagesCollectionNames } from './modules/pages'
+import * as routes from './routes'
 
 const labelMaxLength = 100
 
@@ -23,30 +33,30 @@ export const getUrlForParent = (
   parentChildData?: any // if a meta record this could be the non-meta one
 ): string => {
   switch (parentTable) {
-    case OldCollectionNames.Assets:
-    case OldCollectionNames.AssetMeta:
+    case AssetsCollectionNames.Assets:
+    case AssetsCollectionNames.AssetsMeta:
       return routes.viewAssetWithVar.replace(':assetId', parentId)
-    case OldCollectionNames.Authors:
+    case AuthorsCollectionNames.Authors:
       return routes.viewAssetWithVar.replace(':assetId', parentId)
     // TODO: Support comments on amendments/users/etc
-    case OldCollectionNames.Comments:
-    case CollectionNames.CommentsMeta:
+    case CommentsCollectionNames.Comments:
+    case CommentsCollectionNames.CommentsMeta:
       return routes.viewAssetWithVarAndCommentVar
         .replace(
           ':assetId',
           parentChildData ? parentChildData.parent : parentData.parent
         )
         .replace(':commentId', parentId)
-    case OldCollectionNames.Reports:
+    case ReportsCollectionNames.Reports:
       return routes.viewReportWithVar.replace(':reportId', parentId)
-    case OldCollectionNames.Users:
-    case OldCollectionNames.UserMeta:
-    case OldCollectionNames.UserAdminMeta:
+    case UsersCollectionNames.Users:
+    case UsersCollectionNames.UsersMeta:
+    case UsersCollectionNames.UsersAdminMeta:
       return routes.viewUserWithVar.replace(':userId', parentId)
-    case CollectionNames.Amendments:
-    case CollectionNames.AmendmentsMeta:
+    case AmendmentsCollectionNames.Amendments:
+    case AmendmentsCollectionNames.AmendmentsMeta:
       return routes.viewAmendmentWithVar.replace(':amendmentId', parentId)
-    case CollectionNames.Pages:
+    case PagesCollectionNames.Pages:
       return routes.pagesWithParentAndPageVar
         .replace(':parentName', parentData.parent)
         .replace(':pageName', parentData.id)
@@ -70,48 +80,42 @@ export const getLabelForParent = (
   parentChildData?: any // if a meta record this could be the non-meta one
 ): string => {
   switch (parentTable) {
-    case OldCollectionNames.Assets:
-      return parentData[AssetFieldNames.title] || '(no title)'
-    case OldCollectionNames.AssetMeta:
+    case AssetsCollectionNames.Assets:
+      return (parentData as Asset).title || '(no title)'
+    case AssetsCollectionNames.AssetsMeta:
       if (parentChildData) {
-        return parentChildData[AssetFieldNames.title]
+        return (parentChildData as Asset).title
       } else {
         return `asset`
       }
-    case OldCollectionNames.Authors:
-      return parentData[AuthorFieldNames.name] || '(no name)'
-    case OldCollectionNames.Users:
-      return parentData[UserFieldNames.username] || '(no username)'
-    case OldCollectionNames.Reports:
-      return (
-        parentData[ReportFieldNames.reason.substring(0, labelMaxLength)] ||
-        '(no report reason)'
-      )
-    case CollectionNames.AmendmentsMeta:
+    case AuthorsCollectionNames.Authors:
+      return (parentData as Author).name || '(no name)'
+    case UsersCollectionNames.Users:
+      return (parentData as User).username || '(no username)'
+    case ReportsCollectionNames.Reports:
+      return (parentData as Report).reason
+        ? (parentData as Report).reason.substring(0, labelMaxLength)
+        : '(no report reason)'
+    case AmendmentsCollectionNames.AmendmentsMeta:
       if (parentChildData) {
         return `${parentChildData[AmendmentsFieldNames.parentTable]} amendment`
       } else {
         return `amendment`
       }
-    case CollectionNames.Pages:
-      return parentData[PagesFieldNames.title]
-    case CollectionNames.CommentsMeta:
+    case PagesCollectionNames.Pages:
+      return (parentData as Page).title
+    case CommentsCollectionNames.CommentsMeta:
       if (parentChildData) {
         return (
-          parentChildData[CommentFieldNames.comment].substring(
-            0,
-            labelMaxLength
-          ) || '(no comment data)'
+          (parentChildData as Comment).comment.substring(0, labelMaxLength) ||
+          '(no comment data)'
         )
       }
     case ReportsCollectionNames.ReportsMeta:
       if (parentChildData) {
-        return (
-          parentChildData[ReportFieldNames.reason].substring(
-            0,
-            labelMaxLength
-          ) || '(no report reason)'
-        )
+        return (parentChildData as Report).reason
+          ? (parentChildData as Report).reason.substring(0, labelMaxLength)
+          : '(no report reason)'
       }
     case SocialCollectionNames.SocialPostMeta:
       if (parentChildData) {

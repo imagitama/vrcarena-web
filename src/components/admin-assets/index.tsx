@@ -8,29 +8,29 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import {
-  AssetFieldNames,
-  AssetMetaFieldNames,
   PublishStatuses,
   ApprovalStatuses,
   AccessStatuses,
-  CollectionNames,
   AssetCategories,
 } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
-import { FullAsset } from '../../modules/assets'
+import {
+  FullAsset,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
 import AssetResultsItem from '../../components/asset-results-item'
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
+import { colorPalette } from '../../config'
 
 import Button from '../button'
 import PaginatedView from '../paginated-view'
 import EditorRecordManager from '../editor-record-manager'
 import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
-import { colorPalette } from '../../config'
-import Link from '../link'
 
 const useStyles = makeStyles({
   pass: {
@@ -204,8 +204,8 @@ function AssetsTable({
                   <TableCell>
                     <EditorRecordManager
                       id={id}
-                      collectionName={CollectionNames.Assets}
-                      metaCollectionName={CollectionNames.AssetMeta}
+                      collectionName={AssetsCollectionNames.Assets}
+                      metaCollectionName={AssetsCollectionNames.AssetsMeta}
                       existingApprovalStatus={approvalstatus}
                       existingPublishStatus={publishstatus}
                       existingAccessStatus={accessstatus}
@@ -260,35 +260,31 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
   )
 }
 
-export default () => {
+const AdminAssets = () => {
   const [selectedSubView, setSelectedSubView] = useState(subViews.PENDING)
   const [userIdToFilter, setUserIdToFilter] = useState('')
   const getQuery = useCallback(
-    (query) => {
+    (
+      query: PostgrestFilterBuilder<FullAsset>
+    ): PostgrestFilterBuilder<FullAsset> => {
       if (userIdToFilter) {
-        query = query.eq(AssetFieldNames.createdBy, userIdToFilter)
+        query = query.eq('createdby', userIdToFilter)
       }
 
       switch (selectedSubView) {
         case subViews.PENDING:
           query = query
-            .eq(AssetMetaFieldNames.publishStatus, PublishStatuses.Published)
-            .eq(AssetMetaFieldNames.approvalStatus, ApprovalStatuses.Waiting)
-            .eq(AssetMetaFieldNames.accessStatus, AccessStatuses.Public)
+            .eq('publishstatus', PublishStatuses.Published)
+            .eq('approvalstatus', ApprovalStatuses.Waiting)
+            .eq('accessstatus', AccessStatuses.Public)
           break
 
         case subViews.DELETED:
-          query = query.eq(
-            AssetMetaFieldNames.accessStatus,
-            AccessStatuses.Deleted
-          )
+          query = query.eq('accessstatus', AccessStatuses.Deleted)
           break
 
         case subViews.DELETED:
-          query = query.eq(
-            AssetMetaFieldNames.accessStatus,
-            AccessStatuses.Deleted
-          )
+          query = query.eq('accessstatus', AccessStatuses.Deleted)
       }
 
       return query
@@ -307,25 +303,24 @@ export default () => {
   return (
     <PaginatedView
       viewName="getFullAssets"
-      // @ts-ignore
       getQuery={getQuery}
       // cannot re-use other paginated views because "publishedat" field does not exist for them
       sortKey="view-admin-assets"
       sortOptions={[
         {
           label: 'Publish date',
-          fieldName: AssetMetaFieldNames.publishedAt,
+          fieldName: 'publishedat',
         },
         {
           label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt,
+          fieldName: 'createdat',
         },
         {
           label: 'Title',
-          fieldName: AssetFieldNames.title,
+          fieldName: 'title',
         },
       ]}
-      defaultFieldName={AssetMetaFieldNames.publishedAt}
+      defaultFieldName={'publishedat'}
       urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
         ':tabName',
         'assets'
@@ -367,3 +362,5 @@ export default () => {
     </PaginatedView>
   )
 }
+
+export default AdminAssets

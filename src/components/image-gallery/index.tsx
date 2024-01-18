@@ -7,7 +7,7 @@ import LoadingShimmer from '../loading-shimmer'
 import {
   getImageUrlFromYouTubeUrl,
   getRandomInt,
-  isUrlAYoutubeVideo
+  isUrlAYoutubeVideo,
 } from '../../utils'
 import Button from '../button'
 import { useMediaQuery } from 'react-responsive'
@@ -20,8 +20,8 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'center',
     [mediaQueryForMobiles]: {
-      height: ''
-    }
+      height: '',
+    },
   },
   image: {
     margin: '0 0.5rem',
@@ -29,27 +29,27 @@ const useStyles = makeStyles({
     cursor: 'pointer',
     transition: 'all 100ms',
     '& img': {
-      width: '100%'
+      width: '100%',
     },
     [mediaQueryForMobiles]: {
       cursor: 'default',
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   '& $image': {
-    transform: 'scale(1.05)'
+    transform: 'scale(1.05)',
   },
   expanded: {
     height: 'auto',
     '& $image': {
-      width: 'auto'
+      width: 'auto',
     },
     '& $image:hover': {
-      transform: false
+      transform: false,
     },
     [mediaQueryForMobiles]: {
-      height: 'auto'
-    }
+      height: 'auto',
+    },
   },
   btn: {
     fontSize: '2rem',
@@ -58,55 +58,55 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     '& svg': {
-      fontSize: '100%'
+      fontSize: '100%',
     },
     [mediaQueryForMobiles]: {
       position: 'absolute',
-      background: 'rgba(0, 0, 0, 1)'
-    }
+      background: 'rgba(0, 0, 0, 1)',
+    },
   },
   visible: {
     opacity: 0.5,
     '&:hover': {
       cursor: 'pointer',
-      opacity: 1
-    }
+      opacity: 1,
+    },
   },
   btnLeft: {
-    left: 0
+    left: 0,
   },
   btnRight: {
-    right: 0
+    right: 0,
   },
   caption: {
-    marginTop: '0.5rem'
+    marginTop: '0.5rem',
   },
   videoPlayerControls: {
     marginTop: '0.25rem',
     display: 'flex',
-    justifyContent: 'right'
+    justifyContent: 'right',
   },
   youtube: {
     width: 'calc(100vw - 20rem)',
     [mediaQueryForMobiles]: {
-      width: 'auto'
-    }
+      width: 'auto',
+    },
   },
   shimmer: {
     width: '30rem',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   hidden: {
-    display: 'none'
-  }
+    display: 'none',
+  },
 })
 
 const Image = ({
   image,
   onClick,
   isSelected,
-  isExpanded
+  isExpanded,
 }: {
   image: ImageDetails
   onClick: () => void
@@ -115,12 +115,7 @@ const Image = ({
 }) => {
   const classes = useStyles()
   const isMobile = useMediaQuery({ query: queryForMobiles })
-
   const isYoutube = isUrlAYoutubeVideo(image.url)
-
-  // if (isExpanded && !isSelected) {
-  //   return null
-  // }
 
   return (
     <div
@@ -161,7 +156,7 @@ const LoadingShimmers = ({ count }: { count: number }) => {
   const sizesRefs = useRef([
     getRandomInt(200, 300),
     getRandomInt(200, 300),
-    getRandomInt(200, 300)
+    getRandomInt(200, 300),
   ])
 
   const shimmers = []
@@ -190,7 +185,7 @@ const ImageGallery = ({
   onClickImage,
   onMoveNext,
   onMovePrev,
-  showLoadingCount
+  showLoadingCount,
 }: {
   images?: ImageDetails[]
   onClickImage?: (image: ImageDetails) => void
@@ -218,7 +213,7 @@ const ImageGallery = ({
               selectedIdx !== null && selectedIdx > 0 ? classes.visible : ''
             }`}
             onClick={() => {
-              setSelectedIdx(currentVal => {
+              setSelectedIdx((currentVal) => {
                 if (currentVal !== null && currentVal > 0) {
                   return currentVal - 1
                 }
@@ -239,7 +234,7 @@ const ImageGallery = ({
                   isSelected={selectedIdx === i}
                   isExpanded={selectedIdx !== null}
                   onClick={() => {
-                    setSelectedIdx(currentVal => {
+                    setSelectedIdx((currentVal) => {
                       if (currentVal === i) {
                         return null
                       }
@@ -260,7 +255,7 @@ const ImageGallery = ({
                 : ''
             }`}
             onClick={() => {
-              setSelectedIdx(currentVal => {
+              setSelectedIdx((currentVal) => {
                 if (
                   currentVal !== null &&
                   images &&

@@ -10,3 +10,7 @@ export interface Rating {
   rating: number
   comments: string
 }
+
+export const CollectionNames = {
+  Reviews: 'reviews',
+}

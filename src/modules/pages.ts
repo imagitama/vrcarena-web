@@ -6,4 +6,6 @@ export interface Page {
   content: string
 }
 
-export const collectionNamePages = 'pages'
+export const CollectionNames = {
+  Pages: 'pages',
+}

@@ -9,7 +9,7 @@ import useUserRecord from '../../hooks/useUserRecord'
 
 import navItems, {
   canShowMenuItem,
-  getLabelForMenuItem
+  getLabelForMenuItem,
 } from '../../navigation'
 import { trackAction } from '../../analytics'
 import useUserPreferences from '../../hooks/useUserPreferences'
@@ -18,15 +18,15 @@ const useStyles = makeStyles({
   root: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   menuItem: {
     color: '#FFF', // TODO: Get from theme
     '&:first-child': {
       menuItemLabel: {
-        paddingLeft: 0
-      }
-    }
+        paddingLeft: 0,
+      },
+    },
   },
   menuItemLabel: {
     padding: '0.75rem',
@@ -36,16 +36,16 @@ const useStyles = makeStyles({
     textAlign: 'center',
     textShadow: '1px 1px 1px #000',
     '&:hover': {
-      cursor: 'pointer'
+      cursor: 'pointer',
     },
     '& svg': {
-      width: '1em'
-    }
+      width: '1em',
+    },
   },
   twitterBtn: {
     paddingLeft: '1rem',
-    marginTop: '0.4rem'
-  }
+    marginTop: '0.4rem',
+  },
 })
 
 function Dropdown({ label, items, isOpen, onOpen, onClose }) {
@@ -53,7 +53,7 @@ function Dropdown({ label, items, isOpen, onOpen, onClose }) {
   const labelRef = useRef()
   const classes = useStyles()
 
-  const onClickItem = url => {
+  const onClickItem = (url) => {
     push(url)
     onClose()
   }
@@ -69,11 +69,11 @@ function Dropdown({ label, items, isOpen, onOpen, onClose }) {
         open={isOpen}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         onClose={onClose}>
         {isChildrenAComponent(items)
@@ -92,7 +92,7 @@ function isChildrenAComponent(children) {
   return children && !Array.isArray(children)
 }
 
-export default () => {
+const DesktopMenu = () => {
   const classes = useStyles()
   const [, , user] = useUserRecord()
   const [, , userPreferences] = useUserPreferences()
@@ -105,7 +105,7 @@ export default () => {
   return (
     <div className={classes.root}>
       {navItems
-        .filter(navItem => canShowMenuItem(navItem, user, userPreferences))
+        .filter((navItem) => canShowMenuItem(navItem, user, userPreferences))
         .map(({ id, label, url, children }) => {
           const actualLabel = getLabelForMenuItem(label)
 
@@ -140,7 +140,7 @@ export default () => {
                   items={
                     isChildrenAComponent(children)
                       ? children
-                      : children.filter(navItem =>
+                      : children.filter((navItem) =>
                           canShowMenuItem(navItem, user, userPreferences)
                         )
                   }
@@ -160,3 +160,5 @@ export default () => {
     </div>
   )
 }
+
+export default DesktopMenu

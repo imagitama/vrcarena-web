@@ -10,13 +10,12 @@ import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 
 const publicAvatarsBannedTag = 'public_avatars_banned'
-const adultAvatarsBanned = 'adult_avatars_banned'
 
 export default ({
   assetId,
   tags,
   overrideSave = undefined,
-  onDone
+  onDone,
 }: {
   assetId: string
   tags: string[]
@@ -42,10 +41,10 @@ export default ({
   }
 
   const updateTag = (tagName: string, newValue: boolean) =>
-    setNewTags(currentTags =>
+    setNewTags((currentTags) =>
       newValue
         ? currentTags.concat([tagName])
-        : currentTags.filter(tag => tag !== tagName)
+        : currentTags.filter((tag) => tag !== tagName)
     )
 
   const onSaveClick = async () => {
@@ -60,7 +59,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.tags]: newTags
+        [AssetFieldNames.tags]: newTags,
       })
 
       onDone()

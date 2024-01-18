@@ -10,25 +10,24 @@ import Button from '../button'
 const useStyles = makeStyles({
   input: {
     width: '100%',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   controls: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   root: {
-    display: 'flex'
+    display: 'flex',
   },
   col: {
     width: '50%',
     padding: '1rem',
-    // overflowY: 'auto',
-    height: '100vh'
-  }
+    height: '100vh',
+  },
 })
 
 export default ({
   content = '',
-  onChange
+  onChange,
 }: {
   content: string
   onChange: (newText: string) => void
@@ -93,7 +92,8 @@ This is a caption
 :::`
     )
 
-  const onClickAddImage = () => setIsImageEditorOpen(currentVal => !currentVal)
+  const onClickAddImage = () =>
+    setIsImageEditorOpen((currentVal) => !currentVal)
 
   return (
     <div className={classes.root}>
@@ -101,7 +101,7 @@ This is a caption
         <Paper>
           <TextField
             value={content}
-            onChange={e => onChange(e.target.value)}
+            onChange={(e) => onChange(e.target.value)}
             multiline
             rows={75}
             rowsMax={25}

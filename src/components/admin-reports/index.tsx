@@ -7,14 +7,15 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
-import { AssetFieldNames, ReportFieldNames } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 import {
   FullReport,
+  Report,
   ReportMetaFieldNames,
-  ResolutionStatuses
+  ResolutionStatuses,
 } from '../../modules/reports'
 
 import Button from '../button'
@@ -28,7 +29,7 @@ import UsernameLink from '../username-link'
 
 function ReportsTable({
   reports,
-  hydrate
+  hydrate,
 }: {
   reports?: FullReport[]
   hydrate?: () => void
@@ -46,7 +47,7 @@ function ReportsTable({
         </TableHead>
         <TableBody>
           {reports ? (
-            reports.map(asset => {
+            reports.map((asset) => {
               const {
                 id,
                 parenttable,
@@ -60,7 +61,7 @@ function ReportsTable({
                 // view
                 parentdata,
                 createdbyusername: createdByUsername,
-                resolvedbyusername: resolvedByUsername
+                resolvedbyusername: resolvedByUsername,
               } = asset
               return (
                 <TableRow key={id}>
@@ -105,7 +106,7 @@ function ReportsTable({
 
 const Renderer = ({
   items,
-  hydrate
+  hydrate,
 }: {
   items?: FullReport[]
   hydrate?: () => void
@@ -113,7 +114,7 @@ const Renderer = ({
 
 const subViews = {
   PENDING: 0,
-  RESOLVED: 1
+  RESOLVED: 1,
 }
 
 const analyticsCategoryName = 'AdminReports'
@@ -123,7 +124,7 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
   return (
     <>
       <TextInput
-        onChange={e => setVal(e.target.value)}
+        onChange={(e) => setVal(e.target.value)}
         value={val}
         placeholder="User ID"
         size="small"
@@ -137,24 +138,20 @@ export default () => {
   const [selectedSubView, setSelectedSubView] = useState(subViews.PENDING)
   const [userIdToFilter, setUserIdToFilter] = useState('')
   const getQuery = useCallback(
-    query => {
+    (
+      query: PostgrestFilterBuilder<FullReport>
+    ): PostgrestFilterBuilder<FullReport> => {
       if (userIdToFilter) {
-        query = query.eq(AssetFieldNames.createdBy, userIdToFilter)
+        query = query.eq('createdby', userIdToFilter)
       }
 
       switch (selectedSubView) {
         case subViews.PENDING:
-          query = query.eq(
-            ReportMetaFieldNames.resolutionstatus,
-            ResolutionStatuses.Pending
-          )
+          query = query.eq('resolutionstatus', ResolutionStatuses.Pending)
           break
 
         case subViews.RESOLVED:
-          query = query.eq(
-            ReportMetaFieldNames.resolutionstatus,
-            ResolutionStatuses.Resolved
-          )
+          query = query.eq('resolutionstatus', ResolutionStatuses.Resolved)
           break
       }
 
@@ -164,7 +161,7 @@ export default () => {
   )
 
   const toggleSubView = (subView: number) =>
-    setSelectedSubView(currentVal => {
+    setSelectedSubView((currentVal) => {
       if (currentVal === subView) {
         return subViews.PENDING
       }
@@ -180,14 +177,14 @@ export default () => {
       sortOptions={[
         {
           label: 'Resolved at',
-          fieldName: ReportMetaFieldNames.resolvedat
+          fieldName: 'resolvedat',
         },
         {
           label: 'Reported at',
-          fieldName: ReportFieldNames.createdAt
-        }
+          fieldName: 'createdat',
+        },
       ]}
-      defaultFieldName={ReportFieldNames.createdAt}
+      defaultFieldName={'createdat'}
       urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
         ':tabName',
         'reports'
@@ -223,7 +220,7 @@ export default () => {
           color="default">
           Resolved
         </Button>,
-        <UserIdFilter onChange={newVal => setUserIdToFilter(newVal)} />
+        <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,
       ]}>
       <Renderer />
     </PaginatedView>
