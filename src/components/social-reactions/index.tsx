@@ -172,7 +172,7 @@ const SocialReactions = ({
   return (
     <div className={classes.root} ref={rootRef}>
       {isFailed && <ErrorMessage>Failed to save reaction</ErrorMessage>}
-      {isLoggedIn && !hasAlreadyReacted && (
+      {!small && isLoggedIn && !hasAlreadyReacted && (
         <Chip
           icon={<AddIcon />}
           label={'...'}

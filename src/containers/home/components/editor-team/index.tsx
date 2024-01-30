@@ -10,9 +10,10 @@ const useStyles = makeStyles({
   items: {
     marginTop: '2rem',
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'flex-end',
     '& > a': {
-      marginLeft: '0.5rem',
+      margin: '0.25rem',
       transition: 'all 100ms',
       '&:hover': {
         transform: 'scale(1.05)',

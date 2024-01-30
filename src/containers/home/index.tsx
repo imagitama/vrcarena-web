@@ -367,11 +367,6 @@ export default () => {
         />
       </Helmet>
       <div className={classes.root}>
-        {/* {isLoggedIn && (
-          <div className={classes.createSocialPostForm}>
-            <CreateSocialPostForm />
-          </div>
-        )} */}
         <ContentBlock buttonUrl={routes.about} buttonLabel="Learn More">
           <p>
             Browse our catalogue of avatars, accessories, tutorials, shaders,
@@ -385,10 +380,10 @@ export default () => {
           <EditorTeam />
         </ContentBlock>
         <br />
-        <div style={{ padding: '0.5rem' }}>
-          <SocialFeed />
-        </div>
-        {/* <div className={classes.tiles}>
+        <div className={classes.tiles}>
+          <Tile title="Social" url={routes.social} buttonLabel="View All">
+            <RecentSocialPosts />
+          </Tile>
           <Tile
             title="Avatars"
             url={routes.viewAvatars}
@@ -450,10 +445,7 @@ export default () => {
             buttonLabel="View All">
             <RecentActivity />
           </Tile>
-          <Tile title="Social" url={routes.social} buttonLabel="View All">
-            <RecentSocialPosts />
-          </Tile> */}
-        {/* </div> */}
+        </div>
       </div>
     </>
   )

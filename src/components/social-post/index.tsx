@@ -243,7 +243,7 @@ const SocialPost = ({
               {socialPost.replycount} replies
             </span>
           ) : null}
-          {allowReplies && isLoggedIn ? (
+          {!small && allowReplies && isLoggedIn ? (
             <span
               onClick={() =>
                 setIsAddReplyFormVisible((currentVal) => !currentVal)
