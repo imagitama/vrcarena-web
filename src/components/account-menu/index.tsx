@@ -6,6 +6,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
+import AddBoxIcon from '@material-ui/icons/AddBox'
 
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import { trackAction } from '../../analytics'
@@ -269,22 +270,13 @@ export default ({
       {isLoggedIn ? (
         <>
           <Button
-            url={routes.social}
-            className={`${classes.item} ${
-              isMobile ? classes.mobileButton : ''
-            }`}
-            onClick={closeAllDropdowns}
-            color="default"
-            icon={<EditIcon />}>
-            Post
-          </Button>{' '}
-          <Button
             url={routes.createAsset}
             className={`${classes.item} ${
               isMobile ? classes.mobileButton : ''
             }`}
-            onClick={closeAllDropdowns}>
-            Upload
+            onClick={closeAllDropdowns}
+            icon={<AddBoxIcon />}>
+            Submit
           </Button>
         </>
       ) : null}

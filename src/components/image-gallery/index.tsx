@@ -172,7 +172,7 @@ const LoadingShimmers = ({ count }: { count: number }) => {
   return <>{shimmers}</>
 }
 
-interface ImageDetails {
+export interface ImageDetails {
   id?: string
   alt?: string // alt
   caption?: string | React.ReactElement

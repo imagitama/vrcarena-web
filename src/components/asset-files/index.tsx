@@ -9,26 +9,31 @@ import ImageGallery from '../image-gallery'
 
 export default ({
   assetId,
-  thumbnailUrl = '',
   fileUrls,
-  analyticsCategoryName = ''
+  thumbnailUrl = '',
+  analyticsCategoryName = '',
+}: {
+  assetId: string
+  thumbnailUrl?: string
+  fileUrls: string[]
+  analyticsCategoryName?: string
 }) => {
   const downloadUrls = fileUrls
     .filter(
-      fileUrl =>
+      (fileUrl) =>
         !isUrlAnImage(fileUrl) &&
         !isUrlAVideo(fileUrl) &&
         !isUrlAYoutubeVideo(fileUrl)
     )
-    .filter(fileUrl => fileUrl !== thumbnailUrl)
+    .filter((fileUrl) => fileUrl !== thumbnailUrl)
 
   const imageUrls = fileUrls
     .filter(isUrlAnImage)
-    .filter(fileUrl => fileUrl !== thumbnailUrl)
+    .filter((fileUrl) => fileUrl !== thumbnailUrl)
 
   const videoUrls = fileUrls
-    .filter(url => isUrlAVideo(url) || isUrlAYoutubeVideo(url))
-    .filter(fileUrl => fileUrl !== thumbnailUrl)
+    .filter((url) => isUrlAVideo(url) || isUrlAYoutubeVideo(url))
+    .filter((fileUrl) => fileUrl !== thumbnailUrl)
 
   return (
     <>
@@ -49,8 +54,10 @@ export default ({
       {imageUrls.length ? (
         <>
           <ImageGallery
-            urls={imageUrls}
-            onOpen={() =>
+            images={imageUrls.map((url) => ({
+              url,
+            }))}
+            onClickImage={() =>
               analyticsCategoryName &&
               trackAction(
                 analyticsCategoryName,
