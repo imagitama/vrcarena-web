@@ -87,6 +87,7 @@ import AssetResultsItemParent from '../asset-results-item-parent'
 import VrcFurySettings from '../vrcfury-settings'
 import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 import Block from '../block'
+import Questions from '../questions'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -646,6 +647,9 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                     <Relations relations={asset.relations} />
                   </Area>
                 ) : null}
+                <Area name="questions" label="Community Questions">
+                  <Questions assetId={asset.id} />
+                </Area>
                 <Area name="related" label="Related Assets">
                   <TabRelated />
                 </Area>
