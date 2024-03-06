@@ -7,7 +7,7 @@ import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { FullTag } from '../../modules/tags'
 import useDelimit from '../../hooks/useDelimit'
 import categoryMeta from '../../category-meta'
-import { renamedTags } from '../../utils/tags'
+import { removeDuplicates, renamedTags } from '../../utils/tags'
 
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
@@ -18,6 +18,10 @@ import Heading from '../heading'
 import TagChip from '../tag-chip'
 import AutocompleteInput, { AutocompleteOption } from '../autocomplete-input'
 import TagChips from '../tag-chips'
+import { Asset } from '../../modules/assets'
+import useFirebaseFunction from '../../hooks/useFirebaseFunction'
+import LoadingIndicator from '../loading-indicator'
+import ChatGptSuggestTags from '../chatgpt-suggest-tags'
 
 const useStyles = makeStyles({
   recommendedTags: {
@@ -210,14 +214,14 @@ export default ({
   currentTags = [],
   onChange = undefined,
   onDone = undefined,
-  categoryName = undefined,
   showRecommendedTags = true,
+  asset = undefined,
 }: {
   currentTags?: string[]
   onChange?: (newTags: string[]) => void
   onDone?: (newTags: string[]) => void
-  categoryName?: string
   showRecommendedTags?: boolean
+  asset?: Asset
 }) => {
   const [textInput, setTextInput] = useState('')
   const [newTags, setNewTags] = useState(currentTags || [])
@@ -309,6 +313,20 @@ export default ({
 
   return (
     <div>
+      {asset && (
+        <>
+          <ChatGptSuggestTags
+            asset={asset}
+            currentTags={newTags}
+            onDone={(tags) =>
+              setNewTags((currentTags) =>
+                removeDuplicates(currentTags.concat(tags))
+              )
+            }
+          />
+          <br />
+        </>
+      )}
       <TagChips tags={newTags} onDelete={removeTag} />
       <AutocompleteInput
         value={textInput}
@@ -328,7 +346,7 @@ export default ({
           <RecommendedTags
             newTags={newTags}
             onClickWithTag={(tag) => addTag(tag)}
-            categoryName={categoryName}
+            categoryName={asset?.category}
           />
         </div>
       )}

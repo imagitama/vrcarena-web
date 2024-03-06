@@ -67,6 +67,8 @@ const useStyles = makeStyles(() => ({
     fontWeight: 100,
     display: 'flex',
     alignItems: 'center',
+    position: 'relative',
+    zIndex: 50,
   },
   children: {},
   controls: {
@@ -79,6 +81,18 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
+export interface MessageProps {
+  children?: React.ReactNode
+  title?: React.ReactNode
+  icon?: React.ReactNode
+  controls?: React.ReactNode
+  color?: string
+  leftAlign?: boolean
+  noMargin?: boolean
+  noTopMargin?: boolean
+  paperClassName?: string
+}
+
 export default ({
   title,
   children,
@@ -88,16 +102,8 @@ export default ({
   leftAlign = false,
   noMargin = false,
   noTopMargin = false,
-}: {
-  children?: React.ReactNode
-  title?: React.ReactNode
-  icon?: React.ReactNode
-  controls?: React.ReactNode
-  color?: string
-  leftAlign?: boolean
-  noMargin?: boolean
-  noTopMargin?: boolean
-}) => {
+  paperClassName = undefined,
+}: MessageProps) => {
   const classes = useStyles()
 
   return (
@@ -105,7 +111,9 @@ export default ({
       className={`${classes.root} ${leftAlign ? classes.leftAlign : ''} ${
         noMargin ? classes.noMargin : ''
       } ${noTopMargin ? classes.noTopMargin : ''}`}>
-      <Paper className={classes.paper} style={{ backgroundColor: color }}>
+      <Paper
+        className={`${classes.paper} ${paperClassName}`}
+        style={{ backgroundColor: color }}>
         <div className={classes.chariot}>
           <Chariot />
         </div>

@@ -1,14 +1,12 @@
 export const cleanupTags = (tags?: string[]): string[] =>
   tags
     ? tags
-        .filter(tag => /^[a-z0-9_]+$/g.test(tag))
-        .map(tag =>
-          tag
-            .trim()
-            .toLowerCase()
-            .replaceAll(' ', '_')
-        )
+        .filter((tag) => /^[a-z0-9_]+$/g.test(tag))
+        .map((tag) => tag.trim().toLowerCase().replaceAll(' ', '_'))
     : []
+
+export const removeDuplicates = (tags: string[]): string[] =>
+  tags.filter((value, index, array) => array.indexOf(value) === index)
 
 export const categories = {
   General: 'General',
@@ -21,13 +19,13 @@ export const categories = {
   License: 'License',
   Performance: 'Performance',
   PC_Rank: 'PC_Rank',
-  Quest_Rank: 'Quest_Rank'
+  Quest_Rank: 'Quest_Rank',
 }
 
 export const getLabelForTag = (tag: string): string =>
   tag
     .split('_')
-    .map(chunk => `${chunk[0].toUpperCase()}${chunk.slice(1)}`)
+    .map((chunk) => `${chunk[0].toUpperCase()}${chunk.slice(1)}`)
     .join(' ')
 
 export const renamedTags = {
@@ -60,7 +58,7 @@ export const renamedTags = {
   crying: ['cry'],
   textures_included: ['albedo_included'],
   // textures
-  '4k_textures': ['high_resolution_textures']
+  '4k_textures': ['high_resolution_textures'],
 }
 
 /**

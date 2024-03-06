@@ -1065,6 +1065,7 @@ const Editor = () => {
                       tags={asset.tags || []}
                       // @ts-ignore
                       categoryName={asset.category}
+                      asset={asset}
                     />
                   }
                 />
