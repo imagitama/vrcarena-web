@@ -21,12 +21,12 @@ const useStyles = makeStyles({
     margin: '0.5rem 0',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   currencySymbol: {
     fontSize: '200%',
-    marginRight: '0.5rem'
-  }
+    marginRight: '0.5rem',
+  },
 })
 
 export default ({
@@ -36,15 +36,15 @@ export default ({
   onDone,
   onCancel,
   actionCategory,
-  overrideSave
+  overrideSave,
 }: {
-  assetId: string
+  assetId: string | null
   currentPrice?: number | null
   currentPriceCurrency?: PopularCurrency
   onDone?: () => void
   onCancel?: () => void
   actionCategory?: string
-  overrideSave?: (newPrice: number | null) => void
+  overrideSave?: (newPrice: number | null, newPriceCurrency: string) => void
 }) => {
   const [newPriceRaw, setNewPriceRaw] = useState<string | null>(
     currentPrice === undefined || currentPrice === null
@@ -55,7 +55,7 @@ export default ({
     currentPriceCurrency || 'USD'
   )
   const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
-    CollectionNames.Assets,
+    assetId ? CollectionNames.Assets : false,
     assetId
   )
   const classes = useStyles()
@@ -65,7 +65,8 @@ export default ({
       const newPriceToSave = newPriceRaw ? parseFloat(newPriceRaw) : null
 
       if (overrideSave) {
-        overrideSave(newPriceToSave)
+        console.log('HERE', overrideSave)
+        overrideSave(newPriceToSave, newPriceCurrency)
 
         if (onDone) {
           onDone()
@@ -80,7 +81,7 @@ export default ({
 
       await save({
         [AssetFieldNames.price]: newPriceToSave,
-        [AssetFieldNames.priceCurrency]: newPriceCurrency
+        [AssetFieldNames.priceCurrency]: newPriceCurrency,
       })
 
       if (onDone) {
@@ -97,7 +98,7 @@ export default ({
       <div className={classes.inputWrapper}>
         <span>
           <Select
-            onChange={e =>
+            onChange={(e) =>
               setNewPriceCurrency(e.target.value as PopularCurrency)
             }
             value={newPriceCurrency}>
@@ -115,7 +116,7 @@ export default ({
         </span>
         <TextInput
           value={newPriceRaw !== null ? newPriceRaw : ''}
-          onChange={e => setNewPriceRaw(e.target.value)}
+          onChange={(e) => setNewPriceRaw(e.target.value)}
         />
         <Button onClick={() => setNewPriceRaw(null)} color="default">
           Clear Price

@@ -122,7 +122,7 @@ interface EditorInfo {
   setIsSyncFormVisible: (newVal: boolean) => void
   // optional
   onPublished?: () => void
-  onFieldChanged?: (fieldName: string, newVal: any) => void
+  onFieldChanged?: (fieldName: keyof Asset, newVal: any) => void
   onAssetChanged?: (newFields: Asset) => void
   // for amendments and uploading images
   originalAssetId?: string
@@ -766,7 +766,6 @@ const Editor = () => {
   const { asset, assetId, onFieldChanged, hydrate, originalAssetId } =
     useEditor()
   const [, , user] = useUserRecord()
-  const classes = useStyles()
   const [hiddenNotices, hideNotice] = useNotices()
 
   if (!asset) {
@@ -825,7 +824,7 @@ const Editor = () => {
                       overrideSave={
                         onFieldChanged
                           ? (newVal: string) =>
-                              onFieldChanged(AssetFieldNames.sourceUrl, newVal)
+                              onFieldChanged('sourceurl', newVal)
                           : undefined
                       }
                     />
@@ -872,8 +871,7 @@ const Editor = () => {
                       assetIdForBucket={originalAssetId}
                       overrideSave={
                         onFieldChanged
-                          ? (url) =>
-                              onFieldChanged(AssetFieldNames.thumbnailUrl, url)
+                          ? (url) => onFieldChanged('thumbnailurl', url)
                           : undefined
                       }
                     />
@@ -979,8 +977,7 @@ const Editor = () => {
                       assetIdForBucket={originalAssetId}
                       overrideSave={
                         onFieldChanged
-                          ? (url) =>
-                              onFieldChanged(AssetFieldNames.bannerUrl, url)
+                          ? (url) => onFieldChanged('bannerurl', url)
                           : undefined
                       }
                     />
@@ -1092,10 +1089,7 @@ const Editor = () => {
                       overrideSave={
                         onFieldChanged
                           ? (newRelations) =>
-                              onFieldChanged(
-                                AssetFieldNames.relations,
-                                newRelations
-                              )
+                              onFieldChanged('relations', newRelations)
                           : undefined
                       }
                     />
@@ -1177,11 +1171,7 @@ const Editor = () => {
                       overrideSave={
                         onFieldChanged
                           ? (newExtraData) =>
-                              onFieldChanged(
-                                // TODO: Type-safety this
-                                'extradata',
-                                newExtraData
-                              )
+                              onFieldChanged('extradata', newExtraData)
                           : undefined
                       }
                     />
@@ -1275,12 +1265,9 @@ const Editor = () => {
                                 newVideoUrl: string,
                                 newFallbackImageUrl: string
                               ) => {
+                                onFieldChanged('pedestalvideourl', newVideoUrl)
                                 onFieldChanged(
-                                  AssetFieldNames.pedestalVideoUrl,
-                                  newVideoUrl
-                                )
-                                onFieldChanged(
-                                  AssetFieldNames.pedestalFallbackImageUrl,
+                                  'pedestalfallbackimageurl',
                                   newFallbackImageUrl
                                 )
                               }
@@ -1334,21 +1321,28 @@ const Editor = () => {
             contents: (
               <>
                 <FormEditorArea
-                  fieldName={AssetFieldNames.price}
+                  // fieldName={AssetFieldNames.price}
                   title="Price"
                   description="The price of the asset."
                   icon={() => <AttachMoneyIcon />}
-                  display={PriceDisplay}
+                  display={() => (
+                    <PriceDisplay value={asset.price} fields={asset} />
+                  )}
                   editor={
-                    assetId ? (
-                      <PriceEditor
-                        assetId={assetId}
-                        currentPrice={asset.price}
-                        currentPriceCurrency={asset.pricecurrency}
-                      />
-                    ) : (
-                      <>Waiting</>
-                    )
+                    <PriceEditor
+                      assetId={assetId}
+                      currentPrice={asset.price}
+                      currentPriceCurrency={asset.pricecurrency}
+                      overrideSave={
+                        onFieldChanged
+                          ? (newPrice, newPriceCurrency) => {
+                              console.debug('Here it is')
+                              onFieldChanged('price', newPrice)
+                              onFieldChanged('pricecurrency', newPriceCurrency)
+                            }
+                          : undefined
+                      }
+                    />
                   }
                 />
                 <FormEditorArea

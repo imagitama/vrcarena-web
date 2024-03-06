@@ -571,10 +571,14 @@ const RenderersForFields = {
       renderer: ({ fields }) => <SpeciesOutput fields={fields} />,
     },
     // sidebar
-    [AssetFieldNames.priceUsd]: {
-      label: 'Price (USD)',
+    [AssetFieldNames.price]: {
+      label: 'Price',
+      renderer: ({ fields }) => <Value value={fields[AssetFieldNames.price]} />,
+    },
+    [AssetFieldNames.priceCurrency]: {
+      label: 'Price Currency',
       renderer: ({ fields }) => (
-        <Value value={fields[AssetFieldNames.priceUsd]} />
+        <Value value={fields[AssetFieldNames.priceCurrency]} />
       ),
     },
     [AssetFieldNames.sourceUrl]: {

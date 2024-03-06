@@ -220,11 +220,6 @@ export default ({
     }))
   }
 
-  const parentWithModifiedFieldsForSaving = mergeNewFieldsIntoParent(
-    newFieldsForSaving,
-    parent
-  )
-
   const parentWithFieldsForOutput = mergeNewFieldsIntoParent(
     newFieldsForOutput,
     parent
