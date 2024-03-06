@@ -18,7 +18,7 @@ const errorCodes: { [key: string]: string } = {
   IS_NOT_DRAFT: 'IS_NOT_DRAFT',
   NOT_CREATOR: 'NOT_CREATOR',
   USER_BANNED: 'USER_BANNED',
-  UNKNOWN: 'UNKNOWN'
+  UNKNOWN: 'UNKNOWN',
 }
 
 const getErrorMessageForCode = (errorCode: string): string => {
@@ -51,19 +51,25 @@ const validationErrorMessages = {
   MISSING_ACCESSORY_PARENT:
     'has no linked asset (this is required if your accessory needs a base avatar)',
   NO_ATTACHMENTS:
-    'has no attached files (please attach at least one larger image)'
+    'has no attached files (please attach at least one larger image)',
 }
 
 const getIfShouldBeNsfw = (asset: Asset): boolean => {
+  if (asset.isadult) {
+    return false
+  }
+
   if (
     asset.description &&
-    adultSearchTerms.some(term => asset.description.includes(term))
+    adultSearchTerms.some((term) =>
+      asset.description.toLowerCase().includes(term)
+    )
   ) {
     return true
   }
   if (
     asset.title &&
-    adultSearchTerms.some(term => asset.title.includes(term))
+    adultSearchTerms.some((term) => asset.title.toLowerCase().includes(term))
   ) {
     return true
   }
@@ -126,7 +132,7 @@ const getValidationErrorMessagesForAsset = (asset: Asset): string[] => {
 export default ({
   assetId,
   asset,
-  onDone = undefined
+  onDone = undefined,
 }: {
   assetId: string
   asset: Asset
@@ -135,10 +141,8 @@ export default ({
   const [isPublishing, setIsPublishing] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<string | null>(null)
-  const [
-    lastValidationErrorMessages,
-    setLastValidationErrorMessages
-  ] = useState<string[]>([])
+  const [lastValidationErrorMessages, setLastValidationErrorMessages] =
+    useState<string[]>([])
 
   const attemptPublish = () => {
     const newValidationErrorMessages = getValidationErrorMessagesForAsset(asset)
@@ -156,7 +160,7 @@ export default ({
       setLastErrorCode(null)
 
       const {
-        data: { error }
+        data: { error },
       } = await callFunction('publishAsset', { assetId })
 
       if (error) {
@@ -222,7 +226,7 @@ export default ({
               review before you try publishing again:
             </strong>
           </p>
-          {lastValidationErrorMessages.map(message => (
+          {lastValidationErrorMessages.map((message) => (
             <WarningMessage leftAlign>The asset {message}</WarningMessage>
           ))}
         </>
