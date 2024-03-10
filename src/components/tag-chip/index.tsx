@@ -22,6 +22,7 @@ interface Props {
   isLoading?: boolean
   label?: string
   onDelete?: () => void
+  noLink?: boolean
 }
 
 const ChipWithTooltip = ({
@@ -83,7 +84,7 @@ const ChipWithTooltip = ({
 }
 
 export default (props: Props) => {
-  return props.onClick || props.isDisabled ? (
+  return props.onClick || props.isDisabled || props.noLink ? (
     <ChipWithTooltip {...props} />
   ) : (
     <Link to={routes.viewTagWithVar.replace(':tag', props.tagName)}>

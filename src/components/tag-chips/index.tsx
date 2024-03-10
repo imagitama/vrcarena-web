@@ -6,11 +6,13 @@ export default ({
   shimmer = false,
   isFilled = true,
   onDelete = undefined,
+  noLink = false,
 }: {
   tags: string[]
   shimmer?: boolean
   isFilled?: boolean
   onDelete?: (tag: string) => void
+  noLink?: boolean
 }) => {
   if (shimmer) {
     return (
@@ -35,6 +37,7 @@ export default ({
           isFilled={isFilled}
           onDelete={onDelete ? () => onDelete(tagName) : undefined}
           onClick={onDelete ? () => {} : undefined}
+          noLink={noLink}
         />
       ))}
     </>

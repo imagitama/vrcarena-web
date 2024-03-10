@@ -72,6 +72,7 @@ const ChatGptSuggestTags = ({
                         : []
                     )
                   }
+                  noLink
                 />{' '}
                 {suggestion.reason}
               </div>
@@ -80,6 +81,7 @@ const ChatGptSuggestTags = ({
           <TagChips
             tags={finalTags.filter((tag) => !currentTags.includes(tag))}
             isFilled={false}
+            noLink
           />
           <FormControls>
             <Button
