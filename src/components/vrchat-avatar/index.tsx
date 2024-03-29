@@ -91,7 +91,8 @@ export default ({
   allowFetch?: boolean
 }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [newData, setNewData] = useState(null)
+  const [lastError, setLastError] = useState<null | Error>(null)
+  const [newData, setNewData] = useState<null | VrchatAvatar>(null)
 
   const {
     id,
@@ -111,19 +112,25 @@ export default ({
 
     try {
       setIsLoading(true)
+      setLastError(null)
 
       // NOTE: This function also dumps it into a cache for later retrieval
       const {
         data: { avatar },
-      } = await callFunction('getVrchatAvatarDetails', {
-        avatarId,
-      })
+      } = await callFunction<{ avatar: VrchatAvatar }>(
+        'getVrchatAvatarDetails',
+        {
+          avatarId,
+        }
+      )
 
       setNewData(avatar)
       setIsLoading(false)
+      setLastError(null)
     } catch (err) {
       console.error(err)
       handleError(err)
+      setLastError(err as Error)
       setIsLoading(false)
     }
   }
@@ -166,6 +173,7 @@ export default ({
             <Typography variant="body2" color="textSecondary" component="p">
               {description}
               {isLoading ? 'Fetching...' : ''}
+              {lastError ? lastError.message : ''}
               {allowFetch && !avatarData ? (
                 <Button onClick={fetchData}>Fetch</Button>
               ) : null}
