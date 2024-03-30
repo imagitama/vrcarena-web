@@ -12,6 +12,7 @@ import {
   FileTooLargeError,
   SecurityError,
   UnsupportedMimeTypeError,
+  bucketNames,
 } from '../../file-uploading'
 
 import FormControls from '../form-controls'
@@ -249,6 +250,11 @@ const Cropper = ({
 }
 
 const getSupabaseOptimizedUrl = (url: string): string => {
+  // as of March 2024 asset thumbnails are converted to WEBP in background
+  if (url.includes(bucketNames.assetThumbnails)) {
+    return url
+  }
+
   if (!url.includes('storage/v1/object')) {
     throw new Error(`Cannot get Supabase optimized URL: URL is weird: ${url}`)
   }
@@ -261,7 +267,7 @@ const getSupabaseOptimizedUrl = (url: string): string => {
   return newUrl
 }
 
-export default ({
+const ImageUploader = ({
   onDone,
   onCancel = undefined,
   bucketName,
@@ -490,3 +496,5 @@ export default ({
     </div>
   )
 }
+
+export default ImageUploader
