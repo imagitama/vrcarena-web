@@ -43,6 +43,7 @@ export default ({
   const [isLoadingSpecies, isErroredLoadingSpecies, species] =
     useDataStoreItems(
       CollectionNames.Species,
+      undefined,
       'favorite-species-editor-species',
       SpeciesFieldNames.pluralName
     )

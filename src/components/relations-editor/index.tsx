@@ -269,6 +269,7 @@ export default ({
           comments: '',
         }}
         onAdd={onAddClick}
+        getKey={(item) => item.asset}
       />
       <FormControls>
         <Button onClick={onSaveClick}>Save</Button>{' '}

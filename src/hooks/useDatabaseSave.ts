@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 
-export default <TRecord>(
+export default <TRecord, TReturnVal = TRecord>(
   collectionName: string | false,
   documentId: string | null = null,
   isDelete: boolean = false
@@ -10,7 +10,7 @@ export default <TRecord>(
   boolean,
   boolean,
   null | Error,
-  (fields?: Partial<TRecord>, id?: string) => Promise<(null | TRecord)[]>,
+  (fields?: Partial<TRecord>, id?: string) => Promise<(null | TReturnVal)[]>,
   () => void
 ] => {
   const [isSaving, setIsSaving] = useState(false)
@@ -64,7 +64,7 @@ export default <TRecord>(
     try {
       console.debug('useDatabaseSave', collectionName, idToSave, fields)
 
-      let returnData: null | TRecord
+      let returnData: null | TReturnVal
 
       if (idToSave) {
         if (isDelete) {

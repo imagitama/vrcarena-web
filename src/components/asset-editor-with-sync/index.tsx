@@ -6,81 +6,59 @@ import LoadingIndicator from '../../components/loading-indicator'
 
 import useUserRecord from '../../hooks/useUserRecord'
 import { readRecord } from '../../data-store'
-import { Asset, FullAsset } from '../../modules/assets'
+import { Asset, CollectionNames, FullAsset } from '../../modules/assets'
 import { handleError } from '../../error-handling'
 
 import AssetEditor, {
   EditorContext,
-  getSourceTypeFromUrl,
-  sourceTypes,
-  useEditor
+  useEditor,
 } from '../../components/asset-editor'
 import Heading from '../../components/heading'
-import SyncWithGumroadForm from '../../components/sync-with-gumroad-form'
-import SyncWithBoothForm from '../sync-with-booth-form'
+import SyncForm from '../../components/sync-form'
+import ExperimentalArea from '../experimental-area'
 
-const SyncForm = () => {
+const SyncFormWrapper = () => {
   const {
     setNewField,
     setNewFields,
     asset,
     assetId,
     setIsSyncFormVisible,
-    hydrate
+    hydrate,
   } = useEditor()
 
   if (!asset) {
     return null
   }
 
-  const url = asset.sourceurl
+  const urlToSync = asset.sourceurl
 
-  const sourceType = getSourceTypeFromUrl(url)
-
-  switch (sourceType) {
-    case sourceTypes.Gumroad:
-      return assetId ? (
-        <SyncWithGumroadForm
-          assetId={assetId}
-          existingGumroadUrl={url}
-          // @ts-ignore
-          onFieldsChanged={setNewFields}
-          onFieldChanged={setNewField}
-          onDone={() => {
-            setNewFields(null)
-            setIsSyncFormVisible(false)
-            hydrate()
-          }}
-          onCancel={() => setIsSyncFormVisible(false)}
-        />
-      ) : (
-        <>Need an asset ID</>
-      )
-    case sourceTypes.Booth:
-      return (
-        <SyncWithBoothForm
-          assetId={assetId}
-          existingBoothUrl={url}
-          // @ts-ignore
-          onFieldsChanged={setNewFields}
-          // @ts-ignore
-          onFieldChanged={setNewField}
-          // @ts-ignore
-          onDone={() => {
-            setNewFields(null)
-            setIsSyncFormVisible(false)
-            hydrate()
-          }}
-          // @ts-ignore
-          onCancel={() => setIsSyncFormVisible(false)}
-        />
-      )
-    default:
-      return <>Cannot sync</>
+  const onChange = (newFields: Asset) => {
+    console.debug(`AssetEditorWithSync.onChange`, { newFields })
+    setNewFields(newFields)
   }
+
+  const onDone = () => {
+    console.debug(`AssetEditorWithSync.onDone`)
+    setNewFields(null)
+    setIsSyncFormVisible(false)
+    hydrate()
+  }
+
+  return (
+    <ExperimentalArea>
+      <SyncForm<Asset>
+        collectionName={CollectionNames.Assets}
+        parentId={asset.id}
+        urlToSync={urlToSync}
+        onChange={onChange}
+        onDone={onDone}
+      />
+    </ExperimentalArea>
+  )
 }
 
-export default ({ assetId }: { assetId: string }) => {
+const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
   const [, , user] = useUserRecord()
   const [isError, setIsError] = useState(false)
   const [isHydrating, setIsHydrating] = useState(false)
@@ -98,11 +76,11 @@ export default ({ assetId }: { assetId: string }) => {
 
     try {
       const rawAssetFields = await readRecord<FullAsset>(
-        'getFullAssets'.toLowerCase(),
+        'getFullAssets',
         assetId
       )
 
-      // fix up old assets that do not default stuff
+      // TODO: fix up old assets that do not default stuff
       if (!rawAssetFields.tags) {
         rawAssetFields.tags = []
       }
@@ -120,9 +98,9 @@ export default ({ assetId }: { assetId: string }) => {
 
   const setNewField = (fieldName: string, newValue: any) =>
     // @ts-ignore
-    setNewFields(currentFields => ({
+    setNewFields((currentFields) => ({
       ...currentFields,
-      [fieldName]: newValue
+      [fieldName]: newValue,
     }))
 
   useEffect(() => {
@@ -155,7 +133,7 @@ export default ({ assetId }: { assetId: string }) => {
         setNewFields,
         setNewField,
         setIsSyncFormVisible,
-        isEditingAllowed: !isSyncFormVisible
+        isEditingAllowed: !isSyncFormVisible,
       }}>
       <Heading variant="h1">
         {assetId
@@ -164,8 +142,10 @@ export default ({ assetId }: { assetId: string }) => {
             }`
           : 'Create Asset'}
       </Heading>
-      {isSyncFormVisible ? <SyncForm /> : null}
+      {isSyncFormVisible ? <SyncFormWrapper /> : null}
       <AssetEditor />
     </EditorContext.Provider>
   )
 }
+
+export default AssetEditorWithSync

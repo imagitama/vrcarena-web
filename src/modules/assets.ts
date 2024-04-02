@@ -5,6 +5,7 @@ import {
   PinnedStatuses,
   PublishStatuses,
 } from '../hooks/useDatabaseQuery'
+import { FullAttachment } from './attachments'
 import { FeaturedStatus as FeaturedStatuses } from './common'
 import { Tag } from './tags'
 
@@ -23,8 +24,7 @@ export interface Relation {
   comments: string
 }
 
-export interface Asset {
-  id: string
+export interface AssetFields {
   title: string
   description: string
   shortdescription: string
@@ -35,7 +35,6 @@ export interface Asset {
   category: string
   tags: string[]
   bannerurl: string
-  fileurls: string[]
   slug: string
   species: string[]
   vrchatclonableavatarids: string[]
@@ -53,6 +52,11 @@ export interface Asset {
   tutorialsteps: TutorialStep[]
   ranks: string[]
   extradata: ExtraData
+  attachmentids: string[]
+}
+
+export interface Asset extends AssetFields {
+  id: string
   createdat: Date
 }
 
@@ -131,12 +135,17 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   relationsdata: Asset[]
   approvedbyusername: string
   tagsdata: Tag[]
+  attachmentsdata: FullAttachment[] | null
 }
 
-export const CollectionNames = {
-  Assets: 'assets',
-  AssetsMeta: 'assetmeta',
-  TagStats: 'tagstats',
+export enum CollectionNames {
+  Assets = 'assets',
+  AssetsMeta = 'assetmeta',
+  TagStats = 'tagstats',
+}
+
+export enum ViewNames {
+  GetFullAssets = 'getfullassets',
 }
 
 // legacy
@@ -154,7 +163,6 @@ export const AssetFieldNames = {
   lastModifiedBy: 'lastmodifiedby',
   lastModifiedAt: 'lastmodifiedat',
   thumbnailUrl: 'thumbnailurl',
-  fileUrls: 'fileurls',
   description: 'description',
   author: 'author',
   children: 'children',

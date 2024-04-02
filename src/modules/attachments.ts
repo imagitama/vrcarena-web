@@ -1,43 +1,56 @@
-export interface Attachment {
-  id: string
+import { AccessStatuses, ApprovalStatuses } from '../hooks/useDatabaseQuery'
+
+export interface AttachmentFields {
+  reason: AttachmentReason
   url: string
-  type: 'image' | 'url'
+  type: AttachmentType | null
   thumbnailurl: string
-  parenttable: string
-  parentid: string
+  title: string
+  description: string
+  license: string | null
+  isadult: boolean | null
+  tags: string[]
+  // these arent needed as assets can connect to attachments
+  parenttable?: string
+  parentid?: string
+}
+
+export interface Attachment extends AttachmentFields {
+  id: string
   createdby: string
+  createdat: string
+  lastmodifiedby: string
+  lastmodifiedat: string
 }
 
 export interface FullAttachment extends Attachment {
+  approvalstatus: ApprovalStatuses
+  approvedat: string
+  accessstatus: AccessStatuses
+  editornotes: string
   createdbyusername: string
+  lastmodifiedbyusername: string
 }
 
-export const attachmentTypes = {
-  image: 'image',
-  url: 'url'
+export enum AttachmentReason {
+  AssetFile = 'asset-file',
+  UserAdded = 'user-added',
 }
 
-export const attachmentSubTypes = {
-  screenshot: 'screenshot',
-  meme: 'meme',
-  recording: 'recording',
-  news: 'news'
+export enum AttachmentType {
+  Image = 'image',
+  Url = 'url',
+  File = 'file',
 }
 
-export const AttachmentsFieldNames = {
-  url: 'url',
-  type: 'type',
-  subType: 'subtype',
-  title: 'title',
-  thumbnailUrl: 'thumbnailurl',
-  description: 'description',
-  license: 'license',
-  tags: 'tags',
-  isAdult: 'isadult',
-  parentTable: 'parenttable',
-  parentId: 'parentid',
-  createdBy: 'createdby',
-  createdAt: 'createdat',
-  lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
+export enum CollectionNames {
+  Attachments = 'attachments',
+  AttachmentsMeta = 'attachmentsmeta',
 }
+
+export enum ViewNames {
+  GetFullAttachments = 'getfullattachments',
+}
+
+export const isFullAttachment = (thing: any): thing is FullAttachment =>
+  thing && thing.createdbyusername

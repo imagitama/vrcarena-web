@@ -244,7 +244,7 @@ export const readRecord = async <TRecord>(
   id: string,
   defaultVal?: TRecord
 ): Promise<TRecord> => {
-  let query = supabase.from(tableName).select('*').eq('id', id)
+  let query = supabase.from(tableName.toLowerCase()).select('*').eq('id', id)
 
   const { error, data } = await query
 

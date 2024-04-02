@@ -4,6 +4,7 @@ import { handleError } from '../error-handling'
 
 export default <TItem>(
   collectionName: string,
+  ids: string[] | undefined,
   queryName: string = 'unnamed',
   orderBy?: string
 ): [boolean, boolean, TItem[] | null, number | null, () => void] => {
@@ -22,13 +23,18 @@ export default <TItem>(
       }
 
       console.debug(
-        `useDataStoreItems :: ${collectionName} :: ${queryName} :: running getQuery`
+        `useDataStoreItems :: ${collectionName} :: ${queryName} :: running getQuery`,
+        { ids }
       )
 
       setIsLoading(true)
       setIsErrored(false)
 
       let query = supabase.from(collectionName).select('*')
+
+      if (ids !== undefined) {
+        query = query.or(ids.map((id) => `id.eq.${id}`).join(','))
+      }
 
       // TODO: Do this better
       if (orderBy) {
@@ -39,6 +45,7 @@ export default <TItem>(
 
       console.debug(
         `useDataStoreItems :: ${collectionName} :: ${queryName} :: query complete`,
+        { ids },
         error,
         data,
         count
@@ -57,7 +64,6 @@ export default <TItem>(
     } catch (err) {
       console.error(err)
       handleError(err)
-      // I thought React batched sets together but apparently not - set this first!
       setIsErrored(true)
       setIsLoading(false)
     }

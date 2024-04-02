@@ -4,13 +4,19 @@ import { Tweet } from 'react-twitter-widgets'
 
 const useStyles = makeStyles({
   root: {
-    width: '550px' // max width of twitter embed
-  }
+    width: '550px', // max width of twitter embed
+  },
 })
 
-const getTweetIdFromUrl = url => url.split('/').pop()
+const getTweetIdFromUrl = (url: string): string => url.split('/').pop()!
 
-export default ({ url = undefined, tweetId = undefined }) => {
+export default ({
+  url = undefined,
+  tweetId = undefined,
+}: {
+  url?: string
+  tweetId?: string
+}) => {
   const classes = useStyles()
 
   if (!url && !tweetId) {
@@ -20,7 +26,7 @@ export default ({ url = undefined, tweetId = undefined }) => {
   return (
     <div className={classes.root}>
       <Tweet
-        tweetId={url ? getTweetIdFromUrl(url) : tweetId ? tweetId : false}
+        tweetId={url ? getTweetIdFromUrl(url) : tweetId ? tweetId : ''}
         options={{ width: '100%' }}
       />
     </div>

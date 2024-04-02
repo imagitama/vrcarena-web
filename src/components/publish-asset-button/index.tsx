@@ -116,9 +116,6 @@ const getValidationErrorMessagesForAsset = (asset: Asset): string[] => {
   if (!asset.sourceurl) {
     messages.push(validationErrorMessages.NO_SOURCE_URL)
   }
-  if (!asset.fileurls || !asset.fileurls.length) {
-    messages.push(validationErrorMessages.NO_ATTACHMENTS)
-  }
   if (
     asset.category === AssetCategories.accessory &&
     (!asset.relations || !asset.relations.length)
@@ -161,7 +158,7 @@ export default ({
 
       const {
         data: { error },
-      } = await callFunction('publishAsset', { assetId })
+      } = await callFunction<{ error?: string }>('publishAsset', { assetId })
 
       if (error) {
         console.error(`Failed to publish asset: ${error}`)

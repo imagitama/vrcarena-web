@@ -7,7 +7,7 @@ import useDatabaseSave from '../../hooks/useDatabaseSave'
 import {
   ApprovalStatuses,
   CollectionNames,
-  PublishStatuses
+  PublishStatuses,
 } from '../../hooks/useDatabaseQuery'
 import { CommonMetaFieldNames } from '../../data-store'
 import useUserId from '../../hooks/useUserId'
@@ -22,23 +22,23 @@ import { colorPalette } from '../../config'
 
 const useStyles = makeStyles({
   control: {
-    marginTop: '0.25rem'
+    marginTop: '0.25rem',
   },
   status: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   approved: {
-    color: colorPalette.positive
+    color: colorPalette.positive,
   },
   waiting: {
-    color: colorPalette.warning
+    color: colorPalette.warning,
   },
   declined: {
-    color: colorPalette.negative
-  }
+    color: colorPalette.negative,
+  },
 })
 
-const validateApprovalStatus = approvalStatus => {
+const validateApprovalStatus = (approvalStatus) => {
   switch (approvalStatus) {
     case ApprovalStatuses.Approved:
     case ApprovalStatuses.Waiting:
@@ -66,7 +66,7 @@ const getClassForApprovalStatus = (approvalStatus, classes) => {
   }
 }
 
-const getLabelForApprovalStatus = approvalStatus => {
+const getLabelForApprovalStatus = (approvalStatus) => {
   switch (approvalStatus) {
     case ApprovalStatuses.Approved:
       return 'Approved'
@@ -84,80 +84,80 @@ const getLabelForApprovalStatus = approvalStatus => {
 const declineOptions = [
   {
     id: 'breaches_guidelines',
-    label: 'Breaches our guidelines: https://www.vrcarena.com/guidelines'
+    label: 'Breaches our guidelines: https://www.vrcarena.com/guidelines',
   },
   {
     id: 'duplicate',
-    label: 'Duplicate of another asset'
+    label: 'Duplicate of another asset',
   },
   {
     id: 'missing_source',
-    label: 'Missing source URL'
+    label: 'Missing source URL',
   },
   {
     id: 'invalid_source',
-    label: 'Invalid source URL'
+    label: 'Invalid source URL',
   },
   {
     id: 'missing_thumbnail',
-    label: 'Missing thumbnail'
+    label: 'Missing thumbnail',
   },
   {
     id: 'invalid_thumbnail',
-    label: 'Invalid thumbnail'
+    label: 'Invalid thumbnail',
   },
   {
     id: 'missing_title',
-    label: 'Missing title'
+    label: 'Missing title',
   },
   {
     id: 'invalid_title',
-    label: 'Invalid title'
+    label: 'Invalid title',
   },
   {
     id: 'missing_author',
-    label: 'Missing author'
+    label: 'Missing author',
   },
   {
     id: 'incorrect_author',
-    label: 'Incorrect author'
+    label: 'Incorrect author',
   },
   {
     id: 'missing_category',
-    label: 'Missing category'
+    label: 'Missing category',
   },
   {
     id: 'incorrect_category',
-    label: 'Incorrect category'
+    label: 'Incorrect category',
   },
   {
     id: 'missing_description',
-    label: 'Missing description'
+    label: 'Missing description',
   },
   {
     id: 'too_short_description',
-    label: 'Too short description'
+    label: 'Too short description',
   },
   {
     id: 'missing_tags',
-    label: 'Missing tags'
+    label: 'Missing tags',
   },
   {
     id: 'not_many_tags',
-    label: 'Too few tags'
+    label: 'Too few tags',
   },
   {
     id: 'missing_species',
-    label: 'Missing species'
+    label: 'Missing species',
   },
   {
     id: 'incorrect_species',
-    label: 'Incorrect species'
+    label: 'Incorrect species',
   },
   {
     id: 'missing_nsfw_flag',
-    label: 'Should be flagged NSFW'
-  }
+    label: 'Should be flagged NSFW',
+  },
 ]
 
 export default ({
@@ -168,7 +168,7 @@ export default ({
   onClick = undefined,
   onDone = undefined,
   beforeApprove = undefined,
-  allowDeclineOptions = false
+  allowDeclineOptions = false,
 }) => {
   const userId = useUserId()
   const [isLoading, isErroredLoading, metaRecord] = useDataStoreItem(
@@ -191,24 +191,34 @@ export default ({
     return <>Saving...</>
   }
 
-  if (isErroredLoading || (!existingApprovalStatus && !metaRecord)) {
-    return <>Failed to load approve button!</>
+  if (isErroredLoading) {
+    return <>Failed to load approve button</>
+  }
+
+  if (!existingApprovalStatus && !metaRecord) {
+    return <>No existing approval status and no meta record</>
   }
 
   if (isSaveError) {
     return <>Failed to save</>
   }
 
-  const approvalStatus =
-    existingApprovalStatus || metaRecord[CommonMetaFieldNames.approvalStatus]
-  const publishStatus =
-    existingPublishStatus || metaRecord[CommonMetaFieldNames.publishStatus]
+  const approvalStatus = existingApprovalStatus
+    ? existingApprovalStatus
+    : metaRecord
+    ? metaRecord[CommonMetaFieldNames.approvalStatus]
+    : undefined
+  const publishStatus = existingPublishStatus
+    ? existingPublishStatus
+    : metaRecord
+    ? metaRecord[CommonMetaFieldNames.publishStatus]
+    : undefined
 
   validateApprovalStatus(approvalStatus)
 
   const isAsset = metaCollectionName === CollectionNames.AssetMeta
 
-  const setNewApprovalStatus = async newApprovalStatus => {
+  const setNewApprovalStatus = async (newApprovalStatus) => {
     try {
       if (onClick) {
         onClick({ newApprovalStatus })
@@ -223,7 +233,7 @@ export default ({
       }
 
       const newEditorNotes = `${selectedDeclineOptionIds
-        .map(id => declineOptions.find(option => option.id === id).label)
+        .map((id) => declineOptions.find((option) => option.id === id).label)
         .join(', ')}${
         metaRecord && metaRecord[CommonMetaFieldNames.editorNotes]
           ? `
@@ -238,12 +248,12 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
           newApprovalStatus === ApprovalStatuses.Approved ? new Date() : null,
         ...(isAsset && newApprovalStatus === ApprovalStatuses.Declined
           ? {
-              [CommonMetaFieldNames.publishStatus]: PublishStatuses.Draft
+              [CommonMetaFieldNames.publishStatus]: PublishStatuses.Draft,
             }
           : {}),
         ...(allowDeclineOptions
           ? { [CommonMetaFieldNames.editorNotes]: newEditorNotes }
-          : {})
+          : {}),
       })
 
       if (onDone) {
@@ -255,7 +265,7 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
     }
   }
 
-  if (publishStatus !== PublishStatuses.Published) {
+  if (publishStatus && publishStatus !== PublishStatuses.Published) {
     return <>Record is a draft and cannot be approved yet</>
   }
 
@@ -285,10 +295,10 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
                 color="default"
                 options={declineOptions}
                 selectedIds={selectedDeclineOptionIds}
-                onSelect={newId =>
-                  setSelectedDeclineOptionIds(currentIds =>
+                onSelect={(newId) =>
+                  setSelectedDeclineOptionIds((currentIds) =>
                     currentIds.includes(newId)
-                      ? currentIds.filter(id => id !== newId)
+                      ? currentIds.filter((id) => id !== newId)
                       : currentIds.concat([newId])
                   )
                 }

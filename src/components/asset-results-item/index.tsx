@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Link from '../../components/link'
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
@@ -8,17 +8,6 @@ import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import LazyLoad from 'react-lazyload'
 import RoomIcon from '@material-ui/icons/Room'
-import {
-  CarouselProvider,
-  Slider,
-  Slide,
-  ButtonBack,
-  ButtonNext,
-  Image,
-} from 'pure-react-carousel'
-import 'pure-react-carousel/dist/react-carousel.es.css'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import Checkbox from '@material-ui/core/Checkbox'
 
@@ -27,15 +16,11 @@ import categoryMeta from '../../category-meta'
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
 import FormattedDate from '../formatted-date'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import useDatabaseQuery, {
+import {
   ApprovalStatuses,
-  CollectionNames,
   PinnedStatuses,
   PublishStatuses,
 } from '../../hooks/useDatabaseQuery'
-import PedestalVideo from '../pedestal-video'
-import { isUrlAnImage } from '../../utils'
-import LoadingIndicator from '../loading-indicator'
 import LoadingShimmer from '../loading-shimmer'
 import AddToCartButton from '../add-to-cart-button'
 import Chip from '../chip'
@@ -300,85 +285,6 @@ const CostChip = ({ isFree, isPaid }: { isFree: boolean; isPaid: boolean }) => {
   )
 }
 
-function HoverOnContent({ asset }: { asset: Asset }) {
-  const classes = useStyles()
-
-  const carouselItems = []
-
-  if (asset.pedestalvideourl) {
-    carouselItems.push(
-      <div className={classes.pedestal}>
-        <PedestalVideo
-          videoUrl={asset.pedestalvideourl}
-          fallbackImageUrl={asset.pedestalfallbackimageurl}
-        />
-      </div>
-    )
-  }
-
-  const attachedImageUrls = asset.fileurls.filter(isUrlAnImage)
-
-  if (attachedImageUrls.length) {
-    attachedImageUrls.forEach((url) => {
-      carouselItems.push(
-        <Image src={url} alt="Attachment" hasMasterSpinner={false} />
-      )
-    })
-  }
-
-  carouselItems.push(
-    <Image src={asset.thumbnailurl} hasMasterSpinner={false} />
-  )
-
-  return (
-    <CarouselProvider
-      naturalSlideWidth={300}
-      naturalSlideHeight={300}
-      totalSlides={carouselItems.length}>
-      <Slider>
-        {carouselItems.map((item, idx) => (
-          <Slide index={idx} className={classes.slide}>
-            <Link
-              to={routes.viewAssetWithVar.replace(
-                ':assetId',
-                asset.slug || asset.id
-              )}>
-              <div className={classes.slideContent}>{item}</div>
-              <div className={classes.slideLoadingSpinner}>
-                <LoadingIndicator />
-              </div>
-            </Link>
-          </Slide>
-        ))}
-      </Slider>
-      <ButtonBack
-        className={`${classes.carouselBtn} ${classes.carouselBackBtn}`}>
-        <ChevronLeftIcon />
-      </ButtonBack>
-      <ButtonNext
-        className={`${classes.carouselBtn} ${classes.carouselNextBtn}`}>
-        <ChevronRightIcon />
-      </ButtonNext>
-    </CarouselProvider>
-  )
-}
-
-function HoverOnEffect({ assetId }: { assetId: string }) {
-  const classes = useStyles()
-  // @ts-ignore
-  const [, , asset] = useDatabaseQuery<Asset>(CollectionNames.Assets, assetId)
-
-  if (!asset || Array.isArray(asset)) {
-    return null
-  }
-
-  return (
-    <div className={classes.hoverOnEffect}>
-      {asset ? <HoverOnContent asset={asset} /> : null}
-    </div>
-  )
-}
-
 const ToggleBulkEditButton = ({ asset }: { asset: Asset }) => {
   const { ids, toggleAsset, selectAsset, isSelectingAll } = useBulkEdit()
 
@@ -419,7 +325,6 @@ const AssetResultsItem = ({
   showCost = true,
   showIsNsfw = true,
   isLandscape = false,
-  hoverOnEffect = false,
   isSelected = false,
   dim = false,
   onClick,
@@ -433,7 +338,6 @@ const AssetResultsItem = ({
   showCost?: boolean
   showIsNsfw?: boolean
   isLandscape?: boolean
-  hoverOnEffect?: boolean
   isSelected?: boolean
   dim?: boolean
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void
@@ -444,34 +348,7 @@ const AssetResultsItem = ({
 }) => {
   const classes = useStyles()
   const cardRef = useRef<HTMLDivElement>()
-  const [isHoverOnEffectVisible, setIsHoverOnEffectVisible] = useState(false)
   const isEditor = useIsEditor()
-
-  useEffect(() => {
-    if (!hoverOnEffect) {
-      return
-    }
-
-    const onMouseOver = () => {
-      setIsHoverOnEffectVisible(true)
-    }
-
-    const onMouseLeave = () => {
-      setIsHoverOnEffectVisible(false)
-    }
-
-    if (cardRef.current) {
-      cardRef.current.addEventListener('mouseover', onMouseOver)
-      cardRef.current.addEventListener('mouseleave', onMouseLeave)
-    }
-
-    return () => {
-      if (cardRef.current) {
-        cardRef.current.removeEventListener('mouseover', onMouseOver)
-        cardRef.current.removeEventListener('mouseleave', onMouseLeave)
-      }
-    }
-  }, [hoverOnEffect])
 
   if (shimmer) {
     return (
@@ -544,10 +421,6 @@ const AssetResultsItem = ({
           </CardContent>
         </Link>
       </CardActionArea>
-
-      {isHoverOnEffectVisible && hoverOnEffect && (
-        <HoverOnEffect assetId={asset.id} />
-      )}
 
       {showSelectedTick && isSelected ? <SelectedTick /> : null}
     </Card>

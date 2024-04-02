@@ -206,7 +206,6 @@ export const AssetFieldNames = {
   lastModifiedBy: 'lastmodifiedby',
   lastModifiedAt: 'lastmodifiedat',
   thumbnailUrl: 'thumbnailurl',
-  fileUrls: 'fileurls',
   description: 'description',
   author: 'author',
   children: 'children',
@@ -226,6 +225,7 @@ export const AssetFieldNames = {
   gumroad: 'gumroad',
   ranks: 'ranks',
   relations: 'relations',
+  attachmentids: 'attachmentids',
 }
 
 export const AssetGumroadFields = {

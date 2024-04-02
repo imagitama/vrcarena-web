@@ -168,8 +168,14 @@ const EditorArea = ({
                       ...(overrideSave && fieldName
                         ? {
                             // asset amendment form
-                            overrideSave: (newVal) =>
-                              overrideSave(fieldName, newVal),
+                            overrideSave: (newVal) => {
+                              console.debug(
+                                `EditorArea.overrideSave`,
+                                fieldName,
+                                newVal
+                              )
+                              overrideSave(fieldName, newVal)
+                            },
                           }
                         : {}),
                       // sync with gumroad form

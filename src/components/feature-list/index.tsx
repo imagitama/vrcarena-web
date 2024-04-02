@@ -134,6 +134,7 @@ const LoadingFeature = () => {
 const useTags = (existingTagsData?: Tag[]) =>
   useDataStoreItems<Tag>(
     existingTagsData && existingTagsData.length ? '' : CollectionNames.Tags,
+    undefined,
     'tags-for-features',
     'id'
   )

@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import AddIcon from '@material-ui/icons/Add'
+import FlipMove from 'react-flip-move'
 
 import CardButton from '../card-button'
 import { moveItemToLeft, moveItemToRight } from '../../utils'
@@ -13,7 +14,14 @@ import Button from '../button'
 
 export type Item<T> = {} & T
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
   items: {
     display: 'flex',
     alignItems: 'center',
@@ -39,8 +47,22 @@ const useStyles = makeStyles({
   sideControl: {
     display: 'flex',
     alignItems: 'center',
-    padding: '0 0.5rem',
+    justifyContent: 'center',
+    padding: '1rem',
+  },
+  sideControlBtn: {
+    width: '3rem',
+    height: '3rem',
+    padding: '0.5rem',
     cursor: 'pointer',
+    borderRadius: '100%',
+    background: theme.palette.background.paper,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    '&:hover:not($disabledControl)': {
+      background: theme.palette.action.hover,
+    },
   },
   centerControls: {
     display: 'flex',
@@ -77,11 +99,11 @@ const useStyles = makeStyles({
     opacity: '0.5',
     cursor: 'not-allowed',
   },
-})
+}))
 
 // generic editor for "items" that can be individually edited, re-arranged, added and deleted
 
-const ItemsEditor = <TItem,>({
+const ItemsEditor = <TItem, TCommonProps extends object = {}>({
   items,
   onChange,
   editor,
@@ -93,26 +115,34 @@ const ItemsEditor = <TItem,>({
   allowAdding = true,
   onAdd = undefined,
   commonProps = undefined,
+  itemClassName = '',
+  getKey = undefined,
 }: {
   items: Item<TItem>[]
   onChange: (newItems: Item<TItem>[]) => void
-  editor: React.ComponentType<{
-    item: Item<TItem>
-    index: number
-    onChange: (newFields: Item<TItem>) => void
-    onDone: (newFields: Item<TItem>) => void
-  }>
-  renderer: React.ComponentType<{
-    item: Item<TItem>
-    index: number
-  }>
+  editor: React.ComponentType<
+    {
+      item: Item<TItem>
+      index: number
+      onChange: (newFields: Item<TItem>) => void
+      onDone: (newFields: Item<TItem>) => void
+    } & TCommonProps
+  >
+  renderer: React.ComponentType<
+    {
+      item: Item<TItem>
+      index: number
+    } & TCommonProps
+  >
   nameSingular?: string
   emptyItem?: TItem
   allowDelete?: boolean
   allowEditing?: boolean
   allowAdding?: boolean
   onAdd?: () => void
-  commonProps?: TItem
+  commonProps?: TCommonProps // spread onto editor and renderer as props
+  itemClassName?: string
+  getKey?: (item: TItem) => string
 }) => {
   const classes = useStyles()
   const [activeIndexToEdit, setActiveIndexToEdit] = useState<number | null>(
@@ -141,6 +171,7 @@ const ItemsEditor = <TItem,>({
     newItems[indexToChange] = newItem
     onChange(newItems)
   }
+
   const onIdxEdited = (indexToChange: number, newItem: Item<TItem>) => {
     console.debug(`Editing item ${indexToChange}...`, {
       old: items[indexToChange],
@@ -151,105 +182,129 @@ const ItemsEditor = <TItem,>({
     onChange(newItems)
     setActiveIndexToEdit(null)
   }
+
   const onMoveIdxLeftClick = (indexToMove: number) => {
     console.debug(`Moving item ${indexToMove} left...`)
-
-    const newArray = moveItemToLeft<Item<TItem>>(items, indexToMove)
-
-    onChange(newArray)
+    const newItems = moveItemToLeft<Item<TItem>>(items, indexToMove)
+    onChange(newItems)
   }
+
   const onMoveIdxRightClick = (indexToMove: number) => {
     console.debug(`Moving item ${indexToMove} right...`)
-
-    const newArray = moveItemToRight<Item<TItem>>(items, indexToMove)
-
-    onChange(newArray)
+    const newItems = moveItemToRight<Item<TItem>>(items, indexToMove)
+    onChange(newItems)
   }
+
   const onDeleteIdxClick = (indexToDelete: number) => {
     console.debug(`Deleting item ${indexToDelete}...`)
-
     onChange(items.filter((itemToCheck, idx) => idx !== indexToDelete))
   }
+
   const onEditIdxClick = (indexToEdit: number) => {
     console.debug(`Entering edit mode for ${indexToEdit}...`)
     setActiveIndexToEdit(indexToEdit)
   }
 
   return (
-    <div className={classes.items}>
-      {items.length ? (
-        items.map((item: Item<TItem>, idx) => (
-          <div
-            key={idx}
-            className={`${classes.item} ${
-              idx === activeIndexToEdit ? classes.activeForEditing : ''
-            }`}>
-            {idx === activeIndexToEdit ? (
-              <div>
-                {React.createElement(editor, {
-                  item,
-                  index: idx,
-                  onChange: (newFields: Item<TItem>) =>
-                    onIdxChange(idx, newFields),
-                  onDone: (newFields: Item<TItem>) =>
-                    onIdxEdited(idx, newFields),
-                  ...(commonProps || {}),
-                })}
+    <div className={classes.root}>
+      <div className={classes.items}>
+        <FlipMove>
+          {items.length ? (
+            items.map((item: Item<TItem>, idx) => {
+              const key = getKey
+                ? getKey(item)
+                : typeof item === 'string'
+                ? item
+                : item === null
+                ? 'null'
+                : // @ts-ignore
+                item.id
+                ? // @ts-ignore
+                  item.id
+                : idx
+              return (
+                <div
+                  key={key}
+                  className={`${classes.item} ${
+                    idx === activeIndexToEdit ? classes.activeForEditing : ''
+                  } ${itemClassName}`}>
+                  {idx === activeIndexToEdit ? (
+                    <div>
+                      {/* @ts-ignore */}
+                      {React.createElement(editor, {
+                        item,
+                        index: idx,
+                        onChange: (newFields: Item<TItem>) =>
+                          onIdxChange(idx, newFields),
+                        onDone: (newFields: Item<TItem>) =>
+                          onIdxEdited(idx, newFields),
+                        ...(commonProps || {}),
+                      })}
+                    </div>
+                  ) : (
+                    <>
+                      {' '}
+                      <div className={classes.sideControl}>
+                        <div
+                          className={`${classes.sideControlBtn}  ${
+                            idx === 0 ? classes.disabledControl : ''
+                          }`}
+                          onClick={() => onMoveIdxLeftClick(idx)}>
+                          <ChevronLeftIcon />
+                        </div>
+                      </div>
+                      <div>
+                        <div>
+                          {/* @ts-ignore */}
+                          {React.createElement(renderer, {
+                            item,
+                            index: idx,
+                            ...(commonProps || {}),
+                          })}
+                        </div>
+                        <div className={`${classes.centerControls}`}>
+                          {allowDelete ? (
+                            <div onClick={() => onDeleteIdxClick(idx)}>
+                              <DeleteIcon />
+                            </div>
+                          ) : null}
+                          {allowEditing ? (
+                            <div onClick={() => onEditIdxClick(idx)}>
+                              <EditIcon />
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className={classes.sideControl}>
+                        <div
+                          className={`${classes.sideControlBtn}  ${
+                            idx === items.length - 1
+                              ? classes.disabledControl
+                              : ''
+                          }`}
+                          onClick={() => onMoveIdxRightClick(idx)}>
+                          <ChevronRightIcon />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )
+            })
+          ) : (
+            <div className={`${classes.item} ${classes.emptyItem}`}>
+              <div className={classes.noItemsMessageWrapper}>
+                <div className={classes.noItemsMessage}>
+                  No {nameSingular}s defined yet
+                </div>
+                <Button color="default" onClick={onAddClick} icon={<AddIcon />}>
+                  Add {nameSingular}
+                </Button>
               </div>
-            ) : (
-              <>
-                {' '}
-                <div
-                  className={`${classes.sideControl} ${
-                    idx === 0 ? classes.disabledControl : ''
-                  }`}
-                  onClick={() => onMoveIdxLeftClick(idx)}>
-                  <ChevronLeftIcon />
-                </div>
-                <div>
-                  <div>
-                    {React.createElement(renderer, {
-                      item,
-                      index: idx,
-                      ...commonProps,
-                    })}
-                  </div>
-                  <div className={`${classes.centerControls}`}>
-                    {allowDelete ? (
-                      <div onClick={() => onDeleteIdxClick(idx)}>
-                        <DeleteIcon />
-                      </div>
-                    ) : null}
-                    {allowEditing ? (
-                      <div onClick={() => onEditIdxClick(idx)}>
-                        <EditIcon />
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-                <div
-                  className={`${classes.sideControl} ${
-                    idx === items.length - 1 ? classes.disabledControl : ''
-                  }`}
-                  onClick={() => onMoveIdxRightClick(idx)}>
-                  <ChevronRightIcon />
-                </div>
-              </>
-            )}
-          </div>
-        ))
-      ) : (
-        <div className={`${classes.item} ${classes.emptyItem}`}>
-          <div className={classes.noItemsMessageWrapper}>
-            <div className={classes.noItemsMessage}>
-              No {nameSingular}s defined yet
             </div>
-            <Button color="default" onClick={onAddClick} icon={<AddIcon />}>
-              Add {nameSingular}
-            </Button>
-          </div>
-        </div>
-      )}
+          )}
+        </FlipMove>
+      </div>
       {allowAdding ? (
         <div className={classes.item}>
           <div className={classes.addButton}>

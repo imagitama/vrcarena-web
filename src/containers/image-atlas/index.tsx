@@ -6,7 +6,6 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
 import ErrorMessage from '../../components/error-message'
-import LoadingIndicator from '../../components/loading-indicator'
 import Paper from '../../components/paper'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import FormattedDate from '../../components/formatted-date'
@@ -26,16 +25,13 @@ interface ImageAtlasCell {
 const atlasSize = 2000 // max width allowed by VRC
 const cellSize = 500 // 500 for authors, 200 for asset thumbnails
 const division = 4
-// const baseUrl =
-// 'https://ryfatxhhdvsuuvzfgmcd.supabase.co/storage/v1/object/public/author-promo-atlasses'
-const baseUrl =
-  'https://ryfatxhhdvsuuvzfgmcd.supabase.co/storage/v1/object/public/author-promo-atlasses'
+const baseUrl = ''
 
 const AssetThumbnailAtlasses = () => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [, isError, results, , hydrate] = useDataStoreItems<ImageAtlasCell>(
-    // 'assetthumbnailatlas',
     'authorpromoatlas',
+    undefined,
     'get-atlasses'
   )
 
@@ -112,9 +108,10 @@ interface ImageAtlasQueuedItem {
 
 const ImageAtlasQueue = () => {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [isLoading, isError, results, , hydrate] =
+  const [, isError, results, , hydrate] =
     useDataStoreItems<ImageAtlasQueuedItem>(
       'imageatlasqueue',
+      undefined,
       'get-queue',
       'queuedat'
     )

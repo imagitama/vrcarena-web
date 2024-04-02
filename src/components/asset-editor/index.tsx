@@ -65,8 +65,6 @@ import ChangeCategoryForm from '../change-category-form'
 import AssetBannerEditor from '../asset-banner-editor'
 import Price from '../price'
 import PriceEditor from '../price-editor'
-import AssetFiles from '../asset-files'
-import AssetAttachmentUploader from '../asset-attachment-uploader'
 import TutorialSteps from '../tutorial-steps'
 import TutorialStepsEditor from '../tutorial-steps-editor'
 import ToggleAdultForm from '../toggle-adult-form'
@@ -88,12 +86,6 @@ import LicenseEditor from '../license-editor'
 import FeaturesEditor from '../features-editor'
 import VrcFurySettings from '../vrcfury-settings'
 import VrcFurySettingsEditor from '../vrcfury-settings-editor'
-
-// @ts-ignore assets
-import placeholderPedestalVideoUrl from '../../assets/videos/placeholder-pedestal.webm'
-import placeholderPedestalFallbackImageUrl from '../../assets/videos/placeholder-pedestal-fallback.webp'
-
-// publish
 import PublishAssetButton from '../publish-asset-button'
 import { getCanAssetBePublished } from '../../assets'
 import CategoryItem from '../category-item'
@@ -109,6 +101,13 @@ import { VRCFury as VrcFuryIcon } from '../../icons'
 import InfoMessage from '../info-message'
 import useNotices from '../../hooks/useNotices'
 import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
+import { Attachment } from '../../modules/attachments'
+import Attachments from '../attachments'
+import AssetAttachmentsEditor from '../asset-attachments-editor'
+
+// @ts-ignore assets
+import placeholderPedestalVideoUrl from '../../assets/videos/placeholder-pedestal.webm'
+import placeholderPedestalFallbackImageUrl from '../../assets/videos/placeholder-pedestal-fallback.webp'
 
 interface EditorInfo {
   assetId: string | null
@@ -183,9 +182,6 @@ const useStyles = makeStyles((theme) => ({
     [mediaQueryForTabletsOrBelow]: {
       width: '100%',
     },
-    // '&:nth-child(1), &:nth-child(4), &:nth-child(5), &:nth-child(7), &:nth-child(9), &:nth-child(12)': {
-    //   backgroundColor: 'rgba(0, 0, 0, 0.1)'
-    // }
   },
   formEditorAreaHeading: {
     fontWeight: 'bold',
@@ -247,12 +243,7 @@ const useStyles = makeStyles((theme) => ({
       background: 'rgba(255, 255, 255, 0.2)',
     },
   },
-  section: {
-    // borderRadius: defaultBorderRadius,
-    // border: '0.2rem solid',
-    // borderColor: 'rgba(255, 255, 255, 0.5)',
-    // marginTop: '0.5rem'
-  },
+  section: {},
   invalid: {
     borderColor: 'rgba(255, 0, 0, 0.1)',
     '& $sectionButton': {
@@ -290,7 +281,6 @@ const FormEditorArea = (props: {
   icon: React.ReactNode
   display?: React.ReactNode
   editor?: React.ReactNode
-  displayAndEditor?: React.ReactNode
   analyticsAction?: string
   analyticsCategoryName?: string
   onDone?: () => void
@@ -480,6 +470,15 @@ const TitleDisplay = ({ value }: { value: string }) => (
   </Heading>
 )
 
+const AttachmentsDisplay = ({ fields }: { fields: FullAsset }) => (
+  <Attachments
+    ids={fields.attachmentids}
+    attachmentsData={fields.attachmentsdata || []}
+    includeMeta
+    includeParents={false}
+  />
+)
+
 const AuthorDisplay = ({
   value,
   fields,
@@ -576,13 +575,6 @@ const PriceDisplay = ({ value, fields }: { value: number; fields: Asset }) =>
     <Price price={value} priceCurrency={fields.pricecurrency} />
   ) : (
     <NoValueMessage>No price set</NoValueMessage>
-  )
-
-const FilesDisplay = ({ value }: { value: string[] }) =>
-  value && value.length ? (
-    <AssetFiles assetId={''} fileUrls={value} />
-  ) : (
-    <NoValueMessage>No files set</NoValueMessage>
   )
 
 const TutorialStepsDisplay = ({ value }: { value: string }) =>
@@ -739,6 +731,42 @@ const FeaturesDisplay = ({ fields }: { fields?: FullAsset }) => {
     return null
   }
   return <FeaturesEditor currentTags={fields.tags || []} isEditing={false} />
+}
+
+const AttachmentsEditor = ({
+  assetId,
+  attachmentIds,
+  attachmentsData,
+  overrideSave,
+  onDone,
+}: {
+  assetId: string // dont need but helpful later
+  attachmentIds: string[]
+  attachmentsData: Attachment[]
+  overrideSave?: (ids: string[]) => void
+  onDone?: () => void
+}) => {
+  const { originalAssetId } = useEditor()
+
+  return (
+    <>
+      <InfoMessage>
+        The first three images and/or YouTube videos will be displayed at the
+        top of the page
+      </InfoMessage>
+      <AssetAttachmentsEditor
+        assetId={originalAssetId || assetId}
+        ids={attachmentIds}
+        attachmentsData={attachmentsData}
+        overrideSave={overrideSave ? (ids) => overrideSave(ids) : undefined}
+        onDone={() => {
+          if (onDone) {
+            onDone()
+          }
+        }}
+      />
+    </>
+  )
 }
 
 const MainControls = () => {
@@ -983,19 +1011,6 @@ const Editor = () => {
                     />
                   }
                 />
-                <FormEditorArea
-                  fieldName={AssetFieldNames.fileUrls}
-                  title="Files"
-                  description="Attach screenshots and videos here. Please use another hosting service for the actual asset (like Google Drive)."
-                  icon={() => <AttachFileIcon />}
-                  display={FilesDisplay}
-                  editor={
-                    <AssetAttachmentUploader
-                      assetId={assetId || undefined}
-                      existingFileUrls={asset.fileurls || []}
-                    />
-                  }
-                />
               </>
             ),
           },
@@ -1025,6 +1040,35 @@ const Editor = () => {
                 },
               ]
             : []),
+          {
+            name: 'attachments',
+            label: 'Attachments',
+            contents: (
+              <>
+                <FormEditorArea
+                  // TODO: Type safe this var
+                  fieldName="attachmentids"
+                  title="Attachments"
+                  description="Upload images, add YouTube videos, link to files and more."
+                  display={AttachmentsDisplay}
+                  editor={
+                    <AttachmentsEditor
+                      assetId={asset.id}
+                      attachmentIds={asset.attachmentids}
+                      attachmentsData={asset.attachmentsdata || []}
+                      overrideSave={
+                        onFieldChanged
+                          ? (newExtraData) =>
+                              onFieldChanged('attachmentids', newExtraData)
+                          : undefined
+                      }
+                    />
+                  }
+                  icon={() => <AttachFileIcon />}
+                />
+              </>
+            ),
+          },
           {
             name: 'features',
             label: 'Features',
@@ -1322,7 +1366,6 @@ const Editor = () => {
             contents: (
               <>
                 <FormEditorArea
-                  // fieldName={AssetFieldNames.price}
                   title="Price"
                   description="The price of the asset."
                   icon={() => <AttachMoneyIcon />}

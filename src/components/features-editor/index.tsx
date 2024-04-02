@@ -27,25 +27,25 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
     '& > *': {
       width: '50%',
-      marginBottom: '0.5rem'
-    }
+      marginBottom: '0.5rem',
+    },
   },
   doesNotHave: {
-    opacity: '0.5'
+    opacity: '0.5',
   },
   item: {
     display: 'flex',
     alignItems: 'center',
     '& svg': {
-      marginRight: '0.5rem'
-    }
-  }
+      marginRight: '0.5rem',
+    },
+  },
 })
 
 const FeatureEditor = ({
   tagData,
   selectedTagName,
-  onSelectTagName
+  onSelectTagName,
 }: {
   tagData: Tag
   selectedTagName: string | null
@@ -57,7 +57,7 @@ const FeatureEditor = ({
       <RadioGroup
         value={selectedTagName}
         row
-        onChange={e => onSelectTagName(e.target.value)}>
+        onChange={(e) => onSelectTagName(e.target.value)}>
         <FormControlLabel
           value={tagData.id}
           control={<Radio />}
@@ -82,13 +82,13 @@ const FeatureEditor = ({
 }
 
 const useTags = () =>
-  useDataStoreItems<Tag>(CollectionNames.Tags, 'tags-for-features')
+  useDataStoreItems<Tag>(CollectionNames.Tags, undefined, 'tags-for-features')
 
 const FeaturesEditor = ({
   assetId,
   currentTags,
   onDone,
-  isEditing
+  isEditing,
 }: {
   currentTags: string[]
   assetId?: string
@@ -128,18 +128,18 @@ const FeaturesEditor = ({
       ...result,
       [tagData.category]: result[tagData.category]
         ? result[tagData.category].concat([tagData])
-        : [tagData]
+        : [tagData],
     }),
     {}
   )
 
   const onSelectTagName = (tagData: Tag, newTagName: string | null) => {
     console.debug(`select tag name`, newTagName, tagData)
-    setNewTags(newTags =>
+    setNewTags((newTags) =>
       newTagName
         ? newTags.concat([newTagName])
         : newTags.filter(
-            tag => tag !== tagData.id && tag !== tagData.oppositetag
+            (tag) => tag !== tagData.id && tag !== tagData.oppositetag
           )
     )
   }
@@ -149,7 +149,7 @@ const FeaturesEditor = ({
       console.debug(`Saving tags...`, assetId, newTags)
 
       await save({
-        tags: newTags
+        tags: newTags,
       })
 
       console.debug(`Tags saved`)
@@ -178,7 +178,7 @@ const FeaturesEditor = ({
               {categoryName}
             </Heading>
             <Paper className={classes.featureEditors}>
-              {tagDatas.map(tagData => {
+              {tagDatas.map((tagData) => {
                 const selectedTagName = newTags.includes(tagData.id)
                   ? tagData.id
                   : tagData.oppositetag && newTags.includes(tagData.oppositetag)
@@ -194,7 +194,7 @@ const FeaturesEditor = ({
                     key={tagData.id}
                     tagData={tagData}
                     selectedTagName={selectedTagName}
-                    onSelectTagName={newTagName =>
+                    onSelectTagName={(newTagName) =>
                       onSelectTagName(tagData, newTagName)
                     }
                   />

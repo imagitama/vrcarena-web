@@ -17,6 +17,7 @@ const useStyles = makeStyles({
   root: {
     width: '100%',
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
     [mediaQueryForMobiles]: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
     },
   },
   image: {
-    margin: '0 0.5rem',
+    margin: '0.5rem',
     width: '33.3%',
     cursor: 'pointer',
     transition: 'all 100ms',

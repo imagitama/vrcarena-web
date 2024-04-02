@@ -23,7 +23,8 @@ export default ({
   itemProperties: ItemProperties
 }) => {
   const [isLoading, isError, items] = useDataStoreItems<any>(
-    itemProperties.collectionName
+    itemProperties.collectionName,
+    undefined
   )
 
   if (isLoading) {

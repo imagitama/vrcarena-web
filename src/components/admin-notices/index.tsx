@@ -9,7 +9,8 @@ import NoticeRenderer from '../notice'
 
 export default () => {
   const [isLoading, isError, notices] = useDataStoreItems<Notice>(
-    collectionName
+    collectionName,
+    undefined
   )
   const [editId, setEditId] = useState<string | undefined>(undefined)
 
@@ -25,10 +26,10 @@ export default () => {
     <>
       <EditNoticeForm
         id={editId}
-        notice={notices.find(notice => notice.id === editId)}
+        notice={notices.find((notice) => notice.id === editId)}
       />
       <br />
-      {notices.map(notice => (
+      {notices.map((notice) => (
         <Fragment key={notice.id}>
           {/* @ts-ignore */}
           <NoticeRenderer {...notice} />

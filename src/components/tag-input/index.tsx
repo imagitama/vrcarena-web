@@ -68,6 +68,7 @@ const RecommendedTags = ({
   const classes = useStyles()
   const [, , allTagDetails] = useDataStoreItems<FullTag>(
     'getfulltags',
+    undefined,
     'all-tags-browser'
   )
 

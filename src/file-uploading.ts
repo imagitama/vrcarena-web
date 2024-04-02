@@ -131,4 +131,5 @@ export const bucketNames = {
   eventBanners: 'event-banners',
   socialPostAttachments: 'socialpost-attachments',
   authorPromos: 'author-promos',
+  temp: 'temp',
 }

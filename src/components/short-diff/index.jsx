@@ -32,6 +32,11 @@ import TagDiff from '../tag-diff'
 import Relations from '../relations'
 import authorsEditableFields from '../../editable-fields/authors'
 import VrcFurySettings from '../vrcfury-settings'
+import Attachments from '../attachments'
+import LoadingIndicator from '../loading-indicator'
+import NoResultsMessage from '../no-results-message'
+import ErrorMessage from '../error-message'
+import useDataStoreItems from '../../hooks/useDataStoreItems'
 
 const useStyles = makeStyles({
   output: {
@@ -463,6 +468,46 @@ function SketchfabOutput({ fields }) {
   )
 }
 
+function AttachmentsOutput({ fields }) {
+  if (!fields.attachmentids) {
+    throw new Error('IDs is not even an array')
+  }
+
+  const [isLoading, isError, attachments] = useDataStoreItems(
+    'attachments',
+    fields.attachmentids,
+    'get-attachments-output'
+  )
+
+  if (isLoading) {
+    return <LoadingIndicator message="Loading attachments..." />
+  }
+
+  if (isError) {
+    return <ErrorMessage>Failed to load attachments</ErrorMessage>
+  }
+
+  if (attachments === null) {
+    return null
+  }
+
+  const ids = fields.attachmentids
+
+  if (!ids.length) {
+    return <NoResultsMessage>No attachments</NoResultsMessage>
+  }
+
+  if (ids.length !== attachments.length) {
+    return (
+      <ErrorMessage>
+        ID count mismatch ({ids.length} vs {attachments.length})
+      </ErrorMessage>
+    )
+  }
+
+  return <Attachments ids={ids} attachmentsData={attachments} />
+}
+
 function ClonableWorldOutput({ fields }) {
   return (
     <div>
@@ -664,13 +709,18 @@ const RenderersForFields = {
         <div>
           {fields.extradata &&
           fields.extradata.vrcfury &&
-          fields.extradata.vrcfury.prefabs ? (
+          fields.extradata.vrcfury.prefabs &&
+          fields.extradata.vrcfury.prefabs.length ? (
             <VrcFurySettings prefabs={fields.extradata.vrcfury.prefabs} />
           ) : (
-            <NoValueLabel />
+            <NoValueLabel>{noValueLabel}</NoValueLabel>
           )}
         </div>
       ),
+    },
+    attachmentids: {
+      label: 'Attachments',
+      renderer: ({ fields }) => <AttachmentsOutput fields={fields} />,
     },
   },
   authors: authorsEditableFields,
@@ -804,6 +854,7 @@ export default ({
         }
 
         if (!rendererInfo) {
+          console.warn(`No renderer found for "${fieldNameThatChanged}"`)
           return null
         }
 

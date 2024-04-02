@@ -8,7 +8,7 @@ const errorStates = {
   NETWORK: 'network',
   DECODE: 'decode',
   SRC_NOT_SUPPORTED: 'srcNotSupported',
-  UNKNOWN: 'unknown'
+  UNKNOWN: 'unknown',
 }
 
 function getErrorStateForEvent(e: any): string {
@@ -65,19 +65,17 @@ export default ({
       ...(config.youtube || {}),
       playerVars: {
         ...((config.youtube || {}).playerVars || {}),
-        autoplay: 1
-      }
+        autoplay: 1,
+      },
     },
     file: {
       ...(config.file || {}),
       attributes: {
         ...((config.file || {}).attributes || {}),
-        autoPlay: true
-      }
-    }
+        autoPlay: true,
+      },
+    },
   }
-
-  console.debug(configToUse)
 
   return (
     <>
@@ -91,7 +89,7 @@ export default ({
             onPlay()
           }
         }}
-        onError={e => {
+        onError={(e) => {
           handleError(e.target.error)
           console.error(e.target.error)
           setErrorState(getErrorStateForEvent(e))

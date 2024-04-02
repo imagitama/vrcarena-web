@@ -9,46 +9,56 @@ const useStyles = makeStyles({
     perspective: '1000px',
     '& img': {
       width: '100%',
-      height: '100%'
-    }
+      height: '100%',
+    },
   },
   spin: {
     animation: '20s $spinThumbnail infinite linear',
-    transition: 'all 100ms'
+    transition: 'all 100ms',
   },
   pauseOnHover: {
     '&:hover': {
-      animation: 'none'
-    }
+      animation: 'none',
+    },
   },
   '@keyframes spinThumbnail': {
     from: {
-      transform: 'rotateY(0deg)'
+      transform: 'rotateY(0deg)',
     },
     to: {
-      transform: 'rotateY(360deg)'
-    }
+      transform: 'rotateY(360deg)',
+    },
   },
   full: {
     width: '300px',
-    height: '300px'
+    height: '300px',
   },
   small: {
     width: '200px',
-    height: '200px'
+    height: '200px',
   },
   tiny: {
     width: '100px',
-    height: '100px'
-  }
+    height: '100px',
+  },
+  micro: {
+    width: '75px',
+    height: '75px',
+  },
 })
 
-export default ({
+const AssetThumbnail = ({
   url,
   className = '',
   spin = false,
   pauseOnHover = true,
-  size = 'full'
+  size = 'full',
+}: {
+  url: string
+  className?: string
+  spin?: boolean
+  pauseOnHover?: boolean
+  size?: 'full' | 'small' | 'tiny' | 'micro'
 }) => {
   const classes = useStyles()
   return (
@@ -65,3 +75,5 @@ export default ({
     </div>
   )
 }
+
+export default AssetThumbnail

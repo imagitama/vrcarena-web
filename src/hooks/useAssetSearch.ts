@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux'
 import { Asset } from '../modules/assets'
 import useAlgoliaSearch, {
   AssetSearchResult,
-  Indexes
+  Indexes,
 } from './useAlgoliaSearch'
 import { setIsSearching } from '../modules/app'
 import { useEffect } from 'react'
@@ -14,7 +14,7 @@ const mapAssetSearchResultsToAssets = (
   assetSearchResults: AssetSearchResult[]
 ): Asset[] =>
   // @ts-ignore
-  assetSearchResults.map(assetSearchResult => ({
+  assetSearchResults.map((assetSearchResult) => ({
     ...assetSearchResult,
     thumbnailurl: assetSearchResult.thumbnailUrl,
     shortdescription: '',
@@ -24,7 +24,6 @@ const mapAssetSearchResultsToAssets = (
     category: '',
     tags: [],
     bannerurl: '',
-    fileurls: [],
     slug: '',
     species: [],
     vrchatclonableavatarids: [],
@@ -36,7 +35,7 @@ const mapAssetSearchResultsToAssets = (
     tutorialsteps: [],
     ranks: [],
     discordserver: '',
-    createdat: undefined
+    createdat: undefined,
   }))
 
 export default (
@@ -54,7 +53,7 @@ export default (
   }
 
   if (isAdultContentEnabled) {
-    filters = filters.filter(filter => filter !== 'isAdult != 1')
+    filters = filters.filter((filter) => filter !== 'isAdult != 1')
   }
 
   const [isLoading, isErrored, assetSearchResults] = useAlgoliaSearch(

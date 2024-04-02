@@ -1,40 +1,17 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AttachFileIcon from '@material-ui/icons/AttachFile'
-
-import { getRandomInt } from '../../../../utils'
 import { CollectionNames } from '../../../../hooks/useDatabaseQuery'
 import useIsLoggedIn from '../../../../hooks/useIsLoggedIn'
-
-import Attachments from '../../../attachments'
 import ImageGallery from '../../../image-gallery'
-import LoadingShimmer from '../../../loading-shimmer'
 import Button from '../../../button'
-import AttachmentForm from '../../../attachment-form'
+import AttachmentEditor from '../../../attachment-editor'
 import FormControls from '../../../form-controls'
-
 import TabContext from '../../context'
+import { AttachmentReason } from '../../../../modules/attachments'
+import AttachmentsByParent from '../../../attachments-by-parent'
+import Paper from '../../../paper'
 
-const LoadingGallery = () => {
-  // store as ref to avoid re-drawing each re-render
-  const sizesRefs = useRef([
-    getRandomInt(200, 300),
-    getRandomInt(200, 300),
-    getRandomInt(200, 300)
-  ])
-
-  return (
-    <ImageGallery
-      thumbnailUrls={[
-        <LoadingShimmer height={sizesRefs.current[0]} />,
-        <LoadingShimmer height={sizesRefs.current[1]} />,
-        <LoadingShimmer height={sizesRefs.current[2]} />
-      ]}
-      isStatic
-    />
-  )
-}
-
-export default () => {
+const TabAttachments = () => {
   const { assetId, isLoading, hydrate } = useContext(TabContext)
   const isLoggedIn = useIsLoggedIn()
   const [isAttachmentFormVisible, setIsAttachmentFormVisible] = useState(false)
@@ -42,26 +19,34 @@ export default () => {
   return (
     <>
       {isLoading ? (
-        <LoadingGallery />
+        <ImageGallery showLoadingCount={3} />
       ) : (
-        <Attachments parentTable={CollectionNames.Assets} parentId={assetId} />
+        <AttachmentsByParent
+          reason={AttachmentReason.UserAdded}
+          parentTable={CollectionNames.Assets}
+          parentId={assetId}
+          includeParents={false}
+        />
       )}
       {isAttachmentFormVisible ? (
-        <>
-          <AttachmentForm
+        <Paper>
+          <AttachmentEditor
+            reason={AttachmentReason.UserAdded}
             parentTable={CollectionNames.Assets}
             parentId={assetId}
             onDone={() => hydrate()}
           />
-        </>
+        </Paper>
       ) : (
         <FormControls>
           <Button
             size="large"
             icon={<AttachFileIcon />}
-            onClick={() =>
-              isLoggedIn ? setIsAttachmentFormVisible(true) : null
-            }
+            onClick={() => {
+              if (isLoggedIn) {
+                setIsAttachmentFormVisible(true)
+              }
+            }}
             isDisabled={isLoading || !isLoggedIn}>
             {isLoggedIn
               ? 'Attach File or URL'
@@ -72,3 +57,5 @@ export default () => {
     </>
   )
 }
+
+export default TabAttachments

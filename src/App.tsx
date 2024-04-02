@@ -494,6 +494,22 @@ const ImageAtlas = lazy(() =>
       import(/* webpackChunkName: "image-atlas" */ './containers/image-atlas')
   )
 )
+const ViewAttachment = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "view-attachment" */ './containers/view-attachment'
+      )
+  )
+)
+const EditAttachment = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "edit-attachment" */ './containers/edit-attachment'
+      )
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -748,6 +764,16 @@ const MainContent = () => {
         <Route exact path={routes.bulkAdd} component={BulkAdd} />
         <Route exact path={routes.promos} component={Promos} />
         <Route exact path={routes.imageAtlas} component={ImageAtlas} />
+        <Route
+          exact
+          path={routes.viewAttachmentWithVar}
+          component={ViewAttachment}
+        />
+        <Route
+          exact
+          path={routes.editAttachmentWithVar}
+          component={EditAttachment}
+        />
         <Route
           exact
           path={routes.editPageWithParentAndPageVar}

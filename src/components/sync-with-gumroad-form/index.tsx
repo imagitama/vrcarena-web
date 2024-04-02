@@ -185,11 +185,14 @@ const AttachmentsOptimizer = ({
 
       const {
         data: { optimizedUrl },
-      } = await callFunction('downloadAndOptimizeImage', {
-        imageUrl,
-        bucketName: bucketNames.attachments,
-        bucketPath: '',
-      })
+      } = await callFunction<{ optimizedUrl: string }>(
+        'downloadAndOptimizeImage',
+        {
+          imageUrl,
+          bucketName: bucketNames.attachments,
+          bucketPath: '',
+        }
+      )
 
       setIsLoading(index, false)
       setIsError(index, false)
@@ -300,12 +303,12 @@ export default ({
   const [gumroadUrl, setGumroadUrl] = useState(existingGumroadUrl || '')
   const [newFields, setNewFields] = useState<AssetFields | null>(null)
   const [whichFieldsAreEnabled, setWhichFieldsAreEnabled] = useState({
-    [AssetFieldNames.title]: true,
-    [AssetFieldNames.description]: true,
-    [AssetFieldNames.thumbnailUrl]: true,
-    [AssetFieldNames.fileUrls]: true,
-    [AssetFieldNames.category]: true,
-    [AssetFieldNames.author]: true,
+    title: true,
+    description: true,
+    thumbnailurl: true,
+    attachmentids: true,
+    category: true,
+    author: true,
   })
   const [isSaving, , isErrored, save] = useDatabaseSave(
     CollectionNames.Assets,
@@ -313,7 +316,6 @@ export default ({
   )
   const classes = useStyles()
   const [isUsingQuotes, setIsUsingQuotes] = useState(true)
-  const [authorName, setAuthorName] = useState<string | null>(null)
 
   const [selectedThumbnailAttachment, setSelectedThumbnailAttachment] =
     useState<null | GetGumroadProductAttachment>(null)
@@ -378,8 +380,6 @@ export default ({
       result.authorName,
       result.authorUrl
     )
-
-    setAuthorName(author !== null ? author.name : null)
 
     if (!author || !author.name) {
       toggleIsFieldEnabled(AssetFieldNames.author)
@@ -453,6 +453,7 @@ export default ({
 
   const toggleIsFieldEnabled = (fieldName: string) => {
     setWhichFieldsAreEnabled((currentEnabledFields) => {
+      // @ts-ignore
       const newVal = !currentEnabledFields[fieldName]
 
       const returnVal = {
@@ -523,12 +524,12 @@ export default ({
         <>
           Thumbnail
           <Checkbox
-            checked={whichFieldsAreEnabled[AssetFieldNames.thumbnailUrl]}
+            checked={whichFieldsAreEnabled.thumbnailurl}
             onClick={() => toggleIsFieldEnabled(AssetFieldNames.thumbnailUrl)}
           />
-          {whichFieldsAreEnabled[AssetFieldNames.thumbnailUrl] &&
-            (newFields[AssetFieldNames.thumbnailUrl] ? (
-              <AssetThumbnail url={newFields[AssetFieldNames.thumbnailUrl]} />
+          {whichFieldsAreEnabled.thumbnailurl &&
+            (newFields.thumbnailurl ? (
+              <AssetThumbnail url={newFields.thumbnailurl} />
             ) : !selectedThumbnailAttachment ? (
               <div className={classes.thumbnailUploader}>
                 Select an image to use for the thumbnail (you will be able to
@@ -580,35 +581,46 @@ export default ({
       <Paper className={classes.row}>
         Attachments
         <Checkbox
-          checked={whichFieldsAreEnabled[AssetFieldNames.fileUrls]}
-          onClick={() => toggleIsFieldEnabled(AssetFieldNames.fileUrls)}
+          checked={whichFieldsAreEnabled.attachmentids}
+          onClick={() => toggleIsFieldEnabled(AssetFieldNames.attachmentids)}
         />
-        {attachmentsToOptimize && attachmentsToOptimize.length ? (
+        NOT AVAILABLE
+        {/* TODO: 
+
+              1. render the original images from Gumroad (saves us having to download it)
+              2. let user pick which ones they want
+              3. for each one: actually download original PNG to bucket and get URL (will be automatically optimized later)
+              4. for each URL: create a record in attachments
+              5. for each created record: get its ID and store this ID in array for asset
+          
+
+      */}
+        {/* {attachmentsToOptimize && attachmentsToOptimize.length ? (
           <>
             These images are being optimized (this takes up to a minute):
             <AttachmentsOptimizer
               attachmentsToOptimize={attachmentsToOptimize}
               onDone={(newFileUrls) => {
                 setAttachmentsToOptimize(null)
-                updateField(AssetFieldNames.fileUrls, newFileUrls)
+                updateField(AssetFieldNames.attachmentids, newFileUrls)
               }}
             />
           </>
         ) : (
-          <AttachmentsOutput urls={newFields[AssetFieldNames.fileUrls] || []} />
-        )}
+          <AttachmentsOutput urls={newFields.fileurls || []} />
+        )} */}
       </Paper>
       <Paper className={classes.row}>
         Title
         <Checkbox
-          checked={whichFieldsAreEnabled[AssetFieldNames.title]}
+          checked={whichFieldsAreEnabled.title}
           onClick={() => toggleIsFieldEnabled(AssetFieldNames.title)}
         />
-        {whichFieldsAreEnabled[AssetFieldNames.title] && (
+        {whichFieldsAreEnabled.title && (
           <>
             <br />
             <TextField
-              value={newFields[AssetFieldNames.title]}
+              value={newFields.title}
               onChange={(e) =>
                 updateField(AssetFieldNames.title, e.target.value)
               }
@@ -620,14 +632,14 @@ export default ({
       <Paper className={classes.row}>
         Description
         <Checkbox
-          checked={whichFieldsAreEnabled[AssetFieldNames.description]}
+          checked={whichFieldsAreEnabled.description}
           onClick={() => toggleIsFieldEnabled(AssetFieldNames.description)}
         />
-        {whichFieldsAreEnabled[AssetFieldNames.description] && (
+        {whichFieldsAreEnabled.description && (
           <>
             <br />
             <TextField
-              value={newFields[AssetFieldNames.description]}
+              value={newFields.description}
               onChange={(e) =>
                 updateField(AssetFieldNames.description, e.target.value)
               }
@@ -638,7 +650,7 @@ export default ({
           </>
         )}
       </Paper>
-      {whichFieldsAreEnabled[AssetFieldNames.description] && (
+      {whichFieldsAreEnabled.description && (
         <Paper className={classes.row}>
           <Checkbox
             checked={isUsingQuotes}
@@ -646,12 +658,8 @@ export default ({
               updateField(
                 AssetFieldNames.description,
                 isUsingQuotes
-                  ? removeQuotesFromDescription(
-                      newFields[AssetFieldNames.description]
-                    )
-                  : addQuotesToDescription(
-                      newFields[AssetFieldNames.description]
-                    )
+                  ? removeQuotesFromDescription(newFields.description)
+                  : addQuotesToDescription(newFields.description)
               )
               setIsUsingQuotes(!isUsingQuotes)
             }}
@@ -662,14 +670,12 @@ export default ({
       <Paper className={classes.row}>
         Author
         <Checkbox
-          checked={whichFieldsAreEnabled[AssetFieldNames.author]}
+          checked={whichFieldsAreEnabled.author}
           onClick={() => toggleIsFieldEnabled(AssetFieldNames.author)}
         />
-        {whichFieldsAreEnabled[AssetFieldNames.author] && (
+        {whichFieldsAreEnabled.author && (
           <>
-            {newFields[AssetFieldNames.author] &&
-            gumroadProduct &&
-            gumroadProduct.authorName
+            {newFields.author && gumroadProduct && gumroadProduct.authorName
               ? gumroadProduct.authorName
               : '(no existing author detected - add it manually)'}
           </>
@@ -678,13 +684,13 @@ export default ({
       <Paper className={classes.row}>
         Category
         <Checkbox
-          checked={whichFieldsAreEnabled[AssetFieldNames.category]}
+          checked={whichFieldsAreEnabled.category}
           onClick={() => toggleIsFieldEnabled(AssetFieldNames.category)}
         />
-        {whichFieldsAreEnabled[AssetFieldNames.category] && (
+        {whichFieldsAreEnabled.category && (
           <>
-            {newFields[AssetFieldNames.category]
-              ? categoryMeta[newFields[AssetFieldNames.category]].name
+            {newFields.category
+              ? categoryMeta[newFields.category].name
               : '(no category detected - add it manually next tab)'}
           </>
         )}

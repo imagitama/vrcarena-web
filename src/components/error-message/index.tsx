@@ -61,7 +61,9 @@ export default ({
         <br />
         <br />
         <strong>Please copy and paste this error code: </strong>{' '}
-        <code>{getErrorCodeForError(error)}</code>
+        <code style={{ wordWrap: 'break-word' }}>
+          {getErrorCodeForError(error)}
+        </code>
       </>
     ) : null}
   </Message>

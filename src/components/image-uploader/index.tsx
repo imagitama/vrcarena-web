@@ -250,8 +250,11 @@ const Cropper = ({
 }
 
 const getSupabaseOptimizedUrl = (url: string): string => {
-  // as of March 2024 asset thumbnails are converted to WEBP in background
-  if (url.includes(bucketNames.assetThumbnails)) {
+  // as of March 2024 some images are converted to WEBP in background (via SQL trigger)
+  if (
+    url.includes(bucketNames.assetThumbnails) ||
+    url.includes(bucketNames.attachments)
+  ) {
     return url
   }
 
@@ -423,11 +426,9 @@ const ImageUploader = ({
     try {
       const blob = await cropImageToBlob(image, cropSettings)
 
-      if (!selectedFileRef.current) {
-        throw new Error('Cannot continue without a selected file')
-      }
-
-      const fileNameWithExt = selectedFileRef.current.name
+      const fileNameWithExt = selectedFileRef.current
+        ? selectedFileRef.current.name
+        : 'cropped.png'
 
       const fileToUpload = new File([blob], fileNameWithExt, {
         // this is required for supabase
@@ -440,6 +441,8 @@ const ImageUploader = ({
     } catch (err) {
       console.error(err)
       handleError(err)
+
+      setLastCustomError(err as Error)
     }
   }
 

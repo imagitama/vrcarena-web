@@ -111,6 +111,7 @@ const SpeciesSelector = ({
 }) => {
   const [isLoading, isError, allSpecies] = useDataStoreItems<Species>(
     CollectionNames.Species,
+    undefined,
     'species-selector',
     SpeciesFieldNames.pluralName
   )

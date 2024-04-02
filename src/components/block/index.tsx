@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
     padding: '1rem',
     marginBottom: '1rem',
+    backgroundColor: '#282828', // when rendered inside ExperimentalArea dont want big areas of green
   },
   title: {
     fontSize: '150%',

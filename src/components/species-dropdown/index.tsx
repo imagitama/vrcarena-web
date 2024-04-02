@@ -14,13 +14,14 @@ let lastKnownAllSpecies: Species[]
 
 const SpeciesSelector = ({
   selectedSpeciesIds = [],
-  onSpeciesClickWithId
+  onSpeciesClickWithId,
 }: {
   selectedSpeciesIds: string[]
   onSpeciesClickWithId: (id: string) => void
 }) => {
   const [isLoading, isError, newSpecies] = useDataStoreItems<Species>(
     lastKnownAllSpecies ? '' : CollectionNames.Species,
+    undefined,
     'species-dropdown',
     SpeciesFieldNames.pluralName
   )
@@ -41,7 +42,7 @@ const SpeciesSelector = ({
 
   return (
     <Select multiple value={selectedSpeciesIds}>
-      {allSpecies.map(speciesItem => (
+      {allSpecies.map((speciesItem) => (
         <MenuItem
           key={speciesItem.id}
           value={speciesItem.id}

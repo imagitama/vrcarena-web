@@ -40,7 +40,7 @@ import { getCanUserEditAsset } from '../../assets'
 import Link from '../../components/link'
 import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
 import categoryMeta from '../../category-meta'
-import { FullAsset, RelationType } from '../../modules/assets'
+import { FullAsset, RelationType, ViewNames } from '../../modules/assets'
 
 import AssetThumbnail from '../asset-thumbnail'
 import Heading from '../heading'
@@ -88,6 +88,7 @@ import VrcFurySettings from '../vrcfury-settings'
 import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 import Block from '../block'
 import Questions from '../questions'
+import { AttachmentType } from '../../modules/attachments'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -172,6 +173,9 @@ const useStyles = makeStyles((theme) => ({
     [mediaQueryForMobiles]: {
       flexDirection: 'column',
     },
+  },
+  primaryMetadataThumb: {
+    marginRight: '1rem',
   },
   thumbnailWrapper: {
     display: 'flex',
@@ -369,15 +373,16 @@ const Area = ({
   )
 }
 
-export default ({ assetId: rawAssetId }: { assetId: string }) => {
+const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
   const getQuery = useCallback(
     () =>
       supabase
-        .from('getfullassets')
+        .from(ViewNames.GetFullAssets)
         .select('*')
-        .or(`id.eq.${rawAssetId},${AssetFieldNames.slug}.eq.${rawAssetId}`),
+        .or(`id.eq.${rawAssetId},${AssetFieldNames.slug}.eq.${rawAssetId}`)
+        .limit(1),
     // need to sub to logged in as view does NOT remount forcing a query reload (we have to do it ourselves)
     [rawAssetId, isLoggedIn]
   )
@@ -408,12 +413,25 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
   }
 
   const isLoading = isLoadingAsset || !asset
-  const attachedImagesAndYouTubeUrls =
-    asset && asset.fileurls && asset.fileurls.length
-      ? asset.fileurls.filter(
-          (url) => isUrlAnImage(url) || isUrlAYoutubeVideo(url)
+
+  const mediaAttachments =
+    asset && asset.attachmentsdata
+      ? asset.attachmentsdata.filter(
+          (attachment) => attachment.type !== AttachmentType.File
         )
       : []
+  const nonMediaAttachments =
+    asset && asset.attachmentsdata
+      ? asset.attachmentsdata.filter(
+          (attachment) => attachment.type === AttachmentType.File
+        )
+      : []
+  const firstFileAttachment =
+    asset && asset.attachmentsdata
+      ? asset.attachmentsdata.find(
+          (attachment) => attachment.type === AttachmentType.File
+        )
+      : undefined
 
   return (
     <>
@@ -473,17 +491,14 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
               fallbackImageUrl={asset.pedestalfallbackimageurl}
             />
           </div>
-        ) : isLoading || attachedImagesAndYouTubeUrls.length ? (
+        ) : isLoading || mediaAttachments.length ? (
           <ImageGallery
             images={
               isLoading
                 ? []
-                : attachedImagesAndYouTubeUrls
-                    .slice(0, 3)
-                    // .concat(['https://www.youtube.com/watch?v=uMboDekgvz0'])
-                    .map((url) => ({
-                      url,
-                    }))
+                : mediaAttachments.slice(0, 3).map((attachment) => ({
+                    url: attachment.url,
+                  }))
             }
             onClickImage={() =>
               trackAction(
@@ -511,6 +526,13 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
           </div>
         ) : null}
         <div className={classes.primaryMetadata}>
+          <div className={classes.primaryMetadataThumb}>
+            {isLoading ? (
+              <LoadingShimmer width={75} height={75} />
+            ) : (
+              <AssetThumbnail url={asset.thumbnailurl} size="micro" />
+            )}
+          </div>
           <div>
             <Heading variant="h1" noMargin className={classes.titleAndAuthor}>
               {isLoading ? (
@@ -572,15 +594,15 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
         <div className={classes.cols}>
           <div className={classes.leftCol}>
             <TabDescription />
-            {attachedImagesAndYouTubeUrls.length > 3 && (
+            {nonMediaAttachments.length > 3 && (
               <Area name="extra-attached-images" label="Images">
                 <ImageGallery
                   images={
                     isLoading
                       ? []
-                      : attachedImagesAndYouTubeUrls
+                      : nonMediaAttachments
                           .slice(3)
-                          .map((url) => ({ url }))
+                          .map((attachment) => ({ url: attachment.url }))
                   }
                   onClickImage={() =>
                     trackAction(
@@ -692,20 +714,10 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
                 </Control>
               </ControlGroup>
             ) : null}
-            {asset &&
-            asset.fileurls &&
-            asset.fileurls
-              .filter(isUrlNotAnImageOrVideo)
-              .filter((url) => !isUrlAYoutubeVideo(url)).length ? (
+            {firstFileAttachment ? (
               <ControlGroup>
                 <Control>
-                  <Button
-                    url={asset.fileurls
-                      .filter(isUrlNotAnImageOrVideo)
-                      .filter((url) => !isUrlAYoutubeVideo(url))
-                      .shift()}>
-                    Download
-                  </Button>
+                  <Button url={firstFileAttachment.url}>Download</Button>
                 </Control>
               </ControlGroup>
             ) : null}
@@ -967,3 +979,5 @@ export default ({ assetId: rawAssetId }: { assetId: string }) => {
     </>
   )
 }
+
+export default AssetOverview

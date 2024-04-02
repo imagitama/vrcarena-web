@@ -11,20 +11,21 @@ import { FeaturedStatus } from '../../modules/common'
 
 const useStyles = makeStyles(() => ({
   root: {
+    maxWidth: '500px',
     display: 'flex',
     flexWrap: 'wrap',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   box: {
-    border: '2px dashed rgba(255, 255, 0, 0.5)'
+    border: '2px dashed rgba(255, 255, 0, 0.5)',
   },
   noBox: {},
   item: {
-    padding: '0.5rem'
-  }
+    padding: '0.5rem',
+  },
 }))
 
-export default ({
+const EditorRecordManager = ({
   // required
   id,
   metaCollectionName,
@@ -49,7 +50,7 @@ export default ({
   // other
   callOnDoneOnEditorNotes = true,
   allowDeclineOptions = false,
-  showBox = true
+  showBox = true,
 }: {
   id: string
   metaCollectionName: string
@@ -135,3 +136,5 @@ export default ({
     </div>
   )
 }
+
+export default EditorRecordManager

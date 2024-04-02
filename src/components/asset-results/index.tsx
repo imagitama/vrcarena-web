@@ -9,29 +9,27 @@ const useStyles = makeStyles({
   item: {
     margin: '0.5rem',
     [mediaQueryForTabletsOrBelow]: {
-      margin: '0.25rem'
-    }
-  }
+      margin: '0.25rem',
+    },
+  },
 })
 
-export default ({
+const AssetResults = ({
   assets = [],
   showCategory = false,
   showCost = true,
   showIsNsfw = true,
-  hoverOnEffect = false,
   selectedAssetIds = [],
   dimUnselected = false,
   onClickWithEventAndAsset = undefined,
   shimmer = false,
   showAddToCart = true,
-  showSelectedTick = false
+  showSelectedTick = false,
 }: {
   assets?: Asset[]
   showCategory?: boolean
   showCost?: boolean
   showIsNsfw?: boolean
-  hoverOnEffect?: boolean
   selectedAssetIds?: string[]
   dimUnselected?: boolean
   onClickWithEventAndAsset?: (
@@ -59,14 +57,13 @@ export default ({
           </div>
         </>
       ) : (
-        assets.map(asset => (
+        assets.map((asset) => (
           <div key={asset.id} className={classes.item}>
             <AssetResultsItem
               asset={asset}
               showCategory={showCategory}
               showCost={showCost}
               showIsNsfw={showIsNsfw}
-              hoverOnEffect={hoverOnEffect}
               isSelected={selectedAssetIds.includes(asset.id)}
               dim={
                 dimUnselected &&
@@ -90,3 +87,5 @@ export default ({
     </div>
   )
 }
+
+export default AssetResults

@@ -22,15 +22,21 @@ const useStyles = makeStyles({
     width: '50%',
     padding: '1rem',
     height: '100vh',
+    '&:last-child > *': {
+      height: '100%',
+      overflow: 'auto',
+    },
   },
 })
 
 export default ({
   content = '',
   onChange,
+  isDisabled = false,
 }: {
   content: string
   onChange: (newText: string) => void
+  isDisabled?: boolean
 }) => {
   const classes = useStyles()
   const [isImageEditorOpen, setIsImageEditorOpen] = useState(false)
@@ -107,6 +113,7 @@ This is a caption
             rowsMax={25}
             className={classes.input}
             variant="outlined"
+            disabled={isDisabled}
           />
           <Button
             size="small"
