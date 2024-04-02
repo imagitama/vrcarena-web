@@ -37,7 +37,7 @@ const Attachment = ({
         )
       }
     default:
-      throw new Error(`Cannot render upload item: unknown type "${type}"!`)
+      return <Button url={url}>View File</Button>
   }
 }
 
