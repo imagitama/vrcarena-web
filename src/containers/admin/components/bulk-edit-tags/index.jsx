@@ -12,7 +12,7 @@ import useDatabaseQuery, {
   CollectionNames,
   AssetFieldNames,
   Operators,
-  options
+  options,
 } from '../../../../hooks/useDatabaseQuery'
 
 import LoadingIndicator from '../../../../components/loading-indicator'
@@ -27,8 +27,8 @@ import { callFunction } from '../../../../firebase'
 
 const useStyles = makeStyles({
   table: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 })
 
 function AssetsTable({ assets }) {
@@ -45,7 +45,7 @@ function AssetsTable({ assets }) {
               </TableCell>
               <TableCell>{title}</TableCell>
               <TableCell>
-                {tags.map(tag => (
+                {tags.map((tag) => (
                   <TagChip key={tag} tagName={tag} />
                 ))}
               </TableCell>
@@ -94,13 +94,13 @@ const Steps = {
   Operation: 2,
   ConfirmOperation: 3,
   Editing: 4,
-  Done: 5
+  Done: 5,
 }
 
 const OperationNames = {
   Add: 'add',
   Remove: 'remove',
-  Rename: 'rename'
+  Rename: 'rename',
 }
 
 export default () => {
@@ -111,7 +111,7 @@ export default () => {
   const [tag, setTag] = useState(null)
   const [additionalTag, setAdditionalTag] = useState(null)
 
-  const onConfirmWithIds = ids => {
+  const onConfirmWithIds = (ids) => {
     setAssetIds(ids)
     setTag(tagToSearch)
     setStepIdx(Steps.Operation)
@@ -125,7 +125,7 @@ export default () => {
         assetIds,
         operationName,
         tag,
-        additionalTag
+        additionalTag,
       })
 
       setStepIdx(Steps.Done)
@@ -144,7 +144,7 @@ export default () => {
           </p>
           <TextInput
             value={tagToSearch}
-            onChange={e => setTagToSearch(e.target.value)}
+            onChange={(e) => setTagToSearch(e.target.value)}
           />
           <Button onClick={() => setStepIdx(Steps.ConfirmAssets)}>
             Perform Search
@@ -180,7 +180,7 @@ export default () => {
           <Select
             value={operationName}
             variant="outlined"
-            onChange={e => setOperationName(e.target.value)}>
+            onChange={(e) => setOperationName(e.target.value)}>
             {Object.entries(OperationNames).map(([label, value]) => (
               <MenuItem key={value} value={value}>
                 {label}
@@ -190,7 +190,7 @@ export default () => {
           <br />
           <>
             Choose the tag:{' '}
-            <TextInput value={tag} onChange={e => setTag(e.target.value)} />
+            <TextInput value={tag} onChange={(e) => setTag(e.target.value)} />
             <br />
           </>
           {operationName === OperationNames.Rename && (
@@ -198,7 +198,7 @@ export default () => {
               Choose a new tag to rename to:{' '}
               <TextInput
                 value={additionalTag}
-                onChange={e => setAdditionalTag(e.target.value)}
+                onChange={(e) => setAdditionalTag(e.target.value)}
               />
               <br />
             </>
@@ -229,8 +229,7 @@ export default () => {
           <p>
             <span style={{ color: 'orange' }}>
               Warning this operation will trigger side-effects for each asset
-              modified (for example it might send a tweet or notification or
-              something)
+              modified (for example it might send a notification or something)
             </span>
           </p>
           <p>

@@ -2,26 +2,20 @@ import React from 'react'
 import YouTubePlayer from 'react-player/youtube'
 import { makeStyles } from '@material-ui/core/styles'
 
-import {
-  isUrlAYoutubeVideo,
-  isUrlATweet,
-  isUrlAnImage,
-  isUrlAVideo
-} from '../../utils'
+import { isUrlAYoutubeVideo, isUrlAnImage, isUrlAVideo } from '../../utils'
 import VideoPlayer from '../video-player'
-import Tweet from '../tweet'
 import { trackAction } from '../../analytics'
 
 const getImageUrlFromUrls = (fileUrls: string[]): string | undefined =>
-  fileUrls.find(url => isUrlAnImage(url))
+  fileUrls.find((url) => isUrlAnImage(url))
 
 const getVideoUrlFromUrls = (fileUrls: string[]): string | undefined =>
-  fileUrls.find(url => isUrlAVideo(url))
+  fileUrls.find((url) => isUrlAVideo(url))
 
 const useStyles = makeStyles({
   small: {
-    width: '400px'
-  }
+    width: '400px',
+  },
 })
 
 export default ({
@@ -29,7 +23,7 @@ export default ({
   fileUrls,
   sourceUrl,
   analyticsCategoryName,
-  isSmall = false
+  isSmall = false,
 }: {
   assetId: string
   fileUrls: string[]
@@ -70,11 +64,6 @@ export default ({
         }
       />
     )
-  }
-
-  if (isUrlATweet(sourceUrl)) {
-    // @ts-ignore
-    return <Tweet url={sourceUrl} />
   }
 
   return 'No image/video or URL provided'

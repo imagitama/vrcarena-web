@@ -59,17 +59,12 @@ export const CollectionNames = {
   History: 'history',
   EditorHistory: 'editorhistory',
   // users
-  // GuestUsers: 'guestusers',
   UserAdminMeta: 'useradminmeta',
-  // UserCache: 'usercache',
   Users: 'users',
   // assets
   Assets: 'assets',
   AssetMeta: 'assetmeta',
-  // AssetCache: 'assetcache',
   AssetEditorMeta: 'asseteditormeta',
-  // avatar pages
-  // AvatarPages: 'avatarpages',
   // comments
   Comments: 'comments',
   // admin stuff
@@ -82,16 +77,8 @@ export const CollectionNames = {
   DiscordServers: 'discordservers',
   Likes: 'likes',
   Species: 'species',
-  // FeaturedAssetsForUsers: 'featuredassetsforusers',
-  Tweets: 'tweets',
-  TweetsQueue: 'tweetsqueue',
   UserMeta: 'usermeta',
   DiscordMessages: 'discordmessages',
-  // caches
-  // ViewCache: 'viewcache',
-  // products
-  // Products: 'products',
-  // Transactions: 'transactions',s
   // other
   VrchatAvatars: 'vrchatavatars',
   VrchatWorlds: 'vrchatworlds',
@@ -247,8 +234,6 @@ export const AssetMetaFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   lastSyncedWithGumroadAt: 'lastsyncedwithgumroadat',
-  tweetRecordIds: 'tweetrecordids',
-  queuedTweetRecordIds: 'queuedtweetrecordids',
   approvedAt: 'approvedat',
   publishedAt: 'publishedat',
   approvedBy: 'approvedby',

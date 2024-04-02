@@ -328,7 +328,7 @@ const Forms = ({
           <CheckboxInput
             value={automaticallyApprove}
             onChange={(newVal) => setAutomaticallyApprove(newVal)}
-            label="Automatically approve them (warning: this triggers automatic tweet or Discord/email notifications!)"
+            label="Automatically approve them (warning: this triggers automatic Discord/email notifications!)"
           />
         </Message>
         <AssetResults assets={Object.values(newFieldsByWorldId)} />

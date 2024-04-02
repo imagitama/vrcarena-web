@@ -121,7 +121,7 @@ const categories: { [name: string]: Category } = {
     name: 'Content',
     nameSingular: 'Content',
     shortDescription:
-      'Screenshots, videos, tweets or ANYTHING to do with another asset.',
+      'Screenshots, videos, social media posts or ANYTHING to do with another asset.',
     optimizedImageUrl: contentOptimizedImageUrl,
   },
   [AssetCategories.alteration]: {

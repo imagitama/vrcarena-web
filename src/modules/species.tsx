@@ -32,11 +32,11 @@ export interface FullSpecies extends Species {
 }
 
 export const CollectionNames = {
-  Species: 'species'
+  Species: 'species',
 }
 
 export const ViewNames = {
-  GetFullSpecies: 'getfullspecies'
+  GetFullSpecies: 'getfullspecies',
 }
 
 export const editableFields: EditableField<Species>[] = [
@@ -50,38 +50,36 @@ export const editableFields: EditableField<Species>[] = [
       fieldAsLabel: SpeciesFieldNames.pluralName,
       renderer: ({ item }: { item: Species }) => (
         <SpeciesResultItem species={item} />
-      )
-    }
+      ),
+    },
   },
   {
     name: 'singularname',
     label: 'Name (singular)',
     type: fieldTypes.text,
     isRequired: true,
-    hint: 'A single of them - "Dog" (not "Dogs")'
+    hint: 'A single of them - "Dog" (not "Dogs")',
   },
   {
     name: 'pluralname',
     label: 'Name (plural)',
     type: fieldTypes.text,
     isRequired: true,
-    hint: 'Multiple of them - "Dogs" (not "Dog")'
+    hint: 'Multiple of them - "Dogs" (not "Dog")',
   },
   {
     name: 'shortdescription',
     label: 'Short Description',
     type: fieldTypes.text,
     length: 100,
-    hint:
-      'A short sentence used to describe the species in a list view. 100 characters. Do not mention who created the species (if applicable). Avoid mentioning the species name (it is redundant).'
+    hint: 'A short sentence used to describe the species in a list view. 100 characters. Do not mention who created the species (if applicable). Avoid mentioning the species name (it is redundant).',
   },
   {
     name: 'description',
     label: 'Description',
     type: fieldTypes.textMarkdown,
     length: 300,
-    hint:
-      'A longer description of the species used to describe the species in a full view. 300 characters, 1 or 2 sentences max. If created by a specific person, mention at the very end (eg. "Originally created by [Username](./link/to/source).". Do not mention if closed or open species. Avoid mentioning the species name (it is redundant).'
+    hint: 'A longer description of the species used to describe the species in a full view. 300 characters, 1 or 2 sentences max. If created by a specific person, mention at the very end (eg. "Originally created by [Username](./link/to/source).". Do not mention if closed or open species. Avoid mentioning the species name (it is redundant).',
   },
   {
     name: 'thumbnailurl',
@@ -90,17 +88,15 @@ export const editableFields: EditableField<Species>[] = [
     imageUploadProperties: {
       width: THUMBNAIL_WIDTH,
       height: THUMBNAIL_HEIGHT,
-      bucketName: bucketNames.speciesThumbnails
+      bucketName: bucketNames.speciesThumbnails,
     },
-    hint:
-      'Use a dark image so it is easier on the eyes. Prefer an anthro version of the species as it is for VRChat.'
+    hint: 'Use a dark image so it is easier on the eyes. Prefer an anthro version of the species as it is for VRChat.',
   },
   {
     name: 'thumbnailsourceurl',
     label: 'Thumbnail source URL',
     type: fieldTypes.text,
-    hint:
-      'The website or tweet or whatever that you found the image above. Respect authors!'
+    hint: 'The website or social media post or whatever that you found the image above. Respect authors!',
   },
   {
     name: 'redirectto',
@@ -112,7 +108,7 @@ export const editableFields: EditableField<Species>[] = [
       fieldAsLabel: SpeciesFieldNames.pluralName,
       renderer: ({ item }: { item: Species }) => (
         <SpeciesResultItem species={item} />
-      )
-    }
-  }
+      ),
+    },
+  },
 ]

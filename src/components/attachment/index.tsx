@@ -2,7 +2,6 @@ import React from 'react'
 import { AttachmentType, AttachmentFields } from '../../modules/attachments'
 import { isUrlATweet, isUrlAYoutubeVideo } from '../../utils'
 import VideoPlayer from '../video-player'
-import Tweet from '../tweet'
 import Button from '../button'
 
 const Attachment = ({
@@ -18,9 +17,7 @@ const Attachment = ({
     case AttachmentType.Image:
       return <img src={url} width={width} />
     case AttachmentType.Url:
-      if (isUrlATweet(url)) {
-        return <Tweet url={url} />
-      } else if (isUrlAYoutubeVideo(url)) {
+      if (isUrlAYoutubeVideo(url)) {
         return (
           <VideoPlayer
             url={url}

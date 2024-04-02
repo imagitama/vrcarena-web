@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import { colors } from '../../brand'
 import Markdown from '../../components/markdown'
 import logoSvgUrl from './assets/logo-v1/logo-v1.svg'
-import twitterAvatarUrl from './assets/logo-v1/twitter-avatar.png'
+import avatarUrl from './assets/logo-v1/avatar.png'
 
 const rules = `# VRCArena Brand Guide
 
@@ -59,9 +59,9 @@ The font used in the website and all marketing materials is Roboto. View it [her
 
 ## Social Media
 
-<img src="${twitterAvatarUrl}" width="100px" height="100px" />
+<img src="${avatarUrl}" width="100px" height="100px" />
 
-The icons used for social media (Twitter, Discord, etc.) is a square image with the white logo positioned in the center:
+The icons used for social media (Discord, etc.) is a square image with the white logo positioned in the center:
 
 - 20% from the top and bottom
 - 5% from the left and right

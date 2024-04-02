@@ -108,13 +108,6 @@ export const AttachmentsMetaFieldNames = {
   lastModifiedAt: 'lastmodifiedat',
 }
 
-export const TweetsFieldNames = {
-  status: 'status',
-  tweetId: 'tweetid',
-  tweetedAt: 'tweetedat',
-  createdAt: 'createdat',
-}
-
 export const TweetQueueFieldNames = {
   status: 'status',
   asset: 'asset',

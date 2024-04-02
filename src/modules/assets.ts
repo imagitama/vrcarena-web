@@ -100,7 +100,6 @@ export interface AssetMeta {
   createdby: string // user ref
   createdat: Date
   lastsyncedwithgumroadat: Date
-  tweetrecordids: string[]
   approvedat: Date
   approvedby: string
   publishedat: Date

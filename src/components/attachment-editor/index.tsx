@@ -32,7 +32,7 @@ const attachmentTypesMeta: { [key: string]: { name: string } } = {
     name: 'File (link to a ZIP, RAR, etc)',
   },
   [AttachmentType.Url]: {
-    name: 'Other URL (YouTube video, tweet, HTML page, etc)',
+    name: 'Other URL (YouTube video, social media post, etc)',
   },
 }
 
@@ -262,8 +262,8 @@ const AttachmentEditor = ({
               onChange={(e) => setNewUrl(e.target.value)}
               className={classes.textInput}
             />
-            Note that only YouTube videos and tweets will be embedded
-            (everything else will show a button to visit the URL)
+            Note that only YouTube videos will be embedded (everything else will
+            show a button to visit the URL)
             <FormControls>
               <Button onClick={() => setField('url', newUrl)}>Done</Button>
             </FormControls>

@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 
 import Heading from '../../../heading'
 import AdminHistory from '../../../admin-history'
-import TweetsAdmin from '../../../tweets-admin'
 import TabContext from '../../context'
 import { CollectionNames } from '../../../../modules/assets'
 
@@ -18,8 +17,6 @@ export default () => {
         type={CollectionNames.Assets}
         metaType={CollectionNames.AssetsMeta}
       />
-      <Heading variant="h2">Tweets</Heading>
-      <TweetsAdmin assetId={assetId} />
     </>
   )
 }
