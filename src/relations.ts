@@ -44,7 +44,11 @@ export const getUrlForParent = (
       return routes.viewAssetWithVarAndCommentVar
         .replace(
           ':assetId',
-          parentChildData ? parentChildData.parent : parentData.parent
+          parentChildData
+            ? parentChildData.parent
+            : parentData
+            ? parentData.parent
+            : 'NONE'
         )
         .replace(':commentId', parentId)
     case ReportsCollectionNames.Reports:
