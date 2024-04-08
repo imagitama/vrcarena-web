@@ -14,6 +14,7 @@ import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import { cleanupTags } from '../../utils/tags'
 import TagChips from '../tag-chips'
+import WarningMessage from '../warning-message'
 
 const TagBlacklistEditor = () => {
   const isLoggedIn = useIsLoggedIn()
@@ -68,6 +69,9 @@ const TagBlacklistEditor = () => {
 
   return (
     <>
+      <WarningMessage>
+        This feature is currently a WIP and unavailable
+      </WarningMessage>
       <p>
         Enter any tags (separated by a space) you want to avoid seeing on the
         site:

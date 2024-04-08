@@ -10,6 +10,7 @@ export default (): [
   () => void
 ] => {
   const userId = useUserId()
+  // TODO: Cache result for many usages
   return useDataStoreItem<UserPreferences>(
     CollectionNames.UserPreferences,
     userId || false

@@ -382,12 +382,6 @@ const AssetResultsItem = ({
     )
   }
 
-  // if (tagBlacklist) {
-  //   if (tagBlacklist.find(blacklistedTag => asset.tags.includes(blacklistedTag))) {
-  //     return <BlacklistedAssetResultsItem />
-  //   }
-  // }
-
   const isBlacklisted =
     tagBlacklist &&
     tagBlacklist.length &&
