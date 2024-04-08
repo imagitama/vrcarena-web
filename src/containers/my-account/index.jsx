@@ -31,6 +31,7 @@ import { trackAction } from '../../analytics'
 import PatreonConnectForm from '../../components/patreon-connect-form'
 import VrPlatformChooser from '../../components/vr-platform-chooser'
 import LinkAccountWithVrchatForm from '../../components/link-with-vrchat-account-form'
+import TagBlacklistEditor from '../../components/tag-blacklist-editor'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -157,6 +158,8 @@ const View = () => {
                     )
                   }
                 />
+                <Heading variant="h2">Tag Blacklist</Heading>
+                <TagBlacklistEditor />
                 <Heading variant="h3">Notifications</Heading>
                 <NotificationSettings />
               </>

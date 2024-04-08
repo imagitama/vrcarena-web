@@ -9,7 +9,7 @@ export const USER_UNLOADED = 'user/USER_UNLOADED'
 const initialState = {
   isLoading: false,
   isErrored: false,
-  user: null
+  user: null,
 }
 
 export interface NotificationPreferences {}
@@ -19,19 +19,20 @@ export interface UserPreferences {
   enabledadultcontent: boolean
   notificationemail: string
   notificationprefs: NotificationPreferences
+  tagblacklist: string[]
 }
 
 export const CollectionNames = {
   Users: 'users',
   UsersMeta: 'usermeta',
   UsersAdminMeta: 'useradminmeta',
-  UserPreferences: 'userpreferences'
+  UserPreferences: 'userpreferences',
 }
 
 export const UserPreferencesFieldNames = {
   enabledAdultContent: 'enabledadultcontent',
   notificationEmail: 'notificationemail',
-  notificationPrefs: 'notificationprefs'
+  notificationPrefs: 'notificationprefs',
 }
 
 export default (state = initialState, action: AnyAction) => {
@@ -39,19 +40,19 @@ export default (state = initialState, action: AnyAction) => {
     case USER_IS_LOADING:
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
       }
 
     case USER_IS_DONE_LOADING:
       return {
         ...state,
-        isLoading: false
+        isLoading: false,
       }
 
     case USER_IS_ERRORED:
       return {
         ...state,
-        isErrored: true
+        isErrored: true,
       }
 
     case USER_LOADED:
@@ -59,7 +60,7 @@ export default (state = initialState, action: AnyAction) => {
         ...state,
         isLoading: false,
         isErrored: false,
-        user: action.data.user
+        user: action.data.user,
       }
 
     case USER_UNLOADED:
@@ -67,7 +68,7 @@ export default (state = initialState, action: AnyAction) => {
         ...state,
         isLoading: false,
         isErrored: false,
-        user: null
+        user: null,
       }
 
     default:

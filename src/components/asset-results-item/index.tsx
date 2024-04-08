@@ -28,6 +28,7 @@ import { Asset, FullAsset } from '../../modules/assets'
 import useIsEditor from '../../hooks/useIsEditor'
 import useBulkEdit from '../../hooks/useBulkEdit'
 import SelectedTick from '../selected-tick'
+import useTagBlacklist from '../../hooks/useTagBlacklist'
 
 const chipMargin = '0.25rem'
 
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     [mediaQueryForTabletsOrBelow]: {
       width: '160px',
     },
-    overflow: 'visible',
+    overflow: 'hidden',
   },
   landscape: {
     width: '100%',
@@ -203,6 +204,28 @@ const useStyles = makeStyles((theme) => ({
   pushDownIcons: {
     paddingTop: '2.5rem',
   },
+  blacklisted: {
+    '& $media': {
+      filter: 'blur(10px)',
+    },
+    '&:hover $media': {
+      animationName: '$unblur',
+      animationDuration: '3s',
+      animationIterationCount: 1,
+      animationFillMode: 'forwards',
+    },
+  },
+  '@keyframes unblur': {
+    '0%': {
+      filter: 'blur(10px)',
+    },
+    '90%': {
+      filter: 'blur(10px)',
+    },
+    '100%': {
+      filter: 'blur(0px)',
+    },
+  },
 }))
 
 function truncateTextAndAddEllipsis(text: string): string {
@@ -349,6 +372,7 @@ const AssetResultsItem = ({
   const classes = useStyles()
   const cardRef = useRef<HTMLDivElement>()
   const isEditor = useIsEditor()
+  const tagBlacklist = useTagBlacklist()
 
   if (shimmer) {
     return (
@@ -358,11 +382,22 @@ const AssetResultsItem = ({
     )
   }
 
+  // if (tagBlacklist) {
+  //   if (tagBlacklist.find(blacklistedTag => asset.tags.includes(blacklistedTag))) {
+  //     return <BlacklistedAssetResultsItem />
+  //   }
+  // }
+
+  const isBlacklisted =
+    tagBlacklist &&
+    tagBlacklist.length &&
+    tagBlacklist.find((blacklistedTag) => asset.tags.includes(blacklistedTag))
+
   return (
     <Card
       className={`${classes.root} ${isLandscape ? classes.landscape : ''} ${
         dim ? classes.dim : ''
-      }`}
+      } ${isBlacklisted ? classes.blacklisted : ''}`}
       ref={cardRef}>
       {isEditor && (
         <div className={classes.toggleBulkEditButton}>
