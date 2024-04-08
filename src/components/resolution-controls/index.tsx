@@ -12,7 +12,7 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 import {
   CollectionNames,
   ReportMeta,
-  ResolutionStatuses
+  ResolutionStatuses,
 } from '../../modules/reports'
 import useUserId from '../../hooks/useUserId'
 import TextInput from '../text-input'
@@ -22,7 +22,7 @@ export default ({
   existingResolutionStatus,
   existingResolutionNotes,
   onClick,
-  onDone
+  onDone,
 }: {
   id: string
   existingResolutionStatus?: string // pending | resolved
@@ -30,13 +30,12 @@ export default ({
   onClick?: (newValue: string) => void
   onDone?: () => void
 }) => {
-  const [isLoading, isErroredLoading, metaRecord] = useDataStoreItem<
-    ReportMeta
-  >(
-    CollectionNames.ReportsMeta,
-    existingResolutionStatus ? false : id,
-    'resolve-button'
-  )
+  const [isLoading, isErroredLoading, metaRecord] =
+    useDataStoreItem<ReportMeta>(
+      CollectionNames.ReportsMeta,
+      existingResolutionStatus ? false : id,
+      'resolve-button'
+    )
   const [isSaving, , isErroredSaving, save] = useDatabaseSave(
     CollectionNames.ReportsMeta,
     id
@@ -51,7 +50,10 @@ export default ({
   }
 
   if (!existingResolutionStatus && !metaRecord) {
-    return <>No record found</>
+    console.warn(
+      'Cannot render resolution controls: no existing resolution status and no meta record'
+    )
+    return null
   }
 
   const resolutionStatus =
@@ -91,7 +93,7 @@ export default ({
         resolutionstatus: newResolutionStatus,
         resolvedat: newResolvedAt,
         resolvedby: newResolvedBy,
-        resolutionnotes: newResolutionNotes
+        resolutionnotes: newResolutionNotes,
       })
 
       if (onDone) {
@@ -113,9 +115,7 @@ export default ({
             <CheckIcon />
           ) : resolutionStatus === ResolutionStatuses.Resolved ? (
             <ClearIcon />
-          ) : (
-            undefined
-          )
+          ) : undefined
         }>
         {resolutionStatus === ResolutionStatuses.Pending
           ? 'Resolve'
@@ -130,7 +130,7 @@ export default ({
         fullWidth
         rows={5}
         multiline
-        onChange={e => setNewResolutionNotes(e.target.value)}
+        onChange={(e) => setNewResolutionNotes(e.target.value)}
         value={newResolutionNotes}
       />
     </>

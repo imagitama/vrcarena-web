@@ -15,7 +15,7 @@ export default ({
   metaCollectionName,
   existingFeaturedStatus = undefined,
   onClick = undefined,
-  onDone = undefined
+  onDone = undefined,
 }: {
   id: string
   metaCollectionName: string
@@ -23,13 +23,12 @@ export default ({
   onClick?: ({ newValue }: { newValue: FeaturedStatus }) => void
   onDone?: () => void
 }) => {
-  const [isLoading, isErroredLoading, metaRecord] = useDataStoreItem<
-    MetaRecord
-  >(
-    metaCollectionName,
-    existingFeaturedStatus !== undefined ? false : id,
-    'feature-button'
-  )
+  const [isLoading, isErroredLoading, metaRecord] =
+    useDataStoreItem<MetaRecord>(
+      metaCollectionName,
+      existingFeaturedStatus !== undefined ? false : id,
+      'feature-button'
+    )
   const [isSaving, , isErroredSaving, save] = useDatabaseSave(
     metaCollectionName,
     id
@@ -40,7 +39,10 @@ export default ({
   }
 
   if (!existingFeaturedStatus && !metaRecord) {
-    return <>No record found</>
+    console.warn(
+      'Cannot render feature button: no existing featured status and no meta record'
+    )
+    return null
   }
 
   const featuredStatus = existingFeaturedStatus
@@ -73,7 +75,7 @@ export default ({
       }
 
       await save({
-        featuredstatus: newValue
+        featuredstatus: newValue,
       })
 
       if (onDone) {

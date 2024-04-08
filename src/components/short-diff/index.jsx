@@ -474,10 +474,14 @@ function AttachmentsOutput({ fields }) {
   }
 
   const [isLoading, isError, attachments] = useDataStoreItems(
-    'attachments',
+    fields.attachmentids.length ? 'attachments' : false,
     fields.attachmentids,
     'get-attachments-output'
   )
+
+  if (!fields.attachmentids.length) {
+    return <NoResultsMessage>No attachment IDs</NoResultsMessage>
+  }
 
   if (isLoading) {
     return <LoadingIndicator message="Loading attachments..." />

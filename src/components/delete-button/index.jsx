@@ -33,7 +33,10 @@ const DeleteButton = ({
   }
 
   if (!existingAccessStatus && !metaRecord) {
-    return <>No record found</>
+    console.warn(
+      'Cannot render delete button: no existing access status and no meta record'
+    )
+    return null
   }
 
   const accessStatus =
