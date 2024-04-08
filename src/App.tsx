@@ -544,6 +544,7 @@ const MainContent = () => {
       <Switch>
         <Redirect from={'/guidelines'} to={routes.termsOfService} />
         <Redirect from={'/privacy-policy'} to={routes.privacyPolicy} />
+        <Redirect from={'/dcma-policy'} to={routes.dmcaPolicy} />
         <Route exact path={routes.home} component={Home} />
         <Route exact path={routes.worldBuilder} component={WorldBuilder} />
         <Route exact path={routes.social} component={Social} />
