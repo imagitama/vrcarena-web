@@ -6,6 +6,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import TocIcon from '@material-ui/icons/Toc'
 import { Helmet } from 'react-helmet'
 import InfoIcon from '@material-ui/icons/Info'
+import EditIcon from '@material-ui/icons/Edit'
+import HistoryIcon from '@material-ui/icons/History'
 
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
@@ -14,7 +16,7 @@ import Markdown from '../../components/markdown'
 import Button from '../../components/button'
 
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { CollectionNames, PagesFieldNames } from '../../data-store'
+import { PagesFieldNames } from '../../data-store'
 import useDatabaseQuery, {
   Operators,
   options,
@@ -28,10 +30,12 @@ import Message from '../../components/message'
 import { DISCORD_URL } from '../../config'
 import TextInput from '../../components/text-input'
 import CopyButton from '../../components/copy-button'
-import {
-  CollectionNames as PagesCollectionNames,
-  Page,
-} from '../../modules/pages'
+import { CollectionNames, Page } from '../../modules/pages'
+import NoResultsMessage from '../../components/no-results-message'
+import FormControls from '../../components/form-controls'
+import { HistoryEntry } from '../../modules/history'
+import HistoryRevisions from '../../components/history-revisions'
+import { CollectionNames as HistoryCollectionNames } from '../../modules/history'
 
 interface PageContext {
   pagesInParent: Page[]
@@ -190,9 +194,11 @@ const TableOfContents = () => {
 }
 
 const EditorControls = ({
-  page: { id, parent: parentName },
+  parentName,
+  pageName,
 }: {
-  page: Page
+  parentName: string
+  pageName: string
 }) => {
   const isEditor = useIsEditor()
 
@@ -201,12 +207,15 @@ const EditorControls = ({
   }
 
   return (
-    <Button
-      url={routes.editPageWithParentAndPageVar
-        .replace(':parentName', parentName)
-        .replace(':pageName', id)}>
-      Edit Page
-    </Button>
+    <FormControls>
+      <Button
+        url={routes.editPageWithParentAndPageVar
+          .replace(':parentName', parentName)
+          .replace(':pageName', pageName)}
+        icon={<EditIcon />}>
+        Edit Page
+      </Button>
+    </FormControls>
   )
 }
 
@@ -248,9 +257,55 @@ const HelpModeInfo = () => {
   )
 }
 
+const PageHistoryOutput = ({ pageName }: { pageName: string }) => {
+  const [isLoading, isError, entries] = useDatabaseQuery<HistoryEntry>(
+    HistoryCollectionNames.History,
+    [
+      ['parenttable', Operators.EQUALS, CollectionNames.Pages],
+      ['parent', Operators.EQUALS, pageName],
+    ],
+    undefined,
+    ['createdat', OrderDirections.ASC]
+  )
+
+  if (isLoading) {
+    return <LoadingIndicator message="Loading history..." />
+  }
+
+  if (isError) {
+    return <ErrorMessage>Failed to load history</ErrorMessage>
+  }
+
+  if (!entries || !entries.length) {
+    return <NoResultsMessage />
+  }
+
+  return <HistoryRevisions<Page> entries={entries} fieldNameToDiff="content" />
+}
+
+const PageHistory = ({ pageName }: { pageName: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  return (
+    <>
+      <br />
+      <FormControls>
+        <Button
+          icon={<HistoryIcon />}
+          onClick={() => setIsExpanded(!isExpanded)}
+          color="default">
+          View Revision History
+        </Button>
+      </FormControls>
+      {isExpanded && <PageHistoryOutput pageName={pageName} />}
+    </>
+  )
+}
+
 const PageView = ({ page }: { page: Page }) => {
   const {
     parentName,
+    pageName,
     description: parentDescription,
     isInHelpMode,
     setSelectedLineOfText,
@@ -274,7 +329,7 @@ const PageView = ({ page }: { page: Page }) => {
         onClickLineWithContent={isInHelpMode ? setSelectedLineOfText : null}
       />
       {parentName === 'avatar-tutorial' && <PageControls />}
-      <EditorControls page={page} />
+      {parentName === 'help' && <PageHistory pageName={pageName} />}
     </>
   )
 }
@@ -308,7 +363,7 @@ const Pages = () => {
   )
   const [isLoadingPages, isErrorLoadingPages, pagesInParent] =
     useDatabaseQuery<Page>(
-      PagesCollectionNames.Pages,
+      CollectionNames.Pages,
       [[PagesFieldNames.parent, Operators.EQUALS, parentName]],
       {
         [options.orderBy]: [PagesFieldNames.pageOrder, OrderDirections.ASC],
@@ -335,13 +390,7 @@ const Pages = () => {
 
   const { title, description } = parent
 
-  if (pagesInParent[pagesInParent.length - 1].content === '') {
-    return (
-      <ErrorMessage>
-        Tutorial is currently unavailable (making improvements) 17 June 2022
-      </ErrorMessage>
-    )
-  }
+  const pageContent = pagesInParent[pagesInParent.length - 1].content
 
   return (
     <div className={classes.root}>
@@ -349,7 +398,7 @@ const Pages = () => {
         <title>{title} | VRCArena</title>
         <meta name="description" content={description} />
       </Helmet>
-
+      <EditorControls parentName={parentName} pageName={pageName} />
       {parentName === 'avatar-tutorial' && (
         <>
           <Heading variant="h1" style={{ textAlign: 'center' }}>
@@ -369,7 +418,11 @@ const Pages = () => {
           setSelectedLineOfText,
           isInHelpMode,
         }}>
-        <ViewContents />
+        {pageContent ? (
+          <ViewContents />
+        ) : (
+          <NoResultsMessage>Page has no content</NoResultsMessage>
+        )}
       </PageContext.Provider>
     </div>
   )

@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-function LoadingIndicator({ message = '' }) {
+const LoadingIndicator = ({ message = '' }: { message?: React.ReactNode }) => {
   const classes = useStyles()
   return (
     <>

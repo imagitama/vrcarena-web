@@ -8,4 +8,5 @@ export interface Page {
 
 export const CollectionNames = {
   Pages: 'pages',
+  PageParents: 'pageparents',
 }

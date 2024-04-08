@@ -11,6 +11,7 @@ import { fieldTypes } from '../../generic-forms'
 import { trackAction } from '../../analytics'
 import { scrollToTop } from '../../utils'
 import { handleError } from '../../error-handling'
+import * as routes from '../../routes'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
@@ -32,6 +33,9 @@ import TagsInput from './components/tags-input'
 import DropdownInput from './components/dropdown-input'
 import ItemInput from './components/item-input'
 import Tabs from '../tabs'
+import useIsEditor from '../../hooks/useIsEditor'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import { CollectionNames } from '../../modules/pages'
 
 function getInputForFieldType(type: keyof typeof fieldTypes) {
   switch (type) {

@@ -5,14 +5,15 @@ import { Helmet } from 'react-helmet'
 import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 import NoPermissionMessage from '../../components/no-permission-message'
-
-import { CollectionNames } from '../../data-store'
-
 import * as routes from '../../routes'
 import useIsEditor from '../../hooks/useIsEditor'
+import { CollectionNames } from '../../modules/pages'
 
 const View = () => {
-  const { parentName, pageName } = useParams()
+  const { parentName, pageName } = useParams<{
+    parentName: string
+    pageName: string
+  }>()
   const isEditor = useIsEditor()
 
   if (!isEditor) {
@@ -22,7 +23,7 @@ const View = () => {
   return (
     <>
       <Heading variant="h1">
-        Edit Page {parentName} - {pageName}
+        Edit Page {parentName}/{pageName}
       </Heading>
       <GenericEditor
         collectionName={CollectionNames.Pages}
@@ -37,7 +38,6 @@ const View = () => {
         cancelUrl={routes.pagesWithParentAndPageVar
           .replace(':parentName', parentName)
           .replace(':pageName', pageName)}
-        changeMetaFields={false}
       />
     </>
   )

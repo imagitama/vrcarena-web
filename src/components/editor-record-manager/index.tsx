@@ -8,6 +8,7 @@ import PublicEditorNotesForm from '../public-editor-notes-form'
 import Button from '../button'
 import FeatureButton from '../feature-button'
 import { FeaturedStatus } from '../../modules/common'
+import EditorBox from '../editor-box'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -16,10 +17,6 @@ const useStyles = makeStyles(() => ({
     flexWrap: 'wrap',
     alignItems: 'center',
   },
-  box: {
-    border: '2px dashed rgba(255, 255, 0, 0.5)',
-  },
-  noBox: {},
   item: {
     padding: '0.5rem',
   },
@@ -74,7 +71,7 @@ const EditorRecordManager = ({
 }) => {
   const classes = useStyles()
   return (
-    <div className={`${classes.root} ${showBox ? classes.box : classes.noBox}`}>
+    <EditorBox className={classes.root}>
       {editUrl ? (
         <div className={classes.item}>
           <Button icon={<EditIcon />} url={editUrl}>
@@ -133,7 +130,7 @@ const EditorRecordManager = ({
           />
         </div>
       ) : null}
-    </div>
+    </EditorBox>
   )
 }
 

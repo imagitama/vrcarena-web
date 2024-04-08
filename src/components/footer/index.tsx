@@ -21,18 +21,18 @@ const useStyles = makeStyles({
     margin: '3rem 0 0 0',
     padding: '1rem 2rem',
     fontSize: '16px',
-    display: 'flex'
+    display: 'flex',
   },
   col: {
-    width: '50%'
+    width: '50%',
   },
   colRight: {
-    textAlign: 'right'
+    textAlign: 'right',
   },
   scrollToTopBtnWrapper: {
     marginTop: '3rem',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 })
 
 function ScrollToTopBtn() {
@@ -59,29 +59,29 @@ function ScrollToTopBtn() {
 
 const footerLinks = [
   {
-    url: routes.rules,
-    label: 'Guidelines'
-  },
-  {
     url: routes.takedownPolicy,
-    label: 'Takedowns'
+    label: 'Takedowns',
   },
   {
     url: routes.privacyPolicy,
-    label: 'Privacy Policy'
+    label: 'Privacy Policy',
+  },
+  {
+    url: routes.termsOfService,
+    label: 'Terms of Service',
   },
   {
     url: routes.dmcaPolicy,
-    label: 'DMCA'
+    label: 'DMCA',
   },
   {
     url: routes.brand,
-    label: 'Brand'
+    label: 'Brand',
   },
   {
     url: routes.transparency,
-    label: 'Transparency'
-  }
+    label: 'Transparency',
+  },
 ]
 
 function DevelopmentTools() {

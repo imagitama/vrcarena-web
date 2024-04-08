@@ -9,13 +9,13 @@ const fields: EditableField<any>[] = [
     name: PagesFieldNames.title,
     label: 'Title',
     type: fieldTypes.text,
-    isRequired: true
+    isRequired: true,
   },
   {
     name: PlaylistsFieldNames.description,
     label: 'Description',
-    type: fieldTypes.textMarkdown,
-    default: ''
+    type: fieldTypes.text,
+    default: '',
   },
   {
     name: PagesFieldNames.content,
@@ -24,9 +24,9 @@ const fields: EditableField<any>[] = [
     customProperties: {
       renderer: ({ onChange, value }) => (
         <MarkdownEditor content={value} onChange={onChange} />
-      )
-    }
-  }
+      ),
+    },
+  },
 ]
 
 export default fields

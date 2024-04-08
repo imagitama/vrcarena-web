@@ -6,7 +6,7 @@ import React, {
   Suspense,
 } from 'react'
 import { useMediaQuery } from 'react-responsive'
-import Tabs from '@material-ui/core/Tabs'
+import MaterialTabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { makeStyles } from '@material-ui/core/styles'
 import LazyLoad from 'react-lazyload'
@@ -94,13 +94,13 @@ const getInitialTabIdx = (tabName: string, items: TabItem[]): number => {
 
 export interface TabItem {
   name: string // used in URL
-  label: string
+  label: React.ReactNode
   contents: React.ReactElement
   noLazy?: boolean
   isEnabled?: boolean
 }
 
-export default ({
+const Tabs = ({
   items,
   urlWithTabNameVar = '',
   horizontal = false,
@@ -145,7 +145,7 @@ export default ({
             isHorizontal ? classes.horizontal : classes.vertical
           }`}>
           <div className={classes.tabsContainer}>
-            <Tabs
+            <MaterialTabs
               orientation={isHorizontal ? 'horizontal' : 'vertical'}
               variant="scrollable"
               scrollButtons="auto"
@@ -167,7 +167,7 @@ export default ({
               {enabledItems.map(({ name, label }, index) => (
                 <Tab key={name} label={label} />
               ))}
-            </Tabs>
+            </MaterialTabs>
           </div>
           <div className={classes.tabPanels}>
             {enabledItems.map((item, index) => (
@@ -186,3 +186,5 @@ export default ({
     </Suspense>
   )
 }
+
+export default Tabs

@@ -25,72 +25,72 @@ import Link from '../../components/link'
 import LoadingIndicator from '../../components/loading-indicator'
 import { useHistory } from 'react-router'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   // global
   root: {
-    position: 'relative'
+    position: 'relative',
   },
   hydratingIcon: {
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: '1rem'
+    padding: '1rem',
   },
   fakeLink: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
   },
   noValueMessage: {
     opacity: '0.5',
     fontSize: '110%',
     cursor: 'default',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   heading: {
     textAlign: 'center',
     padding: '2rem 0',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   hydrating: {
-    opacity: 0.5
+    opacity: 0.5,
   },
   formControls: {
-    marginTop: '4rem'
+    marginTop: '4rem',
   },
   iconAndText: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   // rules
   acceptRulesButton: {
     textAlign: 'center',
-    padding: '2rem 0'
+    padding: '2rem 0',
   },
 
   // basics
   authorHeading: {
-    fontSize: '50%'
+    fontSize: '50%',
   },
   banner: {
     width: '100%',
     '& img': {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
 
   // patreon
   pedestalVideo: {
     width: '300px',
-    height: '300px'
+    height: '300px',
   },
   patreonMessage: {
     padding: '1rem',
     fontSize: '150%',
     textAlign: 'center',
     '& img': {
-      maxWidth: '50%'
-    }
+      maxWidth: '50%',
+    },
   },
 
   // publish
@@ -98,8 +98,8 @@ const useStyles = makeStyles(theme => ({
     marginTop: '1rem',
     padding: '1rem',
     borderRadius: '5px',
-    border: '3px dashed rgba(255, 255, 255, 0.5)'
-  }
+    border: '3px dashed rgba(255, 255, 255, 0.5)',
+  },
 }))
 
 const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
@@ -108,9 +108,9 @@ const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
   return (
     <div>
       <div className={classes.heading}>
-        By clicking "I accept" you understand and agree to the guidelines for
-        posting assets on this site. Read the guidelines{' '}
-        <Link to={routes.rules}>here</Link>.
+        By clicking "I accept" you understand and agree to our{' '}
+        <Link to={routes.termsOfService}>Terms of Service</Link> and our{' '}
+        <Link to={routes.takedownPolicy}>Takedown Policy</Link>.
       </div>
       <div className={classes.acceptRulesButton}>
         <Button size="large" icon={<CheckIcon />} onClick={onAccept}>
@@ -149,7 +149,7 @@ const View = () => {
       const newDraftRecord = await insertRecord<{ title: string }, Asset>(
         CollectionNames.Assets,
         {
-          title: 'My draft asset'
+          title: 'My draft asset',
         },
         false
       )

@@ -1,5 +1,11 @@
 import React, { lazy, Suspense, useEffect } from 'react'
-import { Route, Switch, useLocation, useHistory } from 'react-router-dom'
+import {
+  Route,
+  Switch,
+  useLocation,
+  useHistory,
+  Redirect,
+} from 'react-router-dom'
 import ThemeProvider from '@material-ui/styles/ThemeProvider'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { makeStyles } from '@material-ui/core/styles'
@@ -135,14 +141,6 @@ const MyAccount = lazy(() =>
 const Admin = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "admin" */ './containers/admin')
-  )
-)
-const PrivacyPolicy = lazy(() =>
-  catchChunkDeaths(
-    () =>
-      import(
-        /* webpackChunkName: "privacy-policy" */ './containers/privacy-policy'
-      )
   )
 )
 const ErrorContainer = lazy(() =>
@@ -333,11 +331,6 @@ const ViewAward = lazy(() =>
     () => import(/* webpackChunkName: "view-award" */ './containers/view-award')
   )
 )
-const Rules = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "rules" */ './containers/rules')
-  )
-)
 const TakedownPolicy = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "takedowns" */ './containers/takedowns')
@@ -449,6 +442,12 @@ const EditPage = lazy(() =>
     () => import(/* webpackChunkName: "edit-page" */ './containers/edit-page')
   )
 )
+const CreatePage = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "create-page" */ './containers/create-page')
+  )
+)
 const RandomAvatars = lazy(() =>
   catchChunkDeaths(
     () =>
@@ -543,6 +542,8 @@ const MainContent = () => {
         </div>
       ) : null}
       <Switch>
+        <Redirect from={'/guidelines'} to={routes.termsOfService} />
+        <Redirect from={'/privacy-policy'} to={routes.privacyPolicy} />
         <Route exact path={routes.home} component={Home} />
         <Route exact path={routes.worldBuilder} component={WorldBuilder} />
         <Route exact path={routes.social} component={Social} />
@@ -576,7 +577,6 @@ const MainContent = () => {
           component={MyAccount}
         />
         <Route exact path={routes.myAccount} component={MyAccount} />
-        <Route exact path={routes.privacyPolicy} component={PrivacyPolicy} />
         <Route exact path={routes.randomAvatars} component={RandomAvatars} />
         <Route
           exact
@@ -695,8 +695,6 @@ const MainContent = () => {
         <Route exact path={routes.viewReportWithVar} component={ViewReport} />
         <Route exact path={routes.dmcaPolicy} component={DmcaPolicy} />
         <Route exact path={routes.viewAwardWithVar} component={ViewAward} />
-        <Route exact path={routes.rules} component={Rules} />
-        <Route exact path={routes.takedownPolicy} component={TakedownPolicy} />
         <Route
           exact
           path={routes.createAmendmentWithVar}
@@ -773,6 +771,11 @@ const MainContent = () => {
           exact
           path={routes.editAttachmentWithVar}
           component={EditAttachment}
+        />
+        <Route
+          exact
+          path={routes.createPageWithParentAndPageVar}
+          component={CreatePage}
         />
         <Route
           exact

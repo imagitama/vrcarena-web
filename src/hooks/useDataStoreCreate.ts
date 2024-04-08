@@ -11,7 +11,8 @@ export default <TRecord>(
   boolean,
   (
     fields: Partial<TRecord>,
-    returnEntireDocument?: boolean
+    returnEntireDocument?: boolean,
+    allowId?: boolean
   ) => Promise<string | TRecord>,
   () => void,
   null | string
@@ -33,7 +34,8 @@ export default <TRecord>(
 
   const create = async (
     fields: Partial<TRecord>,
-    returnEntireDocument: boolean = false
+    returnEntireDocument: boolean = false,
+    allowId: boolean = false
   ): Promise<string | TRecord> => {
     try {
       setIsSuccess(false)
@@ -41,7 +43,7 @@ export default <TRecord>(
       setIsCreating(true)
 
       // @ts-ignore
-      if (fields.id) {
+      if (fields.id && !allowId) {
         throw new Error(`Cannot provide an id when performing create`)
       }
 
@@ -53,13 +55,13 @@ export default <TRecord>(
           returning: 'representation',
         })
 
-      if (!data || !data.length) {
-        throw new Error('Result is null or empty')
-      }
-
       if (error) {
         console.error(error)
         throw new Error(`API error`)
+      }
+
+      if (!data || !data.length) {
+        throw new Error('Result is null or empty')
       }
 
       setIsCreating(false)

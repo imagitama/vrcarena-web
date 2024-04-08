@@ -8,7 +8,8 @@ const TextDiff = ({
   oldValue: string
   newValue: string
 }) => {
-  const isSingleLine = oldValue.includes('\n') || newValue.includes('\n')
+  const isSingleLine = !oldValue.includes('\n') && !newValue.includes('\n')
+
   return (
     <ReactTextDiff
       oldValue={oldValue || ''} // handle weird case when not strings

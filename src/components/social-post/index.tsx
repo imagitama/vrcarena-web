@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import SecurityIcon from '@material-ui/icons/Security'
 
 import Avatar, { sizes } from '../avatar'
 import {
@@ -188,9 +189,11 @@ const SocialPost = ({
                 onClick={() =>
                   setIsEditorControlsVisible((currentVal) => !currentVal)
                 }
-                className={classes.controls}>
-                Toggle Controls
-              </Button>
+                className={classes.controls}
+                icon={<SecurityIcon />}
+                iconOnly
+                size="small"
+              />
               {isEditorControlsVisible && (
                 <EditorRecordManager
                   id={socialPost.id}
