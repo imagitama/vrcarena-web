@@ -873,8 +873,8 @@ export default ({
               label={rendererInfo.label}
               hasChanged={!!onlyNewFields[fieldNameToUse]}>
               <TextDiff
-                oldValue={oldFields[fieldNameThatChanged]}
-                newValue={newFields[fieldNameThatChanged]}
+                oldValue={oldFields[fieldNameThatChanged] || ''}
+                newValue={newFields[fieldNameThatChanged] || ''}
               />
             </Field>
           )

@@ -125,7 +125,7 @@ const HistoryRevisions = <TData,>({
           label: <FormattedDate date={createdAt} />,
           contents: (
             <>
-              <TextDiff oldValue={oldValue} newValue={newValue} />
+              <TextDiff oldValue={oldValue || ''} newValue={newValue || ''} />
             </>
           ),
         })
