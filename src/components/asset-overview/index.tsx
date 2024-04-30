@@ -491,14 +491,20 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
               fallbackImageUrl={asset.pedestalfallbackimageurl}
             />
           </div>
-        ) : isLoading || mediaAttachments.length ? (
+        ) : (
           <ImageGallery
             images={
               isLoading
                 ? []
-                : mediaAttachments.slice(0, 3).map((attachment) => ({
+                : mediaAttachments.length
+                ? mediaAttachments.slice(0, 3).map((attachment) => ({
                     url: attachment.url,
                   }))
+                : [
+                    {
+                      url: asset.thumbnailurl,
+                    },
+                  ]
             }
             onClickImage={() =>
               trackAction(
@@ -520,11 +526,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             }
             showLoadingCount={isLoading ? 3 : 0}
           />
-        ) : asset ? (
-          <div className={classes.thumbnailWrapper}>
-            <AssetThumbnail url={asset.thumbnailurl} />
-          </div>
-        ) : null}
+        )}
         <div className={classes.primaryMetadata}>
           <div className={classes.primaryMetadataThumb}>
             {isLoading ? (
