@@ -123,9 +123,14 @@ const LinkAccountWithVrchatForm = () => {
 
   if (existingVrchatUserId) {
     return (
-      <SuccessMessage>
-        You have already linked your account with VRChat
-      </SuccessMessage>
+      <>
+        <SuccessMessage>
+          You have linked your account with VRChat ❤️
+        </SuccessMessage>
+        <br />
+        <br />
+        (you can safely remove the code from your status)
+      </>
     )
   }
 
