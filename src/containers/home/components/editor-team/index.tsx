@@ -7,8 +7,14 @@ import UsernameLink from '../../../../components/username-link'
 import { shuffle } from '../../../../utils'
 
 const useStyles = makeStyles({
-  items: {
+  root: {
+    display: 'flex',
+    alignItems: 'center',
     marginTop: '2rem',
+  },
+  items: {
+    marginLeft: '0.5rem',
+    alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-end',
@@ -36,12 +42,15 @@ const EditorTeam = () => {
   }
 
   return (
-    <div className={classes.items}>
-      {shuffle<FullUser[]>(users).map((user) => (
-        <UsernameLink id={user.id} username={user.username}>
-          <Avatar url={user.avatarurl} size={sizes.TINY} />
-        </UsernameLink>
-      ))}
+    <div className={classes.root}>
+      Our volunteer staff team:
+      <div className={classes.items}>
+        {shuffle<FullUser[]>(users).map((user) => (
+          <UsernameLink id={user.id} username={user.username}>
+            <Avatar url={user.avatarurl} size={sizes.TINY} />
+          </UsernameLink>
+        ))}
+      </div>
     </div>
   )
 }

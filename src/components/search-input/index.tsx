@@ -6,7 +6,7 @@ import TextInput from '../text-input'
 export default ({
   defaultValue = '',
   performSearch,
-  onClear
+  onClear,
 }: {
   defaultValue?: string
   performSearch: (searchTerm: string) => void
@@ -18,7 +18,7 @@ export default ({
     <div>
       <TextInput
         value={userInput}
-        onKeyDown={e => {
+        onKeyDown={(e) => {
           // fix weird bug when rendered inside menu
           e.stopPropagation()
 
@@ -26,7 +26,7 @@ export default ({
             performSearch(userInput)
           }
         }}
-        onChange={e => setUserInput(e.target.value)}
+        onChange={(e) => setUserInput(e.target.value)}
         size="small"
       />{' '}
       <Button onClick={() => performSearch(userInput)} icon={<SearchIcon />}>

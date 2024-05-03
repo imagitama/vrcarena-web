@@ -21,38 +21,38 @@ const useStyles = makeStyles({
       textShadow: '1px 1px 1px #000',
       display: 'flex',
       alignItems: 'center',
-      fontSize: '50%'
+      fontSize: '50%',
     },
     '& img': {
-      height: '100%'
+      height: '100%',
     },
     [mediaQueryForTabletsOrBelow]: {
       height: '50px',
-      padding: 0
+      padding: 0,
     },
     animation: '3s ease infinite alternate $pulseLogo',
     '&:hover': {
-      animation: '100ms $hoverOverLogo forwards'
-    }
+      animation: '100ms $hoverOverLogo forwards',
+    },
   },
   '@keyframes hoverOverLogo': {
     '0%': {
-      transform: 'scale(1)'
+      transform: 'scale(1)',
     },
     '100%': {
-      transform: 'scale(1.1)'
-    }
+      transform: 'scale(1.1)',
+    },
   },
   '@keyframes pulseLogo': {
     '0%': {
-      transform: 'scale(1)'
+      transform: 'scale(1)',
     },
     '75%': {
-      transform: 'scale(1)'
+      transform: 'scale(1)',
     },
     '100%': {
-      transform: 'scale(1.05)'
-    }
+      transform: 'scale(1.05)',
+    },
   },
   placeholder: {
     textAlign: 'center',
@@ -61,8 +61,8 @@ const useStyles = makeStyles({
     fontSize: '75%',
     padding: '1rem',
     display: 'block',
-    color: 'inherit'
-  }
+    color: 'inherit',
+  },
 })
 
 export default () => {
@@ -90,11 +90,7 @@ export default () => {
   }
 
   if (!events.length) {
-    return (
-      <Link to={routes.createEvent} className={classes.placeholder}>
-        Hosting an event in a VR game? Promote it here
-      </Link>
-    )
+    return null
   }
 
   const { id, name, bannerurl, slug } = events[0]

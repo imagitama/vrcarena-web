@@ -28,10 +28,24 @@ import { client, getUserId } from '../../supabase'
 import { CollectionNames } from '../../modules/notifications'
 
 const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    '@media (max-width: 1300px)': {
+      flexWrap: 'wrap',
+      flexDirection: 'column-reverse',
+    },
+  },
   items: {
     display: 'flex',
     alignItems: 'center',
-    flexWrap: 'wrap',
+    '@media (max-width: 1300px)': {
+      width: '100%',
+      justifyContent: 'flex-end',
+      '&:last-child': {
+        marginBottom: '0.5rem',
+      },
+    },
   },
   item: {
     marginRight: '1rem',
@@ -265,88 +279,97 @@ export default ({
   }, [isLoggedIn])
 
   return (
-    <div className={classes.items}>
+    <div className={classes.root}>
       {isLoggedIn ? (
-        <>
+        <div className={classes.items}>
           <Button
             url={routes.createAsset}
             className={`${classes.item} ${
               isMobile ? classes.mobileButton : ''
             }`}
             onClick={closeAllDropdowns}
-            icon={<AddBoxIcon />}>
+            icon={<AddBoxIcon />}
+            color="default">
             Submit
           </Button>
-        </>
+        </div>
       ) : null}
-      {Object.entries(menu)
-        .filter(([id, { hideIfNone, loggedInOnly }]) => {
-          if (loggedInOnly && !isLoggedIn) {
-            return false
-          }
-          if (hideIfNone && (!menuItems[id] || !menuItems[id].length)) {
-            return false
-          }
-          return true
-        })
-        .map(([id, { label, icon: Icon, badge }]) => (
-          <div
-            key={id}
-            ref={(elem) => {
-              if (!elem) {
-                return
-              }
-              buttonRefs.current[id] = elem
-            }}
-            className={classes.item}
-            onClick={() => toggleMenu(id)}>
-            {badge !== false ? (
-              <Badge
-                badgeContent={menuItems[id] ? menuItems[id].length : null}
-                color="primary">
-                {label ? label : Icon ? <Icon /> : null}
-              </Badge>
-            ) : (
-              label
-            )}
-          </div>
-        ))}
-      {Object.entries(menu).map(
-        ([id, { items, onClick, noItemsMessage, onClear }]) => {
-          const clearItem = {
-            id: 'clear-all',
-            onClick: async () => {
-              if (!onClear) {
-                return
-              }
-
-              await onClear()
-
-              hydrateMenu(id)
-            },
-            label: 'Clear All',
-          }
-          return (
-            <Menu
+      <div className={classes.items}>
+        {Object.entries(menu)
+          .filter(([id, { hideIfNone, loggedInOnly }]) => {
+            if (loggedInOnly && !isLoggedIn) {
+              return false
+            }
+            if (hideIfNone && (!menuItems[id] || !menuItems[id].length)) {
+              return false
+            }
+            return true
+          })
+          .map(([id, { label, icon: Icon, badge }]) => (
+            <div
               key={id}
-              isOpen={openId === id}
-              buttonRef={buttonRefs.current[id]}
-              onClose={() => closeAllDropdowns()}
-              items={
-                items
-                  ? items.concat(onClear ? [clearItem] : [])
-                  : menuItems[id] && menuItems[id].length
-                  ? menuItems[id].concat(onClear ? [clearItem] : [])
-                  : noItemsMessage
-                  ? [{ id: 'no-items', label: noItemsMessage, disabled: true }]
-                  : []
-              }
-              onClickItem={onClick}
-              onRemove={() => hydrateMenu(id)}
-            />
-          )
-        }
-      )}
+              ref={(elem) => {
+                if (!elem) {
+                  return
+                }
+                buttonRefs.current[id] = elem
+              }}
+              className={classes.item}
+              onClick={() => toggleMenu(id)}>
+              {badge !== false ? (
+                <Badge
+                  badgeContent={menuItems[id] ? menuItems[id].length : null}
+                  color="primary">
+                  {label ? label : Icon ? <Icon /> : null}
+                </Badge>
+              ) : (
+                label
+              )}
+            </div>
+          ))}
+        {Object.entries(menu).map(
+          ([id, { items, onClick, noItemsMessage, onClear }]) => {
+            const clearItem = {
+              id: 'clear-all',
+              onClick: async () => {
+                if (!onClear) {
+                  return
+                }
+
+                await onClear()
+
+                hydrateMenu(id)
+              },
+              label: 'Clear All',
+            }
+            return (
+              <Menu
+                key={id}
+                isOpen={openId === id}
+                buttonRef={buttonRefs.current[id]}
+                onClose={() => closeAllDropdowns()}
+                items={
+                  items
+                    ? items.concat(onClear ? [clearItem] : [])
+                    : menuItems[id] && menuItems[id].length
+                    ? menuItems[id].concat(onClear ? [clearItem] : [])
+                    : noItemsMessage
+                    ? [
+                        {
+                          id: 'no-items',
+                          label: noItemsMessage,
+                          disabled: true,
+                        },
+                      ]
+                    : []
+                }
+                onClickItem={onClick}
+                onRemove={() => hydrateMenu(id)}
+              />
+            )
+          }
+        )}
+      </div>
     </div>
   )
 }

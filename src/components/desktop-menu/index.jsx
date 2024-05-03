@@ -19,8 +19,14 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    flexWrap: 'wrap',
+    marginTop: '0.5rem',
+    '&:hover $menuItemLabel': {
+      opacity: 0.8,
+    },
   },
   menuItem: {
+    whiteSpace: 'nowrap',
     color: '#FFF', // TODO: Get from theme
     '&:first-child': {
       menuItemLabel: {
@@ -29,14 +35,17 @@ const useStyles = makeStyles({
     },
   },
   menuItemLabel: {
-    padding: '0.75rem',
+    padding: '0.25rem 0.5rem',
+    opacity: 1,
     color: 'inherit',
     display: 'flex', // for icon
     alignItems: 'center',
     textAlign: 'center',
-    textShadow: '1px 1px 1px #000',
+    textShadow: '1px 1px 2px #000',
+    transition: '100ms all',
     '&:hover': {
       cursor: 'pointer',
+      opacity: '1 !important',
     },
     '& svg': {
       width: '1em',

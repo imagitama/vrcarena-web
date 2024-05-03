@@ -369,13 +369,9 @@ export default () => {
       <div className={classes.root}>
         <ContentBlock buttonUrl={routes.about} buttonLabel="Learn More">
           <p>
-            Browse our catalogue of avatars, accessories, tutorials, shaders,
-            retextures, tools of VR social games like VRChat, ChilloutVR and
-            Resonite.
-          </p>
-          <p>
-            We are a 100% volunteer team that depends on our community for
-            funding and to keep our catalogue up-to-date.
+            A completely free, open-source, community-made{' '}
+            <strong>Wikipedia-style directory</strong> of avatars, accessories,
+            tools and shaders for VR games like VRChat.
           </p>
           <EditorTeam />
         </ContentBlock>

@@ -5,6 +5,7 @@ import {
   useLocation,
   useHistory,
   Redirect,
+  matchPath,
 } from 'react-router-dom'
 import ThemeProvider from '@material-ui/styles/ThemeProvider'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -47,6 +48,7 @@ import {
 import useUserRecord from './hooks/useUserRecord'
 import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
+import useBannerUrl from './hooks/useBannerUrl'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -73,22 +75,6 @@ const useStyles = makeStyles({
   },
   homeNotices: {
     padding: '2rem',
-  },
-  searchbarArea: {
-    width: '50%',
-    position: 'absolute',
-    top: '3%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    transition: 'all 1000ms',
-    zIndex: 100,
-    [mediaQueryForTabletsOrBelow]: {
-      width: '93%',
-      top: '85px',
-    },
-    [mediaQueryForMobiles]: {
-      top: '75px',
-    },
   },
   homepage: {
     [mediaQueryForTabletsOrAbove]: {
@@ -802,6 +788,7 @@ export default () => {
   const classes = useStyles()
   const location = useLocation()
   const isMobile = useMediaQuery({ query: queryForMobiles })
+  const hasBannerSet = useBannerUrl()!!
 
   const isHome = location.pathname === '/'
 
@@ -811,19 +798,6 @@ export default () => {
         <CssBaseline />
         <Banner />
         <PageHeader />
-        <div className={classes.searchbarArea}>
-          <div>
-            <div>
-              <Searchbar />
-            </div>
-          </div>
-
-          {!isMobile && (
-            <div>
-              <DesktopMenu />
-            </div>
-          )}
-        </div>
         <main className="main">
           <div className={`${isHome ? '' : classes.mainContainer}`}>
             <BannedNotice />
