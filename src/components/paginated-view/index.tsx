@@ -120,6 +120,9 @@ const Page = () => {
   const pageGetQuery = useCallback(async () => {
     const rangeStart = (currentPageNumber - 1) * limitPerPage
     const rangeEnd = rangeStart + limitPerPage - 1
+
+    console.log('RENDERING', sorting, OrderDirections.ASC)
+
     const isAscending = sorting
       ? sorting.direction === OrderDirections.ASC
       : false
@@ -187,7 +190,7 @@ const Page = () => {
     viewName,
     getQuery,
     currentPageNumber,
-    sorting ? sorting.direction : null,
+    sorting ? `${sorting.fieldName}.${sorting.direction}` : null,
     selectedSubView,
     Object.values(filters).join('+'),
     isEditor,

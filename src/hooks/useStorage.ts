@@ -14,7 +14,7 @@ export const keys = {
 /**
  * A hook that lets us tap into storage on the device (browser). Only local right now.
  */
-export default <TResult>(
+const useStorage = <TResult>(
   key: string,
   defaultValue?: TResult
 ): [TResult | null, (newValue: TResult) => void, () => void] => {
@@ -39,3 +39,5 @@ export default <TResult>(
     throw err
   }
 }
+
+export default useStorage

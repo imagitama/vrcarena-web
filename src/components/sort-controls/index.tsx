@@ -51,13 +51,13 @@ const appendDirections = (options: SortOption[]): SortOption[] => {
 
     newOptions.push({
       fieldName,
-      label: `${label} (${OrderDirections.ASC})`,
+      label: `${label} (${OrderDirections[OrderDirections.ASC]})`,
       direction: OrderDirections.ASC,
     })
 
     newOptions.push({
       fieldName,
-      label: `${label} (${OrderDirections.DESC})`,
+      label: `${label} (${OrderDirections[OrderDirections.DESC]})`,
       direction: OrderDirections.DESC,
     })
   }
@@ -80,11 +80,13 @@ export default ({
 
   const optionsWithDirections = appendDirections(options)
 
-  const onClickItem = (fieldName: string, direction: OrderDirections) =>
+  const onClickItem = (fieldName: string, direction: OrderDirections) => {
     setSorting({
       fieldName,
       direction,
     })
+    setIsDropdownOpen(false)
+  }
 
   return (
     <>
@@ -112,7 +114,9 @@ export default ({
             <MenuItem
               key={`${fieldName}.${direction}`}
               onClick={
-                direction ? () => onClickItem(fieldName, direction) : undefined
+                direction !== undefined
+                  ? () => onClickItem(fieldName, direction)
+                  : undefined
               }>
               {label}
             </MenuItem>
