@@ -11,7 +11,7 @@ import useIsEditor from '../../hooks/useIsEditor'
 import { RootState } from '../../store'
 import {
   enterBulkEditMode as enterBulkEditModeAction,
-  leaveBulkEditMode as leaveBulkEditModeAction
+  leaveBulkEditMode as leaveBulkEditModeAction,
 } from '../../modules/app'
 import Button from '../button'
 import * as RemoveTag from './actions/RemoveTag'
@@ -35,11 +35,12 @@ import { handleError } from '../../error-handling'
 import Paper from '../paper'
 import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
+import useRootState from '../../hooks/useRootState'
 
 export enum BulkAction {
   RemoveTag,
   AddTag,
-  ChangeSpecies
+  ChangeSpecies,
   // Delete,
   // Undelete,
   // Approve,
@@ -62,7 +63,7 @@ interface Handler {
 const Handlers: { [key in BulkAction]: Handler } = {
   [BulkAction.RemoveTag]: RemoveTag,
   [BulkAction.AddTag]: AddTag,
-  [BulkAction.ChangeSpecies]: ChangeSpecies
+  [BulkAction.ChangeSpecies]: ChangeSpecies,
   // [BulkAction.Delete]: Delete,
   // [BulkAction.Undelete]: Undelete,
   // [BulkAction.Approve]: Approve,
@@ -77,12 +78,12 @@ const Handlers: { [key in BulkAction]: Handler } = {
 
 const useStyles = makeStyles({
   root: {
-    display: 'inline-block'
-  }
+    display: 'inline-block',
+  },
 })
 
 const Preview = ({
-  selectedBulkAction
+  selectedBulkAction,
 }: {
   selectedBulkAction: BulkAction
 }) => {
@@ -101,8 +102,8 @@ const Preview = ({
         </TableRow>
       </TableHead>
       <TableBody>
-        {ids.map(id => {
-          const asset = assets.find(asset => asset.id === id)
+        {ids.map((id) => {
+          const asset = assets.find((asset) => asset.id === id)
           return (
             <TableRow key={id}>
               <TableCell>
@@ -143,8 +144,8 @@ const FormsForEachAsset = () => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {ids.map(id => {
-          const asset = assets.find(asset => asset.id === id)
+        {ids.map((id) => {
+          const asset = assets.find((asset) => asset.id === id)
           return (
             <TableRow key={id}>
               <TableCell>
@@ -170,17 +171,15 @@ const FormsForEachAsset = () => {
 }
 
 const Render = () => {
-  const bulkEditIds = useSelector<RootState>(state => state.app.bulkEditIds)
+  const bulkEditIds = useRootState((state) => state.app.bulkEditIds)
   const dispatch = useDispatch()
-  const [
-    selectedBulkAction,
-    setSelectedBulkAction
-  ] = useState<null | BulkAction>(null)
+  const [selectedBulkAction, setSelectedBulkAction] =
+    useState<null | BulkAction>(null)
   const [assetData, setAssetData] = useState<Asset[]>([])
   const [newData, setNewData] = useState<
     { [assetId: string]: Partial<Asset> } & { all: Partial<Asset> }
   >({
-    all: {}
+    all: {},
   })
   const { ids, setSelectingAll, assetDatas } = useGlobalBulkEdit()
   const [assetIdsWaitingToEdit, setAssetIdsWaitingToEdit] = useState<
@@ -193,7 +192,7 @@ const Render = () => {
     setSelectedBulkAction(null)
     setAssetData([])
     setNewData({
-      all: {}
+      all: {},
     })
     setAssetIdsWaitingToEdit(null)
     leaveBulkEditMode()
@@ -209,14 +208,14 @@ const Render = () => {
     ;(async () => {
       try {
         const idsToGet = ids.filter(
-          id => assetData.find(asset => asset.id === id) === undefined
+          (id) => assetData.find((asset) => asset.id === id) === undefined
         )
 
         console.debug(`Fetching data for ${idsToGet.length} assets...`)
 
         const newAssetData = await Promise.all(
-          idsToGet.map(id => {
-            const existingData = assetDatas.find(asset => asset.id === id)
+          idsToGet.map((id) => {
+            const existingData = assetDatas.find((asset) => asset.id === id)
 
             if (existingData) {
               return existingData
@@ -228,8 +227,8 @@ const Render = () => {
 
         console.debug(`Found data for them`, newAssetData)
 
-        setAssetData(currentAssets => currentAssets.concat(newAssetData))
-        setNewData(currentData => {
+        setAssetData((currentAssets) => currentAssets.concat(newAssetData))
+        setNewData((currentData) => {
           const evenNewerData = { ...currentData }
           for (const asset of newAssetData) {
             if (!evenNewerData[asset.id]) {
@@ -272,14 +271,14 @@ const Render = () => {
 
     const actionFn = Handlers[selectedBulkAction].Action
 
-    setAssetIdsWaitingToEdit(assetData.map(asset => asset.id))
+    setAssetIdsWaitingToEdit(assetData.map((asset) => asset.id))
 
     for (const id of ids) {
       console.debug(
         `Performing action "${selectedBulkAction}" on asset ${id}...`
       )
 
-      const asset = assetData.find(asset => asset.id === id)
+      const asset = assetData.find((asset) => asset.id === id)
 
       if (!asset) {
         throw new Error(`Could not find asset "${id}" in data`)
@@ -287,11 +286,11 @@ const Render = () => {
 
       await actionFn(id, asset, newData)
 
-      setAssetIdsWaitingToEdit(currentIds => {
+      setAssetIdsWaitingToEdit((currentIds) => {
         if (!currentIds) {
           throw new Error('Race condition')
         }
-        return currentIds.filter(id => id !== asset.id)
+        return currentIds.filter((id) => id !== asset.id)
       })
     }
 
@@ -324,8 +323,8 @@ const Render = () => {
       </Button>{' '}
       {selectedBulkAction === null ? (
         (Object.values(BulkAction) as Array<keyof typeof BulkAction>)
-          .filter(i => typeof i === 'string')
-          .map(bulkAction => (
+          .filter((i) => typeof i === 'string')
+          .map((bulkAction) => (
             <Fragment key={bulkAction}>
               <Button
                 onClick={() => initiateBulkAction(BulkAction[bulkAction])}>
@@ -340,7 +339,7 @@ const Render = () => {
             assets: assetData,
             newData,
             setNewData,
-            selectedBulkAction
+            selectedBulkAction,
           }}>
           <Paper>
             {Handlers[selectedBulkAction].Form ? (

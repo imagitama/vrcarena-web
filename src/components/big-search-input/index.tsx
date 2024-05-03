@@ -13,7 +13,7 @@ const sidePadding = '1rem'
 
 const useStyles = makeStyles({
   root: {
-    position: 'relative'
+    position: 'relative',
   },
   inputWrapper: {
     padding: `2px 2px 2px ${sidePadding}`,
@@ -21,15 +21,15 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     '@media (min-width: 960px)': {
-      margin: '0 auto'
-    }
+      margin: '0 auto',
+    },
   },
   input: {
     width: 'calc(100% - 50px)',
     fontSize: '1rem',
     padding: '0.25rem',
     marginLeft: 8,
-    flex: 1
+    flex: 1,
   },
   clearButton: {
     position: 'absolute',
@@ -41,20 +41,19 @@ const useStyles = makeStyles({
     alignItems: 'center',
     color: 'rgba(0, 0, 0, 0.3)', // todo get from theme
     '&:hover': {
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
   searchingIcon: {
-    padding: 8,
     position: 'absolute',
-    top: 0,
+    top: '50%',
     left: '50%',
-    transform: 'translateX(-50%)',
-    color: 'rgba(0, 0, 0, 0.3)' // todo get from theme
-  }
+    transform: 'translate(-50%, -50%)',
+    color: 'rgba(0, 0, 0, 0.3)', // todo get from theme
+  },
 })
 
-export default ({
+const BigSearchInput = ({
   onClear,
   isSearching = false,
   ...inputProps
@@ -74,9 +73,7 @@ export default ({
           />
         </Paper>
         {isSearching ? (
-          <div className={classes.searchingIcon}>
-            <LoadingIndicator />
-          </div>
+          <div className={classes.searchingIcon}>Searching...</div>
         ) : null}
         <div className={classes.clearButton} onClick={onClear}>
           <ClearIcon />
@@ -85,3 +82,5 @@ export default ({
     </div>
   )
 }
+
+export default BigSearchInput

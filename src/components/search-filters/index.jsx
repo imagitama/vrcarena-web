@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
-import FilterListIcon from '@material-ui/icons/FilterList'
 
 import Button from '../button'
 import { trackAction } from '../../analytics'
@@ -19,9 +18,9 @@ const analyticsCategoryName = 'SearchResults'
 
 const useStyles = makeStyles({
   availableFilters: {
-    marginTop: '0.5rem',
     display: 'flex',
     flexWrap: 'wrap',
+    width: '100%',
   },
   availableFilter: {
     margin: '0 0.5rem 0.5rem 0',
@@ -31,7 +30,7 @@ const useStyles = makeStyles({
 const availableFilters = [
   ...Object.values(AssetCategories).map((categoryName) => ({
     id: `category:${categoryName}`,
-    label: `Category - ${categoryMeta[categoryName].name}`,
+    label: categoryMeta[categoryName].name,
   })),
   {
     id: 'field:tags',
@@ -39,7 +38,7 @@ const availableFilters = [
   },
 ]
 
-const AvailableFilters = ({ hideFilters }) => {
+const SearchFilters = () => {
   const { searchFilters } = useSelector(({ app: { searchFilters } }) => ({
     searchFilters,
   }))
@@ -68,7 +67,6 @@ const AvailableFilters = ({ hideFilters }) => {
               } else {
                 addFilter(id)
               }
-              hideFilters()
             }}
             className={classes.availableFilter}
             icon={isSelected ? <CheckIcon /> : null}
@@ -84,7 +82,6 @@ const AvailableFilters = ({ hideFilters }) => {
             analyticsCategoryName,
             'Click clear all search filters button'
           )
-          hideFilters()
         }}
         size="small"
         className={classes.availableFilter}
@@ -95,28 +92,4 @@ const AvailableFilters = ({ hideFilters }) => {
   )
 }
 
-export default () => {
-  const classes = useStyles()
-  const [areFiltersVisible, setAreFiltersVisible] = useState(false)
-  const { searchFilters } = useSelector(({ app: { searchFilters } }) => ({
-    searchFilters,
-  }))
-
-  return (
-    <div className={classes.root}>
-      <Button
-        icon={<FilterListIcon />}
-        onClick={() => {
-          setAreFiltersVisible((currentVal) => !currentVal)
-          trackAction(analyticsCategoryName, 'Click toggle filters button')
-        }}>
-        Filters{searchFilters.length ? ` (${searchFilters.length})` : ''}
-      </Button>
-      {areFiltersVisible ? (
-        <>
-          <AvailableFilters hideFilters={() => setAreFiltersVisible(false)} />
-        </>
-      ) : null}
-    </div>
-  )
-}
+export default SearchFilters

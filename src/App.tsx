@@ -5,7 +5,6 @@ import {
   useLocation,
   useHistory,
   Redirect,
-  matchPath,
 } from 'react-router-dom'
 import ThemeProvider from '@material-ui/styles/ThemeProvider'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -34,8 +33,6 @@ import UnapprovedAssetsMessage from './components/unapproved-assets-message'
 import BannedNotice from './components/banned-notice'
 import Banner from './components/banner'
 import DraftAssetsMessage from './components/draft-assets-message'
-import Searchbar from './components/searchbar'
-import DesktopMenu from './components/desktop-menu'
 
 import useSearchTerm from './hooks/useSearchTerm'
 
@@ -521,7 +518,7 @@ const MainContent = () => {
   }
 
   return (
-    <Suspense fallback={<LoadingIndicator />}>
+    <Suspense fallback={<LoadingIndicator message="Loading..." />}>
       {firebaseUserId && !supabaseUserId ? (
         <div className={classes.floatingLoadingIndicator}>
           <LoadingIndicator message="Waiting for auth..." />

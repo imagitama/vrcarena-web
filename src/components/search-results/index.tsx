@@ -36,21 +36,9 @@ import Button from '../button'
 import PageControls from '../page-controls'
 import UserList from '../user-list'
 import SearchFilters from '../search-filters'
+import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles({
-  tableWrapper: {
-    position: 'relative',
-  },
-  tables: {
-    display: 'flex',
-    position: 'absolute',
-    alignItems: 'center',
-    top: 0,
-    right: 0,
-    [mediaQueryForMobiles]: {
-      position: 'relative',
-    },
-  },
   tableButton: {
     margin: '0 0.5rem 0.5rem 0',
   },
@@ -68,6 +56,13 @@ const useStyles = makeStyles({
   adultContentMessage: {
     textAlign: 'center',
     fontSize: '125%',
+  },
+  items: {
+    display: 'flex',
+  },
+  filters: {
+    display: 'flex',
+    alignItems: 'baseline',
   },
 })
 
@@ -140,7 +135,7 @@ function Results({
       <>
         <NoResultsMessage>
           Nothing found matching your search term
-          {searchFilters.length
+          {tableName === CollectionNames.Assets && searchFilters.length
             ? ` (${searchFilters.length} filter${
                 searchFilters.length > 1 ? 's' : ''
               } applied)`
@@ -195,13 +190,11 @@ const isSearchTermAdult = (searchTerm: string): boolean => {
 const AdultContentMessage = () => {
   const classes = useStyles()
   return (
-    <Message>
-      <div className={classes.adultContentMessage}>
-        <strong>Adult content has been disabled by default.</strong> You must
-        either <Link to={routes.signUp}>sign up</Link> and enable it in your
-        settings or visit our <Link to={routes.nsfw}>NSFW page</Link>
-      </div>
-    </Message>
+    <WarningMessage>
+      <strong>Adult content has been disabled by default.</strong> You must
+      either <Link to={routes.signUp}>sign up</Link> and enable it in your
+      settings or visit our <Link to={routes.nsfw}>NSFW page</Link>
+    </WarningMessage>
   )
 }
 
@@ -270,23 +263,19 @@ function IndexFilters() {
   }
 
   return (
-    <div className={classes.tableWrapper}>
-      <div className={classes.tables}>
-        {Object.entries(searchIndexNameLabels).map(([tableName, label]) => {
-          const isSelected = searchTableName === tableName
-          return (
-            <Button
-              key={tableName}
-              className={classes.tableButton}
-              onClick={() => onClickWithTableName(tableName)}
-              icon={
-                isSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
-              }>
-              {label}
-            </Button>
-          )
-        })}
-      </div>
+    <div className={classes.filters}>
+      {Object.entries(searchIndexNameLabels).map(([tableName, label]) => {
+        const isSelected = searchTableName === tableName
+        return (
+          <Button
+            key={tableName}
+            className={classes.tableButton}
+            onClick={() => onClickWithTableName(tableName)}
+            icon={isSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}>
+            {label}
+          </Button>
+        )
+      })}
     </div>
   )
 }
@@ -561,14 +550,21 @@ export default () => {
     })
   )
   const isAdultContentEnabled = useIsAdultContentEnabled()
+  const classes = useStyles()
 
   return (
     <>
-      <IndexFilters />
+      <div className={classes.items}>
+        {searchTableName === CollectionNames.Assets ? (
+          <SearchFilters />
+        ) : (
+          <div style={{ width: '100%' }} />
+        )}
+        <IndexFilters />
+      </div>
       {isSearchTermAdult(searchTerm) && !isAdultContentEnabled ? (
         <AdultContentMessage />
       ) : null}
-      <SearchFilters />
       {searchTableName === CollectionNames.Assets ? (
         <>
           <AssetSearch />

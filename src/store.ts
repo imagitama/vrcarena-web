@@ -19,17 +19,16 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-const composedEnhancers = compose(
-  applyMiddleware(...middleware),
-  ...enhancers
-)
+const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers)
 
 export const store = createStore(
+  // @ts-ignore
   createRootReducer(history),
   initialState,
   composedEnhancers
 )
 
-export type RootState = ReturnType<typeof store.getState>
+// export type RootState = ReturnType<typeof store.getState>
+export type RootState = any
 
 export default store

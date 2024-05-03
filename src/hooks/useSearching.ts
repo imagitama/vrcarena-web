@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
+import { setIsSearching } from '../modules/app'
+import { useDispatch } from 'react-redux'
 
 export default <TResult>(
   tableName: string,
@@ -54,7 +56,7 @@ export default <TResult>(
           data
         )
 
-        setResults((data as unknown) as TResult)
+        setResults(data as unknown as TResult)
         setIsLoading(false)
         setIsErrored(false)
       } catch (err) {
@@ -87,8 +89,14 @@ export default <TResult>(
     searchTerm,
     selectStatement,
     fieldsToSearch.join(', '),
-    getQuery
+    getQuery,
   ])
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(setIsSearching(isLoading))
+  }, [isLoading])
 
   return [isLoading, isErrored, results]
 }

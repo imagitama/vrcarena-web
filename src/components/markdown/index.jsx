@@ -30,7 +30,7 @@ const useStyles = makeStyles({
     '& h2': {
       marginTop: '2rem',
     },
-    '& p:last-child': {
+    '& > p:last-child': {
       marginBottom: 0,
     },
   },
