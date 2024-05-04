@@ -83,6 +83,7 @@ const useStyles = makeStyles({
     padding: '0.5rem',
     '& $text': {
       margin: '0.5rem 0 0.25rem',
+      wordBreak: 'break-all', // fix homepage width fuckery
     },
     '& $avatar': {
       marginRight: '0.5rem',

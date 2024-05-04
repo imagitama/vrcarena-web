@@ -1,4 +1,3 @@
-import { deprecatedCategories } from '../hooks/useDatabaseQuery'
 import { fieldTypes } from '../generic-forms'
 import {
   THUMBNAIL_WIDTH,
@@ -35,12 +34,10 @@ const fields: EditableField<Author>[] = [
     name: 'categories',
     label: 'Categories',
     type: fieldTypes.multichoice,
-    options: Object.entries(categoryMeta)
-      .filter(([name]) => !deprecatedCategories.includes(name))
-      .map(([name, categoryInfo]) => ({
-        value: name,
-        label: categoryInfo.name,
-      })),
+    options: Object.entries(categoryMeta).map(([name, categoryInfo]) => ({
+      value: name,
+      label: categoryInfo.name,
+    })),
     default: [],
     section: SectionNames.Basic,
     hint: 'Help people find authors related to categories they are interested in.',

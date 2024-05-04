@@ -5,11 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import useAssetSearch from '../../hooks/useAssetSearch'
 import { Asset } from '../../modules/assets'
 import categoryMeta from '../../category-meta'
-import {
-  AssetCategories,
-  AssetFieldNames,
-  deprecatedCategories
-} from '../../hooks/useDatabaseQuery'
+import { AssetCategories, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import AssetResults from '../asset-results'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
@@ -18,17 +14,17 @@ import Select from '../select'
 
 const useStyles = makeStyles({
   dropdown: {
-    width: '30%'
+    width: '30%',
   },
   textInput: {
-    width: '70%'
-  }
+    width: '70%',
+  },
 })
 
 export default ({
   onSelect,
   selectedAsset = undefined,
-  limit = 5
+  limit = 5,
 }: {
   onSelect: (asset: Asset) => void
   selectedAsset?: Asset
@@ -72,7 +68,7 @@ export default ({
 
       <div>
         <Select
-          onChange={e =>
+          onChange={(e) =>
             setSelectedCategory((e.target.value as string) || null)
           }
           className={classes.dropdown}
@@ -80,21 +76,17 @@ export default ({
           <MenuItem value="all" selected={selectedCategory === null}>
             All Categories
           </MenuItem>
-          {Object.entries(categoryMeta)
-            .filter(
-              ([categoryName]) => !deprecatedCategories.includes(categoryName)
-            )
-            .map(([categoryName, categoryInfo]) => (
-              <MenuItem
-                value={categoryName}
-                selected={categoryName === selectedCategory}>
-                {categoryInfo.nameSingular}
-              </MenuItem>
-            ))}
+          {Object.entries(categoryMeta).map(([categoryName, categoryInfo]) => (
+            <MenuItem
+              value={categoryName}
+              selected={categoryName === selectedCategory}>
+              {categoryInfo.nameSingular}
+            </MenuItem>
+          ))}
         </Select>
         <TextInput
           value={userInput}
-          onChange={e => setUserInput(e.target.value)}
+          onChange={(e) => setUserInput(e.target.value)}
           placeholder="Search for an asset"
           className={classes.textInput}
         />

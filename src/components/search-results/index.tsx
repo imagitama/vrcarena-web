@@ -59,6 +59,9 @@ const useStyles = makeStyles({
   },
   items: {
     display: 'flex',
+    [mediaQueryForMobiles]: {
+      flexWrap: 'wrap',
+    },
   },
   filters: {
     display: 'flex',
@@ -271,7 +274,8 @@ function IndexFilters() {
             key={tableName}
             className={classes.tableButton}
             onClick={() => onClickWithTableName(tableName)}
-            icon={isSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}>
+            icon={isSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+            size="small">
             {label}
           </Button>
         )

@@ -293,18 +293,9 @@ export const AssetCategories = {
   shader: 'shader',
   retexture: 'retexture',
   article: 'article',
-  world: 'world',
   worldAsset: 'worldAsset',
   tool: 'tool',
-  alteration: 'alteration', // deprecated
-  content: 'content', // deprecated
 }
-
-export const deprecatedCategories = [
-  AssetCategories.content,
-  AssetCategories.alteration,
-  AssetCategories.world,
-]
 
 export const UserFieldNames = {
   // basic stuff

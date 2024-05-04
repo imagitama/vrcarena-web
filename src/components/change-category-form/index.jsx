@@ -12,7 +12,7 @@ import FormControls from '../form-controls'
 import {
   CollectionNames,
   AssetFieldNames,
-  AssetCategories
+  AssetCategories,
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
@@ -24,33 +24,33 @@ import categoryMeta from '../../category-meta'
 const useStyles = makeStyles({
   buttons: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   button: {
     width: '50%',
     padding: '0.5rem',
-    position: 'relative'
+    position: 'relative',
   },
   contentsWrapper: {
-    display: 'flex'
+    display: 'flex',
   },
   media: {
     width: '200px',
     height: '200px',
-    flexShrink: 0
+    flexShrink: 0,
   },
   thumbnail: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   content: {
-    flex: 1
+    flex: 1,
   },
   // TODO: Invert theme and share components with species selector
   isSelected: {
     backgroundColor: 'grey',
-    boxShadow: '0px 0px 10px #FFF'
-  }
+    boxShadow: '0px 0px 10px #FFF',
+  },
 })
 
 function CategoryButton({
@@ -59,7 +59,7 @@ function CategoryButton({
   optimizedImageUrl,
   shortDescription,
   onClick,
-  isSelected
+  isSelected,
 }) {
   const classes = useStyles()
   return (
@@ -90,31 +90,24 @@ function CategoryButtons({ selectedCategory, onSelect }) {
   const classes = useStyles()
   return (
     <div className={classes.buttons}>
-      {Object.keys(AssetCategories)
-        .filter(name => !deprecatedCategories.includes(name))
-        .map(categoryName => (
-          <CategoryButton
-            key={categoryName}
-            onClick={() => onSelect(categoryName)}
-            isSelected={categoryName === selectedCategory}
-            {...categoryMeta[categoryName]}
-          />
-        ))}
+      {Object.keys(AssetCategories).map((categoryName) => (
+        <CategoryButton
+          key={categoryName}
+          onClick={() => onSelect(categoryName)}
+          isSelected={categoryName === selectedCategory}
+          {...categoryMeta[categoryName]}
+        />
+      ))}
     </div>
   )
 }
-
-const deprecatedCategories = [
-  AssetCategories.content,
-  AssetCategories.alteration
-]
 
 export default ({
   assetId,
   existingCategory,
   actionCategory = '',
   onDone = null,
-  overrideSave = null
+  overrideSave = null,
 }) => {
   const userId = useUserId()
   const [isSaving, , , save] = useDatabaseSave(CollectionNames.Assets, assetId)
@@ -142,7 +135,7 @@ export default ({
       trackAction(actionCategory, 'Click save asset category button', assetId)
 
       await save({
-        [AssetFieldNames.category]: newCategory
+        [AssetFieldNames.category]: newCategory,
       })
 
       if (onDone) {
@@ -158,7 +151,7 @@ export default ({
     <>
       <CategoryButtons
         selectedCategory={newCategory}
-        onSelect={categoryName => setNewCategory(categoryName)}
+        onSelect={(categoryName) => setNewCategory(categoryName)}
       />
       <FormControls>
         <Button onClick={onSaveBtnClick} icon={<SaveIcon />}>
