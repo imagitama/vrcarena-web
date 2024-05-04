@@ -5,12 +5,16 @@ import { FullUser } from '../../../../modules/users'
 import Avatar, { sizes } from '../../../../components/avatar'
 import UsernameLink from '../../../../components/username-link'
 import { shuffle } from '../../../../utils'
+import { mediaQueryForMobiles } from '../../../../media-queries'
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
     alignItems: 'center',
     marginTop: '2rem',
+    [mediaQueryForMobiles]: {
+      flexWrap: 'wrap',
+    },
   },
   items: {
     marginLeft: '0.5rem',
