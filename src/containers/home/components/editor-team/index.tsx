@@ -5,24 +5,15 @@ import { FullUser } from '../../../../modules/users'
 import Avatar, { sizes } from '../../../../components/avatar'
 import UsernameLink from '../../../../components/username-link'
 import { shuffle } from '../../../../utils'
-import { mediaQueryForMobiles } from '../../../../media-queries'
 
 const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: '2rem',
-    [mediaQueryForMobiles]: {
-      flexWrap: 'wrap',
-    },
-  },
   items: {
-    marginLeft: '0.5rem',
+    marginTop: '0.5rem',
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-end',
-    '& > a': {
+    '& > *': {
       margin: '0.25rem',
       transition: 'all 100ms',
       '&:hover': {
@@ -41,20 +32,23 @@ const EditorTeam = () => {
     useSupabaseView<FullUser[]>('getstaffusers')
   const classes = useStyles()
 
-  if (isLoading || isError || !Array.isArray(users)) {
-    return null
-  }
+  const isPlaceholder = isLoading || isError || !Array.isArray(users)
 
   return (
-    <div className={classes.root}>
-      Our volunteer staff team:
-      <div className={classes.items}>
-        {shuffle<FullUser[]>(users).map((user) => (
-          <UsernameLink id={user.id} username={user.username}>
-            <Avatar url={user.avatarurl} size={sizes.TINY} />
-          </UsernameLink>
-        ))}
-      </div>
+    <div className={classes.items}>
+      {isPlaceholder
+        ? Array(7)
+            .fill(undefined)
+            .map(() => (
+              <span>
+                <Avatar size={sizes.TINY} />
+              </span>
+            ))
+        : shuffle<FullUser[]>(users).map((user) => (
+            <UsernameLink id={user.id} username={user.username}>
+              <Avatar url={user.avatarurl} size={sizes.TINY} />
+            </UsernameLink>
+          ))}
     </div>
   )
 }

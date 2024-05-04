@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default ({
+const Avatar = ({
   url = undefined,
   username = undefined,
   size = sizes.MEDIUM,
@@ -98,3 +98,5 @@ export default ({
     </div>
   )
 }
+
+export default Avatar

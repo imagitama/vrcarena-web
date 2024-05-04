@@ -369,9 +369,13 @@ export default () => {
       <div className={classes.root}>
         <ContentBlock buttonUrl={routes.about} buttonLabel="Learn More">
           <p>
-            A completely free, open-source, community-made{' '}
-            <strong>Wikipedia-style directory</strong> of avatars, accessories,
-            tools and shaders for VR games like VRChat.
+            A free, community-driven, wiki-style collection of VR avatars,
+            accessories, retextures and tutorials categorized and tagged to help
+            you find what you're after.
+          </p>
+          <p>
+            We are <strong>not for profit</strong> and run entirely by our
+            awesome <strong>volunteers</strong>:
           </p>
           <EditorTeam />
         </ContentBlock>
