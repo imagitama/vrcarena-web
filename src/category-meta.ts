@@ -101,36 +101,12 @@ const categories: { [name: string]: Category } = {
     optimizedImageUrl: retextureOptimizedImageUrl,
     icon: BrushIcon,
   },
-  [AssetCategories.world]: {
-    id: AssetCategories.world,
-    name: 'Worlds',
-    nameSingular: 'World',
-    shortDescription: `Worlds you can visit in any VR social game.`,
-    optimizedImageUrl: worldOptimizedImageUrl,
-  },
   [AssetCategories.worldAsset]: {
     id: AssetCategories.worldAsset,
     name: 'World Assets',
     nameSingular: 'World Asset',
     shortDescription: `Assets that you can use in your worlds such as buttons, games, video players, etc.`,
     optimizedImageUrl: worldAssetOptimizedImageUrl,
-  },
-  // deprecated
-  [AssetCategories.content]: {
-    id: AssetCategories.content,
-    name: 'Content',
-    nameSingular: 'Content',
-    shortDescription:
-      'Screenshots, videos, social media posts or ANYTHING to do with another asset.',
-    optimizedImageUrl: contentOptimizedImageUrl,
-  },
-  [AssetCategories.alteration]: {
-    id: AssetCategories.alteration,
-    name: 'Alterations',
-    nameSingular: 'Alteration',
-    shortDescription:
-      'An alteration or modification of an existing avatar or accessory.',
-    optimizedImageUrl: alterationOptimizedImageUrl,
   },
 }
 

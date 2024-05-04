@@ -13,19 +13,19 @@ export type FieldsData = any
 
 const useStyles = makeStyles({
   cols: {
-    display: 'flex'
+    display: 'flex',
   },
   col: {
     width: '100%',
     '&:first-child': {
-      width: '33%'
-    }
-  }
+      width: '33%',
+    },
+  },
 })
 
 export default ({
   newFields,
-  onNewFields
+  onNewFields,
 }: {
   newFields: FieldsData
   onNewFields: (newFields: FieldsData) => void | Promise<void>
@@ -36,7 +36,7 @@ export default ({
   const setField = (fieldName: string, value: any) =>
     onNewFields({
       ...newFields,
-      [fieldName]: value
+      [fieldName]: value,
     })
 
   return (
@@ -50,13 +50,13 @@ export default ({
           <TextInput
             fullWidth
             value={newFields[AssetFieldNames.title]}
-            onChange={e => setField(AssetFieldNames.title, e.target.value)}
+            onChange={(e) => setField(AssetFieldNames.title, e.target.value)}
           />
           <Heading variant="h4">Description</Heading>
           <TextInput
             fullWidth
             value={newFields[AssetFieldNames.description]}
-            onChange={e =>
+            onChange={(e) =>
               setField(AssetFieldNames.description, e.target.value)
             }
             multiline
@@ -65,7 +65,8 @@ export default ({
         </div>
       </div>
       <Heading variant="h4">Tags</Heading>
-      <Button onClick={() => setShowRecommendedTags(currentVal => !currentVal)}>
+      <Button
+        onClick={() => setShowRecommendedTags((currentVal) => !currentVal)}>
         Toggle Recommended
       </Button>
       <br />
@@ -75,8 +76,6 @@ export default ({
         onChange={(newTags: string[]) =>
           setField(AssetFieldNames.tags, newTags)
         }
-        /* @ts-ignore */
-        categoryName={AssetCategories.world}
         showRecommendedTags={showRecommendedTags}
       />
     </Paper>

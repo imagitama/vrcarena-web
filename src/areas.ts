@@ -19,20 +19,19 @@ export const areasByCategory = {
   [AssetCategories.shader]: shaderAreas,
   [AssetCategories.retexture]: retextureAreas,
   [AssetCategories.article]: articleAreas,
-  [AssetCategories.world]: worldAreas,
   [AssetCategories.worldAsset]: worldAssetAreas,
-  [AssetCategories.tool]: toolAreas
+  [AssetCategories.tool]: toolAreas,
 }
 
 export const standardAreaNames = {
-  none: 'none'
+  none: 'none',
 }
 
 export const standardAreas = {
   [standardAreaNames.none]: {
     namePlural: 'Other',
-    tags: []
-  }
+    tags: [],
+  },
 }
 
 export const getAreasForAsset = (

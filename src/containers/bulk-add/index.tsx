@@ -215,7 +215,6 @@ const getInitialFields = (worldDataById: {
       [AssetFieldNames.description]: formatDesc(worldData.description),
       [AssetFieldNames.tags]: detectTagsFromVrchatWorld(worldData),
       [AssetFieldNames.thumbnailUrl]: worldData.ourThumbnailUrl,
-      [AssetFieldNames.category]: AssetCategories.world,
     }
   }
 

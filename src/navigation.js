@@ -57,22 +57,12 @@ export function getLabelForMenuItem(Label) {
   return <Label />
 }
 
-const categoriesNotToShow = [
-  AssetCategories.world,
-  AssetCategories.article,
-  AssetCategories.retexture,
-  AssetCategories.content,
-  AssetCategories.alteration,
-]
-
 export default [
-  ...Object.entries(categoriesMeta)
-    .filter(([name]) => !categoriesNotToShow.includes(name))
-    .map(([name, meta]) => ({
-      id: `category-${name}`,
-      label: meta.name,
-      url: routes.viewCategoryWithVar.replace(':categoryName', name),
-    })),
+  ...Object.entries(categoriesMeta).map(([name, meta]) => ({
+    id: `category-${name}`,
+    label: meta.name,
+    url: routes.viewCategoryWithVar.replace(':categoryName', name),
+  })),
   {
     id: 'species',
     label: 'Species',
@@ -149,14 +139,6 @@ export default [
         id: 'tags',
         url: routes.tags,
         label: 'Tags',
-      },
-      {
-        id: AssetCategories.world,
-        url: routes.viewCategoryWithVar.replace(
-          ':categoryName',
-          AssetCategories.world
-        ),
-        label: categoriesMeta[AssetCategories.world].name,
       },
       {
         id: 'adult',

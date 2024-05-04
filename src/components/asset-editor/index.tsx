@@ -1250,22 +1250,6 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.vrchatClonableWorldIds}
-                  title="VRChat World"
-                  description="The VRChat world for this asset."
-                  icon={() => <VRChatIcon />}
-                  doWeRender={asset.category === AssetCategories.world}
-                  display={VrchatWorldsDisplay}
-                  editor={
-                    assetId ? (
-                      <ChangeVrchatWorldForm
-                        assetId={assetId}
-                        worldIds={asset.vrchatclonableworldids || []}
-                      />
-                    ) : null
-                  }
-                />
-                <FormEditorArea
                   fieldName={AssetFieldNames.vrchatClonableAvatarIds}
                   title="VRChat Avatars"
                   description="If users can clone an avatar in VRChat to test the asset you can set that here. Note: We only grab its info once."
