@@ -253,7 +253,8 @@ const getSupabaseOptimizedUrl = (url: string): string => {
   // as of March 2024 some images are converted to WEBP in background (via SQL trigger)
   if (
     url.includes(bucketNames.assetThumbnails) ||
-    url.includes(bucketNames.attachments)
+    url.includes(bucketNames.attachments) ||
+    url.includes(bucketNames.assetBanners)
   ) {
     return url
   }
