@@ -68,6 +68,12 @@ const useStyles = makeStyles({
   tile: {
     margin: '1rem 0',
     padding: '0 1rem',
+    [mediaQueryForTabletsOrBelow]: {
+      padding: '0 0.5rem',
+    },
+    [mediaQueryForMobiles]: {
+      padding: '0 0.25rem',
+    },
   },
   tileCols: {
     margin: '1rem 0',

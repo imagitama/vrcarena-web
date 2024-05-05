@@ -4,6 +4,10 @@ import LazyLoad from 'react-lazyload'
 import LoadingIndicator from '../loading-indicator'
 import Link from '../link'
 import { isAbsoluteUrl } from '../../utils'
+import {
+  mediaQueryForMobiles,
+  mediaQueryForTabletsOrBelow,
+} from '../../media-queries'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,6 +16,12 @@ const useStyles = makeStyles((theme) => ({
     padding: '1rem',
     marginBottom: '1rem',
     backgroundColor: '#282828', // when rendered inside ExperimentalArea dont want big areas of green
+    [mediaQueryForTabletsOrBelow]: {
+      padding: '0.5rem',
+    },
+    [mediaQueryForMobiles]: {
+      padding: '0.25rem',
+    },
   },
   title: {
     fontSize: '150%',
