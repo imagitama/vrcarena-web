@@ -4,13 +4,14 @@ import { ActivityEvents } from '../../activity'
 import Link from '../../components/link'
 import {
   Asset,
-  CollectionNames as AssetCollectionNames
+  CollectionNames as AssetCollectionNames,
 } from '../../modules/assets'
 import {
   User,
-  CollectionNames as UserCollectionNames
+  CollectionNames as UserCollectionNames,
 } from '../../modules/users'
 import * as routes from '../../routes'
+import ErrorMessage from '../error-message'
 
 export default ({
   message,
@@ -19,7 +20,7 @@ export default ({
   parentData,
   extraData,
   createdBy,
-  createdByUsername
+  createdByUsername,
 }: {
   message: string
   parent: string
@@ -30,6 +31,10 @@ export default ({
   createdByUsername: string
 }) => {
   let asset: Asset, user: User
+
+  if (!extraData) {
+    return <ErrorMessage>No data</ErrorMessage>
+  }
 
   switch (message) {
     case ActivityEvents.ASSET_APPROVED:
