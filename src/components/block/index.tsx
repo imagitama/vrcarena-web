@@ -8,6 +8,7 @@ import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
+import ErrorBoundary from '../error-boundary'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,24 +70,26 @@ const Block = ({
   )
 
   return (
-    <LazyLoad height={300} placeholder={<LoadingIndicator />}>
-      <div className={`${classes.root} ${className}`}>
-        <div className={classes.title}>
-          {url ? (
-            isAbsoluteUrl(url) ? (
-              <a href={url} target="_blank" rel="noopener noreferrer">
-                {titleToRender}
-              </a>
+    <ErrorBoundary>
+      <LazyLoad height={300} placeholder={<LoadingIndicator />}>
+        <div className={`${classes.root} ${className}`}>
+          <div className={classes.title}>
+            {url ? (
+              isAbsoluteUrl(url) ? (
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  {titleToRender}
+                </a>
+              ) : (
+                <Link to={url}>{titleToRender}</Link>
+              )
             ) : (
-              <Link to={url}>{titleToRender}</Link>
-            )
-          ) : (
-            titleToRender
-          )}
+              titleToRender
+            )}
+          </div>
+          {children}
         </div>
-        {children}
-      </div>
-    </LazyLoad>
+      </LazyLoad>
+    </ErrorBoundary>
   )
 }
 

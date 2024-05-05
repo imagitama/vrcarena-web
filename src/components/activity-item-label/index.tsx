@@ -13,7 +13,7 @@ import {
 import * as routes from '../../routes'
 import ErrorMessage from '../error-message'
 
-export default ({
+const ActivityItemLabel = ({
   message,
   parent,
   parentTable,
@@ -33,7 +33,12 @@ export default ({
   let asset: Asset, user: User
 
   if (!extraData) {
-    return <ErrorMessage>No data</ErrorMessage>
+    console.warn(`Cannot render activity label: no extra data found`, {
+      message,
+      parent,
+      parentTable,
+    })
+    return null
   }
 
   switch (message) {
@@ -82,9 +87,15 @@ export default ({
           </>
         )
       } else {
-        throw new Error(`Need an asset or user for COMMENT_CREATED`)
+        console.warn(
+          `Cannot render comment: only assets and users are supported`,
+          { message, parent, parentTable, extraData }
+        )
+        return null
       }
     default:
       throw new Error(`Unknown message ${message}`)
   }
 }
+
+export default ActivityItemLabel
