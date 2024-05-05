@@ -2,43 +2,33 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { makeStyles } from '@material-ui/core/styles'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import { Link } from 'react-router-dom'
 
 import useSearchTerm from '../../hooks/useSearchTerm'
-import useSupabaseView from '../../hooks/useSupabaseView'
-import { AssetCategories } from '../../hooks/useDatabaseQuery'
-
 import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
 import * as routes from '../../routes'
-import { trimDescription } from '../../utils/formatting'
-import {
-  DISCORD_URL,
-  PATREON_BECOME_PATRON_URL,
-  TWITTER_URL,
-} from '../../config'
-import { freeAvatars, getPathForQueryString, questAvatars } from '../../queries'
-import { Asset } from '../../modules/assets'
-
 import Button from '../../components/button'
-import PedestalVideo from '../../components/pedestal-video'
-
-import avatarsImageUrl from './assets/avatars.webp'
-import accessoriesImageUrl from './assets/accessories.webp'
-import discordImageUrl from './assets/discord.webp'
-import patreonImageUrl from './assets/patreon.webp'
-import oculusImageUrl from './assets/oculus.webp'
-import freeImageUrl from './assets/free.webp'
-import MostRecentDiscordAnnouncement from './components/most-recent-discord-announcement'
-import PatreonCosts from './components/patreon-costs'
-import RecentActivity from './components/recent-activity'
-import RecentSocialPosts from './components/recent-social-posts'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import CreateSocialPostForm from '../../components/create-social-post-form'
 import EditorTeam from './components/editor-team'
-import { SocialFeed } from '../social'
+import useSupabaseView from '../../hooks/useSupabaseView'
+import ErrorMessage from '../../components/error-message'
+import { FullAsset, PublicAsset } from '../../modules/assets'
+import { User } from '../../modules/users'
+import { FullActivityEntry } from '../../modules/activity'
+import { CachedDiscordMessage } from '../../modules/discordmessagecache'
+import AssetResults from '../../components/asset-results'
+import ActivityResults from '../../components/activity-results'
+import UserList from '../../components/user-list'
+import DiscordMessageResult from '../../components/discord-message-result'
+import { AssetCategories } from '../../hooks/useDatabaseQuery'
+import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '../../config'
+import Block from '../../components/block'
+import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
+import LoadingShimmer from '../../components/loading-shimmer'
+import PatreonCosts from './components/patreon-costs'
+
+const contentMaxWidth = '900px'
 
 const useStyles = makeStyles({
   root: {
@@ -62,7 +52,7 @@ const useStyles = makeStyles({
       marginBottom: 0,
     },
     '& > div': {
-      maxWidth: '900px',
+      maxWidth: contentMaxWidth,
       margin: '0 auto',
     },
     '& $controls': {
@@ -75,88 +65,19 @@ const useStyles = makeStyles({
       },
     },
   },
-  tiles: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'stretch',
-    padding: '0.5rem',
-  },
   tile: {
-    fontWeight: 200, // 100 for message titles, 400 for body
+    margin: '1rem 0',
+    padding: '0 1rem',
+  },
+  tileCols: {
+    margin: '1rem 0',
+    padding: '0 0.5rem',
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '0.5rem',
-    width: '33.3%',
-    [mediaQueryForTabletsOrBelow]: {
-      width: '50%',
-    },
-    [mediaQueryForMobiles]: {
+    '& > *': {
       width: '100%',
+      margin: 0,
+      padding: '0 0.5rem',
     },
-    '& > a': {
-      width: '100%',
-      height: '100%',
-      color: 'inherit',
-    },
-    '& $controls': {
-      position: 'absolute',
-      padding: '2rem',
-      bottom: 0,
-      right: 0,
-      [mediaQueryForMobiles]: {
-        padding: '1rem',
-      },
-    },
-  },
-  title: {
-    fontSize: '150%',
-    textShadow: '1px 1px 1px #000',
-    marginBottom: '1rem',
-  },
-  contents: {
-    width: '100%',
-    minHeight: '200px',
-    height: '100%',
-    borderRadius: '0.5rem',
-    transition: 'all 100ms',
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    padding: '2rem 2rem 6rem 2rem',
-    [mediaQueryForMobiles]: {
-      padding: '1rem 1rem 4rem 1rem',
-    },
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-      '& $bg': {
-        opacity: 0.15,
-      },
-      '& $mainImage': {
-        transform: 'scale(1.1)',
-      },
-    },
-    position: 'relative',
-  },
-  mainImage: {
-    width: '6rem',
-    height: '16rem',
-    position: 'absolute',
-    top: '-5%',
-    left: '2rem',
-    transition: 'all 100ms',
-    backgroundSize: 'contain',
-    backgroundRepeat: 'no-repeat',
-  },
-  bg: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    transition: 'all 100ms',
-    opacity: 0.1,
-    zIndex: -5,
   },
   controls: {
     width: '100%',
@@ -164,162 +85,10 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'right',
   },
-  createSocialPostForm: {
-    padding: '1rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  block: {
+    marginBottom: 0,
   },
 })
-
-const ActualLink = ({
-  url,
-  children,
-}: {
-  url?: string
-  children: React.ReactNode
-}) =>
-  url ? (
-    url.includes('http') ? (
-      <a href={url}>{children}</a>
-    ) : (
-      <Link to={url}>{children}</Link>
-    )
-  ) : (
-    <>{children}</>
-  )
-
-const Tile = ({
-  title,
-  mainImageUrl,
-  url,
-  buttonUrl,
-  buttonLabel,
-  children,
-  backgroundImageUrl = '',
-  background = undefined,
-}: {
-  title: string
-  url?: string
-  buttonUrl?: string
-  buttonLabel: string
-  children: React.ReactNode
-  mainImageUrl?: string
-  backgroundImageUrl?: string
-  background?: React.ReactNode
-}) => {
-  const classes = useStyles()
-  return (
-    <div className={classes.tile}>
-      <ActualLink url={url}>
-        <div className={classes.contents}>
-          {mainImageUrl ? (
-            <div
-              className={classes.mainImage}
-              style={{ backgroundImage: `url(${mainImageUrl})` }}
-            />
-          ) : null}
-          {title ? <div className={classes.title}>{title}</div> : null}
-          {children}
-          <div className={classes.controls}>
-            <Button url={buttonUrl || url} icon={<ChevronRightIcon />}>
-              {buttonLabel}
-            </Button>
-          </div>
-          {backgroundImageUrl ? (
-            <div
-              className={classes.bg}
-              style={{ backgroundImage: `url(${backgroundImageUrl})` }}
-            />
-          ) : null}
-          {background ? <div className={classes.bg}>{background}</div> : null}
-        </div>
-      </ActualLink>
-    </div>
-  )
-}
-
-const LoadingTile = ({ buttonLabel }: { buttonLabel: string }) => {
-  const classes = useStyles()
-  return (
-    <div className={classes.tile}>
-      <div className={classes.contents}>
-        <div className={classes.controls}>
-          <Button isLoading>{buttonLabel}</Button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const useFeaturedAssetStyles = makeStyles({
-  pedestalVideo: {
-    height: '100%',
-    transform: 'translateY(-25%)',
-    '& > div': {
-      height: '150%',
-    },
-  },
-  newIndicator: {
-    backgroundColor: 'rgb(255, 0, 0)',
-    color: '#FFF',
-    borderRadius: '1rem',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    padding: '0.25rem 1rem',
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    transform: 'translate(-50%, -50%)',
-    cursor: 'default',
-    fontSize: '150%',
-  },
-})
-
-const FeaturedAssetTile = () => {
-  const [, , results] = useSupabaseView<Asset[]>(
-    'getFeaturedAsset',
-    null,
-    'featured-asset'
-  )
-  const classes = useFeaturedAssetStyles()
-
-  if (results === null || !results.length) {
-    return <LoadingTile buttonLabel="View Featured Asset" />
-  }
-
-  const asset = results[0]
-
-  const {
-    title,
-    description,
-    shortdescription: shortDescription,
-    thumbnailurl: thumbnailUrl,
-    pedestalvideourl: pedestalVideoUrl,
-    pedestalfallbackimageurl: pedestalFallbackImageUrl,
-  } = asset
-
-  return (
-    <Tile
-      title={title}
-      url={routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id)}
-      buttonLabel="View Featured Asset"
-      backgroundImageUrl={pedestalVideoUrl ? undefined : thumbnailUrl}
-      background={
-        pedestalVideoUrl ? (
-          <div className={classes.pedestalVideo}>
-            <PedestalVideo
-              videoUrl={pedestalVideoUrl}
-              fallbackImageUrl={pedestalFallbackImageUrl}
-              noShadow
-            />
-          </div>
-        ) : undefined
-      }>
-      {trimDescription(shortDescription || description || '')}
-    </Tile>
-  )
-}
 
 const ContentBlock = ({
   buttonUrl,
@@ -345,10 +114,148 @@ const ContentBlock = ({
   )
 }
 
+const Tile = ({
+  title,
+  url,
+  buttonLabel,
+  children,
+}: {
+  title: string
+  url: string
+  buttonLabel?: string
+  children: React.ReactNode
+}) => {
+  const classes = useStyles()
+  return (
+    <div className={classes.tile}>
+      <Block url={url} title={title} className={classes.block}>
+        {children}
+        {buttonLabel ? (
+          <div className={classes.controls}>
+            <Button url={url} icon={<ChevronRightIcon />}>
+              {buttonLabel}
+            </Button>
+          </div>
+        ) : null}
+      </Block>
+    </div>
+  )
+}
+
+const LoadingContentBlock = () => (
+  <Block>
+    <AssetResults shimmer shimmerCount={10} />
+  </Block>
+)
+
+const TileCols = ({ children }: { children: React.ReactNode }) => {
+  const classes = useStyles()
+  return <div className={classes.tileCols}>{children}</div>
+}
+
+interface HomepageContent {
+  recentavatars: PublicAsset[]
+  recentaccessories: PublicAsset[]
+  recentusers: User[]
+  recentactivity: FullActivityEntry[]
+  recentdiscordannouncements: CachedDiscordMessage[]
+  featuredasset: FullAsset
+}
+
+const Tiles = () => {
+  const isAdultContentEnabled = useIsAdultContentEnabled()
+  const [isLoading, isError, results] = useSupabaseView<HomepageContent[]>(
+    `${isAdultContentEnabled ? '' : 'non'}adulthomepagecontent`
+  )
+
+  if (isError) {
+    return <ErrorMessage>Failed to load homepage content</ErrorMessage>
+  }
+
+  if (isLoading || !Array.isArray(results) || !results.length) {
+    return (
+      <>
+        <LoadingContentBlock />
+        <LoadingContentBlock />
+        <LoadingContentBlock />
+        <LoadingContentBlock />
+      </>
+    )
+  }
+
+  const {
+    recentavatars: recentAvatars,
+    recentaccessories: recentAccessories,
+    recentusers: recentUsers,
+    recentactivity: recentActivity,
+    recentdiscordannouncements: recentDiscordAnnouncements,
+    featuredasset: featuredAsset,
+  } = results[0]
+
+  return (
+    <>
+      <Tile
+        title="Recent Avatars"
+        url={routes.viewCategoryWithVar.replace(
+          ':categoryName',
+          AssetCategories.avatar
+        )}
+        buttonLabel="Browse Avatars">
+        <AssetResults assets={recentAvatars} />
+      </Tile>
+      <Tile
+        title="Recent Accessories"
+        url={routes.viewCategoryWithVar.replace(
+          ':categoryName',
+          AssetCategories.accessory
+        )}
+        buttonLabel="Browse Accessories">
+        <AssetResults assets={recentAccessories} />
+      </Tile>
+      <Tile
+        title="Recent Sign-ups"
+        url={routes.users}
+        buttonLabel="Browse Users">
+        <UserList users={recentUsers} />
+      </Tile>
+      <TileCols>
+        <Tile
+          title="Discord Announcement"
+          url={DISCORD_URL}
+          buttonLabel="Join Discord">
+          {recentDiscordAnnouncements.length ? (
+            <DiscordMessageResult message={recentDiscordAnnouncements[0]} />
+          ) : (
+            <ErrorMessage>No Discord messages found</ErrorMessage>
+          )}
+        </Tile>
+        <Tile
+          title="Recent Activity"
+          url={routes.activity}
+          buttonLabel="View Activity">
+          <ActivityResults activityEntries={recentActivity} />
+        </Tile>
+      </TileCols>
+      <TileCols>
+        <Tile
+          title="Patreon"
+          url={PATREON_BECOME_PATRON_URL}
+          buttonLabel="Become Patron">
+          <PatreonCosts />
+        </Tile>
+        <Tile
+          title="Featured Asset"
+          url={routes.viewAssetWithVar.replace(':assetId', featuredAsset.id)}>
+          <AssetResults assets={[featuredAsset]} />
+        </Tile>
+      </TileCols>
+    </>
+  )
+}
+
 export default () => {
   const classes = useStyles()
   const searchTerm = useSearchTerm()
-  const isLoggedIn = useIsLoggedIn()
 
   if (searchTerm) {
     return null
@@ -379,73 +286,7 @@ export default () => {
           </p>
           <EditorTeam />
         </ContentBlock>
-        <br />
-        <div className={classes.tiles}>
-          <Tile title="Social" url={routes.social} buttonLabel="View All">
-            <RecentSocialPosts />
-          </Tile>
-          <Tile
-            title="Avatars"
-            url={routes.viewAvatars}
-            buttonLabel="Browse Avatars"
-            backgroundImageUrl={avatarsImageUrl}>
-            We have catalogued over 600 avatars ranging from canines, dragons,
-            anime, memes and more. Find the avatar that best represents you and
-            follow the links to the product page.
-          </Tile>
-          <Tile
-            title="Accessories"
-            url={routes.viewCategoryWithVar.replace(
-              ':categoryName',
-              AssetCategories.accessory
-            )}
-            buttonLabel="Browse Accessories"
-            backgroundImageUrl={accessoriesImageUrl}>
-            Avatar bases look great but you can really add to your avatar will
-            accessories such as hair and clothing. We have catalogued as many
-            accessories as we could find into what part of the body they are
-            for.
-          </Tile>
-          <FeaturedAssetTile />
-          <Tile
-            title="Quest Avatars"
-            url={getPathForQueryString(questAvatars)}
-            buttonLabel="Find Quest avatars"
-            backgroundImageUrl={oculusImageUrl}>
-            Using tags you can narrow down your search for Quest-compatible
-            avatars.
-          </Tile>
-          <Tile
-            title="Free Avatars"
-            url={getPathForQueryString(freeAvatars)}
-            buttonLabel="Find free avatars"
-            backgroundImageUrl={freeImageUrl}>
-            On a budget? Using tags you can find any avatar labelled as "free".
-          </Tile>
-          <Tile
-            title=""
-            url={DISCORD_URL}
-            buttonLabel="Join Discord"
-            backgroundImageUrl={discordImageUrl}>
-            <MostRecentDiscordAnnouncement />
-          </Tile>
-          <Tile
-            title="Patreon"
-            url={PATREON_BECOME_PATRON_URL}
-            buttonLabel="Become Patron"
-            backgroundImageUrl={patreonImageUrl}>
-            We need your help with running the site. Any costs not covered by
-            Patreon come out of the pocket of our staff.
-            <br />
-            <PatreonCosts />
-          </Tile>
-          <Tile
-            title="Recent Activity"
-            url={routes.activity}
-            buttonLabel="View All">
-            <RecentActivity />
-          </Tile>
-        </div>
+        <Tiles />
       </div>
     </>
   )

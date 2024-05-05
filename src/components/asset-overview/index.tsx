@@ -56,7 +56,6 @@ import AssetResultsItem from '../asset-results-item'
 import FormattedDate from '../formatted-date'
 import UsernameLink from '../username-link'
 import GitHubReleases from '../github-releases'
-import LoadingIndicator from '../loading-indicator'
 
 // controls
 import VisitSourceButton from '../visit-source-button'
@@ -65,7 +64,6 @@ import AddToWishlistButton from '../add-to-wishlist-button'
 import AddToCollectionButton from '../add-to-collection-button'
 
 import AssetOverviewContext from './context'
-import DiscordServerInfo from './components/discord-server-info'
 import Messages from './components/messages'
 import Control from './components/control'
 import TabDescription from './components/tab-description'

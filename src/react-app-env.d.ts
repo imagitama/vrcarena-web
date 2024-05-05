@@ -18,3 +18,5 @@ declare module 'react-autocomplete-input' {
   }
   export default (props: ReactAutocompleteInputProps) => React.Element
 }
+
+declare module '@danktuary/react-discord-message'

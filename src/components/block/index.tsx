@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import LazyLoad from 'react-lazyload'
 import LoadingIndicator from '../loading-indicator'
 import Link from '../link'
+import { isAbsoluteUrl } from '../../utils'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,11 +41,13 @@ const Block = ({
   children,
   url,
   icon: Icon,
+  className,
 }: {
   title?: string
   children: React.ReactNode
   url?: string
   icon?: React.ReactElement
+  className?: string
 }) => {
   const classes = useStyles()
 
@@ -57,9 +60,19 @@ const Block = ({
 
   return (
     <LazyLoad height={300} placeholder={<LoadingIndicator />}>
-      <div className={classes.root}>
+      <div className={`${classes.root} ${className}`}>
         <div className={classes.title}>
-          {url ? <Link to={url}>{titleToRender}</Link> : titleToRender}
+          {url ? (
+            isAbsoluteUrl(url) ? (
+              <a href={url} target="_blank" rel="noopener noreferrer">
+                {titleToRender}
+              </a>
+            ) : (
+              <Link to={url}>{titleToRender}</Link>
+            )
+          ) : (
+            titleToRender
+          )}
         </div>
         {children}
       </div>

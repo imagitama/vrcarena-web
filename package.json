@@ -33,6 +33,7 @@
     "source-map-loader": "^4.0.1"
   },
   "dependencies": {
+    "@danktuary/react-discord-message": "^1.0.2",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@material-ui/core": "^4.12.4",

@@ -23,6 +23,7 @@ const AssetResults = ({
   dimUnselected = false,
   onClickWithEventAndAsset = undefined,
   shimmer = false,
+  shimmerCount = 3,
   showAddToCart = true,
   showSelectedTick = false,
 }: {
@@ -37,6 +38,7 @@ const AssetResults = ({
     asset: Asset
   ) => void
   shimmer?: boolean
+  shimmerCount?: number
   showAddToCart?: boolean
   showSelectedTick?: boolean
 }) => {
@@ -44,46 +46,38 @@ const AssetResults = ({
 
   return (
     <div className={classes.root}>
-      {shimmer ? (
-        <>
-          <div className={classes.item}>
-            <AssetResultsItem shimmer />
-          </div>
-          <div className={classes.item}>
-            <AssetResultsItem shimmer />
-          </div>
-          <div className={classes.item}>
-            <AssetResultsItem shimmer />
-          </div>
-        </>
-      ) : (
-        assets.map((asset) => (
-          <div key={asset.id} className={classes.item}>
-            <AssetResultsItem
-              asset={asset}
-              showCategory={showCategory}
-              showCost={showCost}
-              showIsNsfw={showIsNsfw}
-              isSelected={selectedAssetIds.includes(asset.id)}
-              dim={
-                dimUnselected &&
-                selectedAssetIds.length &&
-                !selectedAssetIds.includes(asset.id)
-                  ? true
-                  : false
-              }
-              onClick={
-                onClickWithEventAndAsset
-                  ? (e: React.SyntheticEvent<HTMLElement>) =>
-                      onClickWithEventAndAsset(e, asset)
-                  : undefined
-              }
-              showAddToCart={showAddToCart}
-              showSelectedTick={showSelectedTick}
-            />
-          </div>
-        ))
-      )}
+      {shimmer
+        ? new Array(shimmerCount).fill(undefined).map(() => (
+            <div className={classes.item}>
+              <AssetResultsItem shimmer />
+            </div>
+          ))
+        : assets.map((asset) => (
+            <div key={asset.id} className={classes.item}>
+              <AssetResultsItem
+                asset={asset}
+                showCategory={showCategory}
+                showCost={showCost}
+                showIsNsfw={showIsNsfw}
+                isSelected={selectedAssetIds.includes(asset.id)}
+                dim={
+                  dimUnselected &&
+                  selectedAssetIds.length &&
+                  !selectedAssetIds.includes(asset.id)
+                    ? true
+                    : false
+                }
+                onClick={
+                  onClickWithEventAndAsset
+                    ? (e: React.SyntheticEvent<HTMLElement>) =>
+                        onClickWithEventAndAsset(e, asset)
+                    : undefined
+                }
+                showAddToCart={showAddToCart}
+                showSelectedTick={showSelectedTick}
+              />
+            </div>
+          ))}
     </div>
   )
 }
