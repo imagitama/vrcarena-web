@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import Markdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown'
 import remarkDirective from 'remark-directive'
 import { visit } from 'unist-util-visit'
 import rehypeRaw from 'rehype-raw'
@@ -25,6 +25,8 @@ import Button from '../button'
 import SlimMessage from '../slim-message'
 import ImageWithCaption from '../image-with-caption'
 
+type ReactMarkdownNode = any
+
 const useStyles = makeStyles({
   root: {
     '& h2': {
@@ -33,10 +35,13 @@ const useStyles = makeStyles({
     '& > p:last-child': {
       marginBottom: 0,
     },
+    '& blockquote img': {
+      maxWidth: '100%',
+    },
   },
 })
 
-const getLabel = (node) => {
+const getLabel = (node: ReactMarkdownNode): string => {
   try {
     return node.children.pop().children[0].value
   } catch (err) {
@@ -44,7 +49,7 @@ const getLabel = (node) => {
   }
 }
 
-const getUrlFromAttributes = (attributes) => {
+const getUrlFromAttributes = (attributes: any): string => {
   if (attributes.url) {
     return attributes.url
   }
@@ -56,7 +61,7 @@ const getUrlFromAttributes = (attributes) => {
   return '#unknown'
 }
 
-const onContainerDirective = (node) => {
+const onContainerDirective = (node: ReactMarkdownNode): void => {
   switch (node.name) {
     case 'button':
       node.data.hName = 'button'
@@ -99,7 +104,7 @@ const onContainerDirective = (node) => {
 }
 
 function myRemarkDirectivePlugin() {
-  return (tree) => {
+  return (tree: any) => {
     visit(tree, (node) => {
       node.data = node.data || {}
 
@@ -110,10 +115,18 @@ function myRemarkDirectivePlugin() {
   }
 }
 
-const getIconFromUrl = (url) =>
+const getIconFromUrl = (url: string) =>
   url.includes('http') ? <LaunchIcon /> : <ChevronRight />
 
-const ComponentReplacement = ({ type, props, onClickLineWithContent }) =>
+const ComponentReplacement = ({
+  type,
+  props,
+  onClickLineWithContent,
+}: {
+  type: string
+  props: any
+  onClickLineWithContent?: (content: string) => void
+}) =>
   React.createElement(type, {
     ...props,
     onClick: onClickLineWithContent
@@ -122,7 +135,7 @@ const ComponentReplacement = ({ type, props, onClickLineWithContent }) =>
     className: onClickLineWithContent ? 'clickable' : '',
   })
 
-const getTextFromProps = (props) => {
+const getTextFromProps = (props: any) => {
   try {
     if (typeof props.children[0] === 'string') {
       return props.children[0]
@@ -134,11 +147,19 @@ const getTextFromProps = (props) => {
   }
 }
 
-const TabContext = createContext()
-const useTabs = (idx) => {
+const TabContext =
+  // @ts-ignore
+  createContext<
+    [
+      { [tabIdx: number]: number },
+      (newState: { [tabIdx: number]: number }) => void
+    ]
+  >()
+
+const useTabs = (idx: number): [number, (newIdx: number) => void] => {
   const [tabState, setTabState] = useContext(TabContext)
   const selectedIdx = tabState[idx] || 0
-  const setSelectedIdx = (newIdx) =>
+  const setSelectedIdx = (newIdx: number) =>
     setTabState({
       ...tabState,
       [idx]: newIdx,
@@ -146,7 +167,15 @@ const useTabs = (idx) => {
   return [selectedIdx, setSelectedIdx]
 }
 
-const Tab = ({ label, idx, groupIdx }) => {
+const Tab = ({
+  label,
+  idx,
+  groupIdx,
+}: {
+  label: string
+  idx: number
+  groupIdx: number
+}) => {
   const [selectedIdx, setSelectedIdx] = useTabs(groupIdx)
   return (
     <MaterialTab
@@ -157,7 +186,15 @@ const Tab = ({ label, idx, groupIdx }) => {
   )
 }
 
-const TabContents = ({ contents, idx, groupIdx }) => {
+const TabContents = ({
+  contents,
+  idx,
+  groupIdx,
+}: {
+  contents: React.ReactNode
+  idx: number
+  groupIdx: number
+}) => {
   const [selectedIdx] = useTabs(groupIdx)
   return (
     <div style={{ display: selectedIdx === idx ? 'block' : 'none' }}>
@@ -166,7 +203,7 @@ const TabContents = ({ contents, idx, groupIdx }) => {
   )
 }
 
-const Image = (props) => {
+const Image = (props: { src: string }) => {
   return (
     <Button url={props.src} icon={<ImageIcon />}>
       View Image
@@ -174,12 +211,18 @@ const Image = (props) => {
   )
 }
 
-export default ({
+const Markdown = ({
   source = '',
   analyticsCategory = '',
   enableHtml = false,
-  onClickLineWithContent = null,
+  onClickLineWithContent = undefined,
   replaceImagesWithButtons = false,
+}: {
+  source: string
+  analyticsCategory?: string
+  enableHtml?: boolean
+  onClickLineWithContent?: (content: string) => void
+  replaceImagesWithButtons?: boolean
 }) => {
   const [tabState, setTabState] = useState({})
   const classes = useStyles()
@@ -188,26 +231,27 @@ export default ({
   let groupIdx = -1
   return (
     <TabContext.Provider value={[tabState, setTabState]}>
-      <Markdown
+      <ReactMarkdown
         children={source}
         rehypePlugins={enableHtml ? [rehypeRaw] : []}
         remarkPlugins={[remarkDirective, myRemarkDirectivePlugin, gfm]}
         className={classes.root}
         components={{
-          button: (props) => (
+          // @ts-ignore
+          button: (props: { url: string; label: string }) => (
             <Button
               url={props.url}
               icon={getIconFromUrl(props.url)}
               onClick={
                 onClickLineWithContent
                   ? () => onClickLineWithContent(props.label)
-                  : null
+                  : undefined
               }
               className={onClickLineWithContent ? 'clickable' : ''}>
               {props.label}
             </Button>
           ),
-          warning: (props) => (
+          warning: (props: { message: string }) => (
             <SlimMessage
               onClick={
                 onClickLineWithContent
@@ -218,7 +262,7 @@ export default ({
               <WarningIcon /> {props.message}
             </SlimMessage>
           ),
-          info: (props) => (
+          info: (props: { message: string }) => (
             <SlimMessage
               onClick={
                 onClickLineWithContent
@@ -229,7 +273,8 @@ export default ({
               <InfoIcon /> {props.message}
             </SlimMessage>
           ),
-          image: (props) => (
+          // @ts-ignore
+          image: (props: { caption: string; url: string }) => (
             <div
               onClick={
                 onClickLineWithContent
@@ -239,13 +284,14 @@ export default ({
                       e.stopPropagation()
                       return false
                     }
-                  : null
+                  : undefined
               }
               className={onClickLineWithContent ? 'clickable' : ''}>
               <ImageWithCaption caption={props.caption} src={props.url} />
             </div>
           ),
-          link: (props) => (
+          // @ts-ignore
+          link: (props: { href: string; children: React.ReactNode }) => (
             <a
               href={props.href}
               target="_blank"
@@ -268,46 +314,54 @@ export default ({
               {props.children} <OpenInNewIcon style={{ fontSize: '1em' }} />
             </a>
           ),
-          h1: (props) => (
+          h1: (props: { children: React.ReactNode }) => (
             <ComponentReplacement
               type="h1"
               props={props}
               onClickLineWithContent={onClickLineWithContent}
             />
           ),
-          h2: (props) => (
+          h2: (props: { children: React.ReactNode }) => (
             <ComponentReplacement
               type="h2"
               props={props}
               onClickLineWithContent={onClickLineWithContent}
             />
           ),
-          h3: (props) => (
+          h3: (props: { children: React.ReactNode }) => (
             <ComponentReplacement
               type="h3"
               props={props}
               onClickLineWithContent={onClickLineWithContent}
             />
           ),
-          p: (props) => (
+          p: (props: { children: React.ReactNode }) => (
             <ComponentReplacement
               type="p"
               props={props}
               onClickLineWithContent={onClickLineWithContent}
             />
           ),
-          table: (props) => (
+          table: (props: { children: React.ReactNode }) => (
             <div>
               <Table size="small" className="markdown-table">
                 {props.children}
               </Table>
             </div>
           ),
-          tr: (props) => <TableRow>{props.children}</TableRow>,
-          tbody: (props) => <TableBody>{props.children}</TableBody>,
-          td: (props) => <TableCell>{props.children}</TableCell>,
-          thead: (props) => <TableHead>{props.children}</TableHead>,
-          tab: (props) => {
+          tr: (props: { children: React.ReactNode }) => (
+            <TableRow>{props.children}</TableRow>
+          ),
+          tbody: (props: { children: React.ReactNode }) => (
+            <TableBody>{props.children}</TableBody>
+          ),
+          td: (props: { children: React.ReactNode }) => (
+            <TableCell>{props.children}</TableCell>
+          ),
+          thead: (props: { children: React.ReactNode }) => (
+            <TableHead>{props.children}</TableHead>
+          ),
+          tab: (props: { label: string }) => {
             const oldTabIdx = tabIdx
 
             if (oldTabIdx === 0) {
@@ -321,7 +375,7 @@ export default ({
               <Tab label={props.label} idx={oldTabIdx} groupIdx={groupIdx} />
             )
           },
-          tabContents: (props) => {
+          tabContents: (props: { children: React.ReactNode }) => {
             const oldTabContentsIdx = tabContentsIdx
             tabContentsIdx++
 
@@ -337,7 +391,7 @@ export default ({
           },
           ...(replaceImagesWithButtons
             ? {
-                img: (props) => <Image {...props} />,
+                img: (props: { src: string }) => <Image {...props} />,
               }
             : {}),
         }}
@@ -346,6 +400,4 @@ export default ({
   )
 }
 
-// | Some header | Another header |
-// | --- | --- |
-// | A cell. | Another cell. |
+export default Markdown
