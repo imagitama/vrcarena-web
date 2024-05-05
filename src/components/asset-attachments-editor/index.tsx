@@ -8,6 +8,7 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
 import AttachmentsForm from '../attachments-form'
+import WarningMessage from '../warning-message'
 
 const AssetAttachmentsEditor = ({
   assetId,
@@ -73,14 +74,20 @@ const AssetAttachmentsEditor = ({
   }
 
   return (
-    <AttachmentsForm
-      reason={AttachmentReason.AssetFile}
-      parentTable={CollectionNames.Assets}
-      parentId={assetId}
-      ids={ids}
-      attachmentsData={attachmentsData}
-      onDone={onSave}
-    />
+    <>
+      <WarningMessage>
+        We are aware of an issue amending assets with new attachments (6 May
+        2024)
+      </WarningMessage>
+      <AttachmentsForm
+        reason={AttachmentReason.AssetFile}
+        parentTable={CollectionNames.Assets}
+        parentId={assetId}
+        ids={ids}
+        attachmentsData={attachmentsData}
+        onDone={onSave}
+      />
+    </>
   )
 }
 

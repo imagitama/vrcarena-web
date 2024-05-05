@@ -26,6 +26,7 @@ const AssetResults = ({
   shimmerCount = 3,
   showAddToCart = true,
   showSelectedTick = false,
+  showEditorChips = false,
 }: {
   assets?: Asset[]
   showCategory?: boolean
@@ -41,6 +42,7 @@ const AssetResults = ({
   shimmerCount?: number
   showAddToCart?: boolean
   showSelectedTick?: boolean
+  showEditorChips?: boolean
 }) => {
   const classes = useStyles()
 
@@ -75,6 +77,7 @@ const AssetResults = ({
                 }
                 showAddToCart={showAddToCart}
                 showSelectedTick={showSelectedTick}
+                showEditorChips={showEditorChips}
               />
             </div>
           ))}

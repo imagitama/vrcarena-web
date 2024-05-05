@@ -235,6 +235,7 @@ function truncateTextAndAddEllipsis(text: string): string {
 function ExtraChips({
   asset,
   showCategory = false,
+  showEditorChips = false,
   categoryName = '',
   showCost = false,
   isFree,
@@ -243,6 +244,7 @@ function ExtraChips({
 }: {
   asset: FullAsset
   showCategory: boolean
+  showEditorChips: boolean
   categoryName: string
   showCost: boolean
   isFree: boolean
@@ -256,7 +258,7 @@ function ExtraChips({
       className={`${classes.extraChips} ${
         pushDown ? classes.pushDownIcons : ''
       }`}>
-      {isEditor ? (
+      {showEditorChips && isEditor ? (
         <>
           <Chip label={asset.approvalstatus} className={classes.extraChip} />
           <Chip label={asset.publishstatus} className={classes.extraChip} />
@@ -357,6 +359,7 @@ const AssetResultsItem = ({
   showAddToCart = false,
   showSelectedTick = false,
   pushDownIcons = false,
+  showEditorChips = false,
 }: {
   asset?: Asset
   showCategory?: boolean
@@ -370,6 +373,7 @@ const AssetResultsItem = ({
   showAddToCart?: boolean
   showSelectedTick?: boolean
   pushDownIcons?: boolean
+  showEditorChips?: boolean
 }) => {
   const classes = useStyles()
   const cardRef = useRef<HTMLDivElement>()
@@ -412,6 +416,7 @@ const AssetResultsItem = ({
             // @ts-ignore
             asset={asset}
             showCategory={showCategory}
+            showEditorChips={showEditorChips}
             categoryName={asset.category}
             showCost={showCost}
             isFree={getIsFree(asset.tags)}

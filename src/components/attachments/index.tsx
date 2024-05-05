@@ -28,9 +28,12 @@ const Attachments = ({
           const attachment = attachmentsData.find((data) => data.id === id)
 
           if (!attachment) {
-            return (
-              <ErrorMessage>Could not find attachment for {id}</ErrorMessage>
-            )
+            return {
+              url: '/#failed',
+              caption: (
+                <ErrorMessage>Could not find attachment for {id}</ErrorMessage>
+              ),
+            }
           }
 
           return {
