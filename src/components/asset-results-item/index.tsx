@@ -250,17 +250,19 @@ function ExtraChips({
   pushDown: boolean
 }) {
   const classes = useStyles()
+  const isEditor = useIsEditor()
   return (
     <div
       className={`${classes.extraChips} ${
         pushDown ? classes.pushDownIcons : ''
       }`}>
-      {asset.approvalstatus === ApprovalStatuses.Waiting && (
-        <Chip label="Unapproved" className={classes.extraChip} />
-      )}
-      {asset.publishstatus === PublishStatuses.Draft && (
-        <Chip label="Draft" className={classes.extraChip} />
-      )}
+      {isEditor ? (
+        <>
+          <Chip label={asset.approvalstatus} className={classes.extraChip} />
+          <Chip label={asset.publishstatus} className={classes.extraChip} />
+          <Chip label={asset.accessstatus} className={classes.extraChip} />
+        </>
+      ) : null}
       {asset.pinnedstatus === PinnedStatuses.Pinned && (
         <Chip icon={<RoomIcon />} label={false} className={classes.extraChip} />
       )}

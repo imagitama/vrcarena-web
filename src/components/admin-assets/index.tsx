@@ -241,6 +241,7 @@ const Renderer = ({
 const subViews = {
   PENDING: 0,
   DELETED: 1,
+  DECLINED: 2,
 }
 
 const analyticsCategoryName = 'AdminAssets'
@@ -283,8 +284,11 @@ const AdminAssets = () => {
           query = query.eq('accessstatus', AccessStatuses.Deleted)
           break
 
-        case subViews.DELETED:
-          query = query.eq('accessstatus', AccessStatuses.Deleted)
+        case subViews.DECLINED:
+          query = query
+            .eq('publishstatus', PublishStatuses.Draft)
+            .eq('approvalstatus', ApprovalStatuses.Declined)
+            .eq('accessstatus', AccessStatuses.Public)
       }
 
       return query
@@ -340,6 +344,21 @@ const AdminAssets = () => {
           }}
           color="default">
           Pending
+        </Button>,
+        <Button
+          icon={
+            selectedSubView === subViews.DECLINED ? (
+              <CheckBoxIcon />
+            ) : (
+              <CheckBoxOutlineBlankIcon />
+            )
+          }
+          onClick={() => {
+            setSelectedSubView(subViews.DECLINED)
+            trackAction(analyticsCategoryName, 'Click on view declined assets')
+          }}
+          color="default">
+          Declined
         </Button>,
         <Button
           icon={

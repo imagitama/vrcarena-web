@@ -251,7 +251,7 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
               [CommonMetaFieldNames.publishStatus]: PublishStatuses.Draft,
             }
           : {}),
-        ...(allowDeclineOptions
+        ...(allowDeclineOptions && selectedDeclineOptionIds.length
           ? { [CommonMetaFieldNames.editorNotes]: newEditorNotes }
           : {}),
       })
