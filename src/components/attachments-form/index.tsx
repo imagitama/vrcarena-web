@@ -137,7 +137,7 @@ const AttachmentsForm = ({
   parentTable: string
   parentId: string
   attachmentsData: Attachment[]
-  onDone?: (attachmentIds: string[]) => void
+  onDone?: (attachmentIds: string[], attachmentDatas: Attachment[]) => void
   actionCategory?: string
 }) => {
   const [newAttachmentIds, setNewAttachmentIds] =
@@ -158,7 +158,7 @@ const AttachmentsForm = ({
       }
 
       if (onDone) {
-        onDone(newValue)
+        onDone(newValue, newAttachmentsDatas)
       }
     } catch (err) {
       console.error(err)

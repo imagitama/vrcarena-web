@@ -20,7 +20,7 @@ const AssetAttachmentsEditor = ({
   assetId: string
   ids: string[]
   attachmentsData: Attachment[]
-  overrideSave?: (newIds: string[]) => void
+  overrideSave?: (newIds: string[], newDatas: Attachment[]) => void
   onDone?: () => void
   actionCategory?: string
 }) => {
@@ -29,12 +29,12 @@ const AssetAttachmentsEditor = ({
     assetId
   )
 
-  const onSave = async (newIds: string[]) => {
+  const onSave = async (newIds: string[], newDatas: Attachment[]) => {
     try {
       console.debug(`AssetAttachmentsEditor.onSave`, { newIds })
 
       if (overrideSave) {
-        overrideSave(newIds)
+        overrideSave(newIds, newDatas)
 
         if (onDone) {
           onDone()

@@ -743,7 +743,7 @@ const AttachmentsEditor = ({
   assetId: string // dont need but helpful later
   attachmentIds: string[]
   attachmentsData: Attachment[]
-  overrideSave?: (ids: string[]) => void
+  overrideSave?: (ids: string[], newDatas: Attachment[]) => void
   onDone?: () => void
 }) => {
   const { originalAssetId } = useEditor()
@@ -758,7 +758,11 @@ const AttachmentsEditor = ({
         assetId={originalAssetId || assetId}
         ids={attachmentIds}
         attachmentsData={attachmentsData}
-        overrideSave={overrideSave ? (ids) => overrideSave(ids) : undefined}
+        overrideSave={
+          overrideSave
+            ? (ids, newDatas) => overrideSave(ids, newDatas)
+            : undefined
+        }
         onDone={() => {
           if (onDone) {
             onDone()
@@ -1058,8 +1062,11 @@ const Editor = () => {
                       attachmentsData={asset.attachmentsdata || []}
                       overrideSave={
                         onFieldChanged
-                          ? (newExtraData) =>
-                              onFieldChanged('attachmentids', newExtraData)
+                          ? (newIds, newDatas) => {
+                              onFieldChanged('attachmentids', newIds)
+                              // @ts-ignore
+                              onFieldChanged('attachmentsdata', newDatas)
+                            }
                           : undefined
                       }
                     />

@@ -3,6 +3,7 @@ import ImageGallery from '../image-gallery'
 import { Attachment, FullAttachment } from '../../modules/attachments'
 import NoResultsMessage from '../no-results-message'
 import AttachmentCaption from '../attachment-caption'
+import ErrorMessage from '../error-message'
 
 const Attachments = ({
   ids,
@@ -27,7 +28,9 @@ const Attachments = ({
           const attachment = attachmentsData.find((data) => data.id === id)
 
           if (!attachment) {
-            return null
+            return (
+              <ErrorMessage>Could not find attachment for {id}</ErrorMessage>
+            )
           }
 
           return {
