@@ -1,5 +1,10 @@
 import React from 'react'
-import { Attachment, AttachmentReason } from '../../modules/attachments'
+import {
+  Attachment,
+  AttachmentReason,
+  FullAttachment,
+  ViewNames,
+} from '../../modules/attachments'
 import { Asset, CollectionNames } from '../../modules/assets'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { trackAction } from '../../analytics'
@@ -9,6 +14,7 @@ import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
 import AttachmentsForm from '../attachments-form'
 import WarningMessage from '../warning-message'
+import useDataStoreItems from '../../hooks/useDataStoreItems'
 
 const AssetAttachmentsEditor = ({
   assetId,
@@ -21,21 +27,37 @@ const AssetAttachmentsEditor = ({
   assetId: string
   ids: string[]
   attachmentsData: Attachment[]
-  overrideSave?: (newIds: string[], newDatas: Attachment[]) => void
+  overrideSave?: (
+    newIds: string[],
+    extraFields: { attachmentsdata: Attachment[] }
+  ) => void
   onDone?: () => void
   actionCategory?: string
 }) => {
+  // const needsToPopulateAttachments =
+  //   ids.length > 0 &&
+  //   ids.filter(
+  //     (id) => attachmentsData.find((data) => data.id === id) !== undefined
+  //   ).length > 0
+
   const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
+  // const [isLoading, isError, newAttachmentsData] =
+  //   useDataStoreItems<FullAttachment>(
+  //     ViewNames.GetFullAttachments,
+  //     needsToPopulateAttachments ? ids : false
+  //   )
+
+  // const attachmentsDataToUse = newAttachmentsData || attachmentsData
 
   const onSave = async (newIds: string[], newDatas: Attachment[]) => {
     try {
       console.debug(`AssetAttachmentsEditor.onSave`, { newIds })
 
       if (overrideSave) {
-        overrideSave(newIds, newDatas)
+        overrideSave(newIds, { attachmentsdata: newDatas })
 
         if (onDone) {
           onDone()
@@ -61,6 +83,14 @@ const AssetAttachmentsEditor = ({
     }
   }
 
+  // if (needsToPopulateAttachments && (isLoading || !newAttachmentsData)) {
+  //   return <LoadingIndicator message="Loading attachments for editor..." />
+  // }
+
+  // if (isError) {
+  //   return <ErrorMessage>Failed to load attachments</ErrorMessage>
+  // }
+
   if (isSaving) {
     return <LoadingIndicator message="Saving asset..." />
   }
@@ -75,10 +105,6 @@ const AssetAttachmentsEditor = ({
 
   return (
     <>
-      <WarningMessage>
-        We are aware of an issue amending assets with new attachments (6 May
-        2024)
-      </WarningMessage>
       <AttachmentsForm
         reason={AttachmentReason.AssetFile}
         parentTable={CollectionNames.Assets}

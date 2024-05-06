@@ -74,15 +74,29 @@ const useStyles = makeStyles({
   },
 })
 
-const ParentEditor = ({ type, id, fields, onFieldChanged }) => {
+const ParentEditor = ({
+  type,
+  id,
+  fields,
+  onFieldChanged,
+  insertExtraFields,
+}: {
+  type?: string
+  id?: string
+  fields: any
+  onFieldChanged: (fieldName: string, value: any) => void
+  insertExtraFields: (extraFields: { [fieldName: string]: any }) => void
+}) => {
   switch (type) {
     case OldCollectionNames.Assets:
       return (
         <EditorContext.Provider
+          // @ts-ignore
           value={{
             asset: fields,
             originalAssetId: id,
-            onFieldChanged: onFieldChanged,
+            onFieldChanged,
+            insertExtraFields,
           }}>
           <AssetEditor />
         </EditorContext.Provider>
@@ -103,7 +117,7 @@ const ParentEditor = ({ type, id, fields, onFieldChanged }) => {
   }
 }
 
-const getViewNameForParentTable = (parentTable) => {
+const getViewNameForParentTable = (parentTable: string): string => {
   switch (parentTable) {
     case OldCollectionNames.Assets:
       return 'getfullassets'
@@ -114,24 +128,32 @@ const getViewNameForParentTable = (parentTable) => {
   }
 }
 
-export default ({
-  amendmentId = null,
-  parentTable = null,
-  parentId = null,
+const AmendmentEditor = ({
+  amendmentId = undefined,
+  parentTable = undefined,
+  parentId = undefined,
   returnUrl = '',
+}: {
+  amendmentId?: string
+  parentTable?: string
+  parentId?: string
+  returnUrl?: string
 }) => {
   const classes = useStyles()
-  const [isLoadingParent, isErroredLoadingParent, parent] = useDataStoreItem(
-    parentTable ? getViewNameForParentTable(parentTable) : false,
-    parentId || false,
-    'amendment-editor-parent'
-  )
+  const [isLoadingParent, isErroredLoadingParent, parent] =
+    useDataStoreItem<any>(
+      parentTable ? getViewNameForParentTable(parentTable) : '',
+      parentId || false,
+      'amendment-editor-parent'
+    )
   const [isSaving, isSuccess, isErroredSaving, saveOrCreate] = useDatabaseSave(
     CollectionNames.Amendments,
     amendmentId
   )
   const [newFieldsForSaving, setNewFieldsForSaving] = useState({})
-  const [newFieldsForOutput, setNewFieldsForOutput] = useState({})
+  const [newFieldsForOutput, setNewFieldsForOutput] = useState<{
+    [fieldName: string]: any
+  }>({})
   const [isPreviewVisible, setIsPreviewVisible] = useState(false)
   const [comments, setComments] = useState('')
 
@@ -199,7 +221,7 @@ export default ({
   const changedFieldNames = getChangedFieldNames(parent, newFieldsForOutput)
 
   // note: each little form does its own save so we override EVERY one with this func
-  const onFieldChanged = async (fieldName, newValue) => {
+  const onFieldChanged = async (fieldName: string, newValue: any) => {
     console.debug(`AmendmentEditor.onFieldChanged.${fieldName}`, newValue)
 
     // we store the data as IDs but still need to output it as "authorName" etc.
@@ -220,14 +242,36 @@ export default ({
     }))
   }
 
+  const insertExtraFields = (extraFields: { [fieldName: string]: any }) => {
+    console.debug(`AmendmentEditor.insertExtraFields`, { extraFields })
+
+    // TODO: do this in generic way (quick fix)
+    if (extraFields.attachmentsdata) {
+      setNewFieldsForOutput((currentVal) => ({
+        ...currentVal,
+        attachmentsdata: currentVal.attachmentsdata
+          ? currentVal.attachmentsdata.concat(extraFields.attachmentsdata)
+          : extraFields.attachmentsdata,
+      }))
+      return
+    }
+
+    setNewFieldsForOutput((currentVal) => ({
+      ...currentVal,
+      ...extraFields,
+    }))
+  }
+
   const parentWithFieldsForOutput = mergeNewFieldsIntoParent(
     newFieldsForOutput,
     parent
   )
 
+  console.debug(`AmendmentEditor.render`, { parentWithFieldsForOutput })
+
   if (isPreviewVisible) {
     return (
-      <div className={classes.root}>
+      <div>
         <WarningMessage>
           Please review ALL fields to ensure your amendment is correct before
           submitting it for approval
@@ -286,8 +330,11 @@ export default ({
           id={parentId}
           fields={parentWithFieldsForOutput}
           onFieldChanged={onFieldChanged}
+          insertExtraFields={insertExtraFields}
         />
       </>
     )
   }
 }
+
+export default AmendmentEditor

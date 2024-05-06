@@ -93,10 +93,32 @@ const EditorArea = ({
   className = '',
   overrideSave = undefined,
   overrideSaveWithNewFields = undefined,
+  insertExtraFields = undefined,
   isRequired = false,
   isEditable = true,
   fields,
   newFields,
+}: {
+  fieldName?: string
+  title: string
+  description?: string
+  icon: () => React.ReactElement
+  display?: () => React.ReactElement
+  editor?: React.ReactNode
+  displayAndEditor?: React.ReactNode
+  analyticsAction?: string
+  analyticsCategoryName?: string
+  onDone?: () => void
+  className?: string
+  overrideSave?: (fieldName: string, value: any) => void
+  overrideSaveWithNewFields?: (newFields: { [fieldName: string]: any }) => void
+  insertExtraFields?: (extraFields: { [fieldName: string]: any }) => void
+  isRequired?: boolean
+  isEditable?: boolean
+  fields?: any
+  newFields?: any
+  // extra
+  doWeRender?: boolean
 }) => {
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const classes = useStyles()
@@ -108,7 +130,10 @@ const EditorArea = ({
   }, [isEditable])
 
   const isTwoColumnLayout =
-    newFields && !isEditorOpen && newFields[fieldName] !== undefined
+    newFields &&
+    !isEditorOpen &&
+    fieldName &&
+    newFields[fieldName] !== undefined
 
   return (
     <div className={`${classes.root} ${className}`}>
@@ -146,13 +171,14 @@ const EditorArea = ({
           }`}>
           {DisplayAndEditor || Editor || Display
             ? React.cloneElement(
+                // @ts-ignore
                 DisplayAndEditor ? (
                   DisplayAndEditor
                 ) : isEditorOpen && Editor ? (
                   Editor
-                ) : (
+                ) : Display ? (
                   <Display />
-                ),
+                ) : null,
                 isEditorOpen
                   ? {
                       onDone: () => {
@@ -168,7 +194,7 @@ const EditorArea = ({
                       ...(overrideSave && fieldName
                         ? {
                             // asset amendment form
-                            overrideSave: (newVal) => {
+                            overrideSave: (newVal: any) => {
                               console.debug(
                                 `EditorArea.overrideSave`,
                                 fieldName,
@@ -180,11 +206,12 @@ const EditorArea = ({
                         : {}),
                       // sync with gumroad form
                       overrideSaveWithNewFields: overrideSaveWithNewFields
-                        ? (newVals) => overrideSaveWithNewFields(newVals)
+                        ? (newVals: any) => overrideSaveWithNewFields(newVals)
                         : undefined,
+                      insertExtraFields,
                     }
                   : {
-                      value: fields[fieldName],
+                      value: fieldName ? fields[fieldName] : null,
                       fields,
                     }
               )
@@ -197,11 +224,13 @@ const EditorArea = ({
                 <ArrowRightIcon />
               </div>
             </div>
-            <div className={`${classes.col} ${classes.rightCol}`}>
-              {React.cloneElement(<Display />, {
-                value: newFields[fieldName],
-                fields: newFields,
-              })}
+            <div className={classes.col}>
+              {Display
+                ? React.cloneElement(<Display />, {
+                    value: newFields[fieldName],
+                    fields: newFields,
+                  })
+                : null}
             </div>
           </>
         ) : null}

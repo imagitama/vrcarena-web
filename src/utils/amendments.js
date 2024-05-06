@@ -22,6 +22,13 @@ export const mergeNewFieldsIntoParent = (newFields, parent) => {
     }
   }
 
+  // TODO: do this generically (quick fix)
+  if (newFields.attachmentsdata && parent.attachmentsdata) {
+    newParent.attachmentsdata = parent.attachmentsdata.concat(
+      newFields.attachmentsdata
+    )
+  }
+
   return newParent
 }
 
@@ -30,6 +37,11 @@ export const getChangedFieldNames = (oldFields, newFields) => {
 
   for (const fieldName in newFields) {
     if (fieldName === 'id') {
+      continue
+    }
+
+    // TODO: do this generically (quick fix)
+    if (fieldName === 'attachmentsdata') {
       continue
     }
 

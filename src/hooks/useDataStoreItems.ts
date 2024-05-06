@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { client as supabase } from '../supabase'
 import { handleError } from '../error-handling'
 
 export default <TItem>(
   collectionName: string,
-  ids: string[] | undefined,
+  ids: string[] | undefined | false,
   queryName: string = 'unnamed',
   orderBy?: string
 ): [boolean, boolean, TItem[] | null, number | null, () => void] => {
@@ -18,6 +18,13 @@ export default <TItem>(
       if (!collectionName) {
         console.debug(
           `useDataStoreItems :: ${queryName} :: no collection name - skipping`
+        )
+        return
+      }
+
+      if (ids === false) {
+        console.debug(
+          `useDataStoreItems :: ${queryName} :: IDs false - skipping`
         )
         return
       }
@@ -71,7 +78,12 @@ export default <TItem>(
 
   useEffect(() => {
     hydrate()
-  }, [collectionName, queryName, orderBy])
+  }, [
+    collectionName,
+    Array.isArray(ids) ? ids.join(',') : ids,
+    queryName,
+    orderBy,
+  ])
 
   return [isLoading, isErrored, result, totalCount, hydrate]
 }

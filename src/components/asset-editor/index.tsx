@@ -125,6 +125,7 @@ interface EditorInfo {
   onAssetChanged?: (newFields: Asset) => void
   // for amendments and uploading images
   originalAssetId?: string
+  insertExtraFields?: (extraFields: { [fieldName: string]: any }) => void
 }
 
 export const EditorContext = createContext<EditorInfo>({} as any)
@@ -299,6 +300,7 @@ const FormEditorArea = (props: {
     isHydrating,
     onFieldChanged,
     onAssetChanged,
+    insertExtraFields,
     asset,
     newFields,
     isEditingAllowed,
@@ -319,6 +321,7 @@ const FormEditorArea = (props: {
       }`}
       // @ts-ignore
       overrideSave={onFieldChanged}
+      insertExtraFields={insertExtraFields}
       // @ts-ignore
       overrideSaveWithNewFields={onAssetChanged}
       fields={asset}
@@ -739,12 +742,14 @@ const AttachmentsEditor = ({
   attachmentsData,
   overrideSave,
   onDone,
+  insertExtraFields,
 }: {
   assetId: string // dont need but helpful later
   attachmentIds: string[]
   attachmentsData: Attachment[]
-  overrideSave?: (ids: string[], newDatas: Attachment[]) => void
+  overrideSave?: (ids: string[]) => void
   onDone?: () => void
+  insertExtraFields?: (extraFields: { [fieldName: string]: any }) => void
 }) => {
   const { originalAssetId } = useEditor()
 
@@ -760,7 +765,13 @@ const AttachmentsEditor = ({
         attachmentsData={attachmentsData}
         overrideSave={
           overrideSave
-            ? (ids, newDatas) => overrideSave(ids, newDatas)
+            ? (ids, extraFields) => {
+                overrideSave(ids)
+
+                if (insertExtraFields) {
+                  insertExtraFields(extraFields)
+                }
+              }
             : undefined
         }
         onDone={() => {
@@ -1062,10 +1073,8 @@ const Editor = () => {
                       attachmentsData={asset.attachmentsdata || []}
                       overrideSave={
                         onFieldChanged
-                          ? (newIds, newDatas) => {
+                          ? (newIds: string[]) => {
                               onFieldChanged('attachmentids', newIds)
-                              // @ts-ignore
-                              onFieldChanged('attachmentsdata', newDatas)
                             }
                           : undefined
                       }
