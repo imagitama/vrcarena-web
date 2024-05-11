@@ -32,12 +32,14 @@ const Renderer = ({ items }) => {
 
   return (
     <>
-      {Object.entries(assetsByCategory).map(([categoryName, assets]) => (
-        <Fragment key={categoryName}>
-          <Heading variant="h2">{categoryMeta[categoryName].name}</Heading>
-          <AssetResults assets={assets} />
-        </Fragment>
-      ))}
+      {Object.entries(assetsByCategory).map(([categoryName, assets]) =>
+        categoryName in categoryMeta ? (
+          <Fragment key={categoryName}>
+            <Heading variant="h2">{categoryMeta[categoryName].name}</Heading>
+            <AssetResults assets={assets} />
+          </Fragment>
+        ) : null
+      )}
     </>
   )
 }
