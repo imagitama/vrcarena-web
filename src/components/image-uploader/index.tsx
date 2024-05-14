@@ -6,12 +6,13 @@ import 'react-image-crop/dist/ReactCrop.css'
 import CheckIcon from '@material-ui/icons/Check'
 import PhotoIcon from '@material-ui/icons/Photo'
 
-import useFileUpload from '../../hooks/useFileUpload'
+import useImageUpload from '../../hooks/useImageUpload'
 import { handleError } from '../../error-handling'
 import {
   FileTooLargeError,
   SecurityError,
   UnsupportedMimeTypeError,
+  UploadImageError,
   bucketNames,
 } from '../../file-uploading'
 
@@ -19,6 +20,7 @@ import FormControls from '../form-controls'
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
+import InfoMessage from '../info-message'
 
 const useStyles = makeStyles({
   root: {},
@@ -87,6 +89,10 @@ const getErrorMessageForLastError = (error: Error): string => {
             .join(', ')})`
         : ''
     }`
+  }
+
+  if (error instanceof UploadImageError) {
+    return `${error.message} - code ${error.code}`
   }
 
   return 'Unknown error'
@@ -383,13 +389,12 @@ const ImageUploader = ({
       }
     },
   })
-  // @ts-ignore
+
   const [isUploading, percentageDone, lastError, , upload, clear] =
-    useFileUpload()
+    useImageUpload()
 
   if (lastError || lastCustomError) {
-    // @ts-ignore
-    const error: Error = lastError || lastCustomError
+    const error: Error = lastError || lastCustomError!
     return (
       <ErrorMessage
         onRetry={() => {
@@ -402,22 +407,13 @@ const ImageUploader = ({
   }
 
   const uploadImage = async (fileToUpload: File): Promise<string> => {
-    const uploadPath = `${directoryPath ? `${directoryPath}/` : ''}${
-      fileToUpload.name
-    }`
-
-    const uploadedUrl = await upload(fileToUpload, bucketName, uploadPath)
-
-    // NOTE: Supabase always serves our images as .webp if you use the "render" URL
-    // verify by seeing Content-Type header
-    // 1.91mb PNG becomes 125kb WEBP
-    const autoOptimizedUrl = getSupabaseOptimizedUrl(uploadedUrl)
+    const uploadedUrl = await upload(fileToUpload, bucketName, directoryPath)
 
     if (resetOnDone) {
       reset()
     }
 
-    return autoOptimizedUrl
+    return uploadedUrl
   }
 
   const onDoneCropping = async (
@@ -478,6 +474,10 @@ const ImageUploader = ({
 
   return (
     <div className={classes.root}>
+      <InfoMessage>
+        14 May 2024: I modified how images are uploaded. Please report any
+        issues to our Discord. -PB
+      </InfoMessage>
       <div
         {...getRootProps()}
         className={`${children ? '' : classes.dropzone} ${

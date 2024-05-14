@@ -1,3 +1,4 @@
+import { callFunction, callFunctionWithFile } from './firebase'
 import { client } from './supabase'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -114,6 +115,72 @@ export const uploadFile = async (
   console.debug(`File uploaded to ${url}`)
 
   return url
+}
+
+enum ErrorCodes {
+  Unknown = 0,
+  MissingField = 1,
+  FailedToRetrieveFile = 2,
+  FailedToOptimize = 3,
+  FailedToUpload = 4,
+}
+
+export class UploadImageError extends Error {
+  code: ErrorCodes | null
+  constructor(message: string, code: ErrorCodes | null) {
+    super(message)
+    this.code = code
+  }
+}
+
+export const uploadImage = async (
+  image: File,
+  bucketName: string,
+  bucketDirectoryPath: string = '', // default to root
+  onProgress?: (progress: number) => void
+): Promise<string> => {
+  if (!(image instanceof File)) {
+    throw new Error('Need a file')
+  }
+  if (!bucketName) {
+    throw new Error('Need a bucket name')
+  }
+
+  console.debug(`uploadImage`, { image, bucketName, bucketDirectoryPath })
+
+  let fakeProgressPercentage = 0
+
+  // supabase client does not expose a progress callback so we will fake it until they add it
+  const fakeProgressLoop = setInterval(() => {
+    if (fakeProgressPercentage < 90) {
+      fakeProgressPercentage += 1
+
+      if (onProgress) {
+        onProgress(fakeProgressPercentage)
+      }
+    }
+  }, 50)
+
+  const {
+    data: { imageUrl, error: errorMessage, code },
+  } = await callFunctionWithFile<{
+    imageUrl: string
+    error?: string
+    code?: number | null
+  }>('uploadImage', image, {
+    bucketName,
+    bucketDirectoryPath,
+  })
+
+  clearInterval(fakeProgressLoop)
+
+  if (errorMessage) {
+    throw new UploadImageError(errorMessage, code || null)
+  } else {
+    console.debug(`File uploaded to ${imageUrl}`)
+  }
+
+  return imageUrl
 }
 
 export const bucketNames = {

@@ -11,7 +11,7 @@ const firebaseConfig = {
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
 }
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig)
@@ -37,12 +37,12 @@ export const auth = firebaseApp.auth()
 export const logout = () => auth.signOut()
 
 export const roles = {
-  ADMIN: 'ADMIN'
+  ADMIN: 'ADMIN',
 }
 
 export let loggedInUserId: null | string = null
 
-auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged((user) => {
   if (user) {
     // @ts-ignore
     loggedInUserId = user
@@ -50,7 +50,7 @@ auth.onAuthStateChanged(user => {
     Sentry.setUser({
       id: user.uid,
       username: user.displayName || undefined,
-      email: user.email || undefined
+      email: user.email || undefined,
     })
   } else {
     Sentry.setUser(null)
@@ -74,12 +74,73 @@ export const callFunction = async <TResult>(
     return Promise.resolve(inDevResult)
   }
 
-  const result = await firebase
-    .app()
-    .functions()
-    .httpsCallable(name)(data)
+  const result = await firebase.app().functions().httpsCallable(name)(data)
 
   console.debug(`function "${name}" is complete`, result)
 
   return result as HttpsCallableResult<TResult>
+}
+
+export const getFunctionUrl = (functionName: string): string => {
+  const app = firebase.app()
+  // @ts-ignore Not public
+  const region = app.functions().region
+  // @ts-ignore
+  const projectId = app.options.projectId
+
+  if (inDevelopment()) {
+    return `http://127.0.0.1:5000/${projectId}/${region}/${functionName}`
+  }
+
+  return `https://${region}-${projectId}.cloudfunctions.net/${functionName}`
+}
+
+export const callFunctionWithFile = async <TResult>(
+  name: string,
+  file: File,
+  data?: { [key: string]: any },
+  inDevResult?: any
+): Promise<HttpsCallableResult<TResult>> => {
+  console.debug(`calling function "${name}" with file`, file, data)
+
+  if (inDevelopment() && inDevResult) {
+    return Promise.resolve(inDevResult)
+  }
+
+  const formData = new FormData()
+  formData.append('file', file)
+
+  if (data) {
+    for (const key in data) {
+      formData.append(key, data[key])
+    }
+  }
+
+  try {
+    const url = getFunctionUrl(name)
+
+    console.debug(`call "${url}"`)
+
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    })
+
+    // NOTE: onRequest function is modelled on HTTP callable functions
+    // so will return 200 even on errors
+    if (!response.ok) {
+      throw new Error(
+        `Response not OK: ${response.status} ${response.statusText}`
+      )
+    }
+
+    const result = await response.json()
+
+    console.debug(`function "${name}" is complete`, result)
+
+    return { data: result } as HttpsCallableResult<TResult>
+  } catch (error) {
+    console.error(`Failed calling function "${name}"`, error)
+    throw error
+  }
 }
