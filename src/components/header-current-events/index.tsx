@@ -12,10 +12,10 @@ import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 
 const useStyles = makeStyles({
   banner: {
-    height: '100px',
+    height: '75px',
     transition: '100ms all',
     display: 'block',
-    padding: '0.5rem',
+    padding: '0.5rem 0 0 0.75rem',
     '& a': {
       color: 'inherit',
       textShadow: '1px 1px 1px #000',
