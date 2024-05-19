@@ -45,11 +45,43 @@ export interface PublicEvent extends Event {
   featuredstatus: FeaturedStatus
 }
 
-export interface FullEvent extends Event, EventMeta {}
+export enum AttendanceStatus {
+  Accepted = 'accepted',
+  Maybe = 'maybe',
+  Declined = 'declined',
+}
+
+// export enum UnusableAttendanceStatus {
+//   Abstain = 'abstain', // if they chose a status then reversed it - should never be returned in public views
+// }
+
+export namespace AttendanceStatus {
+  export const Abstain: AttendanceStatus = 'abstain' as AttendanceStatus
+}
+
+export interface EventAttendance {
+  id: string
+  event: string // id
+  status: AttendanceStatus
+  lastmodifiedat: Date
+  lastmodifiedby: string
+  createdat: Date
+  createdby: string
+}
+
+export interface FullEventAttendance extends EventAttendance {
+  createdbyusername: string
+  createdbyavatarurl: string
+}
+
+export interface FullEvent extends Event, EventMeta {
+  attendance: FullEventAttendance[]
+}
 
 export const CollectionNames = {
   Events: 'events',
   EventsMeta: 'eventsmeta',
+  EventAttendance: 'eventattendance',
 }
 
 export const ViewNames = {

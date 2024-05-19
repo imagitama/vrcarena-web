@@ -1,9 +1,8 @@
-import React, { useRef, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Helmet } from 'react-helmet'
 import LinkIcon from '@material-ui/icons/Link'
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
-import LazyLoad from 'react-lazyload'
 import WarningIcon from '@material-ui/icons/Warning'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
@@ -20,15 +19,12 @@ import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useIsEditor from '../../hooks/useIsEditor'
 import useUserRecord from '../../hooks/useUserRecord'
 import {
-  isUrlAnImage,
-  isUrlNotAnImageOrVideo,
   getDescriptionForHtmlMeta,
   getOpenGraphUrlForRouteUrl,
   isGitHubUrl,
   isGoogleDriveUrl,
   isTwitterUrl,
   isDiscordUrl,
-  isUrlAYoutubeVideo,
 } from '../../utils'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'

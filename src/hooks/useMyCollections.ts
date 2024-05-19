@@ -10,7 +10,8 @@ export default (): [
   boolean,
   Collection[] | null,
   number | null,
-  () => void
+  () => void,
+  boolean
 ] => {
   const userId = useUserId()
   const getQuery = useCallback(

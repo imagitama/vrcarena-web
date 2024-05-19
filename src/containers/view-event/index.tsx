@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import LaunchIcon from '@material-ui/icons/Launch'
 import { makeStyles } from '@material-ui/core/styles'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+// import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import EditIcon from '@material-ui/icons/Edit'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 
@@ -24,17 +24,25 @@ import { useParams } from 'react-router'
 import { FullAuthor } from '../../modules/authors'
 import AuthorResultsItem from '../../components/author-results-item'
 import SaleInfo from '../../components/sale-info'
-import { CollectionNames, FullEvent, ViewNames } from '../../modules/events'
+import {
+  AttendanceStatus,
+  CollectionNames,
+  FullEvent,
+  ViewNames,
+} from '../../modules/events'
 import LoadingIndicator from '../../components/loading-indicator'
 import NoResultsMessage from '../../components/no-results-message'
 import useIsEditor from '../../hooks/useIsEditor'
 import EditorRecordManager from '../../components/editor-record-manager'
 import PublicEditorNotes from '../../components/public-editor-notes'
 import CommentList from '../../components/comment-list'
-import Paper from '../../components/paper'
 import Block from '../../components/block'
 import FormattedDate from '../../components/formatted-date'
 import { mediaQueryForMobiles } from '../../media-queries'
+import EventAttendanceButton from '../../components/event-attendance-button'
+import EventAttendanceResults from '../../components/event-attendance-results'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import useUserId from '../../hooks/useUserId'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
@@ -137,6 +145,24 @@ const useStyles = makeStyles({
   controlGroup: {
     marginBottom: '1rem',
   },
+  // miniLoadingIndicator: {
+  //   position: 'absolute',
+  //   top: 0,
+  //   left: 0,
+  //   opacity: 0,
+  //   animation: '150ms $pulseMiniLoadingIndicator infinite alternate',
+  //   '& svg': {
+  //     fontSize: '50%',
+  //   },
+  // },
+  // '@keyframes pulseMiniLoadingIndicator': {
+  //   from: {
+  //     opacity: 0,
+  //   },
+  //   to: {
+  //     opacity: 0.2,
+  //   },
+  // },
 })
 
 const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
@@ -272,12 +298,12 @@ const View = () => {
         .or(`id.eq.${eventIdOrSlug},slug.eq.${eventIdOrSlug}`),
     [eventIdOrSlug]
   )
-  const [isLoading, isError, events, , hydrate] = useDataStore<FullEvent[]>(
-    getQuery,
-    'view-event'
-  )
+  const [isLoading, isError, events, , hydrate, isHydrating] = useDataStore<
+    FullEvent[]
+  >(getQuery, 'view-event', true)
   const classes = useStyles()
   const isEditor = useIsEditor()
+  const myUserId = useUserId()
 
   if (isLoading) {
     return <LoadingIndicator message="Loading event..." />
@@ -291,6 +317,7 @@ const View = () => {
     return <NoResultsMessage />
   }
 
+  const event = events[0]
   const {
     id,
     name,
@@ -298,14 +325,22 @@ const View = () => {
     thumbnailurl,
     sourceurl,
     assettags,
-    slug,
     approvalstatus,
     accessstatus,
     editornotes,
     featuredstatus,
     startsat,
     endsat,
-  } = events[0]
+    attendance,
+  } = event
+
+  const myAttendance = attendance.find(
+    (attendanceItem) => attendanceItem.createdby == myUserId
+  )
+
+  const visibleAttendance = attendance.filter(
+    (attendanceItem) => attendanceItem.status !== AttendanceStatus.Abstain
+  )
 
   return (
     <>
@@ -317,13 +352,23 @@ const View = () => {
         {editornotes ? <PublicEditorNotes notes={editornotes} /> : null}
         <div className={classes.primaryMetadata}>
           {thumbnailurl ? (
-            <img src={thumbnailurl} alt="Thumbnail for event" width={300} />
+            <img
+              src={thumbnailurl}
+              alt="Thumbnail for event"
+              width={300}
+              className={classes.primaryMetadataThumb}
+            />
           ) : null}
           <Heading variant="h1">
             <Link
               to={routes.viewEventWithVar.replace(':eventId', eventIdOrSlug)}>
               {name || '(unnamed)'}
-            </Link>
+            </Link>{' '}
+            {/* {isHydrating ? (
+              <span className={classes.miniLoadingIndicator}>
+                <LoadingIndicator />
+              </span>
+            ) : null} */}
           </Heading>
         </div>
         <div className={classes.dates}>
@@ -368,13 +413,14 @@ const View = () => {
               </div>
             )}
             <div className={classes.controlGroup}>
-              <Button
-                url={routes.events}
-                icon={<ChevronLeftIcon />}
-                color="default"
-                switchIconSide>
-                Back To Events
-              </Button>
+              <EventAttendanceButton
+                eventId={event.id}
+                myAttendance={myAttendance}
+                onDone={hydrate}
+              />
+              {visibleAttendance.length ? (
+                <EventAttendanceResults items={visibleAttendance} />
+              ) : null}
             </div>
             {isEditor ? (
               <div className={classes.controlGroup}>
@@ -386,7 +432,6 @@ const View = () => {
                 </Button>
               </div>
             ) : null}
-
             {isEditor && (
               <EditorRecordManager
                 id={id}

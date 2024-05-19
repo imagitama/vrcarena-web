@@ -12,11 +12,14 @@ export default <TResult>(
   getQuery:
     | null
     | (() => SupabaseQueryBuilder<any> | Promise<SupabaseQueryBuilder<any>>),
-  queryName: string = 'unnamed'
-): [boolean, boolean, null | TResult, null | number, () => void] => {
+  queryName: string = 'unnamed',
+  // TODO: Do this better/consistently - maybe an "options" object?
+  isQuietHydrate: boolean = false
+): [boolean, boolean, null | TResult, null | number, () => void, boolean] => {
   const [result, setResult] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isErrored, setIsErrored] = useState(false)
+  const [isHydrating, setIsHydrating] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const isUnmountedRef = useRef(false)
   const timerRef = useRef<number>(0)
@@ -30,7 +33,13 @@ export default <TResult>(
 
       console.debug(`useDataStore :: ${queryName} :: running getQuery`)
 
-      setIsLoading(true)
+      if (isQuietHydrate) {
+        setIsHydrating(true)
+        setIsLoading(false)
+      } else {
+        setIsLoading(true)
+      }
+
       setIsErrored(false)
       timerRef.current = inDevelopment() ? performance.now() : 0
 
@@ -59,7 +68,13 @@ export default <TResult>(
 
       setResult(data)
       setTotalCount(count || null)
-      setIsLoading(false)
+
+      if (isQuietHydrate) {
+        setIsHydrating(false)
+      } else {
+        setIsLoading(false)
+      }
+
       setIsErrored(false)
     } catch (err) {
       console.error(err)
@@ -70,6 +85,10 @@ export default <TResult>(
           `Query complete but component has unmounted, skipping re-render...`
         )
         return
+      }
+
+      if (isQuietHydrate) {
+        setIsHydrating(false)
       }
 
       // I thought React batched sets together but apparently not - set this first!
@@ -89,5 +108,5 @@ export default <TResult>(
     }
   }, [hydrate])
 
-  return [isLoading, isErrored, result, totalCount, hydrate]
+  return [isLoading, isErrored, result, totalCount, hydrate, isHydrating]
 }
