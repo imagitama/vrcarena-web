@@ -91,6 +91,7 @@ const AvatarMenuItem = () => {
     <>
       <Avatar
         url={user && user.avatarurl ? user.avatarurl : undefined}
+        username={user && user.username ? user.username : undefined}
         size={sizes.TINY}
       />
       <KeyboardArrowDownIcon />
