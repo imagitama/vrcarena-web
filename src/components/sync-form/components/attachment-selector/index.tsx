@@ -192,7 +192,8 @@ const AttachmentsSelector = ({
 
           let urlToUse: string = url
 
-          if (isUrlAnImage(url)) {
+          // gumroad is WEBP but they dont want to admit it >:(
+          if (isUrlAnImage(url) || url.includes('public-files.gumroad.com')) {
             // just download the PNG/WEBP/whatever to our bucket
             // it will be optimized to WEBP automatically later (via SQL triggers)
             urlToUse = await downloadImageByUrl(

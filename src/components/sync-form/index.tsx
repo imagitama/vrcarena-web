@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import SyncIcon from '@material-ui/icons/Sync'
 import SaveIcon from '@material-ui/icons/Save'
-import { makeStyles } from '@material-ui/core/styles'
 
 import {
   SyncFieldTypes,
