@@ -36,7 +36,7 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
       {attachment.editornotes && (
         <PublicEditorNotes notes={attachment.editornotes} />
       )}
-      <AttachmentOutput attachment={attachment} width="100%" />
+      <AttachmentOutput attachment={attachment} />
       <br />
       <br />
       <AttachmentCaption attachment={attachment} includeMeta includeParents />

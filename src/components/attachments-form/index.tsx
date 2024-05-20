@@ -21,18 +21,13 @@ import Button from '../button'
 
 const useStyles = makeStyles({
   output: {
-    // maxWidth: '50%',
     overflow: 'hidden',
-    '& img': {
-      width: '100%',
-    },
-  },
-  item: {
     '& img': {
       width: 'auto',
       maxHeight: '300px',
     },
   },
+  item: {},
 })
 
 interface AttachmentFormContextValue {
@@ -209,9 +204,10 @@ const AttachmentsForm = ({
           parentId,
           attachmentsData: allAttachmentDatas,
         }}
-        onAdd={() =>
-          setNewAttachmentIds((currentIds) => currentIds.concat([null]))
-        }
+        emptyItem={''}
+        // onAdd={() =>
+        //   setNewAttachmentIds((currentIds) => currentIds.concat([null]))
+        // }
         itemClassName={classes.item}
       />
       <FormControls>

@@ -13,7 +13,6 @@ import {
   SecurityError,
   UnsupportedMimeTypeError,
   UploadImageError,
-  bucketNames,
 } from '../../file-uploading'
 
 import FormControls from '../form-controls'
@@ -186,6 +185,12 @@ const Cropper = ({
   const classes = useStyles()
 
   useEffect(() => {
+    console.debug(`ImageUploader.Cropper.mount`, {
+      imageUrl,
+      requiredWidth,
+      requiredHeight,
+    })
+
     return () => {
       if (throttleTimeoutRef.current) {
         clearTimeout(throttleTimeoutRef.current)
@@ -197,6 +202,7 @@ const Cropper = ({
   }, [])
 
   const onCrop = (newCrop: Crop) => {
+    console.debug(`ImageUploader.Cropper.onCrop`, { oldCrop: crop, newCrop })
     if (throttleTimeoutRef.current) {
       clearTimeout(throttleTimeoutRef.current)
     }
@@ -213,6 +219,10 @@ const Cropper = ({
         onChange={(newCrop) => onCrop(newCrop)}
         ruleOfThirds
         onImageLoaded={(img) => {
+          console.debug(`ImageUploader.Cropper.ReactCrop.onImageLoaded`, {
+            img,
+          })
+
           // store their image so we can use it later
           imageRef.current = img
           imageRef.current.crossOrigin = 'anonymous' // allow us to render cross-domain images like Gumroad
@@ -255,26 +265,48 @@ const Cropper = ({
   )
 }
 
-const getSupabaseOptimizedUrl = (url: string): string => {
-  // as of March 2024 some images are converted to WEBP in background (via SQL trigger)
-  if (
-    url.includes(bucketNames.assetThumbnails) ||
-    url.includes(bucketNames.attachments) ||
-    url.includes(bucketNames.assetBanners)
-  ) {
-    return url
-  }
+interface ImageInfo {
+  url: string
+  base64: string
+  width: number
+  height: number
+}
 
-  if (!url.includes('storage/v1/object')) {
-    throw new Error(`Cannot get Supabase optimized URL: URL is weird: ${url}`)
-  }
+const getImageInfo = async (file: File): Promise<ImageInfo> => {
+  console.debug(`ImageUploader.getImageInfo`, { file })
 
-  const chunks = url.split('storage/v1/object/public')
+  return new Promise((resolve, reject) => {
+    const imageUrl = URL.createObjectURL(file)
 
-  // NOTE: Supabase returns it with .png extension but content-type is always WEBP
-  const newUrl = `${chunks[0]}storage/v1/render/image/public${chunks[1]}`
+    const i = new Image()
 
-  return newUrl
+    i.onload = () => {
+      console.debug(`ImageUploader.getImageInfo.img.onload`)
+
+      let reader = new FileReader()
+      reader.readAsDataURL(file)
+
+      reader.onload = () => {
+        console.debug(`ImageUploader.getImageInfo.reader.onload`, {
+          result: reader.result,
+        })
+
+        if (reader.result === null) {
+          reject(new Error('Result is null'))
+          return
+        }
+
+        resolve({
+          url: imageUrl,
+          width: i.width,
+          height: i.height,
+          base64: reader.result.toString(),
+        })
+      }
+    }
+
+    i.src = imageUrl
+  })
 }
 
 const ImageUploader = ({
@@ -331,6 +363,8 @@ const ImageUploader = ({
   const [lastCustomError, setLastCustomError] = useState<Error | null>(null)
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    console.debug(`ImageUploader.onDrop`, { files: acceptedFiles })
+
     if (!acceptedFiles.length) {
       // no error here as it should be caught by onDropRejected
       console.warn('Accepted files is empty')
@@ -340,8 +374,9 @@ const ImageUploader = ({
     if (allowCropping) {
       const file = acceptedFiles[0]
       selectedFileRef.current = file
-      const imageUrl = await convertFileToUrl(file)
-      setImageUrlToCrop(imageUrl)
+      const imageInfo = await getImageInfo(file)
+      console.debug(`ImageUploader.onDrop.imageinfo`, { imageInfo })
+      setImageUrlToCrop(imageInfo.url)
     } else {
       const results: string[] = []
 
@@ -421,6 +456,8 @@ const ImageUploader = ({
     cropSettings: Crop
   ): Promise<void> => {
     try {
+      console.debug(`ImageUploader.onDoneCropping`, { crop: cropSettings })
+
       const blob = await cropImageToBlob(image, cropSettings)
 
       const fileNameWithExt = selectedFileRef.current
@@ -428,7 +465,6 @@ const ImageUploader = ({
         : 'cropped.png'
 
       const fileToUpload = new File([blob], fileNameWithExt, {
-        // this is required for supabase
         type: 'image/png',
       })
 
@@ -474,10 +510,6 @@ const ImageUploader = ({
 
   return (
     <div className={classes.root}>
-      <InfoMessage>
-        14 May 2024: I modified how images are uploaded. Please report any
-        issues to our Discord. -PB
-      </InfoMessage>
       <div
         {...getRootProps()}
         className={`${children ? '' : classes.dropzone} ${
