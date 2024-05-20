@@ -27,6 +27,8 @@ import Block from '../../components/block'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import LoadingShimmer from '../../components/loading-shimmer'
 import PatreonCosts from './components/patreon-costs'
+import SpeciesResultItem from '../../components/species-result-item'
+import { FullSpecies } from '../../modules/species'
 
 const contentMaxWidth = '900px'
 
@@ -67,22 +69,26 @@ const useStyles = makeStyles({
   },
   tile: {
     margin: '1rem 0',
-    padding: '0 1rem',
-    [mediaQueryForTabletsOrBelow]: {
-      padding: '0 0.5rem',
-    },
-    [mediaQueryForMobiles]: {
-      padding: '0 0.25rem',
-    },
   },
   tileCols: {
     margin: '1rem 0',
     padding: '0 0.5rem',
     display: 'flex',
     '& > *': {
-      width: '100%',
-      margin: 0,
       padding: '0 0.5rem',
+    },
+    '& > *:first-child': {
+      width: '100%',
+    },
+    '& > *:last-child': {
+      // width: '25%'
+    },
+    [mediaQueryForMobiles]: {
+      flexDirection: 'column',
+      padding: '0 0.25rem',
+      '& > *': {
+        padding: '0',
+      },
     },
   },
   controls: {
@@ -138,7 +144,11 @@ const Tile = ({
         {children}
         {buttonLabel ? (
           <div className={classes.controls}>
-            <Button url={url} icon={<ChevronRightIcon />}>
+            <Button
+              url={url}
+              icon={<ChevronRightIcon />}
+              color="default"
+              size="small">
               {buttonLabel}
             </Button>
           </div>
@@ -166,6 +176,7 @@ interface HomepageContent {
   recentactivity: FullActivityEntry[]
   recentdiscordannouncements: CachedDiscordMessage[]
   featuredasset: FullAsset
+  featuredspecies: FullSpecies
 }
 
 const Tiles = () => {
@@ -196,35 +207,36 @@ const Tiles = () => {
     recentactivity: recentActivity,
     recentdiscordannouncements: recentDiscordAnnouncements,
     featuredasset: featuredAsset,
+    featuredspecies: featuredSpecies,
   } = results[0]
 
   return (
-    <>
-      <Tile
-        title="Recent Avatars"
-        url={routes.viewCategoryWithVar.replace(
-          ':categoryName',
-          AssetCategories.avatar
-        )}
-        buttonLabel="Browse Avatars">
-        <AssetResults assets={recentAvatars} />
-      </Tile>
-      <Tile
-        title="Recent Accessories"
-        url={routes.viewCategoryWithVar.replace(
-          ':categoryName',
-          AssetCategories.accessory
-        )}
-        buttonLabel="Browse Accessories">
-        <AssetResults assets={recentAccessories} />
-      </Tile>
-      <Tile
-        title="Recent Sign-ups"
-        url={routes.users}
-        buttonLabel="Browse Users">
-        <UserList users={recentUsers} />
-      </Tile>
-      <TileCols>
+    <TileCols>
+      <div>
+        <Tile
+          title="Recent Avatars"
+          url={routes.viewCategoryWithVar.replace(
+            ':categoryName',
+            AssetCategories.avatar
+          )}
+          buttonLabel="Browse Avatars">
+          <AssetResults assets={recentAvatars} />
+        </Tile>
+        <Tile
+          title="Recent Accessories"
+          url={routes.viewCategoryWithVar.replace(
+            ':categoryName',
+            AssetCategories.accessory
+          )}
+          buttonLabel="Browse Accessories">
+          <AssetResults assets={recentAccessories} />
+        </Tile>
+        <Tile
+          title="Recent Sign-ups"
+          url={routes.users}
+          buttonLabel="Browse Users">
+          <UserList users={recentUsers} />
+        </Tile>
         <Tile
           title="Discord Announcement"
           url={DISCORD_URL}
@@ -241,21 +253,27 @@ const Tiles = () => {
           buttonLabel="View Activity">
           <ActivityResults activityEntries={recentActivity} />
         </Tile>
-      </TileCols>
-      <TileCols>
+      </div>
+      <div>
         <Tile
-          title="Patreon"
-          url={PATREON_BECOME_PATRON_URL}
-          buttonLabel="Become Patron">
-          <PatreonCosts />
+          title="Species Of The Day"
+          url={routes.viewAllSpecies}
+          buttonLabel="Browse Species">
+          <SpeciesResultItem speciesItem={featuredSpecies} />
         </Tile>
         <Tile
           title="Featured Asset"
           url={routes.viewAssetWithVar.replace(':assetId', featuredAsset.id)}>
           <AssetResults assets={[featuredAsset]} />
         </Tile>
-      </TileCols>
-    </>
+        <Tile
+          title="Patreon"
+          url={PATREON_BECOME_PATRON_URL}
+          buttonLabel="Become Patron">
+          <PatreonCosts />
+        </Tile>
+      </div>
+    </TileCols>
   )
 }
 

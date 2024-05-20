@@ -27,6 +27,7 @@ import {
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
 import { findItemAndParents } from '../../utils'
+import SpeciesResultItem from '../../components/species-result-item'
 
 const description =
   'Avatars in VR social games can be grouped into different species. Here is a list of all species that we know about in VR social games from Avalis to Dutch Angel Dragons to Digimon.'
@@ -38,43 +39,6 @@ const useStyles = makeStyles({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  speciesItem: {
-    width: '33.3%',
-    padding: '0.25rem',
-    '& a': {
-      color: 'inherit',
-      display: 'block',
-      '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      },
-    },
-    [mediaQueryForTablets]: {
-      width: '50%',
-    },
-    [mediaQueryForMobiles]: {
-      width: '100%',
-    },
-    '& $speciesItem': {
-      width: '100%',
-    },
-  },
-  speciesItemTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    '& img': {
-      width: '100px',
-      height: '100px',
-      marginRight: '0.5rem',
-    },
-  },
-  name: {
-    fontSize: '150%',
-    marginBottom: '0.1rem',
-  },
-  description: {
-    fontSize: '75%',
-    fontStyle: 'italic',
-  },
   autocompleteWrapper: {
     marginBottom: '1rem',
     display: 'flex',
@@ -83,6 +47,18 @@ const useStyles = makeStyles({
   autocomplete: {
     width: '50%',
     [mediaQueryForTabletsOrBelow]: {
+      width: '100%',
+    },
+  },
+  speciesItem: {
+    width: '33.3%',
+    [mediaQueryForTablets]: {
+      width: '50%',
+    },
+    [mediaQueryForMobiles]: {
+      width: '100%',
+    },
+    '& $speciesItem': {
       width: '100%',
     },
   },
@@ -107,44 +83,6 @@ function convertToNestedArray(
     }
   }
   return nestedArray
-}
-
-const SpeciesResult = ({
-  speciesItem,
-  indent = 0,
-}: {
-  speciesItem: SpeciesWithChildren
-  indent?: number
-}) => {
-  const classes = useStyles()
-  return (
-    <div
-      className={classes.speciesItem}
-      style={{ marginLeft: `calc(2rem * ${indent})` }}>
-      <Link
-        to={routes.viewSpeciesWithVar.replace(
-          ':speciesIdOrSlug',
-          speciesItem.slug || speciesItem.id
-        )}>
-        <div className={classes.speciesItemTitle}>
-          <img src={speciesItem.thumbnailurl} />{' '}
-          <div>
-            <div className={classes.name}>
-              {speciesItem.pluralname} ({speciesItem.avatarcount})
-            </div>
-            <div className={classes.description}>
-              {speciesItem.shortdescription}
-            </div>
-          </div>
-        </div>
-      </Link>
-      {speciesItem.children
-        ? speciesItem.children.map((speciesChild) => (
-            <SpeciesResult speciesItem={speciesChild} indent={1} />
-          ))
-        : null}
-    </div>
-  )
 }
 
 const View = () => {
@@ -199,7 +137,16 @@ const View = () => {
       </div>
       <div className={classes.speciesResults}>
         {speciesHierarchy.map((speciesItem) => (
-          <SpeciesResult key={speciesItem.id} speciesItem={speciesItem} />
+          <SpeciesResultItem
+            key={speciesItem.id}
+            speciesItem={speciesItem}
+            className={classes.speciesItem}>
+            {speciesItem.children
+              ? speciesItem.children.map((speciesChild) => (
+                  <SpeciesResultItem speciesItem={speciesChild} indent={1} />
+                ))
+              : null}
+          </SpeciesResultItem>
         ))}
       </div>
     </>

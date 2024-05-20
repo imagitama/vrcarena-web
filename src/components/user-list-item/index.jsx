@@ -8,29 +8,34 @@ import { getUserIsStaffMember } from '../../utils/users'
 
 import Avatar, { sizes } from '../avatar'
 import StaffBadge from '../staff-badge'
+import { mediaQueryForMobiles } from '../../media-queries'
 
 const useStyles = makeStyles({
   container: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   item: {
     width: '200px',
     height: '200px',
     textAlign: 'center',
-    position: 'relative'
+    position: 'relative',
+    [mediaQueryForMobiles]: {
+      width: '150px',
+      height: '150px',
+    },
   },
   itemContents: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   icon: {
     display: 'inline-block',
-    fontSize: '400%'
+    fontSize: '400%',
   },
   name: {
     display: 'block',
     fontSize: '150%',
-    marginTop: '0.5rem'
+    marginTop: '0.5rem',
   },
   link: {
     display: 'flex',
@@ -40,11 +45,11 @@ const useStyles = makeStyles({
     top: 0,
     left: 0,
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   avatar: {
-    margin: '0 auto'
-  }
+    margin: '0 auto',
+  },
 })
 
 export default ({ user }) => {

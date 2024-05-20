@@ -49,7 +49,7 @@ export const editableFields: EditableField<Species>[] = [
       collectionName: CollectionNames.Species,
       fieldAsLabel: SpeciesFieldNames.pluralName,
       renderer: ({ item }: { item: Species }) => (
-        <SpeciesResultItem species={item} />
+        <SpeciesResultItem speciesItem={item} />
       ),
     },
   },
@@ -107,7 +107,7 @@ export const editableFields: EditableField<Species>[] = [
       collectionName: CollectionNames.Species,
       fieldAsLabel: SpeciesFieldNames.pluralName,
       renderer: ({ item }: { item: Species }) => (
-        <SpeciesResultItem species={item} />
+        <SpeciesResultItem speciesItem={item} />
       ),
     },
   },

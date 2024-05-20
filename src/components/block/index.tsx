@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover $icon': {
       opacity: 1,
     },
+    [mediaQueryForMobiles]: {
+      padding: '0.25rem',
+    },
   },
   icon: {
     opacity: 0,

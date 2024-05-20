@@ -1,36 +1,83 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-
-import { Species } from '../../modules/species'
+import { FullSpecies, Species } from '../../modules/species'
 import Link from '../../components/link'
 import * as routes from '../../routes'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 
 const useStyles = makeStyles({
   root: {
-    width: '200px',
-    height: '100%',
-    position: 'relative',
-    [mediaQueryForTabletsOrBelow]: {
-      width: '160px',
+    padding: '0.25rem',
+    '& a': {
+      color: 'inherit',
+      display: 'block',
+      '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      },
     },
-    overflow: 'visible',
+  },
+  thumbnailPlaceholder: {},
+  title: {
+    display: 'flex',
+    alignItems: 'center',
+    '& img, & $thumbnailPlaceholder': {
+      width: '100px',
+      height: '100px',
+      marginRight: '0.5rem',
+    },
+  },
+  name: {
+    fontSize: '150%',
+    marginBottom: '0.1rem',
+  },
+  description: {
+    fontSize: '75%',
+    fontStyle: 'italic',
   },
 })
 
-const SpeciesResultItem = ({ species }: { species: Species }) => {
+const isFull = (thing: Species | FullSpecies): thing is FullSpecies =>
+  'avatarcount' in thing
+
+const SpeciesResultItem = ({
+  speciesItem,
+  indent = 0,
+  children,
+  className,
+}: {
+  speciesItem: FullSpecies | Species
+  indent?: number
+  children?: React.ReactNode
+  className?: string
+}) => {
   const classes = useStyles()
   return (
-    <Card className={classes.root}>
-      <CardActionArea>
-        <Link to={routes.viewSpeciesWithVar.replace(':speciesId', species.id)}>
-          <img src={species.thumbnailurl} />
-          {species.pluralname}
-        </Link>
-      </CardActionArea>
-    </Card>
+    <div
+      className={`${classes.root} ${className}`}
+      style={{ marginLeft: `calc(2rem * ${indent})` }}>
+      <Link
+        to={routes.viewSpeciesWithVar.replace(
+          ':speciesIdOrSlug',
+          speciesItem.slug || speciesItem.id
+        )}>
+        <div className={classes.title}>
+          {speciesItem.thumbnailurl ? (
+            <img src={speciesItem.thumbnailurl} />
+          ) : (
+            <div className={classes.thumbnailPlaceholder} />
+          )}{' '}
+          <div>
+            <div className={classes.name}>
+              {speciesItem.pluralname}
+              {isFull(speciesItem) ? ` (${speciesItem.avatarcount})` : null}
+            </div>
+            <div className={classes.description}>
+              {speciesItem.shortdescription}
+            </div>
+          </div>
+        </div>
+      </Link>
+      {children}
+    </div>
   )
 }
 
