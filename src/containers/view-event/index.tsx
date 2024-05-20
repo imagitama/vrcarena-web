@@ -298,14 +298,16 @@ const View = () => {
         .or(`id.eq.${eventIdOrSlug},slug.eq.${eventIdOrSlug}`),
     [eventIdOrSlug]
   )
-  const [isLoading, isError, events, , hydrate, isHydrating] = useDataStore<
-    FullEvent[]
-  >(getQuery, 'view-event', true)
+  const [isLoading, isError, events, , hydrate] = useDataStore<FullEvent[]>(
+    getQuery,
+    'view-event',
+    true
+  )
   const classes = useStyles()
   const isEditor = useIsEditor()
   const myUserId = useUserId()
 
-  if (isLoading) {
+  if (isLoading || !events) {
     return <LoadingIndicator message="Loading event..." />
   }
 
@@ -313,7 +315,7 @@ const View = () => {
     return <ErrorMessage>Failed to load event</ErrorMessage>
   }
 
-  if (!events || !events.length) {
+  if (!events.length) {
     return <NoResultsMessage />
   }
 
