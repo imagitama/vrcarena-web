@@ -400,7 +400,7 @@ const View = () => {
                 parentId={id}
               />
             </Block>
-            <Block title="Tagged Events">
+            <Block title="Tagged Assets">
               <Assets tagsToSearch={assettags || []} />
             </Block>
           </div>
