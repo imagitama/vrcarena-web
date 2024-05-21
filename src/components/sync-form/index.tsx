@@ -174,6 +174,11 @@ const SyncForm = <TRecord extends object>({
   onDone?: () => void
 }) => {
   const platformName = getSyncPlatformNameFromUrl(urlToSync)
+
+  if (platformName === undefined) {
+    throw new Error(`Could not get platform name for ${urlToSync}`)
+  }
+
   const platformInfo = getSyncPlatformInfoFromName(platformName)
 
   const [disabledFieldNames, setDisabledFieldNames] = useState<string[]>([])
