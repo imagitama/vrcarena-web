@@ -10,7 +10,7 @@ export const optimizeImageByUrl = async (
   } = await callFunction<{ optimizedUrl: string }>('downloadAndOptimizeImage', {
     imageUrl,
     bucketName,
-    bucketPath,
+    bucketPath: bucketPath || '', // errors if this is not a string
   })
 
   return optimizedUrl
