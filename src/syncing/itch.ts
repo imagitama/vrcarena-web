@@ -5,6 +5,7 @@ const gumroad: SyncPlatformInfo<FullAsset> = {
   platformName: SyncPlatformName.Itch,
   fields: [
     {
+      // NOTE: URL is base64 encoded to avoid CORS error
       ourName: 'thumbnailurl',
       type: SyncFieldTypes.ImageUrl,
       label: 'Thumbnail',

@@ -216,7 +216,6 @@ const Cropper = ({
     <div className={classes.cropper}>
       <ReactCrop
         src={imageUrl}
-        crossorigin="anonymous" // fix rendering itch.io thumbs
         onChange={(newCrop) => onCrop(newCrop)}
         ruleOfThirds
         onImageLoaded={(img) => {

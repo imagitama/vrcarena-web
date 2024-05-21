@@ -440,7 +440,7 @@ const AssetSource = ({ url }: { url: string }) => {
         className={classes.sourceUrl}>
         {url} <OpenInNewIcon />
       </a>
-      {syncPlatformName ? (
+      {syncPlatformName !== undefined ? (
         <SyncButton syncPlatformName={syncPlatformName} onSync={onSync} />
       ) : null}
     </div>

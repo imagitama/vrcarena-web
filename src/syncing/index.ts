@@ -13,7 +13,9 @@ export enum SyncPlatformName {
   // etc.
 }
 
-export const getSyncPlatformNameFromUrl = (url: string): SyncPlatformName => {
+export const getSyncPlatformNameFromUrl = (
+  url: string
+): SyncPlatformName | undefined => {
   // TODO: rename these  funcs to "isGumroadProductUrl" more explicit
   if (isGumroadUrl(url)) {
     return SyncPlatformName.Gumroad
@@ -27,7 +29,7 @@ export const getSyncPlatformNameFromUrl = (url: string): SyncPlatformName => {
   if (isItchProductUrl(url)) {
     return SyncPlatformName.Itch
   }
-  throw new Error(`Cannot get sync platform from URL "${url}"`)
+  return undefined
 }
 
 export enum SyncFieldTypes {
