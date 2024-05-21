@@ -61,7 +61,6 @@ const FormFieldInput = ({
     case SyncFieldTypes.Attachments:
       return (
         <AttachmentsSelector
-          finalAttachmentIds={value}
           attachments={fieldResult.value}
           onDone={(attachmentIds) => onChange(attachmentIds)}
           isDisabled={isDisabled}

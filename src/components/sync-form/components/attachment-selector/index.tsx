@@ -21,7 +21,7 @@ import FormControls from '../../../form-controls'
 import CheckboxInput from '../../../checkbox-input'
 import AttachmentOutput from '../../../attachment'
 import useSync from '../../hooks/useSync'
-import { downloadImageByUrl } from '../../../../images'
+import { optimizeImageByUrl } from '../../../../images'
 import { bucketNames } from '../../../../file-uploading'
 import NoResultsMessage from '../../../no-results-message'
 import AttachmentMeta from '../../../attachment-meta'
@@ -145,12 +145,10 @@ const DatabaseOperationOutput = <TRecord extends object>({
 }
 
 const AttachmentsSelector = ({
-  finalAttachmentIds,
   attachments,
   onDone,
   isDisabled: isFieldDisabled,
 }: {
-  finalAttachmentIds: string[]
   attachments: SyncAttachment[]
   onDone: (attachmentIds: string[]) => void
   isDisabled: boolean
@@ -194,13 +192,7 @@ const AttachmentsSelector = ({
 
           // gumroad is WEBP but they dont want to admit it >:(
           if (isUrlAnImage(url) || url.includes('public-files.gumroad.com')) {
-            // just download the PNG/WEBP/whatever to our bucket
-            // it will be optimized to WEBP automatically later (via SQL triggers)
-            urlToUse = await downloadImageByUrl(
-              url,
-              bucketNames.attachments,
-              ''
-            )
+            urlToUse = await optimizeImageByUrl(url, bucketNames.attachments)
           }
 
           const createdRecord = await insertRecord<
