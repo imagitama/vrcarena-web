@@ -358,6 +358,21 @@ export function isDiscordUrl(url: string): boolean {
   return url.includes('discordapp.com') || url.includes('discord.com')
 }
 
+export const isItchProductUrl = (url: string): boolean => {
+  try {
+    const urlObject = new URL(url)
+
+    if (urlObject.hostname.endsWith('itch.io')) {
+      const parts = urlObject.hostname.split('.')
+      return parts.length === 3 && urlObject.pathname.trim() !== '/'
+    }
+
+    return false
+  } catch (error) {
+    return false
+  }
+}
+
 export const getImageUrlFromYouTubeUrl = (url: string): string =>
   isUrlAYoutubeVideo(url)
     ? `https://ytimg.googleusercontent.com/vi/${getYouTubeVideoIdFromUrl(

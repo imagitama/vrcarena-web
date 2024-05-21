@@ -108,6 +108,7 @@ import AssetAttachmentsEditor from '../asset-attachments-editor'
 // @ts-ignore assets
 import placeholderPedestalVideoUrl from '../../assets/videos/placeholder-pedestal.webm'
 import placeholderPedestalFallbackImageUrl from '../../assets/videos/placeholder-pedestal-fallback.webp'
+import { getSyncPlatformNameFromUrl, SyncPlatformName } from '../../syncing'
 
 interface EditorInfo {
   assetId: string | null
@@ -379,31 +380,16 @@ const ShouldBeAdultWarning = ({ asset }: { asset: Asset }) => {
   ) : null
 }
 
-export const sourceTypes = {
-  Gumroad: 'gumroad',
-  Booth: 'booth',
-  GitHub: 'github',
-  Unknown: 'unknown',
-}
-
-export const getSourceTypeFromUrl = (url: string): string => {
-  if (isGumroadUrl(url)) {
-    return sourceTypes.Gumroad
-  }
-  if (isBoothUrl(url)) {
-    return sourceTypes.Booth
-  }
-  return sourceTypes.Unknown
-}
-
-const getLabelForSyncButton = (sourceType: string): string => {
-  switch (sourceType) {
-    case sourceTypes.Gumroad:
-      return 'Sync With Gumroad'
-    case sourceTypes.Booth:
-      return 'Sync With Booth'
-    default:
-      return ''
+const getFriendlySyncPlatformName = (
+  syncPlatformName: SyncPlatformName
+): string | undefined => {
+  switch (syncPlatformName) {
+    case SyncPlatformName.Gumroad:
+      return 'Gumroad'
+    case SyncPlatformName.Booth:
+      return 'Booth'
+    case SyncPlatformName.Itch:
+      return 'Itch.io'
   }
 }
 
@@ -412,22 +398,22 @@ const PatreonOnlyMessage = () => (
 )
 
 const SyncButton = ({
-  sourceType,
+  syncPlatformName,
   onSync,
 }: {
-  sourceType: string
+  syncPlatformName: SyncPlatformName
   onSync: () => void
 }) => {
-  const label = getLabelForSyncButton(sourceType)
+  const label = getFriendlySyncPlatformName(syncPlatformName)
 
   if (!label) {
-    return null
+    throw new Error(`Could not get label for platform ${syncPlatformName}`)
   }
 
   return (
     <FormControls>
       <Button icon={<SyncIcon />} onClick={onSync}>
-        {label}
+        Sync with {label}
       </Button>
     </FormControls>
   )
@@ -441,7 +427,7 @@ const AssetSource = ({ url }: { url: string }) => {
     return <NoValueMessage>No URL set</NoValueMessage>
   }
 
-  const sourceType = getSourceTypeFromUrl(url)
+  const syncPlatformName = getSyncPlatformNameFromUrl(url)
 
   const onSync = () => setIsSyncFormVisible(true)
 
@@ -454,7 +440,9 @@ const AssetSource = ({ url }: { url: string }) => {
         className={classes.sourceUrl}>
         {url} <OpenInNewIcon />
       </a>
-      <SyncButton sourceType={sourceType} onSync={onSync} />
+      {syncPlatformName ? (
+        <SyncButton syncPlatformName={syncPlatformName} onSync={onSync} />
+      ) : null}
     </div>
   )
 }

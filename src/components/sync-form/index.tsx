@@ -15,6 +15,7 @@ import {
 import GumroadSyncInfo from '../../syncing/gumroad'
 import BoothSyncInfo from '../../syncing/booth'
 import DiscordSyncInfo from '../../syncing/discord'
+import ItchSyncInfo from '../../syncing/itch'
 
 import useFirebaseFunction from '../../hooks/useFirebaseFunction'
 import LoadingIndicator from '../loading-indicator'
@@ -42,6 +43,8 @@ export const getSyncPlatformInfoFromName = (
       return BoothSyncInfo
     case SyncPlatformName.Discord:
       return DiscordSyncInfo
+    case SyncPlatformName.Itch:
+      return ItchSyncInfo
     default:
       throw new Error(`Unknown name "${name}"`)
   }
@@ -56,6 +59,9 @@ const getInitialFieldsToSave = <TRecord,>(
     let value
 
     switch (field.type) {
+      case SyncFieldTypes.ImageUrl:
+        value = ''
+        break
       case SyncFieldTypes.ThumbnailFromUrls:
         value = ''
         break

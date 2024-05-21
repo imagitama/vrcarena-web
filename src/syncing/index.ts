@@ -1,9 +1,15 @@
-import { isBoothUrl, isDiscordUrl, isGumroadUrl } from '../utils'
+import {
+  isBoothUrl,
+  isDiscordUrl,
+  isGumroadUrl,
+  isItchProductUrl,
+} from '../utils'
 
 export enum SyncPlatformName {
   Gumroad,
   Booth,
   Discord,
+  Itch,
   // etc.
 }
 
@@ -17,6 +23,9 @@ export const getSyncPlatformNameFromUrl = (url: string): SyncPlatformName => {
   }
   if (isDiscordUrl(url)) {
     return SyncPlatformName.Discord
+  }
+  if (isItchProductUrl(url)) {
+    return SyncPlatformName.Itch
   }
   throw new Error(`Cannot get sync platform from URL "${url}"`)
 }

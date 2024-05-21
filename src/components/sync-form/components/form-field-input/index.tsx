@@ -32,7 +32,15 @@ const FormFieldInput = ({
           isDisabled={isDisabled}
         />
       )
-    // case SyncFieldTypes.ImageUrl:
+    case SyncFieldTypes.ImageUrl:
+      return (
+        <ThumbnailSelector
+          overrideUrl={fieldResult.value}
+          finalUrl={value}
+          imageUrls={[]}
+          onDone={(finalUrl) => onChange(finalUrl)}
+        />
+      )
     // shows cropper for image
     case SyncFieldTypes.ThumbnailFromUrls:
       return (

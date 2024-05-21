@@ -23,19 +23,21 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ThumbnailSelector = ({
+  overrideUrl,
   finalUrl,
   imageUrls,
   onDone,
 }: {
+  overrideUrl?: string
   finalUrl: string
   imageUrls: string[]
   onDone: (finalUrl: string) => void
 }) => {
-  const [selectedUrl, setSelectedUrl] = useState('')
+  const [selectedUrl, setSelectedUrl] = useState(overrideUrl || '')
   const { parentId } = useSync()
   const classes = useStyles()
 
-  if (!imageUrls.length) {
+  if (!overrideUrl && !imageUrls.length) {
     return <NoResultsMessage>No images were found</NoResultsMessage>
   }
 
@@ -65,7 +67,7 @@ const ThumbnailSelector = ({
         requiredWidth={THUMBNAIL_WIDTH}
         requiredHeight={THUMBNAIL_HEIGHT}
         onDone={(urls) => onDone(urls[0])}
-        onCancel={() => setSelectedUrl('')}
+        onCancel={!overrideUrl ? () => setSelectedUrl('') : undefined}
       />
     )
   }
