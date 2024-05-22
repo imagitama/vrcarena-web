@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   medium: { height: '10rem' },
-  large: { height: '20rem' },
+  large: { height: '40rem' },
   metaCell: {},
   sideControl: {
     display: 'flex',
@@ -133,6 +133,12 @@ const useStyles = makeStyles((theme) => ({
       aspectRatio: '1/1',
       maxWidth: '100%',
       maxHeight: '100%',
+    },
+  },
+  // quick fix for thumbs
+  thumbnail: {
+    '& img': {
+      height: '100%',
     },
   },
 }))
@@ -452,7 +458,10 @@ const ItemOutput = forwardRef(
             return (
               <div
                 key={fieldName as string}
-                className={`${classes.cell} ${size ? classes[size] : ''}`}>
+                className={`${classes.cell} ${size ? classes[size] : ''} ${
+                  // quick fix for thumbnails
+                  fieldName === 'thumbnailurl' ? classes.thumbnail : ''
+                }`}>
                 <FieldOutput<TItem>
                   item={item}
                   fieldName={fieldName}
