@@ -11,11 +11,7 @@ import {
 } from '../../utils'
 import Button from '../button'
 import { useMediaQuery } from 'react-responsive'
-import {
-  mediaQueryForMobiles,
-  mediaQueryForTabletsOrBelow,
-  queryForMobiles,
-} from '../../media-queries'
+import { mediaQueryForMobiles, queryForMobiles } from '../../media-queries'
 
 const useStyles = makeStyles({
   root: {
@@ -37,25 +33,8 @@ const useStyles = makeStyles({
       maxWidth: '100%',
       maxHeight: '400px',
       aspectRatio: '1/1',
+      objectFit: 'contain', // (default: fill) required to fix stretched images on Edge
     },
-    // [mediaQueryForTabletsOrBelow]: {
-    //   cursor: 'default',
-    //   width: '100%',
-    //   maxWidth: 'inherit',
-    //   '& img': {
-    //     width: 'auto',
-    //     maxHeight: 'inherit',
-    //   },
-    // },
-    // [mediaQueryForMobiles]: {
-    //   cursor: 'default',
-    //   width: '100%',
-    //   maxWidth: 'inherit',
-    //   '& img': {
-    //     width: 'auto',
-    //     maxHeight: 'inherit',
-    //   },
-    // },
   },
   '& $image': {
     transform: 'scale(1.05)',
