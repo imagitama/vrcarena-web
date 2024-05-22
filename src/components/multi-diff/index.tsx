@@ -137,6 +137,7 @@ const useStyles = makeStyles((theme) => ({
   },
   // quick fix for thumbs
   thumbnail: {
+    height: '300px',
     '& img': {
       height: '100%',
     },
