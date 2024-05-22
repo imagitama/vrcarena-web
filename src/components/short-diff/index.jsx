@@ -476,7 +476,7 @@ function AttachmentsOutput({ fields }) {
   const [isLoading, isError, attachments] = useDataStoreItems(
     fields.attachmentids.length ? 'attachments' : false,
     fields.attachmentids,
-    'get-attachments-output'
+    { queryName: 'get-attachments-output' }
   )
 
   if (!fields.attachmentids.length) {

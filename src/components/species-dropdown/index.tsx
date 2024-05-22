@@ -3,7 +3,6 @@ import MenuItem from '@material-ui/core/MenuItem'
 
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { CollectionNames, Species } from '../../modules/species'
-import { SpeciesFieldNames } from '../../hooks/useDatabaseQuery'
 
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
@@ -22,8 +21,7 @@ const SpeciesSelector = ({
   const [isLoading, isError, newSpecies] = useDataStoreItems<Species>(
     lastKnownAllSpecies ? '' : CollectionNames.Species,
     undefined,
-    'species-dropdown',
-    SpeciesFieldNames.pluralName
+    { queryName: 'species-dropdown', orderBy: 'pluralname' }
   )
 
   if (newSpecies) {

@@ -183,7 +183,7 @@ const AllDiscordServers = ({
   const [isLoading, isErrored, results] = useDataStoreItems<DiscordServer>(
     'getpublicdiscordservers',
     undefined,
-    'get-discord-servers-for-form'
+    { queryName: 'get-discord-servers-for-form' }
   )
 
   if (isLoading || !results) {

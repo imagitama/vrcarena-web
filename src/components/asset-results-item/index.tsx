@@ -29,6 +29,7 @@ import useIsEditor from '../../hooks/useIsEditor'
 import useBulkEdit from '../../hooks/useBulkEdit'
 import SelectedTick from '../selected-tick'
 import useTagBlacklist from '../../hooks/useTagBlacklist'
+import { colorFree } from '../../themes'
 
 const chipMargin = '0.25rem'
 
@@ -199,7 +200,7 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
   },
   freeChip: {
-    backgroundColor: 'rgb(100, 150, 100)',
+    backgroundColor: colorFree,
   },
   pushDownIcons: {
     paddingTop: '2.5rem',

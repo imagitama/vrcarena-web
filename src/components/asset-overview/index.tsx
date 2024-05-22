@@ -10,6 +10,7 @@ import CardActionArea from '@material-ui/core/CardActionArea'
 // icons
 import BuildIcon from '@material-ui/icons/Build'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
+import CompareArrowsIcon from '@material-ui/icons/CompareArrows'
 
 import useDataStore from '../../hooks/useDataStore'
 import useBanner from '../../hooks/useBanner'
@@ -899,6 +900,14 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                   assetId={assetId}
                   asButton
                 />
+              </Control>
+              <Control>
+                <Button
+                  url={routes.compareWithVar.replace(':assetId', assetId)}
+                  icon={<CompareArrowsIcon />}
+                  color="default">
+                  Compare
+                </Button>
               </Control>
             </ControlGroup>
             {isLoggedIn && (

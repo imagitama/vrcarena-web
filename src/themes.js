@@ -10,6 +10,8 @@ export const colorEditorDark = '#6e4c35'
 // TODO: Replace with material ui theme
 export const defaultBorderRadius = '4px'
 
+export const colorFree = 'rgb(100, 150, 100)'
+
 const createOurTheme = (isDark) =>
   createTheme({
     palette: {

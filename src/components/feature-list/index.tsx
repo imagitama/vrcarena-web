@@ -135,8 +135,7 @@ const useTags = (existingTagsData?: Tag[]) =>
   useDataStoreItems<Tag>(
     existingTagsData && existingTagsData.length ? '' : CollectionNames.Tags,
     undefined,
-    'tags-for-features',
-    'id'
+    { queryName: 'tags-for-features', orderBy: 'id' }
   )
 
 const FeatureList = ({

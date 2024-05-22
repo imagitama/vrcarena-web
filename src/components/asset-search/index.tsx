@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const AssetSearch = ({
   onSelect,
   selectedAsset = undefined,
   limit = 5,
@@ -94,3 +94,5 @@ export default ({
     </>
   )
 }
+
+export default AssetSearch

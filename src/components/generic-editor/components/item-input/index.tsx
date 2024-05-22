@@ -24,7 +24,8 @@ export default ({
 }) => {
   const [isLoading, isError, items] = useDataStoreItems<any>(
     itemProperties.collectionName,
-    undefined
+    undefined,
+    { queryName: 'item-input' }
   )
 
   if (isLoading) {

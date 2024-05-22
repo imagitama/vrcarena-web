@@ -23,6 +23,8 @@ interface Props {
   label?: string
   onDelete?: () => void
   noLink?: boolean
+  className?: string
+  visualOnly?: boolean
 }
 
 const ChipWithTooltip = ({
@@ -35,6 +37,8 @@ const ChipWithTooltip = ({
   icon = undefined,
   isLoading = false,
   onDelete = undefined,
+  className = undefined,
+  visualOnly = false,
 }: Props) => {
   const classes = useStyles()
   const [isOpen, setIsOpen] = useState(false)
@@ -53,7 +57,7 @@ const ChipWithTooltip = ({
       onMouseEnter={() => setIsOpen(true)}
       onMouseOut={() => setIsOpen(false)}>
       <Chip
-        className={classes.chip}
+        className={`${classes.chip} ${className}`}
         label={
           isLoading ? (
             <span className={classes.loading}>{tagName}</span>
@@ -65,7 +69,7 @@ const ChipWithTooltip = ({
         }
         color={isFilled && !isDisabled ? 'primary' : undefined}
         disabled={isDisabled}
-        clickable={!isDisabled}
+        clickable={!isDisabled || visualOnly}
         onClick={isDisabled !== true ? onClickToUse : undefined}
         icon={icon}
         onDelete={
@@ -84,7 +88,10 @@ const ChipWithTooltip = ({
 }
 
 export default (props: Props) => {
-  return props.onClick || props.isDisabled || props.noLink ? (
+  return props.onClick ||
+    props.isDisabled ||
+    props.noLink ||
+    props.visualOnly ? (
     <ChipWithTooltip {...props} />
   ) : (
     <Link to={routes.viewTagWithVar.replace(':tag', props.tagName)}>

@@ -32,7 +32,7 @@ const AssetThumbnailAtlasses = () => {
   const [, isError, results, , hydrate] = useDataStoreItems<ImageAtlasCell>(
     'authorpromoatlas',
     undefined,
-    'get-atlasses'
+    { queryName: 'get-atlasses' }
   )
 
   useInterval(hydrate, 2000)
@@ -109,12 +109,10 @@ interface ImageAtlasQueuedItem {
 const ImageAtlasQueue = () => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [, isError, results, , hydrate] =
-    useDataStoreItems<ImageAtlasQueuedItem>(
-      'imageatlasqueue',
-      undefined,
-      'get-queue',
-      'queuedat'
-    )
+    useDataStoreItems<ImageAtlasQueuedItem>('imageatlasqueue', undefined, {
+      queryName: 'get-queue',
+      orderBy: 'queuedat',
+    })
 
   useInterval(hydrate, 2000)
 

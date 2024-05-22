@@ -41,12 +41,10 @@ export default ({
   const userId = useUserId()
   const [isLoadingUser, isErroredLoadingUser, user] = useUserRecord()
   const [isLoadingSpecies, isErroredLoadingSpecies, species] =
-    useDataStoreItems(
-      CollectionNames.Species,
-      undefined,
-      'favorite-species-editor-species',
-      SpeciesFieldNames.pluralName
-    )
+    useDataStoreItems(CollectionNames.Species, undefined, {
+      queryName: 'favorite-species-editor-species',
+      orderBy: SpeciesFieldNames.pluralName,
+    })
   const [isSaving, isSaveSuccess, isSaveErrored, save] = useDatabaseSave(
     CollectionNames.Users,
     userId

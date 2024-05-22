@@ -492,6 +492,11 @@ const EditAttachment = lazy(() =>
       )
   )
 )
+const Compare = lazy(() =>
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "compare" */ './containers/compare')
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -746,6 +751,11 @@ const MainContent = () => {
         <Route exact path={routes.bulkAdd} component={BulkAdd} />
         <Route exact path={routes.promos} component={Promos} />
         <Route exact path={routes.imageAtlas} component={ImageAtlas} />
+        <Route
+          exact
+          path={[routes.compareWithVars, routes.compareWithVar]}
+          component={Compare}
+        />
         <Route
           exact
           path={routes.viewAttachmentWithVar}

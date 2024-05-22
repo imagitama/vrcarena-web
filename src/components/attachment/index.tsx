@@ -1,6 +1,6 @@
 import React from 'react'
 import { AttachmentType, AttachmentFields } from '../../modules/attachments'
-import { isUrlATweet, isUrlAYoutubeVideo } from '../../utils'
+import { isUrlAYoutubeVideo } from '../../utils'
 import VideoPlayer from '../video-player'
 import Button from '../button'
 

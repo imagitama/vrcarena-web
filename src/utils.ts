@@ -509,3 +509,13 @@ export const moveCursorToEnd = (element: HTMLElement) => {
 let isChristmasTime = new Date().getMonth() === 11
 
 export const getIsChristmasTime = () => isChristmasTime
+
+export const addOrUpdateQueryParam = (name: string, value: string): void => {
+  const url = new URL(window.location.href)
+
+  url.searchParams.set(name, value)
+
+  console.debug(`addOrUpdateQueryParam`, { name, value, url: url.href })
+
+  window.history.replaceState(null, '', url.href)
+}

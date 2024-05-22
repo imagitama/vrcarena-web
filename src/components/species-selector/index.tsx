@@ -112,8 +112,7 @@ const SpeciesSelector = ({
   const [isLoading, isError, allSpecies] = useDataStoreItems<Species>(
     CollectionNames.Species,
     undefined,
-    'species-selector',
-    SpeciesFieldNames.pluralName
+    { queryName: 'species-selector', orderBy: 'pluralname' }
   )
   const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()

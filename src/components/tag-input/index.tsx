@@ -69,7 +69,7 @@ const RecommendedTags = ({
   const [, , allTagDetails] = useDataStoreItems<FullTag>(
     'getfulltags',
     undefined,
-    'all-tags-browser'
+    { queryName: 'all-tags-browser' }
   )
 
   if (!allTagDetails) {

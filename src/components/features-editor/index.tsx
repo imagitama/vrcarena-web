@@ -82,7 +82,9 @@ const FeatureEditor = ({
 }
 
 const useTags = () =>
-  useDataStoreItems<Tag>(CollectionNames.Tags, undefined, 'tags-for-features')
+  useDataStoreItems<Tag>(CollectionNames.Tags, undefined, {
+    queryName: 'tags-for-features',
+  })
 
 const FeaturesEditor = ({
   assetId,
