@@ -129,7 +129,7 @@ const Image = ({
       } ${isExpanded && !isSelected ? classes.hidden : ''}`}>
       {isExpanded && isYoutube ? (
         <>
-          <VideoPlayer url={image.url} autoplay width="100%" height="100%" />
+          <VideoPlayer url={image.url} autoplay width="100%" height="500px" />
           {isMobile ? null : (
             <div className={classes.videoPlayerControls}>
               <Button onClick={() => onClick()}>Close Player</Button>
