@@ -11,7 +11,11 @@ import {
 } from '../../utils'
 import Button from '../button'
 import { useMediaQuery } from 'react-responsive'
-import { mediaQueryForMobiles, queryForMobiles } from '../../media-queries'
+import {
+  mediaQueryForMobiles,
+  mediaQueryForTabletsOrBelow,
+  queryForMobiles,
+} from '../../media-queries'
 
 const useStyles = makeStyles({
   root: {
@@ -25,17 +29,33 @@ const useStyles = makeStyles({
     },
   },
   image: {
+    maxWidth: '33.3%',
     margin: '0.5rem',
-    width: '33.3%',
     cursor: 'pointer',
     transition: 'all 100ms',
     '& img': {
-      width: '100%',
+      maxWidth: '100%',
+      maxHeight: '400px',
+      aspectRatio: '1/1',
     },
-    [mediaQueryForMobiles]: {
-      cursor: 'default',
-      width: '100%',
-    },
+    // [mediaQueryForTabletsOrBelow]: {
+    //   cursor: 'default',
+    //   width: '100%',
+    //   maxWidth: 'inherit',
+    //   '& img': {
+    //     width: 'auto',
+    //     maxHeight: 'inherit',
+    //   },
+    // },
+    // [mediaQueryForMobiles]: {
+    //   cursor: 'default',
+    //   width: '100%',
+    //   maxWidth: 'inherit',
+    //   '& img': {
+    //     width: 'auto',
+    //     maxHeight: 'inherit',
+    //   },
+    // },
   },
   '& $image': {
     transform: 'scale(1.05)',
@@ -43,7 +63,12 @@ const useStyles = makeStyles({
   expanded: {
     height: 'auto',
     '& $image': {
+      maxWidth: '100%',
+      maxHeight: '100vh',
+    },
+    '& $image img': {
       width: 'auto',
+      maxHeight: 'inherit',
     },
     '& $image:hover': {
       transform: false,
