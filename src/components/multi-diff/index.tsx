@@ -24,6 +24,7 @@ import AssetSearch from '../asset-search'
 import useCart from '../../hooks/useCart'
 import TagChip from '../tag-chip'
 import { colorFree } from '../../themes'
+import ErrorMessage from '../error-message'
 
 const useStyles = makeStyles((theme) => ({
   items: {
@@ -540,6 +541,11 @@ const MultiDiff = <TItem,>({
   replaceOtherIds: (ids: string[]) => void
 }) => {
   const classes = useStyles()
+
+  // TODO: This shouldn't happen but does sometimes?
+  if (!mainItem) {
+    return <ErrorMessage>No main item to use for comparison</ErrorMessage>
+  }
 
   return (
     <MultiDiffContext.Provider
