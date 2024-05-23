@@ -116,7 +116,8 @@ const Renderer = ({
   )
 }
 
-const isIdActuallyId = (thing: any): thing is string => thing !== null
+const isIdActuallyId = (thing: any): thing is string =>
+  thing !== '' && thing !== null
 
 const AttachmentsForm = ({
   reason,
