@@ -242,6 +242,7 @@ const subViews = {
   PENDING: 0,
   DELETED: 1,
   DECLINED: 2,
+  APPROVED: 3,
 }
 
 const analyticsCategoryName = 'AdminAssets'
@@ -282,6 +283,13 @@ const AdminAssets = () => {
 
         case subViews.DELETED:
           query = query.eq('accessstatus', AccessStatuses.Deleted)
+          break
+
+        case subViews.APPROVED:
+          query = query
+            .eq('publishstatus', PublishStatuses.Published)
+            .eq('approvalstatus', ApprovalStatuses.Approved)
+            .eq('accessstatus', AccessStatuses.Public)
           break
 
         case subViews.DECLINED:
@@ -341,6 +349,21 @@ const AdminAssets = () => {
           onClick={() => {
             setSelectedSubView(subViews.PENDING)
             trackAction(analyticsCategoryName, 'Click on view pending assets')
+          }}
+          color="default">
+          Pending
+        </Button>,
+        <Button
+          icon={
+            selectedSubView === subViews.APPROVED ? (
+              <CheckBoxIcon />
+            ) : (
+              <CheckBoxOutlineBlankIcon />
+            )
+          }
+          onClick={() => {
+            setSelectedSubView(subViews.PENDING)
+            trackAction(analyticsCategoryName, 'Click on view approved assets')
           }}
           color="default">
           Pending
