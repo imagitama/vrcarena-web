@@ -362,11 +362,11 @@ const AdminAssets = () => {
             )
           }
           onClick={() => {
-            setSelectedSubView(subViews.PENDING)
+            setSelectedSubView(subViews.APPROVED)
             trackAction(analyticsCategoryName, 'Click on view approved assets')
           }}
           color="default">
-          Pending
+          Approved
         </Button>,
         <Button
           icon={
