@@ -80,7 +80,9 @@ const CreateForm = ({
 
   const onCreate = async () => {
     try {
-      trackAction(actionCategory, 'Click create Discord Server button')
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click create Discord Server button')
+      }
 
       const justCreatedDocument = await create(
         {
@@ -272,11 +274,13 @@ const Form = ({
       const newValue =
         overrideValue !== undefined ? overrideValue : selectedDiscordServerId
 
-      trackAction(actionCategory, 'Click save Discord Server button', {
-        collectionName,
-        id,
-        discordServerId: newValue,
-      })
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click save Discord Server button', {
+          collectionName,
+          id,
+          discordServerId: newValue,
+        })
+      }
 
       if (overrideSave) {
         overrideSave(newValue)

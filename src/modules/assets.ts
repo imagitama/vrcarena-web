@@ -1,4 +1,4 @@
-import { popularCurrencies } from '../currency'
+import { PopularCurrency, popularCurrencies } from '../currency'
 import {
   AccessStatuses,
   ApprovalStatuses,
@@ -24,6 +24,13 @@ export interface Relation {
   comments: string
 }
 
+export interface SourceInfo {
+  url: string
+  price: number | null
+  pricecurrency: PopularCurrency | null
+  comments: string
+}
+
 export interface AssetFields {
   title: string
   description: string
@@ -40,7 +47,7 @@ export interface AssetFields {
   vrchatclonableavatarids: string[]
   vrchatclonableworldids: string[]
   price: number
-  pricecurrency: keyof typeof popularCurrencies
+  pricecurrency: PopularCurrency
   sourceurl: string
   gumroad?: {
     sync: boolean
@@ -53,6 +60,7 @@ export interface AssetFields {
   ranks: string[]
   extradata: ExtraData
   attachmentids: string[]
+  extrasources: SourceInfo[]
 }
 
 export interface Asset extends AssetFields {

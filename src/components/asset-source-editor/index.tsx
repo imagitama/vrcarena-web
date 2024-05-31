@@ -19,8 +19,8 @@ import TextInput from '../text-input'
 
 const useStyles = makeStyles({
   textInput: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 })
 
 const getIsInvalidPatreonUrl = (url?: string): boolean => {
@@ -35,7 +35,7 @@ export default ({
   sourceUrl = undefined,
   onDone = undefined,
   actionCategory,
-  overrideSave = undefined
+  overrideSave = undefined,
 }: {
   assetId: string | null
   sourceUrl?: string
@@ -72,10 +72,12 @@ export default ({
         return
       }
 
-      trackAction(actionCategory, 'Click save asset source button', assetId)
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click save asset source button', assetId)
+      }
 
       await save({
-        [AssetFieldNames.sourceUrl]: newSourceUrl
+        [AssetFieldNames.sourceUrl]: newSourceUrl,
       })
 
       if (onDone) {
@@ -157,7 +159,7 @@ export default ({
       <TextInput
         className={classes.textInput}
         value={newSourceUrl}
-        onChange={e => setNewSourceUrl(e.target.value)}
+        onChange={(e) => setNewSourceUrl(e.target.value)}
         variant="outlined"
         multiline
       />

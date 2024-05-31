@@ -734,15 +734,36 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                   <VisitSourceButton
                     isAssetLoading={isLoading}
                     assetId={assetId}
-                    isNoFilesAttached
-                    sourceUrl={asset ? asset.sourceurl : null}
-                    categoryName={asset ? asset.category : null}
+                    sourceInfo={
+                      asset
+                        ? {
+                            url: asset.sourceurl,
+                            price: null,
+                            pricecurrency: null,
+                            comments: '',
+                          }
+                        : undefined
+                    }
                     analyticsCategoryName={analyticsCategoryName}
                     analyticsEvent="Click visit source button"
+                    extraSources={asset?.extrasources}
                   />
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
                   <MiniSaleInfo />
                 </Control>
+                {asset && asset.extrasources
+                  ? asset.extrasources.map((sourceInfo) => (
+                      <Control>
+                        <VisitSourceButton
+                          sourceInfo={sourceInfo}
+                          assetId={assetId}
+                          analyticsCategoryName={analyticsCategoryName}
+                          analyticsEvent="Click visit extra source button"
+                          isExtraSource
+                        />
+                      </Control>
+                    ))
+                  : null}
                 <Control>
                   {asset?.discordserver ? (
                     <DiscordServerMustJoinNotice

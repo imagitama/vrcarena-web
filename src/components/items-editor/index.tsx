@@ -208,89 +208,90 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
   return (
     <div className={classes.root}>
       <FlipMove className={classes.items}>
-        {items.length ? (
-          items.map((item: Item<TItem>, idx) => {
-            const key = getKey
-              ? getKey(item)
-              : typeof item === 'string'
-              ? item
-              : item === null
-              ? 'null'
-              : // @ts-ignore
-              item.id
-              ? // @ts-ignore
+        {items.length
+          ? items.map((item: Item<TItem>, idx) => {
+              const key = getKey
+                ? getKey(item)
+                : typeof item === 'string'
+                ? item
+                : item === null
+                ? 'null'
+                : // @ts-ignore
                 item.id
-              : idx
-            return (
-              <div
-                key={key}
-                className={`${classes.item} ${
-                  idx === activeIndexToEdit ? classes.activeForEditing : ''
-                } ${itemClassName}`}>
-                {idx === activeIndexToEdit ? (
-                  <div>
-                    {/* @ts-ignore */}
-                    {React.createElement(editor, {
-                      item,
-                      index: idx,
-                      onChange: (newFields: Item<TItem>) =>
-                        onIdxChange(idx, newFields),
-                      onDone: (newFields: Item<TItem>) =>
-                        onIdxEdited(idx, newFields),
-                      ...(commonProps || {}),
-                    })}
-                  </div>
-                ) : (
-                  <>
-                    {' '}
-                    <div className={classes.sideControl}>
-                      <div
-                        className={`${classes.sideControlBtn}  ${
-                          idx === 0 ? classes.disabledControl : ''
-                        }`}
-                        onClick={() => onMoveIdxLeftClick(idx)}>
-                        <ChevronLeftIcon />
-                      </div>
-                    </div>
+                ? // @ts-ignore
+                  item.id
+                : idx
+              return (
+                <div
+                  key={key}
+                  className={`${classes.item} ${
+                    idx === activeIndexToEdit ? classes.activeForEditing : ''
+                  } ${itemClassName}`}>
+                  {idx === activeIndexToEdit ? (
                     <div>
+                      {/* @ts-ignore */}
+                      {React.createElement(editor, {
+                        item,
+                        index: idx,
+                        onChange: (newFields: Item<TItem>) =>
+                          onIdxChange(idx, newFields),
+                        onDone: (newFields: Item<TItem>) =>
+                          onIdxEdited(idx, newFields),
+                        ...(commonProps || {}),
+                      })}
+                    </div>
+                  ) : (
+                    <>
+                      {' '}
+                      <div className={classes.sideControl}>
+                        <div
+                          className={`${classes.sideControlBtn}  ${
+                            idx === 0 ? classes.disabledControl : ''
+                          }`}
+                          onClick={() => onMoveIdxLeftClick(idx)}>
+                          <ChevronLeftIcon />
+                        </div>
+                      </div>
                       <div>
-                        {/* @ts-ignore */}
-                        {React.createElement(renderer, {
-                          item,
-                          index: idx,
-                          ...(commonProps || {}),
-                        })}
+                        <div>
+                          {/* @ts-ignore */}
+                          {React.createElement(renderer, {
+                            item,
+                            index: idx,
+                            ...(commonProps || {}),
+                          })}
+                        </div>
+                        <div className={`${classes.centerControls}`}>
+                          {allowDelete ? (
+                            <div onClick={() => onDeleteIdxClick(idx)}>
+                              <DeleteIcon />
+                            </div>
+                          ) : null}
+                          {allowEditing ? (
+                            <div onClick={() => onEditIdxClick(idx)}>
+                              <EditIcon />
+                            </div>
+                          ) : null}
+                        </div>
                       </div>
-                      <div className={`${classes.centerControls}`}>
-                        {allowDelete ? (
-                          <div onClick={() => onDeleteIdxClick(idx)}>
-                            <DeleteIcon />
-                          </div>
-                        ) : null}
-                        {allowEditing ? (
-                          <div onClick={() => onEditIdxClick(idx)}>
-                            <EditIcon />
-                          </div>
-                        ) : null}
+                      <div className={classes.sideControl}>
+                        <div
+                          className={`${classes.sideControlBtn}  ${
+                            idx === items.length - 1
+                              ? classes.disabledControl
+                              : ''
+                          }`}
+                          onClick={() => onMoveIdxRightClick(idx)}>
+                          <ChevronRightIcon />
+                        </div>
                       </div>
-                    </div>
-                    <div className={classes.sideControl}>
-                      <div
-                        className={`${classes.sideControlBtn}  ${
-                          idx === items.length - 1
-                            ? classes.disabledControl
-                            : ''
-                        }`}
-                        onClick={() => onMoveIdxRightClick(idx)}>
-                        <ChevronRightIcon />
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            )
-          })
-        ) : (
+                    </>
+                  )}
+                </div>
+              )
+            })
+          : null}
+        {allowAdding ? (
           <div className={`${classes.item} ${classes.emptyItem}`}>
             <div className={classes.noItemsMessageWrapper}>
               <div className={classes.noItemsMessage}>
@@ -301,9 +302,9 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
               </Button>
             </div>
           </div>
-        )}
+        ) : null}
       </FlipMove>
-      {allowAdding ? (
+      {/* {allowAdding ? (
         <div className={classes.item}>
           <div className={classes.addButton}>
             <CardButton
@@ -316,7 +317,7 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
             />
           </div>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   )
 }

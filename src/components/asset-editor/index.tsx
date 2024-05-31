@@ -37,7 +37,7 @@ import {
 import * as routes from '../../routes'
 import categoryMeta from '../../category-meta'
 import { adultSearchTerms, nsfwRules, WEBSITE_FULL_URL } from '../../config'
-import { isGumroadUrl, isBoothUrl } from '../../utils'
+import { isGumroadUrl } from '../../utils'
 import { getDoesAssetNeedPublishing } from '../../utils/assets'
 import useUserRecord from '../../hooks/useUserRecord'
 
@@ -89,7 +89,7 @@ import VrcFurySettingsEditor from '../vrcfury-settings-editor'
 import PublishAssetButton from '../publish-asset-button'
 import { getCanAssetBePublished } from '../../assets'
 import CategoryItem from '../category-item'
-import { Asset, FullAsset } from '../../modules/assets'
+import { Asset, FullAsset, SourceInfo } from '../../modules/assets'
 import { inDevelopment } from '../../environment'
 import TagChip from '../tag-chip'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
@@ -109,6 +109,8 @@ import AssetAttachmentsEditor from '../asset-attachments-editor'
 import placeholderPedestalVideoUrl from '../../assets/videos/placeholder-pedestal.webm'
 import placeholderPedestalFallbackImageUrl from '../../assets/videos/placeholder-pedestal-fallback.webp'
 import { getSyncPlatformNameFromUrl, SyncPlatformName } from '../../syncing'
+import ExtraSourcesEditor from '../extra-sources-editor'
+import VisitSourceButton from '../visit-source-button'
 
 interface EditorInfo {
   assetId: string | null
@@ -433,13 +435,12 @@ const AssetSource = ({ url }: { url: string }) => {
 
   return (
     <div>
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={classes.sourceUrl}>
-        {url} <OpenInNewIcon />
-      </a>
+      {url}
+      <br />
+      <br />
+      <VisitSourceButton
+        sourceInfo={{ url, price: null, pricecurrency: null, comments: '' }}
+      />
       {syncPlatformName !== undefined ? (
         <SyncButton syncPlatformName={syncPlatformName} onSync={onSync} />
       ) : null}
@@ -450,6 +451,24 @@ const AssetSource = ({ url }: { url: string }) => {
 const SourceDisplay = ({ value }: { value: string }) => (
   <AssetSource url={value} />
 )
+
+const ExtraSourcesDisplay = ({ value }: { value: SourceInfo[] }) =>
+  value && value.length ? (
+    <>
+      {value.map((sourceInfo) => (
+        <>
+          {sourceInfo.url}
+          <br />
+          <br />
+          <VisitSourceButton sourceInfo={sourceInfo} />
+          <br />
+          <br />
+        </>
+      ))}
+    </>
+  ) : (
+    <>No extra sources set</>
+  )
 
 const ThumbnailDisplay = ({ value }: { value: string }) => (
   <AssetThumbnail url={value} />
@@ -878,6 +897,49 @@ const Editor = () => {
                       isEnabled={isSyncWithGumroadEnabled}
                       // @ts-ignore
                       settings={asset.gumroad}
+                    />
+                  }
+                />
+                <FormEditorArea
+                  title="Price"
+                  description="The price of the asset."
+                  icon={() => <AttachMoneyIcon />}
+                  display={() => (
+                    <PriceDisplay value={asset.price} fields={asset} />
+                  )}
+                  editor={
+                    <PriceEditor
+                      assetId={assetId}
+                      currentPrice={asset.price}
+                      currentPriceCurrency={asset.pricecurrency}
+                      overrideSave={
+                        onFieldChanged
+                          ? (newPrice, newPriceCurrency) => {
+                              onFieldChanged('price', newPrice)
+                              onFieldChanged('pricecurrency', newPriceCurrency)
+                            }
+                          : undefined
+                      }
+                    />
+                  }
+                />
+                <FormEditorArea
+                  fieldName="extrasources"
+                  title="Extra Sources"
+                  description="Any other places people can get this asset."
+                  icon={() => <PhotoIcon />}
+                  display={ExtraSourcesDisplay}
+                  editor={
+                    <ExtraSourcesEditor
+                      extraSources={asset.extrasources}
+                      assetId={assetId}
+                      overrideSave={
+                        onFieldChanged
+                          ? (newExtraSources: SourceInfo[]) =>
+                              onFieldChanged('extrasources', newExtraSources)
+                          : undefined
+                      }
+                      onDone={() => hydrate()}
                     />
                   }
                 />

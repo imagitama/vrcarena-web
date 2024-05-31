@@ -37,6 +37,7 @@ import LoadingIndicator from '../loading-indicator'
 import NoResultsMessage from '../no-results-message'
 import ErrorMessage from '../error-message'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
+import VisitSourceButton from '../visit-source-button'
 
 const useStyles = makeStyles({
   output: {
@@ -512,6 +513,18 @@ function AttachmentsOutput({ fields }) {
   return <Attachments ids={ids} attachmentsData={attachments} />
 }
 
+const ExtraSourcesOutput = ({ extraSources }) =>
+  extraSources.map((sourceInfo) => (
+    <div>
+      {sourceInfo.url}
+      <br />
+      <br />
+      <VisitSourceButton sourceInfo={sourceInfo} />
+      <br />
+      <br />
+    </div>
+  ))
+
 function ClonableWorldOutput({ fields }) {
   return (
     <div>
@@ -725,6 +738,12 @@ const RenderersForFields = {
     attachmentids: {
       label: 'Attachments',
       renderer: ({ fields }) => <AttachmentsOutput fields={fields} />,
+    },
+    extrasources: {
+      label: 'Extra Sources',
+      renderer: ({ fields }) => (
+        <ExtraSourcesOutput extraSources={fields.extrasources} />
+      ),
     },
   },
   authors: authorsEditableFields,

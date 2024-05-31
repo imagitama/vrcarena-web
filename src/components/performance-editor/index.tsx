@@ -218,7 +218,9 @@ const PerformanceEditor = ({
         return
       }
 
-      trackAction(actionCategory, 'Click save performance tags button')
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click save performance tags button')
+      }
 
       if (!assetId) {
         return

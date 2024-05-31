@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { defaultCurrency, popularCurrencies } from '../../currency'
+import { defaultCurrency, formatPrice, popularCurrencies } from '../../currency'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,19 +67,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const isDollars = (currency: keyof typeof popularCurrencies) => {
-  // probably use NPM package for this
-  switch (currency) {
-    case 'USD':
-    case 'AUD':
-    case 'CAD':
-    case 'NZD':
-      return true
-  }
-
-  return false
-}
-
 // show "+" symbol as some gumroad products have multiple variants
 // and the API only gives us a price for one of them (which is random?)
 export default ({
@@ -103,9 +90,7 @@ export default ({
     <div className={classes.root}>
       <span className={`${isLoading ? classes.loading : ''}`}>
         <span className={classes.price}>
-          {price === 0
-            ? 'Free'
-            : `${isDollars(currency) ? '$' : ''}${price.toFixed(2)}`}
+          {price === 0 ? 'Free' : formatPrice(price, priceCurrency, false)}
         </span>{' '}
         {price === 0 ? null : (
           <span className={classes.currency}>{currency}</span>

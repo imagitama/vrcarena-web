@@ -57,7 +57,9 @@ const AssetBannerEditor = ({
         return
       }
 
-      trackAction(actionCategory, 'Click save banner button')
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click save banner button')
+      }
 
       if (!assetId) {
         return

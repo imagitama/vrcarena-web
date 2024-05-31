@@ -45,10 +45,16 @@ const AssetAttachmentsEditor = ({
         return
       }
 
-      trackAction(actionCategory, 'Click save asset attachment editor button', {
-        assetId,
-        newIds,
-      })
+      if (actionCategory) {
+        trackAction(
+          actionCategory,
+          'Click save asset attachment editor button',
+          {
+            assetId,
+            newIds,
+          }
+        )
+      }
 
       await save({
         attachmentids: newIds,

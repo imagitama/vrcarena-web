@@ -14,6 +14,7 @@ import Paper from '../paper'
 import FormControls from '../form-controls'
 import SearchForAssetForm from '../search-for-asset-form'
 import AssetResultsItem from '../asset-results-item'
+import { moveItemInArray } from '../../utils'
 
 const useStyles = makeStyles({
   item: {
@@ -119,12 +120,6 @@ function ItemEditor({
       </div>
     </Paper>
   )
-}
-
-function moveItemInArray(from, to, array) {
-  const newArray = [].concat(array)
-  newArray.splice(to, 0, newArray.splice(from, 1)[0])
-  return newArray
 }
 
 export default ({ items: newItems = [], onChange, itemsAssetData = [] }) => {

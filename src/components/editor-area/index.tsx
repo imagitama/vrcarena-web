@@ -152,7 +152,7 @@ const EditorArea = ({
             <div
               className={classes.editIcon}
               onClick={() => {
-                if (analyticsAction) {
+                if (analyticsCategoryName && analyticsAction) {
                   trackAction(analyticsCategoryName, analyticsAction)
                 }
 

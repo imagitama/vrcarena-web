@@ -14,9 +14,31 @@ export const popularCurrencies = {
   INR: 'Indian Rupee',
   KRW: 'South Korean Won',
   BRL: 'Brazilian Real',
-  ZAR: 'South African Rand'
+  ZAR: 'South African Rand',
 }
 
 export type PopularCurrency = keyof typeof popularCurrencies
 
 export const defaultCurrency: PopularCurrency = 'USD'
+
+const isDollars = (currency: PopularCurrency): boolean => {
+  // TODO: probably use NPM package for this
+  switch (currency) {
+    case 'USD':
+    case 'AUD':
+    case 'CAD':
+    case 'NZD':
+      return true
+  }
+
+  return false
+}
+
+export const formatPrice = (
+  price: number,
+  currency: PopularCurrency,
+  withCurrency: boolean = true
+) =>
+  `${isDollars(currency) ? '$' : ''}${price.toFixed(2)}${
+    withCurrency ? ` ${currency}` : ''
+  }`

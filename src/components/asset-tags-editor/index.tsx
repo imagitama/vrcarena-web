@@ -41,7 +41,9 @@ export default ({
         return
       }
 
-      trackAction(actionCategory, 'Click save asset tags', assetId)
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click save asset tags', assetId)
+      }
 
       await save({
         [AssetFieldNames.tags]: newTags,

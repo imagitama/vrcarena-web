@@ -12,9 +12,8 @@ import TextInput from '../text-input'
 import Button from '../button'
 import FormControls from '../form-controls'
 import { popularCurrencies, PopularCurrency } from '../../currency'
-import Select from '../select'
 import WarningMessage from '../warning-message'
-import Price from '../price'
+import PriceInput from '../price-input'
 
 const useStyles = makeStyles({
   inputWrapper: {
@@ -29,7 +28,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const PriceEditor = ({
   assetId,
   currentPrice,
   currentPriceCurrency,
@@ -45,11 +44,16 @@ export default ({
   onCancel?: () => void
   actionCategory?: string
   overrideSave?: (newPrice: number | null, newPriceCurrency: string) => void
+  // extra sources editor
+  price?: number | null
+  priceCurrency?: number | null
+  onChange?: (
+    newPrice: number | null,
+    newPriceCurrency: PopularCurrency | null
+  ) => void
 }) => {
-  const [newPriceRaw, setNewPriceRaw] = useState<string | null>(
-    currentPrice === undefined || currentPrice === null
-      ? null
-      : currentPrice.toString()
+  const [newPrice, setNewPriceRaw] = useState<number | null>(
+    currentPrice === undefined || currentPrice === null ? null : currentPrice
   )
   const [newPriceCurrency, setNewPriceCurrency] = useState<PopularCurrency>(
     currentPriceCurrency || 'USD'
@@ -62,11 +66,8 @@ export default ({
 
   const onSaveBtnClick = async () => {
     try {
-      const newPriceToSave = newPriceRaw ? parseFloat(newPriceRaw) : null
-
       if (overrideSave) {
-        console.log('HERE', overrideSave)
-        overrideSave(newPriceToSave, newPriceCurrency)
+        overrideSave(newPrice, newPriceCurrency)
 
         if (onDone) {
           onDone()
@@ -80,7 +81,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.price]: newPriceToSave,
+        [AssetFieldNames.price]: newPrice,
         [AssetFieldNames.priceCurrency]: newPriceCurrency,
       })
 
@@ -95,48 +96,18 @@ export default ({
 
   return (
     <>
-      <div className={classes.inputWrapper}>
-        <span>
-          <Select
-            onChange={(e) =>
-              setNewPriceCurrency(e.target.value as PopularCurrency)
-            }
-            value={newPriceCurrency}>
-            {Object.entries(popularCurrencies).map(
-              ([currencyCode, currencyName]) => (
-                <MenuItem
-                  key={currencyCode}
-                  value={currencyCode}
-                  title={currencyName}>
-                  {currencyCode}
-                </MenuItem>
-              )
-            )}
-          </Select>
-        </span>
-        <TextInput
-          value={newPriceRaw !== null ? newPriceRaw : ''}
-          onChange={(e) => setNewPriceRaw(e.target.value)}
-        />
-        <Button onClick={() => setNewPriceRaw(null)} color="default">
-          Clear Price
-        </Button>
-      </div>
       <WarningMessage>
-        If automatic syncing with Gumroad is enabled, this price will be
-        automatically updated daily. Note the currency is always USD for this to
-        work.
+        If automatic syncing with Gumroad is enabled (and the currency is USD)
+        this price will be automatically updated daily.
       </WarningMessage>
-      <br />
-      <strong>Preview:</strong>{' '}
-      {newPriceRaw === null ? (
-        '(no price set)'
-      ) : (
-        <Price
-          price={parseFloat(newPriceRaw)}
-          priceCurrency={newPriceCurrency}
-        />
-      )}
+      <PriceInput
+        price={newPrice}
+        priceCurrency={newPriceCurrency}
+        onChange={(newPrice, newPriceCurrency) => {
+          setNewPriceRaw(newPrice)
+          setNewPriceCurrency(newPriceCurrency)
+        }}
+      />
       {isSaving ? (
         'Saving...'
       ) : isSaveSuccess ? (
@@ -158,3 +129,5 @@ export default ({
     </>
   )
 }
+
+export default PriceEditor

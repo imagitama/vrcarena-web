@@ -519,3 +519,13 @@ export const addOrUpdateQueryParam = (name: string, value: string): void => {
 
   window.history.replaceState(null, '', url.href)
 }
+
+export const moveItemInArray = (
+  from: number,
+  to: number,
+  array: Array<any>
+): Array<any> => {
+  const newArray: Array<any> = [].concat(array as any)
+  newArray.splice(to, 0, newArray.splice(from, 1)[0])
+  return newArray
+}

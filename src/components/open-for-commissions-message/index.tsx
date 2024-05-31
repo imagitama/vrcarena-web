@@ -11,37 +11,37 @@ import { trackAction } from '../../analytics'
 const useStyles = makeStyles({
   root: {
     margin: '1rem 0',
-    padding: '1rem 1rem 0'
+    padding: '1rem 1rem 0',
   },
   withButton: {
-    display: 'flex'
+    display: 'flex',
   },
   heading: {
     width: '100%',
     fontSize: '150%',
     fontWeight: 100,
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   icon: {
-    marginRight: '0.5rem'
+    marginRight: '0.5rem',
   },
   info: {
     padding: '1rem',
     '& p:first-child': {
-      marginTop: 0
+      marginTop: 0,
     },
     '& p:last-child': {
-      marginBottom: 0
-    }
-  }
+      marginBottom: 0,
+    },
+  },
 })
 
 export default ({
   info,
   showViewAuthorButton,
   authorId,
-  analyticsCategory
+  analyticsCategory,
 }: {
   info: string
   showViewAuthorButton?: boolean
@@ -66,12 +66,15 @@ export default ({
       {showViewAuthorButton && (
         <Button
           url={routes.viewAuthorWithVar.replace(':authorId', authorId)}
-          onClick={() =>
-            trackAction(
-              analyticsCategory,
-              'Click view details for author commissions',
-              authorId
-            )
+          onClick={
+            analyticsCategory
+              ? () =>
+                  trackAction(
+                    analyticsCategory,
+                    'Click view details for author commissions',
+                    authorId
+                  )
+              : undefined
           }>
           View Details
         </Button>
