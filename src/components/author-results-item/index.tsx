@@ -12,6 +12,7 @@ import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import categoryMeta, { getCategoryMeta } from '../../category-meta'
 import { Author } from '../../modules/authors'
 import DefaultAvatar from '../default-avatar'
+import { AssetCategory } from '../../modules/assets'
 
 const useStyles = makeStyles({
   root: {
@@ -68,7 +69,10 @@ export default ({
               <div className={classes.cats}>
                 {categories && categories.length
                   ? categories
-                      .map((categoryName) => getCategoryMeta(categoryName).name)
+                      .map(
+                        (categoryName) =>
+                          getCategoryMeta(categoryName as AssetCategory).name
+                      )
                       .join(', ')
                   : '\u00A0'}
               </div>

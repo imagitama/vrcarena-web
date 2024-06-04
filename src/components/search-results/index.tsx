@@ -38,6 +38,7 @@ import PageControls from '../page-controls'
 import UserList from '../user-list'
 import SearchFilters from '../search-filters'
 import WarningMessage from '../warning-message'
+import { AssetCategory } from '../../modules/assets'
 
 const useStyles = makeStyles({
   tableButton: {
@@ -334,7 +335,7 @@ const CategoryAndSpeciesSearchHint = ({
   let suggestedCategory: CategoryMeta | null = null
 
   for (const categoryName in categoryMeta) {
-    const category = getCategoryMeta(categoryName)
+    const category = getCategoryMeta(categoryName as AssetCategory)
 
     if (
       category.name.toLowerCase().includes(searchTermLower) ||
