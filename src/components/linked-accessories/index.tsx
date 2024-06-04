@@ -45,7 +45,7 @@ const LinkedAccessories = ({
 
     return query
   }, [assetId, isAdultContentEnabled])
-  const [isLoading, isError, results, totalCount] = useDataStore<Asset[]>(
+  const [isLoading, lastErrorCode, results, totalCount] = useDataStore<Asset[]>(
     getQuery,
     'linked-accessories'
   )
@@ -59,7 +59,7 @@ const LinkedAccessories = ({
     )
   }
 
-  if (isError) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to load accessories</ErrorMessage>
   }
 

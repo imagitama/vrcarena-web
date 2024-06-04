@@ -4,7 +4,7 @@ import {
   Asset,
   PublicAsset,
   Relation,
-  RelationType
+  RelationType,
 } from '../../modules/assets'
 import AssetResultsItem from '../asset-results-item'
 import Markdown from '../markdown'
@@ -18,34 +18,34 @@ import AssetResultsItemParent from '../asset-results-item-parent'
 const useStyles = makeStyles({
   root: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   relationType: {
-    margin: '0 0.5rem 0.5rem 0'
+    margin: '0 0.5rem 0.5rem 0',
   },
   relations: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   relation: {
     position: 'relative',
     height: '100%',
-    margin: '0 0.5rem 0.5rem 0'
+    margin: '0 0.5rem 0.5rem 0',
   },
   label: {
     fontSize: '150%',
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   comments: {
     marginTop: '0.5rem',
     fontStyle: 'italic',
     '& > p:last-child': {
-      marginBottom: 0
-    }
+      marginBottom: 0,
+    },
   },
   itemLabel: {
-    marginTop: '0.5rem'
-  }
+    marginTop: '0.5rem',
+  },
 })
 
 export const getLabelForType = (relationType: string): string => {
@@ -72,7 +72,7 @@ export const Relations = ({ children }: { children: React.ReactNode }) => {
 export const RelationItem = ({
   relation,
   asset,
-  showRelation
+  showRelation,
 }: {
   relation: Relation
   asset: PublicAsset
@@ -102,13 +102,13 @@ export default ({ relations }: { relations: Relation[] }) => {
         .or(relations.map(({ asset }) => `id.eq.${asset}`).join(',')),
     [relations.map(({ asset }) => asset).join('+')]
   )
-  const [isLoadingAssets, isErrorLoadingAssets, assets] = useDataStore<
+  const [isLoadingAssets, lastErrorCodeLoadingAssets, assets] = useDataStore<
     PublicAsset[]
   >(getQuery, 'relations')
   const classes = useStyles()
 
   const relationsWithData = assets
-    ? relations.filter(relation =>
+    ? relations.filter((relation) =>
         assets.find(({ id }) => id === relation.asset)
       )
     : []
@@ -121,12 +121,12 @@ export default ({ relations }: { relations: Relation[] }) => {
       [relation.type]:
         relation.type in final
           ? final[relation.type].concat([relation])
-          : [relation]
+          : [relation],
     }),
     {}
   )
 
-  if (isErrorLoadingAssets) {
+  if (lastErrorCodeLoadingAssets !== null) {
     return <ErrorMessage>Failed to load relations</ErrorMessage>
   }
 
@@ -145,7 +145,7 @@ export default ({ relations }: { relations: Relation[] }) => {
           <div className={classes.relationType}>
             <div className={classes.label}>{getLabelForType(relationType)}</div>
             <Relations>
-              {relationsForType.map(relation => {
+              {relationsForType.map((relation) => {
                 const asset = assets.find(({ id }) => id === relation.asset)
 
                 if (!asset) {

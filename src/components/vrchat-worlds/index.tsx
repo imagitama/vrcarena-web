@@ -39,7 +39,7 @@ export default ({
             .or(worldIds.map((worldId) => `id.eq.${worldId}`).join(',')),
     [worldIds.join(',')]
   )
-  const [isLoading, isErrored, results] = useDataStore<
+  const [isLoading, lastErrorCode, results] = useDataStore<
     CachedVrchatWorldRecord[]
   >(getQuery, 'vrchat-worlds')
   const classes = useStyles()
@@ -52,7 +52,7 @@ export default ({
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to get worlds</ErrorMessage>
   }
 

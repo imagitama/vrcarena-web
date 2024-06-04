@@ -22,7 +22,7 @@ import ButtonDropdown from '../button-dropdown'
 
 import useHistory from '../../hooks/useHistory'
 import useSorting from '../../hooks/useSorting'
-import useDataStore from '../../hooks/useDataStore'
+import useDataStore, { ErrorCode } from '../../hooks/useDataStore'
 import useIsEditor from '../../hooks/useIsEditor'
 import { client as supabase } from '../../supabase'
 import {
@@ -195,18 +195,28 @@ const Page = () => {
     Object.values(filters).join('+'),
     isEditor,
   ])
-  const [isLoading, isErrored, items, totalCount, hydrate] = useDataStore<
+  const [isLoading, lastErrorCode, items, totalCount, hydrate] = useDataStore<
     any[]
-  >(pageGetQuery, `paginated-view-${collectionName || viewName}`)
+  >(pageGetQuery, {
+    name: `paginated-view-${collectionName || viewName}`,
+    ignoreRangeErrors: true,
+  })
 
-  useScrollMemory(isLoading === false && isErrored === false)
+  useScrollMemory(isLoading === false && lastErrorCode === null)
+
+  if (lastErrorCode !== null) {
+    if (lastErrorCode === ErrorCode.BadRange) {
+      return (
+        <NoResultsMessage>
+          No results found for page {currentPageNumber}
+        </NoResultsMessage>
+      )
+    }
+    return <ErrorMessage>Failed to load page!</ErrorMessage>
+  }
 
   if (isLoading || !items) {
     return <LoadingIndicator message="Loading page..." />
-  }
-
-  if (isErrored) {
-    return <ErrorMessage>Failed to load page!</ErrorMessage>
   }
 
   if (!items.length) {

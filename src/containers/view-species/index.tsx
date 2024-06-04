@@ -131,7 +131,7 @@ const View = () => {
         .or(`id.eq.${speciesIdOrSlug},slug.eq.${speciesIdOrSlug}`),
     [speciesIdOrSlug]
   )
-  const [isLoadingSpecies, isErrorLoadingSpecies, speciesResults] =
+  const [isLoadingSpecies, lastErrorCodeLoadingSpecies, speciesResults] =
     useDataStore<FullSpecies[]>(getSpeciesQuery, 'view-species')
 
   const species =
@@ -147,7 +147,7 @@ const View = () => {
       .eq('parent', species.id)
     return query
   }, [species && species.id])
-  const [isLoadingChildren, isErrorLoadingChildren, childSpecies] =
+  const [isLoadingChildren, lastErrorCodeLoadingChildren, childSpecies] =
     useDataStore<Species[]>(
       species ? getChildrenQuery : null,
       'view-species-children'
@@ -179,7 +179,10 @@ const View = () => {
     return <LoadingIndicator message="Loading species..." />
   }
 
-  if (isErrorLoadingSpecies || isErrorLoadingChildren) {
+  if (
+    lastErrorCodeLoadingSpecies !== null ||
+    lastErrorCodeLoadingChildren !== null
+  ) {
     return <ErrorMessage>Failed to load species</ErrorMessage>
   }
 

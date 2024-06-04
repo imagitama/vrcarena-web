@@ -18,10 +18,7 @@ import Button from '../../components/button'
 const View = ({ count }: { count: number }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(() => {
-    let query = supabase
-      .from('getrandompublicavatars')
-      .select('*')
-      .limit(5)
+    let query = supabase.from('getrandompublicavatars').select('*').limit(5)
 
     if (!isAdultContentEnabled) {
       query = query.eq(AssetFieldNames.isAdult, false)
@@ -29,13 +26,13 @@ const View = ({ count }: { count: number }) => {
 
     return query
   }, [isAdultContentEnabled, count])
-  const [isLoading, isError, avatars] = useDataStore<Asset[]>(getQuery)
+  const [isLoading, lastErrorCode, avatars] = useDataStore<Asset[]>(getQuery)
 
   if (isLoading || !avatars) {
     return <LoadingIndicator message="Finding random avatars..." />
   }
 
-  if (isError) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to find avatars</ErrorMessage>
   }
 
@@ -45,7 +42,7 @@ const View = ({ count }: { count: number }) => {
 export default () => {
   const [count, setCount] = useState<number>(0)
   const regenerate = () =>
-    setCount(currentVal => {
+    setCount((currentVal) => {
       return currentVal + 1
     })
   return (

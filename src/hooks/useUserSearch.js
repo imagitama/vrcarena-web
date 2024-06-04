@@ -6,7 +6,7 @@ import { client as supabase } from '../supabase'
 
 const defaultLimit = 50
 
-const cleanupSearchTerm = searchTerm => (searchTerm ? searchTerm.trim() : '')
+const cleanupSearchTerm = (searchTerm) => (searchTerm ? searchTerm.trim() : '')
 
 export const getQuery = (
   searchTerm,
@@ -19,13 +19,15 @@ export const getQuery = (
 
   let query = supabase
     .rpc('searchusers', {
-      searchterm: searchTerm.split(' ').join('&')
+      searchterm: searchTerm.split(' ').join('&'),
     })
     .select('*')
     .limit(limit)
 
   for (const [fieldName, values] of Object.entries(filtersByFieldName)) {
-    query = query.or(values.map(value => `${fieldName}.eq.${value}`).join(','))
+    query = query.or(
+      values.map((value) => `${fieldName}.eq.${value}`).join(',')
+    )
   }
 
   return query
@@ -54,14 +56,14 @@ export default (searchTerm, filtersByFieldName = {}, limit = defaultLimit) => {
       actualSearchTerm,
       Object.keys(filtersByFieldName).join('+'),
       Object.values(filtersByFieldName).join('+'),
-      limit
+      limit,
     ]
   )
 
-  const [isLoading, isError, value] = useDataStore(
+  const [isLoading, lastErrorCode, value] = useDataStore(
     getQueryForHook,
     'user-search'
   )
 
-  return [isLoading, isError, value]
+  return [isLoading, lastErrorCode, value]
 }

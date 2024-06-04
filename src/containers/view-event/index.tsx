@@ -183,7 +183,7 @@ const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
 
     return query
   }, [isAdultContentEnabled, tagsToSearch.join('+')])
-  const [isLoading, isErrored, results] = useDataStore(
+  const [isLoading, lastErrorCode, results] = useDataStore(
     getQuery,
     'assets-for-event'
   )
@@ -192,7 +192,7 @@ const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
     return <LoadingIndicator message="Loading assets with tags..." />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return (
       <ErrorMessage>
         Failed to get assets with tags {tagsToSearch.join(', ')}
@@ -257,7 +257,7 @@ const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
 
     return query
   }, [eventId])
-  const [isLoading, isErrored, authors] = useDataStore<FullAuthor>(
+  const [isLoading, lastErrorCode, authors] = useDataStore<FullAuthor>(
     getQuery,
     'authors-for-event'
   )
@@ -266,7 +266,7 @@ const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
     return <LoadingIndicator message="Loading authors with sales..." />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to get authors with sales</ErrorMessage>
   }
 
@@ -300,8 +300,7 @@ const View = () => {
   )
   const [isLoading, isError, events, , hydrate] = useDataStore<FullEvent[]>(
     getQuery,
-    'view-event',
-    true
+    { name: 'view-event', quietHydrate: true }
   )
   const classes = useStyles()
   const isEditor = useIsEditor()

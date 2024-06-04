@@ -15,7 +15,7 @@ import useDataStore from '../../../../hooks/useDataStore'
 import {
   CollectionNameComments,
   CollectionNameCommentsMeta,
-  FullComment
+  FullComment,
 } from '../../../../modules/comments'
 import { client as supabase } from '../../../../supabase'
 import LoadingIndicator from '../../../../components/loading-indicator'
@@ -36,7 +36,7 @@ import { AccessStatuses } from '../../../../hooks/useDatabaseQuery'
 const BulkControls = ({
   ids,
   cancel,
-  onDone
+  onDone,
 }: {
   ids: string[]
   cancel: () => void
@@ -60,7 +60,7 @@ const BulkControls = ({
       const { error } = await supabase
         .from(CollectionNameCommentsMeta)
         .update({
-          [CommonMetaFieldNames.accessStatus]: AccessStatuses.Deleted
+          [CommonMetaFieldNames.accessStatus]: AccessStatuses.Deleted,
         })
         .in('id', ids)
 
@@ -120,26 +120,21 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
       supabase
         .from('getfullcomments'.toLowerCase())
         .select('*', {
-          count: 'estimated'
+          count: 'estimated',
         })
         .eq(CommonFieldNames.createdBy, userId)
         .order(CommonFieldNames.createdAt, { ascending: false }),
     [userId]
   )
-  const [
-    isLoadingComments,
-    isErrorLoadingComments,
-    comments,
-    ,
-    hydrate
-  ] = useDataStore<FullComment[]>(getQuery, 'user-comments')
+  const [isLoadingComments, lastErrorCodeLoadingComments, comments, , hydrate] =
+    useDataStore<FullComment[]>(getQuery, 'user-comments')
   const [selectedCommentIds, setSelectedCommentIds] = useState<string[]>([])
 
   if (isLoadingComments || !comments) {
     return <LoadingIndicator />
   }
 
-  if (isErrorLoadingComments) {
+  if (lastErrorCodeLoadingComments !== null) {
     return <ErrorMessage>Failed to load comments</ErrorMessage>
   }
 
@@ -148,9 +143,9 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
   }
 
   const toggleIsSelected = (id: string) =>
-    setSelectedCommentIds(currentVal =>
+    setSelectedCommentIds((currentVal) =>
       currentVal.includes(id)
-        ? currentVal.filter(itemId => itemId !== id)
+        ? currentVal.filter((itemId) => itemId !== id)
         : currentVal.concat([id])
     )
 
@@ -165,7 +160,7 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
 
   const toggleSelectAll = () =>
     setSelectedCommentIds(
-      isSelectingAll ? [] : comments.map(comment => comment.id)
+      isSelectingAll ? [] : comments.map((comment) => comment.id)
     )
 
   return (
@@ -193,7 +188,7 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {comments.map(comment => (
+            {comments.map((comment) => (
               <TableRow
                 key={comment.id}
                 selected={selectedCommentIds.includes(comment.id)}>
@@ -264,7 +259,7 @@ export default () => {
         User ID:{' '}
         <TextInput
           value={textInput}
-          onChange={e => setTextInput(e.target.value)}
+          onChange={(e) => setTextInput(e.target.value)}
           size="small"
         />{' '}
         <Button onClick={() => performFilter()}>Filter</Button>

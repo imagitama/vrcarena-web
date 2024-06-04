@@ -19,7 +19,7 @@ export default ({ assetId }: { assetId: string }) => {
         .eq(AmendmentsFieldNames.parent, assetId),
     [assetId]
   )
-  const [isLoading, isErrored, results] = useDataStore(
+  const [isLoading, lastErrorCode, results] = useDataStore(
     getQuery,
     'asset-amendments'
   )
@@ -28,7 +28,7 @@ export default ({ assetId }: { assetId: string }) => {
     return <LoadingIndicator message="Loading amendments..." />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to load amendments</ErrorMessage>
   }
 

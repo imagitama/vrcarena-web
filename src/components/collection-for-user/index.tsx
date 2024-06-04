@@ -18,7 +18,7 @@ const CollectionForUser = ({ userId }: { userId: string }) => {
         .eq('userid', userId),
     [userId]
   )
-  const [isLoading, isErrored, assetsInCollection] = useDataStore<Asset[]>(
+  const [isLoading, lastErrorCode, assetsInCollection] = useDataStore<Asset[]>(
     getQuery,
     'collection-for-user'
   )
@@ -27,7 +27,7 @@ const CollectionForUser = ({ userId }: { userId: string }) => {
     return <LoadingIndicator message="Loading collection..." />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to find the collection</ErrorMessage>
   }
 

@@ -35,7 +35,7 @@ export default ({
             .or(avatarIds.map((avatarId) => `id.eq.${avatarId}`).join(',')),
     [avatarIds.join(',')]
   )
-  const [isLoading, isErrored, results] = useDataStore<
+  const [isLoading, lastErrorCode, results] = useDataStore<
     CachedVrchatAvatarRecord[]
   >(getQuery, 'vrchat-avatars')
   const classes = useStyles()
@@ -49,7 +49,7 @@ export default ({
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to get avatars</ErrorMessage>
   }
 

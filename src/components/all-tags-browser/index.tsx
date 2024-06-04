@@ -21,7 +21,7 @@ export default () => {
     return query
   }, [isAdultContentEnabled])
 
-  const [isLoading, isError, allTagDetails] = useDataStore<FullTag[]>(
+  const [isLoading, lastErrorCode, allTagDetails] = useDataStore<FullTag[]>(
     getQuery,
     'all-tags-browser'
   )
@@ -30,13 +30,17 @@ export default () => {
     return <LoadingIndicator message="Loading tags..." />
   }
 
-  if (isError || !Array.isArray(allTagDetails) || !allTagDetails.length) {
+  if (
+    lastErrorCode !== null ||
+    !Array.isArray(allTagDetails) ||
+    !allTagDetails.length
+  ) {
     return <ErrorMessage>Failed to load tags</ErrorMessage>
   }
 
   return (
     <>
-      {allTagDetails.map(tagDetails => (
+      {allTagDetails.map((tagDetails) => (
         <Fragment key={tagDetails.tag}>
           <TagChip
             tagName={tagDetails.id}

@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 import { client as supabase } from '../supabase'
 import { PlaylistsFieldNames } from '../data-store'
-import useDataStore from './useDataStore'
+import useDataStore, { ErrorCode } from './useDataStore'
 import useUserId from './useUserId'
 import { Collection } from '../modules/collections'
 
 export default (): [
   boolean,
-  boolean,
+  null | ErrorCode,
   Collection[] | null,
   number | null,
   () => void,

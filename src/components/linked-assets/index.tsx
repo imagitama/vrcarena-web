@@ -15,13 +15,13 @@ import FindMoreAssetsButton from '../find-more-assets-button'
 
 const useStyles = makeStyles({
   root: {
-    display: 'flex'
-  }
+    display: 'flex',
+  },
 })
 
 export default ({
   assetId,
-  limit = 5
+  limit = 5,
 }: {
   assetId: string
   limit?: number
@@ -31,7 +31,7 @@ export default ({
     let query = supabase
       .from('getPublicAssets'.toLowerCase())
       .select('*', {
-        count: 'estimated'
+        count: 'estimated',
       })
       .contains(AssetFieldNames.children, [assetId])
       .limit(limit)
@@ -43,7 +43,7 @@ export default ({
 
     return query
   }, [assetId, isAdultContentEnabled])
-  const [isLoading, isError, results, totalCount] = useDataStore<Asset[]>(
+  const [isLoading, lastErrorCode, results, totalCount] = useDataStore<Asset[]>(
     getQuery,
     'linked-assets'
   )
@@ -57,7 +57,7 @@ export default ({
     )
   }
 
-  if (isError) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to load linked assets</ErrorMessage>
   }
 

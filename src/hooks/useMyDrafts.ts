@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 import { client as supabase } from '../supabase'
 import useUserId from './useUserId'
-import useDataStore from './useDataStore'
+import useDataStore, { ErrorCode } from './useDataStore'
 import { AssetFieldNames } from './useDatabaseQuery'
 import { FullAsset } from '../modules/assets'
 
-export default (): [boolean, boolean, FullAsset[] | null] => {
+export default (): [boolean, null | ErrorCode, FullAsset[] | null] => {
   const userId = useUserId()
   const getQuery = useCallback(() => {
     return supabase
@@ -13,9 +13,9 @@ export default (): [boolean, boolean, FullAsset[] | null] => {
       .select('*')
       .eq(AssetFieldNames.createdBy, userId)
   }, [])
-  const [isLoading, isError, result] = useDataStore<FullAsset[]>(
+  const [isLoading, lastErrorCode, result] = useDataStore<FullAsset[]>(
     getQuery,
     'my-drafts'
   )
-  return [isLoading, isError, result]
+  return [isLoading, lastErrorCode, result]
 }

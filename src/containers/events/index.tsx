@@ -34,13 +34,16 @@ function Events() {
     query = isAdultContentEnabled === false ? query.is('isadult', false) : query
     return query
   }, [isAdultContentEnabled])
-  const [isLoading, isError, events] = useDataStore<Event[]>(getQuery, 'events')
+  const [isLoading, lastErrorCode, events] = useDataStore<Event[]>(
+    getQuery,
+    'events'
+  )
 
   if (isLoading || !events) {
     return <LoadingIndicator message="Loading events..." />
   }
 
-  if (isError) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to load events</ErrorMessage>
   }
 

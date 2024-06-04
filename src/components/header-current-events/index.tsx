@@ -75,7 +75,7 @@ export default () => {
         .gt('endsat', new Date().toISOString()),
     []
   )
-  const [isLoading, isError, events] = useDataStore<Event[]>(
+  const [isLoading, lastErrorCode, events] = useDataStore<Event[]>(
     getQuery,
     'current-events'
   )
@@ -85,7 +85,7 @@ export default () => {
     return null
   }
 
-  if (isError) {
+  if (lastErrorCode !== null) {
     return <>Failed to load events</>
   }
 

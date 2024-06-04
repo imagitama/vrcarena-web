@@ -19,7 +19,7 @@ export default () => {
         .eq(AssetMetaFieldNames.featuredBy, userId),
     [userId]
   )
-  const [isLoading, isErrored, results] = useDataStore(
+  const [isLoading, lastErrorCode, results] = useDataStore(
     getQuery,
     'featured-assets-for-user'
   )
@@ -28,7 +28,7 @@ export default () => {
     return <LoadingIndicator message="Loading featured assets..." />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to load featured assets</ErrorMessage>
   }
 

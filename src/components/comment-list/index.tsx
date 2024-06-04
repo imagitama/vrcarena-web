@@ -46,7 +46,7 @@ export default ({
     [collectionName, parentId, shimmer, isEditor, getPrivate]
   )
 
-  const [isLoading, isErrored, results, , hydrate] = useDataStore<
+  const [isLoading, lastErrorCode, results, , hydrate] = useDataStore<
     FullComment[]
   >(shimmer ? null : getQuery, 'get-comments')
 
@@ -63,7 +63,7 @@ export default ({
     )
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return (
       <ErrorMessage>
         Failed to load{getPrivate ? ' private' : ''} comments

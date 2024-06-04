@@ -386,7 +386,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     // need to sub to logged in as view does NOT remount forcing a query reload (we have to do it ourselves)
     [rawAssetId, isLoggedIn]
   )
-  const [isLoadingAsset, isError, results, , hydrate] = useDataStore<
+  const [isLoadingAsset, lastErrorCode, results, , hydrate] = useDataStore<
     FullAsset[]
   >(getQuery, 'asset-overview')
   const asset = results && results.length ? results[0] : null
@@ -404,7 +404,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   )
 
   if (
-    isError ||
+    lastErrorCode !== null ||
     (results && results.length === 0) ||
     (asset && asset.category === 'world')
   ) {

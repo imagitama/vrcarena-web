@@ -10,7 +10,7 @@ import { Review } from '../../modules/reviews'
 
 export default ({
   assetId,
-  shimmer = false
+  shimmer = false,
 }: {
   assetId: string
   shimmer?: boolean
@@ -25,7 +25,7 @@ export default ({
             .eq(ReviewsFieldNames.asset, assetId),
     [assetId, shimmer]
   )
-  const [isLoading, isError, reviews] = useDataStore<Review[]>(
+  const [isLoading, lastErrorCode, reviews] = useDataStore<Review[]>(
     getQuery,
     'reviews-by-asset-id'
   )
@@ -38,7 +38,7 @@ export default ({
     )
   }
 
-  if (isError) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to load reviews</ErrorMessage>
   }
 

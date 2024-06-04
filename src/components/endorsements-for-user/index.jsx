@@ -17,7 +17,7 @@ export default ({ userId }) => {
         .eq('userid', userId),
     [userId]
   )
-  const [isLoading, isErrored, assetsEndorsed] = useDataStore(
+  const [isLoading, lastErrorCode, assetsEndorsed] = useDataStore(
     getQuery,
     'endorsements-for-user'
   )
@@ -26,7 +26,7 @@ export default ({ userId }) => {
     return <LoadingIndicator message="Loading endorsements..." />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to find the endorsements</ErrorMessage>
   }
 

@@ -280,12 +280,12 @@ const useAccessories = (): AssetsByArea => {
 
     return query
   }, [isAdultContentEnabled])
-  const [isLoading, isError, assets] = useDataStore<PublicAsset[]>(
+  const [isLoading, lastErrorCode, assets] = useDataStore<PublicAsset[]>(
     getQuery,
     'wardrobe'
   )
 
-  if (isLoading || isError || !assets) {
+  if (isLoading || lastErrorCode !== null || !assets) {
     return {}
   }
 

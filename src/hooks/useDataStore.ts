@@ -5,24 +5,77 @@ import { handleError } from '../error-handling'
 import { inDevelopment } from '../environment'
 
 /**
- * TODO: Delete this hook and return to useDatabaseQuery as it abstracts Supabase
+ * TODO: Decide if to delete this hook and return to useDatabaseQuery as it abstracts Supabase
  */
+
+export enum ErrorCode {
+  BadRange,
+  Unknown,
+}
+
+enum PostgresErrorCode {
+  // code: "PGRST103", details: "An offset of 200 was requested, but there are only 33 rows.", hint: null, message: "Requested range not satisfiable"
+  PGRST103 = 'PGRST103',
+}
+
+export interface UseDataStoreOptions {
+  name?: string
+  quietHydrate?: boolean
+  ignoreRangeErrors?: boolean // when user requests page that doesnt exist
+}
+
+const getOptions = (
+  queryNameOrOptions: string | UseDataStoreOptions | undefined
+): UseDataStoreOptions =>
+  typeof queryNameOrOptions === 'string'
+    ? { name: queryNameOrOptions }
+    : queryNameOrOptions !== undefined
+    ? queryNameOrOptions
+    : {
+        name: '(unnamed)',
+        quietHydrate: false,
+      }
+
+interface PostgresError extends Error {
+  code: string
+}
+
+const getErrorCodeFromError = (error: Error): ErrorCode => {
+  if ((error as PostgresError).code) {
+    switch ((error as PostgresError).code) {
+      case PostgresErrorCode.PGRST103:
+        return ErrorCode.BadRange
+    }
+  }
+  return ErrorCode.Unknown
+}
 
 export default <TResult>(
   getQuery:
     | null
     | (() => SupabaseQueryBuilder<any> | Promise<SupabaseQueryBuilder<any>>),
-  queryName: string = 'unnamed',
-  // TODO: Do this better/consistently - maybe an "options" object?
-  isQuietHydrate: boolean = false
-): [boolean, boolean, null | TResult, null | number, () => void, boolean] => {
+  queryNameOrOptions?: string | UseDataStoreOptions
+): [
+  boolean,
+  null | ErrorCode,
+  null | TResult,
+  null | number,
+  () => void,
+  boolean
+] => {
   const [result, setResult] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<ErrorCode | null>(null)
   const [isHydrating, setIsHydrating] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const isUnmountedRef = useRef(false)
   const timerRef = useRef<number>(0)
+
+  const {
+    name: queryName,
+    quietHydrate: isQuietHydrate,
+    ...options
+  } = getOptions(queryNameOrOptions)
 
   const hydrate = useCallback(async () => {
     try {
@@ -40,7 +93,7 @@ export default <TResult>(
         setIsLoading(true)
       }
 
-      setIsErrored(false)
+      setLastErrorCode(null)
       timerRef.current = inDevelopment() ? performance.now() : 0
 
       const { error, data, count } = await getQuery()
@@ -54,9 +107,23 @@ export default <TResult>(
       )
 
       if (error) {
-        throw new Error(
-          `useDataStore failed run query "${queryName}": ${error.code}: ${error.message} (${error.hint})`
-        )
+        if (
+          options.ignoreRangeErrors &&
+          (error as PostgresError).code === PostgresErrorCode.PGRST103
+        ) {
+          if (isQuietHydrate) {
+            setIsHydrating(false)
+          } else {
+            setIsLoading(false)
+          }
+
+          setLastErrorCode(ErrorCode.BadRange)
+          return
+        } else {
+          throw new Error(
+            `useDataStore failed run query "${queryName}": ${error.code}: ${error.message} (${error.hint})`
+          )
+        }
       }
 
       if (isUnmountedRef.current) {
@@ -75,7 +142,7 @@ export default <TResult>(
         setIsLoading(false)
       }
 
-      setIsErrored(false)
+      setLastErrorCode(null)
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -91,11 +158,10 @@ export default <TResult>(
         setIsHydrating(false)
       }
 
-      // I thought React batched sets together but apparently not - set this first!
-      setIsErrored(true)
+      setLastErrorCode(getErrorCodeFromError(err as Error))
       setIsLoading(false)
     }
-  }, [getQuery, queryName])
+  }, [getQuery])
 
   useEffect(() => {
     // fix setting state on unmounted component
@@ -108,5 +174,5 @@ export default <TResult>(
     }
   }, [hydrate])
 
-  return [isLoading, isErrored, result, totalCount, hydrate, isHydrating]
+  return [isLoading, lastErrorCode, result, totalCount, hydrate, isHydrating]
 }

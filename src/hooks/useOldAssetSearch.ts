@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 
 import { AssetFieldNames } from './useDatabaseQuery'
 import useIsAdultContentEnabled from './useIsAdultContentEnabled'
-import useDataStore from './useDataStore'
+import useDataStore, { ErrorCode } from './useDataStore'
 import { client as supabase } from '../supabase'
 import { setIsSearching } from '../modules/app'
 import { Asset } from '../modules/assets'
@@ -12,12 +12,7 @@ const defaultLimit = 50
 
 // backslash is an escape symbol
 const cleanupSearchTerm = (searchTerm: string): string =>
-  searchTerm
-    ? searchTerm
-        .trim()
-        .replaceAll('\\', '')
-        .replaceAll("'", "''")
-    : ''
+  searchTerm ? searchTerm.trim().replaceAll('\\', '').replaceAll("'", "''") : ''
 
 // fix some weird issue on Sentry where the entire URL is dumped into the search term
 const validateSearchTerm = (searchTerm: string): boolean =>
@@ -27,7 +22,7 @@ export default (
   searchTerm: string,
   filtersByFieldName: { [fieldName: string]: string[] } = {},
   limit = defaultLimit
-): [boolean, boolean, Asset[] | null] => {
+): [boolean, null | ErrorCode, Asset[] | null] => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [actualSearchTerm, setActualSearchTerm] = useState<string>('')
   const timerRef = useRef<NodeJS.Timeout>()
@@ -61,12 +56,12 @@ export default (
 
     let query = supabase
       .rpc('searchassets', {
-        searchterm: actualSearchTerm.split(' ').join('&')
+        searchterm: actualSearchTerm.split(' ').join('&'),
       })
       .select('*')
       .limit(limit)
       .order('rank', {
-        ascending: false
+        ascending: false,
       })
 
     if (!isAdultContentEnabled) {
@@ -75,7 +70,7 @@ export default (
 
     for (const [fieldName, values] of Object.entries(filtersByFieldName)) {
       query = query.or(
-        values.map(value => `${fieldName}.eq.${value}`).join(',')
+        values.map((value) => `${fieldName}.eq.${value}`).join(',')
       )
     }
 
@@ -84,14 +79,14 @@ export default (
     actualSearchTerm,
     isAdultContentEnabled,
     Object.keys(filtersByFieldName).join('+'),
-    Object.values(filtersByFieldName).join('+')
+    Object.values(filtersByFieldName).join('+'),
   ])
 
-  const [isLoading, isError, value] = useDataStore<Asset[]>(getQuery)
+  const [isLoading, lastErrorCode, value] = useDataStore<Asset[]>(getQuery)
 
   useEffect(() => {
     dispatch(setIsSearching(isLoading))
   }, [isLoading])
 
-  return [isLoading, isError, value]
+  return [isLoading, lastErrorCode, value]
 }

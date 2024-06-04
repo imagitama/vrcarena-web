@@ -19,7 +19,7 @@ export default () => {
         .eq('userid', userId),
     [userId]
   )
-  const [isLoading, isErrored, myCollection] = useDataStore(
+  const [isLoading, lastErrorCode, myCollection] = useDataStore(
     getQuery,
     'my-collection'
   )
@@ -28,7 +28,7 @@ export default () => {
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return <ErrorMessage>Failed to find your collection</ErrorMessage>
   }
 
