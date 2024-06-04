@@ -590,7 +590,7 @@ const MainContent = () => {
           exact
           path={`${routes.viewCategoryWithVar.replace(
             ':categoryName',
-            'news'
+            'article'
           )}/*`}
           component={DeprecatedRouteView}
         />

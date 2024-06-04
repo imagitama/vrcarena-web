@@ -169,7 +169,8 @@ function AssetsTable({
                       <AssetApprovalChecklistItem
                         label="Category"
                         isValid={
-                          typeof category === 'string' && category !== ''
+                          typeof category === 'string' &&
+                          (category as string) !== ''
                         }
                         validLabel={category}
                       />
