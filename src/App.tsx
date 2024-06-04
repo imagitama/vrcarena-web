@@ -573,6 +573,14 @@ const MainContent = () => {
           path={routes.viewCategoryWithVar.replace(':categoryName', 'world')}
           component={DeprecatedRouteView}
         />
+        <Route
+          exact
+          path={`${routes.viewCategoryWithVar.replace(
+            ':categoryName',
+            'world'
+          )}/*`}
+          component={DeprecatedRouteView}
+        />
         <Route exact path={routes.viewAvatars} component={ViewAvatars} />
         <Route
           exact
