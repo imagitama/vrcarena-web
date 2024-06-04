@@ -14,7 +14,11 @@ export interface CollectionForUser {
   assets: string[]
 }
 
-export const CollectionNames = {
-  Collections: 'collections',
-  CollectionsForUsers: 'collectionsforusers',
+export enum CollectionNames {
+  Collections = 'playlists', // TODO: rename
+  CollectionsForUsers = 'collectionsforusers',
+}
+
+export enum ViewNames {
+  GetPublicCollections = 'getpublicplaylists',
 }

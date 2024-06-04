@@ -8,7 +8,7 @@ import PaginatedView from '../../components/paginated-view'
 import { OrderDirections } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import CollectionResults from '../../components/collection-results'
-import { Collection } from '../../modules/collections'
+import { Collection, ViewNames } from '../../modules/collections'
 
 const description = 'Browse the collections of assets created by our users.'
 
@@ -29,7 +29,7 @@ export default () => {
       <BodyText>{description}</BodyText>
       <PaginatedView<Collection>
         sortKey="view-all-collections"
-        viewName="getPublicPlaylists"
+        viewName={ViewNames.GetPublicCollections}
         defaultFieldName="createdat"
         defaultDirection={OrderDirections.ASC}
         urlWithPageNumberVar={routes.viewCollectionsWithPageNumberVar}>

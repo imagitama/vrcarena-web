@@ -259,7 +259,7 @@ const Divider = () => {
   return <div className={classes.divider} />
 }
 
-export default ({
+const AddToCollectionButton = ({
   assetId,
   isAssetLoading,
   onClick,
@@ -386,3 +386,5 @@ export default ({
     </div>
   )
 }
+
+export default AddToCollectionButton
