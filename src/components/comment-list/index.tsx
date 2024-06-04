@@ -33,7 +33,7 @@ export default ({
   const getQuery = useCallback(
     () =>
       shimmer
-        ? false
+        ? null
         : supabase
             .from(
               (isEditor ? 'getFullComments' : 'getPublicComments').toLowerCase()

@@ -53,7 +53,10 @@ const getErrorCodeFromError = (error: Error): ErrorCode => {
 export default <TResult>(
   getQuery:
     | null
-    | (() => SupabaseQueryBuilder<any> | Promise<SupabaseQueryBuilder<any>>),
+    | (() =>
+        | SupabaseQueryBuilder<TResult>
+        | Promise<SupabaseQueryBuilder<TResult>>
+        | null),
   queryNameOrOptions?: string | UseDataStoreOptions
 ): [
   boolean,
@@ -96,7 +99,16 @@ export default <TResult>(
       setLastErrorCode(null)
       timerRef.current = inDevelopment() ? performance.now() : 0
 
-      const { error, data, count } = await getQuery()
+      const result = await getQuery()
+
+      if (!result) {
+        console.debug(
+          `useDataStore :: ${queryName} :: getQuery returned non-query - skipping`
+        )
+        return
+      }
+
+      const { error, data, count } = result
 
       console.debug(
         `useDataStore :: ${queryName} :: query complete`,

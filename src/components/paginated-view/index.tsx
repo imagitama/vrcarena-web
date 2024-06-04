@@ -121,8 +121,6 @@ const Page = () => {
     const rangeStart = (currentPageNumber - 1) * limitPerPage
     const rangeEnd = rangeStart + limitPerPage - 1
 
-    console.log('RENDERING', sorting, OrderDirections.ASC)
-
     const isAscending = sorting
       ? sorting.direction === OrderDirections.ASC
       : false
