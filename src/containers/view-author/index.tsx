@@ -223,19 +223,21 @@ const View = () => {
             </Heading>
             <div className={classes.categories}>
               {categories && categories.length
-                ? categories.map((categoryName, idx) => (
-                    <Fragment key={categoryName}>
-                      {idx !== 0 && ', '}
-                      <Link
-                        key={categoryName}
-                        to={routes.viewCategoryWithVar.replace(
-                          ':categoryName',
-                          categoryName
-                        )}>
-                        {categoryMeta[categoryName].name}
-                      </Link>
-                    </Fragment>
-                  ))
+                ? categories
+                    .filter((categoryName) => categoryName in categoryMeta)
+                    .map((categoryName, idx) => (
+                      <Fragment key={categoryName}>
+                        {idx !== 0 && ', '}
+                        <Link
+                          key={categoryName}
+                          to={routes.viewCategoryWithVar.replace(
+                            ':categoryName',
+                            categoryName
+                          )}>
+                          {categoryMeta[categoryName].name}
+                        </Link>
+                      </Fragment>
+                    ))
                 : null}
             </div>
           </div>

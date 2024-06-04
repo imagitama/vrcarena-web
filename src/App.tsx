@@ -46,6 +46,7 @@ import useUserRecord from './hooks/useUserRecord'
 import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
 import useBannerUrl from './hooks/useBannerUrl'
+import DeprecatedRouteView from './containers/deprecated-route'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -566,6 +567,11 @@ const MainContent = () => {
           exact
           path={routes.viewAvatarsWithPageVar}
           component={ViewAvatars}
+        />
+        <Route
+          exact
+          path={routes.viewCategoryWithVar.replace(':categoryName', 'world')}
+          component={DeprecatedRouteView}
         />
         <Route exact path={routes.viewAvatars} component={ViewAvatars} />
         <Route
