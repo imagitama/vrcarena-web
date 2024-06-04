@@ -74,7 +74,6 @@ export const CollectionNames = {
   PollResponses: 'pollresponses',
   PollTallies: 'polltallies',
   Authors: 'authors',
-  DiscordServers: 'discordservers',
   Likes: 'likes',
   Species: 'species',
   UserMeta: 'usermeta',
@@ -86,6 +85,7 @@ export const CollectionNames = {
   Attachments: 'attachments',
   // subscriptions
   Subscriptions: 'subscriptions',
+  DiscordServers: 'discordservers',
 }
 
 export const VrchatAvatarsFieldNames = {

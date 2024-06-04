@@ -1,3 +1,9 @@
+import {
+  AccessStatuses,
+  ApprovalStatuses,
+  PublishStatuses,
+} from '../hooks/useDatabaseQuery'
+
 export interface DiscordServerFields {
   name: string
   description?: string
@@ -17,6 +23,18 @@ export interface DiscordServer extends DiscordServerFields {
   createdby?: string
 }
 
-export const CollectionNames = {
-  DiscordServers: 'discordservers',
+export interface FullDiscordServer extends DiscordServer {
+  publishstatus: PublishStatuses
+  accessstatus: AccessStatuses
+  approvalstatus: ApprovalStatuses
+  editornotes: string
+}
+
+export enum CollectionNames {
+  DiscordServers = 'discordservers',
+  DiscordServersMeta = 'discordserversmeta',
+}
+
+export enum ViewNames {
+  GetFullDiscordServers = 'getfulldiscordservers',
 }

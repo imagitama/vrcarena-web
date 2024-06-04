@@ -4,9 +4,9 @@ import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
 import LaunchIcon from '@material-ui/icons/Launch'
 import SyncIcon from '@material-ui/icons/Sync'
+import EditIcon from '@material-ui/icons/Edit'
 
 import * as routes from '../../routes'
-
 import Markdown from '../../components/markdown'
 import ErrorMessage from '../../components/error-message'
 import LoadingIndicator from '../../components/loading-indicator'
@@ -18,23 +18,28 @@ import Message from '../../components/message'
 import EditorRecordManager from '../../components/editor-record-manager'
 
 import useUserRecord from '../../hooks/useUserRecord'
-import useDatabaseQuery, {
-  DiscordServerFieldNames,
-  ApprovalStatuses,
-  AccessStatuses
-} from '../../hooks/useDatabaseQuery'
+import { AccessStatuses, ApprovalStatuses } from '../../hooks/useDatabaseQuery'
 import { canEditDiscordServer } from '../../utils'
 import { trackAction } from '../../analytics'
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
-import { CollectionNames, CommonMetaFieldNames } from '../../data-store'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import {
+  CollectionNames,
+  FullDiscordServer,
+  ViewNames,
+} from '../../modules/discordservers'
+import useIsEditor from '../../hooks/useIsEditor'
 
 const analyticsCategory = 'ViewDiscordServer'
 
-function SyncDiscordServerButton({ discordServerId }) {
+function SyncDiscordServerButton({
+  discordServerId,
+}: {
+  discordServerId: string
+}) {
   const [isLoading, setIsLoading] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(null)
+  const [isSuccess, setIsSuccess] = useState<boolean | null>(null)
 
   const onClick = async () => {
     try {
@@ -46,7 +51,7 @@ function SyncDiscordServerButton({ discordServerId }) {
       setIsSuccess(false)
 
       await callFunction('syncDiscordServerById', {
-        id: discordServerId
+        id: discordServerId,
       })
 
       setIsLoading(false)
@@ -71,12 +76,14 @@ function SyncDiscordServerButton({ discordServerId }) {
 }
 
 const View = () => {
-  const { discordServerId } = useParams()
+  const { discordServerId } = useParams<{ discordServerId: string }>()
   const [, , user] = useUserRecord()
-  const [isLoading, isErrored, result, hydrate] = useDataStoreItem(
-    'getfulldiscordservers',
-    discordServerId
-  )
+  const [isLoading, isErrored, result, hydrate] =
+    useDataStoreItem<FullDiscordServer>(
+      ViewNames.GetFullDiscordServers,
+      discordServerId
+    )
+  const isEditor = useIsEditor()
 
   if (isLoading) {
     return <LoadingIndicator />
@@ -90,19 +97,18 @@ const View = () => {
   }
 
   const {
-    [DiscordServerFieldNames.name]: name,
-    [DiscordServerFieldNames.description]: description,
-    [DiscordServerFieldNames.widgetId]: widgetId,
-    [DiscordServerFieldNames.iconUrl]: iconUrl,
-    [DiscordServerFieldNames.inviteUrl]: inviteUrl,
-    [DiscordServerFieldNames.requiresPatreon]: requiresPatreon,
-    [DiscordServerFieldNames.patreonUrl]: patreonUrl,
-
+    name: name,
+    description: description,
+    widgetid: widgetId,
+    iconurl: iconUrl,
+    inviteurl: inviteUrl,
+    requirespatreon: requiresPatreon,
+    patreonurl: patreonUrl,
     // meta
-    [CommonMetaFieldNames.publishStatus]: publishStatus,
-    [CommonMetaFieldNames.accessStatus]: accessStatus,
-    [CommonMetaFieldNames.approvalStatus]: approvalStatus,
-    [CommonMetaFieldNames.editorNotes]: editorNotes
+    publishstatus: publishStatus,
+    accessstatus: accessStatus,
+    approvalstatus: approvalStatus,
+    editornotes: editorNotes,
   } = result
 
   const isApproved = approvalStatus === ApprovalStatuses.Approved
@@ -117,7 +123,6 @@ const View = () => {
           content={`View the Discord server named ${name}`}
         />
       </Helmet>
-
       {isApproved !== true && (
         <Message>This Discord Server is unapproved</Message>
       )}
@@ -130,9 +135,7 @@ const View = () => {
           {editorNotes}
         </Message>
       )}
-
       {iconUrl && <img src={iconUrl} alt={`Icon for server ${name}`} />}
-
       <Heading variant="h1">
         <Link
           to={routes.viewAuthorWithVar.replace(
@@ -142,9 +145,16 @@ const View = () => {
           {name}
         </Link>
       </Heading>
-
-      {description && <Markdown source={description} />}
-
+      {isEditor ? (
+        <Button
+          url={routes.editDiscordServerWithVar.replace(
+            ':discordServerId',
+            discordServerId
+          )}
+          icon={<EditIcon />}>
+          Edit
+        </Button>
+      ) : null}{' '}
       {inviteUrl && (
         <Button
           url={inviteUrl}
@@ -159,7 +169,7 @@ const View = () => {
           Join Server
         </Button>
       )}
-
+      {description && <Markdown source={description} />}
       {requiresPatreon && (
         <>
           This server requires you are a Patreon subscriber before you join.
@@ -178,14 +188,12 @@ const View = () => {
           </Button>
         </>
       )}
-
       {widgetId && (
         <DiscordServerWidget
           serverId={widgetId}
           joinActionCategory={analyticsCategory}
         />
       )}
-
       {canEditDiscordServer(user) && (
         <>
           <Heading variant="h2">Actions</Heading>
@@ -203,7 +211,6 @@ const View = () => {
           <SyncDiscordServerButton discordServerId={discordServerId} />
         </>
       )}
-
       <PageControls>
         <Button
           url={routes.discordServers}
@@ -218,7 +225,7 @@ const View = () => {
   )
 }
 
-export default () => (
+const ViewDiscordServerView = () => (
   <>
     <Helmet>
       <title>View a Discord server | VRCArena</title>
@@ -230,3 +237,5 @@ export default () => (
     <View />
   </>
 )
+
+export default ViewDiscordServerView
