@@ -1,12 +1,9 @@
 import React from 'react'
 import * as routes from './routes'
 import categoriesMeta from './category-meta'
-import {
-  AssetCategories,
-  UserCacheFieldNames,
-  UserRoles,
-} from './hooks/useDatabaseQuery'
+import { UserCacheFieldNames, UserRoles } from './hooks/useDatabaseQuery'
 import { UserPreferencesFieldNames } from './modules/user'
+import { AssetCategory } from './modules/assets'
 
 export function canShowMenuItem(menuItem, user, userPreferences) {
   if (menuItem.requiresAuth && !user) {
@@ -78,22 +75,17 @@ export default [
         label: 'Events',
       },
       {
-        id: AssetCategories.retexture,
+        id: AssetCategory.Retexture,
         url: routes.viewCategoryWithVar.replace(
           ':categoryName',
-          AssetCategories.retexture
+          AssetCategory.Retexture
         ),
-        label: categoriesMeta[AssetCategories.retexture].name,
+        label: categoriesMeta[AssetCategory.Retexture].name,
       },
       {
         id: 'collections',
         url: routes.viewCollections,
         label: 'Collections',
-      },
-      {
-        id: 'news',
-        url: routes.news,
-        label: 'News',
       },
       {
         id: 'authors',

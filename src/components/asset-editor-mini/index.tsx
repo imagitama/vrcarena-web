@@ -1,15 +1,13 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { useState } from 'react'
-import { AssetCategories, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import AssetThumbnail from '../asset-thumbnail'
 import Button from '../button'
 import Heading from '../heading'
 import Paper from '../paper'
 import TagInput from '../tag-input'
 import TextInput from '../text-input'
-
-export type FieldsData = any
+import { AssetFields } from '../../modules/assets'
 
 const useStyles = makeStyles({
   cols: {
@@ -23,17 +21,17 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const AssetEditorMini = ({
   newFields,
   onNewFields,
 }: {
-  newFields: FieldsData
-  onNewFields: (newFields: FieldsData) => void | Promise<void>
+  newFields: AssetFields
+  onNewFields: (newFields: AssetFields) => void | Promise<void>
 }) => {
   const [showRecommendedTags, setShowRecommendedTags] = useState(false)
   const styles = useStyles()
 
-  const setField = (fieldName: string, value: any) =>
+  const setField = (fieldName: keyof AssetFields, value: any) =>
     onNewFields({
       ...newFields,
       [fieldName]: value,
@@ -43,22 +41,20 @@ export default ({
     <Paper>
       <div className={styles.cols}>
         <div className={styles.col}>
-          <AssetThumbnail url={newFields[AssetFieldNames.thumbnailUrl]} />
+          <AssetThumbnail url={newFields.thumbnailurl} />
         </div>
         <div className={styles.col}>
           <Heading variant="h4">Title</Heading>
           <TextInput
             fullWidth
-            value={newFields[AssetFieldNames.title]}
-            onChange={(e) => setField(AssetFieldNames.title, e.target.value)}
+            value={newFields.title}
+            onChange={(e) => setField('title', e.target.value)}
           />
           <Heading variant="h4">Description</Heading>
           <TextInput
             fullWidth
-            value={newFields[AssetFieldNames.description]}
-            onChange={(e) =>
-              setField(AssetFieldNames.description, e.target.value)
-            }
+            value={newFields.description}
+            onChange={(e) => setField('description', e.target.value)}
             multiline
             rows={2}
           />
@@ -71,13 +67,12 @@ export default ({
       </Button>
       <br />
       <TagInput
-        currentTags={newFields[AssetFieldNames.tags]}
-        /* @ts-ignore */
-        onChange={(newTags: string[]) =>
-          setField(AssetFieldNames.tags, newTags)
-        }
+        currentTags={newFields.tags}
+        onChange={(newTags: string[]) => setField('tags', newTags)}
         showRecommendedTags={showRecommendedTags}
       />
     </Paper>
   )
 }
+
+export default AssetEditorMini

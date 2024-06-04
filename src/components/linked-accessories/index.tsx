@@ -2,11 +2,10 @@ import React, { useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import CheckroomIcon from '@mui/icons-material/Checkroom'
 
-import { AssetCategories, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { client as supabase } from '../../supabase'
-import { Asset } from '../../modules/assets'
+import { Asset, AssetCategory } from '../../modules/assets'
 import * as routes from '../../routes'
 
 import AssetResults from '../asset-results'
@@ -16,13 +15,13 @@ import FindMoreAssetsButton from '../find-more-assets-button'
 
 const useStyles = makeStyles({
   root: {
-    display: 'flex'
-  }
+    display: 'flex',
+  },
 })
 
-export default ({
+const LinkedAccessories = ({
   assetId,
-  limit = 5
+  limit = 5,
 }: {
   assetId: string
   limit?: number
@@ -30,20 +29,19 @@ export default ({
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(() => {
     let query = supabase
-      .from('getPublicAssets'.toLowerCase())
+      .from<Asset>('getPublicAssets'.toLowerCase())
       .select('*', {
-        count: 'estimated'
+        count: 'estimated',
       })
-      .eq(AssetFieldNames.category, AssetCategories.accessory)
+      .eq('category', AssetCategory.Accessory)
       // TODO: Since changing children => relations we need to create a SQL functions to lookup relation
-      .contains(AssetFieldNames.children, [assetId])
+      // @ts-ignore
+      .contains('children', [assetId])
       .limit(limit)
+      // @ts-ignore
       .order('random')
 
-    query =
-      isAdultContentEnabled === false
-        ? query.is(AssetFieldNames.isAdult, false)
-        : query
+    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
 
     return query
   }, [assetId, isAdultContentEnabled])
@@ -82,3 +80,5 @@ export default ({
     </div>
   )
 }
+
+export default LinkedAccessories

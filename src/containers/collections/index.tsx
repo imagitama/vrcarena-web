@@ -7,12 +7,14 @@ import BodyText from '../../components/body-text'
 import PaginatedView from '../../components/paginated-view'
 import { OrderDirections } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
-import { PlaylistsFieldNames } from '../../data-store'
 import CollectionResults from '../../components/collection-results'
+import { Collection } from '../../modules/collections'
 
 const description = 'Browse the collections of assets created by our users.'
 
-const Renderer = ({ items }) => <CollectionResults collections={items} />
+const Renderer = ({ items }: { items?: Collection[] }) => (
+  <CollectionResults collections={items} />
+)
 
 export default () => {
   return (
@@ -25,10 +27,10 @@ export default () => {
         <Link to={routes.viewCollections}>All Collections</Link>
       </Heading>
       <BodyText>{description}</BodyText>
-      <PaginatedView
+      <PaginatedView<Collection>
         sortKey="view-all-collections"
         viewName="getPublicPlaylists"
-        defaultFieldName={PlaylistsFieldNames.createdAt}
+        defaultFieldName="createdat"
         defaultDirection={OrderDirections.ASC}
         urlWithPageNumberVar={routes.viewCollectionsWithPageNumberVar}>
         <Renderer />

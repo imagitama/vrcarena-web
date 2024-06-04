@@ -14,7 +14,6 @@ import AddIcon from '@material-ui/icons/Add'
 import Link from '../../components/link'
 
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { AssetFieldNames, AssetCategories } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
 import useQueryParams from '../../hooks/useQueryParams'
 import useStorage from '../../hooks/useStorage'
@@ -25,12 +24,12 @@ import { WEBSITE_FULL_URL } from '../../config'
 import {
   groupAssetsIntoAreas,
   standardAreaNames,
-  standardAreas
+  standardAreas,
 } from '../../areas'
 import accessoryAreas, {
   areaNames,
   nsfwAreas,
-  nsfwAreaNames
+  nsfwAreaNames,
 } from '../../areas/accessory'
 
 import Button from '../../components/button'
@@ -42,25 +41,30 @@ import { handleError } from '../../error-handling'
 import ErrorMessage from '../error-message'
 import Paper from '../paper'
 import { base64EncodeString, parseBase64String } from '../../utils'
-import { PublicAsset, RelationType } from '../../modules/assets'
+import {
+  Asset,
+  AssetCategory,
+  PublicAsset,
+  RelationType,
+} from '../../modules/assets'
 
 const useStyles = makeStyles({
   output: {
     marginTop: '1rem',
     '& *::-webkit-scrollbar': {
-      width: '10px'
+      width: '10px',
     },
     '& *::-webkit-scrollbar-track': {
-      background: 'transparent'
+      background: 'transparent',
     },
     '& *::-webkit-scrollbar-thumb': {
       background: '#7a7a7a',
-      borderRadius: '5px'
-    }
+      borderRadius: '5px',
+    },
   },
   details: {
     display: 'flex',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   waitingForSelection: {
     width: '100%',
@@ -70,8 +74,8 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     '& span': {
       textAlign: 'center',
-      fontStyle: 'italic'
-    }
+      fontStyle: 'italic',
+    },
   },
   avatarThumbnailWrapper: {
     display: 'flex',
@@ -80,44 +84,44 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     '& img': {
       width: '300px',
-      height: '300px'
-    }
+      height: '300px',
+    },
   },
   areas: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   area: {
     width: '100%',
     marginBottom: '2rem',
-    position: 'relative'
+    position: 'relative',
   },
   areaTitle: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   name: {
     width: '100%',
     fontSize: '125%',
     marginBottom: '0.25rem',
-    fontWeight: 100
+    fontWeight: 100,
   },
   input: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   control: {
     height: '100%',
     padding: '1rem',
     cursor: 'pointer',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   disabled: {
     cursor: 'default',
-    opacity: '0.25'
+    opacity: '0.25',
   },
   leftButton: {},
   window: {
@@ -125,14 +129,14 @@ const useStyles = makeStyles({
     height: '320px',
     overflow: 'hidden',
     overflowX: 'auto',
-    position: 'relative'
+    position: 'relative',
   },
   assets: {
     display: 'flex',
     position: 'absolute',
     top: 0,
     left: 0,
-    transition: 'all 100ms'
+    transition: 'all 100ms',
   },
   asset: {
     width: '300px',
@@ -144,11 +148,11 @@ const useStyles = makeStyles({
     position: 'relative',
     '& img': {
       width: '100%',
-      height: '100%'
-    }
+      height: '100%',
+    },
   },
   selected: {
-    borderColor: 'yellow'
+    borderColor: 'yellow',
   },
   small: {
     width: '150px',
@@ -156,11 +160,11 @@ const useStyles = makeStyles({
     marginRight: '0.25rem',
     '& $icon': {
       padding: '0.5rem',
-      fontSize: '100%'
+      fontSize: '100%',
     },
     '& $incompatibleWarning': {
-      padding: '0.5rem'
-    }
+      padding: '0.5rem',
+    },
   },
   meta: {
     position: 'absolute',
@@ -169,11 +173,11 @@ const useStyles = makeStyles({
     padding: '0.5rem',
     textShadow: '1px 1px 1px #000',
     '& a': {
-      color: '#FFF'
-    }
+      color: '#FFF',
+    },
   },
   subtitle: {
-    fontSize: '50%'
+    fontSize: '50%',
   },
   noResultsMessage: {
     width: '100%',
@@ -181,12 +185,12 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: '0.5'
+    opacity: '0.5',
   },
   icons: {
     position: 'absolute',
     top: 0,
-    right: 0
+    right: 0,
   },
   icon: {
     padding: '1rem',
@@ -194,29 +198,29 @@ const useStyles = makeStyles({
     cursor: 'pointer',
     display: 'flex',
     '& svg': {
-      filter: 'drop-shadow(1px 1px 1px #000)'
-    }
+      filter: 'drop-shadow(1px 1px 1px #000)',
+    },
   },
   selectedAreas: {
     display: 'flex',
     flexWrap: 'wrap',
-    alignItems: 'start'
+    alignItems: 'start',
   },
   selectedArea: {
     padding: '0.5rem',
     margin: '0 0.5rem 0.5rem 0',
     background: 'rgb(100, 100, 100)',
-    borderRadius: '3px'
+    borderRadius: '3px',
   },
   selectedAssets: {
-    display: 'flex'
+    display: 'flex',
   },
   exportWrapper: {
     marginTop: '0.5rem',
     display: 'flex',
     '& > *:first-child': {
-      marginRight: '0.5rem'
-    }
+      marginRight: '0.5rem',
+    },
   },
   incompatibleWarning: {
     position: 'absolute',
@@ -226,26 +230,26 @@ const useStyles = makeStyles({
     color: '#ffeb00', // not standard but yolo
     textShadow: '1px 1px 1px #000',
     '& svg': {
-      filter: 'drop-shadow(1px 1px 1px #000)'
+      filter: 'drop-shadow(1px 1px 1px #000)',
     },
-    cursor: 'default'
+    cursor: 'default',
   },
   incompatibleWarningText: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   // tags
   tags: {
-    display: 'flex'
+    display: 'flex',
   },
   tag: {
     margin: '0 0.25rem 0.25rem 0',
     '&, &:focus': {
-      background: 'none'
-    }
+      background: 'none',
+    },
   },
   excluded: {
-    opacity: '0.5'
+    opacity: '0.5',
   },
   welcomeMessage: {
     textAlign: 'center',
@@ -253,9 +257,9 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     '& > :first-child': {
-      width: '100%'
-    }
-  }
+      width: '100%',
+    },
+  },
 })
 
 const TagChip = ({ tagName, ...props }: { tagName: string } & ChipProps) => (
@@ -268,14 +272,11 @@ const useAccessories = (): AssetsByArea => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(() => {
     let query = supabase
-      .from('getPublicAssets'.toLowerCase())
+      .from<PublicAsset>('getPublicAssets'.toLowerCase())
       .select('*')
-      .eq(AssetFieldNames.category, AssetCategories.accessory)
+      .eq('category', AssetCategory.Accessory)
 
-    query =
-      isAdultContentEnabled === false
-        ? query.is(AssetFieldNames.isAdult, false)
-        : query
+    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
 
     return query
   }, [isAdultContentEnabled])
@@ -321,7 +322,7 @@ const sortChildrenFirst = (
 const isAssetAChild = (assetId: string, asset: PublicAsset): boolean =>
   asset.relations &&
   !!asset.relations.find(
-    relation =>
+    (relation) =>
       relation.type === RelationType.Parent && relation.asset === assetId
   )
 
@@ -350,7 +351,7 @@ const Area = ({
   areaName,
   assetsByArea,
   selectedAssetIds: selectedAssetIdsFromParent,
-  toggleSelectAssetId
+  toggleSelectAssetId,
 }: {
   baseAssetId: string
   areaName: string
@@ -377,7 +378,7 @@ const Area = ({
       windowRef.current.scroll({
         top: 0,
         left: newLeft,
-        behavior: 'smooth'
+        behavior: 'smooth',
       })
     } catch (err) {
       if (
@@ -393,8 +394,8 @@ const Area = ({
 
   const assetsInArea = assetsByArea[areaName] || []
 
-  const prevAsset = () => setSelectedAssetIdx(currentIdx => currentIdx - 1)
-  const nextAsset = () => setSelectedAssetIdx(currentIdx => currentIdx + 1)
+  const prevAsset = () => setSelectedAssetIdx((currentIdx) => currentIdx - 1)
+  const nextAsset = () => setSelectedAssetIdx((currentIdx) => currentIdx + 1)
 
   const selectedAssetIds = selectedAssetIdsFromParent || []
 
@@ -411,7 +412,7 @@ const Area = ({
     assetsInArea
   )
 
-  const assetsToRender = assetsInAreaWithChildrenFirst.filter(asset =>
+  const assetsToRender = assetsInAreaWithChildrenFirst.filter((asset) =>
     filterAssetFromExcludedTags(asset, excludedTags)
   )
 
@@ -419,11 +420,11 @@ const Area = ({
   const isThereNextAsset = selectedAssetIdx < assetsToRender.length - 1
 
   const includeTag = (tag: string): void => {
-    setExcludedTags(currentTags => currentTags.filter(item => item !== tag))
+    setExcludedTags((currentTags) => currentTags.filter((item) => item !== tag))
     setSelectedAssetIdx(0)
   }
   const excludeTag = (tag: string): void => {
-    setExcludedTags(currentTags => currentTags.concat([tag]))
+    setExcludedTags((currentTags) => currentTags.concat([tag]))
     setSelectedAssetIdx(0)
   }
 
@@ -440,7 +441,7 @@ const Area = ({
       <div className={classes.areaTitle}>
         <div className={classes.name}>{areaInfo.namePlural}</div>
         <div className={classes.tags}>
-          {areaInfo.tags.map(tag => {
+          {areaInfo.tags.map((tag) => {
             const isExcluded = excludedTags.includes(tag)
             return (
               <TagChip
@@ -468,7 +469,7 @@ const Area = ({
         </div>
         <div className={classes.window} ref={windowRef}>
           <div className={classes.assets}>
-            {assetsToRender.map(asset => {
+            {assetsToRender.map((asset) => {
               const isSelected = selectedAssetIds.includes(asset.id)
               return (
                 <div
@@ -533,7 +534,7 @@ const SelectedAssets = ({
   baseAssetId,
   selectedAssetIdsByArea,
   assetsByArea,
-  removeAssetIdFromArea
+  removeAssetIdFromArea,
 }: {
   baseAssetId: string
   selectedAssetIdsByArea: { [areaName: string]: string[] }
@@ -575,14 +576,16 @@ const SelectedAssets = ({
             </div>
             <div className={classes.selectedAssets}>
               {assetIds ? (
-                assetIds.map(assetId => {
+                assetIds.map((assetId) => {
                   const assetsInArea = assetsByArea[areaName]
 
                   if (!assetsInArea) {
                     return 'No assets in area'
                   }
 
-                  const asset = assetsInArea.find(asset => asset.id === assetId)
+                  const asset = assetsInArea.find(
+                    (asset) => asset.id === assetId
+                  )
 
                   if (!asset) {
                     return 'No asset found'
@@ -689,7 +692,7 @@ const IntroMessage = () => {
 export default ({
   assetId,
   baseAsset,
-  showThumbnail = true
+  showThumbnail = true,
 }: {
   assetId: string
   baseAsset: PublicAsset
@@ -697,9 +700,8 @@ export default ({
 }) => {
   const assetsByArea = useAccessories()
   const classes = useStyles()
-  const [selectedAssetIdsByArea, setSelectedAssetIdsByArea] = useState<
-    AssetIdsByArea
-  >({})
+  const [selectedAssetIdsByArea, setSelectedAssetIdsByArea] =
+    useState<AssetIdsByArea>({})
   const [exportedUrl, setExportedUrl] = useState('')
   const queryParams = useQueryParams()
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -709,7 +711,7 @@ export default ({
   const showIntroMessage = !isIntroMessageHidden
 
   const toggleSelectAssetIdByArea = (areaName: string, assetId: string) => {
-    setSelectedAssetIdsByArea(currentVal => {
+    setSelectedAssetIdsByArea((currentVal) => {
       const newVal = { ...currentVal }
 
       if (!(areaName in newVal)) {
@@ -717,7 +719,7 @@ export default ({
       }
 
       if (newVal[areaName].includes(assetId)) {
-        newVal[areaName] = newVal[areaName].filter(id => id !== assetId)
+        newVal[areaName] = newVal[areaName].filter((id) => id !== assetId)
       } else {
         newVal[areaName] = newVal[areaName].concat([assetId])
       }
@@ -729,10 +731,10 @@ export default ({
   }
 
   const removeAssetIdFromArea = (areaName: string, assetId: string) => {
-    setSelectedAssetIdsByArea(currentVal => {
+    setSelectedAssetIdsByArea((currentVal) => {
       const newVal = {
         ...currentVal,
-        [areaName]: currentVal[areaName].filter(id => id !== assetId)
+        [areaName]: currentVal[areaName].filter((id) => id !== assetId),
       }
 
       hydrateExportedUrl(newVal)
@@ -826,7 +828,7 @@ export default ({
                   ? selectedAssetIdsByArea[areaName]
                   : []
               }
-              toggleSelectAssetId={assetId =>
+              toggleSelectAssetId={(assetId) =>
                 toggleSelectAssetIdByArea(areaName, assetId)
               }
             />

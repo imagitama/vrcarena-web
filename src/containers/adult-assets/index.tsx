@@ -17,18 +17,22 @@ import useStorage from '../../hooks/useStorage'
 import { trackAction } from '../../analytics'
 import categoryMeta from '../../category-meta'
 import useUserPreferences from '../../hooks/useUserPreferences'
-import { UserPreferencesFieldNames } from '../../modules/user'
+import { PublicAsset } from '../../modules/assets'
 
-const Renderer = ({ items }) => {
-  const assetsByCategory = items.reduce((newObj, asset) => {
-    const cat = asset[AssetFieldNames.category]
-    if (cat in newObj) {
-      newObj[cat] = newObj[cat].concat([asset])
-    } else {
-      newObj[cat] = [asset]
-    }
-    return newObj
-  }, {})
+const Renderer = ({ items }: { items?: PublicAsset[] }) => {
+  const assetsByCategory = items
+    ? items.reduce<{ [categoryName: string]: PublicAsset[] }>(
+        (newObj, asset) => {
+          if (asset.category in newObj) {
+            newObj[asset.category] = newObj[asset.category].concat([asset])
+          } else {
+            newObj[asset.category] = [asset]
+          }
+          return newObj
+        },
+        {}
+      )
+    : []
 
   return (
     <>
@@ -50,21 +54,21 @@ const Assets = () => {
     []
   )
   return (
-    <PaginatedView
+    <PaginatedView<PublicAsset>
       viewName={`getPublicAssets`}
       getQuery={getQuery}
       sortKey="view-adult-assets"
       sortOptions={[
         {
           label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt,
+          fieldName: 'createdat',
         },
         {
           label: 'Title',
-          fieldName: AssetFieldNames.title,
+          fieldName: 'title',
         },
       ]}
-      defaultFieldName={AssetFieldNames.title}
+      defaultFieldName="title"
       urlWithPageNumberVar={routes.nsfwWithPageNumberVar}>
       <Renderer />
     </PaginatedView>
@@ -78,7 +82,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default () => {
+const AdultAssetsView = () => {
   const [, , userPreferences] = useUserPreferences()
   const [isAdult, setIsAdult] = useState(false)
   const classes = useStyles()
@@ -89,8 +93,8 @@ export default () => {
       return
     }
 
-    if (userPreferences[UserPreferencesFieldNames.enabledAdultContent]) {
-      setIsAdult(userPreferences[UserPreferencesFieldNames.enabledAdultContent])
+    if (userPreferences.enabledadultcontent) {
+      setIsAdult(userPreferences.enabledadultcontent)
     }
   }, [userPreferences !== null])
 
@@ -124,3 +128,5 @@ export default () => {
     </>
   )
 }
+
+export default AdultAssetsView

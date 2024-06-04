@@ -1,5 +1,11 @@
-export default {
-  Avatars: {
+import type { Areas } from '../areas'
+
+export const areaNames = {
+  avatars: 'avatars',
+}
+
+const areas: Areas = {
+  [areaNames.avatars]: {
     namePlural: 'Avatars',
     tags: [
       'quest_compatible',
@@ -20,7 +26,9 @@ export default {
       'customizable_body',
       'clothes_included',
       'hand_colliders',
-      'multiple_eye_colors'
-    ]
-  }
+      'multiple_eye_colors',
+    ],
+  },
 }
+
+export default areas

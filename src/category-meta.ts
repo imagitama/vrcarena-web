@@ -8,7 +8,7 @@ import ConstructionIcon from '@mui/icons-material/Construction'
 import FormatColorFillIcon from '@mui/icons-material/FormatColorFill'
 import BrushIcon from '@mui/icons-material/Brush'
 
-import { AssetCategories } from './hooks/useDatabaseQuery'
+import { AssetCategory } from './modules/assets'
 
 // TODO: Load on demand
 import accessoryOptimizedImageUrl from './assets/images/categories/optimized/accessory.webp'
@@ -16,15 +16,12 @@ import animationOptimizedImageUrl from './assets/images/categories/optimized/ani
 import articleOptimizedImageUrl from './assets/images/categories/optimized/article.webp'
 import avatarOptimizedImageUrl from './assets/images/categories/optimized/avatar.webp'
 import tutorialOptimizedImageUrl from './assets/images/categories/optimized/tutorial.webp'
-import worldOptimizedImageUrl from './assets/images/categories/optimized/world.webp'
 import worldAssetOptimizedImageUrl from './assets/images/categories/optimized/worldAsset.webp'
 import toolOptimizedImageUrl from './assets/images/categories/optimized/tool.webp'
-import alterationOptimizedImageUrl from './assets/images/categories/optimized/alteration.webp'
-import contentOptimizedImageUrl from './assets/images/categories/optimized/content.webp'
 import retextureOptimizedImageUrl from './assets/images/categories/optimized/retexture.webp'
 import shaderOptimizedImageUrl from './assets/images/categories/optimized/shader.webp'
 
-export interface Category {
+export interface CategoryMeta {
   id: string
   name: string
   nameSingular: string
@@ -33,17 +30,17 @@ export interface Category {
   icon?: any
 }
 
-const categories: { [name: string]: Category } = {
-  [AssetCategories.accessory]: {
-    id: AssetCategories.accessory,
+const categoryMetas: { [name: string]: CategoryMeta } = {
+  [AssetCategory.Accessory]: {
+    id: AssetCategory.Accessory,
     name: 'Accessories',
     nameSingular: 'Accessory',
     shortDescription: `Add clothes, jewelry, glasses and more to your avatar using these accessories.`,
     optimizedImageUrl: accessoryOptimizedImageUrl,
     icon: CheckroomIcon,
   },
-  [AssetCategories.animation]: {
-    id: AssetCategories.animation,
+  [AssetCategory.Animation]: {
+    id: AssetCategory.Animation,
     name: 'Animations',
     nameSingular: 'Animation',
     shortDescription:
@@ -51,32 +48,32 @@ const categories: { [name: string]: Category } = {
     optimizedImageUrl: animationOptimizedImageUrl,
     icon: DirectionsRunIcon,
   },
-  [AssetCategories.avatar]: {
-    id: AssetCategories.avatar,
+  [AssetCategory.Avatar]: {
+    id: AssetCategory.Avatar,
     name: 'Avatars',
     nameSingular: 'Avatar',
     shortDescription: `Discover new avatars for you to use in your favorite VR game.`,
     optimizedImageUrl: avatarOptimizedImageUrl,
     icon: AccessibilityIcon,
   },
-  [AssetCategories.tutorial]: {
-    id: AssetCategories.tutorial,
+  [AssetCategory.Tutorial]: {
+    id: AssetCategory.Tutorial,
     name: 'Tutorials',
     nameSingular: 'Tutorial',
     shortDescription: `Learn how to use software such as Unity, Blender or Substance Painter. Learn how to make changes to your avatar or build worlds.`,
     optimizedImageUrl: tutorialOptimizedImageUrl,
     icon: SchoolIcon,
   },
-  [AssetCategories.article]: {
-    id: AssetCategories.article,
+  [AssetCategory.Article]: {
+    id: AssetCategory.Article,
     name: 'News',
     nameSingular: 'Article',
     shortDescription: `Read recent news article about VRChat and the different species.`,
     optimizedImageUrl: articleOptimizedImageUrl,
     icon: ReceiptIcon,
   },
-  [AssetCategories.tool]: {
-    id: AssetCategories.tool,
+  [AssetCategory.Tool]: {
+    id: AssetCategory.Tool,
     name: 'Tools',
     nameSingular: 'Tool',
     shortDescription:
@@ -84,8 +81,8 @@ const categories: { [name: string]: Category } = {
     optimizedImageUrl: toolOptimizedImageUrl,
     icon: ConstructionIcon,
   },
-  [AssetCategories.shader]: {
-    id: AssetCategories.shader,
+  [AssetCategory.Shader]: {
+    id: AssetCategory.Shader,
     name: 'Shaders',
     nameSingular: 'Shader',
     shortDescription:
@@ -93,16 +90,16 @@ const categories: { [name: string]: Category } = {
     optimizedImageUrl: shaderOptimizedImageUrl,
     icon: FormatColorFillIcon,
   },
-  [AssetCategories.retexture]: {
-    id: AssetCategories.retexture,
+  [AssetCategory.Retexture]: {
+    id: AssetCategory.Retexture,
     name: 'Retextures',
     nameSingular: 'Retexture',
     shortDescription: 'New textures for existing avatars or accessories.',
     optimizedImageUrl: retextureOptimizedImageUrl,
     icon: BrushIcon,
   },
-  [AssetCategories.worldAsset]: {
-    id: AssetCategories.worldAsset,
+  [AssetCategory.WorldAsset]: {
+    id: AssetCategory.WorldAsset,
     name: 'World Assets',
     nameSingular: 'World Asset',
     shortDescription: `Assets that you can use in your worlds such as buttons, games, video players, etc.`,
@@ -110,4 +107,13 @@ const categories: { [name: string]: Category } = {
   },
 }
 
-export default categories
+export const getCategoryMeta = (categoryName: AssetCategory): CategoryMeta => {
+  if (!(categoryName in categoryMetas)) {
+    console.warn(`Category ${categoryName} not found in category meta`)
+    // TODO: Probably refactor to return null and everything do a null check
+    return {} as CategoryMeta
+  }
+  return categoryMetas[categoryName]
+}
+
+export default categoryMetas

@@ -15,16 +15,14 @@ import {
   AuthorFieldNames,
   CollectionNames,
   UserFieldNames,
-  AssetCategories,
 } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { mediaQueryForMobiles } from '../../media-queries'
 import { adultSearchTerms } from '../../config'
 import { areasByCategory } from '../../areas'
-import categoryMeta, { Category } from '../../category-meta'
+import categoryMeta, { CategoryMeta } from '../../category-meta'
 import useSpecies from '../../hooks/useSpecies'
 import { Species } from '../../modules/species'
-import { Asset } from '../../modules/assets'
 import { getPathForQueryString } from '../../queries'
 
 import ErrorMessage from '../error-message'
@@ -82,32 +80,6 @@ function ViewAllAuthorsBtn() {
     </PageControls>
   )
 }
-
-interface AssetHit extends Asset {
-  rank: number
-}
-
-const reduceAssetResultsIntoBestAndWorst = (hits: AssetHit[]) =>
-  hits.reduce<{ best: AssetHit[]; worst: AssetHit[] }>(
-    (hitsByScore, hit) => ({
-      best: hit.rank >= 0.5 ? hitsByScore.best.concat([hit]) : hitsByScore.best,
-      worst:
-        hit.rank < 0.5 ? hitsByScore.worst.concat([hit]) : hitsByScore.worst,
-    }),
-    { best: [], worst: [] }
-  )
-
-// avatars are more "important" to people so always display them first
-const sortAssetsByAvatarsFirst = (assets: AssetHit[]): AssetHit[] =>
-  assets.sort((assetA, assetB) => {
-    if (assetA.category === AssetCategories.avatar) {
-      return -1
-    }
-    if (assetB.category === AssetCategories.avatar) {
-      return 1
-    }
-    return 0
-  })
 
 function Results({
   isLoading,
@@ -356,7 +328,7 @@ const CategoryAndSpeciesSearchHint = ({
     return null
   }
 
-  let suggestedCategory: Category | null = null
+  let suggestedCategory: CategoryMeta | null = null
 
   for (const categoryName in categoryMeta) {
     const category = categoryMeta[categoryName]

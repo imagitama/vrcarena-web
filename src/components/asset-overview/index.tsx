@@ -1,9 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Helmet } from 'react-helmet'
-import LinkIcon from '@material-ui/icons/Link'
-import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
-import WarningIcon from '@material-ui/icons/Warning'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
 
@@ -11,11 +8,13 @@ import CardActionArea from '@material-ui/core/CardActionArea'
 import BuildIcon from '@material-ui/icons/Build'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import CompareArrowsIcon from '@material-ui/icons/CompareArrows'
+import LinkIcon from '@material-ui/icons/Link'
+import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
+import WarningIcon from '@material-ui/icons/Warning'
 
 import useDataStore from '../../hooks/useDataStore'
 import useBanner from '../../hooks/useBanner'
 import { client as supabase } from '../../supabase'
-import { AssetFieldNames, AssetCategories } from '../../hooks/useDatabaseQuery'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useIsEditor from '../../hooks/useIsEditor'
 import useUserRecord from '../../hooks/useUserRecord'
@@ -37,7 +36,12 @@ import { getCanUserEditAsset } from '../../assets'
 import Link from '../../components/link'
 import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
 import categoryMeta from '../../category-meta'
-import { FullAsset, RelationType, ViewNames } from '../../modules/assets'
+import {
+  AssetCategory,
+  FullAsset,
+  RelationType,
+  ViewNames,
+} from '../../modules/assets'
 
 import AssetThumbnail from '../asset-thumbnail'
 import Heading from '../heading'
@@ -280,7 +284,7 @@ const getIsAssetFree = (tags: string[]): boolean =>
 
 const getLabelForCategory = (category: string): string => {
   switch (category) {
-    case AssetCategories.avatar:
+    case AssetCategory.Avatar:
       return 'Accessories'
     default:
       return 'Linked Assets'
@@ -376,7 +380,8 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
       supabase
         .from(ViewNames.GetFullAssets)
         .select('*')
-        .or(`id.eq.${rawAssetId},${AssetFieldNames.slug}.eq.${rawAssetId}`)
+        // TODO: type safety field names
+        .or(`id.eq.${rawAssetId},slug.eq.${rawAssetId}`)
         .limit(1),
     // need to sub to logged in as view does NOT remount forcing a query reload (we have to do it ourselves)
     [rawAssetId, isLoggedIn]
@@ -568,7 +573,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
               <LoadingShimmer width={200} height={25} />
             ) : (
               <>
-                {asset.category === AssetCategories.avatar ? (
+                {asset.category === AssetCategory.Avatar ? (
                   <>
                     <SpeciesList
                       speciesIds={asset.species ? asset.species : []}
@@ -629,7 +634,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             {asset ? (
               <>
                 {asset &&
-                (asset.category === AssetCategories.avatar ||
+                (asset.category === AssetCategory.Avatar ||
                   (asset.vrchatclonableavatarids &&
                     asset.vrchatclonableavatarids.length)) ? (
                   <Area
@@ -792,7 +797,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             />
             <ParentControlGroup />
             <ControlGroup>
-              {asset && asset.category === AssetCategories.avatar && (
+              {asset && asset.category === AssetCategory.Avatar && (
                 <>
                   <Control>
                     <Button

@@ -6,13 +6,13 @@ import CloseIcon from '@material-ui/icons/Close'
 
 import Button from '../button'
 import { trackAction } from '../../analytics'
-import { AssetCategories } from '../../hooks/useDatabaseQuery'
 import {
   removeSearchFilter,
   addSearchFilter,
   clearSearchFilters,
 } from '../../modules/app'
 import categoryMeta from '../../category-meta'
+import { AssetCategory } from '../../modules/assets'
 
 const analyticsCategoryName = 'SearchResults'
 
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 })
 
 const availableFilters = [
-  ...Object.values(AssetCategories).map((categoryName) => ({
+  ...Object.values(AssetCategory).map((categoryName) => ({
     id: `category:${categoryName}`,
     label: categoryMeta[categoryName].name,
   })),

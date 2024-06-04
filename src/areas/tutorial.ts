@@ -1,35 +1,39 @@
+import type { Areas } from '../areas'
+
 export const areaNames = {
   unity: 'unity',
   modelling: 'modelling',
   shaders: 'shaders',
   texturing: 'texturing',
   modding: 'modding',
-  vrchat: 'vrchat'
+  vrchat: 'vrchat',
 }
 
-export default {
+const areas: Areas = {
   [areaNames.unity]: {
     namePlural: 'Unity',
-    tags: ['unity', 'animating']
+    tags: ['unity', 'animating'],
   },
   [areaNames.modelling]: {
     namePlural: 'Modelling',
-    tags: ['modelling', 'blender']
+    tags: ['modelling', 'blender'],
   },
   [areaNames.shaders]: {
     namePlural: 'Shaders',
-    tags: ['shaders', 'shader']
+    tags: ['shaders', 'shader'],
   },
   [areaNames.texturing]: {
     namePlural: 'Texturing',
-    tags: ['texturing', 'subtance_painter']
+    tags: ['texturing', 'subtance_painter'],
   },
   [areaNames.modding]: {
     namePlural: 'Modding',
-    tags: ['modding', 'mods']
+    tags: ['modding', 'mods'],
   },
   [areaNames.vrchat]: {
     namePlural: 'VR Games',
-    tags: ['vrchat', 'neosvr', 'chilloutvr', 'beat_saber', 'steamvr']
-  }
+    tags: ['vrchat', 'neosvr', 'chilloutvr', 'beat_saber', 'steamvr'],
+  },
 }
+
+export default areas

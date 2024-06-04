@@ -12,7 +12,7 @@ const DiscordServerResults = ({
   onClickWithEventAndIdAndDetails,
 }: {
   discordServers: DiscordServer[]
-  onClickWithEventAndIdAndDetails: (
+  onClickWithEventAndIdAndDetails?: (
     e: any,
     id: string,
     details: DiscordServer

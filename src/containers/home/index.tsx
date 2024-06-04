@@ -13,7 +13,7 @@ import Button from '../../components/button'
 import EditorTeam from './components/editor-team'
 import useSupabaseView from '../../hooks/useSupabaseView'
 import ErrorMessage from '../../components/error-message'
-import { FullAsset, PublicAsset } from '../../modules/assets'
+import { AssetCategory, FullAsset, PublicAsset } from '../../modules/assets'
 import { User } from '../../modules/users'
 import { FullActivityEntry } from '../../modules/activity'
 import { CachedDiscordMessage } from '../../modules/discordmessagecache'
@@ -21,7 +21,6 @@ import AssetResults from '../../components/asset-results'
 import ActivityResults from '../../components/activity-results'
 import UserList from '../../components/user-list'
 import DiscordMessageResult from '../../components/discord-message-result'
-import { AssetCategories } from '../../hooks/useDatabaseQuery'
 import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '../../config'
 import Block from '../../components/block'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
@@ -217,7 +216,7 @@ const Tiles = () => {
           title="Recent Avatars"
           url={routes.viewCategoryWithVar.replace(
             ':categoryName',
-            AssetCategories.avatar
+            AssetCategory.Avatar
           )}
           buttonLabel="Browse Avatars">
           <AssetResults assets={recentAvatars} />
@@ -226,7 +225,7 @@ const Tiles = () => {
           title="Recent Accessories"
           url={routes.viewCategoryWithVar.replace(
             ':categoryName',
-            AssetCategories.accessory
+            AssetCategory.Accessory
           )}
           buttonLabel="Browse Accessories">
           <AssetResults assets={recentAccessories} />

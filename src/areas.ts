@@ -1,4 +1,3 @@
-import { AssetCategories } from './hooks/useDatabaseQuery'
 import avatarAreas from './areas/avatar'
 import accessoryAreas from './areas/accessory'
 import animationAreas from './areas/animation'
@@ -6,21 +5,20 @@ import tutorialAreas from './areas/tutorial'
 import shaderAreas from './areas/shader'
 import retextureAreas from './areas/retexture'
 import articleAreas from './areas/article'
-import worldAreas from './areas/world'
 import toolAreas from './areas/tool'
-import { Asset, PublicAsset } from './modules/assets'
+import { Asset, AssetCategory, PublicAsset } from './modules/assets'
 import worldAssetAreas from './areas/worldAsset'
 
-export const areasByCategory = {
-  [AssetCategories.avatar]: avatarAreas,
-  [AssetCategories.accessory]: accessoryAreas,
-  [AssetCategories.animation]: animationAreas,
-  [AssetCategories.tutorial]: tutorialAreas,
-  [AssetCategories.shader]: shaderAreas,
-  [AssetCategories.retexture]: retextureAreas,
-  [AssetCategories.article]: articleAreas,
-  [AssetCategories.worldAsset]: worldAssetAreas,
-  [AssetCategories.tool]: toolAreas,
+export const areasByCategory: { [categoryName: string]: Areas } = {
+  [AssetCategory.Avatar]: avatarAreas,
+  [AssetCategory.Accessory]: accessoryAreas,
+  [AssetCategory.Animation]: animationAreas,
+  [AssetCategory.Tutorial]: tutorialAreas,
+  [AssetCategory.Shader]: shaderAreas,
+  [AssetCategory.Retexture]: retextureAreas,
+  [AssetCategory.Article]: articleAreas,
+  [AssetCategory.WorldAsset]: worldAssetAreas,
+  [AssetCategory.Tool]: toolAreas,
 }
 
 export const standardAreaNames = {
@@ -64,7 +62,7 @@ export const groupAssetsIntoAreas = (
 ): { [areaName: string]: PublicAsset[] } => {
   const areas =
     typeof categoryNameOrAreas === 'string'
-      ? areasByCategory[categoryNameOrAreas]
+      ? areasByCategory[categoryNameOrAreas as AssetCategory]
       : categoryNameOrAreas
 
   const assetsByArea: { [areaName: string]: PublicAsset[] } = Object.keys(
@@ -87,4 +85,8 @@ export const groupAssetsIntoAreas = (
 export interface Area {
   namePlural: string
   tags: string[]
+}
+
+export interface Areas {
+  [name: string]: Area
 }

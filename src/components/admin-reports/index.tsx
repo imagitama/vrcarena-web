@@ -169,9 +169,8 @@ export default () => {
     })
 
   return (
-    <PaginatedView
+    <PaginatedView<FullReport>
       viewName="getFullReports"
-      // @ts-ignore
       getQuery={getQuery}
       sortKey="view-reports"
       sortOptions={[

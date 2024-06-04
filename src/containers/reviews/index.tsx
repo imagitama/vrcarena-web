@@ -5,19 +5,18 @@ import Heading from '../../components/heading'
 import PaginatedView from '../../components/paginated-view'
 import ReviewResults from '../../components/review-results'
 import WarningMessage from '../../components/warning-message'
-
-import { ReviewsFieldNames } from '../../data-store'
 import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
+import { Review, ViewNames } from '../../modules/reviews'
 
-const Renderer = ({ items }) => {
-  return <ReviewResults reviews={items} includeAssets />
-}
+const Renderer = ({ items }: { items?: Review[] }) => (
+  <ReviewResults reviews={items} includeAssets />
+)
 
-export default () => {
+const ReviewsView = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
-    query => {
+    (query) => {
       if (!isAdultContentEnabled) {
         query = query.eq(AssetFieldNames.isAdult, false)
       }
@@ -41,13 +40,15 @@ export default () => {
           Please contact us if you believe a review contains incorrect info or
           is very unfair or unjust.
         </WarningMessage>
-        <PaginatedView
-          viewName="getPublicReviewsForPublicAssets"
+        <PaginatedView<Review>
+          viewName={ViewNames.GetPublicReviewsForPublicAssets}
           getQuery={getQuery}
-          defaultFieldName={ReviewsFieldNames.createdAt}>
+          defaultFieldName="createdat">
           <Renderer />
         </PaginatedView>
       </div>
     </>
   )
 }
+
+export default ReviewsView

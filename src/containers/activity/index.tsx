@@ -9,13 +9,14 @@ import PaginatedView from '../../components/paginated-view'
 import { CommonFieldNames } from '../../data-store'
 import { FullActivityEntry } from '../../modules/activity'
 import ActivityItemLabel from '../../components/activity-item-label'
+import { FullHistoryEntry } from '../../modules/history'
 
 const useStyles = makeStyles({
   item: {},
   date: {
     marginTop: '0.25rem',
-    fontSize: '75%'
-  }
+    fontSize: '75%',
+  },
 })
 
 const Results = ({ results }: { results: FullActivityEntry[] }) => {
@@ -32,7 +33,7 @@ const Results = ({ results }: { results: FullActivityEntry[] }) => {
           parentdata: parentData,
           moredata: moreData,
           createdby: createdBy,
-          createdbyusername: createdByUsername
+          createdbyusername: createdByUsername,
         }) => (
           <Paper key={id} margin className={classes.item}>
             <ActivityItemLabel
@@ -69,11 +70,10 @@ export default () => {
         />
       </Helmet>
       Updated every 15 minutes
-      {/* @ts-ignore */}
-      <PaginatedView
+      <PaginatedView<FullHistoryEntry>
         viewName="fullActivity"
         sortKey="history"
-        defaultFieldName={CommonFieldNames.createdAt}
+        defaultFieldName="createdat"
         urlWithPageNumberVar={routes.activityWithPageNumberVar}>
         <Renderer />
       </PaginatedView>

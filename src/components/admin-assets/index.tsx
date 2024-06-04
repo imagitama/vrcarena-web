@@ -14,13 +14,13 @@ import {
   PublishStatuses,
   ApprovalStatuses,
   AccessStatuses,
-  AssetCategories,
 } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 import {
   FullAsset,
   CollectionNames as AssetsCollectionNames,
+  AssetCategory,
 } from '../../modules/assets'
 import AssetResultsItem from '../../components/asset-results-item'
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
@@ -187,7 +187,7 @@ function AssetsTable({
                         isValid={Array.isArray(tags) && tags.length > 0}
                         validLabel={tags ? `${tags.length} tags` : ''}
                       />
-                      {category === AssetCategories.avatar && (
+                      {category === AssetCategory.Avatar && (
                         <AssetApprovalChecklistItem
                           label="Species"
                           isValid={Array.isArray(species) && species.length > 0}
@@ -313,7 +313,7 @@ const AdminAssets = () => {
     })
 
   return (
-    <PaginatedView
+    <PaginatedView<FullAsset>
       viewName="getFullAssets"
       getQuery={getQuery}
       // cannot re-use other paginated views because "publishedat" field does not exist for them

@@ -9,10 +9,9 @@ import Button from '../button'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
-import { Asset } from '../../modules/assets'
+import { Asset, AssetCategory } from '../../modules/assets'
 import WarningMessage from '../warning-message'
 import { adultSearchTerms } from '../../config'
-import { AssetCategories } from '../../hooks/useDatabaseQuery'
 
 const errorCodes: { [key: string]: string } = {
   IS_NOT_DRAFT: 'IS_NOT_DRAFT',
@@ -90,7 +89,7 @@ const getValidationErrorMessagesForAsset = (asset: Asset): string[] => {
     messages.push(validationErrorMessages.NO_AUTHOR)
   }
   if (
-    asset.category === AssetCategories.avatar &&
+    asset.category === AssetCategory.Avatar &&
     (!asset.species || !asset.species.length)
   ) {
     messages.push(validationErrorMessages.NO_SPECIES)
@@ -117,7 +116,7 @@ const getValidationErrorMessagesForAsset = (asset: Asset): string[] => {
     messages.push(validationErrorMessages.NO_SOURCE_URL)
   }
   if (
-    asset.category === AssetCategories.accessory &&
+    asset.category === AssetCategory.Accessory &&
     (!asset.relations || !asset.relations.length)
   ) {
     messages.push(validationErrorMessages.MISSING_ACCESSORY_PARENT)

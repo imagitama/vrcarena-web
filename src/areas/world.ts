@@ -1,6 +1,6 @@
-import { Area } from '../areas'
+import { Areas } from '../areas'
 
-export const areaNames: { [key: string]: string } = {
+export const areaNames = {
   chill: 'chill',
   media: 'media',
   game: 'game',
@@ -9,46 +9,46 @@ export const areaNames: { [key: string]: string } = {
   promo: 'promo',
   experimental: 'experimental',
   demo: 'demo',
-  roleplay: 'roleplay'
+  roleplay: 'roleplay',
 }
 
-const areas: { [areaName: string]: Area } = {
+const areas: Areas = {
   [areaNames.chill]: {
     namePlural: 'Chill',
-    tags: ['chill']
+    tags: ['chill'],
   },
   [areaNames.media]: {
     namePlural: 'Media',
-    tags: ['movies', 'music_player', 'music', 'visualizer']
+    tags: ['movies', 'music_player', 'music', 'visualizer'],
   },
   [areaNames.game]: {
     namePlural: 'Games',
-    tags: ['game']
+    tags: ['game'],
   },
   [areaNames.avatars]: {
     namePlural: 'Avatars',
-    tags: ['avatar_world']
+    tags: ['avatar_world'],
   },
   [areaNames.portals]: {
     namePlural: 'World Portals',
-    tags: ['portal_world']
+    tags: ['portal_world'],
   },
   [areaNames.promo]: {
     namePlural: 'Promotional',
-    tags: ['promo']
+    tags: ['promo'],
   },
   [areaNames.demo]: {
     namePlural: 'Technical Demos',
-    tags: ['tech_demo']
+    tags: ['tech_demo'],
   },
   [areaNames.experimental]: {
     namePlural: 'Experimental',
-    tags: ['experiment']
+    tags: ['experiment'],
   },
   [areaNames.roleplay]: {
     namePlural: 'Roleplay',
-    tags: ['roleplay']
-  }
+    tags: ['roleplay'],
+  },
 }
 
 export default areas

@@ -9,16 +9,17 @@ import PaginatedView from '../../components/paginated-view'
 import AssetResults from '../../components/asset-results'
 import Button from '../../components/button'
 
-import {
-  AssetCategories,
-  AssetFieldNames,
-  OrderDirections
-} from '../../hooks/useDatabaseQuery'
+import { AssetFieldNames, OrderDirections } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
 import categoryMeta from '../../category-meta'
 import * as routes from '../../routes'
-import { Asset } from '../../modules/assets'
+import {
+  Asset,
+  AssetCategory,
+  PublicAsset,
+  ViewNames,
+} from '../../modules/assets'
 
 function getDisplayNameByCategoryName(categoryName: string): string {
   return categoryMeta[categoryName].name
@@ -46,16 +47,13 @@ const Renderer = ({ items }: { items?: AssetWithSpeciesData[] }) => {
   )
 }
 
-const sortKey = 'view-avatars'
-const defaultFieldName = 'createdat'
-const endorsementCountFieldName = 'endorsementcount'
+const categoryName = AssetCategory.Avatar
 
-export default () => {
-  const categoryName = AssetCategories.avatar
+const ViewAvatarsView = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
   const getQuery = useCallback(
-    query => {
+    (query) => {
       query = query.eq(AssetFieldNames.category, categoryName)
       if (!isAdultContentEnabled) {
         query = query.eq(AssetFieldNames.isAdult, false)
@@ -83,27 +81,25 @@ export default () => {
           {getDisplayNameByCategoryName(categoryName)}
         </Heading>
         <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
-        <PaginatedView
-          viewName={'getPublicAssets'}
-          // @ts-ignore
+        <PaginatedView<PublicAsset>
+          viewName={ViewNames.GetPublicAssets}
           getQuery={getQuery}
-          sortKey={sortKey}
+          sortKey="view-avatars"
           sortOptions={[
             {
               label: 'Created date',
-              fieldName: AssetFieldNames.createdAt
+              fieldName: 'createdat',
             },
             {
               label: 'Title',
-              fieldName: AssetFieldNames.title
+              fieldName: 'title',
             },
             {
               label: 'Endorsements',
-              fieldName: endorsementCountFieldName
-            }
+              fieldName: 'endorsementcount',
+            },
           ]}
-          // @ts-ignore
-          defaultFieldName={defaultFieldName}
+          defaultFieldName="createdat"
           defaultDirection={OrderDirections.DESC}
           extraControls={[
             <Button
@@ -117,13 +113,15 @@ export default () => {
               icon={<ShuffleIcon />}
               color="default">
               Random
-            </Button>
+            </Button>,
           ]}
           urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
-          getQueryString={() => `category:${AssetCategories.avatar}`}>
+          getQueryString={() => `category:${AssetCategory.Avatar}`}>
           <Renderer />
         </PaginatedView>
       </div>
     </>
   )
 }
+
+export default ViewAvatarsView

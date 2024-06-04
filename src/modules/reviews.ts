@@ -3,6 +3,7 @@ export interface Review {
   overallrating: number
   ratings: Rating[]
   comments: string
+  createdat: string
 }
 
 export interface Rating {
@@ -11,6 +12,10 @@ export interface Rating {
   comments: string
 }
 
-export const CollectionNames = {
-  Reviews: 'reviews',
+export enum CollectionNames {
+  Reviews = 'reviews',
+}
+
+export enum ViewNames {
+  GetPublicReviewsForPublicAssets = 'getpublicreviewsforpublicassets',
 }

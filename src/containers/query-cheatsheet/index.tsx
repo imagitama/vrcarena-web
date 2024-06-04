@@ -1,7 +1,7 @@
 import React from 'react'
 import Heading from '../../components/heading'
-import { AssetCategories } from '../../hooks/useDatabaseQuery'
 import { sortableFieldMap } from '../query'
+import { AssetCategory } from '../../modules/assets'
 
 const QueryCheatsheet = () => {
   return (
@@ -52,10 +52,10 @@ const QueryCheatsheet = () => {
         Search for assets approved by the editor Bob.
       </p> */}
       <p>
-        <strong>category:{AssetCategories.avatar}</strong>
+        <strong>category:{AssetCategory.Avatar}</strong>
         <br />
-        Search for assets by the category "{AssetCategories.avatar}". Other
-        categories: {Object.values(AssetCategories).join(', ')}
+        Search for assets by the category "{AssetCategory.Avatar}". Other
+        categories: {Object.values(AssetCategory).join(', ')}
       </p>
       <p>
         <strong>species:Dogs</strong>

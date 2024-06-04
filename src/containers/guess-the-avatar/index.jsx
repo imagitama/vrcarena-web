@@ -3,14 +3,11 @@ import { Helmet } from 'react-helmet'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 
-import useDatabaseQuery, {
-  AssetFieldNames,
-  Operators,
-  AssetCategories,
-} from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import Button from '../../components/button'
 import Heading from '../../components/heading'
 import Fireworks from '../../components/fireworks'
+import { AssetCategory } from '../../modules/assets'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', userSelect: 'none', userDrag: 'none' },
@@ -131,7 +128,7 @@ const delay = 2000
 const View = () => {
   const classes = useStyles()
   const [isLoading, isError, avatars] = useDatabaseQuery('getpublicassets', [
-    [AssetFieldNames.category, Operators.EQUALS, AssetCategories.avatar],
+    ['category', Operators.EQUALS, AssetCategory.Avatar],
   ])
   const [selectedAvatar, setSelectedAvatar] = useState(null)
   const [guess, setGuess] = useState('')
@@ -147,7 +144,6 @@ const View = () => {
   const selectNewAvatar = () => {
     clearTimeout(autoSelectNewAvatarTimeoutRef.current)
     const newAvatar = avatars[getRandomInt(0, avatars.length - 1)]
-    console.debug('selected', newAvatar[AssetFieldNames.title])
     setSelectedAvatar(newAvatar)
     setIsCorrect(null)
     setGuess('')
@@ -176,10 +172,7 @@ const View = () => {
       return
     }
 
-    const isCorrect = getIsCorrectGuess(
-      guess,
-      selectedAvatar[AssetFieldNames.title]
-    )
+    const isCorrect = getIsCorrectGuess(guess, selectedAvatar.title)
 
     setGuessesByAvatarId((currentVal) => ({
       ...currentVal,
@@ -254,12 +247,12 @@ const View = () => {
               return (
                 <li key={avatarId}>
                   <img
-                    src={asset[AssetFieldNames.thumbnailUrl]}
+                    src={asset.thumbnailurl}
                     width={100}
                     alt="Thumbnail for item"
                   />
                   <br />
-                  {asset[AssetFieldNames.title]}
+                  {asset.title}
                   <ul>
                     {guesses.map((guess) => (
                       <li key={guess}>{guess}</li>
@@ -279,10 +272,7 @@ const View = () => {
             Esc to skip). Press Enter to guess.
           </p>
           <div style={{ textAlign: 'center' }}>
-            <img
-              src={selectedAvatar[AssetFieldNames.thumbnailUrl]}
-              alt="Thumbnail"
-            />
+            <img src={selectedAvatar.thumbnailurl} alt="Thumbnail" />
             <br />
             <br />
             <TextField

@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { useLocation, useParams } from 'react-router'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
@@ -11,7 +12,6 @@ import AssetResults from '../../components/asset-results'
 import Button from '../../components/button'
 
 import categoryMeta from '../../category-meta'
-import { AssetCategories, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
 
@@ -19,7 +19,7 @@ import AvatarTutorialSection from './components/avatar-tutorial-section'
 import AssetsByArea from '../../components/assets-by-area'
 import AreaNavigation from '../../components/area-navigation'
 import Link from '../../components/link'
-import { PublicAsset } from '../../modules/assets'
+import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 
 function getDisplayNameByCategoryName(categoryName: string): string {
   const category = categoryMeta[categoryName]
@@ -40,7 +40,7 @@ function getDescriptionByCategoryName(categoryName: string): string {
 const Renderer = ({
   items,
   categoryName,
-  groupByAreaEnabled
+  groupByAreaEnabled,
 }: {
   items?: PublicAsset[]
   categoryName: string
@@ -53,15 +53,17 @@ const Renderer = ({
   }
 }
 
-export default () => {
+const ViewCategoryView = () => {
   const { categoryName } = useParams<{ categoryName: string }>()
   const { pathname } = useLocation()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
-    query => {
-      query = query.eq(AssetFieldNames.category, categoryName)
+    (
+      query: PostgrestFilterBuilder<PublicAsset>
+    ): PostgrestFilterBuilder<PublicAsset> => {
+      query = query.eq('category', categoryName)
       if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
+        query = query.eq('isadult', false)
       }
       return query
     },
@@ -70,7 +72,7 @@ export default () => {
   const [groupByAreaEnabled, setGroupByAreaEnabled] = useState(true)
 
   const toggleGroupByArea = () =>
-    setGroupByAreaEnabled(currentVal => !currentVal)
+    setGroupByAreaEnabled((currentVal) => !currentVal)
 
   return (
     <>
@@ -84,55 +86,52 @@ export default () => {
           content={getDescriptionByCategoryName(categoryName)}
         />
       </Helmet>
-
-      <div>
-        <Heading variant="h1">
-          <Link to={pathname}>
-            {getDisplayNameByCategoryName(categoryName)}
-          </Link>
-        </Heading>
-        <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
-        {categoryName === AssetCategories.tutorial && <AvatarTutorialSection />}
-        <AreaNavigation categoryName={categoryName} />
-        <PaginatedView
-          viewName="getPublicAssets"
-          getQuery={getQuery}
-          sortKey="view-category"
-          sortOptions={[
-            {
-              label: 'Submission date',
-              fieldName: AssetFieldNames.createdAt
-            },
-            {
-              label: 'Title',
-              fieldName: AssetFieldNames.title
-            }
-          ]}
-          defaultFieldName={AssetFieldNames.createdAt}
-          urlWithPageNumberVar={routes.viewCategoryWithPageNumberVar.replace(
-            ':categoryName',
-            categoryName
-          )}
-          extraControls={[
-            <Button
-              onClick={() => toggleGroupByArea()}
-              icon={
-                groupByAreaEnabled ? (
-                  <CheckBoxIcon />
-                ) : (
-                  <CheckBoxOutlineBlankIcon />
-                )
-              }>
-              Group By Area
-            </Button>
-          ]}
-          getQueryString={() => `category:${categoryName}`}>
-          <Renderer
-            categoryName={categoryName}
-            groupByAreaEnabled={groupByAreaEnabled}
-          />
-        </PaginatedView>
-      </div>
+      <Heading variant="h1">
+        <Link to={pathname}>{getDisplayNameByCategoryName(categoryName)}</Link>
+      </Heading>
+      <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
+      {categoryName === AssetCategory.Tutorial && <AvatarTutorialSection />}
+      <AreaNavigation categoryName={categoryName} />
+      <PaginatedView<PublicAsset>
+        viewName={ViewNames.GetPublicAssets}
+        getQuery={getQuery}
+        sortKey="view-category"
+        sortOptions={[
+          {
+            label: 'Submission date',
+            fieldName: 'createdat',
+          },
+          {
+            label: 'Title',
+            fieldName: 'title',
+          },
+        ]}
+        defaultFieldName="createdat"
+        urlWithPageNumberVar={routes.viewCategoryWithPageNumberVar.replace(
+          ':categoryName',
+          categoryName
+        )}
+        extraControls={[
+          <Button
+            onClick={() => toggleGroupByArea()}
+            icon={
+              groupByAreaEnabled ? (
+                <CheckBoxIcon />
+              ) : (
+                <CheckBoxOutlineBlankIcon />
+              )
+            }>
+            Group By Area
+          </Button>,
+        ]}
+        getQueryString={() => `category:${categoryName}`}>
+        <Renderer
+          categoryName={categoryName}
+          groupByAreaEnabled={groupByAreaEnabled}
+        />
+      </PaginatedView>
     </>
   )
 }
+
+export default ViewCategoryView

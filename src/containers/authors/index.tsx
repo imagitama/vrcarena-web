@@ -9,15 +9,18 @@ import AuthorResults from '../../components/author-results'
 import { AuthorFieldNames } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import PaginatedView from '../../components/paginated-view'
+import { Author } from '../../modules/authors'
 
 const subViews = {
   DELETED: 1,
-  OPEN_FOR_COMMISSION: 2
+  OPEN_FOR_COMMISSION: 2,
 }
 
-const Renderer = ({ items }) => <AuthorResults authors={items} />
+const Renderer = ({ items }: { items?: Author[] }) => (
+  <AuthorResults authors={items} />
+)
 
-export default () => {
+const AuthorsView = () => {
   const getQuery = useCallback((query, selectedSubView) => {
     switch (selectedSubView) {
       case subViews.OPEN_FOR_COMMISSION:
@@ -40,7 +43,7 @@ export default () => {
         <Link to={routes.authors}>Authors</Link>
       </Heading>
       <BodyText>A list of all authors who have assets on the site.</BodyText>
-      <PaginatedView
+      <PaginatedView<Author>
         viewName="getPublicAuthors"
         editorViewName="getFullAuthors"
         getQuery={getQuery}
@@ -48,20 +51,20 @@ export default () => {
         sortOptions={[
           {
             label: 'Name',
-            fieldName: AuthorFieldNames.name
+            fieldName: 'name',
           },
           {
             label: 'Created on',
-            fieldName: AuthorFieldNames.createdAt
-          }
+            fieldName: 'createdat',
+          },
         ]}
         subViews={[
           {
             label: 'Open For Commission',
-            id: subViews.OPEN_FOR_COMMISSION
-          }
+            id: subViews.OPEN_FOR_COMMISSION,
+          },
         ]}
-        defaultFieldName={AuthorFieldNames.name}
+        defaultFieldName={'name'}
         urlWithPageNumberVar={routes.viewAuthorsWithPageNumberVar}
         createUrl={routes.createAuthor}
         showCommonMetaControls>
@@ -70,3 +73,5 @@ export default () => {
     </>
   )
 }
+
+export default AuthorsView

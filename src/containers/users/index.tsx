@@ -13,11 +13,12 @@ import PaginatedView from '../../components/paginated-view'
 import Button from '../../components/button'
 import { trackAction } from '../../analytics'
 import { changeSearchTableName } from '../../modules/app'
+import { User } from '../../modules/users'
 
 const sortKey = 'view-users'
 const analyticsCategory = 'view-users'
 
-const Renderer = ({ items }) => <UserList users={items} />
+const Renderer = ({ items }: { items?: User[] }) => <UserList users={items} />
 
 const subViews = {
   ALL: 'all',
@@ -36,7 +37,7 @@ export default () => {
     dispatch(changeSearchTableName(CollectionNames.Users))
   }, [])
 
-  const toggleSubView = (subView) =>
+  const toggleSubView = (subView: string): void =>
     setSelectedSubView((currentVal) => {
       if (currentVal === subView) {
         return subViews.ALL
@@ -61,7 +62,7 @@ export default () => {
         />
       </Helmet>
       <Heading variant="h1">Users</Heading>
-      <PaginatedView
+      <PaginatedView<User>
         viewName={selectedSubView === subViews.STAFF ? 'getStaffUsers' : ''}
         collectionName={CollectionNames.Users}
         select={`id, ${UserFieldNames.username}, ${UserFieldNames.avatarUrl}`}
@@ -70,14 +71,14 @@ export default () => {
         sortOptions={[
           {
             label: 'Sign up date',
-            fieldName: UserFieldNames.createdAt,
+            fieldName: 'createdat',
           },
           {
             label: 'Username',
-            fieldName: UserFieldNames.username,
+            fieldName: 'username',
           },
         ]}
-        defaultFieldName={UserFieldNames.createdAt}
+        defaultFieldName="createdat"
         extraControls={[
           <Button
             icon={

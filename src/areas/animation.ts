@@ -1,3 +1,5 @@
+import type { Areas } from '../areas'
+
 export const areaNames = {
   laying_down: 'laying_down',
   sitting: 'sitting',
@@ -6,33 +8,33 @@ export const areaNames = {
   zero_gravity: 'zero_gravity',
   dancing: 'dancing',
   subtle: 'subtle',
-  facial: 'facial'
+  facial: 'facial',
 }
 
-export default {
+const areas: Areas = {
   [areaNames.laying_down]: {
     namePlural: 'Laying Down',
-    tags: ['laying']
+    tags: ['laying'],
   },
   [areaNames.sitting]: {
     namePlural: 'Sitting',
-    tags: ['sitting']
+    tags: ['sitting'],
   },
   [areaNames.sleeping]: {
     namePlural: 'Sleeping',
-    tags: ['sleeping']
+    tags: ['sleeping'],
   },
   [areaNames.moving]: {
     namePlural: 'Movement',
-    tags: ['walking', 'running']
+    tags: ['walking', 'running'],
   },
   [areaNames.zero_gravity]: {
     namePlural: 'Zero G',
-    tags: ['flying', 'floating', 'falling']
+    tags: ['flying', 'floating', 'falling'],
   },
   [areaNames.dancing]: {
     namePlural: 'Dancing',
-    tags: ['dance', 'dancing', 'song']
+    tags: ['dance', 'dancing', 'song'],
   },
   [areaNames.subtle]: {
     namePlural: 'Subtle Effects',
@@ -43,11 +45,13 @@ export default {
       'ear_twitch',
       'tail_twitch',
       'subtle',
-      'tail_wag'
-    ]
+      'tail_wag',
+    ],
   },
   [areaNames.facial]: {
     namePlural: 'Facial Expressions',
-    tags: ['face', 'smile', 'sad', 'frown', 'crying', 'happy']
-  }
+    tags: ['face', 'smile', 'sad', 'frown', 'crying', 'happy'],
+  },
 }
+
+export default areas

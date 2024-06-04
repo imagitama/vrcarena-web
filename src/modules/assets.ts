@@ -9,13 +9,25 @@ import { FullAttachment } from './attachments'
 import { FeaturedStatus as FeaturedStatuses } from './common'
 import { Tag } from './tags'
 
-export const RelationType = {
-  Parent: 'parent',
-  // Child: 'child',
-  // Sibling: 'sibling'
-  Suggested: 'suggested',
-  Similar: 'similar',
-  Other: 'other',
+export enum RelationType {
+  Parent = 'parent',
+  // Child = 'child',
+  // Sibling = 'sibling'
+  Suggested = 'suggested',
+  Similar = 'similar',
+  Other = 'other',
+}
+
+export enum AssetCategory {
+  Avatar = 'avatar',
+  Accessory = 'accessory',
+  Animation = 'animation',
+  Tutorial = 'tutorial',
+  Shader = 'shader',
+  Retexture = 'retexture',
+  Article = 'article',
+  WorldAsset = 'worldAsset',
+  Tool = 'tool',
 }
 
 export interface Relation {
@@ -153,6 +165,7 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullAssets = 'getfullassets',
+  GetPublicAssets = 'getpublicassets',
 }
 
 // legacy

@@ -5,12 +5,9 @@ import useSearching from '../../hooks/useSearching'
 import TextInput from '../text-input'
 import CheckboxInput from '../checkbox-input'
 import AssetResults from '../asset-results'
-import {
-  AssetCategories,
-  AssetFieldNames,
-  CollectionNames,
-} from '../../hooks/useDatabaseQuery'
+import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import categoryMeta from '../../category-meta'
+import { AssetCategory } from '../../modules/assets'
 
 const useStyles = makeStyles({
   textInput: {
@@ -93,7 +90,7 @@ export default ({
 }) => {
   const [searchTerm, setSearchTerm] = useState(null)
   const [selectedCategoryNames, setSelectedCategoryNames] = useState([
-    category ? category : AssetCategories.avatar,
+    category ? category : AssetCategory.Avatar,
   ])
   const classes = useStyles()
 
@@ -106,7 +103,7 @@ export default ({
     <>
       {category ? null : (
         <div className={classes.categories}>
-          {Object.keys(AssetCategories).map((categoryName) => (
+          {Object.keys(AssetCategory).map((categoryName) => (
             <div key={categoryName} className={classes.category}>
               <CheckboxInput
                 value={selectedCategoryNames.includes(categoryName)}

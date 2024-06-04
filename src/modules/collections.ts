@@ -2,6 +2,7 @@ export interface Collection {
   id: string
   title: string
   items: CollectionItem[]
+  createdat: string
 }
 
 export interface CollectionItem {

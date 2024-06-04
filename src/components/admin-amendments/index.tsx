@@ -24,7 +24,7 @@ const Renderer = ({ items }: { items?: FullAmendment[] }) =>
 const subViews = {
   WAITING: 0,
   APPROVED: 1,
-  REJECTED: 2
+  REJECTED: 2,
 }
 
 const analyticsCategoryName = 'AdminAmendments'
@@ -34,7 +34,7 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
   return (
     <>
       <TextInput
-        onChange={e => setVal(e.target.value)}
+        onChange={(e) => setVal(e.target.value)}
         value={val}
         placeholder="User ID"
         size="small"
@@ -48,7 +48,7 @@ export default () => {
   const [selectedSubView, setSelectedSubView] = useState(subViews.WAITING)
   const [userIdToFilter, setUserIdToFilter] = useState('')
   const getQuery = useCallback(
-    query => {
+    (query) => {
       if (userIdToFilter) {
         query = query.eq(CommonMetaFieldNames.createdBy, userIdToFilter)
       }
@@ -81,7 +81,7 @@ export default () => {
   )
 
   const toggleSubView = (subView: number) =>
-    setSelectedSubView(currentVal => {
+    setSelectedSubView((currentVal) => {
       if (currentVal === subView) {
         return subViews.WAITING
       }
@@ -89,17 +89,17 @@ export default () => {
     })
 
   return (
-    <PaginatedView
+    <PaginatedView<FullAmendment>
       viewName="getFullAmendments"
       getQuery={getQuery}
       sortKey="view-amendments"
       sortOptions={[
         {
           label: 'Submission date',
-          fieldName: CommonMetaFieldNames.createdAt
-        }
+          fieldName: 'createdat',
+        },
       ]}
-      defaultFieldName={CommonMetaFieldNames.createdAt}
+      defaultFieldName="createdat"
       urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
         ':tabName',
         'amendments'
@@ -159,7 +159,7 @@ export default () => {
           color="default">
           Rejected
         </Button>,
-        <UserIdFilter onChange={newVal => setUserIdToFilter(newVal)} />
+        <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,
       ]}>
       <Renderer />
     </PaginatedView>

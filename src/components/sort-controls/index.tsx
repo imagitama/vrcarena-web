@@ -9,7 +9,7 @@ import Button from '../button'
 
 const getLabelForSelectedSortOption = (
   sorting: SortingConfig | null,
-  sortOptions: SortOption[]
+  sortOptions: SortOption<any>[]
 ): string => {
   if (!sorting) {
     return '...'
@@ -29,14 +29,14 @@ const getLabelForSelectedSortOption = (
   return '...'
 }
 
-export interface SortOption {
-  fieldName: string
+export interface SortOption<TRecord> {
+  fieldName: keyof TRecord
   label: string
   direction?: OrderDirections
   withDirections?: boolean
 }
 
-const appendDirections = (options: SortOption[]): SortOption[] => {
+const appendDirections = (options: SortOption<any>[]): SortOption<any>[] => {
   const newOptions = []
 
   for (const { fieldName, label, withDirections } of options) {
@@ -65,13 +65,13 @@ const appendDirections = (options: SortOption[]): SortOption[] => {
   return newOptions
 }
 
-export default ({
+const SortControls = <TRecord,>({
   sortKey,
   options,
   defaultFieldName = '',
 }: {
   sortKey: string
-  options: SortOption[]
+  options: SortOption<TRecord>[]
   defaultFieldName?: string
 }) => {
   const [sorting, setSorting] = useSorting(sortKey, defaultFieldName)
@@ -112,10 +112,10 @@ export default ({
           onClose={() => setIsDropdownOpen(false)}>
           {optionsWithDirections.map(({ fieldName, label, direction }) => (
             <MenuItem
-              key={`${fieldName}.${direction}`}
+              key={`${fieldName as string}.${direction}`}
               onClick={
                 direction !== undefined
-                  ? () => onClickItem(fieldName, direction)
+                  ? () => onClickItem(fieldName as string, direction)
                   : undefined
               }>
               {label}
@@ -126,3 +126,5 @@ export default ({
     </>
   )
 }
+
+export default SortControls

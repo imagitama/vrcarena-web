@@ -7,7 +7,7 @@ import {
   AssetMetaFieldNames,
   PublishStatuses,
   ApprovalStatuses,
-  AccessStatuses
+  AccessStatuses,
 } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 import * as routes from '../../routes'
@@ -16,22 +16,25 @@ import { trackAction } from '../../analytics'
 import Button from '../button'
 import PaginatedView from '../paginated-view'
 import AssetResults from '../asset-results'
+import { Asset } from '../../modules/assets'
 
-const Renderer = ({ items }) => <AssetResults assets={items} />
+const Renderer = ({ items }: { items?: Asset[] }) => (
+  <AssetResults assets={items} />
+)
 
 const subViews = {
   PUBLIC: 0,
   DRAFTS: 1,
-  DELETED: 2
+  DELETED: 2,
 }
 
 const analyticsCategoryName = 'MyAccount'
 
-export default () => {
+const MyUploads = () => {
   const userId = useUserId()
   const [selectedSubView, setSelectedSubView] = useState(subViews.PUBLIC)
   const getQuery = useCallback(
-    query => {
+    (query) => {
       query = query.eq(AssetFieldNames.createdBy, userId)
 
       switch (selectedSubView) {
@@ -46,9 +49,8 @@ export default () => {
           query = query.eq(
             AssetMetaFieldNames.accessStatus,
             AccessStatuses.Public
-          ).or(`${AssetMetaFieldNames.publishStatus}.eq.${
-            PublishStatuses.Draft
-          },\
+          )
+            .or(`${AssetMetaFieldNames.publishStatus}.eq.${PublishStatuses.Draft},\
 ${AssetMetaFieldNames.approvalStatus}.eq.${ApprovalStatuses.Waiting},\
 ${AssetMetaFieldNames.approvalStatus}.eq.${ApprovalStatuses.Declined}`)
           break
@@ -65,8 +67,8 @@ ${AssetMetaFieldNames.approvalStatus}.eq.${ApprovalStatuses.Declined}`)
     [userId, selectedSubView]
   )
 
-  const toggleSubView = subView =>
-    setSelectedSubView(currentVal => {
+  const toggleSubView = (subView: number): void =>
+    setSelectedSubView((currentVal) => {
       if (currentVal === subView) {
         return subViews.PUBLIC
       }
@@ -74,21 +76,21 @@ ${AssetMetaFieldNames.approvalStatus}.eq.${ApprovalStatuses.Declined}`)
     })
 
   return (
-    <PaginatedView
+    <PaginatedView<Asset>
       viewName="getAssetsWithMeta"
       getQuery={getQuery}
       sortKey="view-category"
       sortOptions={[
         {
           label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt
+          fieldName: 'createdat',
         },
         {
           label: 'Title',
-          fieldName: AssetFieldNames.title
-        }
+          fieldName: 'title',
+        },
       ]}
-      defaultFieldName={AssetFieldNames.createdAt}
+      defaultFieldName={'createdat'}
       urlWithPageNumberVar={routes.myAccountWithTabNameVarAndPageNumberVar.replace(
         ':tabName',
         'assets'
@@ -144,9 +146,11 @@ ${AssetMetaFieldNames.approvalStatus}.eq.${ApprovalStatuses.Declined}`)
           }}
           color="default">
           Deleted
-        </Button>
+        </Button>,
       ]}>
       <Renderer />
     </PaginatedView>
   )
 }
+
+export default MyUploads

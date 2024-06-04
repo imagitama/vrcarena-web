@@ -131,11 +131,6 @@ const ErrorContainer = lazy(() =>
     () => import(/* webpackChunkName: "error" */ './containers/error')
   )
 )
-const News = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "news" */ './containers/news')
-  )
-)
 const Tags = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "tags" */ './containers/tags')
@@ -186,7 +181,7 @@ const About = lazy(() =>
     () => import(/* webpackChunkName: "about" */ './containers/about')
   )
 )
-const Nsfw = lazy(() =>
+const AdultAssets = lazy(() =>
   catchChunkDeaths(
     () =>
       import(/* webpackChunkName: "adult-assets" */ './containers/adult-assets')
@@ -583,7 +578,6 @@ const MainContent = () => {
           path={routes.viewCategoryWithPageNumberVar}
           component={ViewCategory}
         />
-        <Route exact path={routes.news} component={News} />
         <Route exact path={routes.searchWithVar} component={Search} />
         <Route
           exact
@@ -626,8 +620,12 @@ const MainContent = () => {
         />
         <Route exact path={routes.streams} component={Streams} />
         <Route exact path={routes.about} component={About} />
-        <Route exact path={routes.nsfw} component={Nsfw} />
-        <Route exact path={routes.nsfwWithPageNumberVar} component={Nsfw} />
+        <Route exact path={routes.nsfw} component={AdultAssets} />
+        <Route
+          exact
+          path={routes.nsfwWithPageNumberVar}
+          component={AdultAssets}
+        />
         <Route exact path={routes.authors} component={Authors} />
         <Route
           exact

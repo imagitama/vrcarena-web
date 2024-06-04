@@ -10,7 +10,6 @@ import { callFunction } from '../../firebase'
 import useIsEditor from '../../hooks/useIsEditor'
 import { getIsVrchatWorldId } from '../../utils'
 import {
-  AssetCategories,
   AssetFieldNames,
   CollectionNames,
   AssetMetaFieldNames,
@@ -29,16 +28,24 @@ import WarningMessage from '../../components/warning-message'
 import CheckboxInput from '../../components/checkbox-input'
 import AssetEditorMini from '../../components/asset-editor-mini'
 
+interface FetchWorldDataAndThumbnailResult {
+  world: VrchatWorld
+  thumbnailUrl: string
+}
+
 const fetchWorldDataAndThumbnailById = async (
   id: string
-): Promise<{ world: VrchatWorld; thumbnailUrl: string }> => {
+): Promise<FetchWorldDataAndThumbnailResult> => {
   // NOTE: This function also dumps it into a cache for later retrieval
   const {
     data: { world, thumbnailUrl },
-  } = await callFunction('getVrchatWorldDetails', {
-    worldId: id,
-    convertThumbnail: true, // note: 300x300
-  })
+  } = await callFunction<FetchWorldDataAndThumbnailResult>(
+    'getVrchatWorldDetails',
+    {
+      worldId: id,
+      convertThumbnail: true, // note: 300x300
+    }
+  )
 
   return {
     world,

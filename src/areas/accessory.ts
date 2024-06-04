@@ -1,4 +1,4 @@
-import { Area } from '../areas'
+import type { Area, Areas } from '../areas'
 
 export const areaNames: { [key: string]: string } = {
   hat: 'hat',
@@ -13,32 +13,32 @@ export const areaNames: { [key: string]: string } = {
   arm: 'arm',
   tools: 'tools',
   pet: 'pet',
-  none: 'none'
+  none: 'none',
 }
 
 export const nsfwAreaNames: { [key: string]: string } = {
-  genitals: 'genitals'
+  genitals: 'genitals',
 }
 
 export const nsfwAreas: { [key: string]: Area } = {
   [nsfwAreaNames.genitals]: {
     namePlural: 'Genitals',
-    tags: ['penis', 'vagina', 'genitals']
-  }
+    tags: ['penis', 'vagina', 'genitals'],
+  },
 }
 
-const areas: { [key: string]: Area } = {
+const areas: Areas = {
   [areaNames.hat]: {
     namePlural: 'Hats',
-    tags: ['hat', 'beanie', 'crown', 'halo', 'antenna', 'antennae', 'horns']
+    tags: ['hat', 'beanie', 'crown', 'halo', 'antenna', 'antennae', 'horns'],
   },
   [areaNames.hair]: {
     namePlural: 'Hair',
-    tags: ['hair']
+    tags: ['hair'],
   },
   [areaNames.ears]: {
     namePlural: 'Ears',
-    tags: ['ears']
+    tags: ['ears'],
   },
   [areaNames.face]: {
     namePlural: 'Face',
@@ -56,8 +56,8 @@ const areas: { [key: string]: Area } = {
       'ear',
       'earing',
       'muzzle',
-      'piercing'
-    ]
+      'piercing',
+    ],
   },
   [areaNames.neck]: {
     namePlural: 'Neck',
@@ -70,8 +70,8 @@ const areas: { [key: string]: Area } = {
       'collar',
       'scarf',
       'bowtie',
-      'tie'
-    ]
+      'tie',
+    ],
   },
   [areaNames.top]: {
     namePlural: 'Tops',
@@ -88,8 +88,8 @@ const areas: { [key: string]: Area } = {
       'sweater',
       'armor',
       'gym_clothes',
-      'tank_top'
-    ]
+      'tank_top',
+    ],
   },
   [areaNames.bottom]: {
     namePlural: 'Bottoms',
@@ -103,16 +103,16 @@ const areas: { [key: string]: Area } = {
       'apron',
       'swimsuit',
       'bikini',
-      'trunks'
-    ]
+      'trunks',
+    ],
   },
   [areaNames.back]: {
     namePlural: 'Back',
-    tags: ['back', 'bag', 'backpack', 'cape', 'tail', 'wings', 'wing']
+    tags: ['back', 'bag', 'backpack', 'cape', 'tail', 'wings', 'wing'],
   },
   [areaNames.shoe]: {
     namePlural: 'Feet',
-    tags: ['socks', 'shoes', 'sandals', 'stockings', 'footwear']
+    tags: ['socks', 'shoes', 'sandals', 'stockings', 'footwear'],
   },
   [areaNames.arm]: {
     namePlural: 'Arms',
@@ -126,8 +126,8 @@ const areas: { [key: string]: Area } = {
       'ring',
       'hand',
       'finger',
-      'claws'
-    ]
+      'claws',
+    ],
   },
   [areaNames.tools]: {
     namePlural: 'Tools',
@@ -143,13 +143,13 @@ const areas: { [key: string]: Area } = {
       'hammer',
       'leash',
       'lead',
-      'camera'
-    ]
+      'camera',
+    ],
   },
   [areaNames.pet]: {
     namePlural: 'Companions',
-    tags: ['pet', 'companion']
-  }
+    tags: ['pet', 'companion'],
+  },
 }
 
 export default areas

@@ -21,7 +21,12 @@ import {
 } from '../../hooks/useDatabaseQuery'
 import AssetResults from '../../components/asset-results'
 import PaginatedView from '../../components/paginated-view'
-import { CollectionNames, FullAsset, PublicAsset } from '../../modules/assets'
+import {
+  CollectionNames,
+  FullAsset,
+  PublicAsset,
+  ViewNames,
+} from '../../modules/assets'
 import { query } from '../../data-store'
 import { CollectionNames as AuthorCollectionNames } from '../../modules/authors'
 import { CollectionNames as UserCollectionNames } from '../../modules/users'
@@ -632,11 +637,10 @@ export default () => {
           </ErrorMessage>
         ) : null}
         {operations.length ? (
-          <PaginatedView
-            collectionName={'getpublicassets'}
-            // @ts-ignore
+          <PaginatedView<PublicAsset>
+            collectionName={ViewNames.GetPublicAssets}
             getQuery={getQuery}
-            defaultFieldName={AssetFieldNames.createdAt}
+            defaultFieldName="createdat"
             urlWithPageNumberVar={routes.queryWithVarAndPageVar.replace(
               ':query',
               convertSearchTermToUrlPath(queryStringToDisplay)

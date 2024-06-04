@@ -14,26 +14,32 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
 import { areasByCategory } from '../../areas'
 import { Link } from 'react-router-dom'
+import { AssetCategory, PublicAsset } from '../../modules/assets'
 
-function getDisplayNameByCategoryName(categoryName) {
+function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   return categoryMeta[categoryName].name
 }
 
-function getDisplayName(categoryName, areaName) {
+function getDisplayName(categoryName: AssetCategory, areaName: string): string {
   return areasByCategory[categoryName][areaName].namePlural
 }
 
-function getTags(categoryName, areaName) {
+function getTags(categoryName: AssetCategory, areaName: string): string[] {
   return areasByCategory[categoryName][areaName].tags
 }
 
-const Renderer = ({ items }) => <AssetResults assets={items} />
+const Renderer = ({ items }: { items?: PublicAsset[] }) => (
+  <AssetResults assets={items} />
+)
 
-export default () => {
-  const { categoryName, areaName } = useParams()
+const ViewAreaView = () => {
+  const { categoryName, areaName } = useParams<{
+    categoryName: AssetCategory
+    areaName: string
+  }>()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
-    query => {
+    (query) => {
       query = query
         .eq(AssetFieldNames.category, categoryName)
         .overlaps(AssetFieldNames.tags, getTags(categoryName, areaName))
@@ -72,21 +78,21 @@ export default () => {
           selectedAreaName={areaName}
         />
         <TagChips tags={getTags(categoryName, areaName)} />
-        <PaginatedView
+        <PaginatedView<PublicAsset>
           viewName="getPublicAssets"
           getQuery={getQuery}
           sortKey="view-area"
           sortOptions={[
             {
               label: 'Submission date',
-              fieldName: AssetFieldNames.createdAt
+              fieldName: 'createdat',
             },
             {
               label: 'Title',
-              fieldName: AssetFieldNames.title
-            }
+              fieldName: 'title',
+            },
           ]}
-          defaultFieldName={AssetFieldNames.createdAt}
+          defaultFieldName="createdat"
           urlWithPageNumberVar={routes.viewAreaWithPageNumberVar
             .replace(':categoryName', categoryName)
             .replace(':areaName', areaName)}>
@@ -96,3 +102,5 @@ export default () => {
     </>
   )
 }
+
+export default ViewAreaView

@@ -9,17 +9,14 @@ import SaveIcon from '@material-ui/icons/Save'
 import Button from '../button'
 import FormControls from '../form-controls'
 
-import {
-  CollectionNames,
-  AssetFieldNames,
-  AssetCategories,
-} from '../../hooks/useDatabaseQuery'
+import { CollectionNames, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import categoryMeta from '../../category-meta'
+import { AssetCategory } from '../../modules/assets'
 
 const useStyles = makeStyles({
   buttons: {
@@ -90,7 +87,7 @@ function CategoryButtons({ selectedCategory, onSelect }) {
   const classes = useStyles()
   return (
     <div className={classes.buttons}>
-      {Object.keys(AssetCategories).map((categoryName) => (
+      {Object.keys(AssetCategory).map((categoryName) => (
         <CategoryButton
           key={categoryName}
           onClick={() => onSelect(categoryName)}

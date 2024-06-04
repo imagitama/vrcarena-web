@@ -37,7 +37,6 @@ export const viewAreaWithPageNumberVar =
   '/category/:categoryName/areas/:areaName/page/:pageNumber'
 export const viewAvatars = '/category/avatar'
 export const viewAvatarsWithPageVar = '/category/avatar/:pageNumber'
-export const news = '/news'
 export const searchWithVarOld = '/search/:searchTerm'
 export const searchWithVar = '/search/:indexName/:searchTerm'
 export const viewUserWithVar = '/users/:userId'
@@ -135,3 +134,6 @@ export const viewAttachmentWithVar = '/attachments/:attachmentId'
 export const editAttachmentWithVar = '/attachments/:attachmentId/edit'
 export const compareWithVar = '/compare/:assetId'
 export const compareWithVars = '/compare/:assetId?with=:otherAssetIds'
+
+// deprecated
+export const news = '/news'

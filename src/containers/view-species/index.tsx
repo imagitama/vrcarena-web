@@ -16,16 +16,11 @@ import ErrorMessage from '../../components/error-message'
 import RedirectMessage from '../../components/redirect-message'
 import Button from '../../components/button'
 
-import {
-  AssetCategories,
-  AssetFieldNames,
-  SpeciesFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useIsEditor from '../../hooks/useIsEditor'
 import useDataStore from '../../hooks/useDataStore'
 
-import { PublicAsset } from '../../modules/assets'
+import { AssetCategory, PublicAsset } from '../../modules/assets'
 import {
   CollectionNames,
   FullSpecies,
@@ -62,10 +57,12 @@ const AssetsForSpecies = ({
   ]
 
   const getQuery = useCallback(
-    (query: PostgrestFilterBuilder<PublicAsset>) => {
+    (
+      query: PostgrestFilterBuilder<PublicAsset>
+    ): PostgrestFilterBuilder<PublicAsset> => {
       query = query
         .overlaps('species', speciesIdsToSearchFor)
-        .eq('category', AssetCategories.avatar)
+        .eq('category', AssetCategory.Avatar)
       if (!isAdultContentEnabled) {
         query = query.eq('isadult', false)
       }
@@ -75,27 +72,27 @@ const AssetsForSpecies = ({
   )
 
   return (
-    <PaginatedView
+    <PaginatedView<PublicAsset>
       viewName="getPublicAssets"
       getQuery={getQuery}
       sortKey="view-category"
       sortOptions={[
         {
           label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt,
+          fieldName: 'createdat',
         },
         {
           label: 'Title',
-          fieldName: AssetFieldNames.title,
+          fieldName: 'title',
         },
       ]}
-      defaultFieldName={AssetFieldNames.createdAt}
+      defaultFieldName="createdat"
       urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
         .replace(':speciesIdOrSlug', species.id)
-        .replace(':categoryName', AssetCategories.avatar)}
+        .replace(':categoryName', AssetCategory.Avatar)}
       getQueryString={() =>
         `species:${prepareValueForQuery(species.pluralname)} category:${
-          AssetCategories.avatar
+          AssetCategory.Avatar
         }`
       }
       extraControls={[
@@ -130,9 +127,8 @@ const View = () => {
       supabase
         .from<Species>(ViewNames.GetFullSpecies)
         .select('*')
-        .or(
-          `id.eq.${speciesIdOrSlug},${SpeciesFieldNames.slug}.eq.${speciesIdOrSlug}`
-        ),
+        // TODO: Type safe this
+        .or(`id.eq.${speciesIdOrSlug},slug.eq.${speciesIdOrSlug}`),
     [speciesIdOrSlug]
   )
   const [isLoadingSpecies, isErrorLoadingSpecies, speciesResults] =

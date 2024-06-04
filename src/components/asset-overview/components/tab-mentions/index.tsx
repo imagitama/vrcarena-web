@@ -6,13 +6,13 @@ import TabContext from '../../context'
 import PaginatedView from '../../../paginated-view'
 import {
   AssetFieldNames,
-  OrderDirections
+  OrderDirections,
 } from '../../../../hooks/useDatabaseQuery'
-import { PublicAsset } from '../../../../modules/assets'
+import { Asset, PublicAsset } from '../../../../modules/assets'
 import { Relations, RelationItem } from '../../../relations'
 
 const useStyles = makeStyles({
-  item: { margin: '0.5rem' }
+  item: { margin: '0.5rem' },
 })
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => {
@@ -25,9 +25,9 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => {
 
   return (
     <Relations>
-      {items.map(item => {
+      {items.map((item) => {
         const relation = item.relations.find(
-          relation => relation.asset === assetId
+          (relation) => relation.asset === assetId
         )
 
         // can't throw here - some kind of race condition on navigation means entire asset page crashes
@@ -39,7 +39,7 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => {
                 relation={{
                   type: relation.type,
                   asset: relation.asset,
-                  comments: ''
+                  comments: '',
                 }}
                 asset={item}
                 showRelation
@@ -58,7 +58,7 @@ export default () => {
   const getQuery = useCallback(() => {
     let query = supabase
       .rpc('getmentions', {
-        assetid: assetId
+        assetid: assetId,
       })
       .select('*')
 
@@ -72,10 +72,10 @@ export default () => {
 
   return (
     <div>
-      <PaginatedView
+      <PaginatedView<Asset>
         collectionName="getmentions"
         getQuery={getQuery}
-        defaultFieldName={AssetFieldNames.createdAt}
+        defaultFieldName="createdat"
         defaultDirection={OrderDirections.DESC}>
         <Renderer />
       </PaginatedView>

@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import PaginatedView, { PaginatedViewProps } from '../paginated-view'
 import { PublicAsset } from '../../modules/assets'
 import AssetResults from '../asset-results'
-import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
@@ -14,7 +13,7 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => (
  * @param props
  * @returns
  */
-const AssetsPaginatedView = (props: PaginatedViewProps) => {
+const AssetsPaginatedView = (props: PaginatedViewProps<PublicAsset>) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
   const getQuery = useCallback(
@@ -32,20 +31,20 @@ const AssetsPaginatedView = (props: PaginatedViewProps) => {
   )
 
   return (
-    <PaginatedView
+    <PaginatedView<PublicAsset>
       viewName="getPublicAssets"
       sortKey="view-assets"
       sortOptions={[
         {
           label: 'Submission date',
-          fieldName: AssetFieldNames.createdAt
+          fieldName: 'createdat',
         },
         {
           label: 'Title',
-          fieldName: AssetFieldNames.title
-        }
+          fieldName: 'title',
+        },
       ]}
-      defaultFieldName={AssetFieldNames.createdAt}
+      defaultFieldName="createdat"
       {...props}
       getQuery={getQuery}>
       <Renderer />

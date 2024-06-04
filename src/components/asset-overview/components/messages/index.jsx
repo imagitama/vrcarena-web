@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 import {
   AssetFieldNames,
-  AssetCategories,
+  AssetCategory,
   AssetMetaFieldNames,
   AccessStatuses,
   PublishStatuses,
-  ApprovalStatuses
+  ApprovalStatuses,
 } from '../../../../hooks/useDatabaseQuery'
 import Link from '../../../link'
 import Message from '../../../message'

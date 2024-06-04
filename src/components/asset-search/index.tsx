@@ -3,9 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import MenuItem from '@material-ui/core/MenuItem'
 
 import useAssetSearch from '../../hooks/useAssetSearch'
-import { Asset } from '../../modules/assets'
+import { Asset, AssetCategory } from '../../modules/assets'
 import categoryMeta from '../../category-meta'
-import { AssetCategories, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import AssetResults from '../asset-results'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
@@ -33,11 +32,11 @@ const AssetSearch = ({
   const [userInput, setUserInput] = useState('')
   // preselect avatars as it is the most common kind of search
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
-    AssetCategories.avatar
+    AssetCategory.Avatar
   )
   const [isSearching, isError, results] = useAssetSearch(
     userInput,
-    selectedCategory ? { [AssetFieldNames.category]: [selectedCategory] } : {},
+    selectedCategory ? { category: [selectedCategory] } : {},
     limit
   )
   const classes = useStyles()

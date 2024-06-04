@@ -12,8 +12,7 @@ import * as routes from '../../routes'
 
 import AssetResults from '../asset-results'
 import Heading from '../heading'
-import { PublicAsset } from '../../modules/assets'
-import { AssetCategories } from '../../hooks/useDatabaseQuery'
+import { AssetCategory, PublicAsset } from '../../modules/assets'
 
 const useStyles = makeStyles({
   tags: {
@@ -35,7 +34,7 @@ export default ({
   }
 
   const assetsByArea = groupAssetsIntoAreas(assets, categoryName)
-  const areas = areasByCategory[categoryName]
+  const areas = areasByCategory[categoryName as AssetCategory]
 
   return (
     <div>
@@ -65,7 +64,7 @@ export default ({
                         <Link
                           to={routes.queryWithVar.replace(
                             ':query',
-                            `category:${AssetCategories.accessory} ${tag}`
+                            `category:${AssetCategory.Accessory} ${tag}`
                           )}>
                           {tag}
                         </Link>

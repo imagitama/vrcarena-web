@@ -18,7 +18,6 @@ import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
 import PersonIcon from '@material-ui/icons/Person'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import ControlCameraIcon from '@material-ui/icons/ControlCamera'
-import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered'
 import { Tachometer as TachometerIcon } from '@emotion-icons/boxicons-regular/Tachometer'
 import { ListStars as ListStarsIcon } from '@emotion-icons/bootstrap/ListStars'
@@ -28,7 +27,6 @@ import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon
 import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
 
 import {
-  AssetCategories,
   AssetFieldNames,
   CollectionNames,
   PatreonStatuses,
@@ -89,7 +87,12 @@ import VrcFurySettingsEditor from '../vrcfury-settings-editor'
 import PublishAssetButton from '../publish-asset-button'
 import { getCanAssetBePublished } from '../../assets'
 import CategoryItem from '../category-item'
-import { Asset, FullAsset, SourceInfo } from '../../modules/assets'
+import {
+  Asset,
+  AssetCategory,
+  FullAsset,
+  SourceInfo,
+} from '../../modules/assets'
 import { inDevelopment } from '../../environment'
 import TagChip from '../tag-chip'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
@@ -1043,7 +1046,7 @@ const Editor = () => {
                     </>
                   }
                 />
-                {asset.category === AssetCategories.avatar ? (
+                {asset.category === AssetCategory.Avatar ? (
                   <FormEditorArea
                     fieldName={AssetFieldNames.species}
                     title="Species"
@@ -1079,7 +1082,7 @@ const Editor = () => {
               </>
             ),
           },
-          ...(asset.category === AssetCategories.tutorial
+          ...(asset.category === AssetCategory.Tutorial
             ? [
                 {
                   name: 'tutorialSteps',
@@ -1300,7 +1303,7 @@ const Editor = () => {
                   title="Performance"
                   description="Help people find avatars that match their performance requirements."
                   icon={() => <TachometerIcon />}
-                  doWeRender={asset.category === AssetCategories.avatar}
+                  doWeRender={asset.category === AssetCategory.Avatar}
                   display={() => (
                     <PerformanceEditor
                       assetId={assetId || undefined}

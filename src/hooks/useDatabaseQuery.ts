@@ -285,18 +285,6 @@ export const TutorialStepFieldNames = {
   youtubeUrl: 'youtubeUrl',
 }
 
-export const AssetCategories = {
-  avatar: 'avatar',
-  accessory: 'accessory',
-  animation: 'animation',
-  tutorial: 'tutorial',
-  shader: 'shader',
-  retexture: 'retexture',
-  article: 'article',
-  worldAsset: 'worldAsset',
-  tool: 'tool',
-}
-
 export const UserFieldNames = {
   // basic stuff
   username: 'username',

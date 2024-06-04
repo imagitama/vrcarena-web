@@ -59,24 +59,24 @@ const limitPerPage = 50
 
 type Filters = { [fieldName: string]: string | null }
 
-type GetQueryFn = (
-  currentQuery: PostgrestFilterBuilder<any>,
+type GetQueryFn<TRecord> = (
+  currentQuery: PostgrestFilterBuilder<TRecord>,
   selectedSubView: string | null
-) => PostgrestFilterBuilder<any> | Promise<PostgrestFilterBuilder<any>>
+) => PostgrestFilterBuilder<TRecord> | Promise<PostgrestFilterBuilder<TRecord>>
 
 interface SubViewConfig {
-  id: string | null
+  id: string | number | null
   label: string
 }
 
-interface PaginatedViewData {
+interface PaginatedViewData<TRecord> {
   viewName?: string
   editorViewName?: string
   collectionName?: string
   select: string
-  getQuery?: GetQueryFn
+  getQuery?: GetQueryFn<TRecord>
   sortKey: string
-  defaultFieldName: string
+  defaultFieldName: keyof TRecord
   defaultDirection?: OrderDirections
   renderer: React.ReactElement
   urlWithPageNumberVar: string
@@ -86,7 +86,7 @@ interface PaginatedViewData {
   internalPageNumber: number | null
   setInternalPageNumber: (newPageNumber: number) => void
   subViews?: SubViewConfig[]
-  sortOptions?: SortOption[]
+  sortOptions?: SortOption<TRecord>[]
   getQueryString?: () => string
 }
 
@@ -319,15 +319,15 @@ const subViewConfigAll: SubViewConfig[] = [
   },
 ]
 
-export interface PaginatedViewProps {
+export interface PaginatedViewProps<TRecord> {
   viewName?: string
   editorViewName?: string
   collectionName?: string
   select?: string
-  getQuery?: GetQueryFn
+  getQuery?: GetQueryFn<TRecord>
   sortKey?: string
-  sortOptions?: SortOption[]
-  defaultFieldName?: string
+  sortOptions?: SortOption<TRecord>[]
+  defaultFieldName?: keyof TRecord
   defaultDirection?: OrderDirections
   children?: React.ReactElement
   extraControls?: React.ReactElement[]
@@ -339,15 +339,15 @@ export interface PaginatedViewProps {
   limit?: number
 }
 
-export default ({
+const PaginatedView = <TRecord,>({
   viewName,
   editorViewName,
   collectionName,
   select = '*',
   getQuery = undefined,
-  sortKey = '',
+  sortKey = undefined,
   sortOptions = [],
-  defaultFieldName = '',
+  defaultFieldName = undefined,
   defaultDirection,
   children,
   extraControls = [],
@@ -357,12 +357,14 @@ export default ({
   showCommonMetaControls = false,
   getQueryString = undefined,
   limit = undefined,
-}: PaginatedViewProps) => {
+}: PaginatedViewProps<TRecord>) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
   }
 
-  const [selectedSubView, setSelectedSubView] = useState<string | null>(null)
+  const [selectedSubView, setSelectedSubView] = useState<
+    string | number | null
+  >(null)
   const [filters, setFilters] = useState({})
   const classes = useStyles()
   const isEditor = useIsEditor()
@@ -438,7 +440,9 @@ export default ({
               <Control>
                 <SortControls
                   options={sortOptions}
+                  // @ts-ignore
                   sortKey={sortKey}
+                  // @ts-ignore
                   defaultFieldName={defaultFieldName}
                 />
               </Control>
@@ -459,3 +463,5 @@ export default ({
     </PaginatedViewContext.Provider>
   )
 }
+
+export default PaginatedView
