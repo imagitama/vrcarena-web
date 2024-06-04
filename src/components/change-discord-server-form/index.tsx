@@ -25,6 +25,7 @@ import FormControls from '../form-controls'
 import {
   DiscordServer,
   DiscordServerFields,
+  ViewNames,
 } from '../../modules/discordservers'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
@@ -183,7 +184,7 @@ const AllDiscordServers = ({
   onCancel: () => void
 }) => {
   const [isLoading, isErrored, results] = useDataStoreItems<DiscordServer>(
-    'getpublicdiscordservers',
+    ViewNames.GetPublicDiscordServers,
     undefined,
     { queryName: 'get-discord-servers-for-form' }
   )

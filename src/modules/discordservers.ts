@@ -37,4 +37,5 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullDiscordServers = 'getfulldiscordservers',
+  GetPublicDiscordServers = 'getpublicdiscordservers',
 }

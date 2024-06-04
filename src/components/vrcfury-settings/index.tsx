@@ -66,6 +66,15 @@ const VrcFurySettings = ({
       const ids = prefabs
         .filter((prefab) => prefab.discordServerId !== undefined)
         .map((prefab) => prefab.discordServerId || '')
+
+      if (!ids.length) {
+        console.warn('Could not populate Discord server data: IDs empty', {
+          prefabs,
+          ids,
+        })
+        return null
+      }
+
       const result = await readRecordsById<DiscordServer>(
         CollectionNames.DiscordServers,
         ids

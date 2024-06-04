@@ -13,6 +13,7 @@ import {
   UserFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
+import { ViewNames } from '../../modules/discordservers'
 
 const useStyles = makeStyles({
   textInput: {
@@ -36,6 +37,7 @@ const useStyles = makeStyles({
   },
 })
 
+// TODO: Use enums and types
 const getSearchStatementForCollectionName = (collectionName: string) => {
   switch (collectionName) {
     case CollectionNames.Assets:
@@ -55,6 +57,7 @@ const getSearchStatementForCollectionName = (collectionName: string) => {
   }
 }
 
+// TODO: Use enums and types
 const getFieldsToSearchForCollectionName = (collectionName: string) => {
   switch (collectionName) {
     case CollectionNames.Assets:
@@ -74,12 +77,13 @@ const getFieldsToSearchForCollectionName = (collectionName: string) => {
   }
 }
 
+// TODO: Use enums and types
 const getTableOrViewNameForCollectionName = (collectionName: string) => {
   switch (collectionName) {
     case CollectionNames.Authors:
       return 'getpublicauthors'
     case CollectionNames.DiscordServers:
-      return 'getpublicdiscordservers'
+      return ViewNames.GetPublicDiscordServers
     case CollectionNames.Comments:
       return 'getpubliccomments'
     default:

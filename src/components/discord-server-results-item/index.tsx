@@ -38,7 +38,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const DiscordServerResultsItem = ({
   discordServer: { id, name, iconurl },
   onClick,
 }: {
@@ -71,3 +71,5 @@ export default ({
     </div>
   )
 }
+
+export default DiscordServerResultsItem
