@@ -15,6 +15,7 @@ import { auth as firebaseAuth } from '../../firebase'
 import Button from '../button'
 import BulkEditButton from '../bulk-edit-button'
 import useSupabaseUserId from '../../hooks/useSupabaseUserId'
+import useIsEditor from '../../hooks/useIsEditor'
 
 const useStyles = makeStyles({
   footer: {
@@ -88,6 +89,7 @@ function DevelopmentTools() {
   const [isAlreadyOver18, setIsAlreadyOver18] = useStorage(alreadyOver18Key)
   const firebaseUserId = useUserId()
   const supabaseUserId = useSupabaseUserId()
+  const isEditor = useIsEditor()
   return (
     <table>
       <tbody>
@@ -106,6 +108,8 @@ function DevelopmentTools() {
             FB: {firebaseUserId}
             <br />
             SB: {supabaseUserId}
+            <br />
+            Editor: {isEditor ? 'Yes' : 'No'}
             <br />
             <Button onClick={() => firebaseAuth.signOut()}>
               Sign out of FB

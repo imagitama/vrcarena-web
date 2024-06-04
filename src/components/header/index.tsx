@@ -98,9 +98,6 @@ const useStyles = makeStyles({
   rightCol: {
     width: '100%',
   },
-  accountMenuWrapper: {
-    // flexShrink: 0,
-  },
   searchBar: {
     width: '100%',
   },
@@ -280,7 +277,7 @@ export default () => {
         {!isMobile ? <DesktopMenu /> : null}
       </div>
 
-      <div className={classes.accountMenuWrapper}>
+      <div>
         {!isMobile && <AccountMenu />}
         {isMobile && (
           <Button

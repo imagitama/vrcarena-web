@@ -1,16 +1,23 @@
 import React, { useCallback } from 'react'
 import Link from '../../components/link'
 import { makeStyles } from '@material-ui/core/styles'
-import EventIcon from '@material-ui/icons/Event'
 
 import * as routes from '../../routes'
 import useDataStore from '../../hooks/useDataStore'
 import { client as supabase } from '../../supabase'
-import { Event, FullEvent, PublicEvent, ViewNames } from '../../modules/events'
+import { Event, PublicEvent, ViewNames } from '../../modules/events'
 import { FeaturedStatus } from '../../modules/common'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
+import { getFriendlyDate } from '../../utils/dates'
 
 const useStyles = makeStyles({
+  root: {
+    position: 'relative',
+    animation: '3s ease infinite alternate $pulseLogo',
+    '&:hover': {
+      animation: '100ms $hoverOverLogo forwards',
+    },
+  },
   banner: {
     height: '75px',
     transition: '100ms all',
@@ -29,10 +36,6 @@ const useStyles = makeStyles({
     [mediaQueryForTabletsOrBelow]: {
       height: '50px',
       padding: 0,
-    },
-    animation: '3s ease infinite alternate $pulseLogo',
-    '&:hover': {
-      animation: '100ms $hoverOverLogo forwards',
     },
   },
   '@keyframes hoverOverLogo': {
@@ -63,9 +66,28 @@ const useStyles = makeStyles({
     display: 'block',
     color: 'inherit',
   },
+  chip: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    borderRadius: '0.25rem',
+    zIndex: 100,
+    background: 'rgb(150, 100, 0)',
+    color: '#FFF',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    fontSize: '75%',
+    padding: '0 0.2rem',
+    transform: 'translate(10%, -10%)',
+  },
+  onNow: {
+    background: 'red',
+  },
 })
 
-export default () => {
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000
+
+const HeaderCurrentEvents = () => {
   const getQuery = useCallback(
     () =>
       supabase
@@ -93,14 +115,30 @@ export default () => {
     return null
   }
 
-  const { id, name, bannerurl, slug } = events[0]
+  const { id, name, bannerurl, slug, startsat, endsat } = events[0]
 
   if (!bannerurl) {
     return <>No banner URL configured</>
   }
 
+  const isCurrentlyOn =
+    new Date(startsat).getTime() <= new Date().getTime() &&
+    new Date().getTime() <= new Date(endsat).getTime()
+
+  const isUnderOneWeek =
+    isCurrentlyOn ||
+    new Date(startsat).getTime() - new Date().getTime() <= ONE_WEEK_MS
+
   return (
-    <Link to={routes.viewEventWithVar.replace(':eventId', slug || id)}>
+    <Link
+      to={routes.viewEventWithVar.replace(':eventId', slug || id)}
+      className={classes.root}>
+      {isCurrentlyOn || isUnderOneWeek ? (
+        <div
+          className={`${classes.chip} ${isCurrentlyOn ? classes.onNow : ''}`}>
+          {isCurrentlyOn ? 'On Right Now!' : getFriendlyDate(startsat)}
+        </div>
+      ) : null}
       <img
         src={bannerurl}
         alt={`Banner for ${name}`}
@@ -109,3 +147,5 @@ export default () => {
     </Link>
   )
 }
+
+export default HeaderCurrentEvents
