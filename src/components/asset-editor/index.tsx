@@ -517,7 +517,7 @@ const AuthorDisplay = ({
 const CategoryDisplay = ({ value }: { value: string }) => (
   <div>
     {value ? (
-      <CategoryItem category={getCategoryMeta(value)} />
+      <CategoryItem category={getCategoryMeta(value as AssetCategory)} />
     ) : (
       <NoValueMessage>No category set</NoValueMessage>
     )}
