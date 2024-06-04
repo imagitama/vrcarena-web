@@ -11,7 +11,7 @@ import PaginatedView from '../../components/paginated-view'
 import AssetResults from '../../components/asset-results'
 import Button from '../../components/button'
 
-import categoryMeta from '../../category-meta'
+import { getCategoryMeta } from '../../category-meta'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
 
@@ -21,19 +21,13 @@ import AreaNavigation from '../../components/area-navigation'
 import Link from '../../components/link'
 import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 
-function getDisplayNameByCategoryName(categoryName: string): string {
-  const category = categoryMeta[categoryName]
-  if (!category) {
-    return 'Unknown Category'
-  }
+function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
+  const category = getCategoryMeta(categoryName)
   return category.name
 }
 
-function getDescriptionByCategoryName(categoryName: string): string {
-  const category = categoryMeta[categoryName]
-  if (!category) {
-    return 'This category has been removed or is unavailable.'
-  }
+function getDescriptionByCategoryName(categoryName: AssetCategory): string {
+  const category = getCategoryMeta(categoryName)
   return category.shortDescription
 }
 
@@ -54,7 +48,7 @@ const Renderer = ({
 }
 
 const ViewCategoryView = () => {
-  const { categoryName } = useParams<{ categoryName: string }>()
+  const { categoryName } = useParams<{ categoryName: AssetCategory }>()
   const { pathname } = useLocation()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(

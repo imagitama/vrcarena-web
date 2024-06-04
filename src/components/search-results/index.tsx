@@ -20,7 +20,10 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { mediaQueryForMobiles } from '../../media-queries'
 import { adultSearchTerms } from '../../config'
 import { areasByCategory } from '../../areas'
-import categoryMeta, { CategoryMeta } from '../../category-meta'
+import categoryMeta, {
+  CategoryMeta,
+  getCategoryMeta,
+} from '../../category-meta'
 import useSpecies from '../../hooks/useSpecies'
 import { Species } from '../../modules/species'
 import { getPathForQueryString } from '../../queries'
@@ -331,7 +334,7 @@ const CategoryAndSpeciesSearchHint = ({
   let suggestedCategory: CategoryMeta | null = null
 
   for (const categoryName in categoryMeta) {
-    const category = categoryMeta[categoryName]
+    const category = getCategoryMeta(categoryName)
 
     if (
       category.name.toLowerCase().includes(searchTermLower) ||

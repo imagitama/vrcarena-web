@@ -15,9 +15,9 @@ import { alreadyOver18Key } from '../../config'
 import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useStorage from '../../hooks/useStorage'
 import { trackAction } from '../../analytics'
-import categoryMeta from '../../category-meta'
+import categoryMeta, { getCategoryMeta } from '../../category-meta'
 import useUserPreferences from '../../hooks/useUserPreferences'
-import { PublicAsset } from '../../modules/assets'
+import { AssetCategory, PublicAsset } from '../../modules/assets'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => {
   const assetsByCategory = items
@@ -36,14 +36,14 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => {
 
   return (
     <>
-      {Object.entries(assetsByCategory).map(([categoryName, assets]) =>
-        categoryName in categoryMeta ? (
-          <Fragment key={categoryName}>
-            <Heading variant="h2">{categoryMeta[categoryName].name}</Heading>
-            <AssetResults assets={assets} />
-          </Fragment>
-        ) : null
-      )}
+      {Object.entries(assetsByCategory).map(([categoryName, assets]) => (
+        <Fragment key={categoryName}>
+          <Heading variant="h2">
+            {getCategoryMeta(categoryName as AssetCategory).name}
+          </Heading>
+          <AssetResults assets={assets} />
+        </Fragment>
+      ))}
     </>
   )
 }

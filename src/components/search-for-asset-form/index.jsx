@@ -6,7 +6,7 @@ import TextInput from '../text-input'
 import CheckboxInput from '../checkbox-input'
 import AssetResults from '../asset-results'
 import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
-import categoryMeta from '../../category-meta'
+import categoryMeta, { getCategoryMeta } from '../../category-meta'
 import { AssetCategory } from '../../modules/assets'
 
 const useStyles = makeStyles({
@@ -107,7 +107,7 @@ export default ({
             <div key={categoryName} className={classes.category}>
               <CheckboxInput
                 value={selectedCategoryNames.includes(categoryName)}
-                label={categoryMeta[categoryName].name}
+                label={getCategoryMeta(categoryName).name}
                 onChange={(newVal) =>
                   setSelectedCategoryNames((currentNames) =>
                     newVal

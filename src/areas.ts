@@ -4,7 +4,6 @@ import animationAreas from './areas/animation'
 import tutorialAreas from './areas/tutorial'
 import shaderAreas from './areas/shader'
 import retextureAreas from './areas/retexture'
-import articleAreas from './areas/article'
 import toolAreas from './areas/tool'
 import { Asset, AssetCategory, PublicAsset } from './modules/assets'
 import worldAssetAreas from './areas/worldAsset'
@@ -16,7 +15,6 @@ export const areasByCategory: { [categoryName: string]: Areas } = {
   [AssetCategory.Tutorial]: tutorialAreas,
   [AssetCategory.Shader]: shaderAreas,
   [AssetCategory.Retexture]: retextureAreas,
-  [AssetCategory.Article]: articleAreas,
   [AssetCategory.WorldAsset]: worldAssetAreas,
   [AssetCategory.Tool]: toolAreas,
 }

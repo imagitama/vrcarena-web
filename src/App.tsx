@@ -581,6 +581,19 @@ const MainContent = () => {
           )}/*`}
           component={DeprecatedRouteView}
         />
+        <Route
+          exact
+          path={routes.viewCategoryWithVar.replace(':categoryName', 'news')}
+          component={DeprecatedRouteView}
+        />
+        <Route
+          exact
+          path={`${routes.viewCategoryWithVar.replace(
+            ':categoryName',
+            'news'
+          )}/*`}
+          component={DeprecatedRouteView}
+        />
         <Route exact path={routes.viewAvatars} component={ViewAvatars} />
         <Route
           exact

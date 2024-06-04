@@ -1,5 +1,4 @@
 import AccessibilityIcon from '@material-ui/icons/Accessibility'
-import ReceiptIcon from '@material-ui/icons/Receipt'
 import SchoolIcon from '@material-ui/icons/School'
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun'
 
@@ -13,7 +12,6 @@ import { AssetCategory } from './modules/assets'
 // TODO: Load on demand
 import accessoryOptimizedImageUrl from './assets/images/categories/optimized/accessory.webp'
 import animationOptimizedImageUrl from './assets/images/categories/optimized/animation.webp'
-import articleOptimizedImageUrl from './assets/images/categories/optimized/article.webp'
 import avatarOptimizedImageUrl from './assets/images/categories/optimized/avatar.webp'
 import tutorialOptimizedImageUrl from './assets/images/categories/optimized/tutorial.webp'
 import worldAssetOptimizedImageUrl from './assets/images/categories/optimized/worldAsset.webp'
@@ -63,14 +61,6 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     shortDescription: `Learn how to use software such as Unity, Blender or Substance Painter. Learn how to make changes to your avatar or build worlds.`,
     optimizedImageUrl: tutorialOptimizedImageUrl,
     icon: SchoolIcon,
-  },
-  [AssetCategory.Article]: {
-    id: AssetCategory.Article,
-    name: 'News',
-    nameSingular: 'Article',
-    shortDescription: `Read recent news article about VRChat and the different species.`,
-    optimizedImageUrl: articleOptimizedImageUrl,
-    icon: ReceiptIcon,
   },
   [AssetCategory.Tool]: {
     id: AssetCategory.Tool,

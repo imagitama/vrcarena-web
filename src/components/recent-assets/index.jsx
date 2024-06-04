@@ -18,7 +18,7 @@ import Heading from '../heading'
 import BodyText from '../body-text'
 
 import * as routes from '../../routes'
-import categoryMeta from '../../category-meta'
+import categoryMeta, { getCategoryMeta } from '../../category-meta'
 import { createRef } from '../../utils'
 
 function getViewMoreLinkUrl(speciesId, categoryName) {
@@ -101,10 +101,10 @@ export default ({
                   categoryName
                 )
           }>
-          {title || categoryMeta[categoryName].name}
+          {title || getCategoryMeta(categoryName).name}
         </Link>
       </Heading>
-      <BodyText>{categoryMeta[categoryName].shortDescription}</BodyText>
+      <BodyText>{getCategoryMeta(categoryName).shortDescription}</BodyText>
       <AssetResults assets={results} showPinned={showPinned} />
       <div style={{ textAlign: 'center', marginTop: '1rem' }}>
         {speciesId && categoryName && (

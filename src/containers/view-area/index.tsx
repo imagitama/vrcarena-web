@@ -8,7 +8,7 @@ import TagChips from '../../components/tag-chips'
 import AreaNavigation from '../../components/area-navigation'
 import Heading from '../../components/heading'
 
-import categoryMeta from '../../category-meta'
+import { getCategoryMeta } from '../../category-meta'
 import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom'
 import { AssetCategory, PublicAsset } from '../../modules/assets'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
-  return categoryMeta[categoryName].name
+  return getCategoryMeta(categoryName).name
 }
 
 function getDisplayName(categoryName: AssetCategory, areaName: string): string {

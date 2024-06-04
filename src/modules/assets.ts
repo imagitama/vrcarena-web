@@ -25,7 +25,6 @@ export enum AssetCategory {
   Tutorial = 'tutorial',
   Shader = 'shader',
   Retexture = 'retexture',
-  Article = 'article',
   WorldAsset = 'worldAsset',
   Tool = 'tool',
 }
@@ -51,7 +50,7 @@ export interface AssetFields {
   pedestalvideourl: string
   pedestalfallbackimageurl: string
   author: string // id
-  category: string
+  category: AssetCategory
   tags: string[]
   bannerurl: string
   slug: string

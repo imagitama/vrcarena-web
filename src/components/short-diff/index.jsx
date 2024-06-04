@@ -11,7 +11,7 @@ import {
   CollectionNames,
   SpeciesFieldNames,
 } from '../../hooks/useDatabaseQuery'
-import categoryMeta from '../../category-meta'
+import categoryMeta, { getCategoryMeta } from '../../category-meta'
 
 import AssetThumbnail from '../asset-thumbnail'
 import Markdown from '../markdown'
@@ -623,7 +623,7 @@ const RenderersForFields = {
         <Value
           value={
             fields[AssetFieldNames.category] &&
-            categoryMeta[fields[AssetFieldNames.category]].nameSingular
+            getCategoryMeta(fields[AssetFieldNames.category]).nameSingular
           }
         />
       ),

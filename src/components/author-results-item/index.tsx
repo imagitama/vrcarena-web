@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography'
 
 import * as routes from '../../routes'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import categoryMeta from '../../category-meta'
+import categoryMeta, { getCategoryMeta } from '../../category-meta'
 import { Author } from '../../modules/authors'
 import DefaultAvatar from '../default-avatar'
 
@@ -68,7 +68,7 @@ export default ({
               <div className={classes.cats}>
                 {categories && categories.length
                   ? categories
-                      .map((categoryName) => categoryMeta[categoryName].name)
+                      .map((categoryName) => getCategoryMeta(categoryName).name)
                       .join(', ')
                   : '\u00A0'}
               </div>

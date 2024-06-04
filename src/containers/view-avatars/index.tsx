@@ -12,7 +12,7 @@ import Button from '../../components/button'
 import { AssetFieldNames, OrderDirections } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
-import categoryMeta from '../../category-meta'
+import { getCategoryMeta } from '../../category-meta'
 import * as routes from '../../routes'
 import {
   Asset,
@@ -21,12 +21,12 @@ import {
   ViewNames,
 } from '../../modules/assets'
 
-function getDisplayNameByCategoryName(categoryName: string): string {
-  return categoryMeta[categoryName].name
+function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
+  return getCategoryMeta(categoryName).name
 }
 
-function getDescriptionByCategoryName(categoryName: string): string {
-  return categoryMeta[categoryName].shortDescription
+function getDescriptionByCategoryName(categoryName: AssetCategory): string {
+  return getCategoryMeta(categoryName).shortDescription
 }
 
 interface AssetWithSpeciesData extends Asset {

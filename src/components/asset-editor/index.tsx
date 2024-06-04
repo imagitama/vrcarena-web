@@ -33,7 +33,7 @@ import {
 } from '../../hooks/useDatabaseQuery'
 
 import * as routes from '../../routes'
-import categoryMeta from '../../category-meta'
+import categoryMeta, { getCategoryMeta } from '../../category-meta'
 import { adultSearchTerms, nsfwRules, WEBSITE_FULL_URL } from '../../config'
 import { isGumroadUrl } from '../../utils'
 import { getDoesAssetNeedPublishing } from '../../utils/assets'
@@ -517,7 +517,7 @@ const AuthorDisplay = ({
 const CategoryDisplay = ({ value }: { value: string }) => (
   <div>
     {value ? (
-      <CategoryItem category={categoryMeta[value]} />
+      <CategoryItem category={getCategoryMeta(value)} />
     ) : (
       <NoValueMessage>No category set</NoValueMessage>
     )}

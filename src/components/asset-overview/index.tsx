@@ -35,7 +35,7 @@ import {
 import { getCanUserEditAsset } from '../../assets'
 import Link from '../../components/link'
 import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
-import categoryMeta from '../../category-meta'
+import categoryMeta, { getCategoryMeta } from '../../category-meta'
 import {
   AssetCategory,
   FullAsset,
@@ -590,7 +590,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     asset.category
                   )}>
                   {asset.category
-                    ? categoryMeta[asset.category].nameSingular
+                    ? getCategoryMeta(asset.category).nameSingular
                     : '(no category)'}
                 </Link>
               </>
