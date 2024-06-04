@@ -334,12 +334,13 @@ const getIdIfNotId = async (
 
   console.debug(`Query.getID.result`, { results })
 
-  if (results === null || results.length !== 1) {
+  if (results === null || results.length === 0) {
     throw new CouldNotFindIdError(
-      `Could not find record in column "${columnName}" by ID "${idOrName}" in collection "${collectionName}" - result is ${results}`
+      `Could not find record in column "${columnName}" by ID "${idOrName}" in collection "${collectionName}" - result is empty or 0 ${results}`
     )
   }
 
+  // NOTE: sometimes returns more than 1 result eg. if multiple authors for same name
   const id = results[0].id
 
   return id
