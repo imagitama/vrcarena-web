@@ -5,7 +5,8 @@ import { client as supabase } from '../supabase'
 export default <TRecord, TReturnVal = TRecord>(
   collectionName: string | false,
   documentId: string | null = null,
-  isDelete: boolean = false
+  isDelete: boolean = false,
+  queryName?: string
 ): [
   boolean,
   boolean,
@@ -62,7 +63,12 @@ export default <TRecord, TReturnVal = TRecord>(
     setIsSaving(true)
 
     try {
-      console.debug('useDatabaseSave', collectionName, idToSave, fields)
+      console.debug('useDatabaseSave', {
+        queryName,
+        collectionName,
+        idToSave,
+        fields,
+      })
 
       let returnData: null | TReturnVal
 

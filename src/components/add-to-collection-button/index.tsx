@@ -31,6 +31,9 @@ const useStyles = makeStyles({
     height: '1px',
     background: 'rgba(255, 255, 255, 0.5)',
   },
+  noIcon: {
+    paddingLeft: '40px',
+  },
 })
 
 const MenuItemWithIcon = ({
@@ -38,14 +41,19 @@ const MenuItemWithIcon = ({
   children,
   onClick,
 }: {
-  icon: React.ReactNode
+  icon: React.ReactNode | undefined
   children: React.ReactNode
   onClick: () => void
-}) => (
-  <MenuItem onClick={onClick}>
-    {icon} &nbsp; {children}
-  </MenuItem>
-)
+}) => {
+  const classes = useStyles()
+  return (
+    <MenuItem
+      onClick={onClick}
+      className={icon === undefined ? classes.noIcon : ''}>
+      {icon} &nbsp; {children}
+    </MenuItem>
+  )
+}
 
 const CollectionMenuItem = ({
   assetId,
@@ -146,7 +154,7 @@ const getIcon = (
     return <PlaylistAddCheckIcon />
   }
 
-  return <PlaylistAddIcon />
+  return undefined
 }
 
 const getLabel = (
@@ -191,42 +199,41 @@ const MyCollectionMenuItem = ({
   assetId: string
   onDone: (newValue: boolean) => void
 }) => {
-  const userId = useUserId()
+  const userId = useUserId()!
   const [isLoadingCollection, lastErrorLoadingCollection, myCollection] =
     useDataStoreItem<CollectionForUser>(
       CollectionNames.CollectionsForUsers,
-      userId || false
+      userId,
+      'my-collection'
     )
-  const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] =
+
+  const areWeCreating = myCollection === false
+
+  const [isSaving, isSavingSuccess, lastSavingError, createOrUpdate] =
     useDatabaseSave<CollectionForUser>(
       CollectionNames.CollectionsForUsers,
-      myCollection ? userId : null
+      areWeCreating ? null : userId,
+      undefined,
+      'save-my-collection'
     )
-  const isLoggedIn = !!userId
-  const isAssetInCollection = !!(
-    myCollection &&
-    myCollection.assets &&
-    myCollection.assets.includes(assetId)
-  )
-  const currentAssetIds: string[] =
-    myCollection && myCollection.assets ? myCollection.assets : []
+
+  const isAssetInMyCollection = myCollection
+    ? myCollection.assets.includes(assetId)
+    : false
+  const assetIdsInMyCollection = myCollection ? myCollection.assets : []
 
   const onClickBtn = async () => {
     try {
-      if (!isLoggedIn) {
-        return
-      }
+      const newAssetIds = isAssetInMyCollection
+        ? assetIdsInMyCollection.filter((itemId) => itemId !== assetId)
+        : assetIdsInMyCollection.concat([assetId])
 
-      const newAssetIds = isAssetInCollection
-        ? currentAssetIds.filter((itemId) => itemId !== assetId)
-        : currentAssetIds.concat([assetId])
-
-      await saveOrCreate({
+      await createOrUpdate({
         id: userId,
         assets: newAssetIds,
       })
 
-      onDone(!isAssetInCollection)
+      onDone(!isAssetInMyCollection)
     } catch (err) {
       console.error('Failed to save collection', err)
       handleError(err)
@@ -237,7 +244,7 @@ const MyCollectionMenuItem = ({
     <MenuItemWithIcon
       icon={getIcon(
         isLoadingCollection,
-        isAssetInCollection,
+        isAssetInMyCollection,
         isSaving,
         lastSavingError || lastErrorLoadingCollection,
         isSavingSuccess
@@ -246,7 +253,7 @@ const MyCollectionMenuItem = ({
       {getLabel(
         'Owned Assets',
         isLoadingCollection,
-        isAssetInCollection,
+        isAssetInMyCollection,
         isSaving,
         lastSavingError || lastErrorLoadingCollection,
         isSavingSuccess
