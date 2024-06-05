@@ -847,7 +847,6 @@ const Editor = () => {
                 icon={() => <CategoryIcon />}
                 display={CategoryDisplay}
                 editor={
-                  // @ts-ignore
                   <ChangeCategoryForm
                     assetId={assetId}
                     existingCategory={asset.category}

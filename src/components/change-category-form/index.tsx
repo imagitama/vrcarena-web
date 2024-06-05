@@ -15,8 +15,9 @@ import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
-import categoryMeta from '../../category-meta'
-import { AssetCategory } from '../../modules/assets'
+import categoryMeta, { CategoryMeta } from '../../category-meta'
+import { Asset, AssetCategory } from '../../modules/assets'
+import LoadingIndicator from '../loading-indicator'
 
 const useStyles = makeStyles({
   buttons: {
@@ -50,14 +51,15 @@ const useStyles = makeStyles({
   },
 })
 
-function CategoryButton({
-  name,
-  nameSingular,
-  optimizedImageUrl,
-  shortDescription,
+const CategoryButton = ({
   onClick,
   isSelected,
-}) {
+  meta: { optimizedImageUrl, nameSingular, shortDescription },
+}: {
+  onClick: () => void
+  isSelected: boolean
+  meta: CategoryMeta
+}) => {
   const classes = useStyles()
   return (
     <div className={classes.button}>
@@ -83,39 +85,49 @@ function CategoryButton({
   )
 }
 
-function CategoryButtons({ selectedCategory, onSelect }) {
+const CategoryButtons = ({
+  selectedCategory,
+  onSelect,
+}: {
+  selectedCategory: AssetCategory
+  onSelect: (newCategory: AssetCategory) => void
+}) => {
   const classes = useStyles()
   return (
     <div className={classes.buttons}>
-      {Object.keys(AssetCategory).map((categoryName) => (
+      {Object.values(AssetCategory).map((categoryName) => (
         <CategoryButton
           key={categoryName}
           onClick={() => onSelect(categoryName)}
           isSelected={categoryName === selectedCategory}
-          {...categoryMeta[categoryName]}
+          meta={categoryMeta[categoryName]}
         />
       ))}
     </div>
   )
 }
 
-export default ({
+const ChangeCategoryForm = ({
   assetId,
   existingCategory,
-  actionCategory = '',
-  onDone = null,
-  overrideSave = null,
+  actionCategory,
+  onDone,
+  overrideSave,
+}: {
+  assetId: string | null
+  existingCategory: AssetCategory
+  actionCategory?: string
+  onDone?: () => void
+  overrideSave?: (newCategory: AssetCategory) => void
 }) => {
-  const userId = useUserId()
-  const [isSaving, , , save] = useDatabaseSave(CollectionNames.Assets, assetId)
+  const [isSaving, , , save] = useDatabaseSave(
+    assetId ? CollectionNames.Assets : false,
+    assetId
+  )
   const [newCategory, setNewCategory] = useState(existingCategory)
 
-  if (!userId) {
-    return 'You are not logged in'
-  }
-
   if (isSaving) {
-    return 'Saving...'
+    return <LoadingIndicator message="Saving asset..." />
   }
 
   const onSaveBtnClick = async () => {
@@ -129,7 +141,9 @@ export default ({
         return
       }
 
-      trackAction(actionCategory, 'Click save asset category button', assetId)
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click save asset category button', assetId)
+      }
 
       await save({
         [AssetFieldNames.category]: newCategory,
@@ -158,3 +172,5 @@ export default ({
     </>
   )
 }
+
+export default ChangeCategoryForm

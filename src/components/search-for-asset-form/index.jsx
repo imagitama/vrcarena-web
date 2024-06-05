@@ -103,7 +103,7 @@ export default ({
     <>
       {category ? null : (
         <div className={classes.categories}>
-          {Object.keys(AssetCategory).map((categoryName) => (
+          {Object.values(AssetCategory).map((categoryName) => (
             <div key={categoryName} className={classes.category}>
               <CheckboxInput
                 value={selectedCategoryNames.includes(categoryName)}
