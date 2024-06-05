@@ -222,6 +222,7 @@ const MyCollectionMenuItem = ({
         : currentAssetIds.concat([assetId])
 
       await saveOrCreate({
+        id: userId,
         assets: newAssetIds,
       })
 

@@ -412,8 +412,9 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   ) {
     return (
       <ErrorMessage>
-        We failed to load that asset. you could not have permission or maybe it
-        does not exist. Please ask our staff on Discord
+        Failed to load asset. It could have been deleted, never existed or you
+        do not have permission to see it. If you think this is wrong please
+        contact us in Discord.
       </ErrorMessage>
     )
   }
