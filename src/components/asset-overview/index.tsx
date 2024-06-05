@@ -403,7 +403,13 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     asset && asset.slug ? asset.slug : assetId
   )
 
-  if (lastErrorCode !== null || (results && results.length === 0)) {
+  if (
+    lastErrorCode !== null ||
+    (results && results.length === 0) ||
+    (asset &&
+      ((asset.category as string) === 'world' ||
+        (asset.category as string) === 'article'))
+  ) {
     return (
       <ErrorMessage>
         We failed to load that asset. you could not have permission or maybe it
