@@ -9,7 +9,6 @@ import LazyLoad from 'react-lazyload'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import LinkIcon from '@material-ui/icons/Link'
 
-import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
 import * as routes from '../../routes'
 import {
   Asset,
@@ -24,6 +23,7 @@ import Price from '../price'
 import LoadingShimmer from '../loading-shimmer'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AddToCartButton from '../add-to-cart-button'
+import DefaultThumbnail from '../default-thumbnail'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -136,7 +136,7 @@ const SpeciesOutput = ({
   if (relation) {
     return (
       <span className={classes.relation}>
-        / {relation.type} <LinkIcon />
+        {divider} {relation.type} <LinkIcon />
       </span>
     )
   }
@@ -162,7 +162,11 @@ const SpeciesOutput = ({
     )
   }
 
-  return <>{asset.species.length} species</>
+  return (
+    <>
+      {divider} {asset.species.length} species
+    </>
+  )
 }
 
 const AssetResultsItem = ({
@@ -204,12 +208,10 @@ const AssetResultsItem = ({
           <LazyLoad height={200}>
             <CardMedia
               className={classes.cardMedia}
-              image={
-                asset && asset.thumbnailurl
-                  ? asset.thumbnailurl
-                  : defaultThumbnailUrl
-              }
-              title={asset ? `Thumbnail for ${asset.title}` : ''}></CardMedia>
+              image={asset && asset.thumbnailurl ? asset.thumbnailurl : ''}
+              title={asset ? `Thumbnail for ${asset.title}` : ''}>
+              {!asset || !asset.thumbnailurl ? <DefaultThumbnail /> : undefined}
+            </CardMedia>
           </LazyLoad>
           <CardContent className={classes.cardContent}>
             <Typography className={classes.title}>

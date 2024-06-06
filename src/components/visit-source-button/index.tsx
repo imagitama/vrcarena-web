@@ -19,6 +19,7 @@ import {
   isDiscordUrl,
   isGoogleDriveUrl,
   isPatreonUrl,
+  isItchProductUrl,
 } from '../../utils'
 import { formatPrice } from '../../currency'
 
@@ -74,6 +75,10 @@ function getButtonLabel(
 
   if (isBoothUrl(sourceUrl)) {
     return `${prefix} Booth`
+  }
+
+  if (isItchProductUrl(sourceUrl)) {
+    return `${prefix} itch.io`
   }
 
   if (isGoogleDriveUrl(sourceUrl)) {
