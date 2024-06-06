@@ -179,6 +179,7 @@ export enum ViewNames {
   GetFullAssets = 'getfullassets',
   GetPublicAssets = 'getpublicassets',
   RelatedAssets = 'relatedassets',
+  GetNewPublicAssets = 'getnewpublicassets',
 }
 
 // legacy

@@ -46,6 +46,7 @@ const AssetsPaginatedView = (props: PaginatedViewProps<PublicAsset>) => {
       ]}
       defaultFieldName="createdat"
       {...props}
+      // TODO: Allow to override
       getQuery={getQuery}>
       <Renderer />
     </PaginatedView>

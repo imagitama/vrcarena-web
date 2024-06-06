@@ -11,33 +11,14 @@ import {
 } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
-import { PublicAsset } from '../../modules/assets'
+import { PublicAsset, ViewNames } from '../../modules/assets'
+import AssetsPaginatedView from '../../components/assets-paginated-view'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => {
   return <AssetResults assets={items} />
 }
 
-const hoursInPast = 24 * 7
-const getDateOfStartPeriod = () =>
-  new Date(new Date().getTime() - hoursInPast * 60 * 60 * 1000)
-
 const NewAssetsView = () => {
-  const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
-    (query) => {
-      query = query.gt(
-        AssetMetaFieldNames.approvedAt,
-        getDateOfStartPeriod().toISOString()
-      )
-
-      if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
-      }
-      return query
-    },
-    [isAdultContentEnabled]
-  )
-
   return (
     <>
       <Helmet>
@@ -54,13 +35,11 @@ const NewAssetsView = () => {
         <p>
           Assets that have been approved (not just created) in the past 7 days.
         </p>
-        <PaginatedView<PublicAsset>
-          viewName="getPublicAssets"
-          getQuery={getQuery}
-          defaultFieldName="createdat"
+        <AssetsPaginatedView
+          viewName={ViewNames.GetNewPublicAssets}
           urlWithPageNumberVar={routes.newAssetsWithPageNumberVar}>
           <Renderer />
-        </PaginatedView>
+        </AssetsPaginatedView>
       </div>
     </>
   )
