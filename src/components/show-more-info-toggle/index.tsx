@@ -1,17 +1,17 @@
 import React from 'react'
 import UserPreferenceEditor from '../user-preference-editor'
 
-const AdultContentToggle = ({
+const ShowMoreInfoToggle = ({
   analyticsCategoryName,
 }: {
   analyticsCategoryName?: string
 }) => (
   <UserPreferenceEditor
-    name="enabledadultcontent"
-    label="I am over 18 and want to see adult content"
+    name="showmoreinfo"
+    label="Show more info in assets (such as price)"
     defaultValue={false}
     analyticsCategoryName={analyticsCategoryName}
   />
 )
 
-export default AdultContentToggle
+export default ShowMoreInfoToggle

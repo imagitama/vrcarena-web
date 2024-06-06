@@ -8,15 +8,15 @@ import * as routes from '../../routes'
 import Paper from '../paper'
 
 const useStyles = makeStyles({
-  root: {}
+  root: {},
 })
 
 export default ({
   collection: {
     id,
     [PlaylistsFieldNames.title]: title,
-    [PlaylistsFieldNames.items]: items
-  }
+    [PlaylistsFieldNames.items]: items,
+  },
 }) => {
   const classes = useStyles()
 
@@ -24,7 +24,7 @@ export default ({
     <Paper className={classes.root}>
       <Typography variant="h5" component="h2">
         <Link to={routes.viewCollectionWithVar.replace(':collectionId', id)}>
-          {title}
+          {title || '(no title)'}
         </Link>{' '}
         {items ? ` (${items.length})` : ''}
       </Typography>

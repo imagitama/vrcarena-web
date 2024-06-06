@@ -19,6 +19,7 @@ export const myAccountWithTabNameVarAndPageNumberVar =
 export const privacyPolicy = '/help/privacy-policy'
 export const termsOfService = '/help/terms-of-service'
 export const takedownPolicy = '/help/takedown-policy'
+export const prices = '/help/prices'
 export const signUp = '/sign-up'
 export const contributors = '/contributors'
 export const unapproved = '/unapproved'

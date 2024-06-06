@@ -7,10 +7,15 @@ import TabContext from '../../context'
 import NoResultsMessage from '../../../no-results-message'
 import LoadingIndicator from '../../../loading-indicator'
 import ErrorMessage from '../../../error-message'
+import { Asset, ViewNames } from '../../../../modules/assets'
 
-const RelatedAssets = ({ assetId }) => {
-  const [isLoading, isErrored, result] = useDataStoreItem(
-    'relatedassets',
+interface RelatedAssetsResult {
+  results: Asset[]
+}
+
+const RelatedAssets = ({ assetId }: { assetId: string }) => {
+  const [isLoading, isErrored, result] = useDataStoreItem<RelatedAssetsResult>(
+    ViewNames.RelatedAssets,
     assetId,
     'tab-related'
   )

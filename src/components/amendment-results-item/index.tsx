@@ -19,14 +19,14 @@ import AuthorResultsItem from '../author-results-item'
 
 const useStyles = makeStyles({
   mainCell: {
-    borderBottom: 'none'
-  }
+    borderBottom: 'none',
+  },
 })
 
 const ParentRenderer = ({ table, data }: { table: string; data: any }) => {
   switch (table) {
     case OldCollectionNames.Assets:
-      return <AssetResultsItem asset={data} isLandscape />
+      return <AssetResultsItem asset={data} />
     case OldCollectionNames.Authors:
       return <AuthorResultsItem author={data} />
     default:
@@ -36,7 +36,7 @@ const ParentRenderer = ({ table, data }: { table: string; data: any }) => {
 
 export default ({
   result,
-  showParentDetails = true
+  showParentDetails = true,
 }: {
   result: FullAmendment
   showParentDetails?: boolean
@@ -52,7 +52,7 @@ export default ({
     createdat: createdAt,
     createdby: createdBy,
     parentdata: parentData,
-    createdbyusername: createdByUsername
+    createdbyusername: createdByUsername,
   } = result
 
   const classes = useStyles()
@@ -113,7 +113,7 @@ export default ({
               onlyNewFields={fields}
             />
           ) : (
-            <Button onClick={() => setIsExpanded(currentVal => !currentVal)}>
+            <Button onClick={() => setIsExpanded((currentVal) => !currentVal)}>
               Show Fields
             </Button>
           )}

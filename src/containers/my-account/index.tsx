@@ -32,6 +32,7 @@ import PatreonConnectForm from '../../components/patreon-connect-form'
 import VrPlatformChooser from '../../components/vr-platform-chooser'
 import LinkAccountWithVrchatForm from '../../components/link-with-vrchat-account-form'
 import TagBlacklistEditor from '../../components/tag-blacklist-editor'
+import ShowMoreInfoToggle from '../../components/show-more-info-toggle'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -70,7 +71,7 @@ const View = () => {
   }
 
   // if they just signed up
-  if (!user[UserFieldNames.username]) {
+  if (!user.username) {
     return <LoadingIndicator message="Waiting for your profile..." />
   }
 
@@ -129,13 +130,14 @@ const View = () => {
                 <Heading variant="h3">Bio</Heading>
                 <p>This bio is shown on your public user profile.</p>
                 <BioEditor
+                  // @ts-ignore
                   onSaveClick={() =>
                     trackAction(analyticsCategoryName, 'Click save bio button')
                   }
                 />
                 <Heading variant="h3">Favorite Species</Heading>
                 <FavoriteSpeciesEditor
-                  analyticsCategoryName={analyticsCategoryName}
+                  analyticsCategory={analyticsCategoryName}
                 />
                 <Heading variant="h3">VR Games</Heading>
                 <VrPlatformChooser />
@@ -148,18 +150,16 @@ const View = () => {
             contents: (
               <>
                 <Heading variant="h2">Settings</Heading>
-                <AdultContentToggle
-                  onClick={({ newValue }) =>
-                    trackAction(
-                      analyticsCategoryName,
-                      newValue === true
-                        ? 'Enable adult content'
-                        : 'Disable adult content'
-                    )
-                  }
+                <div>
+                  <AdultContentToggle
+                    analyticsCategoryName={analyticsCategoryName}
+                  />
+                </div>
+                <ShowMoreInfoToggle
+                  analyticsCategoryName={analyticsCategoryName}
                 />
-                <Heading variant="h2">Tag Blacklist</Heading>
-                <TagBlacklistEditor />
+                {/* <Heading variant="h2">Tag Blacklist</Heading>
+                <TagBlacklistEditor /> */}
                 <Heading variant="h3">Notifications</Heading>
                 <NotificationSettings />
               </>

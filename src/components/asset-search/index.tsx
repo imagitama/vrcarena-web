@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import MenuItem from '@material-ui/core/MenuItem'
 
 import useAssetSearch from '../../hooks/useAssetSearch'
-import { Asset, AssetCategory } from '../../modules/assets'
+import { Asset, AssetCategory, PublicAsset } from '../../modules/assets'
 import categoryMeta from '../../category-meta'
 import AssetResults from '../asset-results'
 import ErrorMessage from '../error-message'
@@ -25,8 +25,8 @@ const AssetSearch = ({
   selectedAsset = undefined,
   limit = 5,
 }: {
-  onSelect: (asset: Asset) => void
-  selectedAsset?: Asset
+  onSelect: (asset: Asset | PublicAsset) => void
+  selectedAsset?: Asset | PublicAsset
   limit?: number
 }) => {
   const [userInput, setUserInput] = useState('')
@@ -60,7 +60,6 @@ const AssetSearch = ({
             return false
           }}
           dimUnselected
-          showSelectedTick
           selectedAssetIds={selectedAsset ? [selectedAsset.id] : undefined}
         />
       ) : null}

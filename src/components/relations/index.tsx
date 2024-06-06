@@ -13,7 +13,6 @@ import useDataStore from '../../hooks/useDataStore'
 import LoadingIndicator from '../loading-indicator'
 import NoResultsMessage from '../no-results-message'
 import ErrorMessage from '../error-message'
-import AssetResultsItemParent from '../asset-results-item-parent'
 
 const useStyles = makeStyles({
   root: {
@@ -75,15 +74,17 @@ export const RelationItem = ({
   showRelation,
 }: {
   relation: Relation
-  asset: PublicAsset
+  asset: Asset | PublicAsset
   showRelation?: boolean
 }) => {
   const classes = useStyles()
 
   return (
     <div className={classes.relation}>
-      {showRelation ? <AssetResultsItemParent parent={asset} /> : null}
-      <AssetResultsItem asset={asset} pushDownIcons={showRelation} />
+      <AssetResultsItem
+        asset={asset}
+        relation={showRelation ? relation : undefined}
+      />
       {relation.comments ? (
         <div className={classes.comments}>
           <Markdown source={relation.comments} />

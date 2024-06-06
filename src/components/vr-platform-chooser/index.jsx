@@ -120,7 +120,7 @@ const vrPlatforms = [
   },
 ]
 
-export default ({ analyticsCategory, onDone = undefined }) => {
+export default ({ analyticsCategory = undefined, onDone = undefined }) => {
   const classes = useStyles()
   const userId = useUserId()
   const [isLoadingUser, isErroredLoadingUser, user] = useUserRecord()

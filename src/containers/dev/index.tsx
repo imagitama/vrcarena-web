@@ -26,11 +26,12 @@ import FileUploader from '../../components/file-uploader'
 import { bucketNames } from '../../file-uploading'
 import SurveyForm from '../../components/survey-form'
 import survey from '../../surveys/creating-asset'
-import { CollectionNames } from '../../modules/assets'
+import { Asset, CollectionNames, FullAsset } from '../../modules/assets'
 import PerformanceEditor from '../../components/performance-editor'
 import SpeciesSelector from '../../components/species-selector'
 import FeaturesEditor from '../../components/features-editor'
 import DefaultAvatar from '../../components/default-avatar'
+import AssetResultsItem from '../../components/asset-results-item'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -154,6 +155,31 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <h2>Asset Results Item</h2>
+        <AssetResultsItem />{' '}
+        <AssetResultsItem
+          isSelected
+          asset={
+            {
+              title: 'My Nice Thing',
+              category: 'avatar',
+              species: ['', ''],
+              speciesnames: [
+                'Cat',
+                'Dog',
+                'Fish',
+                'Bird',
+                'Elephant',
+                'Llama',
+                'Cheetah',
+                'Rat',
+                'Owl',
+                'Some Old Lady',
+              ],
+            } as FullAsset
+          }
+        />{' '}
+        <AssetResultsItem isDimmed />
         <h2>Default Avatar</h2>
         <div style={{ width: '300px', height: '300px' }}>
           <DefaultAvatar stringForDecision="HelloWorld" />

@@ -14,7 +14,7 @@ export default () => {
   const getQuery = useCallback(
     () =>
       supabase
-        .from('getFeaturedAssetResults'.toLowerCase())
+        .from('getFullAssets'.toLowerCase())
         .select('*')
         .eq(AssetMetaFieldNames.featuredBy, userId),
     [userId]

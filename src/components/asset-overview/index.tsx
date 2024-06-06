@@ -82,7 +82,6 @@ import Relations from '../relations'
 import useAssetOverview from './useAssetOverview'
 import OpenForCommissionsMessage from '../open-for-commissions-message'
 import TabMentions from './components/tab-mentions'
-import AssetResultsItemParent from '../asset-results-item-parent'
 import VrcFurySettings from '../vrcfury-settings'
 import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 import Block from '../block'
@@ -227,17 +226,17 @@ const ParentControlGroup = () => {
   const { asset } = useAssetOverview()
   const classes = useStyles()
 
-  const parent =
+  const relation =
     asset &&
     asset.relations &&
     asset.relations.find((relation) => relation.type === RelationType.Parent)
 
-  if (!parent) {
+  if (!relation) {
     return null
   }
 
   const parentData = asset.relationsdata.find(
-    (relation) => relation.id === parent.asset
+    (asset) => asset.id === relation.asset
   )
 
   if (!parentData) {
@@ -248,12 +247,7 @@ const ParentControlGroup = () => {
     <ControlGroup>
       <div className={classes.parent}>
         <div className={classes.parentWrapper}>
-          <AssetResultsItemParent parent={parentData} />
-          <AssetResultsItem
-            asset={parentData}
-            showCategory={false}
-            showCost={false}
-          />
+          <AssetResultsItem asset={parentData} relation={relation} />
         </div>
       </div>
     </ControlGroup>
@@ -719,6 +713,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                         : asset.price
                     }
                     priceCurrency={asset ? asset.pricecurrency : 'USD'}
+                    showPriceWarning
                   />
                 </Control>
               </ControlGroup>

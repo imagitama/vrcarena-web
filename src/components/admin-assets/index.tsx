@@ -123,7 +123,7 @@ function AssetsTable({
               return (
                 <TableRow key={id}>
                   <TableCell>
-                    <AssetResultsItem asset={asset} isLandscape showCategory />
+                    <AssetResultsItem asset={asset} />
                     {publishedat ? (
                       <>
                         Published <FormattedDate date={publishedat} />

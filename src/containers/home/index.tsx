@@ -24,10 +24,10 @@ import DiscordMessageResult from '../../components/discord-message-result'
 import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '../../config'
 import Block from '../../components/block'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import LoadingShimmer from '../../components/loading-shimmer'
 import PatreonCosts from './components/patreon-costs'
 import SpeciesResultItem from '../../components/species-result-item'
 import { FullSpecies } from '../../modules/species'
+import LoadingIndicator from '../../components/loading-indicator'
 
 const contentMaxWidth = '900px'
 
@@ -157,12 +157,6 @@ const Tile = ({
   )
 }
 
-const LoadingContentBlock = () => (
-  <Block>
-    <AssetResults shimmer shimmerCount={10} />
-  </Block>
-)
-
 const TileCols = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   return <div className={classes.tileCols}>{children}</div>
@@ -188,26 +182,9 @@ const Tiles = () => {
     return <ErrorMessage>Failed to load homepage content</ErrorMessage>
   }
 
-  if (isLoading || !Array.isArray(results) || !results.length) {
-    return (
-      <>
-        <LoadingContentBlock />
-        <LoadingContentBlock />
-        <LoadingContentBlock />
-        <LoadingContentBlock />
-      </>
-    )
-  }
+  const showShimmer = isLoading || !Array.isArray(results) || !results.length
 
-  const {
-    recentavatars: recentAvatars,
-    recentaccessories: recentAccessories,
-    recentusers: recentUsers,
-    recentactivity: recentActivity,
-    recentdiscordannouncements: recentDiscordAnnouncements,
-    featuredasset: featuredAsset,
-    featuredspecies: featuredSpecies,
-  } = results[0]
+  const result = showShimmer ? null : results[0]
 
   return (
     <TileCols>
@@ -219,7 +196,11 @@ const Tiles = () => {
             AssetCategory.Avatar
           )}
           buttonLabel="Browse Avatars">
-          <AssetResults assets={recentAvatars} />
+          <AssetResults
+            assets={result?.recentavatars}
+            shimmer={showShimmer}
+            shimmerCount={10}
+          />
         </Tile>
         <Tile
           title="Recent Accessories"
@@ -228,29 +209,43 @@ const Tiles = () => {
             AssetCategory.Accessory
           )}
           buttonLabel="Browse Accessories">
-          <AssetResults assets={recentAccessories} />
+          <AssetResults
+            assets={result?.recentaccessories}
+            shimmer={showShimmer}
+            shimmerCount={10}
+          />
         </Tile>
         <Tile
           title="Recent Sign-ups"
           url={routes.users}
           buttonLabel="Browse Users">
-          <UserList users={recentUsers} />
+          <UserList users={result?.recentusers} />
         </Tile>
         <Tile
           title="Discord Announcement"
           url={DISCORD_URL}
           buttonLabel="Join Discord">
-          {recentDiscordAnnouncements.length ? (
-            <DiscordMessageResult message={recentDiscordAnnouncements[0]} />
+          {result ? (
+            result.recentdiscordannouncements.length ? (
+              <DiscordMessageResult
+                message={result.recentdiscordannouncements[0]}
+              />
+            ) : (
+              <ErrorMessage>No Discord messages found</ErrorMessage>
+            )
           ) : (
-            <ErrorMessage>No Discord messages found</ErrorMessage>
+            <LoadingIndicator message="Loading..." />
           )}
         </Tile>
         <Tile
           title="Recent Activity"
           url={routes.activity}
           buttonLabel="View Activity">
-          <ActivityResults activityEntries={recentActivity} />
+          {result ? (
+            <ActivityResults activityEntries={result.recentactivity} />
+          ) : (
+            <LoadingIndicator message="Loading..." />
+          )}
         </Tile>
       </div>
       <div>
@@ -258,12 +253,27 @@ const Tiles = () => {
           title="Species Of The Day"
           url={routes.viewAllSpecies}
           buttonLabel="Browse Species">
-          <SpeciesResultItem speciesItem={featuredSpecies} />
+          {result ? (
+            <SpeciesResultItem speciesItem={result?.featuredspecies} />
+          ) : (
+            <LoadingIndicator message="Loading..." />
+          )}
         </Tile>
         <Tile
           title="Featured Asset"
-          url={routes.viewAssetWithVar.replace(':assetId', featuredAsset.id)}>
-          <AssetResults assets={[featuredAsset]} />
+          url={
+            result?.featuredasset
+              ? routes.viewAssetWithVar.replace(
+                  ':assetId',
+                  result.featuredasset.id
+                )
+              : ''
+          }>
+          <AssetResults
+            assets={result?.featuredasset ? [result.featuredasset] : undefined}
+            shimmer={showShimmer}
+            shimmerCount={1}
+          />
         </Tile>
         <Tile
           title="Patreon"

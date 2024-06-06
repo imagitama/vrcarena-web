@@ -12,7 +12,13 @@ const initialState = {
   user: null,
 }
 
-export interface NotificationPreferences {}
+export type NotificationPreferencesMethods = { [methodName: string]: boolean }
+export type NotificationPreferencesEvents = { [eventName: string]: boolean }
+
+export interface NotificationPreferences {
+  methods: NotificationPreferencesMethods
+  events: NotificationPreferencesEvents
+}
 
 export interface UserPreferences {
   id: string
@@ -20,6 +26,7 @@ export interface UserPreferences {
   notificationemail: string
   notificationprefs: NotificationPreferences
   tagblacklist: string[]
+  showmoreinfo: boolean
 }
 
 export const CollectionNames = {

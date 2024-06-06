@@ -1,4 +1,4 @@
-import { PopularCurrency, popularCurrencies } from '../currency'
+import { PopularCurrency } from '../currency'
 import {
   AccessStatuses,
   ApprovalStatuses,
@@ -8,6 +8,11 @@ import {
 import { FullAttachment } from './attachments'
 import { FeaturedStatus as FeaturedStatuses } from './common'
 import { Tag } from './tags'
+
+// TODO: Better func here as technically FullAsset has speciesnames
+export const getIsPublicAsset = (
+  asset: Asset | PublicAsset
+): asset is PublicAsset => asset && 'speciesnames' in asset
 
 export enum RelationType {
   Parent = 'parent',
@@ -42,30 +47,34 @@ export interface SourceInfo {
   comments: string
 }
 
-export interface AssetFields {
+// minimal data shared between ALL views
+export interface CoreAssetFields {
   title: string
-  description: string
-  shortdescription: string
   thumbnailurl: string
-  pedestalvideourl: string
-  pedestalfallbackimageurl: string
   author: string // id
   category: AssetCategory
-  tags: string[]
-  bannerurl: string
   slug: string
-  species: string[]
-  vrchatclonableavatarids: string[]
-  vrchatclonableworldids: string[]
+  isadult: boolean
   price: number
   pricecurrency: PopularCurrency
+  species: string[]
+  tags: string[] // used for "free" check and to group into areas
+}
+
+export interface AssetFields extends CoreAssetFields {
   sourceurl: string
+  description: string
+  shortdescription: string
+  pedestalvideourl: string
+  pedestalfallbackimageurl: string
+  bannerurl: string
+  vrchatclonableavatarids: string[]
+  vrchatclonableworldids: string[]
   gumroad?: {
     sync: boolean
     fields: { [fieldName: string]: boolean }
   }
   discordserver: string // id
-  isadult: boolean
   relations: Relation[]
   tutorialsteps: TutorialStep[]
   ranks: string[]
@@ -130,9 +139,13 @@ export interface AssetStats {
   reviewcount: number
 }
 
-export interface PublicAsset extends Asset, AssetMeta, AssetStats {
-  author: string
+export interface PublicAsset extends CoreAssetFields {
+  id: string
   authorname: string
+  isfree: boolean
+  speciesnames: string[]
+  // meta
+  createdat: string
 }
 
 export interface FullAsset extends Asset, AssetMeta, AssetStats {
@@ -165,6 +178,7 @@ export enum CollectionNames {
 export enum ViewNames {
   GetFullAssets = 'getfullassets',
   GetPublicAssets = 'getpublicassets',
+  RelatedAssets = 'relatedassets',
 }
 
 // legacy

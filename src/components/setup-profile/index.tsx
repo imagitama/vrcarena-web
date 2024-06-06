@@ -223,6 +223,7 @@ export default ({
             label: 'VR',
             contents: (
               <TabPanel>
+                {/* @ts-ignore */}
                 <VrPlatformChooser analyticsCategory={analyticsCategory} />{' '}
               </TabPanel>
             ),

@@ -1,13 +1,16 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import HelpIcon from '@material-ui/icons/Help'
 import { defaultCurrency, formatPrice, popularCurrencies } from '../../currency'
+import * as routes from '../../routes'
+import Link from '../link'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  tag: {
     display: 'inline-block',
-
     width: 'auto',
     height: '38px',
+    whiteSpace: 'nowrap',
 
     // @ts-ignore
     'background-color': theme.palette.tertiary.main,
@@ -65,37 +68,90 @@ const useStyles = makeStyles((theme) => ({
     // more blur than everything else as price is sensitive and we dont want to give the wrong price!
     filter: 'blur(3px)',
   },
+  small: {
+    // PURPLE VARIANT:
+    // 'background-color': '#6E4A9E',
+    // 'border-left': `1px solid #6E4A9E`,
+    // '&:before': {
+    //   'border-right': `12px solid #6E4A9E`,
+    // },
+
+    height: '24px',
+    'margin-left': '12px',
+    'line-height': '22px',
+    padding: '0 7px 0 7px',
+
+    '&:before': {
+      left: '-12px',
+      'border-top': '12px solid transparent',
+      'border-bottom': '12px solid transparent',
+      // @ts-ignore
+      'border-right': `12px solid ${theme.palette.tertiary.main}`,
+    },
+
+    '&:after': {
+      left: '-6px',
+      top: '11px',
+    },
+
+    '& $price': {
+      fontSize: '100%',
+    },
+  },
+  priceWarning: {
+    fontSize: '50%',
+    marginTop: '0.25rem',
+    '& svg': {
+      fontSize: '100%',
+    },
+  },
 }))
 
 // show "+" symbol as some gumroad products have multiple variants
 // and the API only gives us a price for one of them (which is random?)
-export default ({
+const Price = ({
   price,
   priceCurrency,
   isLoading = false,
+  small = false,
+  showPriceWarning = false, // only used on assetoverview
 }: {
   price: number
   priceCurrency: keyof typeof popularCurrencies
   isLoading?: boolean
+  small?: boolean
+  showPriceWarning?: boolean
 }) => {
   const classes = useStyles()
-
-  if (!price) {
-    return null
-  }
 
   const currency = priceCurrency || defaultCurrency
 
   return (
-    <div className={classes.root}>
-      <span className={`${isLoading ? classes.loading : ''}`}>
-        <span className={classes.price}>
-          {price === 0 ? 'Free' : formatPrice(price, priceCurrency, false)}
-        </span>{' '}
-        {price === 0 ? null : (
-          <span className={classes.currency}>{currency}</span>
-        )}
-      </span>
+    <div>
+      <div
+        className={`${classes.tag} ${small ? classes.small : ''}`}
+        title="This price may be different on the official website.">
+        <span className={`${isLoading ? classes.loading : ''}`}>
+          <span className={classes.price}>
+            {price === 0 || price === null
+              ? 'FREE'
+              : formatPrice(price, priceCurrency, false)}
+          </span>{' '}
+          {price === 0 ? null : (
+            <span className={classes.currency}>{currency}</span>
+          )}
+        </span>
+      </div>
+      {showPriceWarning ? (
+        <div className={classes.priceWarning}>
+          This price may be different on the official website.{' '}
+          <Link to={routes.prices}>
+            <HelpIcon />
+          </Link>
+        </div>
+      ) : null}
     </div>
   )
 }
+
+export default Price

@@ -36,7 +36,7 @@ interface AssetWithSpeciesData extends Asset {
 }
 
 function Avatars({ avatars }: { avatars: AssetWithSpeciesData[] }) {
-  return <AssetResults assets={avatars} showAddToCart />
+  return <AssetResults assets={avatars} />
 }
 
 const Renderer = ({ items }: { items?: AssetWithSpeciesData[] }) => {
@@ -93,10 +93,6 @@ const ViewAvatarsView = () => {
             {
               label: 'Title',
               fieldName: 'title',
-            },
-            {
-              label: 'Endorsements',
-              fieldName: 'endorsementcount',
             },
           ]}
           defaultFieldName="createdat"

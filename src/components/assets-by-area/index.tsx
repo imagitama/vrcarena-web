@@ -12,7 +12,7 @@ import * as routes from '../../routes'
 
 import AssetResults from '../asset-results'
 import Heading from '../heading'
-import { AssetCategory, PublicAsset } from '../../modules/assets'
+import { Asset, AssetCategory, PublicAsset } from '../../modules/assets'
 
 const useStyles = makeStyles({
   tags: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const AssetsByArea = ({
   assets,
   categoryName,
 }: {
@@ -76,9 +76,11 @@ export default ({
                 )}
               </span>
             </Heading>
-            <AssetResults assets={assets} showAddToCart />
+            <AssetResults assets={assets} />
           </Fragment>
         ))}
     </div>
   )
 }
+
+export default AssetsByArea

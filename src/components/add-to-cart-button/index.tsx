@@ -11,28 +11,26 @@ import useTimer from '../../hooks/useTimer'
 const useStyles = makeStyles({
   root: {
     padding: '0.5rem',
-    color: '#FFF',
-    opacity: 0.5,
-    transition: '100ms all',
-    filter: 'drop-shadow(1px 1px 1px #000)',
-    '&:hover': {
-      opacity: 1
-    }
   },
   inCart: {
     color: 'rgb(200, 255, 200)',
-    opacity: 1
-  }
+  },
+  disabled: {
+    opacity: 0.25,
+    cursor: 'default',
+  },
 })
 
 export default ({
   assetId,
   isLoading = false,
-  asButton = false
+  asButton = false,
+  className,
 }: {
-  assetId: string
+  assetId?: string
   isLoading?: boolean
   asButton?: boolean
+  className?: string
 }) => {
   const { ids, add, remove } = useCart()
   const classes = useStyles()
@@ -40,18 +38,18 @@ export default ({
 
   const startTimer = useTimer(() => setIsTooltipShown(false), 2000)
 
-  if (!assetId) {
-    return null
-  }
-
   const isInCart = assetId && ids.includes(assetId)
 
-  const addAssetToCart = () => add(assetId)
-  const removeAssetFromCart = () => remove(assetId)
+  const addAssetToCart = () => assetId && add(assetId)
+  const removeAssetFromCart = () => assetId && remove(assetId)
 
   const onClick = (e: React.SyntheticEvent) => {
     e.preventDefault()
     e.stopPropagation()
+
+    if (!assetId) {
+      return
+    }
 
     if (isInCart) {
       console.debug(`Removing asset ${assetId} from cart...`)
@@ -71,7 +69,9 @@ export default ({
         onClick={onClick}
         color="default"
         isLoading={isLoading}
-        icon={isInCart ? <RemoveShoppingCartIcon /> : <AddShoppingCartIcon />}>
+        icon={isInCart ? <RemoveShoppingCartIcon /> : <AddShoppingCartIcon />}
+        isDisabled={!assetId}
+        className={className}>
         {isInCart ? 'Remove From Cart' : 'Add To Cart'}
       </Button>
     )
@@ -84,7 +84,9 @@ export default ({
         open={isTooltipShown}>
         <div
           onClick={onClick}
-          className={`${classes.root} ${isInCart ? classes.inCart : ''}`}>
+          className={`${classes.root} ${isInCart ? classes.inCart : ''} ${
+            assetId ? '' : classes.disabled
+          } ${className}`}>
           {isInCart ? <DoneAllIcon /> : <AddShoppingCartIcon />}
         </div>
       </Tooltip>

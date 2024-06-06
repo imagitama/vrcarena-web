@@ -1,6 +1,7 @@
 import { AnyAction, Dispatch } from 'redux'
 import { CollectionNames } from '../hooks/useDatabaseQuery'
 import { Asset } from './assets'
+import { UserPreferences } from './user'
 
 export const searchIndexNameLabels = {
   [CollectionNames.Assets]: 'assets',
@@ -58,6 +59,7 @@ export interface AppState {
   bulkEditIds: null | string[] // null is not in edit mode
   isSelectingAll: boolean
   bulkEditAssetDatas: Asset[]
+  userPrefs: UserPreferences | null
 }
 
 const initialState: AppState = {
@@ -72,6 +74,7 @@ const initialState: AppState = {
   bulkEditIds: null,
   isSelectingAll: false,
   bulkEditAssetDatas: [],
+  userPrefs: null,
 }
 
 const OPEN_MENU = 'OPEN_MENU'
@@ -89,6 +92,7 @@ const LEAVE_BULK_EDIT_MODE = 'LEAVE_BULK_EDIT_MODE'
 const TOGGLE_BULK_EDIT_ID = 'TOGGLE_BULK_EDIT_ID'
 const SELECT_BULK_EDIT_ID = 'SELECT_BULK_EDIT_ID'
 const SET_SELECT_ALL = 'SET_SELECT_ALL'
+const SET_USER_PREFS = 'SET_USER_PREFS'
 
 export default (
   state: AppState = initialState,
@@ -216,6 +220,12 @@ export default (
         isSelectingAll: action.payload.newValue,
       }
 
+    case SET_USER_PREFS:
+      return {
+        ...state,
+        userPrefs: action.payload.newUserPrefs,
+      }
+
     default:
       return state
   }
@@ -338,5 +348,12 @@ export const setSelectingAll = (newValue: boolean) => ({
   type: SET_SELECT_ALL,
   payload: {
     newValue,
+  },
+})
+
+export const setUserPrefs = (newUserPrefs: UserPreferences) => ({
+  type: SET_USER_PREFS,
+  payload: {
+    newUserPrefs,
   },
 })

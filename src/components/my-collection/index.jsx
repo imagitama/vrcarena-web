@@ -40,5 +40,5 @@ export default () => {
     )
   }
 
-  return <AssetResults assets={myCollection} showCategory />
+  return <AssetResults assets={myCollection} />
 }

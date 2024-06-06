@@ -24,7 +24,12 @@ import {
 import { callFunction } from '../../firebase'
 import SuccessMessage from '../success-message'
 import useUserPreferences from '../../hooks/useUserPreferences'
-import { CollectionNames, UserPreferencesFieldNames } from '../../modules/user'
+import {
+  CollectionNames,
+  NotificationPreferences,
+  NotificationPreferencesEvents,
+  UserPreferencesFieldNames,
+} from '../../modules/user'
 
 const useStyles = makeStyles({
   root: {
@@ -36,7 +41,9 @@ const useStyles = makeStyles({
   },
 })
 
-const getLabelForEventName = (eventName) => {
+const getLabelForEventName = (
+  eventName: keyof typeof NotificationEvents
+): string => {
   switch (eventName) {
     case NotificationEvents.ASSET_AMENDED:
       return 'My assets are amended with new tags'
@@ -79,7 +86,9 @@ const getLabelForEventName = (eventName) => {
   }
 }
 
-const getLabelForMethodName = (methodName) => {
+const getLabelForMethodName = (
+  methodName: keyof typeof NotificationMethods
+): string => {
   switch (methodName) {
     case NotificationMethods.WEB:
       return 'Notification in the website (top right corner)'
@@ -90,8 +99,10 @@ const getLabelForMethodName = (methodName) => {
   }
 }
 
-const mergeInEvents = (newEvents) => {
-  const finalEvents = {}
+const mergeInEvents = (
+  newEvents: NotificationPreferencesEvents
+): NotificationPreferencesEvents => {
+  const finalEvents: NotificationPreferencesEvents = {}
 
   for (const eventName in defaultNotificationPrefs.events) {
     if (eventName in newEvents) {
@@ -104,7 +115,7 @@ const mergeInEvents = (newEvents) => {
   return finalEvents
 }
 
-const mergeInNotificationPrefs = (newPrefs) => {
+const mergeInNotificationPrefs = (newPrefs: NotificationPreferences) => {
   return {
     // TODO: Merge in methods too? Only if we add a new one
     methods: newPrefs.methods,
@@ -123,12 +134,27 @@ const newPrefsButDisabled = {
   ),
 }
 
-const useAnonymousSave = (anonymousDetails) => {
+type AnonymousDetails = any
+
+const useAnonymousSave = (
+  anonymousDetails: AnonymousDetails
+): [
+  boolean,
+  boolean,
+  boolean,
+  (
+    newPrefs: NotificationPreferences,
+    unsubscribeFromEverything?: boolean
+  ) => void
+] => {
   const [isSaving, setIsSaving] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const save = async (newPrefs, unsubscribeFromEverything = false) => {
+  const save = async (
+    newPrefs: NotificationPreferences,
+    unsubscribeFromEverything = false
+  ) => {
     try {
       setIsSaving(true)
       setIsSuccess(false)
@@ -136,7 +162,7 @@ const useAnonymousSave = (anonymousDetails) => {
 
       const {
         data: { error },
-      } = await callFunction('saveNotificationPrefs', {
+      } = await callFunction<{ error?: string }>('saveNotificationPrefs', {
         anonymousDetails,
         newPrefs: unsubscribeFromEverything ? newPrefsButDisabled : newPrefs,
       })
@@ -164,7 +190,11 @@ const useAnonymousSave = (anonymousDetails) => {
   return [isSaving, isSuccess, isError, save]
 }
 
-export default ({ anonymousDetails }) => {
+const NotificationSettings = ({
+  anonymousDetails,
+}: {
+  anonymousDetails?: AnonymousDetails
+}) => {
   const myUserId = useUserId()
   const [isLoadingPreferences, isErrorLoadingPreferences, userPreferences] =
     useUserPreferences()
@@ -186,17 +216,11 @@ export default ({ anonymousDetails }) => {
     if (!userPreferences) {
       return
     }
-    if (userPreferences[UserPreferencesFieldNames.notificationPrefs]) {
-      setNewPrefs(
-        mergeInNotificationPrefs(
-          userPreferences[UserPreferencesFieldNames.notificationPrefs]
-        )
-      )
+    if (userPreferences.notificationprefs) {
+      setNewPrefs(mergeInNotificationPrefs(userPreferences.notificationprefs))
     }
-    if (userPreferences[UserPreferencesFieldNames.notificationEmail]) {
-      setNotificationEmail(
-        userPreferences[UserPreferencesFieldNames.notificationEmail]
-      )
+    if (userPreferences.notificationemail) {
+      setNotificationEmail(userPreferences.notificationemail)
     }
   }, [userPreferences !== null])
 
@@ -216,22 +240,28 @@ export default ({ anonymousDetails }) => {
     return <ErrorMessage>Failed to save your changes</ErrorMessage>
   }
 
-  const onChangeEvent = (e, eventName) => {
+  const onChangeEvent = (
+    e: React.SyntheticEvent<HTMLInputElement>,
+    eventName: keyof typeof NotificationEvents
+  ) => {
     setNewPrefs((currentVal) => ({
       ...currentVal,
       events: {
         ...currentVal.events,
-        [eventName]: e.target.checked,
+        [eventName]: (e.target as HTMLInputElement).checked,
       },
     }))
   }
 
-  const onChangeMethod = (e, methodName) => {
+  const onChangeMethod = (
+    e: React.SyntheticEvent<HTMLInputElement>,
+    methodName: keyof typeof NotificationMethods
+  ) => {
     setNewPrefs((currentVal) => ({
       ...currentVal,
       methods: {
         ...currentVal.methods,
-        [methodName]: e.target.checked,
+        [methodName]: (e.target as HTMLInputElement).checked,
       },
     }))
   }
@@ -300,10 +330,14 @@ export default ({ anonymousDetails }) => {
             control={
               <Checkbox
                 checked={newPrefs.events[eventName] !== false}
-                onChange={(e) => onChangeEvent(e, eventName)}
+                onChange={(e) =>
+                  onChangeEvent(e, eventName as keyof typeof NotificationEvents)
+                }
               />
             }
-            label={getLabelForEventName(eventName)}
+            label={getLabelForEventName(
+              eventName as keyof typeof NotificationEvents
+            )}
           />
         </div>
       ))}
@@ -318,10 +352,17 @@ export default ({ anonymousDetails }) => {
               control={
                 <Checkbox
                   checked={newPrefs.methods[methodName] !== false}
-                  onChange={(e) => onChangeMethod(e, methodName)}
+                  onChange={(e) =>
+                    onChangeMethod(
+                      e,
+                      methodName as keyof typeof NotificationMethods
+                    )
+                  }
                 />
               }
-              label={getLabelForMethodName(methodName)}
+              label={getLabelForMethodName(
+                methodName as keyof typeof NotificationMethods
+              )}
             />
           </div>
         ))}
@@ -355,3 +396,5 @@ export default ({ anonymousDetails }) => {
     </div>
   )
 }
+
+export default NotificationSettings

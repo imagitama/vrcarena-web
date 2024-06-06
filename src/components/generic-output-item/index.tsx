@@ -26,7 +26,7 @@ export default ({
   }
   switch (type) {
     case CollectionNames.Assets:
-      return <AssetResultsItem asset={data as Asset} isLandscape />
+      return <AssetResultsItem asset={data as Asset} />
     case CollectionNames.Comments:
       return (
         <Comment comment={data as FullComment} showControls={false} shorten />

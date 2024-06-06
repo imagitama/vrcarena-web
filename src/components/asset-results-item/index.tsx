@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react'
-import Link from '../../components/link'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
@@ -7,459 +6,265 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import LazyLoad from 'react-lazyload'
-import RoomIcon from '@material-ui/icons/Room'
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import Checkbox from '@material-ui/core/Checkbox'
+import LoyaltyIcon from '@material-ui/icons/Loyalty'
+import LinkIcon from '@material-ui/icons/Link'
 
-import * as routes from '../../routes'
-import categoryMeta from '../../category-meta'
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
-import FormattedDate from '../formatted-date'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
+import * as routes from '../../routes'
 import {
-  ApprovalStatuses,
-  PinnedStatuses,
-  PublishStatuses,
-} from '../../hooks/useDatabaseQuery'
+  Asset,
+  PublicAsset,
+  Relation,
+  getIsPublicAsset,
+} from '../../modules/assets'
+import Link from '../link'
+import useUserPreferences from '../../hooks/useUserPreferences'
+import { getCategoryMeta } from '../../category-meta'
+import Price from '../price'
 import LoadingShimmer from '../loading-shimmer'
+import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AddToCartButton from '../add-to-cart-button'
-import Chip from '../chip'
-import { Asset, FullAsset } from '../../modules/assets'
-import useIsEditor from '../../hooks/useIsEditor'
-import useBulkEdit from '../../hooks/useBulkEdit'
-import SelectedTick from '../selected-tick'
-import useTagBlacklist from '../../hooks/useTagBlacklist'
-import { colorFree } from '../../themes'
-
-const chipMargin = '0.25rem'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '200px',
-    height: '100%',
-    position: 'relative',
+    transition: 'all 100ms',
     [mediaQueryForTabletsOrBelow]: {
       width: '160px',
     },
-    overflow: 'hidden',
-  },
-  landscape: {
-    width: '100%',
-    '& $media': {
-      width: '200px',
+    '& a': {
+      color: 'inherit',
     },
+    '&:hover $relation svg': {
+      transform: 'rotate(360deg) !important',
+    },
+    // '&:hover $cardMedia': {
+    //   transform: 'scale(1.02)',
+    // },
   },
-  landscapeLink: {
-    display: 'flex',
+  selected: {
+    backgroundColor: '#656565',
   },
-  media: {
-    position: 'relative', // nsfw chip
-    zIndex: -1,
+  dimmed: {
+    opacity: 0.5,
+  },
+  // overrides
+  cardContent: {
+    padding: '12px !important', // also fixes last-child padding
+  },
+  cardMedia: {
+    transition: 'all 500ms',
     height: '200px',
     [mediaQueryForTabletsOrBelow]: {
       height: '160px',
     },
-    flexShrink: 0,
   },
-  actions: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-  },
-  categoryChip: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  categoryChipWithMargin: {
-    margin: chipMargin,
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-  extraChips: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    display: 'flex',
-  },
-  extraChip: {
-    margin: chipMargin,
-    marginLeft: '0.1rem',
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-  extraChipWithIcon: {
-    width: '32px', // make rounded
-  },
-  date: {
-    margin: '0.25rem 0 0.5rem',
-    color: theme.palette.text.secondary,
-  },
-  costChipWrapper: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: chipMargin,
-  },
-  costChip: {
-    background: '#333333', // todo: grab from theme?
-  },
-  nsfwChip: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    margin: '0.25rem',
-  },
-  actionArea: {
-    zIndex: 1,
-  },
-  hoverOnEffect: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    transform: 'translate(-25%, -5%)',
-    width: '300px',
-    height: '300px',
-    background: '#000',
-    '& img': {
-      height: '100%',
-    },
-    zIndex: 100,
-    boxShadow: '1px 1px 5px #000',
-  },
-  pedestal: {
-    width: '100%',
-    '& video': {
-      background: 'rgba(0,0,0,1)',
-    },
-  },
-  slideContent: {
-    position: 'absolute',
-    top: '50%',
-    left: 0,
-    zIndex: 110,
-    transform: 'translateY(-50%)',
-  },
-  slideLoadingSpinner: {
-    width: '100%',
-    position: 'absolute',
-    top: '50%',
-    left: 0,
-    zIndex: 109,
-    transform: 'translateY(-50%)',
-  },
-  carouselBtn: {
-    border: 'none', // is a "button"
-    borderRadius: '100%',
-    background: 'rgba(0,0,0,0.5)',
-    color: '#FFF',
-    position: 'absolute',
-    top: '50%',
-    width: '30px',
-    height: '30px',
-    marginTop: '-15px',
+  // parts
+  title: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    '&:disabled': {
-      opacity: '0',
+    '& span': {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      fontSize: '1rem',
+    },
+    '& svg': {
+      marginLeft: '2px',
+      fontSize: '80%',
     },
   },
-  carouselNextBtn: {
-    right: '10px',
+  author: {
+    fontSize: '90%',
+    marginBottom: '6px',
   },
-  carouselBackBtn: {
-    left: '10px',
+  microText: {
+    fontSize: '85%',
+    textTransform: 'uppercase',
+    lineHeight: '1.25',
+    height: '16px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    // display: '-webkit-box',
+    // lineClamp: 2,
+    // '-webkit-box-orient': 'vertical',
+    // '-webkit-box-pack': 'end',
+    color: '#C9C9C9',
   },
-  '@keyframes fadeInHoverOnEffect': {
-    from: {
-      opacity: 0,
+  relation: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    '& svg': {
+      fontSize: '100%',
+      transform: 'rotate(90deg)',
+      transition: 'transform 500ms',
     },
-    to: {
-      opacity: 1,
-    },
   },
-  slide: {
-    position: 'relative',
-  },
-  dim: {
-    opacity: '0.3',
-  },
-  addToCartButton: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  toggleBulkEditButton: {
+  moreInfo: {
+    marginTop: '6px',
     display: 'flex',
-    justifyContent: 'center',
   },
-  description: {
-    overflowX: 'hidden',
+  controls: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
   },
-  freeChip: {
-    backgroundColor: colorFree,
-  },
-  pushDownIcons: {
-    paddingTop: '2.5rem',
-  },
-  blacklisted: {
-    '& $media': {
-      filter: 'blur(10px)',
-    },
-    '&:hover $media': {
-      animationName: '$unblur',
-      animationDuration: '3s',
-      animationIterationCount: 1,
-      animationFillMode: 'forwards',
-    },
-  },
-  '@keyframes unblur': {
-    '0%': {
-      filter: 'blur(10px)',
-    },
-    '90%': {
-      filter: 'blur(10px)',
-    },
-    '100%': {
-      filter: 'blur(0px)',
+  control: {
+    padding: 0,
+    marginRight: '0.25rem',
+    opacity: '0.5',
+    transition: '100ms all',
+    filter: 'drop-shadow(1px 1px 1px #000)',
+    '&:hover': {
+      opacity: 1,
     },
   },
 }))
 
-function truncateTextAndAddEllipsis(text: string): string {
-  return text && text.length >= 100 ? `${text.slice(0, 100)}...` : text
-}
+const divider = '/'
 
-function ExtraChips({
+const SpeciesOutput = ({
   asset,
-  showCategory = false,
-  showEditorChips = false,
-  categoryName = '',
-  showCost = false,
-  isFree,
-  isPaid,
-  pushDown,
+  relation,
 }: {
-  asset: FullAsset
-  showCategory: boolean
-  showEditorChips: boolean
-  categoryName: string
-  showCost: boolean
-  isFree: boolean
-  isPaid: boolean
-  pushDown: boolean
-}) {
-  const classes = useStyles()
-  const isEditor = useIsEditor()
-  return (
-    <div
-      className={`${classes.extraChips} ${
-        pushDown ? classes.pushDownIcons : ''
-      }`}>
-      {showEditorChips && isEditor ? (
-        <>
-          <Chip label={asset.approvalstatus} className={classes.extraChip} />
-          <Chip label={asset.publishstatus} className={classes.extraChip} />
-          <Chip label={asset.accessstatus} className={classes.extraChip} />
-        </>
-      ) : null}
-      {asset.pinnedstatus === PinnedStatuses.Pinned && (
-        <Chip icon={<RoomIcon />} label={false} className={classes.extraChip} />
-      )}
-      {showCategory && <CategoryChip categoryName={categoryName} />}
-      {showCost && <CostChip isFree={isFree} isPaid={isPaid} />}
-    </div>
-  )
-}
-
-const CategoryChip = ({ categoryName }: { categoryName: string }) => {
-  const classes = useStyles()
-
-  // handle weird edge case when category has been deleted
-  const label =
-    categoryName in categoryMeta
-      ? categoryMeta[categoryName].nameSingular
-      : categoryName
-  const Icon =
-    categoryName in categoryMeta ? categoryMeta[categoryName].icon : null
-
-  return (
-    <Chip
-      icon={Icon ? <Icon /> : undefined}
-      label={false}
-      className={classes.extraChip}
-      title={label}
-    />
-  )
-}
-
-const CostChip = ({ isFree, isPaid }: { isFree: boolean; isPaid: boolean }) => {
-  const classes = useStyles()
-
-  if (!isFree && !isPaid) {
-    return null
-  }
-
-  return (
-    <Chip
-      title={isFree ? 'Free' : isPaid ? 'Paid' : ''}
-      icon={isFree ? undefined : isPaid ? <AttachMoneyIcon /> : undefined}
-      label={isFree ? 'FREE' : false}
-      className={`${classes.extraChip} ${isFree ? classes.freeChip : ''}`}
-    />
-  )
-}
-
-const ToggleBulkEditButton = ({ asset }: { asset: Asset }) => {
-  const { ids, toggleAsset, selectAsset, isSelectingAll } = useBulkEdit()
-
-  useEffect(() => {
-    if (!isSelectingAll) {
-      return
-    }
-
-    selectAsset(asset)
-  }, [isSelectingAll])
-
-  if (!ids) {
-    return null
-  }
-
-  return (
-    <Checkbox
-      checked={ids.includes(asset.id)}
-      onClick={(e) => {
-        toggleAsset(asset)
-        e.stopPropagation()
-        e.preventDefault()
-        return false
-      }}
-    />
-  )
-}
-
-const getIsFree = (tags: string[]): boolean =>
-  tags && (tags.includes('free') || tags.includes('free model'))
-const getIsPaid = (tags: string[]): boolean =>
-  tags && (tags.includes('paid') || tags.includes('paid model'))
-
-const AssetResultsItem = ({
-  // @ts-ignore
-  asset = {},
-  showCategory = false,
-  showCost = true,
-  showIsNsfw = true,
-  isLandscape = false,
-  isSelected = false,
-  dim = false,
-  onClick,
-  shimmer = false,
-  showAddToCart = false,
-  showSelectedTick = false,
-  pushDownIcons = false,
-  showEditorChips = false,
-}: {
-  asset?: Asset
-  showCategory?: boolean
-  showCost?: boolean
-  showIsNsfw?: boolean
-  isLandscape?: boolean
-  isSelected?: boolean
-  dim?: boolean
-  onClick?: (event: React.SyntheticEvent<HTMLElement>) => void
-  shimmer?: boolean
-  showAddToCart?: boolean
-  showSelectedTick?: boolean
-  pushDownIcons?: boolean
-  showEditorChips?: boolean
+  asset?: Asset | PublicAsset
+  relation?: Relation
 }) => {
   const classes = useStyles()
-  const cardRef = useRef<HTMLDivElement>()
-  const isEditor = useIsEditor()
-  const tagBlacklist = useTagBlacklist()
 
-  if (shimmer) {
+  if (relation) {
     return (
-      <div className={classes.root}>
-        <LoadingShimmer height={300} />
-      </div>
+      <span className={classes.relation}>
+        / {relation.type} <LinkIcon />
+      </span>
     )
   }
 
-  const isBlacklisted =
-    tagBlacklist &&
-    tagBlacklist.length &&
-    tagBlacklist.find((blacklistedTag) => asset.tags.includes(blacklistedTag))
+  if (!asset) {
+    return (
+      <>
+        {divider} <LoadingShimmer width="30px" height="10px" />,{' '}
+        <LoadingShimmer width="45px" height="10px" />
+      </>
+    )
+  }
+
+  if (!asset.species || !asset.species.length) {
+    return null
+  }
+
+  if ('speciesnames' in asset) {
+    return (
+      <>
+        {divider} {asset.speciesnames.join(', ')}
+      </>
+    )
+  }
+
+  return <>{asset.species.length} species</>
+}
+
+const AssetResultsItem = ({
+  asset,
+  onClick,
+  relation,
+  // settings
+  isSelected = false,
+  isDimmed = false,
+  controls: Controls,
+}: {
+  asset?: Asset | PublicAsset
+  onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
+  relation?: Relation
+  isSelected?: boolean
+  isDimmed?: boolean
+  controls?: React.FC
+}) => {
+  const classes = useStyles()
+  const [, , prefs] = useUserPreferences()
+  const showMoreInfo = prefs && prefs.showmoreinfo
 
   return (
     <Card
-      className={`${classes.root} ${isLandscape ? classes.landscape : ''} ${
-        dim ? classes.dim : ''
-      } ${isBlacklisted ? classes.blacklisted : ''}`}
-      ref={cardRef}>
-      {isEditor && (
-        <div className={classes.toggleBulkEditButton}>
-          <ToggleBulkEditButton asset={asset} />
-        </div>
-      )}
-      <CardActionArea className={classes.actionArea}>
+      className={`${classes.root} ${isSelected ? classes.selected : ''} ${
+        isDimmed ? classes.dimmed : ''
+      }`}>
+      <CardActionArea>
         <Link
-          to={routes.viewAssetWithVar.replace(
-            ':assetId',
-            asset.slug || asset.id
-          )}
-          className={`${isLandscape ? classes.landscapeLink : ''}`}
+          to={
+            asset
+              ? routes.viewAssetWithVar.replace(
+                  ':assetId',
+                  asset.slug || asset.id
+                )
+              : ''
+          }
           onClick={onClick}>
-          <ExtraChips
-            // @ts-ignore
-            asset={asset}
-            showCategory={showCategory}
-            showEditorChips={showEditorChips}
-            categoryName={asset.category}
-            showCost={showCost}
-            isFree={getIsFree(asset.tags)}
-            isPaid={getIsPaid(asset.tags)}
-            pushDown={pushDownIcons}
-          />
-          {showAddToCart && (
-            <div className={classes.addToCartButton}>
-              <AddToCartButton assetId={asset.id} />
-            </div>
-          )}
           <LazyLoad height={200}>
             <CardMedia
-              className={classes.media}
-              image={asset.thumbnailurl || defaultThumbnailUrl}
-              title={`Thumbnail for ${asset.title}`}>
-              {asset.isadult && showIsNsfw && (
-                <Chip label="NSFW" className={classes.nsfwChip} />
-              )}
-            </CardMedia>
+              className={classes.cardMedia}
+              image={
+                asset && asset.thumbnailurl
+                  ? asset.thumbnailurl
+                  : defaultThumbnailUrl
+              }
+              title={asset ? `Thumbnail for ${asset.title}` : ''}></CardMedia>
           </LazyLoad>
-          <CardContent>
-            <Typography variant="h5" component="h2">
-              {asset.title}
+          <CardContent className={classes.cardContent}>
+            <Typography className={classes.title}>
+              {asset ? (
+                <>
+                  <span title={asset.title.trim()}>{asset.title.trim()}</span>
+                  {asset && asset.isadult ? <LoyaltyIcon /> : null}
+                </>
+              ) : (
+                <LoadingShimmer width="100%" height="40px" />
+              )}
             </Typography>
-            {asset.createdat && (
-              <div className={classes.date}>
-                <FormattedDate date={asset.createdat} />
+            <Typography className={classes.author}>
+              {asset ? (
+                getIsPublicAsset(asset) && asset.authorname ? (
+                  `by ${asset.authorname}`
+                ) : null
+              ) : (
+                <LoadingShimmer width="80px" height="15px" />
+              )}
+            </Typography>
+            <Typography className={classes.microText}>
+              <strong>
+                {asset ? (
+                  getCategoryMeta(asset.category).nameSingular
+                ) : (
+                  <LoadingShimmer width="80px" height="15px" />
+                )}
+              </strong>{' '}
+              <SpeciesOutput asset={asset} relation={relation} />
+            </Typography>
+            <div className={classes.moreInfo}>
+              <div className={classes.controls}>
+                {Controls ? (
+                  <Controls />
+                ) : (
+                  <AddToCartButton
+                    assetId={asset?.id}
+                    className={classes.control}
+                  />
+                )}
               </div>
-            )}
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              component="p"
-              className={classes.description}>
-              {truncateTextAndAddEllipsis(asset.description)}
-            </Typography>
-          </CardContent>
+              {showMoreInfo && asset ? (
+                asset.price > 0 || (getIsPublicAsset(asset) && asset.isfree) ? (
+                  <Price
+                    price={asset.price}
+                    priceCurrency={asset.pricecurrency}
+                    small
+                  />
+                ) : null
+              ) : null}
+            </div>
+          </CardContent>{' '}
         </Link>
       </CardActionArea>
-
-      {showSelectedTick && isSelected ? <SelectedTick /> : null}
     </Card>
   )
 }

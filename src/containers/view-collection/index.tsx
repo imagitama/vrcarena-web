@@ -12,62 +12,63 @@ import Heading from '../../components/heading'
 import Button from '../../components/button'
 import PageControls from '../../components/page-controls'
 import { trackAction } from '../../analytics'
-import {
-  GetFullPlaylistFieldNames,
-  PlaylistsFieldNames,
-} from '../../data-store'
 import AssetResults from '../../components/asset-results'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import { FullCollection, ViewNames } from '../../modules/collections'
+import NoResultsMessage from '../../components/no-results-message'
 
 const analyticsCategory = 'ViewDiscordServer'
 
 const View = () => {
-  const { collectionId } = useParams()
-  const [isLoading, isErrored, result] = useDataStoreItem(
-    'getfullplaylists',
+  const { collectionId } = useParams<{ collectionId: string }>()
+  const [isLoading, isErrored, result] = useDataStoreItem<FullCollection>(
+    ViewNames.GetFullCollections,
     collectionId,
     'view-collection'
   )
 
   if (isLoading) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message="Loading collectiion..." />
   }
 
   if (isErrored) {
-    return <ErrorMessage>Failed to get collection</ErrorMessage>
+    return <ErrorMessage>Failed to load collection</ErrorMessage>
   }
 
   if (!result) {
     return <ErrorMessage>The collection does not exist</ErrorMessage>
   }
 
-  const {
-    id: playlistId,
-    [PlaylistsFieldNames.title]: title,
-    [PlaylistsFieldNames.description]: description,
-    [GetFullPlaylistFieldNames.assets]: assets,
-  } = result
+  const { id: playlistId, title, description, itemsassetdata } = result
 
   return (
     <>
       <Helmet>
-        <title>View collection "{title}" | VRCArena</title>
-        <meta name="description" content={description} />
+        <title>{`View collection "${title}" | VRCArena`}</title>
+        <meta
+          name="description"
+          content={`View the collection called ${title}: ${description}`}
+        />
       </Helmet>
 
       <Heading variant="h1">
+        Collection{' '}
         <Link
           to={routes.viewCollectionWithVar.replace(
             ':collectionId',
             playlistId
           )}>
-          {title}
+          {title || '(no title)'}
         </Link>
       </Heading>
 
       {description && <Markdown source={description} />}
 
-      <AssetResults assets={assets} />
+      {itemsassetdata.length ? (
+        <AssetResults assets={itemsassetdata} />
+      ) : (
+        <NoResultsMessage>No assets in this collection</NoResultsMessage>
+      )}
 
       <PageControls>
         <Button

@@ -43,7 +43,7 @@ const Renderer = ({
   if (groupByAreaEnabled) {
     return <AssetsByArea assets={items} categoryName={categoryName} />
   } else {
-    return <AssetResults assets={items} showAddToCart />
+    return <AssetResults assets={items} />
   }
 }
 

@@ -38,12 +38,23 @@ export const cart = async (): Promise<MenuItemData[]> => {
       throw new Error('Failed to get cart items')
     }
 
-    return data.map((asset) => ({
-      id: asset.id,
-      url: routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id),
-      label: asset.title,
-      imageUrl: asset.thumbnailurl,
-    }))
+    return [
+      {
+        id: 'info',
+        label: 'NOTE: You cannot purchase anything from VRCArena.',
+        disabled: true,
+      } as MenuItemData,
+    ].concat(
+      data.map((asset) => ({
+        id: asset.id,
+        url: routes.viewAssetWithVar.replace(
+          ':assetId',
+          asset.slug || asset.id
+        ),
+        label: asset.title,
+        imageUrl: asset.thumbnailurl,
+      }))
+    )
   } catch (err) {
     console.error(err)
     handleError(err)

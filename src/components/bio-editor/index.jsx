@@ -29,7 +29,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({ onSaveClick = null }) => {
+export default ({ onSaveClick = undefined }) => {
   const classes = useStyles()
   const userId = useUserId()
   const [isLoadingProfile, isErroredLoadingProfile, profile] = useDataStoreItem(

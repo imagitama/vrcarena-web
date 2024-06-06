@@ -38,5 +38,5 @@ export default ({ userId }) => {
     )
   }
 
-  return <AssetResults assets={assetsInWishlist} showCategory />
+  return <AssetResults assets={assetsInWishlist} />
 }

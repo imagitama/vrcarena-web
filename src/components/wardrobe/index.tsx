@@ -44,9 +44,18 @@ import { base64EncodeString, parseBase64String } from '../../utils'
 import {
   Asset,
   AssetCategory,
+  CollectionNames,
+  CoreAssetFields,
+  FullAsset,
   PublicAsset,
   RelationType,
+  ViewNames,
 } from '../../modules/assets'
+import {
+  AccessStatuses,
+  ApprovalStatuses,
+  PublishStatuses,
+} from '../../hooks/useDatabaseQuery'
 
 const useStyles = makeStyles({
   output: {
@@ -238,7 +247,6 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
   },
-  // tags
   tags: {
     display: 'flex',
   },
@@ -266,21 +274,26 @@ const TagChip = ({ tagName, ...props }: { tagName: string } & ChipProps) => (
   <Chip label={tagName} {...props} />
 )
 
-type AssetsByArea = { [areaName: string]: PublicAsset[] }
+type AssetsByArea = { [areaName: string]: FullAsset[] }
 
 const useAccessories = (): AssetsByArea => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
+
+  // TODO: Replace with useDatabaseQuery
   const getQuery = useCallback(() => {
     let query = supabase
-      .from<PublicAsset>('getPublicAssets'.toLowerCase())
+      .from<FullAsset>(ViewNames.GetFullAssets)
       .select('*')
       .eq('category', AssetCategory.Accessory)
+      .eq('publishstatus', PublishStatuses.Published)
+      .eq('approvalstatus', ApprovalStatuses.Approved)
+      .eq('accessstatus', AccessStatuses.Public)
 
     query = isAdultContentEnabled === false ? query.is('isadult', false) : query
 
     return query
   }, [isAdultContentEnabled])
-  const [isLoading, lastErrorCode, assets] = useDataStore<PublicAsset[]>(
+  const [isLoading, lastErrorCode, assets] = useDataStore<FullAsset[]>(
     getQuery,
     'wardrobe'
   )
@@ -295,13 +308,13 @@ const useAccessories = (): AssetsByArea => {
 
   const assetsByArea = groupAssetsIntoAreas(assets, accessoryAreasToUse)
 
-  return assetsByArea
+  return assetsByArea as AssetsByArea
 }
 
 const sortChildrenFirst = (
   assetId: string,
-  assets: PublicAsset[]
-): PublicAsset[] => {
+  assets: FullAsset[]
+): FullAsset[] => {
   const newAssets = [...assets]
   newAssets.sort((assetA, assetB) => {
     return assetA.title.localeCompare(assetB.title)
@@ -319,7 +332,7 @@ const sortChildrenFirst = (
   return newAssets
 }
 
-const isAssetAChild = (assetId: string, asset: PublicAsset): boolean =>
+const isAssetAChild = (assetId: string, asset: FullAsset): boolean =>
   asset.relations &&
   !!asset.relations.find(
     (relation) =>
@@ -327,7 +340,7 @@ const isAssetAChild = (assetId: string, asset: PublicAsset): boolean =>
   )
 
 const filterAssetFromExcludedTags = (
-  asset: PublicAsset,
+  asset: FullAsset,
   excludedTags: string[]
 ): boolean => {
   if (!excludedTags.length || !asset.tags || !asset.tags.length) {
@@ -689,7 +702,7 @@ const IntroMessage = () => {
   )
 }
 
-export default ({
+const Wardrobe = ({
   assetId,
   baseAsset,
   showThumbnail = true,
@@ -838,3 +851,5 @@ export default ({
     </div>
   )
 }
+
+export default Wardrobe

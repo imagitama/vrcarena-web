@@ -5,7 +5,12 @@ import tutorialAreas from './areas/tutorial'
 import shaderAreas from './areas/shader'
 import retextureAreas from './areas/retexture'
 import toolAreas from './areas/tool'
-import { Asset, AssetCategory, PublicAsset } from './modules/assets'
+import {
+  Asset,
+  AssetCategory,
+  CoreAssetFields,
+  PublicAsset,
+} from './modules/assets'
 import worldAssetAreas from './areas/worldAsset'
 
 export const areasByCategory: { [categoryName: string]: Areas } = {
@@ -31,7 +36,7 @@ export const standardAreas = {
 }
 
 export const getAreasForAsset = (
-  asset: Asset,
+  asset: CoreAssetFields,
   areas: { [key: string]: Area }
 ) => {
   const areasForAsset = []
@@ -55,17 +60,19 @@ export const getAreasForAsset = (
 }
 
 export const groupAssetsIntoAreas = (
-  assets: PublicAsset[],
+  assets: (Asset | PublicAsset)[],
   categoryNameOrAreas: string | { [areaName: string]: Area }
-): { [areaName: string]: PublicAsset[] } => {
+): { [areaName: string]: (Asset | PublicAsset)[] } => {
   const areas =
     typeof categoryNameOrAreas === 'string'
       ? areasByCategory[categoryNameOrAreas as AssetCategory]
       : categoryNameOrAreas
 
-  const assetsByArea: { [areaName: string]: PublicAsset[] } = Object.keys(
-    areas
-  ).reduce((groups, areaName) => ({ ...groups, [areaName]: [] }), {})
+  const assetsByArea: { [areaName: string]: (Asset | PublicAsset)[] } =
+    Object.keys(areas).reduce(
+      (groups, areaName) => ({ ...groups, [areaName]: [] }),
+      {}
+    )
 
   assetsByArea[standardAreaNames.none] = []
 

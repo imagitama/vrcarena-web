@@ -35,6 +35,7 @@ import { CommonMetaFieldNames } from '../../data-store'
 import useScrollMemory from '../../hooks/useScrollMemory'
 import { getPathForQueryString } from '../../queries'
 import { scrollToTop } from '../../utils'
+import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles({
   root: {
@@ -92,7 +93,8 @@ interface PaginatedViewData<TRecord> {
 
 // @ts-ignore
 const PaginatedViewContext = createContext<PaginatedViewData>()
-export const usePaginatedView = () => useContext(PaginatedViewContext)
+export const usePaginatedView = (): PaginatedViewData<any> =>
+  useContext(PaginatedViewContext)
 
 const Page = () => {
   const { push } = useHistory()
@@ -105,6 +107,7 @@ const Page = () => {
     select,
     getQuery,
     sortKey,
+    sortOptions,
     defaultFieldName,
     defaultDirection,
     renderer,
@@ -116,14 +119,27 @@ const Page = () => {
     getQueryString,
   } = usePaginatedView()
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
-  const [sorting] = useSorting(sortKey, defaultFieldName, defaultDirection)
+  const [sorting] = useSorting(
+    sortKey,
+    defaultFieldName as string,
+    defaultDirection
+  )
+  const isSortingValid =
+    sorting?.fieldName === defaultFieldName || sortOptions === undefined
+      ? true
+      : sortOptions
+      ? sortOptions.find(
+          (sortOption) => sortOption.fieldName === sorting?.fieldName
+        )
+      : false
   const pageGetQuery = useCallback(async () => {
     const rangeStart = (currentPageNumber - 1) * limitPerPage
     const rangeEnd = rangeStart + limitPerPage - 1
 
-    const isAscending = sorting
-      ? sorting.direction === OrderDirections.ASC
-      : false
+    const isAscending =
+      sorting && isSortingValid
+        ? sorting.direction === OrderDirections.ASC
+        : false
 
     let query: any
 
@@ -170,7 +186,7 @@ const Page = () => {
     // toLowerCase incase they saved an old camelCase field name which breaks SQL
     query = query.range(rangeStart, rangeEnd)
 
-    if (sorting) {
+    if (sorting && isSortingValid) {
       query = query.order(sorting.fieldName.toLowerCase(), {
         ascending: isAscending,
       })
@@ -223,6 +239,12 @@ const Page = () => {
 
   return (
     <>
+      {!isSortingValid && sorting && (
+        <WarningMessage>
+          Your previous sorting selection ({sorting?.fieldName}) appears to be
+          invalid and has been reset
+        </WarningMessage>
+      )}
       {React.cloneElement(renderer, {
         items,
         hydrate,

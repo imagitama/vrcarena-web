@@ -8,14 +8,14 @@ import {
   AssetFieldNames,
   OrderDirections,
 } from '../../../../hooks/useDatabaseQuery'
-import { Asset, PublicAsset } from '../../../../modules/assets'
+import { Asset } from '../../../../modules/assets'
 import { Relations, RelationItem } from '../../../relations'
 
 const useStyles = makeStyles({
   item: { margin: '0.5rem' },
 })
 
-const Renderer = ({ items }: { items?: PublicAsset[] }) => {
+const Renderer = ({ items }: { items?: Asset[] }) => {
   const { assetId } = useContext(TabContext)
   const classes = useStyles()
 

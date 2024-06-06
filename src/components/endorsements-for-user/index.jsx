@@ -38,5 +38,5 @@ export default ({ userId }) => {
     )
   }
 
-  return <AssetResults assets={assetsEndorsed} showCategory />
+  return <AssetResults assets={assetsEndorsed} />
 }

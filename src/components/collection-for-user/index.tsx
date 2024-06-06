@@ -39,7 +39,7 @@ const CollectionForUser = ({ userId }: { userId: string }) => {
     )
   }
 
-  return <AssetResults assets={assetsInCollection} showCategory />
+  return <AssetResults assets={assetsInCollection} />
 }
 
 export default CollectionForUser

@@ -5,7 +5,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import { handleError } from '../../error-handling'
 import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { Asset, Relation, RelationType } from '../../modules/assets'
+import {
+  Asset,
+  PublicAsset,
+  Relation,
+  RelationType,
+} from '../../modules/assets'
 import AssetSearch from '../asset-search'
 import Button from '../button'
 import FormControls from '../form-controls'
@@ -50,9 +55,9 @@ const RelationEditorForm = ({
       comments: '',
     }
   )
-  const [assetsData, setAssetsData] = useState<Asset[]>([])
+  const [assetsData, setAssetsData] = useState<(Asset | PublicAsset)[]>([])
 
-  const onSelectedAsset = (newAsset: Asset) => {
+  const onSelectedAsset = (newAsset: Asset | PublicAsset) => {
     console.debug(`Selected asset ${newAsset.id} for relation`)
     setNewRelation({
       ...newRelation,
