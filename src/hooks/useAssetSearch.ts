@@ -21,7 +21,7 @@ const mapAssetSearchResultsToAssets = (
     pedestalvideourl: '',
     pedestalfallbackimageurl: '',
     author: '',
-    category: '',
+    category: assetSearchResult.category,
     tags: [],
     bannerurl: '',
     slug: '',
