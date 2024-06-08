@@ -10,9 +10,8 @@ import { FeaturedStatus as FeaturedStatuses } from './common'
 import { Tag } from './tags'
 
 // TODO: Better func here as technically FullAsset has speciesnames
-export const getIsPublicAsset = (
-  asset: Asset | PublicAsset
-): asset is PublicAsset => asset && 'speciesnames' in asset
+export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
+  asset && 'speciesnames' in asset
 
 export enum RelationType {
   Parent = 'parent',

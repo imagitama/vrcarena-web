@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from 'react'
 import createAlgoliaSearchClient, {
   SearchClient,
-  SearchIndex
+  SearchIndex,
 } from 'algoliasearch'
 import { Hit } from '@algolia/client-search'
+import { AssetCategory } from '../modules/assets'
 
 export const Indexes = {
-  Assets: `${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}_ASSETS`
+  Assets: `${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}_ASSETS`,
 }
 
 const appId = process.env.REACT_APP_ALGOLIA_APP_ID || ''
@@ -14,28 +15,54 @@ const apiKey = process.env.REACT_APP_ALGOLIA_SEARCH_API_KEY || ''
 
 let client: SearchClient
 
-interface AssetHit {
+interface AlgoliaAssetRecord {
   title: string
-  description: string
+  // display only
+  slug: string
   thumbnailUrl: string
   isAdult: boolean
-  category: string
+  category: string // AssetCategory
+  species: string[]
+  // joined data
+  authorName: string
+  speciesNames: string[]
+  // searchable only
+  description: string
 }
 
-export interface AssetSearchResult extends AssetHit {
+export interface AssetSearchResult {
   id: string
   title: string
+  // display only
+  slug: string
+  thumbnailurl: string
+  isadult: boolean
+  category: AssetCategory
+  species: string[]
+  // joined data
+  authorname: string
+  speciesnames: string[]
+  // searchable only
   description: string
-  thumbnailUrl: string
-  isAdult: boolean
-  category: string
 }
 
-const mapHitsToAssetSearchResults = (hits: Hit<AssetHit>[]) =>
-  hits.map(hit => ({
-    ...hit,
+const mapHitsToAssetSearchResults = (
+  hits: Hit<AlgoliaAssetRecord>[]
+): AssetSearchResult[] =>
+  hits.map((hit) => ({
     id: hit.objectID,
-    objectID: undefined
+    title: hit.title,
+    // display only
+    slug: hit.slug,
+    thumbnailurl: hit.thumbnailUrl,
+    isadult: hit.isAdult,
+    category: hit.category as AssetCategory,
+    species: hit.species,
+    // joined data
+    authorname: hit.authorName,
+    speciesnames: hit.speciesNames,
+    // searchable only
+    description: hit.description,
   }))
 
 export default (
@@ -74,11 +101,14 @@ export default (
 
         console.debug(`Algolia Search`, keywords, filters)
 
-        const { hits } = await indexRef.current.search<AssetHit>(keywords, {
-          filters,
-          offset: 0,
-          length: limit
-        })
+        const { hits } = await indexRef.current.search<AlgoliaAssetRecord>(
+          keywords,
+          {
+            filters,
+            offset: 0,
+            length: limit,
+          }
+        )
 
         console.debug(`Algolia Search complete`, hits)
 

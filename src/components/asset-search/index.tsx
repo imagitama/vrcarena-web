@@ -51,7 +51,11 @@ const AssetSearch = ({
       {results || selectedAsset ? (
         <AssetResults
           assets={
-            results ? results : selectedAsset ? [selectedAsset] : undefined
+            results
+              ? (results as unknown as Asset[])
+              : selectedAsset
+              ? [selectedAsset]
+              : undefined
           }
           onClickWithEventAndAsset={(event, asset) => {
             event.preventDefault()

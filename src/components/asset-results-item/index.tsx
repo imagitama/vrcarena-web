@@ -24,6 +24,7 @@ import LoadingShimmer from '../loading-shimmer'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AddToCartButton from '../add-to-cart-button'
 import DefaultThumbnail from '../default-thumbnail'
+import { AssetSearchResult } from '../../hooks/useAlgoliaSearch'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,7 +129,7 @@ const SpeciesOutput = ({
   asset,
   relation,
 }: {
-  asset?: Asset | PublicAsset
+  asset?: Asset | PublicAsset | AssetSearchResult
   relation?: Relation
 }) => {
   const classes = useStyles()
@@ -178,7 +179,7 @@ const AssetResultsItem = ({
   isDimmed = false,
   controls: Controls,
 }: {
-  asset?: Asset | PublicAsset
+  asset?: Asset | PublicAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
   relation?: Relation
   isSelected?: boolean
@@ -254,7 +255,7 @@ const AssetResultsItem = ({
                   />
                 )}
               </div>
-              {showMoreInfo && asset ? (
+              {showMoreInfo && asset && 'price' in asset ? (
                 asset.price > 0 || (getIsPublicAsset(asset) && asset.isfree) ? (
                   <Price
                     price={asset.price}

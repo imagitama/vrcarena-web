@@ -173,11 +173,6 @@ export const AvatarListFieldNames = {
   species: 'species',
 }
 
-export const FeaturedStatuses = {
-  Featured: 'featured',
-  Unfeatured: 'unfeatured',
-}
-
 /** START ASSETS */
 
 export const AssetFieldNames = {
