@@ -114,6 +114,8 @@ import placeholderPedestalFallbackImageUrl from '../../assets/videos/placeholder
 import { getSyncPlatformNameFromUrl, SyncPlatformName } from '../../syncing'
 import ExtraSourcesEditor from '../extra-sources-editor'
 import VisitSourceButton from '../visit-source-button'
+import { handleError } from '../../error-handling'
+import ErrorMessage from '../error-message'
 
 interface EditorInfo {
   assetId: string | null
@@ -412,7 +414,9 @@ const SyncButton = ({
   const label = getFriendlySyncPlatformName(syncPlatformName)
 
   if (!label) {
-    throw new Error(`Could not get label for platform ${syncPlatformName}`)
+    console.error(`Could not get label for platform ${syncPlatformName}`)
+    handleError(`Could not get label for platform ${syncPlatformName}`)
+    return <ErrorMessage>Failed to render sync button</ErrorMessage>
   }
 
   return (
