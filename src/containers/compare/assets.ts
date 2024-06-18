@@ -4,7 +4,7 @@ import {
   MultiDiffFields,
 } from '../../components/multi-diff'
 import { FullAsset } from '../../modules/assets'
-import categoryMeta from '../../category-meta'
+import categoryMeta, { getCategoryMeta } from '../../category-meta'
 
 const fields: MultiDiffFields<FullAsset> = {
   thumbnailurl: {
@@ -14,7 +14,7 @@ const fields: MultiDiffFields<FullAsset> = {
   category: {
     label: 'Category',
     type: MultiDiffFieldType.None,
-    getValue: (value) => categoryMeta[value].nameSingular,
+    getValue: (value) => getCategoryMeta(value).nameSingular,
   },
   sourceurl: {
     label: 'Source',

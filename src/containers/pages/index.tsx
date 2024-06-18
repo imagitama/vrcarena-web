@@ -36,6 +36,7 @@ import FormControls from '../../components/form-controls'
 import { HistoryEntry } from '../../modules/history'
 import HistoryRevisions from '../../components/history-revisions'
 import { CollectionNames as HistoryCollectionNames } from '../../modules/history'
+import { handleError } from '../../error-handling'
 
 interface PageContext {
   pagesInParent: Page[]
@@ -344,7 +345,13 @@ const ViewContents = () => {
   const thisPage = pagesInParent.find(({ id }) => id === pageName)
 
   if (!thisPage) {
-    throw new Error(`Failed to find page with pagename "${pageName}"`)
+    console.error(`Failed to find page with pagename "${pageName}"`)
+    return (
+      <ErrorMessage>
+        Could not find any page named "{pageName}". It might have been removed
+        or it might never existed.
+      </ErrorMessage>
+    )
   }
 
   return <PageView page={thisPage} />
