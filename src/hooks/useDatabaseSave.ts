@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
+import {
+  DataStoreErrorCode,
+  getDataStoreErrorCodeFromError,
+} from '../data-store'
 
 export default <TRecord, TReturnVal = TRecord>(
   collectionName: string | false,
@@ -10,17 +14,19 @@ export default <TRecord, TReturnVal = TRecord>(
 ): [
   boolean,
   boolean,
-  null | Error,
+  null | DataStoreErrorCode,
   (fields?: Partial<TRecord>, id?: string) => Promise<(null | TReturnVal)[]>,
   () => void
 ] => {
   const [isSaving, setIsSaving] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [lastError, setLastError] = useState<null | Error>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
+    null
+  )
 
   const clear = () => {
     setIsSuccess(false)
-    setLastError(null)
+    setLastErrorCode(null)
     setIsSaving(false)
   }
 
@@ -59,7 +65,7 @@ export default <TRecord, TReturnVal = TRecord>(
     const idToSave = id || documentId
 
     setIsSuccess(false)
-    setLastError(null)
+    setLastErrorCode(null)
     setIsSaving(true)
 
     try {
@@ -128,13 +134,13 @@ export default <TRecord, TReturnVal = TRecord>(
       }
 
       setIsSuccess(true)
-      setLastError(null)
+      setLastErrorCode(null)
       setIsSaving(false)
 
       return [returnData]
     } catch (err) {
       setIsSuccess(false)
-      setLastError(err as Error)
+      setLastErrorCode(getDataStoreErrorCodeFromError(err))
       setIsSaving(false)
       console.error('Failed to save document', err)
       handleError(err)
@@ -142,5 +148,5 @@ export default <TRecord, TReturnVal = TRecord>(
     }
   }
 
-  return [isSaving, isSuccess, lastError, save, clear]
+  return [isSaving, isSuccess, lastErrorCode, save, clear]
 }

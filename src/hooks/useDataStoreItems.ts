@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { client as supabase } from '../supabase'
 import { handleError } from '../error-handling'
+import {
+  DataStoreErrorCode,
+  getDataStoreErrorCodeFromError,
+} from '../data-store'
 
 interface QueryOptions<TItem> {
   queryName?: string
@@ -14,10 +18,18 @@ export default <TItem>(
   options: QueryOptions<TItem> = {
     queryName: '',
   }
-): [boolean, boolean, TItem[] | null, number | null, () => void] => {
+): [
+  boolean,
+  null | DataStoreErrorCode,
+  TItem[] | null,
+  number | null,
+  () => void
+] => {
   const [result, setResult] = useState<TItem[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
+    null
+  )
   const [totalCount, setTotalCount] = useState<number | null>(null)
   const hasInitialResultsRef = useRef(false)
 
@@ -49,7 +61,7 @@ export default <TItem>(
       ) {
         setIsLoading(true)
       }
-      setIsErrored(false)
+      setLastErrorCode(null)
 
       let query = supabase.from(collectionName).select('*')
 
@@ -89,13 +101,13 @@ export default <TItem>(
         setIsLoading(false)
       }
 
-      setIsErrored(false)
+      setLastErrorCode(null)
 
       hasInitialResultsRef.current = true
     } catch (err) {
       console.error(err)
       handleError(err)
-      setIsErrored(true)
+      setLastErrorCode(getDataStoreErrorCodeFromError(err))
       setIsLoading(false)
     }
   }
@@ -108,5 +120,5 @@ export default <TItem>(
     options.orderBy,
   ])
 
-  return [isLoading, isErrored, result, totalCount, hydrate]
+  return [isLoading, lastErrorCode, result, totalCount, hydrate]
 }

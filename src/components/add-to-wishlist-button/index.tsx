@@ -7,7 +7,7 @@ import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { DataStoreError } from '../../data-store'
+import { DataStoreErrorCode } from '../../data-store'
 
 import Button from '../button'
 import { CollectionNames, WishlistForUser } from '../../modules/wishlists'
@@ -17,7 +17,7 @@ const getLabel = (
   isLoading: boolean,
   isAssetInWishlist: boolean,
   isSaving: boolean,
-  lastError: null | DataStoreError,
+  lastErrorCode: null | DataStoreErrorCode,
   isSuccess: boolean
 ) => {
   if (!isLoggedIn) {
@@ -28,7 +28,7 @@ const getLabel = (
     return 'Loading...'
   }
 
-  if (lastError) {
+  if (lastErrorCode) {
     return 'Error!'
   }
 
@@ -60,7 +60,7 @@ const getIcon = (
   isLoading: boolean,
   isAssetInWishlist: boolean,
   isSaving: boolean,
-  lastError: null | DataStoreError,
+  lastErrorCode: null | DataStoreErrorCode,
   isSuccess: boolean
 ) => {
   if (!isLoggedIn) {
@@ -71,7 +71,7 @@ const getIcon = (
     return undefined
   }
 
-  if (lastError) {
+  if (lastErrorCode) {
     return undefined
   }
 
@@ -104,7 +104,7 @@ export default ({
   onClick?: (data: { newValue: boolean }) => void
 }) => {
   const userId = useUserId()
-  const [isLoadingWishlist, lastErrorLoadingWishlist, myWishlist] =
+  const [isLoadingWishlist, lastErrorCodeLoadingWishlist, myWishlist] =
     useDataStoreItem<WishlistForUser>(
       CollectionNames.WishlistsForUsers,
       userId || false,
@@ -157,7 +157,7 @@ export default ({
         isLoadingWishlist,
         isAssetInWishlist,
         isSaving,
-        lastSavingError || lastErrorLoadingWishlist,
+        lastSavingError || lastErrorCodeLoadingWishlist,
         isSavingSuccess
       )}
       onClick={onClickBtn}
@@ -167,7 +167,7 @@ export default ({
         isLoadingWishlist,
         isAssetInWishlist,
         isSaving,
-        lastSavingError || lastErrorLoadingWishlist,
+        lastSavingError || lastErrorCodeLoadingWishlist,
         isSavingSuccess
       )}
     </Button>

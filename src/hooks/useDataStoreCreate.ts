@@ -2,13 +2,17 @@ import { useState } from 'react'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 import { mapFieldsForDatabase } from '../utils'
+import {
+  DataStoreErrorCode,
+  getDataStoreErrorCodeFromError,
+} from '../data-store'
 
 export default <TRecord>(
   collectionName: string
 ): [
   boolean,
   boolean,
-  boolean,
+  null | DataStoreErrorCode,
   (
     fields: Partial<TRecord>,
     returnEntireDocument?: boolean,
@@ -23,12 +27,14 @@ export default <TRecord>(
 
   const [isCreating, setIsCreating] = useState<boolean>(false)
   const [isSuccess, setIsSuccess] = useState<boolean>(false)
-  const [isErrored, setIsErrored] = useState<boolean>(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
+    null
+  )
   const [id, setId] = useState<null | string>(null)
 
   const clear = () => {
     setIsSuccess(false)
-    setIsErrored(false)
+    setLastErrorCode(null)
     setIsCreating(false)
   }
 
@@ -39,7 +45,7 @@ export default <TRecord>(
   ): Promise<string | TRecord> => {
     try {
       setIsSuccess(false)
-      setIsErrored(false)
+      setLastErrorCode(null)
       setIsCreating(true)
 
       // @ts-ignore
@@ -66,7 +72,7 @@ export default <TRecord>(
 
       setIsCreating(false)
       setIsSuccess(true)
-      setIsErrored(false)
+      setLastErrorCode(null)
 
       const createdRecord = data[0]
 
@@ -82,7 +88,7 @@ export default <TRecord>(
     } catch (err) {
       setIsCreating(false)
       setIsSuccess(false)
-      setIsErrored(true)
+      setLastErrorCode(getDataStoreErrorCodeFromError(err))
 
       console.error('Failed to create document', err)
       handleError(err)
@@ -91,5 +97,5 @@ export default <TRecord>(
     }
   }
 
-  return [isCreating, isSuccess, isErrored, create, clear, id]
+  return [isCreating, isSuccess, lastErrorCode, create, clear, id]
 }

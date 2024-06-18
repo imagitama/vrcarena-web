@@ -19,7 +19,7 @@ import WarningMessage from '../warning-message'
 const TagBlacklistEditor = () => {
   const isLoggedIn = useIsLoggedIn()
   const userId = useUserId()
-  const [isLoading, lastError, preferences, hydrate] = useUserPreferences()
+  const [isLoading, lastErrorCode, preferences, hydrate] = useUserPreferences()
   const [isSaving, isSaveSuccess, isSaveError, save] =
     useDatabaseSave<UserPreferences>(
       CollectionNames.UserPreferences,
@@ -46,8 +46,12 @@ const TagBlacklistEditor = () => {
     return <LoadingIndicator message="Saving blacklist..." />
   }
 
-  if (lastError) {
-    return <ErrorMessage>Failed to save blacklist</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage>
+        Failed to save blacklist (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const onClickSave = async () => {

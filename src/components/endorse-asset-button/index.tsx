@@ -16,14 +16,14 @@ import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
 import { createRef } from '../../utils'
-import { DataStoreError } from '../../data-store'
+import { DataStoreErrorCode } from '../../data-store'
 
 const getLabel = (
   isLoggedIn: boolean,
   isLoading: boolean,
   isAlreadyEndorsed: boolean,
   isSaving: boolean,
-  lastError: null | boolean | DataStoreError,
+  lastErrorCode: null | DataStoreErrorCode,
   isSuccess: boolean
 ) => {
   if (!isLoggedIn) {
@@ -34,7 +34,7 @@ const getLabel = (
     return 'Loading...'
   }
 
-  if (lastError) {
+  if (lastErrorCode) {
     return 'Error!'
   }
 
@@ -66,7 +66,7 @@ const getIcon = (
   isLoading: boolean,
   isAlreadyEndorsed: boolean,
   isSaving: boolean,
-  lastError: null | boolean | DataStoreError,
+  lastErrorCode: null | boolean | DataStoreErrorCode,
   isSuccess: boolean
 ) => {
   if (!isLoggedIn) {
@@ -77,7 +77,7 @@ const getIcon = (
     return undefined
   }
 
-  if (lastError) {
+  if (lastErrorCode) {
     return undefined
   }
 
@@ -118,33 +118,36 @@ export default ({
   onDone?: () => void | Promise<void>
 }) => {
   const userId = useUserId()
-  const [isLoadingEndorsements, lastErrorLoadingEndorsements, myEndorsements] =
-    useDatabaseQuery<Endorsement>(
-      CollectionNames.Endorsements,
-      userId
-        ? [
-            [
-              EndorsementFieldNames.createdBy,
-              Operators.EQUALS,
-              createRef(CollectionNames.Users, userId),
-            ],
-            [
-              EndorsementFieldNames.asset,
-              Operators.EQUALS,
-              createRef(CollectionNames.Assets, assetId),
-            ],
-          ]
-        : false,
-      {
-        [options.queryName]: 'get-my-endorsements',
-      }
-    )
+  const [
+    isLoadingEndorsements,
+    lastErrorCodeLoadingEndorsements,
+    myEndorsements,
+  ] = useDatabaseQuery<Endorsement>(
+    CollectionNames.Endorsements,
+    userId
+      ? [
+          [
+            EndorsementFieldNames.createdBy,
+            Operators.EQUALS,
+            createRef(CollectionNames.Users, userId),
+          ],
+          [
+            EndorsementFieldNames.asset,
+            Operators.EQUALS,
+            createRef(CollectionNames.Assets, assetId),
+          ],
+        ]
+      : false,
+    {
+      [options.queryName]: 'get-my-endorsements',
+    }
+  )
 
   const isLoggedIn = !!userId
   const isAlreadyEndorsed =
     Array.isArray(myEndorsements) && myEndorsements.length === 1 ? true : false
 
-  const [isSaving, isSavingSuccess, lastSavingError, createOrDelete] =
+  const [isSaving, isSavingSuccess, lastSavingErrorCode, createOrDelete] =
     useDatabaseSave(
       CollectionNames.Endorsements,
       isAlreadyEndorsed && Array.isArray(myEndorsements)
@@ -224,7 +227,7 @@ export default ({
         isLoadingEndorsements,
         isAlreadyEndorsed,
         isSaving,
-        lastSavingError || lastErrorLoadingEndorsements,
+        lastSavingErrorCode || lastErrorCodeLoadingEndorsements,
         isSavingSuccess
       )}
       onClick={onClickBtn}
@@ -234,7 +237,7 @@ export default ({
         isLoadingEndorsements,
         isAlreadyEndorsed,
         isSaving,
-        lastSavingError || lastErrorLoadingEndorsements,
+        lastSavingErrorCode || lastErrorCodeLoadingEndorsements,
         isSavingSuccess
       )}{' '}
       ({endorsementCount})

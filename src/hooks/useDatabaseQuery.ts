@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { inDevelopment } from '../environment'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
+import {
+  DataStoreErrorCode,
+  getDataStoreErrorCodeFromError,
+} from '../data-store'
 
 export enum Operators {
   IS = 'IS', // works for NULL vals
@@ -566,14 +570,16 @@ export default <TResult>(
   orderBy?: OrderBy,
   subscribe = true,
   startAfter = undefined
-): [boolean, boolean, TResult[] | null, () => void] => {
+): [boolean, null | DataStoreErrorCode, TResult[] | null, () => void] => {
   if (typeof whereClauses === 'string') {
     throw new Error('Cannot pass id to this hook anymore')
   }
 
   const [records, setRecords] = useState<TResult[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
+    null
+  )
   const isUnmountedRef = useRef(false)
 
   const options: OptionsMap = getOptionsIfProvided(limitOrOptions) || {
@@ -605,7 +611,7 @@ export default <TResult>(
 
       if (initiallyLoading) {
         setIsLoading(true)
-        setIsErrored(false)
+        setLastErrorCode(null)
       }
 
       const selectQuery = options.selectQuery || '*'
@@ -706,7 +712,7 @@ export default <TResult>(
       if (result.error) {
         if (result.error.message.includes('JWT expired')) {
           setIsLoading(false)
-          setIsErrored(true)
+          setLastErrorCode(DataStoreErrorCode.AuthExpired)
         } else {
           throw new Error(
             `Failed to query database! ${result.error.code}: ${result.error.message}`
@@ -716,12 +722,12 @@ export default <TResult>(
         // weird timing issue where loading=false but users=null so set it before the other flags
         setRecords(result.data)
         setIsLoading(false)
-        setIsErrored(false)
+        setLastErrorCode(null)
       }
     } catch (err) {
       console.error('Failed to use database query', err)
       setIsLoading(false)
-      setIsErrored(true)
+      setLastErrorCode(getDataStoreErrorCodeFromError(err))
       handleError(err)
     }
   }
@@ -760,5 +766,5 @@ export default <TResult>(
     doIt(false)
   }
 
-  return [isLoading, isErrored, records, hydrate]
+  return [isLoading, lastErrorCode, records, hydrate]
 }

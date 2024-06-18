@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { client as supabase } from '../supabase'
 import { handleError } from '../error-handling'
-import { DataStoreError } from '../data-store'
+import {
+  DataStoreError,
+  DataStoreErrorCode,
+  getDataStoreErrorCodeFromError,
+} from '../data-store'
 
 type HydrateFunction = () => void
 
@@ -16,13 +20,15 @@ export default <TResult>(
   select: string = '*'
 ): [
   boolean,
-  null | DataStoreError,
+  null | DataStoreErrorCode,
   null | TResult | false,
   HydrateFunction
 ] => {
   const [result, setResult] = useState<null | TResult | false>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [lastError, setLastError] = useState<null | DataStoreError>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
+    null
+  )
   const isUnmountedRef = useRef(false)
 
   const doIt = async () => {
@@ -37,7 +43,7 @@ export default <TResult>(
       console.debug(`useDataStoreItem :: ${queryName} :: running getQuery`)
 
       setIsLoading(true)
-      setLastError(null)
+      setLastErrorCode(null)
 
       const { error, data } = await supabase
         .from(collectionName.toLowerCase())
@@ -60,7 +66,7 @@ export default <TResult>(
       if (data && data.length !== 1) {
         setResult(false)
         setIsLoading(false)
-        setLastError(null)
+        setLastErrorCode(null)
         return
       }
 
@@ -73,12 +79,12 @@ export default <TResult>(
 
       setResult(data[0])
       setIsLoading(false)
-      setLastError(null)
+      setLastErrorCode(null)
     } catch (err) {
       console.error(err)
       handleError(err)
       setIsLoading(false)
-      setLastError(err as DataStoreError)
+      setLastErrorCode(getDataStoreErrorCodeFromError(err))
     }
   }
 
@@ -95,5 +101,5 @@ export default <TResult>(
 
   const hydrate = () => doIt()
 
-  return [isLoading, lastError, result, hydrate]
+  return [isLoading, lastErrorCode, result, hydrate]
 }

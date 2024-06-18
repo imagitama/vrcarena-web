@@ -1,14 +1,11 @@
 import useUserId from './useUserId'
 import useDataStoreItem from './useDataStoreItem'
 import { CollectionNames, UserPreferences } from '../modules/user'
-import { DataStoreError } from '../data-store'
+import { DataStoreErrorCode } from '../data-store'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUserPrefs } from '../modules/app'
 
-// let lastInstanceIdx = -1
-
-// let lastKnownUserPrefs: UserPreferences | null = null
 let isSomethingGoingToHydrate = false
 let isHydrating = false
 
@@ -16,7 +13,7 @@ export default (
   forceHydrate?: boolean
 ): [
   boolean,
-  null | DataStoreError,
+  null | DataStoreErrorCode,
   UserPreferences | false | null,
   () => void
 ] => {
@@ -26,9 +23,6 @@ export default (
   )
   const userId = useUserId()
   const dispatch = useDispatch()
-
-  // useEffect(() => { lastInstanceIdx++ })
-  // const instanceIdxRef = useRef<number>(lastInstanceIdx)
 
   const needToHydrate =
     userId &&
@@ -41,7 +35,7 @@ export default (
     isSomethingGoingToHydrate = true
   }
 
-  const [isLoading, lastError, userPrefs, hydrate] =
+  const [isLoading, lastErrorCode, userPrefs, hydrate] =
     useDataStoreItem<UserPreferences>(
       CollectionNames.UserPreferences,
       needToHydrate ? userId : false,
@@ -53,22 +47,9 @@ export default (
       isHydrating = true
     }
     if (userPrefs) {
-      // console.debug(`useUserPreferences.useEffect userPrefs = truthy`, {
-      //   userPrefs,
-      // })
       dispatch(setUserPrefs(userPrefs))
     }
   }, [isLoading])
 
-  // console.debug(`useUserPreferences`, {
-  //   userId,
-  //   isSomethingGoingToHydrate,
-  //   needToHydrate,
-  //   isLoading,
-  //   lastError,
-  //   lastKnownUserPrefs,
-  //   isHydrating,
-  // })
-
-  return [isLoading, lastError, lastKnownUserPrefs, hydrate]
+  return [isLoading, lastErrorCode, lastKnownUserPrefs, hydrate]
 }

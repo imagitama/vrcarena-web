@@ -22,7 +22,7 @@ import ButtonDropdown from '../button-dropdown'
 
 import useHistory from '../../hooks/useHistory'
 import useSorting from '../../hooks/useSorting'
-import useDataStore, { ErrorCode } from '../../hooks/useDataStore'
+import useDataStore from '../../hooks/useDataStore'
 import useIsEditor from '../../hooks/useIsEditor'
 import { client as supabase } from '../../supabase'
 import {
@@ -31,7 +31,7 @@ import {
   PublishStatuses,
   ApprovalStatuses,
 } from '../../hooks/useDatabaseQuery'
-import { CommonMetaFieldNames } from '../../data-store'
+import { CommonMetaFieldNames, DataStoreErrorCode } from '../../data-store'
 import useScrollMemory from '../../hooks/useScrollMemory'
 import { getPathForQueryString } from '../../queries'
 import { scrollToTop } from '../../utils'
@@ -212,14 +212,14 @@ const Page = () => {
   const [isLoading, lastErrorCode, items, totalCount, hydrate] = useDataStore<
     any[]
   >(pageGetQuery, {
-    name: `paginated-view-${collectionName || viewName}`,
-    ignoreRangeErrors: true,
+    queryName: `paginated-view-${collectionName || viewName}`,
+    uncatchErrorCodes: [DataStoreErrorCode.BadRange],
   })
 
   useScrollMemory(isLoading === false && lastErrorCode === null)
 
   if (lastErrorCode !== null) {
-    if (lastErrorCode === ErrorCode.BadRange) {
+    if (lastErrorCode === DataStoreErrorCode.BadRange) {
       return (
         <NoResultsMessage>
           No results found for page {currentPageNumber}

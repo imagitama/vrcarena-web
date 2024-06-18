@@ -98,7 +98,7 @@ const ExtraSourcesEditor = ({
   const [newExtraSources, setNewExtraSources] = useState<SourceInfo[]>(
     extraSources || []
   )
-  const [isSaving, isSaveSuccess, lastError, save] =
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
     useDatabaseSave<AssetFields>(
       assetId ? CollectionNames.Assets : false,
       assetId
@@ -144,8 +144,10 @@ const ExtraSourcesEditor = ({
     return <SuccessMessage>Extra sources saved successfully</SuccessMessage>
   }
 
-  if (lastError) {
-    return <ErrorMessage>Failed to save asset</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

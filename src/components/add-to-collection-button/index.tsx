@@ -6,7 +6,7 @@ import CheckIcon from '@material-ui/icons/Check'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
 
-import { DataStoreError } from '../../data-store'
+import { DataStoreErrorCode } from '../../data-store'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useMyCollections from '../../hooks/useMyCollections'
 import CreateCollectionForm from '../create-collection-form'
@@ -127,7 +127,7 @@ const getIcon = (
   isLoading: boolean,
   isAssetInCollection: boolean,
   isSaving: boolean,
-  lastSavingError: null | DataStoreError,
+  lastSavingError: null | DataStoreErrorCode,
   isSuccess: boolean
 ) => {
   if (isLoading) {
@@ -162,7 +162,7 @@ const getLabel = (
   isLoading: boolean,
   isAssetInCollection: boolean,
   isSaving: boolean,
-  lastSavingError: null | DataStoreError,
+  lastSavingError: null | DataStoreErrorCode,
   isSuccess: boolean
 ) => {
   if (isLoading) {

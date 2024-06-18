@@ -2,19 +2,24 @@ import { useState } from 'react'
 import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 import { mapFieldsForDatabase } from '../utils'
-import { DataStoreError } from '../data-store'
+import {
+  CommonRecordFields,
+  DataStoreError,
+  DataStoreErrorCode,
+  DataStoreOptions,
+  getDataStoreErrorCodeFromError,
+} from '../data-store'
 
-interface CommonRecordFields {
-  id: string
-}
-
-export default <TRecord>(
+const useDataStoreEdit = <TRecord>(
   collectionName: string,
-  id: string | false
+  id: string | false,
+  options: DataStoreOptions = {
+    ignoreErrorCodes: [],
+  }
 ): [
   boolean,
   boolean,
-  null | DataStoreError,
+  null | DataStoreErrorCode,
   (fields: Partial<TRecord>) => Promise<void>,
   () => void
 ] => {
@@ -24,11 +29,13 @@ export default <TRecord>(
 
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isSuccess, setIsSuccess] = useState<boolean>(false)
-  const [lastError, setLastError] = useState<null | DataStoreError>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
+    null
+  )
 
   const clear = () => {
     setIsSuccess(false)
-    setLastError(null)
+    setLastErrorCode(null)
     setIsEditing(false)
   }
 
@@ -39,7 +46,7 @@ export default <TRecord>(
       }
 
       setIsSuccess(false)
-      setLastError(null)
+      setLastErrorCode(null)
       setIsEditing(true)
 
       // @ts-ignore
@@ -64,16 +71,42 @@ export default <TRecord>(
 
       setIsEditing(false)
       setIsSuccess(true)
-      setLastError(null)
+      setLastErrorCode(null)
     } catch (err) {
       setIsEditing(false)
       setIsSuccess(false)
-      setLastError(err as DataStoreError)
 
-      console.error('Failed to save document', err)
-      handleError(err)
+      const errorCode = getDataStoreErrorCodeFromError(err as Error)
+
+      if (
+        options.ignoreErrorCodes &&
+        options.ignoreErrorCodes.includes(errorCode)
+      ) {
+        return
+      }
+
+      if (
+        !(
+          options.unstoreErrorCodes &&
+          options.unstoreErrorCodes.includes(errorCode)
+        )
+      ) {
+        setLastErrorCode(errorCode)
+      }
+
+      if (
+        !(
+          options.uncatchErrorCodes &&
+          options.uncatchErrorCodes.includes(errorCode)
+        )
+      ) {
+        console.error('Failed to save document', err)
+        handleError(err)
+      }
     }
   }
 
-  return [isEditing, isSuccess, lastError, save, clear]
+  return [isEditing, isSuccess, lastErrorCode, save, clear]
 }
+
+export default useDataStoreEdit

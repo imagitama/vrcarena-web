@@ -132,7 +132,7 @@ export default ({
 }) => {
   const userId = useUserId()
   const [isLoadingUser, , user, hydrate] = useUserRecord()
-  const [isCreating, isCreateSuccess, lastCreateError, save] =
+  const [isCreating, isCreateSuccess, lastCreateErrorCode, save] =
     useDataStoreEdit<UserPreferences>(
       CollectionNames.UserPreferences,
       userId || false
@@ -165,13 +165,10 @@ export default ({
     )
   }
 
-  if (lastCreateError) {
+  if (lastCreateErrorCode) {
     return (
       <ErrorMessage>
-        Failed to create your profile:{' '}
-        {lastCreateError.postgrestError
-          ? `error code ${lastCreateError.postgrestError}`
-          : 'unknown'}
+        Failed to create your profile (code {lastCreateErrorCode})
       </ErrorMessage>
     )
   }

@@ -22,6 +22,7 @@ import { bucketNames } from '../../file-uploading'
 import Paper from '../paper'
 import * as routes from '../../routes'
 import MentionsInput, { UsernameMapping } from '../mentions-input'
+import { DataStoreErrorCode } from '../../data-store'
 
 const useStyles = makeStyles({
   root: {
@@ -90,7 +91,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
     isAdult,
     setIsAdult,
     isCreatingPost,
-    isErrorCreatingPost,
+    lastErrorCodeCreatingPost,
     isCreatePostSuccess,
     attachments,
     setAttachments,
@@ -104,7 +105,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
     return null
   }
 
-  const isDoingSomething = isCreatingPost || isErrorCreatingPost
+  const isDoingSomething = isCreatingPost || lastErrorCodeCreatingPost !== null
 
   const removeAttachment = (attachment: SocialAttachment) =>
     setAttachments(attachments.filter((item) => item.url !== attachment.url))
@@ -113,7 +114,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
     <div className={classes.uploaderRoot}>
       {isCreatingPost ? (
         <LoadingIndicator message="Creating post..." />
-      ) : isErrorCreatingPost ? (
+      ) : lastErrorCodeCreatingPost ? (
         <ErrorMessage>Failed to create post</ErrorMessage>
       ) : isCreatePostSuccess ? (
         <SuccessMessage>
@@ -182,7 +183,7 @@ interface FormContext {
   ) => void
   isCreatingPost: boolean
   isCreatePostSuccess: boolean
-  isErrorCreatingPost: boolean
+  lastErrorCodeCreatingPost: null | DataStoreErrorCode
   attachments: SocialAttachment[]
   setAttachments: (newAttachments: SocialAttachment[]) => void
   isAdult: boolean
@@ -215,7 +216,7 @@ const CreateSocialPostForm = ({
   const [
     isCreatingPost,
     isCreatePostSuccess,
-    isErrorCreatingPost,
+    lastErrorCodeCreatingPost,
     create,
     ,
     createdId,
@@ -274,7 +275,7 @@ const CreateSocialPostForm = ({
           setInternalText,
           isCreatingPost,
           isCreatePostSuccess,
-          isErrorCreatingPost,
+          lastErrorCodeCreatingPost,
           attachments,
           setAttachments,
           isAdult,

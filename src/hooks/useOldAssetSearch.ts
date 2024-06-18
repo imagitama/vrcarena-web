@@ -3,10 +3,11 @@ import { useDispatch } from 'react-redux'
 
 import { AssetFieldNames } from './useDatabaseQuery'
 import useIsAdultContentEnabled from './useIsAdultContentEnabled'
-import useDataStore, { ErrorCode } from './useDataStore'
+import useDataStore from './useDataStore'
 import { client as supabase } from '../supabase'
 import { setIsSearching } from '../modules/app'
 import { Asset } from '../modules/assets'
+import { DataStoreErrorCode } from '../data-store'
 
 const defaultLimit = 50
 
@@ -22,7 +23,7 @@ export default (
   searchTerm: string,
   filtersByFieldName: { [fieldName: string]: string[] } = {},
   limit = defaultLimit
-): [boolean, null | ErrorCode, Asset[] | null] => {
+): [boolean, null | DataStoreErrorCode, Asset[] | null] => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [actualSearchTerm, setActualSearchTerm] = useState<string>('')
   const timerRef = useRef<NodeJS.Timeout>()

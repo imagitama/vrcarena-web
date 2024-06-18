@@ -300,7 +300,7 @@ const View = () => {
   )
   const [isLoading, isError, events, , hydrate] = useDataStore<FullEvent[]>(
     getQuery,
-    { name: 'view-event', quietHydrate: true }
+    { queryName: 'view-event', quietHydrate: true }
   )
   const classes = useStyles()
   const isEditor = useIsEditor()

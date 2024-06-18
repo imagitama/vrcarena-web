@@ -1,54 +1,34 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 // @ts-ignore
-import { SupabaseQueryBuilder } from '@supabase/supabase-js'
+import { PostgrestError, SupabaseQueryBuilder } from '@supabase/supabase-js'
 import { handleError } from '../error-handling'
 import { inDevelopment } from '../environment'
+import {
+  DataStoreErrorCode,
+  DataStoreOptions,
+  PostgresErrorCode,
+  getDataStoreErrorCodeFromError,
+} from '../data-store'
 
 /**
  * TODO: Decide if to delete this hook and return to useDatabaseQuery as it abstracts Supabase
  */
 
-export enum ErrorCode {
-  BadRange,
-  Unknown,
-}
-
-enum PostgresErrorCode {
-  // code: "PGRST103", details: "An offset of 200 was requested, but there are only 33 rows.", hint: null, message: "Requested range not satisfiable"
-  PGRST103 = 'PGRST103',
-}
-
-export interface UseDataStoreOptions {
-  name?: string
+export interface UseDataStoreOptions extends DataStoreOptions {
   quietHydrate?: boolean
-  ignoreRangeErrors?: boolean // when user requests page that doesnt exist
 }
 
 const getOptions = (
   queryNameOrOptions: string | UseDataStoreOptions | undefined
 ): UseDataStoreOptions =>
   typeof queryNameOrOptions === 'string'
-    ? { name: queryNameOrOptions }
+    ? { queryName: queryNameOrOptions }
     : queryNameOrOptions !== undefined
     ? queryNameOrOptions
     : {
-        name: '(unnamed)',
+        queryName: '(unnamed)',
         quietHydrate: false,
       }
-
-interface PostgresError extends Error {
-  code: string
-}
-
-const getErrorCodeFromError = (error: Error): ErrorCode => {
-  if ((error as PostgresError).code) {
-    switch ((error as PostgresError).code) {
-      case PostgresErrorCode.PGRST103:
-        return ErrorCode.BadRange
-    }
-  }
-  return ErrorCode.Unknown
-}
 
 export default <TResult>(
   getQuery:
@@ -60,7 +40,7 @@ export default <TResult>(
   queryNameOrOptions?: string | UseDataStoreOptions
 ): [
   boolean,
-  null | ErrorCode,
+  null | DataStoreErrorCode,
   null | TResult,
   null | number,
   () => void,
@@ -68,14 +48,16 @@ export default <TResult>(
 ] => {
   const [result, setResult] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [lastErrorCode, setLastErrorCode] = useState<ErrorCode | null>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<DataStoreErrorCode | null>(
+    null
+  )
   const [isHydrating, setIsHydrating] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const isUnmountedRef = useRef(false)
   const timerRef = useRef<number>(0)
 
   const {
-    name: queryName,
+    queryName: queryName,
     quietHydrate: isQuietHydrate,
     ...options
   } = getOptions(queryNameOrOptions)
@@ -119,9 +101,11 @@ export default <TResult>(
       )
 
       if (error) {
+        // TODO: Do this in a generic way
         if (
-          options.ignoreRangeErrors &&
-          (error as PostgresError).code === PostgresErrorCode.PGRST103
+          Array.isArray(options.uncatchErrorCodes) &&
+          options.uncatchErrorCodes.includes(DataStoreErrorCode.BadRange) &&
+          (error as PostgrestError).code === PostgresErrorCode.PGRST103
         ) {
           if (isQuietHydrate) {
             setIsHydrating(false)
@@ -129,7 +113,7 @@ export default <TResult>(
             setIsLoading(false)
           }
 
-          setLastErrorCode(ErrorCode.BadRange)
+          setLastErrorCode(DataStoreErrorCode.BadRange)
           return
         } else {
           throw new Error(
@@ -170,7 +154,7 @@ export default <TResult>(
         setIsHydrating(false)
       }
 
-      setLastErrorCode(getErrorCodeFromError(err as Error))
+      setLastErrorCode(getDataStoreErrorCodeFromError(err))
       setIsLoading(false)
     }
   }, [getQuery])

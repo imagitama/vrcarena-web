@@ -3,12 +3,8 @@ import { PostgrestError } from '@supabase/supabase-js'
 import { client as supabase } from './supabase'
 import { getIsUuid } from './utils'
 
-export class DataStoreError extends Error {
-  postgrestError?: PostgrestError
-  constructor(message: string, postgrestError?: PostgrestError) {
-    super(`${message}${postgrestError ? `: ${postgrestError.message}` : ''}`)
-    this.postgrestError = postgrestError
-  }
+export interface CommonRecordFields {
+  id: string
 }
 
 const standardFieldNames = {
@@ -457,4 +453,78 @@ export const deleteRecord = async (
 
   // TODO: Do we need to get this? It will mean running SELECT but that could clash with security policies
   return null
+}
+
+// hooks should extend from this
+export interface DataStoreOptions {
+  queryName?: string
+  // these error codes are completely ignored
+  ignoreErrorCodes?: DataStoreErrorCode[]
+  // these error codes won't be stored so won't cause re-renders
+  unstoreErrorCodes?: DataStoreErrorCode[]
+  // these errors won't be captured by Sentry
+  uncatchErrorCodes?: DataStoreErrorCode[]
+}
+
+/**
+ * ERROR HANDLING STUFF...
+ */
+
+// the standard way of passing around errors is the "Error" class (not the Postgres error object)
+// this just wraps it all up nicely
+export class DataStoreError extends Error {
+  postgrestError: PostgrestError
+  constructor(message: string, postgrestError: PostgrestError) {
+    super(`${message}${postgrestError ? `: ${postgrestError.message}` : ''}`)
+    this.postgrestError = postgrestError
+  }
+}
+
+// (note cannot have numeric keys so standard postgres errors prefixed with "PG" (vs "PGRST" for Postgrest))
+// TODO: Use lib's types
+export enum PostgresErrorCode {
+  // code: "PGRST103", details: "An offset of 200 was requested, but there are only 33 rows.", hint: null, message: "Requested range not satisfiable"
+  PGRST103 = 'PGRST103',
+  // code: "23505", details: null, hint: null, message: 'duplicate key value violates unique constraint "users_username_key"'
+  'PG23505' = '23505',
+}
+
+// we should never store complex objects in state (hard to persist, reference issues, etc.)
+// so we prefer error codes
+// we cannot use Supabase's error codes in case we switch providers (which we have done once before)
+// so use these internal error codes
+export enum DataStoreErrorCode {
+  AuthExpired,
+  ViolateUniqueConstraint,
+  BadRange,
+  Unknown,
+}
+
+export const getDataStoreErrorCodeFromPostgrestError = (
+  postgresError: PostgrestError
+): DataStoreErrorCode => {
+  if (!postgresError.code) {
+    throw new Error(
+      'Cannot get data store error code from postgres error: does not have code property'
+    )
+  }
+
+  switch (postgresError.code) {
+    case PostgresErrorCode.PGRST103:
+      return DataStoreErrorCode.BadRange
+    case PostgresErrorCode.PG23505:
+      return DataStoreErrorCode.ViolateUniqueConstraint
+  }
+
+  return DataStoreErrorCode.Unknown
+}
+
+export const getDataStoreErrorCodeFromError = (
+  errorThing: unknown
+): DataStoreErrorCode => {
+  if (errorThing instanceof DataStoreError) {
+    return getDataStoreErrorCodeFromPostgrestError(errorThing.postgrestError!)
+  }
+
+  return DataStoreErrorCode.Unknown
 }

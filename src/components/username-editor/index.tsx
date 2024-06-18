@@ -13,7 +13,7 @@ import { handleError } from '../../error-handling'
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
-import { DataStoreError } from '../../data-store'
+import { DataStoreErrorCode } from '../../data-store'
 
 const useStyles = makeStyles({
   root: {
@@ -27,22 +27,21 @@ const useStyles = makeStyles({
   },
 })
 
-const getMessageForError = (err: DataStoreError): string => {
-  if (!err.postgrestError) {
-    return 'unknown'
-  }
-  if (err.postgrestError.code === '23505') {
+const getMessageForErrorCode = (errorCode: DataStoreErrorCode): string => {
+  if (errorCode === DataStoreErrorCode.ViolateUniqueConstraint) {
     return 'Username is taken'
   }
-  return `Failed: error code ${err.postgrestError.code}`
+  return `Failed to save username (code ${errorCode})`
 }
 
-export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
+const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
   const userId = useUserId()
   const [isLoadingUser, isErrorLoadingUser, user, hydrate] = useUserRecord()
-  const [isSaving, isSaveSuccess, lastSaveError, save] = useDataStoreEdit<{
+  const [isSaving, isSaveSuccess, lastSaveErrorCode, save] = useDataStoreEdit<{
     username: string
-  }>(CollectionNames.Users, userId || false)
+  }>(CollectionNames.Users, userId || false, {
+    uncatchErrorCodes: [DataStoreErrorCode.ViolateUniqueConstraint],
+  })
   const { username } = user
   const [fieldValue, setFieldValue] = useState(username)
   const classes = useStyles()
@@ -105,9 +104,11 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
         ? 'Saving...'
         : isSaveSuccess
         ? 'Saved!'
-        : lastSaveError
-        ? getMessageForError(lastSaveError)
+        : lastSaveErrorCode
+        ? getMessageForErrorCode(lastSaveErrorCode)
         : ''}
     </div>
   )
 }
+
+export default UsernameEditor
