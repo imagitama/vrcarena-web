@@ -5,6 +5,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import { makeStyles } from '@material-ui/core/styles'
 
 import Link from '../../components/link'
 import Heading from '../../components/heading'
@@ -116,6 +117,26 @@ const AssetsForSpecies = ({
   )
 }
 
+const useStyles = makeStyles({
+  headings: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  mainHeading: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    '& a': {
+      display: 'flex',
+      alignItems: 'center',
+      marginRight: '0.5rem',
+    },
+    '& img': {
+      height: '50px',
+      margin: '0 0.5rem',
+    },
+  },
+})
+
 const View = () => {
   const { speciesIdOrSlug } = useParams<{
     speciesIdOrSlug: string
@@ -133,6 +154,7 @@ const View = () => {
   )
   const [isLoadingSpecies, lastErrorCodeLoadingSpecies, speciesResults] =
     useDataStore<FullSpecies[]>(getSpeciesQuery, 'view-species')
+  const classes = useStyles()
 
   const species =
     speciesResults && speciesResults.length === 1 ? speciesResults[0] : null
@@ -208,7 +230,7 @@ const View = () => {
           Edit Species
         </Button>
       ) : null}
-      <div>
+      <div className={classes.headings}>
         <Heading variant="h2" inline>
           <Link to={routes.viewAllSpecies}>All</Link>
           {species.parentpluralname ? (
@@ -225,18 +247,24 @@ const View = () => {
           ) : null}
           {' / '}
         </Heading>
-        <Heading variant="h1" inline>
+        <Heading variant="h1" inline className={classes.mainHeading}>
           <Link
             to={routes.viewSpeciesWithVar.replace(
               ':speciesIdOrSlug',
               species.id
             )}>
+            {species.thumbnailurl ? (
+              <img src={species.thumbnailurl} alt="Thumbnail for species" />
+            ) : null}
             {species.pluralname}
           </Link>{' '}
           ({species.avatarcount})
         </Heading>
       </div>
       <BodyText>{species.description || species.shortdescription}</BodyText>
+      {species.thumbnailsourceurl ? (
+        <a href={species.thumbnailsourceurl}>Thumbnail source</a>
+      ) : null}
       {childSpecies.length ? (
         <Heading variant="h2">
           Children:{' '}
