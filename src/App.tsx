@@ -47,6 +47,7 @@ import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
 import useBannerUrl from './hooks/useBannerUrl'
 import DeprecatedRouteView from './containers/deprecated-route'
+import ErrorMessage from './components/error-message'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -838,7 +839,7 @@ export default () => {
         <CssBaseline />
         <Banner />
         <PageHeader />
-        <main className="main">
+        {/* <main className="main">
           <div className={`${isHome ? '' : classes.mainContainer}`}>
             <BannedNotice />
             <Notices isHome={isHome} />
@@ -848,7 +849,11 @@ export default () => {
               <MainContent />
             </ErrorBoundary>
           </div>
-        </main>
+        </main> */}
+        <ErrorMessage hintText="">
+          Website will be unavailable for a couple of hours (since 5:40 UTC) as
+          I upgrade the database -PB
+        </ErrorMessage>
         <PageFooter />
       </ThemeProvider>
     </ErrorBoundary>
