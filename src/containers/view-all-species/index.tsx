@@ -28,6 +28,7 @@ import {
 } from '../../media-queries'
 import { findItemAndParents } from '../../utils'
 import SpeciesResultItem from '../../components/species-result-item'
+import useStorage from '../../hooks/useStorage'
 
 const description =
   'Avatars in VR social games can be grouped into different species. Here is a list of all species that we know about in VR social games from Avalis to Dutch Angel Dragons to Digimon.'
@@ -51,17 +52,19 @@ const useStyles = makeStyles({
     },
   },
   speciesItem: {
-    width: '33.3%',
-    [mediaQueryForTablets]: {
-      width: '50%',
-    },
-    [mediaQueryForMobiles]: {
-      width: '100%',
-    },
-    '& $speciesItem': {
-      width: '100%',
-    },
+    width: '100%'
   },
+  grid: {
+    '& $speciesItem': {
+      width: '33.3%',
+      [mediaQueryForTablets]: {
+        width: '50%',
+      },
+      [mediaQueryForMobiles]: {
+        width: '100%',
+      }
+    }
+  }
 })
 
 interface SpeciesWithChildren extends FullSpecies {
@@ -85,6 +88,11 @@ function convertToNestedArray(
   return nestedArray
 }
 
+interface SpeciesContainerSettings {
+  grid: boolean // 3 cols
+  groupChildren: boolean
+}
+
 const View = () => {
   const isEditor = useIsEditor()
   const [isLoading, isError, speciesItems] = useDatabaseQuery<Species>(
@@ -96,6 +104,7 @@ const View = () => {
   )
   const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()
+  const [speciesContainerSettings, setContainerSettings] = useStorage<SpeciesContainerSettings>('speciescontainer', { grid: true, groupChildren: true })
 
   if (isLoading || !Array.isArray(speciesItems)) {
     return <LoadingIndicator message="Loading species..." />
@@ -110,7 +119,25 @@ const View = () => {
       ? findItemAndParents<Species>(speciesItems, filterId)
       : speciesItems
 
-  const speciesHierarchy = convertToNestedArray(filteredSpecies)
+  // const speciesHierarchy: SpeciesWithChildren[] = speciesContainerSettings?.groupChildren ? convertToNestedArray(filteredSpecies) : filteredSpecies as SpeciesWithChildren[]
+  const speciesHierarchy: SpeciesWithChildren[] = speciesContainerSettings?.groupChildren ? convertToNestedArray(filteredSpecies) : filteredSpecies as SpeciesWithChildren[]
+
+  const setSetting = (name: keyof SpeciesContainerSettings, newValue: any) => {
+    if (!speciesContainerSettings) {
+      return
+    }
+    setContainerSettings({
+      ...speciesContainerSettings,
+      [name]: newValue
+    })
+  }
+
+  const toggleSetting = (name: keyof SpeciesContainerSettings) => {
+    if (!speciesContainerSettings) {
+      return
+    }
+    setSetting(name, !speciesContainerSettings[name])
+  }
 
   return (
     <>
@@ -135,13 +162,15 @@ const View = () => {
           }}
         />
       </div>
-      <div className={classes.speciesResults}>
+      <Button color="default" onClick={() => toggleSetting('grid')} checked={speciesContainerSettings?.grid}>Grid</Button>{' '}
+      <Button color="default" onClick={() => toggleSetting('groupChildren')} checked={speciesContainerSettings?.groupChildren}>Group Children</Button>
+      <div className={`${classes.speciesResults} ${speciesContainerSettings && speciesContainerSettings.grid ? classes.grid : ''}`}>
         {speciesHierarchy.map((speciesItem) => (
           <SpeciesResultItem
             key={speciesItem.id}
             speciesItem={speciesItem}
             className={classes.speciesItem}>
-            {speciesItem.children
+            {speciesContainerSettings?.groupChildren && speciesItem.children
               ? speciesItem.children.map((speciesChild) => (
                   <SpeciesResultItem speciesItem={speciesChild} indent={1} />
                 ))

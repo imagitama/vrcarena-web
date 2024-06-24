@@ -1,7 +1,9 @@
 import React, { SyntheticEvent } from 'react'
 import Link from '../../components/link'
-import Button from '@material-ui/core/Button'
+import MaterialButton from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 interface ButtonProps {
   children?: React.ReactNode
@@ -24,6 +26,7 @@ interface ButtonProps {
     | 'tertiary'
   title?: string
   iconOnly?: boolean
+  checked?: boolean
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -121,7 +124,7 @@ const ButtonContents = ({
   return <>{children}</>
 }
 
-export default ({
+const Button = ({
   children,
   onClick = undefined,
   url = '',
@@ -133,13 +136,16 @@ export default ({
   isLoading = false,
   title,
   iconOnly,
+  checked,
   ...props
 }: ButtonProps) => {
   const classes = useStyles(props)
 
+  const iconToUse = checked === true ? <CheckBoxIcon /> : checked === false ? <CheckBoxOutlineBlankIcon /> : icon
+
   return (
     <ButtonContents url={url} openInNewTab={openInNewTab} className={className}>
-      <Button
+      <MaterialButton
         variant="contained"
         // @ts-ignore
         color="primary"
@@ -154,19 +160,21 @@ export default ({
         <span
           className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
           {!switchIconSide && children ? <>{children} </> : null}
-          {icon && (
+          {iconToUse && (
             <span
               className={`${classes.icon} ${iconOnly ? classes.noMargin : ''} ${
                 props.size === 'small' ? classes.small : ''
               } ${switchIconSide ? classes.switchIconSide : ''} ${
                 children ? '' : classes.noChildren
               }`}>
-              {icon}
+              {iconToUse}
             </span>
           )}
           {switchIconSide && children ? <>{children} </> : null}
         </span>
-      </Button>
+      </MaterialButton>
     </ButtonContents>
   )
 }
+
+export default Button
