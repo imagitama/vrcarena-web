@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
 import AddIcon from '@material-ui/icons/Add'
 import { makeStyles } from '@material-ui/core/styles'
+import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
@@ -54,17 +55,17 @@ const useStyles = makeStyles({
   speciesItem: {
     width: '100%'
   },
-  grid: {
-    '& $speciesItem': {
-      width: '33.3%',
-      [mediaQueryForTablets]: {
-        width: '50%',
-      },
-      [mediaQueryForMobiles]: {
-        width: '100%',
-      }
-    }
-  }
+  // grid: {
+  //   '& $speciesItem': {
+  //     width: '33.3%',
+  //     [mediaQueryForTablets]: {
+  //       width: '50%',
+  //     },
+  //     [mediaQueryForMobiles]: {
+  //       width: '100%',
+  //     }
+  //   }
+  // }
 })
 
 interface SpeciesWithChildren extends FullSpecies {
@@ -139,6 +140,19 @@ const View = () => {
     setSetting(name, !speciesContainerSettings[name])
   }
 
+  const children = speciesHierarchy.map((speciesItem) => (
+    <SpeciesResultItem
+      key={speciesItem.id}
+      speciesItem={speciesItem}
+      className={classes.speciesItem}>
+      {speciesContainerSettings?.groupChildren && speciesItem.children
+        ? speciesItem.children.map((speciesChild) => (
+            <SpeciesResultItem speciesItem={speciesChild} indent={1} />
+          ))
+        : null}
+    </SpeciesResultItem>
+  ))
+
   return (
     <>
       <div className={classes.autocompleteWrapper}>
@@ -164,20 +178,9 @@ const View = () => {
       </div>
       <Button color="default" onClick={() => toggleSetting('grid')} checked={speciesContainerSettings?.grid}>Grid</Button>{' '}
       <Button color="default" onClick={() => toggleSetting('groupChildren')} checked={speciesContainerSettings?.groupChildren}>Group Children</Button>
-      <div className={`${classes.speciesResults} ${speciesContainerSettings && speciesContainerSettings.grid ? classes.grid : ''}`}>
-        {speciesHierarchy.map((speciesItem) => (
-          <SpeciesResultItem
-            key={speciesItem.id}
-            speciesItem={speciesItem}
-            className={classes.speciesItem}>
-            {speciesContainerSettings?.groupChildren && speciesItem.children
-              ? speciesItem.children.map((speciesChild) => (
-                  <SpeciesResultItem speciesItem={speciesChild} indent={1} />
-                ))
-              : null}
-          </SpeciesResultItem>
-        ))}
-      </div>
+      {speciesContainerSettings?.grid ? <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 900: 3}}><Masonry>{children}</Masonry></ResponsiveMasonry> : <div className={classes.speciesResults}>
+        {children}
+      </div>}
     </>
   )
 }
