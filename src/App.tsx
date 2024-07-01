@@ -839,7 +839,7 @@ export default () => {
         <CssBaseline />
         <Banner />
         <PageHeader />
-        <main className="main">
+        {/* <main className="main">
           <div className={`${isHome ? '' : classes.mainContainer}`}>
             <BannedNotice />
             <Notices isHome={isHome} />
@@ -849,11 +849,11 @@ export default () => {
               <MainContent />
             </ErrorBoundary>
           </div>
-        </main>
-        {/* <ErrorMessage hintText="">
+        </main> */}
+        <ErrorMessage hintText="">
           Website will be unavailable for a couple of hours (since 5:40 UTC) as
           I upgrade the database -PB
-        </ErrorMessage> */}
+        </ErrorMessage>
         <PageFooter />
       </ThemeProvider>
     </ErrorBoundary>
