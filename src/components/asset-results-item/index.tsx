@@ -26,7 +26,7 @@ import AddToCartButton from '../add-to-cart-button'
 import DefaultThumbnail from '../default-thumbnail'
 import { AssetSearchResult } from '../../hooks/useAlgoliaSearch'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
     width: '200px',
     transition: 'all 100ms',
@@ -38,10 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '&:hover $relation svg': {
       transform: 'rotate(360deg) !important',
-    },
-    // '&:hover $cardMedia': {
-    //   transform: 'scale(1.02)',
-    // },
+    }
   },
   selected: {
     backgroundColor: '#656565',
@@ -87,10 +84,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-    // display: '-webkit-box',
-    // lineClamp: 2,
-    // '-webkit-box-orient': 'vertical',
-    // '-webkit-box-pack': 'end',
     color: '#C9C9C9',
   },
   relation: {
@@ -121,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
       opacity: 1,
     },
   },
-}))
+})
 
 const divider = '/'
 
@@ -210,13 +203,13 @@ const AssetResultsItem = ({
             <CardMedia
               className={classes.cardMedia}
               image={asset && asset.thumbnailurl ? asset.thumbnailurl : ''}
-              title={asset ? `Thumbnail for ${asset.title}` : ''}>
+              title={asset && asset.title ? `Thumbnail for ${asset.title}` : ''}>
               {!asset || !asset.thumbnailurl ? <DefaultThumbnail /> : undefined}
             </CardMedia>
           </LazyLoad>
           <CardContent className={classes.cardContent}>
             <Typography className={classes.title}>
-              {asset ? (
+              {asset && asset.title ? (
                 <>
                   <span title={asset.title.trim()}>{asset.title.trim()}</span>
                   {asset && asset.isadult ? <LoyaltyIcon /> : null}
