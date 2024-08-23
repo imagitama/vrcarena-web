@@ -270,7 +270,7 @@ const Form = ({
     setSelectedDiscordServerData(data)
   }
 
-  const onSave = async (overrideValue?: string) => {
+  const onSave = async (overrideValue: string | null) => {
     try {
       const newValue =
         overrideValue !== undefined ? overrideValue : selectedDiscordServerId
@@ -305,7 +305,7 @@ const Form = ({
     }
   }
 
-  const onClear = () => onSave(undefined)
+  const onClear = () => onSave(null)
 
   const create = () => setIsCreating(true)
   const browseAll = () => setIsBrowsingAll(true)

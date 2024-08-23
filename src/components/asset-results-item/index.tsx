@@ -212,7 +212,7 @@ const AssetResultsItem = ({
               {asset && asset.title ? (
                 <>
                   <span title={asset.title.trim()}>{asset.title.trim()}</span>
-                  {asset && asset.isadult ? <LoyaltyIcon /> : null}
+                  {asset.isadult ? <LoyaltyIcon /> : null}
                 </>
               ) : (
                 <LoadingShimmer width="100%" height="40px" />
