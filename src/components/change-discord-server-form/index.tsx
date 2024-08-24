@@ -29,7 +29,7 @@ import {
 } from '../../modules/discordservers'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import { DiscordServerData } from '../../modules/assets'
+import { Asset, DiscordServerData } from '../../modules/assets'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -228,7 +228,7 @@ interface FormProps {
   id?: string
   existingDiscordServerId?: string
   existingDiscordServerData?: DiscordServerData
-  overrideSave?: (newId: string | undefined) => void
+  overrideSave?: (newId: string | null | undefined) => void
   onDone?: () => void
   actionCategory?: string
 }
@@ -248,7 +248,7 @@ const Form = ({
   const [selectedDiscordServerData, setSelectedDiscordServerData] = useState<
     DiscordServerData | undefined
   >(existingDiscordServerData)
-  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave(
+  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave<Asset>(
     collectionName || false,
     id
   )
@@ -293,7 +293,7 @@ const Form = ({
       }
 
       await save({
-        [AssetFieldNames.discordServer]: newValue,
+        discordserver: newValue,
       })
 
       if (onDone) {
