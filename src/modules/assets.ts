@@ -97,7 +97,7 @@ export interface VrcFurySettings {
 
 export interface VrcFuryPrefabInfo {
   url: string
-  discordServerId?: string
+  discordServerId?: string | null
   // when full:
   discordserverdata?: DiscordServerData | null
 }

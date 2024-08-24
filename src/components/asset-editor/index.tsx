@@ -33,7 +33,7 @@ import {
 } from '../../hooks/useDatabaseQuery'
 
 import * as routes from '../../routes'
-import categoryMeta, { getCategoryMeta } from '../../category-meta'
+import { getCategoryMeta } from '../../category-meta'
 import { adultSearchTerms, nsfwRules, WEBSITE_FULL_URL } from '../../config'
 import { isGumroadUrl } from '../../utils'
 import { getDoesAssetNeedPublishing } from '../../utils/assets'
@@ -70,7 +70,6 @@ import ChangeDiscordServerForm from '../change-discord-server-form'
 import VrchatAvatarIdsForm from '../vrchat-avatar-ids-form'
 import VrchatAvatars from '../vrchat-avatars'
 import SketchfabEmbedEditor from '../sketchfab-embed-editor'
-import ChangeVrchatWorldForm from '../change-vrchat-world-form'
 import VrchatWorlds from '../vrchat-worlds'
 import SketchfabEmbed from '../sketchfab-embed'
 import SyncWithGumroadSettings from '../sync-with-gumroad-settings'
@@ -671,7 +670,7 @@ const DiscordServerDisplay = ({
         <strong>Preview:</strong>
         <br />
         <DiscordServerMustJoinNotice
-          discordServerId={fields.discordserver}
+          discordServerId={fields.discordserver || ''}
           discordServerData={fields.discordserverdata || undefined}
         />
       </>
@@ -1497,7 +1496,7 @@ const Editor = () => {
   )
 }
 
-export default () => {
+const AssetEditor = () => {
   const { assetId, asset, isHydrating } = useEditor()
   const classes = useStyles()
 
@@ -1526,3 +1525,5 @@ export default () => {
     </div>
   )
 }
+
+export default AssetEditor

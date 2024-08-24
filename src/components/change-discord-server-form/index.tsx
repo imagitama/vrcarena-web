@@ -4,14 +4,15 @@ import AddIcon from '@material-ui/icons/Add'
 import CheckIcon from '@material-ui/icons/Check'
 import { makeStyles } from '@material-ui/core/styles'
 
-import {
-  CollectionNames,
-  DiscordServerFieldNames,
-  AssetFieldNames,
-} from '../../hooks/useDatabaseQuery'
+import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreItems from '../../hooks/useDataStoreItems'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
+import { AssetFields, DiscordServerData } from '../../modules/assets'
+import { DiscordServer, ViewNames } from '../../modules/discordservers'
 
 import TextInput from '../text-input'
 import SearchForIdForm from '../search-for-id-form'
@@ -22,14 +23,6 @@ import DiscordServerResults from '../discord-server-results'
 import DiscordServerResultsItem from '../discord-server-results-item'
 import Button from '../button'
 import FormControls from '../form-controls'
-import {
-  DiscordServer,
-  DiscordServerFields,
-  ViewNames,
-} from '../../modules/discordservers'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import { Asset, AssetFields, DiscordServerData } from '../../modules/assets'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -226,7 +219,7 @@ const AllDiscordServers = ({
 interface FormProps {
   collectionName?: string
   id?: string
-  existingDiscordServerId?: string
+  existingDiscordServerId?: string | null
   existingDiscordServerData?: DiscordServerData
   overrideSave?: (newId: string | null | undefined) => void
   onDone?: () => void
@@ -243,15 +236,13 @@ const Form = ({
   actionCategory = undefined,
 }: FormProps) => {
   const [selectedDiscordServerId, setSelectedDiscordServerId] = useState<
-    string | undefined
+    string | null | undefined
   >(existingDiscordServerId)
   const [selectedDiscordServerData, setSelectedDiscordServerData] = useState<
     DiscordServerData | undefined
   >(existingDiscordServerData)
-  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave<AssetFields>(
-    collectionName || false,
-    id
-  )
+  const [isSaving, isSuccess, isErrored, save, clear] =
+    useDatabaseSave<AssetFields>(collectionName || false, id)
   const [isCreating, setIsCreating] = useState(false)
   const [isBrowsingAll, setIsBrowsingAll] = useState(false)
 
@@ -270,7 +261,7 @@ const Form = ({
     setSelectedDiscordServerData(data)
   }
 
-  const onSave = async (overrideValue: string | null) => {
+  const onSave = async (overrideValue?: string | null) => {
     try {
       const newValue =
         overrideValue !== undefined ? overrideValue : selectedDiscordServerId

@@ -50,16 +50,13 @@ const PrefabEditor = ({
   onDone: (newFields: Item<VrcFuryPrefabInfo>) => void
 }) => {
   const [url, setUrl] = useState(item.url || '')
-  const [discordServerId, setDiscordServerId] = useState(
-    item.discordServerId || undefined
-  )
+  const [discordServerId, setDiscordServerId] = useState<
+    string | null | undefined
+  >(item.discordServerId || undefined)
   const [doesRequireDiscordServer, setDoesRequireDiscordServer] = useState(
     item.discordServerId ? true : false
   )
-  const [
-    isChangeDiscordServerFormVisible,
-    setIsChangeDiscordServerFormVisible,
-  ] = useState(false)
+  const [isChangeDiscordServerFormVisible] = useState(false)
 
   const onDoneClick = () => {
     if (url) {
