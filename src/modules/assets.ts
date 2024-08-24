@@ -73,7 +73,7 @@ export interface AssetFields extends CoreAssetFields {
     sync: boolean
     fields: { [fieldName: string]: boolean }
   }
-  discordserver: string // id
+  discordserver: string | null // id
   relations: Relation[]
   tutorialsteps: TutorialStep[]
   ranks: string[]

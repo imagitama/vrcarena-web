@@ -29,7 +29,7 @@ import {
 } from '../../modules/discordservers'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import { Asset, DiscordServerData } from '../../modules/assets'
+import { Asset, AssetFields, DiscordServerData } from '../../modules/assets'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -248,7 +248,7 @@ const Form = ({
   const [selectedDiscordServerData, setSelectedDiscordServerData] = useState<
     DiscordServerData | undefined
   >(existingDiscordServerData)
-  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave<AssetFields>(
     collectionName || false,
     id
   )
