@@ -4,13 +4,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 
 import useSearchTerm from '../../hooks/useSearchTerm'
-import {
-  mediaQueryForMobiles,
-  mediaQueryForTabletsOrBelow,
-} from '../../media-queries'
+import { mediaQueryForMobiles } from '../../media-queries'
 import * as routes from '../../routes'
 import Button from '../../components/button'
-import EditorTeam from './components/editor-team'
 import useSupabaseView from '../../hooks/useSupabaseView'
 import ErrorMessage from '../../components/error-message'
 import { AssetCategory, FullAsset, PublicAsset } from '../../modules/assets'
@@ -315,9 +311,8 @@ export default () => {
           </p>
           <p>
             We are <strong>not for profit</strong> and run entirely by our
-            awesome <strong>volunteers</strong>:
+            awesome <strong>volunteers</strong>.
           </p>
-          <EditorTeam />
         </ContentBlock>
         <Tiles />
       </div>

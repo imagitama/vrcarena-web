@@ -113,7 +113,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
       return
     }
 
-    console.debug(`Firebase user has signed in, getting a new JWT...`)
+    console.debug(`Firebase user has signed in, getting a new JWT...`, { user })
 
     const userId = user.uid
     loggedInUserId = userId
