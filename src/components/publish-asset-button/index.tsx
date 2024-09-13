@@ -45,7 +45,6 @@ enum BlockingErrorTypes {
   NO_THUMBNAIL = 'NO_THUMBNAIL',
   NO_DESCRIPTION = 'NO_DESCRIPTION',
   NO_TAGS = 'NO_TAGS',
-  NO_PAID_OR_FREE_TAG = 'NO_PAID_OR_FREE_TAG',
 }
 
 enum NonBlockingErrorTypes {
@@ -57,6 +56,7 @@ enum NonBlockingErrorTypes {
   MISSING_ACCESSORY_PARENT = 'MISSING_ACCESSORY_PARENT',
   NO_ATTACHMENTS = 'NO_ATTACHMENTS',
   NO_SOURCE_URL = 'NO_SOURCE_URL',
+  NO_PAID_OR_FREE_TAG = 'NO_PAID_OR_FREE_TAG',
 }
 
 const validationErrorMessages = {
@@ -78,7 +78,7 @@ const validationErrorMessages = {
     'has no linked asset (this is required if your accessory needs a base avatar)',
   [NonBlockingErrorTypes.NO_ATTACHMENTS]:
     'has no attached files (please attach at least one larger image)',
-  [BlockingErrorTypes.NO_PAID_OR_FREE_TAG]: 'has no "free" or "paid" tag',
+  [NonBlockingErrorTypes.NO_PAID_OR_FREE_TAG]: 'has no "free" or "paid" tag',
 }
 
 const getIfShouldBeNsfw = (asset: Asset): boolean => {
@@ -144,7 +144,7 @@ const getValidationErrorMessagesForAsset = (
     !asset.tags.includes('free') &&
     !asset.tags.includes('paid')
   ) {
-    messages.push(BlockingErrorTypes.NO_PAID_OR_FREE_TAG)
+    messages.push(NonBlockingErrorTypes.NO_PAID_OR_FREE_TAG)
   }
   if (getIfShouldBeNsfw(asset)) {
     messages.push(NonBlockingErrorTypes.NOT_MARKED_NSFW)
