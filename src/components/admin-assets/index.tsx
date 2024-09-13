@@ -7,8 +7,11 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { makeStyles } from '@material-ui/core/styles'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import { makeStyles } from '@material-ui/styles'
+import CheckIcon from '@material-ui/icons/Check'
 
 import {
   PublishStatuses,
@@ -21,6 +24,7 @@ import {
   FullAsset,
   CollectionNames as AssetsCollectionNames,
   AssetCategory,
+  ViewNames,
 } from '../../modules/assets'
 import AssetResultsItem from '../../components/asset-results-item'
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
@@ -31,6 +35,13 @@ import PaginatedView from '../paginated-view'
 import EditorRecordManager from '../editor-record-manager'
 import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
+import AssetOverview from '../asset-overview'
+import Message from '../message'
+import useDataStore from '../../hooks/useDataStore'
+import { client } from '../../supabase'
+import LoadingIndicator from '../loading-indicator'
+import ErrorMessage from '../error-message'
+import Heading from '../heading'
 
 const useStyles = makeStyles({
   pass: {
@@ -41,6 +52,26 @@ const useStyles = makeStyles({
   },
   notImportant: {
     color: 'rgba(255, 0, 0, 0.5)',
+  },
+  queue: {
+    marginTop: '1rem',
+  },
+  queueControls: {
+    border: '1px dashed white',
+    padding: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& > *': {
+      margin: '0 0.25rem',
+    },
+  },
+  assetButtons: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: '0 0.15rem',
+    },
   },
 })
 
@@ -94,7 +125,7 @@ function AssetsTable({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Asset</TableCell>
+            <TableCell>Asset ({assets ? assets.length : '-'})</TableCell>
             <TableCell />
             <TableCell>Controls</TableCell>
           </TableRow>
@@ -237,7 +268,26 @@ const Renderer = ({
 }: {
   items?: FullAsset[]
   hydrate?: () => void
-}) => <AssetsTable assets={items} hydrate={hydrate} />
+}) => {
+  const [inQueueMode, setInQueueMode] = useState(false)
+
+  if (inQueueMode) {
+    return <Queue assets={items} />
+  }
+
+  return (
+    <>
+      <Message
+        title="Queue"
+        controls={
+          <Button onClick={() => setInQueueMode(true)}>View As Queue</Button>
+        }>
+        Speed up approval by using the new queue system
+      </Message>
+      <AssetsTable assets={items} hydrate={hydrate} />
+    </>
+  )
+}
 
 const subViews = {
   PENDING: 0,
@@ -260,6 +310,60 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
       />
       <Button onClick={() => onChange(val)}>Apply</Button>
     </>
+  )
+}
+
+const Queue = ({ assets }: { assets?: FullAsset[] }) => {
+  const [currentAssetId, setCurrentAssetId] = useState('')
+  const classes = useStyles()
+
+  if (!assets) {
+    return null
+  }
+
+  const assetIds = assets.map((asset) => asset.id)
+  const atStart = assetIds.indexOf(currentAssetId) === 0
+  const atEnd = assetIds.indexOf(currentAssetId) === assetIds.length - 1
+
+  const assetIdToDisplay = currentAssetId || assetIds[0]
+
+  const onClickPrev = () =>
+    setCurrentAssetId(assetIds[assetIds.indexOf(assetIdToDisplay) - 1])
+  const onClickNext = () =>
+    setCurrentAssetId(assetIds[assetIds.indexOf(assetIdToDisplay) + 1])
+
+  return (
+    <div className={classes.queue}>
+      <div className={classes.queueControls}>
+        <Button
+          isDisabled={atStart}
+          onClick={onClickPrev}
+          icon={<ChevronLeftIcon />}
+          switchIconSide
+          size="large">
+          Previous Asset
+        </Button>
+        <div className={classes.assetButtons}>
+          {assetIds.map((assetId, index) => (
+            <Button
+              key={assetId}
+              color={'default'}
+              onClick={() => setCurrentAssetId(assetId)}
+              icon={assetIdToDisplay === assetId ? <CheckIcon /> : undefined}>
+              #{index + 1}
+            </Button>
+          ))}
+        </div>
+        <Button
+          isDisabled={atEnd}
+          onClick={onClickNext}
+          icon={<ChevronRightIcon />}
+          size="large">
+          Next Asset
+        </Button>
+      </div>
+      <AssetOverview assetId={assetIdToDisplay} />
+    </div>
   )
 }
 
