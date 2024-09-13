@@ -6,10 +6,12 @@ export default ({
   children,
   leftAlign = false,
   noTopMargin = false,
+  controls = undefined,
 }: {
   children: React.ReactChild | React.ReactChild[]
   leftAlign?: boolean
   noTopMargin?: boolean
+  controls?: React.ReactNode
 }) => (
   <Message
     icon={<WarningIcon />}
@@ -17,5 +19,6 @@ export default ({
     leftAlign={leftAlign}
     noTopMargin={noTopMargin}
     title={children}
+    controls={controls}
   />
 )

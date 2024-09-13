@@ -17,12 +17,14 @@ export default ({
   hintText,
   onRetry,
   onOkay,
+  leftAlign,
 }: {
   children: React.ReactNode
   error?: Error
   hintText?: false | string
   onRetry?: () => void
   onOkay?: () => void
+  leftAlign?: boolean
 }) => (
   <Message
     icon={<ErrorIcon />}
@@ -43,7 +45,8 @@ export default ({
           ) : null}
         </>
       ) : undefined
-    }>
+    }
+    leftAlign={leftAlign}>
     {hintText || hintText === undefined ? (
       <>
         {hintText || (

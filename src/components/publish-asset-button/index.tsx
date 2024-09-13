@@ -12,6 +12,11 @@ import SuccessMessage from '../success-message'
 import { Asset, AssetCategory } from '../../modules/assets'
 import WarningMessage from '../warning-message'
 import { adultSearchTerms } from '../../config'
+import Message from '../message'
+import FormControls from '../form-controls'
+import useHistory from '../../hooks/useHistory'
+import useTimer from '../../hooks/useTimer'
+import * as routes from '../../routes'
 
 const errorCodes: { [key: string]: string } = {
   IS_NOT_DRAFT: 'IS_NOT_DRAFT',
@@ -33,24 +38,47 @@ const getErrorMessageForCode = (errorCode: string): string => {
   }
 }
 
+enum BlockingErrorTypes {
+  NO_TITLE = 'NO_TITLE',
+  DEFAULT_TITLE = 'DEFAULT_TITLE',
+  NO_AUTHOR = 'NO_AUTHOR',
+  NO_THUMBNAIL = 'NO_THUMBNAIL',
+  NO_DESCRIPTION = 'NO_DESCRIPTION',
+  NO_TAGS = 'NO_TAGS',
+  NO_PAID_OR_FREE_TAG = 'NO_PAID_OR_FREE_TAG',
+}
+
+enum NonBlockingErrorTypes {
+  INVALID_TITLE = 'INVALID_TITLE',
+  NO_SPECIES = 'NO_SPECIES',
+  SHORT_DESCRIPTION = 'SHORT_DESCRIPTION',
+  NOT_MANY_TAGS = 'NOT_MANY_TAGS',
+  NOT_MARKED_NSFW = 'NOT_MARKED_NSFW',
+  MISSING_ACCESSORY_PARENT = 'MISSING_ACCESSORY_PARENT',
+  NO_ATTACHMENTS = 'NO_ATTACHMENTS',
+  NO_SOURCE_URL = 'NO_SOURCE_URL',
+}
+
 const validationErrorMessages = {
-  NO_TITLE: 'has no title',
-  DEFAULT_TITLE: 'is using the default title',
-  INVALID_TITLE: 'has an invalid title',
-  NO_AUTHOR: 'has no author',
-  NO_SPECIES: 'has no species',
-  NO_THUMBNAIL: 'has no thumbnail',
-  NO_SOURCE_URL: 'has no source URL',
-  NO_DESCRIPTION: 'has no description',
-  SHORT_DESCRIPTION: 'has a too short description (less than 20 characters)',
-  NO_TAGS: 'has no tags',
-  NOT_MANY_TAGS: "hasn't got many tags (less than 4)",
-  NOT_MARKED_NSFW:
+  [BlockingErrorTypes.NO_TITLE]: 'has no title',
+  [BlockingErrorTypes.DEFAULT_TITLE]: 'is using the default title',
+  [NonBlockingErrorTypes.INVALID_TITLE]: 'has an invalid title',
+  [BlockingErrorTypes.NO_AUTHOR]: 'has no author',
+  [NonBlockingErrorTypes.NO_SPECIES]: 'has no species',
+  [BlockingErrorTypes.NO_THUMBNAIL]: 'has no thumbnail',
+  [NonBlockingErrorTypes.NO_SOURCE_URL]: 'has no source URL',
+  [BlockingErrorTypes.NO_DESCRIPTION]: 'has no description',
+  [NonBlockingErrorTypes.SHORT_DESCRIPTION]:
+    'has a too short description (less than 20 characters)',
+  [BlockingErrorTypes.NO_TAGS]: 'has no tags',
+  [NonBlockingErrorTypes.NOT_MANY_TAGS]: "hasn't got many tags (less than 4)",
+  [NonBlockingErrorTypes.NOT_MARKED_NSFW]:
     'has not been flagged as NSFW even though it contains NSFW terms',
-  MISSING_ACCESSORY_PARENT:
+  [NonBlockingErrorTypes.MISSING_ACCESSORY_PARENT]:
     'has no linked asset (this is required if your accessory needs a base avatar)',
-  NO_ATTACHMENTS:
+  [NonBlockingErrorTypes.NO_ATTACHMENTS]:
     'has no attached files (please attach at least one larger image)',
+  [BlockingErrorTypes.NO_PAID_OR_FREE_TAG]: 'has no "free" or "paid" tag',
 }
 
 const getIfShouldBeNsfw = (asset: Asset): boolean => {
@@ -76,50 +104,59 @@ const getIfShouldBeNsfw = (asset: Asset): boolean => {
   return false
 }
 
-const getValidationErrorMessagesForAsset = (asset: Asset): string[] => {
+const getValidationErrorMessagesForAsset = (
+  asset: Asset
+): (BlockingErrorTypes | NonBlockingErrorTypes)[] => {
   const messages = []
 
   if (!asset.title) {
-    messages.push(validationErrorMessages.NO_TITLE)
+    messages.push(BlockingErrorTypes.NO_TITLE)
   }
   if (asset.title && asset.title === 'My draft asset') {
-    messages.push(validationErrorMessages.DEFAULT_TITLE)
+    messages.push(BlockingErrorTypes.DEFAULT_TITLE)
   }
   if (!asset.author) {
-    messages.push(validationErrorMessages.NO_AUTHOR)
+    messages.push(BlockingErrorTypes.NO_AUTHOR)
   }
   if (
     asset.category === AssetCategory.Avatar &&
     (!asset.species || !asset.species.length)
   ) {
-    messages.push(validationErrorMessages.NO_SPECIES)
+    messages.push(NonBlockingErrorTypes.NO_SPECIES)
   }
   if (!asset.thumbnailurl || asset.thumbnailurl === defaultThumbnailUrl) {
-    messages.push(validationErrorMessages.NO_THUMBNAIL)
+    messages.push(BlockingErrorTypes.NO_THUMBNAIL)
   }
   if (!asset.description) {
-    messages.push(validationErrorMessages.NO_DESCRIPTION)
+    messages.push(BlockingErrorTypes.NO_DESCRIPTION)
   }
   if (asset.description && asset.description.length < 20) {
-    messages.push(validationErrorMessages.SHORT_DESCRIPTION)
+    messages.push(NonBlockingErrorTypes.SHORT_DESCRIPTION)
   }
   if (!asset.tags || !asset.tags.length) {
-    messages.push(validationErrorMessages.NO_TAGS)
+    messages.push(BlockingErrorTypes.NO_TAGS)
   }
   if (asset.tags && asset.tags.length < 4) {
-    messages.push(validationErrorMessages.NOT_MANY_TAGS)
+    messages.push(NonBlockingErrorTypes.NOT_MANY_TAGS)
+  }
+  if (
+    asset.tags &&
+    !asset.tags.includes('free') &&
+    !asset.tags.includes('paid')
+  ) {
+    messages.push(BlockingErrorTypes.NO_PAID_OR_FREE_TAG)
   }
   if (getIfShouldBeNsfw(asset)) {
-    messages.push(validationErrorMessages.NOT_MARKED_NSFW)
+    messages.push(NonBlockingErrorTypes.NOT_MARKED_NSFW)
   }
   if (!asset.sourceurl) {
-    messages.push(validationErrorMessages.NO_SOURCE_URL)
+    messages.push(NonBlockingErrorTypes.NO_SOURCE_URL)
   }
   if (
     asset.category === AssetCategory.Accessory &&
     (!asset.relations || !asset.relations.length)
   ) {
-    messages.push(validationErrorMessages.MISSING_ACCESSORY_PARENT)
+    messages.push(NonBlockingErrorTypes.MISSING_ACCESSORY_PARENT)
   }
 
   return messages
@@ -137,19 +174,42 @@ export default ({
   const [isPublishing, setIsPublishing] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<string | null>(null)
-  const [lastValidationErrorMessages, setLastValidationErrorMessages] =
-    useState<string[]>([])
+  const [lastValidationErrorTypes, setLastValidationErrorMessages] = useState<
+    (BlockingErrorTypes | NonBlockingErrorTypes)[]
+  >([])
+  const [ignoreWarnings, setIgnoreWarnings] = useState(false)
+  const { push } = useHistory()
+  const navigateAfterDelay = useTimer(() => {
+    push(routes.viewAssetWithVar.replace(':assetId', assetId))
+  }, 3000)
 
   const attemptPublish = () => {
+    console.debug('attempt publish')
+
     const newValidationErrorMessages = getValidationErrorMessagesForAsset(asset)
     setLastValidationErrorMessages(newValidationErrorMessages)
 
-    if (!newValidationErrorMessages.length) {
+    const blockingValidationErrorTypes = newValidationErrorMessages.filter(
+      (errorType) =>
+        Object.values(BlockingErrorTypes).includes(errorType as any)
+    )
+    const nonBlockingValidationErrorTypes = newValidationErrorMessages.filter(
+      (errorType) =>
+        Object.values(NonBlockingErrorTypes).includes(errorType as any)
+    )
+
+    if (
+      !blockingValidationErrorTypes.length &&
+      (!nonBlockingValidationErrorTypes.length ||
+        (nonBlockingValidationErrorTypes.length && ignoreWarnings))
+    ) {
       publish()
     }
   }
 
   const publish = async () => {
+    console.debug('publish')
+
     try {
       setIsPublishing(true)
       setIsSuccess(false)
@@ -173,6 +233,8 @@ export default ({
       if (onDone) {
         onDone()
       }
+
+      navigateAfterDelay()
     } catch (err) {
       console.error('Failed to publish asset', err)
       handleError(err)
@@ -200,33 +262,68 @@ export default ({
       <SuccessMessage>
         Asset has been published successfully. It will be reviewed by our staff
         (usually within 24 hours).
+        <br />
+        <br />
+        Redirecting you to the asset in 2 seconds...
       </SuccessMessage>
     )
   }
 
+  console.log(lastValidationErrorTypes, BlockingErrorTypes)
+
+  const blockingValidationErrorTypes = lastValidationErrorTypes.filter(
+    (errorType) => Object.values(BlockingErrorTypes).includes(errorType as any)
+  )
+  const nonBlockingValidationErrorTypes = lastValidationErrorTypes.filter(
+    (errorType) => Object.keys(NonBlockingErrorTypes).includes(errorType as any)
+  )
+
   return (
-    <>
-      <Button
-        icon={<PublishIcon />}
-        color="tertiary"
-        onClick={lastValidationErrorMessages.length ? publish : attemptPublish}
-        size="large">
-        Publish For Approval
-        {lastValidationErrorMessages.length ? ' (Anyway)' : ''}
-      </Button>
-      {lastValidationErrorMessages.length ? (
+    <div>
+      <FormControls>
+        <Button
+          icon={<PublishIcon />}
+          color="tertiary"
+          onClick={attemptPublish}
+          size="large">
+          Publish For Approval
+        </Button>
+      </FormControls>
+      {blockingValidationErrorTypes.length ? (
         <>
-          <p>
-            <strong>
-              There were some validation issues with your asset that you should
-              review before you try publishing again:
-            </strong>
-          </p>
-          {lastValidationErrorMessages.map((message) => (
-            <WarningMessage leftAlign>The asset {message}</WarningMessage>
-          ))}
+          <ErrorMessage hintText={false}>
+            There were some validation issues with your asset that you must fix
+            before it can be published:
+            <ul>
+              {blockingValidationErrorTypes.map((errorType) => (
+                <li key={errorType}>
+                  The asset {validationErrorMessages[errorType]}
+                </li>
+              ))}
+            </ul>
+          </ErrorMessage>
         </>
       ) : null}
-    </>
+      {nonBlockingValidationErrorTypes.length && !ignoreWarnings ? (
+        <>
+          <WarningMessage
+            controls={
+              <Button onClick={() => setIgnoreWarnings(true)} color="default">
+                Ignore
+              </Button>
+            }>
+            There were some validation issues with your asset that we recommend
+            you fix:
+            <ul>
+              {nonBlockingValidationErrorTypes.map((errorType) => (
+                <li key={errorType}>
+                  The asset {validationErrorMessages[errorType]}
+                </li>
+              ))}
+            </ul>
+          </WarningMessage>
+        </>
+      ) : null}
+    </div>
   )
 }

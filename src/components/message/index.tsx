@@ -31,6 +31,8 @@ const useStyles = makeStyles(() => ({
   text: {
     width: '100%',
     zIndex: 10,
+  },
+  nonTitleText: {
     '& > *': {
       margin: '1rem 0',
       '&:first-child': {
@@ -125,8 +127,14 @@ export default ({
               <span>{title}</span>
             </div>
           ) : null}
-          {children ? <div className={classes.children}>{children}</div> : null}
-          {controls ? <div className={classes.controls}>{controls}</div> : null}
+          <div className={classes.nonTitleText}>
+            {children ? (
+              <div className={classes.children}>{children}</div>
+            ) : null}
+            {controls ? (
+              <div className={classes.controls}>{controls}</div>
+            ) : null}
+          </div>
         </div>
       </Paper>
     </div>
