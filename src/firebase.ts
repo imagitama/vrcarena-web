@@ -40,12 +40,14 @@ export const roles = {
   ADMIN: 'ADMIN',
 }
 
-export let loggedInUserId: null | string = null
+export let loggedInUserId: string | null = null
+export let loggedInUser: firebase.User | null = null
 
 auth.onAuthStateChanged((user) => {
   if (user) {
     // @ts-ignore
     loggedInUserId = user
+    loggedInUser = user
 
     Sentry.setUser({
       id: user.uid,
@@ -56,6 +58,7 @@ auth.onAuthStateChanged((user) => {
     Sentry.setUser(null)
 
     loggedInUserId = null
+    loggedInUser = null
   }
 })
 
@@ -143,4 +146,28 @@ export const callFunctionWithFile = async <TResult>(
     console.error(`Failed calling function "${name}"`, error)
     throw error
   }
+}
+
+export const changeLoggedInUserEmail = async (
+  newEmail: string
+): Promise<void> => {
+  console.debug(`changing logged in user's email to "${newEmail}"...`)
+
+  await firebase.auth().currentUser?.updateEmail(newEmail)
+
+  console.debug('done')
+}
+
+export const changeLoggedInUserPassword = async (
+  newPassword: string
+): Promise<void> => {
+  console.debug(`changing logged in user's password...`)
+
+  if (!newPassword) {
+    throw new Error('Need a value')
+  }
+
+  await firebase.auth().currentUser?.updatePassword(newPassword)
+
+  console.debug('done')
 }

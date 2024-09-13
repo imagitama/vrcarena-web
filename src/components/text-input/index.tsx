@@ -18,6 +18,7 @@ export default (props: {
   ) => void
   placeholder?: string
   size?: string
+  type?: string
   // custom
   isDisabled?: boolean
   variant?: 'outlined' | 'standard'

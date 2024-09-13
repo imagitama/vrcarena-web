@@ -141,7 +141,16 @@ const Button = ({
 }: ButtonProps) => {
   const classes = useStyles(props)
 
-  const iconToUse = checked === true ? <CheckBoxIcon /> : checked === false ? <CheckBoxOutlineBlankIcon /> : icon
+  const iconToUse =
+    checked === true ? (
+      <CheckBoxIcon />
+    ) : checked === false ? (
+      <CheckBoxOutlineBlankIcon />
+    ) : (
+      icon
+    )
+
+  console.debug('CLASS NAME', className)
 
   return (
     <ButtonContents url={url} openInNewTab={openInNewTab} className={className}>

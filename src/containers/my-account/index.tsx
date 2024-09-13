@@ -33,6 +33,9 @@ import VrPlatformChooser from '../../components/vr-platform-chooser'
 import LinkAccountWithVrchatForm from '../../components/link-with-vrchat-account-form'
 import TagBlacklistEditor from '../../components/tag-blacklist-editor'
 import ShowMoreInfoToggle from '../../components/show-more-info-toggle'
+import ChangeEmailForm from '../../components/change-email-form'
+import DeleteAccountForm from '../../components/delete-account-form'
+import ChangePasswordForm from '../../components/change-password-form'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -162,6 +165,21 @@ const View = () => {
                 <TagBlacklistEditor /> */}
                 <Heading variant="h3">Notifications</Heading>
                 <NotificationSettings />
+                <Heading variant="h3">Advanced Settings</Heading>
+                <Heading variant="h4" noTopMargin>
+                  Change Email Address
+                </Heading>
+                <p>
+                  Use this form to change your signup email address to something
+                  else.
+                </p>
+                <ChangeEmailForm />
+                <Heading variant="h4" noTopMargin>
+                  Change Password
+                </Heading>
+                <p>Use this form to change your password to something else.</p>
+                <ChangePasswordForm />
+                <DeleteAccountForm />
               </>
             ),
           },

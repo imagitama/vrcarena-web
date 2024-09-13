@@ -321,7 +321,7 @@ const NotificationSettings = ({
           <br />
         </>
       ) : null}
-      <Heading variant="h3">Events</Heading>
+      <Heading variant="h4">Events</Heading>
       <p>Choose what kind of events you want to subscribe to.</p>
       {Object.keys(NotificationEvents).map((eventName) => (
         <div key={eventName}>
@@ -341,7 +341,7 @@ const NotificationSettings = ({
           />
         </div>
       ))}
-      <Heading variant="h3">Methods</Heading>
+      <Heading variant="h4">Methods</Heading>
       <p>Choose how you want to receive your notifications.</p>
       {Object.keys(NotificationMethods)
         .filter((methodName) => methodName !== NotificationMethods.DISCORD)
@@ -368,7 +368,7 @@ const NotificationSettings = ({
         ))}
       {!anonymousDetails ? (
         <>
-          <Heading variant="h3">Email</Heading>
+          <Heading variant="h4">Preferred Email</Heading>
           <p>
             If you want to receive your notifications at a different email you
             can enter it here (or leave it blank to use your sign up one).
