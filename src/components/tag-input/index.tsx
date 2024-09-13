@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { client as supabase } from '../../supabase'
@@ -7,7 +7,11 @@ import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { FullTag } from '../../modules/tags'
 import useDelimit from '../../hooks/useDelimit'
 import categoryMeta from '../../category-meta'
-import { removeDuplicates, renamedTags } from '../../utils/tags'
+import {
+  getTagFromUserInput,
+  removeDuplicates,
+  renamedTags,
+} from '../../utils/tags'
 
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
@@ -19,8 +23,6 @@ import TagChip from '../tag-chip'
 import AutocompleteInput, { AutocompleteOption } from '../autocomplete-input'
 import TagChips from '../tag-chips'
 import { Asset } from '../../modules/assets'
-import useFirebaseFunction from '../../hooks/useFirebaseFunction'
-import LoadingIndicator from '../loading-indicator'
 import ChatGptSuggestTags from '../chatgpt-suggest-tags'
 
 const useStyles = makeStyles({
@@ -211,7 +213,7 @@ const filterSuggestions = (
     }
   })
 
-export default ({
+const TagInput = ({
   currentTags = [],
   onChange = undefined,
   onDone = undefined,
@@ -335,7 +337,7 @@ export default ({
         options={autoCompleteOptions}
         onSelectedOption={(option) => {
           setTextInput('')
-          addTag(option.data)
+          addTag(getTagFromUserInput(option.data))
         }}
         label={isLoading ? 'Searching...' : 'Start typing a tag...'}
         textFieldProps={{
@@ -359,3 +361,5 @@ export default ({
     </div>
   )
 }
+
+export default TagInput

@@ -150,8 +150,6 @@ const Button = ({
       icon
     )
 
-  console.debug('CLASS NAME', className)
-
   return (
     <ButtonContents url={url} openInNewTab={openInNewTab} className={className}>
       <MaterialButton

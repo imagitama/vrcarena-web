@@ -5,6 +5,19 @@ export const cleanupTags = (tags?: string[]): string[] =>
         .map((tag) => tag.trim().toLowerCase().replaceAll(' ', '_'))
     : []
 
+export const getTagFromUserInput = (userInput: string): string =>
+  userInput
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-zA-Z0-9-_]/g, '')
+    .replace(/-/g, '_')
+
+export const getTagsFromUserInput = (userInput: string): string[] =>
+  userInput
+    .split(/\s+/)
+    .map((tag) => getTagFromUserInput(tag))
+    .filter((tag) => tag.length > 0)
+
 export const removeDuplicates = (tags: string[]): string[] =>
   tags.filter((value, index, array) => array.indexOf(value) === index)
 

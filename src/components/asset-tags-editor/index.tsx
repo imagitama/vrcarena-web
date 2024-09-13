@@ -1,16 +1,14 @@
 import React from 'react'
 
 import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
-import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
 import { trackAction } from '../../analytics'
 
 import TagInput from '../tag-input'
 import { Asset } from '../../modules/assets'
 
-export default ({
+const AssetTagsEditor = ({
   assetId,
   tags = [],
   onDone,
@@ -75,3 +73,5 @@ export default ({
     </>
   )
 }
+
+export default AssetTagsEditor

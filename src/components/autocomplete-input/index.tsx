@@ -132,7 +132,9 @@ const AutocompleteInput = <TOption,>({
     <Autocomplete
       options={options}
       getOptionDisabled={(option) => option.isDisabled === true}
-      getOptionLabel={(option: AutocompleteOption<TOption>) => option.label}
+      getOptionLabel={(option: AutocompleteOption<TOption>) =>
+        option.label || ''
+      }
       renderInput={(params) => (
         <MyTextField
           params={params}
