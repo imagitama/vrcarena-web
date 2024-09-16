@@ -83,10 +83,15 @@ export default ({
         onAddClick()
       }
 
+      if (!textFieldValue.trim()) {
+        console.warn('Cannot add comment without a message')
+        return
+      }
+
       await create({
         parenttable: collectionName,
         parent: parentId,
-        comment: textFieldValue,
+        comment: textFieldValue.trim(),
         isprivate: asPrivate,
       })
 
@@ -109,7 +114,9 @@ export default ({
         isDisabled={isSaving}
       />
       <FormControls extraTopMargin>
-        <Button onClick={onAddCommentBtnClick}>
+        <Button
+          onClick={onAddCommentBtnClick}
+          isDisabled={!textFieldValue.trim()}>
           Add{asPrivate ? ' Private' : ''} Comment
         </Button>
       </FormControls>
