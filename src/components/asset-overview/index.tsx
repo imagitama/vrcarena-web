@@ -87,6 +87,11 @@ import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 import Block from '../block'
 import Questions from '../questions'
 import { AttachmentType } from '../../modules/attachments'
+import {
+  AccessStatuses,
+  ApprovalStatuses,
+  PublishStatuses,
+} from '../../hooks/useDatabaseQuery'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -105,6 +110,12 @@ const CreatorControls = React.lazy(
   () =>
     import(
       /* webpackChunkName: "asset-overview-creator-controls" */ './components/creator-controls'
+    )
+)
+const QueuedAssetInfo = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "asset-overview-queued-asset-info" */ '../queued-asset-info'
     )
 )
 
@@ -366,6 +377,11 @@ const Area = ({
   )
 }
 
+const isAssetWaitingForApproval = (asset: FullAsset): boolean =>
+  asset.publishstatus == PublishStatuses.Published &&
+  asset.approvalstatus == ApprovalStatuses.Waiting &&
+  asset.accessstatus == AccessStatuses.Public
+
 const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
@@ -480,6 +496,9 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             <meta property="og:site_name" content="VRCArena" />
           </Helmet>
         )}
+        {asset && isAssetWaitingForApproval(asset) ? (
+          <QueuedAssetInfo asset={asset} hydrate={hydrate} />
+        ) : null}
         <Messages />
         {asset && asset.pedestalvideourl ? (
           <div

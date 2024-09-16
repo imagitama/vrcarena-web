@@ -34,8 +34,14 @@ export interface UserMeta {
   vrchatlinkcode: number
 }
 
+export enum UserRoles {
+  User = 'user',
+  Editor = 'editor',
+  Admin = 'admin',
+}
+
 export interface UserAdminMeta {
-  role: string
+  role: UserRoles
 }
 
 export interface FullUser extends User, UserMeta, UserAdminMeta {}

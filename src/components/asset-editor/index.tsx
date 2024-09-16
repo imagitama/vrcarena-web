@@ -118,7 +118,7 @@ import ErrorMessage from '../error-message'
 
 interface EditorInfo {
   assetId: string | null
-  hydrate: () => Promise<void>
+  hydrate: () => Promise<void> | void
   isHydrating: boolean
   asset: FullAsset | null
   newFields: Asset | null

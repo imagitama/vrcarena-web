@@ -11,12 +11,18 @@ const useStyles = makeStyles(() => ({
 const EditorBox = ({
   children,
   className,
+  show = true,
 }: {
   children: React.ReactNode
   className?: string
+  show?: boolean
 }) => {
   const classes = useStyles()
-  return <div className={`${classes.root} ${className || ''}`}>{children}</div>
+  return (
+    <div className={`${show ? classes.root : ''} ${className || ''}`}>
+      {children}
+    </div>
+  )
 }
 
 export default EditorBox

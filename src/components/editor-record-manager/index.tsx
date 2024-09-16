@@ -71,7 +71,7 @@ const EditorRecordManager = ({
 }) => {
   const classes = useStyles()
   return (
-    <EditorBox className={classes.root}>
+    <EditorBox className={classes.root} show={showBox}>
       {editUrl ? (
         <div className={classes.item}>
           <Button icon={<EditIcon />} url={editUrl}>

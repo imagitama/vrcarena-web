@@ -19,10 +19,7 @@ import AdminHome from './components/home'
 import useUserRecord from '../../hooks/useUserRecord'
 import * as routes from '../../routes'
 
-import {
-  UserAdminMetaFieldNames,
-  UserRoles
-} from '../../hooks/useDatabaseQuery'
+import { UserRoles } from '../../modules/users'
 import Link from '../../components/link'
 
 const View = () => {
@@ -33,13 +30,12 @@ const View = () => {
   }
 
   if (isErrored) {
-    return <ErrorMessage />
+    return <ErrorMessage>Failed to load user</ErrorMessage>
   }
 
   if (
     !user ||
-    (user[UserAdminMetaFieldNames.role] !== UserRoles.Admin &&
-      user[UserAdminMetaFieldNames.role] !== UserRoles.Editor)
+    (user.role !== UserRoles.Admin && user.role !== UserRoles.Editor)
   ) {
     return <NoPermissionMessage />
   }
@@ -57,7 +53,7 @@ const View = () => {
               <>
                 <AdminHome />
               </>
-            )
+            ),
           },
           {
             name: 'assets',
@@ -67,7 +63,7 @@ const View = () => {
                 <Heading variant="h2">Assets</Heading>
                 <AdminAssets />
               </>
-            )
+            ),
           },
           {
             name: 'amendments',
@@ -90,7 +86,7 @@ const View = () => {
                   <AdminAmendments />
                 </div>
               </>
-            )
+            ),
           },
           {
             name: 'history',
@@ -109,7 +105,7 @@ const View = () => {
                 </p>
                 <AdminHistory />
               </>
-            )
+            ),
           },
           {
             name: 'reports',
@@ -137,7 +133,7 @@ const View = () => {
                 </p>
                 <AdminReports />
               </>
-            )
+            ),
           },
           {
             name: 'public-avatars',
@@ -163,7 +159,7 @@ const View = () => {
                 </p>
                 <AdminPublicAvatars />
               </>
-            )
+            ),
           },
           {
             name: 'notices',
@@ -178,7 +174,7 @@ const View = () => {
                 </p>
                 <AdminNotices />
               </>
-            )
+            ),
           },
           {
             name: 'users',
@@ -188,8 +184,8 @@ const View = () => {
                 <Heading variant="h2">Users</Heading>
                 <AdminUsers />
               </>
-            )
-          }
+            ),
+          },
         ]}
       />
     </>
@@ -199,7 +195,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>The admin area | VRCArena</title>
+      <title>Admin Area | VRCArena</title>
       <meta name="description" content="Top secret" />
     </Helmet>
     <View />

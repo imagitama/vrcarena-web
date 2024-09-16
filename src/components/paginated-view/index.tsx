@@ -43,6 +43,17 @@ const useStyles = makeStyles({
   },
   controls: {
     display: 'flex',
+  },
+  controlsLeft: {
+    display: 'flex',
+    '& > *:first-child': {
+      marginLeft: 'auto',
+    },
+  },
+  controlsRight: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'end',
     '& > *:first-child': {
       marginLeft: 'auto',
     },
@@ -92,7 +103,7 @@ interface PaginatedViewData<TRecord> {
 }
 
 // @ts-ignore
-const PaginatedViewContext = createContext<PaginatedViewData>()
+export const PaginatedViewContext = createContext<PaginatedViewData>()
 export const usePaginatedView = (): PaginatedViewData<any> =>
   useContext(PaginatedViewContext)
 
@@ -361,6 +372,7 @@ export interface PaginatedViewProps<TRecord> {
   defaultDirection?: OrderDirections
   children?: React.ReactElement
   extraControls?: React.ReactElement[]
+  extraControlsLeft?: React.ReactElement[] // todo: better name
   urlWithPageNumberVar?: string
   createUrl?: string
   subViews?: SubViewConfig[]
@@ -381,6 +393,7 @@ const PaginatedView = <TRecord,>({
   defaultDirection,
   children,
   extraControls = [],
+  extraControlsLeft = [],
   urlWithPageNumberVar = '',
   createUrl,
   subViews,
@@ -432,61 +445,68 @@ const PaginatedView = <TRecord,>({
       }}>
       <div className={classes.root}>
         <div className={classes.controls}>
-          {isEditor && showCommonMetaControls ? (
-            <ControlGroup>
-              <CommonMetaControls />
-            </ControlGroup>
+          {extraControlsLeft ? (
+            <div className={classes.controlsLeft}>
+              <ControlGroup>{extraControlsLeft}</ControlGroup>
+            </div>
           ) : null}
-          {subViews ? (
-            <ControlGroup>
-              {subViewConfigAll.concat(subViews).map(({ label, id }, idx) => (
-                <Fragment key={id}>
-                  {idx !== 0 ? <>&nbsp;</> : ''}
-                  <Button
-                    onClick={() => setSelectedSubView(id)}
-                    color="default"
-                    icon={
-                      selectedSubView === id ? (
-                        <CheckBoxIcon />
-                      ) : (
-                        <CheckBoxOutlineBlankIcon />
-                      )
-                    }>
-                    {label}
+          <div className={classes.controlsRight}>
+            {isEditor && showCommonMetaControls ? (
+              <ControlGroup>
+                <CommonMetaControls />
+              </ControlGroup>
+            ) : null}
+            {subViews ? (
+              <ControlGroup>
+                {subViewConfigAll.concat(subViews).map(({ label, id }, idx) => (
+                  <Fragment key={id}>
+                    {idx !== 0 ? <>&nbsp;</> : ''}
+                    <Button
+                      onClick={() => setSelectedSubView(id)}
+                      color="default"
+                      icon={
+                        selectedSubView === id ? (
+                          <CheckBoxIcon />
+                        ) : (
+                          <CheckBoxOutlineBlankIcon />
+                        )
+                      }>
+                      {label}
+                    </Button>
+                  </Fragment>
+                ))}
+              </ControlGroup>
+            ) : null}
+            {extraControls ? (
+              <ControlGroup>
+                {extraControls.map((extraControl, idx) => (
+                  <Control key={idx}>{extraControl}</Control>
+                ))}
+              </ControlGroup>
+            ) : null}
+            {sortOptions.length ? (
+              <ControlGroup>
+                <Control>
+                  <SortControls
+                    options={sortOptions}
+                    // @ts-ignore
+                    sortKey={sortKey}
+                    // @ts-ignore
+                    defaultFieldName={defaultFieldName}
+                  />
+                </Control>
+              </ControlGroup>
+            ) : null}
+            {createUrl ? (
+              <ControlGroup>
+                <Control>
+                  <Button icon={<AddIcon />} url={createUrl}>
+                    Create
                   </Button>
-                </Fragment>
-              ))}
-            </ControlGroup>
-          ) : null}
-          {extraControls ? (
-            <ControlGroup>
-              {extraControls.map((extraControl, idx) => (
-                <Control key={idx}>{extraControl}</Control>
-              ))}
-            </ControlGroup>
-          ) : null}
-          {sortOptions.length ? (
-            <ControlGroup>
-              <Control>
-                <SortControls
-                  options={sortOptions}
-                  // @ts-ignore
-                  sortKey={sortKey}
-                  // @ts-ignore
-                  defaultFieldName={defaultFieldName}
-                />
-              </Control>
-            </ControlGroup>
-          ) : null}
-          {createUrl ? (
-            <ControlGroup>
-              <Control>
-                <Button icon={<AddIcon />} url={createUrl}>
-                  Create
-                </Button>
-              </Control>
-            </ControlGroup>
-          ) : null}
+                </Control>
+              </ControlGroup>
+            ) : null}
+          </div>
         </div>
         <Page />
       </div>

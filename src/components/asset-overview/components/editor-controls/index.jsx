@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import {
   AssetMetaFieldNames,
-  CollectionNames
+  CollectionNames,
 } from '../../../../hooks/useDatabaseQuery'
 import EditorRecordManager from '../../../editor-record-manager'
 import TabContext from '../../context'

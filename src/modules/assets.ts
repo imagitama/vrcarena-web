@@ -166,6 +166,7 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   approvedbyusername: string
   tagsdata: Tag[]
   attachmentsdata: FullAttachment[] | null
+  publishedbyusername: string
 }
 
 export enum CollectionNames {

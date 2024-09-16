@@ -12,6 +12,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import { makeStyles } from '@material-ui/styles'
 import CheckIcon from '@material-ui/icons/Check'
+import EditIcon from '@material-ui/icons/Edit'
 
 import {
   PublishStatuses,
@@ -24,7 +25,6 @@ import {
   FullAsset,
   CollectionNames as AssetsCollectionNames,
   AssetCategory,
-  ViewNames,
 } from '../../modules/assets'
 import AssetResultsItem from '../../components/asset-results-item'
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
@@ -37,11 +37,9 @@ import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
 import AssetOverview from '../asset-overview'
 import Message from '../message'
-import useDataStore from '../../hooks/useDataStore'
-import { client } from '../../supabase'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Heading from '../heading'
+import useStorage from '../../hooks/useStorage'
+import AssetEditor, { EditorContext } from '../asset-editor'
+import AssetEditorWithSync from '../asset-editor-with-sync'
 
 const useStyles = makeStyles({
   pass: {
@@ -262,38 +260,41 @@ function AssetsTable({
   )
 }
 
+enum View {
+  List = 'list',
+  Queue = 'queue',
+}
+
 const Renderer = ({
   items,
   hydrate,
+  selectedView,
 }: {
   items?: FullAsset[]
   hydrate?: () => void
+  selectedView: View | null
 }) => {
-  const [inQueueMode, setInQueueMode] = useState(false)
-
-  if (inQueueMode) {
-    return <Queue assets={items} />
+  if (selectedView === View.Queue) {
+    return <Queue assets={items} hydrate={hydrate!} />
   }
 
   return (
     <>
-      <Message
-        title="Queue"
-        controls={
-          <Button onClick={() => setInQueueMode(true)}>View As Queue</Button>
-        }>
-        Speed up approval by using the new queue system
-      </Message>
       <AssetsTable assets={items} hydrate={hydrate} />
     </>
   )
 }
 
-const subViews = {
-  PENDING: 0,
-  DELETED: 1,
-  DECLINED: 2,
-  APPROVED: 3,
+enum SubView {
+  Pending = 'pending',
+  Deleted = 'deleted',
+  Declined = 'declined',
+  Approved = 'approved',
+}
+
+enum StorageKeys {
+  View = 'admin-assets-view',
+  SubView = 'admin-assets-subview',
 }
 
 const analyticsCategoryName = 'AdminAssets'
@@ -305,7 +306,7 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
       <TextInput
         onChange={(e) => setVal(e.target.value)}
         value={val}
-        placeholder="User ID"
+        placeholder="Filter by user ID"
         size="small"
       />
       <Button onClick={() => onChange(val)}>Apply</Button>
@@ -313,8 +314,15 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
   )
 }
 
-const Queue = ({ assets }: { assets?: FullAsset[] }) => {
+const Queue = ({
+  assets,
+  hydrate,
+}: {
+  assets?: FullAsset[]
+  hydrate: () => void
+}) => {
   const [currentAssetId, setCurrentAssetId] = useState('')
+  const [isEditing, setIsEditing] = useState(false)
   const classes = useStyles()
 
   if (!assets) {
@@ -356,19 +364,37 @@ const Queue = ({ assets }: { assets?: FullAsset[] }) => {
         </div>
         <Button
           isDisabled={atEnd}
+          onClick={() => setIsEditing((currentVal) => !currentVal)}
+          icon={<EditIcon />}
+          size="large">
+          Toggle Edit
+        </Button>
+        <Button
+          isDisabled={atEnd}
           onClick={onClickNext}
           icon={<ChevronRightIcon />}
           size="large">
           Next Asset
         </Button>
       </div>
-      <AssetOverview assetId={assetIdToDisplay} />
+      {isEditing ? (
+        <AssetEditorWithSync assetId={assetIdToDisplay} />
+      ) : (
+        <AssetOverview assetId={assetIdToDisplay} />
+      )}
     </div>
   )
 }
 
 const AdminAssets = () => {
-  const [selectedSubView, setSelectedSubView] = useState(subViews.PENDING)
+  const [selectedView, setSelectedView] = useStorage(
+    StorageKeys.View,
+    View.List
+  )
+  const [selectedSubView, setSelectedSubView] = useStorage(
+    StorageKeys.SubView,
+    SubView.Pending
+  )
   const [userIdToFilter, setUserIdToFilter] = useState('')
   const getQuery = useCallback(
     (
@@ -379,25 +405,25 @@ const AdminAssets = () => {
       }
 
       switch (selectedSubView) {
-        case subViews.PENDING:
+        case SubView.Pending:
           query = query
             .eq('publishstatus', PublishStatuses.Published)
             .eq('approvalstatus', ApprovalStatuses.Waiting)
             .eq('accessstatus', AccessStatuses.Public)
           break
 
-        case subViews.DELETED:
+        case SubView.Deleted:
           query = query.eq('accessstatus', AccessStatuses.Deleted)
           break
 
-        case subViews.APPROVED:
+        case SubView.Approved:
           query = query
             .eq('publishstatus', PublishStatuses.Published)
             .eq('approvalstatus', ApprovalStatuses.Approved)
             .eq('accessstatus', AccessStatuses.Public)
           break
 
-        case subViews.DECLINED:
+        case SubView.Declined:
           query = query
             .eq('publishstatus', PublishStatuses.Draft)
             .eq('approvalstatus', ApprovalStatuses.Declined)
@@ -406,16 +432,11 @@ const AdminAssets = () => {
 
       return query
     },
-    [userIdToFilter, selectedSubView]
+    [userIdToFilter, selectedSubView, selectedView] // subscribe to selectedView as queue does not hydrate anything
   )
 
-  const toggleSubView = (subView: number) =>
-    setSelectedSubView((currentVal) => {
-      if (currentVal === subView) {
-        return subViews.PENDING
-      }
-      return subView
-    })
+  const toggleSubView = (subView: SubView) =>
+    setSelectedSubView(selectedSubView === subView ? SubView.Pending : subView)
 
   return (
     <PaginatedView<FullAsset>
@@ -442,17 +463,36 @@ const AdminAssets = () => {
         ':tabName',
         'assets'
       )}
-      extraControls={[
+      extraControlsLeft={[
         <Button
           icon={
-            selectedSubView === subViews.PENDING ? (
+            selectedView === View.Queue ? (
               <CheckBoxIcon />
             ) : (
               <CheckBoxOutlineBlankIcon />
             )
           }
           onClick={() => {
-            setSelectedSubView(subViews.PENDING)
+            setSelectedView(
+              selectedView === View.Queue ? View.List : View.Queue
+            )
+            trackAction(analyticsCategoryName, 'Click toggle view')
+          }}
+          color="default">
+          Queue Mode
+        </Button>,
+      ]}
+      extraControls={[
+        <Button
+          icon={
+            selectedSubView === SubView.Pending ? (
+              <CheckBoxIcon />
+            ) : (
+              <CheckBoxOutlineBlankIcon />
+            )
+          }
+          onClick={() => {
+            setSelectedSubView(SubView.Pending)
             trackAction(analyticsCategoryName, 'Click on view pending assets')
           }}
           color="default">
@@ -460,14 +500,14 @@ const AdminAssets = () => {
         </Button>,
         <Button
           icon={
-            selectedSubView === subViews.APPROVED ? (
+            selectedSubView === SubView.Approved ? (
               <CheckBoxIcon />
             ) : (
               <CheckBoxOutlineBlankIcon />
             )
           }
           onClick={() => {
-            setSelectedSubView(subViews.APPROVED)
+            setSelectedSubView(SubView.Approved)
             trackAction(analyticsCategoryName, 'Click on view approved assets')
           }}
           color="default">
@@ -475,14 +515,14 @@ const AdminAssets = () => {
         </Button>,
         <Button
           icon={
-            selectedSubView === subViews.DECLINED ? (
+            selectedSubView === SubView.Declined ? (
               <CheckBoxIcon />
             ) : (
               <CheckBoxOutlineBlankIcon />
             )
           }
           onClick={() => {
-            setSelectedSubView(subViews.DECLINED)
+            setSelectedSubView(SubView.Declined)
             trackAction(analyticsCategoryName, 'Click on view declined assets')
           }}
           color="default">
@@ -490,14 +530,14 @@ const AdminAssets = () => {
         </Button>,
         <Button
           icon={
-            selectedSubView === subViews.DELETED ? (
+            selectedSubView === SubView.Deleted ? (
               <CheckBoxIcon />
             ) : (
               <CheckBoxOutlineBlankIcon />
             )
           }
           onClick={() => {
-            toggleSubView(subViews.DELETED)
+            toggleSubView(SubView.Deleted)
             trackAction(analyticsCategoryName, 'Click on view deleted assets')
           }}
           color="default">
@@ -505,7 +545,7 @@ const AdminAssets = () => {
         </Button>,
         <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,
       ]}>
-      <Renderer />
+      <Renderer selectedView={selectedView} />
     </PaginatedView>
   )
 }

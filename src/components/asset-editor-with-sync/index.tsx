@@ -67,6 +67,8 @@ const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
   const [isSyncFormVisible, setIsSyncFormVisible] = useState(false)
 
   const hydrate = async () => {
+    console.debug(`AssetEditorWithSync.hydrate`, { assetId })
+
     if (!assetId) {
       return
     }
@@ -104,14 +106,20 @@ const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
     }))
 
   useEffect(() => {
+    console.debug(`AssetEditorWithSync.useEffect`, { assetId })
+
     if (!assetId) {
       return
     }
     hydrate()
   }, [assetId])
 
+  if (!assetId) {
+    return <>You need an ID</>
+  }
+
   if (!assetRecord) {
-    return <LoadingIndicator message="Loading asset..." />
+    return <LoadingIndicator message="Loading asset to edit..." />
   }
 
   if (isError) {

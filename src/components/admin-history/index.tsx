@@ -18,18 +18,18 @@ const History = ({
   type,
   limit,
 }: {
-  id: string
-  type: string
+  id?: string
+  type?: string
   limit: number
 }) => {
   const [isLoading, isErrored, results] = useDatabaseQuery<HistoryEntry>(
     'getAllHistory',
-    id
+    id && type
       ? [
           ['parent', Operators.EQUALS, id],
           ['parenttable', Operators.EQUALS, type],
         ]
-      : false,
+      : [],
     {
       [options.limit]: limit,
       [options.orderBy]: ['createdat', OrderDirections.DESC],
@@ -57,13 +57,13 @@ const MetaHistory = ({
   type,
   limit,
 }: {
-  id: string
-  type: string
-  limit: number
+  id?: string
+  type?: string
+  limit?: number
 }) => {
   const [isLoading, isErrored, results] = useDatabaseQuery<HistoryEntry>(
     'getAllHistory',
-    id
+    id && type
       ? [
           ['parent', Operators.EQUALS, id],
           ['parenttable', Operators.EQUALS, type],
@@ -97,9 +97,9 @@ const AdminHistory = ({
   metaType,
   limit = 20,
 }: {
-  id: string
-  type: string
-  metaType: string
+  id?: string
+  type?: string
+  metaType?: string
   limit?: number
 }) => {
   return (
