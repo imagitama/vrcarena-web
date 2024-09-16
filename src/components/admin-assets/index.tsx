@@ -363,7 +363,6 @@ const Queue = ({
           ))}
         </div>
         <Button
-          isDisabled={atEnd}
           onClick={() => setIsEditing((currentVal) => !currentVal)}
           icon={<EditIcon />}
           size="large">
