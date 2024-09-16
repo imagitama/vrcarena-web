@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@material-ui/icons/Save'
+import EditIcon from '@material-ui/icons/Edit'
+import CheckIcon from '@material-ui/icons/Check'
 
 import { handleError } from '../../error-handling'
 import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
@@ -15,7 +17,6 @@ import AssetSearch from '../asset-search'
 import Button from '../button'
 import FormControls from '../form-controls'
 import ItemsEditor, { Item } from '../items-editor'
-import Select from '../select'
 import TextInput from '../text-input'
 import AssetResultsItem from '../asset-results-item'
 import LoadingIndicator from '../loading-indicator'
@@ -26,6 +27,8 @@ import Markdown from '../markdown'
 import { getLabelForType } from '../relations'
 import useTimer from '../../hooks/useTimer'
 import { formHideDelay } from '../../config'
+import RadioInputs from '../radio-inputs'
+import HidableMessage from '../hidable-message'
 
 const useStyles = makeStyles({
   editor: {
@@ -51,7 +54,7 @@ const RelationEditorForm = ({
   const [newRelation, setNewRelation] = useState<Relation>(
     relation || {
       asset: '',
-      type: '',
+      type: RelationType.Parent,
       comments: '',
     }
   )
@@ -66,6 +69,8 @@ const RelationEditorForm = ({
     setAssetsData((currentData) => currentData.concat([newAsset]))
   }
 
+  const onTypeChange = (newType: RelationType) =>
+    setNewRelation({ ...newRelation, type: newType })
   const onCommentsChange = (newComments: string) =>
     setNewRelation({ ...newRelation, comments: newComments })
 
@@ -79,7 +84,6 @@ const RelationEditorForm = ({
 
   return (
     <div className={classes.editor}>
-      <div className={classes.formLabel}>1. Search for an asset</div>
       <AssetSearch
         selectedAsset={assetsData.find(
           (assetData) => assetData.id === newRelation.asset
@@ -87,32 +91,16 @@ const RelationEditorForm = ({
         onSelect={onSelectedAsset}
         limit={10}
       />
-      <div className={classes.formLabel}>
-        2. Select if a parent, child, sibling, etc.
-      </div>
-      <Select
-        fullWidth
-        onChange={(e) =>
-          setNewRelation((currentVal) => ({
-            ...currentVal,
-            type: e.target.value as string,
-          }))
-        }
+      <RadioInputs
         value={newRelation.type}
-        placeholder="Select a relationship">
-        <MenuItem value="" disabled>
-          Select a relationship
-        </MenuItem>
-        {Object.entries(RelationType).map(([label, value]) => (
-          <MenuItem
-            key={value}
-            value={value}
-            selected={newRelation.type === value}>
-            {label}
-          </MenuItem>
-        ))}
-      </Select>
-      <div className={classes.formLabel}>3. Add some comments (optional)</div>
+        onChange={(newValue) =>
+          onTypeChange(RelationType[newValue as keyof typeof RelationType])
+        }
+        options={Object.entries(RelationType).map(([key, value]) => ({
+          value: value,
+          label: key,
+        }))}
+      />
       <TextInput
         multiline
         rows={2}
@@ -122,8 +110,8 @@ const RelationEditorForm = ({
         placeholder="Comments (optional)"
       />
       <FormControls>
-        <Button onClick={onDoneClick}>
-          {relation ? 'Edit' : 'Add'} Relation
+        <Button onClick={onDoneClick} icon={<CheckIcon />}>
+          Done
         </Button>
       </FormControls>
     </div>
@@ -182,7 +170,7 @@ const validateRelations = (relations: Relation[]): boolean => {
   return true
 }
 
-export default ({
+const RelationsEditor = ({
   assetId,
   currentRelations = [],
   onDone = undefined,
@@ -200,7 +188,9 @@ export default ({
     assetId
   )
   const [isAddFormVisible, setIsAddFormVisible] = useState(false)
-  const [newRelations, setNewRelations] = useState<Relation[]>(currentRelations)
+  const [newRelations, setNewRelations] = useState<Relation[]>(
+    currentRelations || []
+  )
   const startSaveDoneTimer = useTimer(
     () => (onDone ? onDone() : {}),
     formHideDelay
@@ -252,7 +242,7 @@ export default ({
   }
 
   if (isSuccess) {
-    return <SuccessMessage>Relations saved!</SuccessMessage>
+    return <SuccessMessage>Relations saved</SuccessMessage>
   }
 
   if (isFailed) {
@@ -261,6 +251,15 @@ export default ({
 
   return (
     <div>
+      <HidableMessage noticeId="relations-editor-info">
+        We encourage everyone to "link" different assets together to help
+        people:
+        <ul>
+          <li>find a dependency to make your asset work</li>
+          <li>find other similar assets</li>
+        </ul>
+        Please link other assets using this form.
+      </HidableMessage>
       {isAddFormVisible ? <RelationEditorForm onDone={onAddRelation} /> : null}
       <ItemsEditor<Relation>
         nameSingular="relation"
@@ -277,7 +276,9 @@ export default ({
         getKey={(item) => item.asset}
       />
       <FormControls>
-        <Button onClick={onSaveClick}>Save</Button>{' '}
+        <Button onClick={onSaveClick} icon={<SaveIcon />}>
+          Save
+        </Button>{' '}
         {onCancel ? (
           <Button onClick={onCancel} color="default">
             Cancel
@@ -287,3 +288,5 @@ export default ({
     </div>
   )
 }
+
+export default RelationsEditor

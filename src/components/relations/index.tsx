@@ -62,7 +62,7 @@ export const getLabelForType = (relationType: string): string => {
   }
 }
 
-export const Relations = ({ children }: { children: React.ReactNode }) => {
+export const RelationsItems = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
 
   return <div className={classes.relations}>{children}</div>
@@ -94,7 +94,7 @@ export const RelationItem = ({
   )
 }
 
-export default ({ relations }: { relations: Relation[] }) => {
+const Relations = ({ relations }: { relations: Relation[] }) => {
   const getQuery = useCallback(
     () =>
       supabase
@@ -132,7 +132,7 @@ export default ({ relations }: { relations: Relation[] }) => {
   }
 
   if (isLoadingAssets || !assets) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message="Loading relations..." />
   }
 
   if (!assets.length) {
@@ -145,7 +145,7 @@ export default ({ relations }: { relations: Relation[] }) => {
         ([relationType, relationsForType]) => (
           <div className={classes.relationType}>
             <div className={classes.label}>{getLabelForType(relationType)}</div>
-            <Relations>
+            <RelationsItems>
               {relationsForType.map((relation) => {
                 const asset = assets.find(({ id }) => id === relation.asset)
 
@@ -163,10 +163,12 @@ export default ({ relations }: { relations: Relation[] }) => {
                   />
                 )
               })}
-            </Relations>
+            </RelationsItems>
           </div>
         )
       )}
     </div>
   )
 }
+
+export default Relations

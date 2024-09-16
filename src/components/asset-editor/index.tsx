@@ -608,7 +608,7 @@ const RelationsDisplay = ({
   fields: FullAsset
 }) => (
   <>
-    {value && value.length ? (
+    {fields.relations && Array.isArray(fields.relations) ? (
       <Relations relations={fields.relations} />
     ) : (
       <NoValueMessage>No relations set</NoValueMessage>
@@ -842,20 +842,32 @@ const Editor = () => {
             name: 'category',
             label: 'Category',
             contents: (
-              <FormEditorArea
-                fieldName={AssetFieldNames.category}
-                isRequired
-                title="Category"
-                description="Which category the asset falls into."
-                icon={() => <CategoryIcon />}
-                display={CategoryDisplay}
-                editor={
-                  <ChangeCategoryForm
-                    assetId={assetId}
-                    existingCategory={asset.category}
+              <>
+                <FormEditorArea
+                  fieldName={AssetFieldNames.category}
+                  isRequired
+                  title="Category"
+                  description="Which category the asset falls into."
+                  icon={() => <CategoryIcon />}
+                  display={CategoryDisplay}
+                  editor={
+                    <ChangeCategoryForm
+                      assetId={assetId}
+                      existingCategory={asset.category}
+                    />
+                  }
+                />
+                {asset.category === AssetCategory.Accessory ? (
+                  <FormEditorArea
+                    fieldName={AssetFieldNames.relations}
+                    title="Parent"
+                    description="Accessories usually have a parent that is required for it to function. Set it here (if needed)."
+                    icon={() => <LinkIcon />}
+                    display={RelationsDisplay}
+                    editor={<RelationsEditor assetId={assetId || undefined} />}
                   />
-                }
-              />
+                ) : null}
+              </>
             ),
           },
           {

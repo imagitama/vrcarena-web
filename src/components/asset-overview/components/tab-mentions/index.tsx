@@ -9,7 +9,7 @@ import {
   OrderDirections,
 } from '../../../../hooks/useDatabaseQuery'
 import { Asset } from '../../../../modules/assets'
-import { Relations, RelationItem } from '../../../relations'
+import { RelationsItems, RelationItem } from '../../../relations'
 
 const useStyles = makeStyles({
   item: { margin: '0.5rem' },
@@ -24,7 +24,7 @@ const Renderer = ({ items }: { items?: Asset[] }) => {
   }
 
   return (
-    <Relations>
+    <RelationsItems>
       {items.map((item) => {
         const relation = item.relations.find(
           (relation) => relation.asset === assetId
@@ -48,7 +48,7 @@ const Renderer = ({ items }: { items?: Asset[] }) => {
           </div>
         )
       })}
-    </Relations>
+    </RelationsItems>
   )
 }
 

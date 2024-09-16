@@ -6,6 +6,7 @@ import useAlgoliaSearch, {
 import { setIsSearching } from '../modules/app'
 import { useEffect } from 'react'
 import useIsAdultContentEnabled from './useIsAdultContentEnabled'
+import useOldAssetSearch from './useOldAssetSearch'
 
 const defaultLimit = 50
 
@@ -27,12 +28,15 @@ const useAssetSearch = (
     filters = filters.filter((filter) => filter !== 'isAdult != 1')
   }
 
-  const [isLoading, isErrored, assetSearchResults] = useAlgoliaSearch(
-    Indexes.Assets,
-    searchTerm,
-    filters.join(' AND '),
-    limit
-  )
+  const [isLoading, isErrored, assetSearchResults] =
+    process.env.NODE_ENV === 'development'
+      ? useOldAssetSearch(searchTerm)
+      : useAlgoliaSearch(
+          Indexes.Assets,
+          searchTerm,
+          filters.join(' AND '),
+          limit
+        )
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -41,7 +45,11 @@ const useAssetSearch = (
 
   const assets = assetSearchResults || null
 
-  return [isLoading, isErrored, assets]
+  return [
+    isLoading,
+    isErrored === null || isErrored === false ? false : true,
+    assets as AssetSearchResult[] | null,
+  ]
 }
 
 export default useAssetSearch

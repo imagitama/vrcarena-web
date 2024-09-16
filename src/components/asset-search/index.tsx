@@ -13,7 +13,8 @@ import Select from '../select'
 
 const useStyles = makeStyles({
   dropdown: {
-    width: '30%',
+    width: '29%',
+    marginLeft: '1%',
   },
   textInput: {
     width: '70%',
@@ -69,6 +70,12 @@ const AssetSearch = ({
       ) : null}
 
       <div>
+        <TextInput
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          placeholder="Search for an asset"
+          className={classes.textInput}
+        />
         <Select
           onChange={(e) =>
             setSelectedCategory((e.target.value as string) || null)
@@ -86,12 +93,6 @@ const AssetSearch = ({
             </MenuItem>
           ))}
         </Select>
-        <TextInput
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Search for an asset"
-          className={classes.textInput}
-        />
       </div>
     </>
   )

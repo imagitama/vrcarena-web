@@ -4,16 +4,14 @@ import useDatabaseQuery, {
   Operators,
 } from '../../hooks/useDatabaseQuery'
 import { makeStyles } from '@material-ui/core/styles'
-import { views, NoticesFieldNames, FullNotice } from '../../modules/notices'
-import useStorage, { keys as storageKeys } from '../../hooks/useStorage'
-import { trackAction } from '../../analytics'
+import { views, FullNotice } from '../../modules/notices'
 import Notice from '../notice'
-import { write as writeStorage } from '../../utils/storage'
 import ErrorMessage from '../error-message'
 import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
+import useNotices from '../../hooks/useNotices'
 
 const useStyles = makeStyles({
   home: {
@@ -42,15 +40,7 @@ const Notices = ({ isHome = false }: { isHome: boolean }) => {
     ['orderby', OrderDirections.ASC]
   )
   const classes = useStyles()
-  const [hiddenNotices] = useStorage<string[]>(storageKeys.hiddenNotices, [])
-
-  const hideNotice = (hideId: string) => {
-    writeStorage(
-      storageKeys.hiddenNotices,
-      hiddenNotices !== null ? hiddenNotices.concat([hideId]) : [hideId]
-    )
-    trackAction('Global', 'Click hide notice', hideId)
-  }
+  const [hiddenNotices, hideNoticeById] = useNotices()
 
   if (isErrored) {
     return <ErrorMessage>Failed to load notices</ErrorMessage>
@@ -61,7 +51,7 @@ const Notices = ({ isHome = false }: { isHome: boolean }) => {
   }
 
   const noticesToShow = results.filter(
-    (notice) => hiddenNotices && !hiddenNotices.includes(notice.hideid)
+    (notice) => !hiddenNotices.includes(notice.hideid)
   )
 
   if (!noticesToShow.length) {
@@ -72,7 +62,7 @@ const Notices = ({ isHome = false }: { isHome: boolean }) => {
     <div className={isHome ? classes.home : ''}>
       {noticesToShow.map((notice) => (
         <div className={classes.notice} key={notice.id}>
-          <Notice {...notice} hide={() => hideNotice(notice.hideid)} />
+          <Notice {...notice} hide={() => hideNoticeById(notice.hideid)} />
         </div>
       ))}
     </div>
