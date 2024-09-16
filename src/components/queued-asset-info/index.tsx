@@ -35,6 +35,7 @@ const QueuedAssetInfo = ({
           existingEditorNotes={asset.editornotes}
           onDone={hydrate}
           showBox={false}
+          allowDeclineOptions={true}
         />
       ) : null}
     </Message>
