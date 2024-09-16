@@ -9,6 +9,7 @@ import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import {
   Asset,
+  FullAsset,
   PublicAsset,
   Relation,
   RelationType,
@@ -46,9 +47,11 @@ const useStyles = makeStyles({
 const RelationEditorForm = ({
   relation,
   onDone,
+  assetsData: existingAssetsData,
 }: {
   onDone: (newRelation: Relation) => void
   relation?: Relation
+  assetsData?: Asset[]
 }) => {
   const classes = useStyles()
   const [newRelation, setNewRelation] = useState<Relation>(
@@ -58,7 +61,9 @@ const RelationEditorForm = ({
       comments: '',
     }
   )
-  const [assetsData, setAssetsData] = useState<(Asset | PublicAsset)[]>([])
+  const [assetsData, setAssetsData] = useState<(Asset | PublicAsset)[]>(
+    existingAssetsData || []
+  )
 
   const onSelectedAsset = (newAsset: Asset | PublicAsset) => {
     console.debug(`Selected asset ${newAsset.id} for relation`)
@@ -69,10 +74,8 @@ const RelationEditorForm = ({
     setAssetsData((currentData) => currentData.concat([newAsset]))
   }
 
-  const onTypeChange = (newType: RelationType) =>
-    setNewRelation({ ...newRelation, type: newType })
-  const onCommentsChange = (newComments: string) =>
-    setNewRelation({ ...newRelation, comments: newComments })
+  const setField = (name: keyof Relation, value: any) =>
+    setNewRelation({ ...newRelation, [name]: value })
 
   const onDoneClick = () => {
     if (!validateRelations([newRelation])) {
@@ -82,20 +85,33 @@ const RelationEditorForm = ({
     onDone(newRelation)
   }
 
+  console.debug(`RelationsEditor.render`, { newRelation })
+
   return (
     <div className={classes.editor}>
-      <AssetSearch
-        selectedAsset={assetsData.find(
-          (assetData) => assetData.id === newRelation.asset
-        )}
-        onSelect={onSelectedAsset}
-        limit={10}
-      />
+      {newRelation.asset ? (
+        <>
+          <AssetResultsItem
+            asset={assetsData.find(
+              (assetData) => assetData.id === newRelation.asset
+            )}
+          />
+          <Button onClick={() => setField('asset', null)} color="default">
+            Clear
+          </Button>
+        </>
+      ) : (
+        <AssetSearch
+          selectedAsset={assetsData.find(
+            (assetData) => assetData.id === newRelation.asset
+          )}
+          onSelect={onSelectedAsset}
+          limit={10}
+        />
+      )}
       <RadioInputs
         value={newRelation.type}
-        onChange={(newValue) =>
-          onTypeChange(RelationType[newValue as keyof typeof RelationType])
-        }
+        onChange={(newValue) => setField('type', newValue as RelationType)}
         options={Object.entries(RelationType).map(([key, value]) => ({
           value: value,
           label: key,
@@ -106,7 +122,7 @@ const RelationEditorForm = ({
         rows={2}
         fullWidth
         value={newRelation.comments}
-        onChange={(e) => onCommentsChange(e.target.value)}
+        onChange={(e) => setField('comments', e.target.value)}
         placeholder="Comments (optional)"
       />
       <FormControls>
@@ -121,13 +137,16 @@ const RelationEditorForm = ({
 const Editor = ({
   item,
   onDone,
+  assetsData,
 }: {
   item: Item<Relation>
   onDone: (newItem: Item<Relation>) => void
+  assetsData?: Asset[]
 }) => (
   <RelationEditorForm
     relation={item as unknown as Relation}
     onDone={(newRelation: Relation) => onDone(newRelation as Item<Relation>)}
+    assetsData={assetsData}
   />
 )
 
@@ -173,12 +192,14 @@ const validateRelations = (relations: Relation[]): boolean => {
 const RelationsEditor = ({
   assetId,
   currentRelations = [],
+  assetsData = undefined,
   onDone = undefined,
   onCancel = undefined,
   overrideSave = undefined,
 }: {
   assetId?: string
   currentRelations?: Relation[]
+  assetsData?: Asset[]
   onDone?: () => void
   onCancel?: () => void
   overrideSave?: (newRelations: Relation[]) => void
@@ -261,7 +282,7 @@ const RelationsEditor = ({
         Please link other assets using this form.
       </HidableMessage>
       {isAddFormVisible ? <RelationEditorForm onDone={onAddRelation} /> : null}
-      <ItemsEditor<Relation>
+      <ItemsEditor<Relation, { assetsData: Asset[] | undefined }>
         nameSingular="relation"
         editor={Editor}
         renderer={Renderer}
@@ -274,6 +295,9 @@ const RelationsEditor = ({
         }}
         onAdd={onAddClick}
         getKey={(item) => item.asset}
+        commonProps={{
+          assetsData,
+        }}
       />
       <FormControls>
         <Button onClick={onSaveClick} icon={<SaveIcon />}>

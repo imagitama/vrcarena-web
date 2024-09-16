@@ -868,6 +868,7 @@ const Editor = () => {
                       <RelationsEditor
                         assetId={assetId || undefined}
                         currentRelations={asset.relations || []}
+                        assetsData={asset.relationsdata}
                         overrideSave={
                           onFieldChanged
                             ? (newRelations) =>
@@ -1225,6 +1226,7 @@ const Editor = () => {
                     <RelationsEditor
                       assetId={assetId || undefined}
                       currentRelations={asset.relations || []}
+                      assetsData={asset.relationsdata}
                       overrideSave={
                         onFieldChanged
                           ? (newRelations) =>
