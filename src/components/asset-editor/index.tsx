@@ -864,7 +864,18 @@ const Editor = () => {
                     description="Accessories usually have a parent that is required for it to function. Set it here (if needed)."
                     icon={() => <LinkIcon />}
                     display={RelationsDisplay}
-                    editor={<RelationsEditor assetId={assetId || undefined} />}
+                    editor={
+                      <RelationsEditor
+                        assetId={assetId || undefined}
+                        currentRelations={asset.relations || []}
+                        overrideSave={
+                          onFieldChanged
+                            ? (newRelations) =>
+                                onFieldChanged('relations', newRelations)
+                            : undefined
+                        }
+                      />
+                    }
                   />
                 ) : null}
               </>
