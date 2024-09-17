@@ -222,6 +222,38 @@ export default () => {
         <NoPermissionMessage message="This is a no permission message." />
         <h2>Success Message</h2>
         <SuccessMessage>This is a success message.</SuccessMessage>
+        <SuccessMessage title="Some Title">
+          This is a success message.
+        </SuccessMessage>
+        <SuccessMessage
+          title="Some Title"
+          controls={[
+            <Button>Click Me</Button>,
+            <Button>Another Button</Button>,
+          ]}>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
+            eleifend facilisis bibendum. Maecenas pulvinar ante nisi, vitae
+            molestie metus feugiat id. Quisque pretium ullamcorper faucibus. Sed
+            a metus nisl. Phasellus posuere leo justo, vitae lobortis justo
+            scelerisque lobortis. Morbi eget tellus tellus. In faucibus sed ex
+            tempus gravida. Maecenas bibendum feugiat mattis. Mauris gravida
+            velit sed orci hendrerit, ac congue eros vehicula. In finibus libero
+            at velit convallis, id suscipit sem elementum.
+          </p>
+          <p>
+            Ut massa dui, lacinia eu lacinia non, rhoncus ac nisl. Donec dictum
+            volutpat augue, rhoncus mollis dolor accumsan venenatis. Donec sit
+            amet mi sit amet eros semper commodo. Aliquam erat volutpat. Quisque
+            et nisi eu velit tristique gravida. Vestibulum hendrerit dolor sit
+            amet nibh facilisis, laoreet malesuada mauris scelerisque. Lorem
+            ipsum dolor sit amet, consectetur adipiscing elit. In pellentesque,
+            massa vel sollicitudin gravida, odio enim laoreet odio, sit amet
+            sagittis enim enim nec justo. Praesent ut mi vel augue placerat
+            posuere sed sit amet velit. Interdum et malesuada fames ac ante
+            ipsum primis in faucibus.
+          </p>
+        </SuccessMessage>
         <h2>Message</h2>
         <Message>This is a generic message.</Message>
         <h2>Error Boundary Message</h2>

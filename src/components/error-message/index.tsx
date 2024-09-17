@@ -5,27 +5,26 @@ import CheckIcon from '@material-ui/icons/Check'
 
 import { DISCORD_URL, EMAIL } from '../../config'
 import { base64EncodeString } from '../../utils'
-import Message from '../message'
+import Message, { MessageProps } from '../message'
 import Button from '../button'
 
 const getErrorCodeForError = (error: Error): string =>
   base64EncodeString(error.message)
 
-export default ({
+const ErrorMessage = ({
   children,
   error,
   hintText,
   onRetry,
   onOkay,
-  leftAlign,
+  ...messageProps
 }: {
   children: React.ReactNode
   error?: Error
   hintText?: false | string
   onRetry?: () => void
   onOkay?: () => void
-  leftAlign?: boolean
-}) => (
+} & MessageProps) => (
   <Message
     icon={<ErrorIcon />}
     color="#1c0002"
@@ -45,8 +44,7 @@ export default ({
           ) : null}
         </>
       ) : undefined
-    }
-    leftAlign={leftAlign}>
+    }>
     {hintText || hintText === undefined ? (
       <>
         {hintText || (
@@ -71,3 +69,5 @@ export default ({
     ) : null}
   </Message>
 )
+
+export default ErrorMessage

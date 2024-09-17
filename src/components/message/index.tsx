@@ -13,12 +13,6 @@ const useStyles = makeStyles(() => ({
   leftAlign: {
     justifyContent: 'flex-start',
   },
-  noMargin: {
-    margin: 0,
-  },
-  noTopMargin: {
-    marginTop: 0,
-  },
   paper: {
     position: 'relative',
     padding: '1rem',
@@ -32,19 +26,8 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     zIndex: 10,
   },
-  nonTitleText: {
-    marginTop: '1rem',
-    '& > *': {
-      margin: '1rem 0',
-      '&:first-child': {
-        marginTop: 0,
-      },
-      '&:last-child': {
-        marginBottom: 0,
-      },
-    },
-  },
   icon: {
+    alignSelf: 'baseline',
     marginRight: '1rem',
     display: 'flex',
   },
@@ -73,7 +56,12 @@ const useStyles = makeStyles(() => ({
     position: 'relative',
     zIndex: 50,
   },
-  children: {},
+  children: {
+    marginTop: '0.25rem',
+    '& p:first-child': {
+      marginTop: 0,
+    },
+  },
   controls: {
     marginTop: '1rem',
     display: 'flex',
@@ -81,6 +69,13 @@ const useStyles = makeStyles(() => ({
     '& > *': {
       margin: '0 0.25rem',
     },
+  },
+  // at end to override
+  noMargin: {
+    margin: 0,
+  },
+  noTopMargin: {
+    marginTop: 0,
   },
 }))
 
@@ -120,22 +115,18 @@ export default ({
         <div className={classes.chariot}>
           <Chariot />
         </div>
-        <div className={`${classes.text}`}>
-          {title || icon ? (
-            <div className={classes.title}>
-              {' '}
-              {icon ? <div className={classes.icon}>{icon}</div> : null}{' '}
-              <span>{title}</span>
+        {icon && <div className={classes.icon}>{icon}</div>}
+        <div className={classes.text}>
+          {title && <div className={classes.title}>{title}</div>}
+          {children && (
+            <div
+              className={`${classes.children} ${
+                title ? '' : classes.noTopMargin
+              }`}>
+              {children}
             </div>
-          ) : null}
-          <div className={classes.nonTitleText}>
-            {children ? (
-              <div className={classes.children}>{children}</div>
-            ) : null}
-            {controls ? (
-              <div className={classes.controls}>{controls}</div>
-            ) : null}
-          </div>
+          )}
+          {controls && <div className={classes.controls}>{controls}</div>}
         </div>
       </Paper>
     </div>
