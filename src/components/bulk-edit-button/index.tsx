@@ -8,7 +8,6 @@ import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/styles'
 
 import useIsEditor from '../../hooks/useIsEditor'
-import { RootState } from '../../store'
 import {
   enterBulkEditMode as enterBulkEditModeAction,
   leaveBulkEditMode as leaveBulkEditModeAction,
@@ -35,7 +34,7 @@ import { handleError } from '../../error-handling'
 import Paper from '../paper'
 import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
-import useRootState from '../../hooks/useRootState'
+import { RootState } from '../../modules'
 
 export enum BulkAction {
   RemoveTag,
@@ -171,7 +170,9 @@ const FormsForEachAsset = () => {
 }
 
 const Render = () => {
-  const bulkEditIds = useRootState((state) => state.app.bulkEditIds)
+  const bulkEditIds = useSelector(
+    ({ app: { bulkEditIds } }: RootState) => bulkEditIds
+  )
   const dispatch = useDispatch()
   const [selectedBulkAction, setSelectedBulkAction] =
     useState<null | BulkAction>(null)

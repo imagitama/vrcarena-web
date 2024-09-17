@@ -90,6 +90,7 @@ const TabControls = ({
   const { count, activeTabIdx, back, next } = useTabs()
   const [, , user] = useUserRecord()
   const classes = useStyles()
+  const canFinish = !isCreating && user && user.username
   return (
     <FormControls className={classes.formControls}>
       <Button
@@ -104,7 +105,7 @@ const TabControls = ({
       {activeTabIdx === count - 1 ? (
         <Button
           onClick={onFinish}
-          isDisabled={isCreating || (user && !user.username)}
+          isDisabled={!canFinish}
           size="large"
           color="tertiary"
           icon={<FlagIcon />}>

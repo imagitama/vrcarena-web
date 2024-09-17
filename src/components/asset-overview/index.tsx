@@ -92,6 +92,10 @@ import {
   ApprovalStatuses,
   PublishStatuses,
 } from '../../hooks/useDatabaseQuery'
+import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
+import WarningMessage from '../warning-message'
+import { alreadyOver18Key } from '../../config'
+import useStorage from '../../hooks/useStorage'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -403,8 +407,15 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const assetId = asset ? asset.id : rawAssetId
   const classes = useStyles()
   const [, , user] = useUserRecord()
-  useBanner(asset && asset.bannerurl)
   const [isPedestalExpanded, setIsPedestalExpanded] = useState(false)
+  const isAdultContentEnabled = useIsAdultContentEnabled()
+  const [bypassAdultFilterOnce, setBypassAdultFilterOnce] = useState(false)
+  const [, setIsAlreadyOver18] = useStorage(alreadyOver18Key)
+
+  const hideBecauseAdult =
+    asset && asset.isadult && !isAdultContentEnabled && !bypassAdultFilterOnce
+
+  useBanner(hideBecauseAdult ? null : asset && asset.bannerurl)
 
   const isAllowedToEditAsset = asset && user && getCanUserEditAsset(asset, user)
 
@@ -430,6 +441,34 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   }
 
   const isLoading = isLoadingAsset || !asset
+
+  if (hideBecauseAdult) {
+    return (
+      <WarningMessage
+        title="Adult Content Warning"
+        controls={[
+          <Button
+            color="default"
+            onClick={() => setBypassAdultFilterOnce(true)}>
+            I am over 18 - Allow Once
+          </Button>,
+          <Button color="default" onClick={() => setIsAlreadyOver18(true)}>
+            I am over 18 - Allow In Browser
+          </Button>,
+        ]}>
+        "{asset.title}" contains adult content and is hidden by default. You can
+        disable this by going to{' '}
+        <Link
+          to={routes.myAccountWithTabNameVar.replace(':tabName', 'settings')}>
+          your account settings
+        </Link>
+        , just this once, or forever in this browser.
+        <br />
+        <br />
+        Tags for this asset: <TagChips tags={asset.tags} isFilled={false} />
+      </WarningMessage>
+    )
+  }
 
   const mediaAttachments =
     asset && asset.attachmentsdata

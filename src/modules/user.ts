@@ -1,4 +1,5 @@
 import { AnyAction } from 'redux'
+import { FullUser } from './users'
 
 export const USER_IS_LOADING = 'user/USER_IS_LOADING'
 export const USER_IS_DONE_LOADING = 'user/USER_IS_DONE_LOADING'
@@ -6,7 +7,13 @@ export const USER_IS_ERRORED = 'user/USER_IS_ERRORED'
 export const USER_LOADED = 'user/USER_LOADED'
 export const USER_UNLOADED = 'user/USER_UNLOADED'
 
-const initialState = {
+export interface UserState {
+  isLoading: boolean
+  isErrored: boolean
+  user: null | FullUser
+}
+
+const initialState: UserState = {
   isLoading: false,
   isErrored: false,
   user: null,

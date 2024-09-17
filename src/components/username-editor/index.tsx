@@ -42,6 +42,11 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
   }>(CollectionNames.Users, userId || false, {
     uncatchErrorCodes: [DataStoreErrorCode.ViolateUniqueConstraint],
   })
+
+  if (!user) {
+    throw new Error('Need a user')
+  }
+
   const { username } = user
   const [fieldValue, setFieldValue] = useState(username)
   const classes = useStyles()

@@ -2,15 +2,13 @@ import { useSelector } from 'react-redux'
 import useSupabaseUserId from './useSupabaseUserId'
 import { loadUserIntoStore } from '../auth'
 import { FullUser } from '../modules/users'
+import { RootState } from '../modules'
 
-export default (): [boolean, boolean, FullUser, () => void] => {
+export default (): [boolean, boolean, FullUser | null, () => void] => {
   const userId = useSupabaseUserId()
-  // @ts-ignore
-  const isLoading = useSelector(({ user }) => user.isLoading)
-  // @ts-ignore
-  const isErrored = useSelector(({ user }) => user.isErrored)
-  // @ts-ignore
-  const record = useSelector(({ user }) => user.user)
+  const isLoading = useSelector(({ user }: RootState) => user.isLoading)
+  const isErrored = useSelector(({ user }: RootState) => user.isErrored)
+  const record = useSelector(({ user }: RootState) => user.user)
 
   const hydrate = () => loadUserIntoStore(userId, false)
 

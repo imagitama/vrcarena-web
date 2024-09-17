@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux'
-import { RootState } from '../store'
+import { RootState } from '../modules'
 
 export default (): string => {
-  const bannerUrl = useSelector<RootState, string>(
-    ({ app: { bannerUrl } }) => bannerUrl
+  const bannerUrl = useSelector(
+    ({ app: { bannerUrl } }: RootState) => bannerUrl
   )
   return bannerUrl
 }

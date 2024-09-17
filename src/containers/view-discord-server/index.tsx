@@ -194,7 +194,7 @@ const View = () => {
           joinActionCategory={analyticsCategory}
         />
       )}
-      {canEditDiscordServer(user) && (
+      {user && canEditDiscordServer(user) && (
         <>
           <Heading variant="h2">Actions</Heading>
           <EditorRecordManager

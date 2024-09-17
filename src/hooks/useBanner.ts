@@ -1,13 +1,14 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setBannerUrls as setBannerUrlsAction } from '../modules/app'
+import { RootState } from '../modules'
 
-export default newBannerUrl => {
-  const { bannerUrl } = useSelector(({ app: { bannerUrl } }) => ({
-    bannerUrl
+export default (newBannerUrl: string | null) => {
+  const { bannerUrl } = useSelector(({ app: { bannerUrl } }: RootState) => ({
+    bannerUrl,
   }))
   const dispatch = useDispatch()
-  const setBannerUrl = url => dispatch(setBannerUrlsAction({ url }))
+  const setBannerUrl = (url: string) => dispatch(setBannerUrlsAction({ url }))
 
   useEffect(() => {
     if (!newBannerUrl) {
@@ -22,6 +23,6 @@ export default newBannerUrl => {
 
   return {
     bannerUrl,
-    setBannerUrl
+    setBannerUrl,
   }
 }

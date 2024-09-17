@@ -2,10 +2,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   toggleBulkEditId as toggleBulkEditIdAction,
   selectBulkEditId as selectBulkEditIdAction,
-  setSelectingAll as setSelectingAllAction
+  setSelectingAll as setSelectingAllAction,
 } from '../modules/app'
 import { Asset } from '../modules/assets'
-import { RootState } from '../store'
+import { RootState } from '../modules'
 
 const useBulkEdit = (): {
   ids: null | string[]
@@ -17,15 +17,9 @@ const useBulkEdit = (): {
   isSelectingAll: boolean
   setSelectingAll: (newValue: boolean) => void
 } => {
-  const ids = useSelector<RootState, null | string[]>(
-    state => state.app.bulkEditIds
-  )
-  const isSelectingAll = useSelector<RootState, boolean>(
-    state => state.app.isSelectingAll
-  )
-  const assetDatas = useSelector<RootState, Asset[]>(
-    state => state.app.bulkEditAssetDatas
-  )
+  const ids = useSelector(({ app }: RootState) => app.bulkEditIds)
+  const isSelectingAll = useSelector(({ app }: RootState) => app.isSelectingAll)
+  const assetDatas = useSelector(({ app }: RootState) => app.bulkEditAssetDatas)
   const dispatch = useDispatch()
 
   const toggleId = (id: string) => {
@@ -60,7 +54,7 @@ const useBulkEdit = (): {
     selectId,
     selectAsset,
     isSelectingAll,
-    setSelectingAll
+    setSelectingAll,
   }
 }
 

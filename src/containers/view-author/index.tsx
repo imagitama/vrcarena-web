@@ -295,7 +295,7 @@ const View = () => {
         />
       )}
 
-      {canEditAuthor(user) && (
+      {user && canEditAuthor(user) && (
         <>
           <Heading variant="h2">Actions</Heading>
           <EditorRecordManager
