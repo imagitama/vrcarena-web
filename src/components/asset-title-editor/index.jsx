@@ -90,7 +90,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.title]: newTitleValue,
+        [AssetFieldNames.title]: newTitleValue.trim(),
       })
 
       if (onDone) {
