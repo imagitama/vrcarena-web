@@ -1,9 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import LoadingShimmer from '../../../../components/loading-shimmer'
-import useSupabaseView from '../../../../hooks/useSupabaseView'
-import { CachedPatreonMember } from '../../../../modules/patreonmembercache'
-import { patreonTax, totalCostPerMonth } from '../../../../costs'
+import { totalCostPerMonth } from '../../../../costs'
 import { colorPalette } from '../../../../config'
 
 const defaultText = `All of the costs for running the site are paid by our amazing
@@ -14,8 +11,8 @@ const useStyles = makeStyles({
   root: {
     '& > div': {
       display: 'flex',
-      alignItems: 'center'
-    }
+      alignItems: 'center',
+    },
   },
   income: {},
   expenditure: {},
@@ -25,64 +22,59 @@ const useStyles = makeStyles({
     width: '50%',
     textAlign: 'right',
     paddingRight: '1rem',
-    fontSize: '80%'
+    fontSize: '80%',
   },
   cost: {
-    fontSize: '150%'
+    fontSize: '150%',
   },
   negative: {
     color: colorPalette.negative,
-    animation: '500ms $pulseNegativeCost infinite alternate'
+    animation: '500ms $pulseNegativeCost infinite alternate',
   },
   '@keyframes pulseNegativeCost': {
     from: {
-      opacity: 1
+      opacity: 1,
     },
     to: {
-      opacity: 0.5
-    }
-  }
+      opacity: 0.5,
+    },
+  },
 })
 
-export default () => {
-  const [isLoading, isError, members] = useSupabaseView<CachedPatreonMember[]>(
-    'getAnonymousPatreonMembers'
-  )
+export default ({
+  isLoading,
+  incomeCentsAfterTaxes,
+}: {
+  isLoading: boolean
+  incomeCentsAfterTaxes?: number
+}) => {
   const classes = useStyles()
-
-  if (isLoading) {
-    return <LoadingShimmer height="20px" />
-  }
-
-  if (isError || !Array.isArray(members)) {
-    return null
-  }
-
-  const incomeCents = members.reduce(
-    (finalIncomeCents, { currentlyentitledamountcents }) =>
-      finalIncomeCents + currentlyentitledamountcents,
-    0
-  )
-
-  const incomeCentsAfterTaxes = incomeCents * (1 - patreonTax)
-  const incomeDollars = incomeCentsAfterTaxes / 100
-
+  const incomeDollars =
+    isLoading && incomeCentsAfterTaxes ? incomeCentsAfterTaxes / 100 : 0
   const diff = totalCostPerMonth - incomeDollars
 
   return (
     <div className={classes.root}>
       <div className={classes.income}>
         <span className={classes.label}>Income from Patreon</span>{' '}
-        <span className={classes.cost}>${incomeDollars.toFixed(2)}</span>
+        <span className={classes.cost}>
+          ${isLoading ? '--' : incomeDollars.toFixed(2)}
+        </span>
       </div>
       <div className={classes.expenditure}>
-        <span className={classes.label}>Running costs</span>{' '}
-        <span className={classes.cost}>${totalCostPerMonth.toFixed(2)}</span>
+        <span className={classes.label}>Server costs</span>{' '}
+        <span className={classes.cost}>
+          ${isLoading ? '--' : totalCostPerMonth.toFixed(2)}
+        </span>
       </div>
       <div className={classes.result}>
         <span className={classes.label} />{' '}
-        <span className={`${classes.cost} ${diff > 0 ? classes.negative : ''}`}>
-          {diff > 0 ? '-' : ''}${diff.toFixed(2)}
+        <span
+          className={`${classes.cost} ${
+            !isLoading && diff > 0 ? classes.negative : ''
+          }`}>
+          {!isLoading && diff > 0 ? '-' : ''}$
+          {isLoading ? '--' : diff.toFixed(2)}
         </span>
       </div>
     </div>

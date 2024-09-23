@@ -166,6 +166,7 @@ interface HomepageContent {
   recentdiscordannouncements: CachedDiscordMessage[]
   featuredasset: FullAsset
   featuredspecies: FullSpecies
+  patreonincome: number
 }
 
 const Tiles = () => {
@@ -275,7 +276,10 @@ const Tiles = () => {
           title="Patreon"
           url={PATREON_BECOME_PATRON_URL}
           buttonLabel="Become Patron">
-          <PatreonCosts />
+          <PatreonCosts
+            isLoading={!result}
+            incomeCentsAfterTaxes={result?.patreonincome}
+          />
         </Tile>
       </div>
     </TileCols>

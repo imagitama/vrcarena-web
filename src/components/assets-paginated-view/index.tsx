@@ -1,17 +1,9 @@
 import React, { useCallback } from 'react'
 import PaginatedView, { PaginatedViewProps } from '../paginated-view'
-import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
+import { PublicAsset, ViewNames } from '../../modules/assets'
 import AssetResults from '../asset-results'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import AssetsByArea from '../assets-by-area'
-
-// const Renderer = ({
-//   items,
-//   hydrate,
-// }: {
-//   items?: PublicAsset[]
-//   hydrate?: () => void
-// }) => <AssetResults assets={items} hydrate={hydrate} />
 
 interface ExtraRendererProps {
   categoryName?: string
