@@ -20,6 +20,7 @@ import AssetsByArea from '../../components/assets-by-area'
 import AreaNavigation from '../../components/area-navigation'
 import Link from '../../components/link'
 import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
+import AssetsPaginatedView from '../../components/assets-paginated-view'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   const category = getCategoryMeta(categoryName)
@@ -31,37 +32,17 @@ function getDescriptionByCategoryName(categoryName: AssetCategory): string {
   return category.shortDescription
 }
 
-const Renderer = ({
-  items,
-  categoryName,
-  groupByAreaEnabled,
-}: {
-  items?: PublicAsset[]
-  categoryName: string
-  groupByAreaEnabled?: boolean
-}) => {
-  if (groupByAreaEnabled) {
-    return <AssetsByArea assets={items} categoryName={categoryName} />
-  } else {
-    return <AssetResults assets={items} />
-  }
-}
-
 const ViewCategoryView = () => {
   const { categoryName } = useParams<{ categoryName: AssetCategory }>()
   const { pathname } = useLocation()
-  const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
     (
       query: PostgrestFilterBuilder<PublicAsset>
     ): PostgrestFilterBuilder<PublicAsset> => {
       query = query.eq('category', categoryName)
-      if (!isAdultContentEnabled) {
-        query = query.eq('isadult', false)
-      }
       return query
     },
-    [categoryName, isAdultContentEnabled]
+    [categoryName]
   )
   const [groupByAreaEnabled, setGroupByAreaEnabled] = useState(true)
 
@@ -86,7 +67,7 @@ const ViewCategoryView = () => {
       <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
       {categoryName === AssetCategory.Tutorial && <AvatarTutorialSection />}
       <AreaNavigation categoryName={categoryName} />
-      <PaginatedView<PublicAsset>
+      <AssetsPaginatedView
         viewName={ViewNames.GetPublicAssets}
         getQuery={getQuery}
         sortKey="view-category"
@@ -118,12 +99,10 @@ const ViewCategoryView = () => {
             Group By Area
           </Button>,
         ]}
-        getQueryString={() => `category:${categoryName}`}>
-        <Renderer
-          categoryName={categoryName}
-          groupByAreaEnabled={groupByAreaEnabled}
-        />
-      </PaginatedView>
+        getQueryString={() => `category:${categoryName}`}
+        categoryName={categoryName}
+        groupByAreaEnabled={groupByAreaEnabled}
+      />
     </>
   )
 }

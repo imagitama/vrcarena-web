@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import LazyLoad from 'react-lazyload'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import LinkIcon from '@material-ui/icons/Link'
+import EditIcon from '@material-ui/icons/Edit'
 
 import * as routes from '../../routes'
 import {
@@ -38,7 +39,7 @@ const useStyles = makeStyles({
     },
     '&:hover $relation svg': {
       transform: 'rotate(360deg) !important',
-    }
+    },
   },
   selected: {
     backgroundColor: '#656565',
@@ -56,6 +57,7 @@ const useStyles = makeStyles({
     [mediaQueryForTabletsOrBelow]: {
       height: '160px',
     },
+    overflow: 'hidden', // fix onClick in controls not working
   },
   // parts
   title: {
@@ -171,6 +173,8 @@ const AssetResultsItem = ({
   isSelected = false,
   isDimmed = false,
   controls: Controls,
+  // extra
+  toggleEditMode = undefined,
 }: {
   asset?: Asset | PublicAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
@@ -178,6 +182,7 @@ const AssetResultsItem = ({
   isSelected?: boolean
   isDimmed?: boolean
   controls?: React.FC
+  toggleEditMode?: () => void
 }) => {
   const classes = useStyles()
   const [, , prefs] = useUserPreferences()
@@ -203,7 +208,9 @@ const AssetResultsItem = ({
             <CardMedia
               className={classes.cardMedia}
               image={asset && asset.thumbnailurl ? asset.thumbnailurl : ''}
-              title={asset && asset.title ? `Thumbnail for ${asset.title}` : ''}>
+              title={
+                asset && asset.title ? `Thumbnail for ${asset.title}` : ''
+              }>
               {!asset || !asset.thumbnailurl ? <DefaultThumbnail /> : undefined}
             </CardMedia>
           </LazyLoad>
@@ -242,10 +249,23 @@ const AssetResultsItem = ({
                 {Controls ? (
                   <Controls />
                 ) : (
-                  <AddToCartButton
-                    assetId={asset?.id}
-                    className={classes.control}
-                  />
+                  <>
+                    <AddToCartButton
+                      assetId={asset?.id}
+                      className={classes.control}
+                    />
+                    {toggleEditMode && (
+                      <div
+                        onClick={(e) => {
+                          toggleEditMode()
+                          e.preventDefault()
+                          e.stopPropagation()
+                        }}
+                        className={classes.control}>
+                        <EditIcon />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               {showMoreInfo && asset && 'price' in asset ? (

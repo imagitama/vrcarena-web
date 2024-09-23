@@ -5,6 +5,14 @@ import { getIsUuid } from './utils'
 
 export interface CommonRecordFields {
   id: string
+  lastmodifiedat: Date | null
+  lastmodifiedby: string | null
+  createdat: Date
+  createdby: string
+}
+
+export interface CommonMetaRecordFields {
+  editornotes: string
 }
 
 const standardFieldNames = {

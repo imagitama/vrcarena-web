@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AssetResultsItem from '../asset-results-item'
 import { Asset, PublicAsset } from '../../modules/assets'
+import InlineAssetEditor from '../inline-asset-editor'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -21,6 +22,7 @@ const AssetResults = ({
   onClickWithEventAndAsset = undefined,
   shimmer = false,
   shimmerCount = 3,
+  hydrate = undefined,
 }: {
   assets?: (Asset | PublicAsset)[]
   selectedAssetIds?: string[]
@@ -31,8 +33,17 @@ const AssetResults = ({
   ) => void
   shimmer?: boolean
   shimmerCount?: number
+  hydrate?: () => void
 }) => {
   const classes = useStyles()
+  const [assetIdToEdit, setAssetIdToEdit] = useState<null | string>(null)
+
+  const toggleEditMode = (assetId: string) => {
+    setAssetIdToEdit((currentAssetId) =>
+      currentAssetId === assetId ? null : assetId
+    )
+    return false
+  }
 
   return (
     <div className={classes.root}>
@@ -60,9 +71,19 @@ const AssetResults = ({
                         onClickWithEventAndAsset(e, asset)
                     : undefined
                 }
+                toggleEditMode={
+                  hydrate ? () => toggleEditMode(asset.id) : undefined
+                }
               />
             </div>
           ))}
+      {assetIdToEdit && hydrate ? (
+        <InlineAssetEditor
+          asset={assets.find((asset) => asset.id === assetIdToEdit)!}
+          onDone={hydrate}
+          onCancel={() => setAssetIdToEdit(null)}
+        />
+      ) : null}
     </div>
   )
 }

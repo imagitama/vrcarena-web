@@ -32,6 +32,7 @@ import SpeciesSelector from '../../components/species-selector'
 import FeaturesEditor from '../../components/features-editor'
 import DefaultAvatar from '../../components/default-avatar'
 import AssetResultsItem from '../../components/asset-results-item'
+import AssetResults from '../../components/asset-results'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -180,6 +181,30 @@ export default () => {
           }
         />{' '}
         <AssetResultsItem isDimmed />
+        <h2>Asset Results</h2>
+        <AssetResults
+          assets={[
+            {
+              id: 'abcd',
+              title: 'My Nice Thing',
+              category: 'avatar',
+              species: ['', ''],
+              speciesnames: [
+                'Cat',
+                'Dog',
+                'Fish',
+                'Bird',
+                'Elephant',
+                'Llama',
+                'Cheetah',
+                'Rat',
+                'Owl',
+                'Some Old Lady',
+              ],
+            } as FullAsset,
+          ]}
+          hydrate={() => console.log('Dev hydrate')}
+        />
         <h2>Default Avatar</h2>
         <div style={{ width: '300px', height: '300px' }}>
           <DefaultAvatar stringForDecision="HelloWorld" />

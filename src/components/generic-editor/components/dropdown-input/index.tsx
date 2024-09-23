@@ -1,21 +1,26 @@
 import React, { Fragment } from 'react'
 import MenuItem from '@material-ui/core/MenuItem'
+import { SelectProps } from '@material-ui/core/Select'
 import Select from '../../../select'
 import { Option } from '../../../../editable-fields'
 
-export default ({
+const DropdownInput = ({
   onChange,
   value = null,
   options,
+  isDisabled = false,
+  ...selectProps
 }: {
   onChange: (newVal: any) => void
   value: string | null
   options: Option[]
-}) => (
+  isDisabled?: boolean
+} & SelectProps) => (
   <Select
-    //   fullWidth
     value={value}
-    onChange={(e: any) => onChange(e.target.value)}>
+    onChange={(e: any) => onChange(e.target.value)}
+    disabled={isDisabled}
+    {...selectProps}>
     {options.map((option) => (
       <MenuItem key={option.value} value={option.value || undefined}>
         {option.label}
@@ -23,3 +28,5 @@ export default ({
     ))}
   </Select>
 )
+
+export default DropdownInput

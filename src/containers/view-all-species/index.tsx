@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
 import AddIcon from '@material-ui/icons/Add'
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { makeStyles } from '@material-ui/core/styles'
-import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
@@ -15,7 +15,6 @@ import useDatabaseQuery, {
   Operators,
   options,
   OrderDirections,
-  SpeciesFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import LoadingIndicator from '../../components/loading-indicator'
@@ -24,7 +23,6 @@ import { FullSpecies, Species, ViewNames } from '../../modules/species'
 import AutocompleteInput from '../../components/autocomplete-input'
 import {
   mediaQueryForMobiles,
-  mediaQueryForTablets,
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
 import { findItemAndParents } from '../../utils'
@@ -42,7 +40,7 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
   },
   autocompleteWrapper: {
-    marginBottom: '1rem',
+    margin: '1rem 0',
     display: 'flex',
     justifyContent: 'center',
   },
@@ -53,19 +51,43 @@ const useStyles = makeStyles({
     },
   },
   speciesItem: {
-    width: '100%'
+    width: '100%',
   },
-  // grid: {
-  //   '& $speciesItem': {
-  //     width: '33.3%',
-  //     [mediaQueryForTablets]: {
-  //       width: '50%',
-  //     },
-  //     [mediaQueryForMobiles]: {
-  //       width: '100%',
-  //     }
-  //   }
-  // }
+  // copies from paginated view
+  controls: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  controlsLeft: {
+    display: 'flex',
+    '& > *:first-child': {
+      marginLeft: 'auto',
+    },
+    [mediaQueryForMobiles]: {
+      width: '100%',
+      flexShrink: 1,
+    },
+  },
+  controlsRight: {
+    width: '100%',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'end',
+    '& > *:first-child': {
+      marginLeft: 'auto',
+    },
+  },
+  controlGroup: {
+    display: 'flex',
+    marginLeft: '1rem',
+    flexWrap: 'wrap',
+    [mediaQueryForMobiles]: {
+      margin: '0.1rem',
+    },
+  },
+  control: {
+    marginLeft: '0.5rem',
+  },
 })
 
 interface SpeciesWithChildren extends FullSpecies {
@@ -105,23 +127,23 @@ const View = () => {
   )
   const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()
-  const [speciesContainerSettings, setContainerSettings] = useStorage<SpeciesContainerSettings>('speciescontainer', { grid: true, groupChildren: true })
+  const [speciesContainerSettings, setContainerSettings] =
+    useStorage<SpeciesContainerSettings>('speciescontainer', {
+      grid: true,
+      groupChildren: true,
+    })
 
-  if (isLoading || !Array.isArray(speciesItems)) {
-    return <LoadingIndicator message="Loading species..." />
-  }
-
-  if (isError) {
-    return <ErrorMessage>Failed to load species</ErrorMessage>
-  }
-
-  const filteredSpecies =
-    filterId !== null
+  const filteredSpecies = speciesItems
+    ? filterId !== null
       ? findItemAndParents<Species>(speciesItems, filterId)
       : speciesItems
+    : null
 
-  // const speciesHierarchy: SpeciesWithChildren[] = speciesContainerSettings?.groupChildren ? convertToNestedArray(filteredSpecies) : filteredSpecies as SpeciesWithChildren[]
-  const speciesHierarchy: SpeciesWithChildren[] = speciesContainerSettings?.groupChildren ? convertToNestedArray(filteredSpecies) : filteredSpecies as SpeciesWithChildren[]
+  const speciesHierarchy: SpeciesWithChildren[] | null = filteredSpecies
+    ? speciesContainerSettings?.groupChildren
+      ? convertToNestedArray(filteredSpecies)
+      : (filteredSpecies as SpeciesWithChildren[])
+    : null
 
   const setSetting = (name: keyof SpeciesContainerSettings, newValue: any) => {
     if (!speciesContainerSettings) {
@@ -129,7 +151,7 @@ const View = () => {
     }
     setContainerSettings({
       ...speciesContainerSettings,
-      [name]: newValue
+      [name]: newValue,
     })
   }
 
@@ -140,28 +162,72 @@ const View = () => {
     setSetting(name, !speciesContainerSettings[name])
   }
 
-  const children = speciesHierarchy.map((speciesItem) => (
-    <SpeciesResultItem
-      key={speciesItem.id}
-      speciesItem={speciesItem}
-      className={classes.speciesItem}>
-      {speciesContainerSettings?.groupChildren && speciesItem.children
-        ? speciesItem.children.map((speciesChild) => (
-            <SpeciesResultItem speciesItem={speciesChild} indent={1} />
-          ))
-        : null}
-    </SpeciesResultItem>
-  ))
+  const children = speciesHierarchy
+    ? speciesHierarchy.map((speciesItem) => (
+        <SpeciesResultItem
+          key={speciesItem.id}
+          speciesItem={speciesItem}
+          className={classes.speciesItem}>
+          {speciesContainerSettings?.groupChildren && speciesItem.children
+            ? speciesItem.children.map((speciesChild) => (
+                <SpeciesResultItem speciesItem={speciesChild} indent={1} />
+              ))
+            : null}
+        </SpeciesResultItem>
+      ))
+    : null
 
   return (
     <>
+      <div className={classes.controls}>
+        <div className={classes.controlsRight}>
+          <div className={classes.controlGroup}>
+            <Button
+              color="default"
+              onClick={() => toggleSetting('grid')}
+              checked={speciesContainerSettings?.grid}
+              size="small">
+              Grid
+            </Button>
+            &nbsp;
+            <Button
+              color="default"
+              onClick={() => toggleSetting('groupChildren')}
+              checked={speciesContainerSettings?.groupChildren}
+              size="small">
+              Group Children
+            </Button>
+            {isEditor && (
+              <>
+                &nbsp;
+                <Button
+                  url={routes.createSpecies}
+                  icon={<AddIcon />}
+                  onClick={() =>
+                    trackAction(
+                      analyticsCategory,
+                      'Click create species button'
+                    )
+                  }
+                  size="small">
+                  Create
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
       <div className={classes.autocompleteWrapper}>
         <AutocompleteInput
           label="Search for species"
-          options={speciesItems.map((speciesItem) => ({
-            label: speciesItem.pluralname,
-            data: speciesItem.id,
-          }))}
+          options={
+            speciesItems
+              ? speciesItems.map((speciesItem) => ({
+                  label: speciesItem.pluralname,
+                  data: speciesItem.id,
+                }))
+              : []
+          }
           filterOptions={(options, searchTerm) =>
             options.filter((option) =>
               option.label.toLowerCase().includes(searchTerm.toLowerCase())
@@ -173,43 +239,37 @@ const View = () => {
           textFieldProps={{
             fullWidth: true,
             autoFocus: true,
+            disabled: isLoading,
           }}
         />
       </div>
-      <Button color="default" onClick={() => toggleSetting('grid')} checked={speciesContainerSettings?.grid}>Grid</Button>{' '}
-      <Button color="default" onClick={() => toggleSetting('groupChildren')} checked={speciesContainerSettings?.groupChildren}>Group Children</Button>
-      {speciesContainerSettings?.grid ? <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 900: 3}}><Masonry>{children}</Masonry></ResponsiveMasonry> : <div className={classes.speciesResults}>
-        {children}
-      </div>}
+      {isLoading || !Array.isArray(speciesItems) ? (
+        <LoadingIndicator message="Loading species..." />
+      ) : isError ? (
+        <ErrorMessage>Failed to load species</ErrorMessage>
+      ) : (
+        <>
+          {speciesContainerSettings?.grid ? (
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
+              <Masonry>{children}</Masonry>
+            </ResponsiveMasonry>
+          ) : (
+            <div className={classes.speciesResults}>{children}</div>
+          )}
+        </>
+      )}
     </>
   )
 }
 
 export default () => {
-  const isEditor = useIsEditor()
   return (
     <>
       <Helmet>
         <title>View all species | VRCArena</title>
         <meta name="description" content={description} />
       </Helmet>
-      <Heading variant="h1">
-        <Link to={routes.viewAllSpecies}>All Species</Link>
-      </Heading>
-      <BodyText>{description}</BodyText>
-      {isEditor && (
-        <>
-          <Heading variant="h2">Actions</Heading>
-          <Button
-            url={routes.createSpecies}
-            icon={<AddIcon />}
-            onClick={() =>
-              trackAction(analyticsCategory, 'Click create species button')
-            }>
-            Create
-          </Button>
-        </>
-      )}
       <View />
     </>
   )

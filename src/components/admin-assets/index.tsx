@@ -13,6 +13,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import { makeStyles } from '@material-ui/styles'
 import CheckIcon from '@material-ui/icons/Check'
 import EditIcon from '@material-ui/icons/Edit'
+import FilterListIcon from '@material-ui/icons/FilterList'
 
 import {
   PublishStatuses,
@@ -55,11 +56,11 @@ const useStyles = makeStyles({
     marginTop: '1rem',
   },
   queueControls: {
-    border: '1px dashed white',
     padding: '1rem',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    flexWrap: 'wrap',
     '& > *': {
       margin: '0 0.25rem',
     },
@@ -309,7 +310,12 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
         placeholder="Filter by user ID"
         size="small"
       />
-      <Button onClick={() => onChange(val)}>Apply</Button>
+      <Button
+        onClick={() => onChange(val)}
+        icon={<FilterListIcon />}
+        color="default"
+        size="small"
+      />
     </>
   )
 }
@@ -347,8 +353,7 @@ const Queue = ({
           isDisabled={atStart}
           onClick={onClickPrev}
           icon={<ChevronLeftIcon />}
-          switchIconSide
-          size="large">
+          switchIconSide>
           Previous Asset
         </Button>
         <div className={classes.assetButtons}>
@@ -357,22 +362,21 @@ const Queue = ({
               key={assetId}
               color={'default'}
               onClick={() => setCurrentAssetId(assetId)}
-              icon={assetIdToDisplay === assetId ? <CheckIcon /> : undefined}>
+              icon={assetIdToDisplay === assetId ? <CheckIcon /> : undefined}
+              size="small">
               #{index + 1}
             </Button>
           ))}
         </div>
         <Button
           onClick={() => setIsEditing((currentVal) => !currentVal)}
-          icon={<EditIcon />}
-          size="large">
+          icon={<EditIcon />}>
           Toggle Edit
         </Button>
         <Button
           isDisabled={atEnd}
           onClick={onClickNext}
-          icon={<ChevronRightIcon />}
-          size="large">
+          icon={<ChevronRightIcon />}>
           Next Asset
         </Button>
       </div>
@@ -477,7 +481,8 @@ const AdminAssets = () => {
             )
             trackAction(analyticsCategoryName, 'Click toggle view')
           }}
-          color="default">
+          color="default"
+          size="small">
           Queue Mode
         </Button>,
       ]}
@@ -494,7 +499,8 @@ const AdminAssets = () => {
             setSelectedSubView(SubView.Pending)
             trackAction(analyticsCategoryName, 'Click on view pending assets')
           }}
-          color="default">
+          color="default"
+          size="small">
           Pending
         </Button>,
         <Button
@@ -509,7 +515,8 @@ const AdminAssets = () => {
             setSelectedSubView(SubView.Approved)
             trackAction(analyticsCategoryName, 'Click on view approved assets')
           }}
-          color="default">
+          color="default"
+          size="small">
           Approved
         </Button>,
         <Button
@@ -524,7 +531,8 @@ const AdminAssets = () => {
             setSelectedSubView(SubView.Declined)
             trackAction(analyticsCategoryName, 'Click on view declined assets')
           }}
-          color="default">
+          color="default"
+          size="small">
           Declined
         </Button>,
         <Button
@@ -539,7 +547,8 @@ const AdminAssets = () => {
             toggleSubView(SubView.Deleted)
             trackAction(analyticsCategoryName, 'Click on view deleted assets')
           }}
-          color="default">
+          color="default"
+          size="small">
           Deleted
         </Button>,
         <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,

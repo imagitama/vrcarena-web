@@ -18,14 +18,24 @@ const useStyles = makeStyles({
   tags: {
     fontSize: '50%',
   },
+  areas: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    margin: '-1rem',
+  },
+  area: {
+    margin: '1rem',
+  },
 })
 
 const AssetsByArea = ({
   assets,
   categoryName,
+  hydrate,
 }: {
   assets?: PublicAsset[]
   categoryName: string
+  hydrate?: () => void
 }) => {
   const classes = useStyles()
 
@@ -37,11 +47,11 @@ const AssetsByArea = ({
   const areas = areasByCategory[categoryName as AssetCategory]
 
   return (
-    <div>
+    <div className={classes.areas}>
       {Object.entries(assetsByArea)
         .filter(([, assets]) => assets.length)
         .map(([areaName, assets]) => (
-          <Fragment key={areaName}>
+          <div key={areaName} className={classes.area}>
             <Heading variant="h2">
               {areaName !== standardAreaNames.none ? (
                 <Link
@@ -76,8 +86,8 @@ const AssetsByArea = ({
                 )}
               </span>
             </Heading>
-            <AssetResults assets={assets} />
-          </Fragment>
+            <AssetResults assets={assets} hydrate={hydrate} />
+          </div>
         ))}
     </div>
   )

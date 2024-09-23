@@ -26,6 +26,9 @@ import { Asset } from '../../modules/assets'
 import ChatGptSuggestTags from '../chatgpt-suggest-tags'
 
 const useStyles = makeStyles({
+  fullWidth: {
+    width: '100%',
+  },
   recommendedTags: {
     marginBottom: '1rem',
   },
@@ -218,13 +221,19 @@ const TagInput = ({
   onChange = undefined,
   onDone = undefined,
   showRecommendedTags = true,
+  showChatGptSuggestions = true,
   asset = undefined,
+  isDisabled = false,
+  fullWidth = false,
 }: {
   currentTags?: string[]
   onChange?: (newTags: string[]) => void
   onDone?: (newTags: string[]) => void
   showRecommendedTags?: boolean
+  showChatGptSuggestions?: boolean
   asset?: Asset
+  isDisabled?: boolean
+  fullWidth?: boolean
 }) => {
   const [textInput, setTextInput] = useState('')
   const [newTags, setNewTags] = useState(currentTags || [])
@@ -315,8 +324,8 @@ const TagInput = ({
     )
 
   return (
-    <div>
-      {asset && (
+    <div className={`${fullWidth ? classes.fullWidth : ''}`}>
+      {asset && showChatGptSuggestions && (
         <>
           <ChatGptSuggestTags
             asset={asset}
@@ -342,6 +351,7 @@ const TagInput = ({
         label={isLoading ? 'Searching...' : 'Start typing a tag...'}
         textFieldProps={{
           fullWidth: true,
+          disabled: isDisabled,
         }}
       />
       {showRecommendedTags && (
@@ -355,7 +365,9 @@ const TagInput = ({
       )}
       {onDone && (
         <FormControls>
-          <Button onClick={onDoneClick}>Done</Button>
+          <Button onClick={onDoneClick} isDisabled={isDisabled}>
+            Done
+          </Button>
         </FormControls>
       )}
     </div>

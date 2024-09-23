@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
+import FilterListIcon from '@material-ui/icons/FilterList'
 
 import useSorting, { SortingConfig } from '../../hooks/useSorting'
 import { OrderDirections } from '../../hooks/useDatabaseQuery'
@@ -91,8 +92,12 @@ const SortControls = <TRecord,>({
   return (
     <>
       <span ref={buttonRef}>
-        <Button onClick={() => setIsDropdownOpen((currentVal) => !currentVal)}>
-          Sort by{' '}
+        <Button
+          onClick={() => setIsDropdownOpen((currentVal) => !currentVal)}
+          icon={<FilterListIcon />}
+          color="default"
+          size="small"
+          switchIconSide>
           {getLabelForSelectedSortOption(sorting, optionsWithDirections)}
           <KeyboardArrowDownIcon />
         </Button>

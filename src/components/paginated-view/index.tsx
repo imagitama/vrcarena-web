@@ -36,6 +36,7 @@ import useScrollMemory from '../../hooks/useScrollMemory'
 import { getPathForQueryString } from '../../queries'
 import { scrollToTop } from '../../utils'
 import WarningMessage from '../warning-message'
+import { mediaQueryForMobiles } from '../../media-queries'
 
 const useStyles = makeStyles({
   root: {
@@ -43,16 +44,22 @@ const useStyles = makeStyles({
   },
   controls: {
     display: 'flex',
+    flexWrap: 'wrap',
   },
   controlsLeft: {
     display: 'flex',
     '& > *:first-child': {
       marginLeft: 'auto',
     },
+    [mediaQueryForMobiles]: {
+      width: '100%',
+      flexShrink: 1,
+    },
   },
   controlsRight: {
     width: '100%',
     display: 'flex',
+    flexWrap: 'wrap',
     justifyContent: 'end',
     '& > *:first-child': {
       marginLeft: 'auto',
@@ -60,7 +67,11 @@ const useStyles = makeStyles({
   },
   controlGroup: {
     display: 'flex',
-    marginLeft: '1rem',
+    marginLeft: '0.5rem',
+    flexWrap: 'wrap',
+    [mediaQueryForMobiles]: {
+      margin: '0.1rem',
+    },
   },
   control: {
     marginLeft: '0.5rem',
@@ -321,35 +332,12 @@ const CommonMetaControl = ({
       selectedId={filters[fieldName] ? filters[fieldName] : clearId}
       options={Object.entries(fieldMap)
         .map(([key, val]) => ({ id: val, label: key }))
-        .concat([{ id: clearId, label: 'Clear' }])}
+        .concat([{ id: clearId, label: 'Default' }])}
       onSelect={onSelect}
-      color="default">
-      {label}
-    </ButtonDropdown>
-  )
-}
-
-const CommonMetaControls = () => {
-  return (
-    <>
-      <CommonMetaControl
-        label="Access"
-        fieldName={CommonMetaFieldNames.accessStatus}
-        fieldMap={AccessStatuses}
-      />
-      &nbsp;
-      <CommonMetaControl
-        label="Approval"
-        fieldName={CommonMetaFieldNames.approvalStatus}
-        fieldMap={ApprovalStatuses}
-      />
-      &nbsp;
-      <CommonMetaControl
-        label="Publish"
-        fieldName={CommonMetaFieldNames.publishStatus}
-        fieldMap={PublishStatuses}
-      />
-    </>
+      size="small"
+      color="default"
+      label={label}
+    />
   )
 }
 
@@ -453,7 +441,23 @@ const PaginatedView = <TRecord,>({
           <div className={classes.controlsRight}>
             {isEditor && showCommonMetaControls ? (
               <ControlGroup>
-                <CommonMetaControls />
+                <CommonMetaControl
+                  label="Access"
+                  fieldName={CommonMetaFieldNames.accessStatus}
+                  fieldMap={AccessStatuses}
+                />
+                &nbsp;
+                <CommonMetaControl
+                  label="Approval"
+                  fieldName={CommonMetaFieldNames.approvalStatus}
+                  fieldMap={ApprovalStatuses}
+                />
+                &nbsp;
+                <CommonMetaControl
+                  label="Publish"
+                  fieldName={CommonMetaFieldNames.publishStatus}
+                  fieldMap={PublishStatuses}
+                />
               </ControlGroup>
             ) : null}
             {subViews ? (
@@ -464,6 +468,7 @@ const PaginatedView = <TRecord,>({
                     <Button
                       onClick={() => setSelectedSubView(id)}
                       color="default"
+                      size="small"
                       icon={
                         selectedSubView === id ? (
                           <CheckBoxIcon />
@@ -480,7 +485,12 @@ const PaginatedView = <TRecord,>({
             {extraControls ? (
               <ControlGroup>
                 {extraControls.map((extraControl, idx) => (
-                  <Control key={idx}>{extraControl}</Control>
+                  <Control key={idx}>
+                    {React.cloneElement(extraControl, {
+                      color: 'default',
+                      size: 'small',
+                    })}
+                  </Control>
                 ))}
               </ControlGroup>
             ) : null}
@@ -500,7 +510,7 @@ const PaginatedView = <TRecord,>({
             {createUrl ? (
               <ControlGroup>
                 <Control>
-                  <Button icon={<AddIcon />} url={createUrl}>
+                  <Button icon={<AddIcon />} size="small" url={createUrl}>
                     Create
                   </Button>
                 </Control>

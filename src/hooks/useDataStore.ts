@@ -47,7 +47,7 @@ export default <TResult>(
   boolean
 ] => {
   const [result, setResult] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<DataStoreErrorCode | null>(
     null
   )
@@ -87,6 +87,7 @@ export default <TResult>(
         console.debug(
           `useDataStore :: ${queryName} :: getQuery returned non-query - skipping`
         )
+        setIsLoading(false)
         return
       }
 

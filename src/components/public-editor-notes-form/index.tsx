@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@material-ui/icons/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { CommonMetaFieldNames } from '../../data-store'
+import {
+  CommonMetaFieldNames,
+  CommonMetaRecordFields,
+  CommonRecordFields,
+} from '../../data-store'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
@@ -11,26 +16,34 @@ import Button from '../button'
 import TextInput from '../text-input'
 import LoadingIndicator from '../loading-indicator'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import FormControls from '../form-controls'
 
 const useStyles = makeStyles({
   label: {
     fontSize: '75%',
-    display: 'block'
-  }
+    display: 'block',
+  },
 })
 
-export default ({
+const PublicEditorNotesForm = ({
   id,
   metaCollectionName,
   existingEditorNotes = undefined,
-  onClick = null,
-  onDone = null
+  onClick = undefined,
+  onDone = undefined,
+}: {
+  id: string
+  metaCollectionName: string
+  existingEditorNotes?: string
+  onClick?: (result: { editorNotes: string }) => void
+  onDone?: () => void
 }) => {
-  const [isLoadingMeta, isErroredLoadingMeta, metaRecord] = useDataStoreItem(
-    metaCollectionName,
-    existingEditorNotes !== undefined ? false : id,
-    'editor-notes-form'
-  )
+  const [isLoadingMeta, isErroredLoadingMeta, metaRecord] =
+    useDataStoreItem<CommonMetaRecordFields>(
+      metaCollectionName,
+      existingEditorNotes !== undefined ? false : id,
+      'editor-notes-form'
+    )
   const [isSaving, , isErroredSavingAsset, saveMetaRecord] = useDatabaseSave(
     metaCollectionName,
     id
@@ -46,7 +59,7 @@ export default ({
       return
     }
 
-    setNewEditorNotes(metaRecord[CommonMetaFieldNames.editorNotes])
+    setNewEditorNotes(metaRecord.editornotes)
   }, [metaRecord !== null])
 
   if (
@@ -76,7 +89,7 @@ export default ({
       }
 
       await saveMetaRecord({
-        [CommonMetaFieldNames.editorNotes]: newEditorNotes || ''
+        [CommonMetaFieldNames.editorNotes]: newEditorNotes || '',
       })
 
       if (onDone) {
@@ -95,11 +108,15 @@ export default ({
         multiline
         rows={2}
         value={newEditorNotes}
-        onChange={e => setNewEditorNotes(e.target.value)}
+        onChange={(e) => setNewEditorNotes(e.target.value)}
       />
-      <Button onClick={onSaveBtnClick} size="small">
-        Save
-      </Button>
+      <FormControls>
+        <Button onClick={onSaveBtnClick} size="small" icon={<SaveIcon />}>
+          Save Notes
+        </Button>
+      </FormControls>
     </>
   )
 }
+
+export default PublicEditorNotesForm

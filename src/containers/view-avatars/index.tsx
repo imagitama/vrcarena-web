@@ -20,6 +20,7 @@ import {
   PublicAsset,
   ViewNames,
 } from '../../modules/assets'
+import AssetsPaginatedView from '../../components/assets-paginated-view'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   return getCategoryMeta(categoryName).name
@@ -35,32 +36,15 @@ interface AssetWithSpeciesData extends Asset {
   avatarcount: number
 }
 
-function Avatars({ avatars }: { avatars: AssetWithSpeciesData[] }) {
-  return <AssetResults assets={avatars} />
-}
-
-const Renderer = ({ items }: { items?: AssetWithSpeciesData[] }) => {
-  return (
-    <>
-      <Avatars avatars={items || []} />
-    </>
-  )
-}
-
 const categoryName = AssetCategory.Avatar
 
 const ViewAvatarsView = () => {
-  const isAdultContentEnabled = useIsAdultContentEnabled()
-
   const getQuery = useCallback(
     (query) => {
       query = query.eq(AssetFieldNames.category, categoryName)
-      if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
-      }
       return query
     },
-    [categoryName, isAdultContentEnabled]
+    [categoryName]
   )
 
   return (
@@ -81,22 +65,9 @@ const ViewAvatarsView = () => {
           {getDisplayNameByCategoryName(categoryName)}
         </Heading>
         <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
-        <PaginatedView<PublicAsset>
-          viewName={ViewNames.GetPublicAssets}
+        <AssetsPaginatedView
           getQuery={getQuery}
           sortKey="view-avatars"
-          sortOptions={[
-            {
-              label: 'Created date',
-              fieldName: 'createdat',
-            },
-            {
-              label: 'Title',
-              fieldName: 'title',
-            },
-          ]}
-          defaultFieldName="createdat"
-          defaultDirection={OrderDirections.DESC}
           extraControls={[
             <Button
               url={routes.viewAllSpecies}
@@ -112,9 +83,8 @@ const ViewAvatarsView = () => {
             </Button>,
           ]}
           urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
-          getQueryString={() => `category:${AssetCategory.Avatar}`}>
-          <Renderer />
-        </PaginatedView>
+          getQueryString={() => `category:${AssetCategory.Avatar}`}
+        />
       </div>
     </>
   )
