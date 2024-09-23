@@ -47,13 +47,13 @@ const AssetsPaginatedView = ({
 
   const getQuery = useCallback(
     (query, selectedSubView) => {
-      if (props.getQuery) {
-        query = props.getQuery(query, selectedSubView)
-      }
-
       // always check for "true" to prevent accidental inclusion
       query =
         isAdultContentEnabled === true ? query : query.is('isadult', false)
+
+      if (props.getQuery) {
+        query = props.getQuery(query, selectedSubView)
+      }
 
       return query
     },
@@ -75,8 +75,9 @@ const AssetsPaginatedView = ({
         },
       ]}
       defaultFieldName="createdat"
-      getQuery={getQuery}
-      {...props}>
+      {...props}
+      // NOTE: Do not override props with this as we do adult check
+      getQuery={getQuery}>
       <Renderer
         categoryName={categoryName}
         groupByAreaEnabled={groupByAreaEnabled}
