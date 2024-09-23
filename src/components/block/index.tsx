@@ -74,7 +74,7 @@ const Block = ({
 
   return (
     <ErrorBoundary>
-      <LazyLoad height={300} placeholder={<LoadingIndicator />}>
+      <LazyLoad>
         <div className={`${classes.root} ${className}`}>
           <div className={classes.title}>
             {url ? (
