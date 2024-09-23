@@ -50,7 +50,7 @@ export default ({
 }) => {
   const classes = useStyles()
   const incomeDollars =
-    isLoading && incomeCentsAfterTaxes ? incomeCentsAfterTaxes / 100 : 0
+    !isLoading && incomeCentsAfterTaxes ? incomeCentsAfterTaxes / 100 : 0
   const diff = totalCostPerMonth - incomeDollars
 
   return (
