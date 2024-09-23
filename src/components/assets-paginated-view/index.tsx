@@ -47,13 +47,13 @@ const AssetsPaginatedView = ({
 
   const getQuery = useCallback(
     (query, selectedSubView) => {
-      // always check for "true" to prevent accidental inclusion
-      query =
-        isAdultContentEnabled === true ? query : query.is('isadult', false)
-
       if (props.getQuery) {
         query = props.getQuery(query, selectedSubView)
       }
+
+      // always check for "true" to prevent accidental inclusion
+      query =
+        isAdultContentEnabled === true ? query : query.is('isadult', false)
 
       return query
     },
