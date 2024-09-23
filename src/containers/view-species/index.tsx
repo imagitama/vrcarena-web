@@ -33,6 +33,9 @@ import * as routes from '../../routes'
 import { prepareValueForQuery } from '../../queries'
 import { client as supabase } from '../../supabase'
 import { trackAction } from '../../analytics'
+import useSupabaseView from '../../hooks/useSupabaseView'
+import useDataStoreFunction from '../../hooks/useDataStoreFunction'
+import { handleError } from '../../error-handling'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -137,6 +140,10 @@ const useStyles = makeStyles({
   },
 })
 
+interface RandomlyUpdateSpeciesThumbnailResult {
+  randomly_update_all_species_thumbnails: number
+}
+
 const View = () => {
   const { speciesIdOrSlug } = useParams<{
     speciesIdOrSlug: string
@@ -152,8 +159,13 @@ const View = () => {
         .or(`id.eq.${speciesIdOrSlug},slug.eq.${speciesIdOrSlug}`),
     [speciesIdOrSlug]
   )
-  const [isLoadingSpecies, lastErrorCodeLoadingSpecies, speciesResults] =
-    useDataStore<FullSpecies[]>(getSpeciesQuery, 'view-species')
+  const [
+    isLoadingSpecies,
+    lastErrorCodeLoadingSpecies,
+    speciesResults,
+    ,
+    hydrate,
+  ] = useDataStore<FullSpecies[]>(getSpeciesQuery, 'view-species')
   const classes = useStyles()
 
   const species =
@@ -175,6 +187,24 @@ const View = () => {
       'view-species-children'
     )
   const { push } = useHistory()
+  const getQuery = useCallback(
+    () =>
+      supabase
+        .rpc('randomly_update_species_thumbnail', {
+          speciesid: speciesIdOrSlug,
+        })
+        .select('*'),
+    []
+  )
+  const [
+    isUpdatingThumbnail,
+    lastErrorCode,
+    lastThumbnailUpdateResult,
+    randomlyUpdateSpeciesThumbnailResult,
+  ] = useDataStoreFunction<
+    { speciesid: string },
+    RandomlyUpdateSpeciesThumbnailResult
+  >('randomly_update_species_thumbnail')
 
   useEffect(() => {
     if (!species || !species.redirectto) {
@@ -224,11 +254,30 @@ const View = () => {
         />
       </Helmet>
       {isEditor ? (
-        <Button
-          url={routes.editSpeciesWithVar.replace(':speciesId', species.id)}
-          icon={<EditIcon />}>
-          Edit Species
-        </Button>
+        <>
+          <Button
+            url={routes.editSpeciesWithVar.replace(':speciesId', species.id)}
+            icon={<EditIcon />}>
+            Edit Species
+          </Button>
+          <Button
+            onClick={async () => {
+              try {
+                await randomlyUpdateSpeciesThumbnailResult({
+                  speciesid: speciesIdOrSlug,
+                })
+                await hydrate()
+              } catch (err) {
+                console.error(err)
+                handleError(err)
+              }
+            }}
+            color="default"
+            isDisabled={isUpdatingThumbnail}>
+            Regenerate Thumbnail
+            {lastErrorCode !== null ? ` failed: ${lastErrorCode}` : ''}
+          </Button>
+        </>
       ) : null}
       <div className={classes.headings}>
         <Heading variant="h2" inline>
