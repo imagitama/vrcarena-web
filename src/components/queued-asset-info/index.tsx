@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
 import EditIcon from '@material-ui/icons/Edit'
+import { makeStyles } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableRow from '@material-ui/core/TableRow'
+import CheckIcon from '@material-ui/icons/Check'
+import CloseIcon from '@material-ui/icons/Close'
 
-import { CollectionNames, FullAsset } from '../../modules/assets'
+import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
+import { AssetCategory, CollectionNames, FullAsset } from '../../modules/assets'
 import UsernameLink from '../username-link'
 import FormattedDate from '../formatted-date'
 import EditorRecordManager from '../editor-record-manager'
@@ -9,7 +17,74 @@ import useIsEditor from '../../hooks/useIsEditor'
 import Message from '../message'
 import Button from '../button'
 import InlineAssetEditor from '../inline-asset-editor'
-import Heading from '../heading'
+import { colorPalette } from '../../config'
+import categoryMetas from '../../category-meta'
+
+const useStyles = makeStyles({
+  pass: {
+    color: colorPalette.positive,
+  },
+  fail: {
+    color: colorPalette.negative,
+  },
+  notImportant: {
+    color: 'rgba(255, 0, 0, 0.5)',
+  },
+  cell: {
+    '& span': {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    '& svg': {
+      marginRight: '0.25rem',
+    },
+  },
+})
+
+const AssetApprovalChecklistItem = ({
+  label,
+  isValid,
+  isNotImportant,
+  validLabel,
+  invalidLabel,
+  url,
+}: {
+  label: string
+  isValid: boolean
+  isNotImportant?: boolean
+  validLabel?: string
+  invalidLabel?: string
+  url?: string
+}) => {
+  const classes = useStyles()
+  return (
+    <TableRow key={label}>
+      <TableCell align="right">{label}</TableCell>
+      <TableCell className={classes.cell}>
+        {isValid ? (
+          <>
+            <span className={classes.pass}>
+              {' '}
+              <CheckIcon /> {validLabel || 'Good'}
+            </span>{' '}
+            {url ? (
+              <a href={url} target="_blank" rel="noopener noreferrer">
+                Link
+              </a>
+            ) : null}
+          </>
+        ) : (
+          <span
+            className={`${classes.fail} ${
+              isNotImportant ? classes.notImportant : ''
+            }`}>
+            <CloseIcon /> {invalidLabel || 'Not Good'}
+          </span>
+        )}
+      </TableCell>
+    </TableRow>
+  )
+}
 
 const QueuedAssetInfo = ({
   asset,
@@ -29,6 +104,87 @@ const QueuedAssetInfo = ({
         username={asset.publishedbyusername}
       />{' '}
       <FormattedDate date={asset.publishedat} />
+      <Table size="small">
+        <TableBody>
+          <AssetApprovalChecklistItem
+            label="Source"
+            isValid={
+              typeof asset.sourceurl === 'string' && asset.sourceurl !== ''
+            }
+            validLabel={'Set'}
+            url={
+              typeof asset.sourceurl === 'string' && asset.sourceurl !== ''
+                ? asset.sourceurl
+                : ''
+            }
+          />
+          <AssetApprovalChecklistItem
+            label="Thumbnail"
+            isValid={
+              typeof asset.thumbnailurl === 'string' &&
+              asset.thumbnailurl !== '' &&
+              asset.thumbnailurl !== defaultThumbnailUrl
+            }
+            validLabel={'Set'}
+          />
+          <AssetApprovalChecklistItem
+            label="Title"
+            isValid={
+              typeof asset.title === 'string' &&
+              asset.title !== 'My draft asset'
+            }
+            validLabel="Set"
+          />
+          <AssetApprovalChecklistItem
+            label="Author"
+            isValid={typeof asset.author === 'string' && asset.author !== ''}
+            validLabel={`Set: ${asset.authorname}`}
+          />
+          <AssetApprovalChecklistItem
+            label="Category"
+            isValid={
+              typeof asset.category === 'string' &&
+              (asset.category as string) !== ''
+            }
+            validLabel={
+              asset.category ? categoryMetas[asset.category].nameSingular : ''
+            }
+          />
+          <AssetApprovalChecklistItem
+            label="Description"
+            isValid={
+              typeof asset.description === 'string' &&
+              asset.description !== '' &&
+              asset.description.length > 10
+            }
+            validLabel={
+              asset.description ? `Length: ${asset.description.length}` : ''
+            }
+            invalidLabel={
+              typeof asset.description === 'string'
+                ? `Only ${asset.description.length} characters`
+                : undefined
+            }
+          />
+          <AssetApprovalChecklistItem
+            label="Tags"
+            isValid={Array.isArray(asset.tags) && asset.tags.length > 0}
+            validLabel={asset.tags ? `${asset.tags.length} tags` : ''}
+          />
+          {asset.category === AssetCategory.Avatar && (
+            <AssetApprovalChecklistItem
+              label="Species"
+              isValid={Array.isArray(asset.species) && asset.species.length > 0}
+              isNotImportant
+              validLabel={
+                asset.speciesnames && asset.speciesnames.length
+                  ? asset.speciesnames.join(', ')
+                  : ''
+              }
+            />
+          )}
+        </TableBody>
+      </Table>
       {isEditor ? (
         <>
           <br />
