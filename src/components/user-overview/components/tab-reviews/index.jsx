@@ -9,7 +9,7 @@ import useUserOverview from '../../useUserOverview'
 
 const ReviewsForUser = ({ userId }) => {
   const getQuery = useCallback(
-    query => query.eq(ReviewsFieldNames.createdBy, userId),
+    (query) => query.eq(ReviewsFieldNames.createdBy, userId),
     [userId]
   )
   const [isLoading, isError, reviews] = useSupabaseView(
@@ -17,12 +17,12 @@ const ReviewsForUser = ({ userId }) => {
     getQuery
   )
 
-  if (isLoading) {
-    return <LoadingIndicator message="Loading reviews..." />
-  }
-
   if (isError) {
     return <ErrorMessage>Failed to load reviews</ErrorMessage>
+  }
+
+  if (isLoading || !reviews) {
+    return <LoadingIndicator message="Loading reviews..." />
   }
 
   if (!reviews.length) {
