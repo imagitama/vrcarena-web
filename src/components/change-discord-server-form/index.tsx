@@ -23,6 +23,7 @@ import DiscordServerResults from '../discord-server-results'
 import DiscordServerResultsItem from '../discord-server-results-item'
 import Button from '../button'
 import FormControls from '../form-controls'
+import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -410,6 +411,10 @@ const ChangeDiscordServerForm = (props: FormProps) => {
   const classes = useStyles()
   return (
     <div className={classes.root}>
+      <WarningMessage>
+        Only set a Discord server if they are <strong>required</strong> to join
+        it to be able to do something.
+      </WarningMessage>
       <Form {...props} />
     </div>
   )
