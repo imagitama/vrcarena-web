@@ -21,6 +21,8 @@ export const PROMO_HEIGHT = 512
 export const AVATAR_WIDTH = THUMBNAIL_WIDTH
 export const AVATAR_HEIGHT = THUMBNAIL_HEIGHT
 
+export const ASSET_TITLE_MAX_LENGTH = 60
+
 export const NONATTACHMENT_MAX_SIZE_BYTES = 4194304
 
 export const otherSpeciesKey = 'other-species'

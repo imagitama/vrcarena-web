@@ -13,6 +13,9 @@ import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
 import FormControls from '../form-controls'
 import Heading from '../heading'
+import { Asset } from '../../modules/assets'
+import { ASSET_TITLE_MAX_LENGTH } from '../../config'
+import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -23,27 +26,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default ({
+const TitleLengthIssue = ({ title }: { title: string }) => {
+  if (title.length > ASSET_TITLE_MAX_LENGTH) {
+    return (
+      <WarningMessage>
+        Your title is longer than the max length of {ASSET_TITLE_MAX_LENGTH} (
+        {title.length}). Please make it shorter.
+      </WarningMessage>
+    )
+  }
+  return null
+}
+
+const AssetTitleEditor = ({
   assetId,
-  title = null,
-  onDone = null,
+  title,
+  onDone,
   actionCategory,
-  overrideSave = null,
+  overrideSave,
+}: {
+  assetId: string | null
+  title: string
+  onDone?: () => void
+  actionCategory?: string
+  overrideSave?: (newTitle: string) => void
 }) => {
-  const [newTitleValue, setNewTitleValue] = useState(title || '(no title)')
+  const [newTitleValue, setNewTitleValue] = useState(title || '')
   const [searchTerm, setSearchTerm] = useState('')
   const [isSaving, isSaveSuccess, lastError, save] = useDatabaseSave(
     CollectionNames.Assets,
     assetId
   )
   const classes = useStyles()
-  const titleRef = useRef()
-  const [isSearching, , searchResults] = useSearching(
+  const titleRef = useRef<HTMLSpanElement | null>(null)
+  const [isSearching, , searchResults] = useSearching<Asset[]>(
     CollectionNames.Assets,
     searchTerm,
     '*',
     [AssetFieldNames.title],
-    null,
+    undefined,
     5
   )
 
@@ -63,7 +84,7 @@ export default ({
       ? searchResults.filter(({ id }) => id !== assetId)
       : null
 
-    if (!searchResultsWithoutSelf.length) {
+    if (searchResultsWithoutSelf && !searchResultsWithoutSelf.length) {
       onSave()
     }
   }, [searchTerm, isSearching, searchResults && searchResults.length])
@@ -79,13 +100,18 @@ export default ({
         return
       }
 
-      trackAction(actionCategory, 'Click save title button')
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click save title button')
+      }
 
       if (newTitleValue === title) {
         console.warn(
           'Cannot save the asset title: new title is the same as the original'
         )
-        onDone()
+
+        if (onDone) {
+          onDone()
+        }
         return
       }
 
@@ -146,15 +172,18 @@ export default ({
 
   return (
     <>
-      <Heading variant="h1">
+      <Heading variant="h1" noTopMargin>
         <span
           ref={titleRef}
           contentEditable={!isSaving}
-          onKeyUp={(e) => setNewTitleValue(e.target.innerText)}
-          className={classes.title}>
-          {title || '(no title)'}
-        </span>
+          onKeyUp={(e) =>
+            setNewTitleValue((e.target as HTMLSpanElement).innerText.trim())
+          }
+          className={classes.title}
+          dangerouslySetInnerHTML={{ __html: title || '(no title)' }}
+        />
       </Heading>
+      <TitleLengthIssue title={newTitleValue} />
       {isSaving ? (
         <LoadingIndicator message="Saving..." />
       ) : isSaveSuccess ? (
@@ -171,3 +200,5 @@ export default ({
     </>
   )
 }
+
+export default AssetTitleEditor
