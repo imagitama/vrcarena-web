@@ -62,10 +62,6 @@ export default ({
 
   const toggle = async () => {
     try {
-      if (!featuredStatus) {
-        throw new Error('Cannot toggle - invalid initial status!')
-      }
-
       const newValue =
         featuredStatus === FeaturedStatus.Featured
           ? FeaturedStatus.Unfeatured
