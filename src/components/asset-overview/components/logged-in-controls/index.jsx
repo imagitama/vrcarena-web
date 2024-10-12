@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import * as routes from '../../../../routes'
 import {
   CollectionNames,
-  AssetMetaFieldNames
+  AssetMetaFieldNames,
 } from '../../../../hooks/useDatabaseQuery'
 import useUserRecord from '../../../../hooks/useUserRecord'
 import { canFeatureAssets } from '../../../../permissions'
@@ -23,12 +23,11 @@ export default () => {
     asset,
     isLoading,
     analyticsCategoryName,
-    trackAction
+    trackAction,
+    hydrate,
   } = useContext(TabContext)
-  const [
-    isSubscriptionsEditorEnabled,
-    setIsSubscriptionsEditorEnabled
-  ] = useState(false)
+  const [isSubscriptionsEditorEnabled, setIsSubscriptionsEditorEnabled] =
+    useState(false)
   const [, , user] = useUserRecord()
 
   if (isLoading) {
@@ -78,6 +77,7 @@ export default () => {
             metaCollectionName={CollectionNames.AssetMeta}
             existingFeaturedStatus={asset[AssetMetaFieldNames.featuredStatus]}
             onClick={() => trackAction('Click feature asset button', assetId)}
+            onDone={hydrate}
           />
         </Control>
       )}
