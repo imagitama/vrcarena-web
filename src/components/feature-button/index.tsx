@@ -35,7 +35,15 @@ export default ({
   )
 
   return (
-    <>Cannot feature this asset: featuring assets is currently unavailable</>
+    <>
+      <Button color="default" onClick={() => {}} icon={<StarIcon />} isDisabled>
+        Feature
+      </Button>
+      <div style={{ fontSize: '50%' }}>
+        No assets can be featured/unfeatured. Please contact us directly to have
+        this changed
+      </div>
+    </>
   )
 
   // if (isLoading || isSaving) {
