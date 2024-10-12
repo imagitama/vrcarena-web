@@ -42,21 +42,22 @@ export default ({
     console.warn(
       'Cannot render feature button: no existing featured status and no meta record'
     )
-    return null
+    return <>Failed to render feature button: missing data</>
   }
 
-  const featuredStatus = existingFeaturedStatus
-    ? existingFeaturedStatus
-    : metaRecord
-    ? metaRecord.featuredstatus
-    : undefined
+  const featuredStatus =
+    existingFeaturedStatus !== undefined
+      ? existingFeaturedStatus
+      : metaRecord
+      ? metaRecord.featuredstatus
+      : undefined
 
   if (isErroredLoading || !featuredStatus) {
-    return <>Failed to load record!</>
+    return <>Failed to load featured asset data</>
   }
 
   if (isErroredSaving) {
-    return <>Failed to save record!</>
+    return <>Failed to save featured asset data</>
   }
 
   const toggle = async () => {
