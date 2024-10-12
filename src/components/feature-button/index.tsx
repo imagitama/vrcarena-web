@@ -52,7 +52,7 @@ export default ({
       ? metaRecord.featuredstatus
       : undefined
 
-  if (isErroredLoading || !featuredStatus) {
+  if (isErroredLoading || featuredStatus === undefined) {
     return <>Failed to load featured asset data</>
   }
 
