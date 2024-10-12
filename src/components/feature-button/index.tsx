@@ -38,7 +38,7 @@ export default ({
     return <LoadingIndicator message={isLoading ? 'Loading...' : 'Saving...'} />
   }
 
-  if (!existingFeaturedStatus && !metaRecord) {
+  if (existingFeaturedStatus === undefined && !metaRecord) {
     console.warn(
       'Cannot render feature button: no existing featured status and no meta record'
     )
