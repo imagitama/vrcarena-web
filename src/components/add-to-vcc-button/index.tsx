@@ -3,7 +3,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '../button'
 import { VRChat as VRChatIcon } from '../../icons'
-import ErrorMessage from '../error-message'
 import { isGitRepoUrl, isJsonUrl } from '../../utils'
 
 const useStyles = makeStyles({
@@ -22,9 +21,6 @@ const AddToVccButton = ({
   assetId?: string
 }) => {
   const classes = useStyles()
-  if (!isGitRepoUrl(vccUrl) && !isJsonUrl(vccUrl)) {
-    return <ErrorMessage>Invalid VCC URL: {vccUrl}</ErrorMessage>
-  }
   return (
     <Tooltip
       arrow
@@ -32,12 +28,12 @@ const AddToVccButton = ({
       placement="top">
       <Button
         url={`vcc://vpm/${
-          isGitRepoUrl(vccUrl) ? 'addRepo' : 'addPackage'
+          isJsonUrl(vccUrl) ? 'addPackage' : 'addRepo'
         }?url=${vccUrl}`}
         color="default"
         icon={<VRChatIcon className={classes.vrchatIcon} />}
         switchIconSide>
-        Add {isGitRepoUrl(vccUrl) ? 'Repo' : 'Package'} To VCC
+        Add {isJsonUrl(vccUrl) ? 'Package' : 'Repo'} To VCC
       </Button>
     </Tooltip>
   )

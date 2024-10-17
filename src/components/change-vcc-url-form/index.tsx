@@ -85,6 +85,9 @@ const ChangeVccUrlForm = ({
         <li>https://vrchat-community.github.io/template-package/index.json</li>
         <li>https://github.com/vrchat-community/template-package.git</li>
       </ul>
+      If the URL has no extension it is considered a Git repo.
+      <br />
+      <br />
       <TextInput
         value={newVccUrl}
         onChange={(e) => setNewVccUrl(e.target.value)}
@@ -94,7 +97,8 @@ const ChangeVccUrlForm = ({
         <>
           <br />
           <br />
-          Preview: <AddToVccButton vccUrl={newVccUrl} />
+          Preview:&nbsp;&nbsp;&nbsp;
+          <AddToVccButton vccUrl={newVccUrl} />
         </>
       ) : null}
       <FormControls>
