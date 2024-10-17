@@ -96,6 +96,7 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import WarningMessage from '../warning-message'
 import { alreadyOver18Key } from '../../config'
 import useStorage from '../../hooks/useStorage'
+import AddToVccButton from '../add-to-vcc-button'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -773,6 +774,13 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     priceCurrency={asset ? asset.pricecurrency : 'USD'}
                     showPriceWarning
                   />
+                </Control>
+              </ControlGroup>
+            ) : null}
+            {asset && asset.vccurl ? (
+              <ControlGroup>
+                <Control>
+                  <AddToVccButton vccUrl={asset.vccurl} assetId={asset.id} />
                 </Control>
               </ControlGroup>
             ) : null}

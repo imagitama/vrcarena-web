@@ -10,11 +10,25 @@ import AmendmentEditor from '../../components/amendment-editor'
 import useUserRecord from '../../hooks/useUserRecord'
 import useNotices from '../../hooks/useNotices'
 import InfoMessage from '../../components/info-message'
+import * as routes from '../../routes'
+import { CollectionNames } from '../../modules/assets'
 
 const noticeId = 'create-amendment-info'
 
+const getReturnUrl = (parentTable: string, parentId: string): string => {
+  switch (parentTable) {
+    case CollectionNames.Assets:
+      return routes.viewAssetWithVar.replace(':assetId', parentId)
+    default:
+      return ''
+  }
+}
+
 const View = () => {
-  const { parentTable, parentId } = useParams()
+  const { parentTable, parentId } = useParams<{
+    parentTable: string
+    parentId: string
+  }>()
   const [, , user] = useUserRecord()
   const [hiddenNotices, hideNotice] = useNotices()
 
@@ -35,7 +49,11 @@ const View = () => {
           review your amendment usually within 48 hours.
         </InfoMessage>
       )}
-      <AmendmentEditor parentTable={parentTable} parentId={parentId} />
+      <AmendmentEditor
+        parentTable={parentTable}
+        parentId={parentId}
+        returnUrl={getReturnUrl(parentTable, parentId)}
+      />
     </>
   )
 }

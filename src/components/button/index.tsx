@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react'
+import React, { SyntheticEvent, forwardRef } from 'react'
 import Link from '../../components/link'
 import MaterialButton from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
@@ -124,64 +124,73 @@ const ButtonContents = ({
   return <>{children}</>
 }
 
-const Button = ({
-  children,
-  onClick = undefined,
-  url = '',
-  icon = undefined,
-  isDisabled = false,
-  className = '',
-  openInNewTab = true,
-  switchIconSide = false,
-  isLoading = false,
-  title,
-  iconOnly,
-  checked,
-  ...props
-}: ButtonProps) => {
-  const classes = useStyles(props)
+const Button = forwardRef(
+  (
+    {
+      children,
+      onClick = undefined,
+      url = '',
+      icon = undefined,
+      isDisabled = false,
+      className = '',
+      openInNewTab = true,
+      switchIconSide = false,
+      isLoading = false,
+      title,
+      iconOnly,
+      checked,
+      ...props
+    }: ButtonProps,
+    ref
+  ) => {
+    const classes = useStyles(props)
 
-  const iconToUse =
-    checked === true ? (
-      <CheckBoxIcon />
-    ) : checked === false ? (
-      <CheckBoxOutlineBlankIcon />
-    ) : (
-      icon
-    )
+    const iconToUse =
+      checked === true ? (
+        <CheckBoxIcon />
+      ) : checked === false ? (
+        <CheckBoxOutlineBlankIcon />
+      ) : (
+        icon
+      )
 
-  return (
-    <ButtonContents url={url} openInNewTab={openInNewTab} className={className}>
-      <MaterialButton
-        variant="contained"
-        // @ts-ignore
-        color="primary"
-        onClick={onClick}
-        disabled={isDisabled}
-        className={`${classes.root} ${url ? '' : className} ${
+    return (
+      <ButtonContents
+        url={url}
+        openInNewTab={openInNewTab}
+        className={className}>
+        <MaterialButton
+          ref={ref}
+          variant="contained"
           // @ts-ignore
-          props.color === 'tertiary' ? classes.tertiary : ''
-        }`}
-        title={title}
-        {...props}>
-        <span
-          className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
-          {!switchIconSide && children ? <>{children} </> : null}
-          {iconToUse && (
-            <span
-              className={`${classes.icon} ${iconOnly ? classes.noMargin : ''} ${
-                props.size === 'small' ? classes.small : ''
-              } ${switchIconSide ? classes.switchIconSide : ''} ${
-                children ? '' : classes.noChildren
-              }`}>
-              {iconToUse}
-            </span>
-          )}
-          {switchIconSide && children ? <>{children} </> : null}
-        </span>
-      </MaterialButton>
-    </ButtonContents>
-  )
-}
+          color="primary"
+          onClick={onClick}
+          disabled={isDisabled}
+          className={`${classes.root} ${url ? '' : className} ${
+            // @ts-ignore
+            props.color === 'tertiary' ? classes.tertiary : ''
+          }`}
+          title={title}
+          {...props}>
+          <span
+            className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
+            {!switchIconSide && children ? <>{children} </> : null}
+            {iconToUse && (
+              <span
+                className={`${classes.icon} ${
+                  iconOnly ? classes.noMargin : ''
+                } ${props.size === 'small' ? classes.small : ''} ${
+                  switchIconSide ? classes.switchIconSide : ''
+                } ${children ? '' : classes.noChildren}`}>
+                {iconToUse}
+              </span>
+            )}
+            {switchIconSide && children ? <>{children} </> : null}
+          </span>
+        </MaterialButton>
+      </ButtonContents>
+    )
+  }
+)
 
 export default Button

@@ -115,6 +115,8 @@ import ExtraSourcesEditor from '../extra-sources-editor'
 import VisitSourceButton from '../visit-source-button'
 import { handleError } from '../../error-handling'
 import ErrorMessage from '../error-message'
+import ChangeVccUrlForm from '../change-vcc-url-form'
+import AddToVccButton from '../add-to-vcc-button'
 
 interface EditorInfo {
   assetId: string | null
@@ -282,8 +284,8 @@ const NoValueMessage = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const FormEditorArea = (props: {
-  fieldName?: string
+const FormEditorArea = <TRecord,>(props: {
+  fieldName?: keyof TRecord
   title: string
   description?: string
   icon: React.ReactNode
@@ -626,16 +628,6 @@ const VrchatAvatarsDisplay = ({ value }: { value: string[] }) => (
   </>
 )
 
-const VrchatWorldsDisplay = ({ value }: { value: string[] }) => (
-  <>
-    {value && value.length ? (
-      <VrchatWorlds worldIds={value} />
-    ) : (
-      <NoValueMessage>No VRChat worlds set</NoValueMessage>
-    )}
-  </>
-)
-
 const IsAdultDisplay = ({ value }: { value: boolean }) => {
   const classes = useStyles()
   return (
@@ -844,7 +836,7 @@ const Editor = () => {
             contents: (
               <>
                 <FormEditorArea
-                  fieldName={AssetFieldNames.category}
+                  fieldName="category"
                   isRequired
                   title="Category"
                   description="Which category the asset falls into."
@@ -859,7 +851,7 @@ const Editor = () => {
                 />
                 {asset.category === AssetCategory.Accessory ? (
                   <FormEditorArea
-                    fieldName={AssetFieldNames.relations}
+                    fieldName="relations"
                     title="Parent"
                     description="Accessories usually have a parent that is required for it to function. Set it here (if needed)."
                     icon={() => <LinkIcon />}
@@ -888,7 +880,7 @@ const Editor = () => {
             contents: (
               <>
                 <FormEditorArea
-                  fieldName={AssetFieldNames.sourceUrl}
+                  fieldName="sourceurl"
                   isRequired
                   title="Source URL"
                   description="Where can I get this asset? Enter a Gumroad or Booth URL and we can automatically get info for it."
@@ -910,7 +902,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.gumroad}
+                  fieldName="gumroad"
                   title="Auto Sync"
                   description="Automatically sync with Gumroad once per day. Experimental."
                   icon={() => <SyncIcon />}
@@ -981,7 +973,7 @@ const Editor = () => {
             contents: (
               <>
                 <FormEditorArea
-                  fieldName={AssetFieldNames.thumbnailUrl}
+                  fieldName="thumbnailurl"
                   isRequired
                   title="Thumbnail"
                   description="A square image used in search results."
@@ -1000,7 +992,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.title}
+                  fieldName="title"
                   isRequired
                   title="Title"
                   description="A short but descriptive name for your asset. Keep it short and sweet."
@@ -1015,7 +1007,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.description}
+                  fieldName="description"
                   isRequired
                   title="Description"
                   description="Explain what the asset is for. Supports Markdown."
@@ -1030,7 +1022,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.author}
+                  fieldName="author"
                   isRequired
                   title="Author"
                   description="The original creator of the asset."
@@ -1045,7 +1037,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.isAdult}
+                  fieldName="isadult"
                   isRequired
                   title="Toggle Adult"
                   description="Adult content is not visible to the public by default."
@@ -1074,7 +1066,7 @@ const Editor = () => {
                 />
                 {asset.category === AssetCategory.Avatar ? (
                   <FormEditorArea
-                    fieldName={AssetFieldNames.species}
+                    fieldName="species"
                     title="Species"
                     description="Help people find your asset by grouping it into its species (if applicable)."
                     icon={() => <PetsIcon />}
@@ -1088,7 +1080,7 @@ const Editor = () => {
                   />
                 ) : null}
                 <FormEditorArea
-                  fieldName={AssetFieldNames.bannerUrl}
+                  fieldName="bannerurl"
                   title="Banner"
                   description="A wide and short image displayed behind the header to make your asset look pretty."
                   icon={() => <PanoramaIcon />}
@@ -1116,7 +1108,7 @@ const Editor = () => {
                   contents: (
                     <>
                       <FormEditorArea
-                        fieldName={AssetFieldNames.tutorialSteps}
+                        fieldName="tutorialsteps"
                         title="Tutorial Steps"
                         description="The steps to complete the tutorial."
                         icon={() => <FormatListNumberedIcon />}
@@ -1192,7 +1184,7 @@ const Editor = () => {
             contents: (
               <>
                 <FormEditorArea
-                  fieldName={AssetFieldNames.tags}
+                  fieldName="tags"
                   isRequired
                   title="Tags"
                   description="Correct tags are very helpful for finding the right asset."
@@ -1217,7 +1209,7 @@ const Editor = () => {
             contents: (
               <>
                 <FormEditorArea
-                  fieldName={AssetFieldNames.relations}
+                  fieldName="relations"
                   title="Relations"
                   description={`To help people find an asset your one depends on or is related to, you can "link" it here.`}
                   icon={() => <LinkIcon />}
@@ -1346,7 +1338,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.vrchatClonableAvatarIds}
+                  fieldName="vrchatclonableavatarids"
                   title="VRChat Avatars"
                   description="If users can clone an avatar in VRChat to test the asset you can set that here. Note: We only grab its info once."
                   icon={() => <VRChatIcon />}
@@ -1405,7 +1397,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.shortDescription}
+                  fieldName="shortdescription"
                   title="Featured Asset Description"
                   description="This description is used instead of the normal one whenever the asset is featured on the homepage."
                   icon={() => <TextFormatIcon />}
@@ -1423,7 +1415,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.slug}
+                  fieldName="slug"
                   title="Slug"
                   description="A slug is a user-friendly name for the asset shown in the URL instead of the ID. Keep it very short (like 5-10 characters)."
                   icon={() => <BugReportIcon />}
@@ -1470,7 +1462,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.discordServer}
+                  fieldName="discordserver"
                   title="Discord Server"
                   description="If you need to join a Discord server to download this asset you can set that here."
                   icon={() => <DiscordIcon />}
@@ -1487,7 +1479,7 @@ const Editor = () => {
                   }
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.sketchfabEmbedUrl}
+                  fieldName="sketchfabembedurl"
                   title="Sketchfab"
                   description="We can embed a 3D preview from the Sketchfab website here."
                   icon={() => <ControlCameraIcon />}
@@ -1496,7 +1488,7 @@ const Editor = () => {
                   editor={<SketchfabEmbedEditor assetId={assetId} />}
                 />
                 <FormEditorArea
-                  fieldName={AssetFieldNames.tags}
+                  fieldName="tags"
                   title="License"
                   description="What is the license for this asset?"
                   icon={() => <GavelIcon />}
@@ -1507,6 +1499,26 @@ const Editor = () => {
                       assetId={assetId}
                       tags={asset.tags || []}
                       // @ts-ignore
+                      onDone={hydrate}
+                    />
+                  }
+                />
+                <FormEditorArea<Asset>
+                  fieldName="vccurl"
+                  title="VCC"
+                  description="Display a button to add to the VRChat Creator Companion."
+                  icon={() => <VRChatIcon />}
+                  display={({ value }: { value: Asset['vccurl'] }) =>
+                    value ? (
+                      <AddToVccButton vccUrl={value} />
+                    ) : (
+                      <NoValueMessage>No VCC URL set</NoValueMessage>
+                    )
+                  }
+                  editor={
+                    <ChangeVccUrlForm
+                      assetId={assetId || undefined}
+                      existingVccUrl={asset.vccurl}
                       onDone={hydrate}
                     />
                   }

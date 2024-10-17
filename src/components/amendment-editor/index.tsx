@@ -179,9 +179,7 @@ const AmendmentEditor = ({
         action.
         <br />
         <br />
-        {parentId && returnUrl ? (
-          <Button url={returnUrl}>Return to Parent</Button>
-        ) : null}
+        {returnUrl ? <Button url={returnUrl}>Return to Parent</Button> : null}
       </SuccessMessage>
     )
   }

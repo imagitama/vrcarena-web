@@ -514,7 +514,7 @@ function AttachmentsOutput({ fields }) {
 }
 
 const ExtraSourcesOutput = ({ extraSources }) =>
-  extraSources.map((sourceInfo) => (
+  (extraSources || []).map((sourceInfo) => (
     <div>
       {sourceInfo.url}
       <br />
@@ -744,6 +744,10 @@ const RenderersForFields = {
       renderer: ({ fields }) => (
         <ExtraSourcesOutput extraSources={fields.extrasources} />
       ),
+    },
+    vccurl: {
+      label: 'VCC URL',
+      type: fieldTypes.url,
     },
   },
   authors: authorsEditableFields,

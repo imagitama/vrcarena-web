@@ -529,3 +529,8 @@ export const moveItemInArray = (
   newArray.splice(to, 0, newArray.splice(from, 1)[0])
   return newArray
 }
+
+export const isGitRepoUrl = (url: string) =>
+  url.substring(url.length, url.length - 4) === '.git'
+export const isJsonUrl = (url: string) =>
+  url.substring(url.length, url.length - 5) === '.json'

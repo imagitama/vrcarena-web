@@ -80,6 +80,7 @@ export interface AssetFields extends CoreAssetFields {
   extradata: ExtraData
   attachmentids: string[]
   extrasources: SourceInfo[]
+  vccurl?: string
 }
 
 export interface Asset extends AssetFields {
