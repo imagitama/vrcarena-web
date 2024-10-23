@@ -534,6 +534,9 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             />
             <meta property="og:image" content={asset.thumbnailurl} />
             <meta property="og:site_name" content="VRCArena" />
+            {asset.accessstatus === AccessStatus.Archived ? (
+              <meta name="robots" content="noindex" />
+            ) : null}
           </Helmet>
         )}
         {asset && isAssetWaitingForApproval(asset) ? (
