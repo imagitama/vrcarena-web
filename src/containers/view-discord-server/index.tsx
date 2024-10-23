@@ -18,7 +18,6 @@ import Message from '../../components/message'
 import EditorRecordManager from '../../components/editor-record-manager'
 
 import useUserRecord from '../../hooks/useUserRecord'
-import { AccessStatuses, ApprovalStatuses } from '../../hooks/useDatabaseQuery'
 import { canEditDiscordServer } from '../../utils'
 import { trackAction } from '../../analytics'
 import { handleError } from '../../error-handling'
@@ -30,6 +29,7 @@ import {
   ViewNames,
 } from '../../modules/discordservers'
 import useIsEditor from '../../hooks/useIsEditor'
+import { AccessStatus, ApprovalStatus } from '../../modules/common'
 
 const analyticsCategory = 'ViewDiscordServer'
 
@@ -111,8 +111,8 @@ const View = () => {
     editornotes: editorNotes,
   } = result
 
-  const isApproved = approvalStatus === ApprovalStatuses.Approved
-  const isDeleted = accessStatus === AccessStatuses.Deleted
+  const isApproved = approvalStatus === ApprovalStatus.Approved
+  const isDeleted = accessStatus === AccessStatus.Deleted
 
   return (
     <>

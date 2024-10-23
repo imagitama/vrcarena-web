@@ -1,3 +1,5 @@
+import { AccessStatus } from './common'
+
 export enum SocialAttachmentType {
   Image = 'image',
 }
@@ -25,7 +27,7 @@ export interface SocialPost extends SocialPostFields {
 
 export interface SocialPostMeta {
   editornotes: string
-  accessstatus: string
+  accessstatus: AccessStatus
   createdat: Date
   createdby: string
   lastmodifiedat: Date

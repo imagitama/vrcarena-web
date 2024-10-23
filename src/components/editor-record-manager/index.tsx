@@ -7,8 +7,14 @@ import DeleteButton from '../delete-button'
 import PublicEditorNotesForm from '../public-editor-notes-form'
 import Button from '../button'
 import FeatureButton from '../feature-button'
-import { FeaturedStatus } from '../../modules/common'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  FeaturedStatus,
+  PublishStatus,
+} from '../../modules/common'
 import EditorBox from '../editor-box'
+import ArchiveButton from '../archive-button'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -53,9 +59,9 @@ const EditorRecordManager = ({
   metaCollectionName: string
   collectionName?: string
   editUrl?: string
-  existingApprovalStatus?: string
-  existingPublishStatus?: string
-  existingAccessStatus?: string
+  existingApprovalStatus?: ApprovalStatus
+  existingPublishStatus?: PublishStatus
+  existingAccessStatus?: AccessStatus
   existingEditorNotes?: string
   existingFeaturedStatus?: FeaturedStatus
   onDone?: () => void
@@ -64,7 +70,7 @@ const EditorRecordManager = ({
   showAccessButtons?: boolean
   showEditorNotes?: boolean
   showFeatureButtons?: boolean
-  beforeApprove?: () => void
+  beforeApprove?: () => boolean | Promise<boolean>
   callOnDoneOnEditorNotes?: boolean
   allowDeclineOptions?: boolean
   showBox?: boolean
@@ -84,29 +90,34 @@ const EditorRecordManager = ({
           <ApproveButton
             id={id}
             metaCollectionName={metaCollectionName}
-            // @ts-ignore
             existingApprovalStatus={existingApprovalStatus}
-            // @ts-ignore
             existingPublishStatus={existingPublishStatus}
-            // @ts-ignore
             onDone={onDone}
-            // @ts-ignore
             beforeApprove={beforeApprove}
             allowDeclineOptions={allowDeclineOptions}
           />
         </div>
       ) : null}
       {showAccessButtons ? (
-        <div className={classes.item}>
-          <DeleteButton
-            id={id}
-            metaCollectionName={metaCollectionName}
-            // @ts-ignore
-            existingAccessStatus={existingAccessStatus}
-            // @ts-ignore
-            onDone={onDone}
-          />
-        </div>
+        <>
+          <div className={classes.item}>
+            <DeleteButton
+              id={id}
+              metaCollectionName={metaCollectionName}
+              existingAccessStatus={existingAccessStatus}
+              onDone={onDone}
+            />
+          </div>
+
+          <div className={classes.item}>
+            <ArchiveButton
+              id={id}
+              metaCollectionName={metaCollectionName}
+              existingAccessStatus={existingAccessStatus}
+              onDone={onDone}
+            />
+          </div>
+        </>
       ) : null}
       {showFeatureButtons ? (
         <div className={classes.item}>

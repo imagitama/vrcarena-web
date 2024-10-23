@@ -2,12 +2,12 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   CollectionNames as CommentsCollectionNames,
-  CommentsMetaFieldNames
+  CommentsMetaFieldNames,
 } from '../../modules/comments'
 import {
   createMessage,
   editMessage,
-  FullHistoryEntry
+  FullHistoryEntry,
 } from '../../modules/history'
 import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 import { getUrlForParent, getLabelForParent } from '../../relations'
@@ -19,19 +19,19 @@ import {
   AssetMetaFieldNames,
   BanStatuses,
   PublishStatuses,
-  UserMetaFieldNames
+  UserMetaFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import FormattedDate from '../formatted-date'
 import {
   AmendmentsMetaFieldNames,
-  CollectionNames as AmendmentsCollectionNames
+  CollectionNames as AmendmentsCollectionNames,
 } from '../../modules/amendments'
 import { CollectionNames as UsersCollectionNames } from '../../modules/users'
 import ErrorBoundary from '../error-boundary'
 import {
   CollectionNames as ReportsCollectionNames,
   ReportMetaFieldNames,
-  ResolutionStatuses
+  ResolutionStatus,
 } from '../../modules/reports'
 import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
 
@@ -83,9 +83,9 @@ const getLabelForBanStatus = (banStatus: string): string => {
 
 const getLabelForResolutionStatus = (resolutionStatus: string): string => {
   switch (resolutionStatus) {
-    case ResolutionStatuses.Pending:
+    case ResolutionStatus.Pending:
       return 'unresolved'
-    case ResolutionStatuses.Resolved:
+    case ResolutionStatus.Resolved:
       return 'resolved'
     default:
       throw new Error(`Unknown publish status: ${resolutionStatus}`)
@@ -94,18 +94,18 @@ const getLabelForResolutionStatus = (resolutionStatus: string): string => {
 
 const useStyles = makeStyles({
   entry: {
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   text: {},
   date: {
     fontSize: '50%',
     // textAlign: 'right',
-    marginTop: '0.25rem'
-  }
+    marginTop: '0.25rem',
+  },
 })
 
 const LabelForEntry = ({
-  entry: { message, data, parent, parenttable, parentdata, createdby }
+  entry: { message, data, parent, parenttable, parentdata, createdby },
 }: {
   entry: FullHistoryEntry
 }) => {
@@ -116,7 +116,7 @@ const LabelForEntry = ({
       fieldName !== 'ts'
         ? {
             ...newChanges,
-            [fieldName]: newValue
+            [fieldName]: newValue,
           }
         : newChanges,
     {}
@@ -285,7 +285,7 @@ const Entry = ({ entry }: { entry: FullHistoryEntry }) => {
 export default ({ entries }: { entries: FullHistoryEntry[] }) => {
   return (
     <div>
-      {entries.map(entry => (
+      {entries.map((entry) => (
         <ErrorBoundary key={entry.id}>
           <Entry entry={entry} />
         </ErrorBoundary>

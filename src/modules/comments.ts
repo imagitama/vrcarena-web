@@ -1,3 +1,5 @@
+import { AccessStatus } from './common'
+
 export interface Comment {
   id: string
   comment: string
@@ -11,7 +13,7 @@ export interface Comment {
 }
 
 export interface CommentMeta {
-  accessstatus: string
+  accessstatus: AccessStatus
   editornotes: string
   lastmodifiedat: string
   lastmodifiedby: string

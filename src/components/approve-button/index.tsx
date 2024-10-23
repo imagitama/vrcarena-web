@@ -4,12 +4,8 @@ import ClearIcon from '@material-ui/icons/Clear'
 import { makeStyles } from '@material-ui/core/styles'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import {
-  ApprovalStatuses,
-  CollectionNames,
-  PublishStatuses,
-} from '../../hooks/useDatabaseQuery'
-import { CommonMetaFieldNames } from '../../data-store'
+import { CollectionNames } from '../../hooks/useDatabaseQuery'
+import { CommonMetaFieldNames, CommonMetaRecordFields } from '../../data-store'
 import useUserId from '../../hooks/useUserId'
 
 import Button from '../button'
@@ -19,6 +15,7 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 import ButtonDropdown from '../button-dropdown'
 import HintText from '../hint-text'
 import { colorPalette } from '../../config'
+import { ApprovalStatus, MetaRecord, PublishStatus } from '../../modules/common'
 
 const useStyles = makeStyles({
   control: {
@@ -38,46 +35,38 @@ const useStyles = makeStyles({
   },
 })
 
-const validateApprovalStatus = (approvalStatus) => {
+const getClassForApprovalStatus = (
+  approvalStatus: ApprovalStatus,
+  classes: ReturnType<typeof useStyles>
+): string => {
   switch (approvalStatus) {
-    case ApprovalStatuses.Approved:
-    case ApprovalStatuses.Waiting:
-    case ApprovalStatuses.Declined:
-      return true
-    default:
-      throw new Error(
-        `Cannot get label for unknown approval status "${approvalStatus}"!`
-      )
-  }
-}
-
-const getClassForApprovalStatus = (approvalStatus, classes) => {
-  switch (approvalStatus) {
-    case ApprovalStatuses.Approved:
+    case ApprovalStatus.Approved:
       return classes.approved
-    case ApprovalStatuses.Waiting:
+    case ApprovalStatus.Waiting:
       return classes.waiting
-    case ApprovalStatuses.Declined:
+    case ApprovalStatus.Declined:
       return classes.declined
     default:
-      throw new Error(
+      console.warn(
         `Cannot get class for approval status: unknown status "${approvalStatus}"!`
       )
+      return ''
   }
 }
 
-const getLabelForApprovalStatus = (approvalStatus) => {
+const getLabelForApprovalStatus = (approvalStatus: ApprovalStatus): string => {
   switch (approvalStatus) {
-    case ApprovalStatuses.Approved:
+    case ApprovalStatus.Approved:
       return 'Approved'
-    case ApprovalStatuses.Waiting:
+    case ApprovalStatus.Waiting:
       return 'Waiting For Approval'
-    case ApprovalStatuses.Declined:
+    case ApprovalStatus.Declined:
       return 'Declined'
     default:
-      throw new Error(
+      console.warn(
         `Cannot get label for approval status: unknown status "${approvalStatus}"!`
       )
+      return approvalStatus
   }
 }
 
@@ -160,7 +149,7 @@ const declineOptions = [
   },
 ]
 
-export default ({
+const ApproveButton = ({
   id,
   metaCollectionName,
   existingApprovalStatus = undefined,
@@ -169,19 +158,35 @@ export default ({
   onDone = undefined,
   beforeApprove = undefined,
   allowDeclineOptions = false,
+}: {
+  id: string
+  metaCollectionName: string
+  existingApprovalStatus?: ApprovalStatus
+  existingPublishStatus?: PublishStatus
+  onClick?: ({
+    newApprovalStatus,
+  }: {
+    newApprovalStatus: ApprovalStatus
+  }) => void
+  onDone?: () => void
+  beforeApprove?: () => boolean | Promise<boolean> // false to cancel approval
+  allowDeclineOptions?: boolean
 }) => {
   const userId = useUserId()
-  const [isLoading, isErroredLoading, metaRecord] = useDataStoreItem(
-    metaCollectionName,
-    existingApprovalStatus ? false : id,
-    'approve-button'
-  )
-  const [isSaving, , isSaveError, save] = useDatabaseSave(
+  const [isLoading, isErroredLoading, metaRecord] =
+    useDataStoreItem<MetaRecord>(
+      metaCollectionName,
+      existingApprovalStatus ? false : id,
+      'approve-button'
+    )
+  const [isSaving, , isSaveError, save] = useDatabaseSave<MetaRecord>(
     metaCollectionName,
     id
   )
   const classes = useStyles()
-  const [selectedDeclineOptionIds, setSelectedDeclineOptionIds] = useState([])
+  const [selectedDeclineOptionIds, setSelectedDeclineOptionIds] = useState<
+    string[]
+  >([])
 
   if (!userId || isLoading) {
     return <>Loading...</>
@@ -206,19 +211,21 @@ export default ({
   const approvalStatus = existingApprovalStatus
     ? existingApprovalStatus
     : metaRecord
-    ? metaRecord[CommonMetaFieldNames.approvalStatus]
+    ? metaRecord.approvalstatus
     : undefined
   const publishStatus = existingPublishStatus
     ? existingPublishStatus
     : metaRecord
-    ? metaRecord[CommonMetaFieldNames.publishStatus]
+    ? metaRecord.publishstatus
     : undefined
 
-  validateApprovalStatus(approvalStatus)
+  if (!approvalStatus || !publishStatus) {
+    return <>Waiting for data...</>
+  }
 
   const isAsset = metaCollectionName === CollectionNames.AssetMeta
 
-  const setNewApprovalStatus = async (newApprovalStatus) => {
+  const setNewApprovalStatus = async (newApprovalStatus: ApprovalStatus) => {
     try {
       if (onClick) {
         onClick({ newApprovalStatus })
@@ -233,22 +240,22 @@ export default ({
       }
 
       const newEditorNotes = `${selectedDeclineOptionIds
-        .map((id) => declineOptions.find((option) => option.id === id).label)
+        .map((id) => declineOptions.find((option) => option.id === id)!.label)
         .join(', ')}${
-        metaRecord && metaRecord[CommonMetaFieldNames.editorNotes]
+        metaRecord && metaRecord.editornotes
           ? `
       
-${metaRecord[CommonMetaFieldNames.editorNotes]}`
+${metaRecord.editornotes}`
           : ''
       }`
 
       await save({
-        [CommonMetaFieldNames.approvalStatus]: newApprovalStatus,
-        [CommonMetaFieldNames.approvedAt]:
-          newApprovalStatus === ApprovalStatuses.Approved ? new Date() : null,
-        ...(isAsset && newApprovalStatus === ApprovalStatuses.Declined
+        approvalstatus: newApprovalStatus,
+        approvedat:
+          newApprovalStatus === ApprovalStatus.Approved ? new Date() : null,
+        ...(isAsset && newApprovalStatus === ApprovalStatus.Declined
           ? {
-              [CommonMetaFieldNames.publishStatus]: PublishStatuses.Draft,
+              [CommonMetaFieldNames.publishStatus]: PublishStatus.Draft,
             }
           : {}),
         ...(allowDeclineOptions && selectedDeclineOptionIds.length
@@ -265,7 +272,7 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
     }
   }
 
-  if (publishStatus && publishStatus !== PublishStatuses.Published) {
+  if (publishStatus && publishStatus !== PublishStatus.Published) {
     return <>Record is a draft and cannot be approved yet</>
   }
 
@@ -278,16 +285,16 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
         )}`}>
         Status: <strong>{getLabelForApprovalStatus(approvalStatus)}</strong>
       </div>
-      {approvalStatus !== ApprovalStatuses.Approved ? (
+      {approvalStatus !== ApprovalStatus.Approved ? (
         <div className={classes.control}>
           <Button
-            onClick={() => setNewApprovalStatus(ApprovalStatuses.Approved)}
+            onClick={() => setNewApprovalStatus(ApprovalStatus.Approved)}
             icon={<CheckIcon />}>
             Approve
           </Button>
         </div>
       ) : null}
-      {approvalStatus !== ApprovalStatuses.Declined ? (
+      {approvalStatus !== ApprovalStatus.Declined ? (
         <>
           {allowDeclineOptions ? (
             <div className={classes.control}>
@@ -295,7 +302,7 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
                 color="default"
                 options={declineOptions}
                 selectedIds={selectedDeclineOptionIds}
-                onSelect={(newId) =>
+                onSelect={(newId: string) =>
                   setSelectedDeclineOptionIds((currentIds) =>
                     currentIds.includes(newId)
                       ? currentIds.filter((id) => id !== newId)
@@ -310,7 +317,7 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
           ) : null}
           <div className={classes.control}>
             <Button
-              onClick={() => setNewApprovalStatus(ApprovalStatuses.Declined)}
+              onClick={() => setNewApprovalStatus(ApprovalStatus.Declined)}
               icon={<ClearIcon />}>
               Decline
               {isAsset ? ' (and Draft)' : ''}
@@ -321,3 +328,5 @@ ${metaRecord[CommonMetaFieldNames.editorNotes]}`
     </>
   )
 }
+
+export default ApproveButton

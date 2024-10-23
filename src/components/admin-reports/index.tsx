@@ -11,19 +11,14 @@ import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
-import {
-  FullReport,
-  Report,
-  ReportMetaFieldNames,
-  ResolutionStatuses,
-} from '../../modules/reports'
+import { FullReport, ResolutionStatus } from '../../modules/reports'
 
 import Button from '../button'
 import PaginatedView from '../paginated-view'
 import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
 import GenericOutputItem from '../generic-output-item'
-import ResolutionStatus from '../resolution-status'
+import ResolutionStatusOutput from '../resolution-status'
 import Link from '../link'
 import UsernameLink from '../username-link'
 
@@ -83,7 +78,7 @@ function ReportsTable({
                     <UsernameLink id={createdBy} username={createdByUsername} />
                   </TableCell>
                   <TableCell>
-                    <ResolutionStatus
+                    <ResolutionStatusOutput
                       resolutionStatus={resolutionStatus}
                       resolvedAt={resolvedAt}
                       resolvedBy={resolvedBy}
@@ -147,11 +142,11 @@ export default () => {
 
       switch (selectedSubView) {
         case subViews.PENDING:
-          query = query.eq('resolutionstatus', ResolutionStatuses.Pending)
+          query = query.eq('resolutionstatus', ResolutionStatus.Pending)
           break
 
         case subViews.RESOLVED:
-          query = query.eq('resolutionstatus', ResolutionStatuses.Resolved)
+          query = query.eq('resolutionstatus', ResolutionStatus.Resolved)
           break
       }
 

@@ -3,7 +3,7 @@ import { CollectionNames as ExistingCollectionNames } from '../hooks/useDatabase
 const commonReportReasonKeys = {
   OFFENSIVE_CONTENT: 'OFFENSIVE_CONTENT',
   SPAM: 'SPAM',
-  OTHER: 'OTHER'
+  OTHER: 'OTHER',
 }
 
 export const reportReasonsKeysByCollection = {
@@ -11,23 +11,23 @@ export const reportReasonsKeysByCollection = {
     OUTDATED_CONTENT: 'OUTDATED_CONTENT',
     BROKEN_SOURCE: 'BROKEN_SOURCE',
     CLAIM_OWNERSHIP: 'CLAIM_OWNERSHIP',
-    TAKEDOWN: 'TAKEDOWN'
-  }
+    TAKEDOWN: 'TAKEDOWN',
+  },
 }
 
 const commonReasons: ReportReason[] = [
   {
     value: commonReportReasonKeys.OFFENSIVE_CONTENT,
-    label: 'Offensive content'
+    label: 'Offensive content',
   },
   {
     value: commonReportReasonKeys.SPAM,
-    label: 'Spam or bot message'
+    label: 'Spam or bot message',
   },
   {
     value: commonReportReasonKeys.OTHER,
-    label: 'Other/custom reason (use comments field)'
-  }
+    label: 'Other/custom reason (use comments field)',
+  },
 ]
 
 const reasonsByCollectionName: { [collectionName: string]: ReportReason[] } = {
@@ -36,23 +36,23 @@ const reasonsByCollectionName: { [collectionName: string]: ReportReason[] } = {
       value:
         reportReasonsKeysByCollection[ExistingCollectionNames.Assets]
           .BROKEN_SOURCE,
-      label: 'Broken or invalid source'
+      label: 'Broken or invalid source',
     },
     {
       value:
         reportReasonsKeysByCollection[ExistingCollectionNames.Assets]
           .OUTDATED_CONTENT,
       label:
-        'Outdated content (eg. thumbnail, attachments, etc.). Please provide a link to the correct content'
+        'Outdated content (eg. thumbnail, attachments, etc.). Please provide a link to the correct content',
     },
     {
       value:
         reportReasonsKeysByCollection[ExistingCollectionNames.Assets].TAKEDOWN,
       label:
-        'I am the creator of this asset and I have read the takedown policy and want it to be taken down'
-    }
+        'I am the creator of this asset and I have read the takedown policy and want it to be taken down',
+    },
   ],
-  [ExistingCollectionNames.Comments]: []
+  [ExistingCollectionNames.Comments]: [],
 }
 
 interface ReportReason {
@@ -88,9 +88,14 @@ export interface Report {
   createdby: string
 }
 
+export enum ResolutionStatus {
+  Pending = 'pending',
+  Resolved = 'resolved',
+}
+
 export interface ReportMeta {
   editornotes: string
-  resolutionstatus: 'pending' | 'resolved'
+  resolutionstatus: ResolutionStatus
   resolvedat: Date
   resolvedby: string
   resolutionnotes: string
@@ -111,16 +116,11 @@ export const ReportMetaFieldNames = {
   createdBy: 'createdby',
   createdAt: 'createdat',
   lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat'
-}
-
-export const ResolutionStatuses = {
-  Pending: 'pending',
-  Resolved: 'resolved'
+  lastModifiedAt: 'lastmodifiedat',
 }
 
 export const CollectionNames = {
   Reports: 'reports',
   // TODO: Pluralize this sometime
-  ReportsMeta: 'reportmeta'
+  ReportsMeta: 'reportmeta',
 }

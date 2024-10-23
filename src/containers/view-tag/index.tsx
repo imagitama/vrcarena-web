@@ -5,7 +5,6 @@ import { useParams } from 'react-router'
 import Heading from '../../components/heading'
 import AssetsPaginatedView from '../../components/assets-paginated-view'
 import ErrorMessage from '../../components/error-message'
-import { AccessStatuses, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsEditor from '../../hooks/useIsEditor'
 import EditorRecordManager from '../../components/editor-record-manager'
 import { CollectionNames, FullTag } from '../../modules/tags'
@@ -16,10 +15,13 @@ import Button from '../../components/button'
 import PublicEditorNotes from '../../components/public-editor-notes'
 import { getLabelForTag } from '../../utils/tags'
 import Message from '../../components/message'
+import { AccessStatus } from '../../modules/common'
+import { PublicAsset } from '../../modules/assets'
+import { GetQueryFn } from '../../components/paginated-view'
 
 const AssetsForTag = ({ tag }: { tag: string }) => {
-  const getQuery = useCallback(
-    (query) => query.contains(AssetFieldNames.tags, `{${tag}}`),
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
+    (query) => query.contains('tags', `{${tag}}`),
     [tag]
   )
   return <AssetsPaginatedView getQuery={getQuery} />
@@ -47,7 +49,7 @@ export default () => {
           content={`View more info about the tag ${tag} including stats.`}
         />
       </Helmet>
-      {fullTag && fullTag.accessstatus === AccessStatuses.Deleted ? (
+      {fullTag && fullTag.accessstatus === AccessStatus.Deleted ? (
         <Message>This tag has been deleted</Message>
       ) : null}
       {fullTag && fullTag.editornotes ? (

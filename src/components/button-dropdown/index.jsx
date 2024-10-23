@@ -9,14 +9,14 @@ import Button from '../../components/button'
 
 const useStyles = makeStyles({
   root: {
-    display: 'flex'
-  }
+    display: 'flex',
+  },
 })
 
 export default ({
   options,
   label = '',
-  selectedId,
+  selectedId = undefined,
   selectedIds = [],
   closeOnSelect = true,
   onSelect,
@@ -30,7 +30,7 @@ export default ({
     setIsDropdownOpen(!isDropdownOpen)
   }
 
-  const onClickItem = optionId => {
+  const onClickItem = (optionId) => {
     onSelect(optionId)
 
     if (closeOnSelect) {
@@ -64,11 +64,11 @@ export default ({
           open={isDropdownOpen}
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'center'
+            horizontal: 'center',
           }}
           transformOrigin={{
             vertical: 'top',
-            horizontal: 'center'
+            horizontal: 'center',
           }}
           onClose={onClose}>
           {options.map(({ id, label }) => (

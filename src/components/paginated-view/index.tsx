@@ -82,7 +82,7 @@ const limitPerPage = 50
 
 type Filters = { [fieldName: string]: string | null }
 
-type GetQueryFn<TRecord> = (
+export type GetQueryFn<TRecord> = (
   currentQuery: PostgrestFilterBuilder<TRecord>,
   selectedSubView: string | null
 ) => PostgrestFilterBuilder<TRecord> | Promise<PostgrestFilterBuilder<TRecord>>
@@ -329,6 +329,7 @@ const CommonMetaControl = ({
 
   return (
     <ButtonDropdown
+      // @ts-ignore
       selectedId={filters[fieldName] ? filters[fieldName] : clearId}
       options={Object.entries(fieldMap)
         .map(([key, val]) => ({ id: val, label: key }))

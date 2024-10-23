@@ -1,9 +1,35 @@
 export enum FeaturedStatus {
   Featured = 'featured',
-  Unfeatured = 'unfeatured'
+  Unfeatured = 'unfeatured',
+}
+
+export enum PublishStatus {
+  Published = 'published',
+  Draft = 'draft',
+}
+
+export enum AccessStatus {
+  Public = 'public',
+  Archived = 'archived', // added oct 2024
+  Deleted = 'deleted',
+}
+
+export enum ApprovalStatus {
+  Approved = 'approved',
+  Waiting = 'waiting',
+  Declined = 'declined',
+}
+
+export enum PinnedStatus {
+  Pinned = 'pinned',
+  Unpinned = 'unpinned',
 }
 
 export interface MetaRecord {
-  featuredstatus: 'featuredstatus'
-  accessstatus: 'accessstatus'
+  editornotes: string
+  featuredstatus: FeaturedStatus
+  accessstatus: AccessStatus
+  approvalstatus: ApprovalStatus
+  approvedat: Date | null // todo: verify this is common - probs only assets
+  publishstatus: PublishStatus
 }

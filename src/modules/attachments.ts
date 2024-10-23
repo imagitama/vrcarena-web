@@ -1,4 +1,4 @@
-import { AccessStatuses, ApprovalStatuses } from '../hooks/useDatabaseQuery'
+import { AccessStatus, ApprovalStatus } from './common'
 
 export interface AttachmentFields {
   reason: AttachmentReason
@@ -24,9 +24,9 @@ export interface Attachment extends AttachmentFields {
 }
 
 export interface FullAttachment extends Attachment {
-  approvalstatus: ApprovalStatuses
+  approvalstatus: ApprovalStatus
   approvedat: string
-  accessstatus: AccessStatuses
+  accessstatus: AccessStatus
   editornotes: string
   createdbyusername: string
   lastmodifiedbyusername: string

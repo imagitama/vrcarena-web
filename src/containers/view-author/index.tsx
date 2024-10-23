@@ -24,7 +24,6 @@ import useUserRecord from '../../hooks/useUserRecord'
 import {
   CollectionNames as OldCollectionNames,
   AssetFieldNames,
-  AccessStatuses,
   OrderDirections,
 } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
@@ -38,6 +37,7 @@ import { FullAuthor } from '../../modules/authors'
 import SaleInfo from '../../components/sale-info'
 import PaginatedView from '../../components/paginated-view'
 import { PublicAsset } from '../../modules/assets'
+import { AccessStatus } from '../../modules/common'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -183,7 +183,7 @@ const View = () => {
     createdby: createdBy,
   } = author
 
-  const isDeleted = accessStatus === AccessStatuses.Deleted
+  const isDeleted = accessStatus === AccessStatus.Deleted
 
   const saleExpiresAt = saleExpiresAtString
     ? new Date(saleExpiresAtString)

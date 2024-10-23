@@ -24,22 +24,26 @@ export enum OrderDirections {
   DESC,
 }
 
+// @deprecated use modules/common.ts
 export enum PublishStatuses {
   Published = 'published',
   Draft = 'draft',
 }
 
+// @deprecated use modules/common.ts
 export enum AccessStatuses {
   Public = 'public',
   Deleted = 'deleted',
 }
 
+// @deprecated use modules/common.ts
 export enum ApprovalStatuses {
   Approved = 'approved',
   Waiting = 'waiting',
   Declined = 'declined',
 }
 
+// @deprecated use modules/common.ts
 export enum PinnedStatuses {
   Pinned = 'pinned',
   Unpinned = 'unpinned',
@@ -323,6 +327,7 @@ export const UserMetaFieldNames = {
   createdAt: 'createdat',
 }
 
+// @deprecated Use module/common.tss
 export const PatreonStatuses = {
   Patron: 'patron',
   NotPatron: 'not_patron',

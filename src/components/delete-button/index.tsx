@@ -2,7 +2,6 @@ import React from 'react'
 import DeleteIcon from '@material-ui/icons/Delete'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { AccessStatuses } from '../../hooks/useDatabaseQuery'
 import { CommonMetaFieldNames } from '../../data-store'
 
 import Button from '../button'
@@ -10,6 +9,7 @@ import LoadingIndicator from '../loading-indicator'
 
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import { AccessStatus, MetaRecord } from '../../modules/common'
 
 const DeleteButton = ({
   id,
@@ -17,13 +17,20 @@ const DeleteButton = ({
   existingAccessStatus = undefined,
   onClick = undefined,
   onDone = undefined,
+}: {
+  id: string
+  metaCollectionName: string
+  existingAccessStatus?: AccessStatus
+  onClick?: ({ newValue }: { newValue: AccessStatus }) => void
+  onDone?: () => void
 }) => {
-  const [isLoading, isErroredLoading, metaRecord] = useDataStoreItem(
-    metaCollectionName,
-    existingAccessStatus !== undefined ? false : id,
-    'delete-button'
-  )
-  const [isSaving, , isErroredSaving, save] = useDatabaseSave(
+  const [isLoading, isErroredLoading, metaRecord] =
+    useDataStoreItem<MetaRecord>(
+      metaCollectionName,
+      existingAccessStatus !== undefined ? false : id,
+      'delete-button'
+    )
+  const [isSaving, , isErroredSaving, save] = useDatabaseSave<MetaRecord>(
     metaCollectionName,
     id
   )
@@ -34,13 +41,13 @@ const DeleteButton = ({
 
   if (!existingAccessStatus && !metaRecord) {
     console.warn(
-      'Cannot render delete button: no existing access status and no meta record'
+      'Cannot render button: no existing access status and no meta record'
     )
     return null
   }
 
   const accessStatus =
-    existingAccessStatus || metaRecord[CommonMetaFieldNames.accessStatus]
+    existingAccessStatus || (metaRecord ? metaRecord.accessstatus : undefined)
 
   if (isErroredLoading || !accessStatus) {
     return <>Failed to load record!</>
@@ -57,16 +64,16 @@ const DeleteButton = ({
       }
 
       const newValue =
-        accessStatus === AccessStatuses.Deleted
-          ? AccessStatuses.Public
-          : AccessStatuses.Deleted
+        accessStatus === AccessStatus.Deleted
+          ? AccessStatus.Public
+          : AccessStatus.Deleted
 
       if (onClick) {
         onClick({ newValue })
       }
 
       await save({
-        [CommonMetaFieldNames.accessStatus]: newValue,
+        accessstatus: newValue,
       })
 
       if (onDone) {
@@ -80,9 +87,7 @@ const DeleteButton = ({
 
   return (
     <Button color="default" onClick={toggle} icon={<DeleteIcon />}>
-      {accessStatus === AccessStatuses.Deleted
-        ? 'Restore From Trash'
-        : 'Delete'}
+      {accessStatus === AccessStatus.Deleted ? 'Restore From Trash' : 'Delete'}
     </Button>
   )
 }

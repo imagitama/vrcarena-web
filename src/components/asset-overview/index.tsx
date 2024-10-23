@@ -87,16 +87,16 @@ import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 import Block from '../block'
 import Questions from '../questions'
 import { AttachmentType } from '../../modules/attachments'
-import {
-  AccessStatuses,
-  ApprovalStatuses,
-  PublishStatuses,
-} from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import WarningMessage from '../warning-message'
 import { alreadyOver18Key } from '../../config'
 import useStorage from '../../hooks/useStorage'
 import AddToVccButton from '../add-to-vcc-button'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+} from '../../modules/common'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -383,9 +383,9 @@ const Area = ({
 }
 
 const isAssetWaitingForApproval = (asset: FullAsset): boolean =>
-  asset.publishstatus == PublishStatuses.Published &&
-  asset.approvalstatus == ApprovalStatuses.Waiting &&
-  asset.accessstatus == AccessStatuses.Public
+  asset.publishstatus == PublishStatus.Published &&
+  asset.approvalstatus == ApprovalStatus.Waiting &&
+  asset.accessstatus == AccessStatus.Public
 
 const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()

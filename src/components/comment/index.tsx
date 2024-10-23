@@ -4,10 +4,7 @@ import Link from '../../components/link'
 import { makeStyles } from '@material-ui/core/styles'
 
 import useUserRecord from '../../hooks/useUserRecord'
-import {
-  CollectionNames as OldCollectionNames,
-  AccessStatuses,
-} from '../../hooks/useDatabaseQuery'
+import { CollectionNames as OldCollectionNames } from '../../hooks/useDatabaseQuery'
 import { CollectionNames } from '../../data-store'
 
 import { canEditComments } from '../../permissions'
@@ -21,10 +18,11 @@ import StaffBadge from '../staff-badge'
 import LoadingShimmer from '../loading-shimmer'
 import EditorRecordManager from '../editor-record-manager'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import { Comment, FullComment } from '../../modules/comments'
+import { FullComment } from '../../modules/comments'
 import ReportButton from '../report-button'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import MentionsOutput from '../mentions-output'
+import { AccessStatus } from '../../modules/common'
 
 const useStyles = makeStyles({
   cols: {
@@ -144,7 +142,7 @@ export default ({
     createdbyrole: createdByRole,
   } = comment
 
-  const isDeleted = accessStatus === AccessStatuses.Deleted
+  const isDeleted = accessStatus === AccessStatus.Deleted
 
   return (
     <div

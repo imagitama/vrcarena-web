@@ -1,3 +1,5 @@
+import { ApprovalStatus } from './common'
+
 export const AmendmentsFieldNames = {
   parentTable: 'parenttable',
   parent: 'parent',
@@ -6,12 +8,12 @@ export const AmendmentsFieldNames = {
   lastModifiedBy: 'lastmodifiedby',
   lastModifiedAt: 'lastmodifiedat',
   createdBy: 'createdby',
-  createdAt: 'createdat'
+  createdAt: 'createdat',
 }
 
 export const GetFullAmendmentsFieldNames = {
   parentData: 'parentdata',
-  createdByUsername: 'createdbyusername'
+  createdByUsername: 'createdbyusername',
 }
 
 export const AmendmentsMetaFieldNames = {
@@ -23,7 +25,7 @@ export const AmendmentsMetaFieldNames = {
   lastmodifiedat: 'lastmodifiedat',
   lastmodifiedby: 'lastmodifiedby',
   createdat: 'createdat',
-  createdby: 'createdby'
+  createdby: 'createdby',
 }
 
 // types
@@ -44,12 +46,12 @@ export interface AmendmentFields {
 }
 
 export interface FullAmendment extends Amendment {
-  approvalstatus: string
+  approvalstatus: ApprovalStatus
   parentdata: any
   createdbyusername: any
 }
 
 export const CollectionNames = {
   Amendments: 'amendments',
-  AmendmentsMeta: 'amendmentsmeta'
+  AmendmentsMeta: 'amendmentsmeta',
 }

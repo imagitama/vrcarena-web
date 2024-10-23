@@ -17,12 +17,12 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 import {
   FullReport,
   reportReasonsKeysByCollection,
-  ResolutionStatuses
+  ResolutionStatus,
 } from '../../modules/reports'
 import NoResultsMessage from '../../components/no-results-message'
 import WarningMessage from '../../components/warning-message'
 import FormattedDate from '../../components/formatted-date'
-import ResolutionStatus from '../../components/resolution-status'
+import ResolutionStatusOutput from '../../components/resolution-status'
 import Button from '../../components/button'
 import { getUrlForParent } from '../../relations'
 import ResolutionControls from '../../components/resolution-controls'
@@ -72,7 +72,7 @@ const View = () => {
     // view
     createdbyusername: createdByUsername,
     parentdata: parentData,
-    resolvedbyusername: resolvedByUsername
+    resolvedbyusername: resolvedByUsername,
   } = report
 
   const onResolutionStatusChanged = () => hydrate()
@@ -92,13 +92,13 @@ const View = () => {
         </Link>
       </Heading>
       <Heading variant="h2">Resolution Status</Heading>
-      <ResolutionStatus
+      <ResolutionStatusOutput
         resolutionStatus={resolutionStatus}
         resolvedAt={resolvedAt}
         resolvedBy={resolvedBy}
         resolvedByUsername={resolvedByUsername}
       />
-      {resolutionStatus === ResolutionStatuses.Resolved ? (
+      {resolutionStatus === ResolutionStatus.Resolved ? (
         <>
           <Heading variant="h2">Resolution Notes</Heading>
           <Markdown source={resolutionNotes || ''} />

@@ -1,37 +1,17 @@
 import React from 'react'
 import { CollectionNames } from '../../data-store'
 import { handleError } from '../../error-handling'
-import { PublishStatuses } from '../../hooks/useDatabaseQuery'
+import { PublishStatus } from '../../modules/common'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import EditorRecordManager from '../editor-record-manager'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import { FullAmendment } from '../../modules/amendments'
-import { getIsStringADate } from '../../utils'
 
-// dates inside of diffs are stored as strings so we need to convert them to Date for storage
-const mapRawFieldsToSavableFields = (fields: {
-  [key: string]: any
-}): { [key: string]: any } => {
-  const savableFields: { [key: string]: any } = {}
-
-  for (const fieldName in fields) {
-    let field = fields[fieldName]
-
-    if (getIsStringADate(field)) {
-      field = new Date(field)
-    }
-
-    savableFields[fieldName] = field
-  }
-
-  return savableFields
-}
-
-export default ({
+const AmendmentEditorRecordManager = ({
   amendment,
-  onDone
+  onDone,
 }: {
   amendment: FullAmendment
   onDone: () => void
@@ -40,24 +20,22 @@ export default ({
     isSavingParent,
     isSavingParentSuccess,
     isSavingParentError,
-    saveParent
+    saveParent,
   ] = useDatabaseSave(amendment.parenttable, amendment.parent)
 
-  const beforeApprove = async () => {
+  const beforeApprove = async (): Promise<boolean> => {
     try {
-      // const fieldsToSave = mapRawFieldsToSavableFields(amendment.fields)
       const fieldsToSave = amendment.fields
 
-      // console.debug(`Saving parent`, amendment.fields, fieldsToSave)
-
       await saveParent({
-        ...fieldsToSave
+        ...fieldsToSave,
       })
 
       return true
     } catch (err) {
       console.error('Failed to approve amendment', err)
       handleError(err)
+      return false
     }
   }
 
@@ -78,13 +56,12 @@ export default ({
         showEditorNotes
         allowDeclineOptions
         existingApprovalStatus={amendment.approvalstatus}
-        // needed otherwise approve button complains
-        existingPublishStatus={PublishStatuses.Published}
-        // @ts-ignore
+        existingPublishStatus={PublishStatus.Published}
         onDone={onDone}
-        // @ts-ignore
         beforeApprove={beforeApprove}
       />
     </>
   )
 }
+
+export default AmendmentEditorRecordManager

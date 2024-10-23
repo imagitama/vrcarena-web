@@ -1,4 +1,4 @@
-import { FeaturedStatus } from './common'
+import { AccessStatus, ApprovalStatus, FeaturedStatus } from './common'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../config'
 import { EditableField } from '../editable-fields'
 import { fieldTypes } from '../generic-forms'
@@ -32,8 +32,8 @@ export interface Event {
 export interface EventMeta {
   id: string
   editornotes: string
-  approvalstatus: string
-  accessstatus: string
+  approvalstatus: ApprovalStatus
+  accessstatus: AccessStatus
   featuredstatus: FeaturedStatus
   lastmodifiedat: Date
   lastmodifiedby: string
@@ -50,10 +50,6 @@ export enum AttendanceStatus {
   Maybe = 'maybe',
   Declined = 'declined',
 }
-
-// export enum UnusableAttendanceStatus {
-//   Abstain = 'abstain', // if they chose a status then reversed it - should never be returned in public views
-// }
 
 export namespace AttendanceStatus {
   export const Abstain: AttendanceStatus = 'abstain' as AttendanceStatus

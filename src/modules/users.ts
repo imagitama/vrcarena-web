@@ -28,8 +28,14 @@ export interface User extends SocialMediaUsernames {
   createdat: Date
 }
 
+export enum PatreonStatus {
+  Patron = 'patron',
+  NotPatron = 'not_patron',
+  Unknown = 'unknown',
+}
+
 export interface UserMeta {
-  patreonstatus: string
+  patreonstatus: PatreonStatus
   linkedvrchatuserid: string
   vrchatlinkcode: number
 }

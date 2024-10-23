@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { ResolutionStatuses } from '../../modules/reports'
+import { ResolutionStatus } from '../../modules/reports'
 import FormattedDate from '../formatted-date'
 import UsernameLink from '../username-link'
 import { colorPalette } from '../../config'
@@ -31,15 +31,15 @@ export default ({
   return (
     <div
       className={
-        resolutionStatus === ResolutionStatuses.Pending
+        resolutionStatus === ResolutionStatus.Pending
           ? classes.waiting
-          : resolutionStatus === ResolutionStatuses.Resolved
+          : resolutionStatus === ResolutionStatus.Resolved
           ? classes.resolved
           : ''
       }>
-      {resolutionStatus === ResolutionStatuses.Pending ? (
+      {resolutionStatus === ResolutionStatus.Pending ? (
         'Pending Staff Input'
-      ) : resolutionStatus === ResolutionStatuses.Resolved ? (
+      ) : resolutionStatus === ResolutionStatus.Resolved ? (
         <>
           Resolved by{' '}
           <UsernameLink

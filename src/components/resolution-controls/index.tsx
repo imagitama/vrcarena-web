@@ -12,7 +12,7 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 import {
   CollectionNames,
   ReportMeta,
-  ResolutionStatuses,
+  ResolutionStatus,
 } from '../../modules/reports'
 import useUserId from '../../hooks/useUserId'
 import TextInput from '../text-input'
@@ -77,13 +77,13 @@ export default ({
       }
 
       const newResolutionStatus =
-        resolutionStatus === ResolutionStatuses.Pending
-          ? ResolutionStatuses.Resolved
-          : ResolutionStatuses.Pending
+        resolutionStatus === ResolutionStatus.Pending
+          ? ResolutionStatus.Resolved
+          : ResolutionStatus.Pending
       const newResolvedAt =
-        newResolutionStatus === ResolutionStatuses.Resolved ? new Date() : null
+        newResolutionStatus === ResolutionStatus.Resolved ? new Date() : null
       const newResolvedBy =
-        newResolutionStatus === ResolutionStatuses.Resolved ? userId : null
+        newResolutionStatus === ResolutionStatus.Resolved ? userId : null
 
       if (onClick) {
         onClick(newResolutionStatus)
@@ -111,15 +111,15 @@ export default ({
         color="default"
         onClick={toggle}
         icon={
-          resolutionStatus === ResolutionStatuses.Pending ? (
+          resolutionStatus === ResolutionStatus.Pending ? (
             <CheckIcon />
-          ) : resolutionStatus === ResolutionStatuses.Resolved ? (
+          ) : resolutionStatus === ResolutionStatus.Resolved ? (
             <ClearIcon />
           ) : undefined
         }>
-        {resolutionStatus === ResolutionStatuses.Pending
+        {resolutionStatus === ResolutionStatus.Pending
           ? 'Resolve'
-          : resolutionStatus === ResolutionStatuses.Resolved
+          : resolutionStatus === ResolutionStatus.Resolved
           ? 'Return To Pending'
           : 'UNKNOWN'}
       </Button>

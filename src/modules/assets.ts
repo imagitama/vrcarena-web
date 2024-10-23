@@ -1,12 +1,12 @@
 import { PopularCurrency } from '../currency'
-import {
-  AccessStatuses,
-  ApprovalStatuses,
-  PinnedStatuses,
-  PublishStatuses,
-} from '../hooks/useDatabaseQuery'
 import { FullAttachment } from './attachments'
-import { FeaturedStatus as FeaturedStatuses } from './common'
+import {
+  FeaturedStatus,
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+  PinnedStatus,
+} from './common'
 import { Tag } from './tags'
 
 // TODO: Better func here as technically FullAsset has speciesnames
@@ -116,12 +116,12 @@ export interface VrchatWorld {}
 
 export interface AssetMeta {
   editornotes: string
-  publishstatus: PublishStatuses
+  publishstatus: PublishStatus
   publishedby: string // user ref
-  accessstatus: AccessStatuses
-  approvalstatus: ApprovalStatuses
-  pinnedstatus: PinnedStatuses
-  featuredstatus: FeaturedStatuses
+  accessstatus: AccessStatus
+  approvalstatus: ApprovalStatus
+  pinnedstatus: PinnedStatus
+  featuredstatus: FeaturedStatus
   featuredby: string // user ref
   lastmodifiedby: string // user ref
   lastmodifiedat: Date

@@ -3,10 +3,10 @@ import Message from '../../../message'
 import PublicEditorNotes from '../../../public-editor-notes'
 import AssetOverviewContext from '../../context'
 import {
-  AccessStatuses,
-  ApprovalStatuses,
-  PublishStatuses,
-} from '../../../../hooks/useDatabaseQuery'
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+} from '../../../../modules/common'
 
 const AssetOverviewMessages = () => {
   const { asset, isLoading } = useContext(AssetOverviewContext)
@@ -21,7 +21,17 @@ const AssetOverviewMessages = () => {
     messages.push(<PublicEditorNotes notes={asset.editornotes} />)
   }
 
-  if (asset.accessstatus === AccessStatuses.Deleted) {
+  if (asset.accessstatus === AccessStatus.Archived) {
+    messages.push(
+      <Message key="archived">
+        This asset has been archived to preserve links and for historical
+        access. If this is your asset and you want it hidden forever, please
+        create a new report.
+      </Message>
+    )
+  }
+
+  if (asset.accessstatus === AccessStatus.Deleted) {
     messages.push(
       <Message key="deleted">
         This asset has been deleted by a staff member.
@@ -29,7 +39,7 @@ const AssetOverviewMessages = () => {
     )
   }
 
-  if (asset.publishstatus === PublishStatuses.Draft) {
+  if (asset.publishstatus === PublishStatus.Draft) {
     messages.push(
       <Message key="draft">
         This asset is a draft. It is only visible to the uploader and must be
@@ -39,7 +49,7 @@ const AssetOverviewMessages = () => {
     )
   }
 
-  if (asset.approvalstatus === ApprovalStatuses.Declined) {
+  if (asset.approvalstatus === ApprovalStatus.Declined) {
     messages.push(
       <Message key="declined">
         This asset has been declined for approval. Please read our notes.

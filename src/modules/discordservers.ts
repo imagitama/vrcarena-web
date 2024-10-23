@@ -1,8 +1,4 @@
-import {
-  AccessStatuses,
-  ApprovalStatuses,
-  PublishStatuses,
-} from '../hooks/useDatabaseQuery'
+import { AccessStatus, ApprovalStatus, PublishStatus } from './common'
 
 export interface DiscordServerFields {
   name: string
@@ -24,9 +20,9 @@ export interface DiscordServer extends DiscordServerFields {
 }
 
 export interface FullDiscordServer extends DiscordServer {
-  publishstatus: PublishStatuses
-  accessstatus: AccessStatuses
-  approvalstatus: ApprovalStatuses
+  publishstatus: PublishStatus
+  accessstatus: AccessStatus
+  approvalstatus: ApprovalStatus
   editornotes: string
 }
 

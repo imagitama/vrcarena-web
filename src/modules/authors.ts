@@ -1,3 +1,5 @@
+import { AccessStatus, ApprovalStatus, PublishStatus } from './common'
+
 export interface Author {
   id: string
   name: string
@@ -30,10 +32,10 @@ export interface Author {
 
 export interface AuthorMeta {
   id: string
-  approvalstatus: string
+  approvalstatus: ApprovalStatus
   approvedat: Date
-  accessstatus: string
-  publishstatus: string
+  accessstatus: AccessStatus
+  publishstatus: PublishStatus
   publishedby: string
   editornotes: string
   lastmodifiedat: Date
