@@ -327,13 +327,14 @@ export const UserMetaFieldNames = {
   createdAt: 'createdat',
 }
 
-// @deprecated Use module/common.tss
+// @deprecated Use module/common.ts
 export const PatreonStatuses = {
   Patron: 'patron',
   NotPatron: 'not_patron',
   Unknown: 'unknown',
 }
 
+// @deprecated Use module/users.ts
 export const BanStatuses = {
   Banned: 'banned',
   Unbanned: 'unbanned',

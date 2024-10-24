@@ -7,6 +7,7 @@ import { ReactComponent as ChristmasHat } from '../../assets/images/christmas-ha
 import { fixAccessingImagesUsingToken, getIsChristmasTime } from '../../utils'
 
 export const sizes = {
+  EXTRATINY: 'extratiny', // timeline
   TINY: 'tiny',
   SMALL: 'small',
   MEDIUM: 'medium',
@@ -22,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   imageWrapper: {
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
+  },
+  [sizes.EXTRATINY]: {
+    width: '25px',
+    height: '25px',
   },
   [sizes.TINY]: {
     width: '50px',

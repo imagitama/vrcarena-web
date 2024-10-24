@@ -4,6 +4,7 @@ import Heading from '../../../heading'
 import AdminHistory from '../../../admin-history'
 import TabContext from '../../context'
 import { CollectionNames } from '../../../../modules/assets'
+import AssetTimeline from '../../../asset-timeline'
 
 export default () => {
   const { assetId } = useContext(TabContext)
@@ -11,12 +12,7 @@ export default () => {
   return (
     <>
       <Heading variant="h2">History</Heading>
-      <AdminHistory
-        id={assetId}
-        limit={10}
-        type={CollectionNames.Assets}
-        metaType={CollectionNames.AssetsMeta}
-      />
+      <AssetTimeline assetId={assetId} />
     </>
   )
 }

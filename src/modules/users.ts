@@ -40,6 +40,11 @@ export interface UserMeta {
   vrchatlinkcode: number
 }
 
+export enum BanStatus {
+  Banned = 'banned',
+  Unbanned = 'unbanned',
+}
+
 export enum UserRoles {
   User = 'user',
   Editor = 'editor',
