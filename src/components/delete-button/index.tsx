@@ -105,6 +105,21 @@ const DeleteButton = ({
     }
   }
 
+  const onClickUpdate = async () => {
+    try {
+      await save({
+        deletionreason: selectedReason,
+      } as AssetMeta)
+
+      if (onDone) {
+        onDone()
+      }
+    } catch (err) {
+      console.error('Failed to update reason', err)
+      handleError(err)
+    }
+  }
+
   const isAsset = metaCollectionName === AssetCollectionNames.AssetsMeta
 
   return (
@@ -134,6 +149,13 @@ const DeleteButton = ({
       <Button onClick={toggle} icon={<DeleteIcon />} size="small">
         {accessStatus === AccessStatus.Deleted ? 'Un-delete' : 'Delete'}
       </Button>
+      {isAsset &&
+        existingDeletionReason !== undefined &&
+        existingDeletionReason !== selectedReason && (
+          <Button onClick={onClickUpdate} size="small">
+            Update Reason
+          </Button>
+        )}
     </>
   )
 }
