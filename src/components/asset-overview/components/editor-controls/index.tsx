@@ -22,6 +22,7 @@ export default () => {
         existingAccessStatus={asset.accessstatus}
         existingEditorNotes={asset.editornotes}
         // assets
+        existingDeletionReason={asset.deletionreason}
         existingArchivedReason={asset.archivedreason}
         existingDeclinedReasons={asset.declinedreasons}
         onDone={() => hydrate()}
