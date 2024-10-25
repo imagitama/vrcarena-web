@@ -54,7 +54,6 @@ const AmendmentEditorRecordManager = ({
         showPublishButtons={false}
         showAccessButtons={false}
         showEditorNotes
-        allowDeclineOptions
         existingApprovalStatus={amendment.approvalstatus}
         existingPublishStatus={PublishStatus.Published}
         onDone={onDone}

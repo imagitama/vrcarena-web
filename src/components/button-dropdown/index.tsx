@@ -5,15 +5,20 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import CheckIcon from '@material-ui/icons/Check'
 import { makeStyles } from '@material-ui/core/styles'
 
-import Button from '../../components/button'
+import Button, { ButtonProps } from '../../components/button'
 
 const useStyles = makeStyles({
   root: {
-    display: 'flex',
+    display: 'inline-flex',
   },
 })
 
-export default ({
+interface DropdownOption {
+  id: string
+  label: string
+}
+
+const ButtonDropdown = ({
   options,
   label = '',
   selectedId = undefined,
@@ -21,16 +26,23 @@ export default ({
   closeOnSelect = true,
   onSelect,
   ...buttonProps
-}) => {
+}: {
+  options: DropdownOption[]
+  label?: string
+  selectedId?: string
+  selectedIds?: string[]
+  closeOnSelect?: boolean
+  onSelect: (newId: string) => void
+} & ButtonProps) => {
   const classes = useStyles()
-  const buttonRef = useRef()
+  const buttonRef = useRef<HTMLElement | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const onMainBtnClick = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
 
-  const onClickItem = (optionId) => {
+  const onClickItem = (optionId: string) => {
     onSelect(optionId)
 
     if (closeOnSelect) {
@@ -48,11 +60,11 @@ export default ({
         <Button
           {...buttonProps}
           icon={buttonProps.icon || <KeyboardArrowDownIcon />}
-          onClick={() => {
+          onClick={(e) => {
             onMainBtnClick()
 
             if (buttonProps.onClick) {
-              buttonProps.onClick()
+              buttonProps.onClick(e)
             }
           }}>
           {label}
@@ -87,3 +99,5 @@ export default ({
     </div>
   )
 }
+
+export default ButtonDropdown

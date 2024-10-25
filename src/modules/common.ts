@@ -30,6 +30,7 @@ export interface MetaRecord {
   featuredstatus: FeaturedStatus
   accessstatus: AccessStatus
   approvalstatus: ApprovalStatus
-  approvedat: Date | null // todo: verify this is common - probs only assets
   publishstatus: PublishStatus
+  // todo: add to non-assets
+  approvedat: Date | null
 }

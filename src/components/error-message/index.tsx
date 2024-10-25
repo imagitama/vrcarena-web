@@ -12,6 +12,7 @@ const getErrorCodeForError = (error: Error): string =>
   base64EncodeString(error.message)
 
 const ErrorMessage = ({
+  title,
   children,
   error,
   hintText,
@@ -28,7 +29,7 @@ const ErrorMessage = ({
   <Message
     icon={<ErrorIcon />}
     color="#1c0002"
-    title={children}
+    title={title || children}
     controls={
       onRetry || onOkay ? (
         <>
@@ -45,6 +46,7 @@ const ErrorMessage = ({
         </>
       ) : undefined
     }>
+    {title && children ? children : null}
     {hintText || hintText === undefined ? (
       <>
         {hintText || (

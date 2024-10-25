@@ -244,7 +244,6 @@ function AssetsTable({
                       // @ts-ignore
                       onDone={hydrate ? () => hydrate() : undefined}
                       callOnDoneOnEditorNotes={false}
-                      allowDeclineOptions={true}
                     />
                   </TableCell>
                 </TableRow>

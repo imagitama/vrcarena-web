@@ -534,3 +534,12 @@ export const isGitRepoUrl = (url: string) =>
   url.substring(url.length, url.length - 4) === '.git'
 export const isJsonUrl = (url: string) =>
   url.substring(url.length, url.length - 5) === '.json'
+
+export const getAreArraysSame = (arrayA: any[], arrayB: any[]): boolean => {
+  if (arrayA.length !== arrayB.length) return false
+
+  const sortedA = [...arrayA].sort()
+  const sortedB = [...arrayB].sort()
+
+  return sortedA.every((value, index) => value === sortedB[index])
+}

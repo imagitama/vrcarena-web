@@ -6,6 +6,7 @@ import {
   ApprovalStatus,
   PublishStatus,
   PinnedStatus,
+  MetaRecord,
 } from './common'
 import { Tag } from './tags'
 
@@ -114,23 +115,55 @@ export interface DiscordServerData {
 
 export interface VrchatWorld {}
 
-export interface AssetMeta {
-  editornotes: string
-  publishstatus: PublishStatus
-  publishedby: string // user ref
-  accessstatus: AccessStatus
-  approvalstatus: ApprovalStatus
-  pinnedstatus: PinnedStatus
-  featuredstatus: FeaturedStatus
-  featuredby: string // user ref
-  lastmodifiedby: string // user ref
+export enum DeletionReason {
+  author_request = 'author_request',
+  dmca_claim = 'dmca_claim',
+  inferior = 'inferior',
+  violates_tos = 'violates_tos',
+}
+
+export enum ArchivedReason {
+  product_missing = 'product_missing',
+  product_discontinued = 'product_discontinued',
+}
+
+export enum DeclinedReason {
+  violates_tos = 'violates_tos',
+  inferior = 'inferior',
+  missing_source = 'missing_source',
+  invalid_source = 'invalid_source',
+  missing_thumbnail = 'missing_thumbnail',
+  invalid_thumbnail = 'invalid_thumbnail',
+  missing_title = 'missing_title',
+  invalid_title = 'invalid_title',
+  missing_author = 'missing_author',
+  incorrect_author = 'incorrect_author',
+  missing_category = 'missing_category',
+  incorrect_category = 'incorrect_category',
+  missing_description = 'missing_description',
+  too_short_description = 'too_short_description',
+  missing_tags = 'missing_tags',
+  not_many_tags = 'not_many_tags',
+  missing_species = 'missing_species',
+  incorrect_species = 'incorrect_species',
+  missing_nsfw_flag = 'missing_nsfw_flag',
+}
+
+export interface AssetMeta extends MetaRecord {
+  publishedby: string
+  featuredby: string
+  lastmodifiedby: string
   lastmodifiedat: Date
-  createdby: string // user ref
+  createdby: string
   createdat: Date
-  lastsyncedwithgumroadat: Date
-  approvedat: Date
   approvedby: string
   publishedat: Date
+  // not in MetaRecord
+  deletionreason: DeletionReason
+  archivedreason: ArchivedReason
+  declinedreasons: DeclinedReason[]
+  // specific to assets
+  lastsyncedwithgumroadat: Date
 }
 
 export interface AssetStats {

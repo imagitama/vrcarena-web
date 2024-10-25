@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
-interface ButtonProps {
+export interface ButtonProps {
   children?: React.ReactNode
   onClick?: (e: SyntheticEvent) => Promise<void> | void
   url?: string

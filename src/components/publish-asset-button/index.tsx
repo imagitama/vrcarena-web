@@ -12,31 +12,11 @@ import SuccessMessage from '../success-message'
 import { Asset, AssetCategory } from '../../modules/assets'
 import WarningMessage from '../warning-message'
 import { adultSearchTerms } from '../../config'
-import Message from '../message'
 import FormControls from '../form-controls'
 import useHistory from '../../hooks/useHistory'
 import useTimer from '../../hooks/useTimer'
 import * as routes from '../../routes'
-
-const errorCodes: { [key: string]: string } = {
-  IS_NOT_DRAFT: 'IS_NOT_DRAFT',
-  NOT_CREATOR: 'NOT_CREATOR',
-  USER_BANNED: 'USER_BANNED',
-  UNKNOWN: 'UNKNOWN',
-}
-
-const getErrorMessageForCode = (errorCode: string): string => {
-  switch (errorCode) {
-    case errorCodes.IS_NOT_DRAFT:
-      return 'Only drafts can be published'
-    case errorCodes.NOT_CREATOR:
-      return 'You are not the creator of this asset'
-    case errorCodes.USER_BANNED:
-      return 'You are banned'
-    default:
-      return 'Unknown'
-  }
-}
+import { PublishErrorCode, getErrorMessageForCode } from '../../assets'
 
 enum BlockingErrorTypes {
   NO_TITLE = 'NO_TITLE',
@@ -241,7 +221,7 @@ export default ({
 
       setIsPublishing(false)
       setIsSuccess(false)
-      setLastErrorCode(errorCodes.UNKNOWN)
+      setLastErrorCode(PublishErrorCode.UNKNOWN)
     }
   }
 

@@ -52,6 +52,7 @@ export enum UserRoles {
 }
 
 export interface UserAdminMeta {
+  id: string
   role: UserRoles
 }
 

@@ -26,6 +26,7 @@ import ShortDiff from '../short-diff'
 import GenericEditor from '../generic-editor'
 import WarningMessage from '../warning-message'
 import Heading from '../heading'
+import { Asset } from '../../modules/assets'
 
 const useStyles = makeStyles({
   cols: {
@@ -224,7 +225,7 @@ const AmendmentEditor = ({
 
     // we store the data as IDs but still need to output it as "authorName" etc.
     const [outputFieldName, outputValue] = await getFieldNameAndValueForOutput(
-      fieldName,
+      fieldName as keyof Asset,
       newValue
     )
 

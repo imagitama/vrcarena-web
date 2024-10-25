@@ -216,7 +216,7 @@ const QueuedAssetInfo = ({
             existingAccessStatus={asset.accessstatus}
             existingEditorNotes={asset.editornotes}
             onDone={hydrate}
-            allowDeclineOptions={true}
+            showStatuses
           />
         </>
       ) : null}
