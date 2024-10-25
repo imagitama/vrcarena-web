@@ -76,7 +76,9 @@ const AssetOverviewMessages = () => {
         This asset has been declined for approval. It has the following issues:
         <ul style={{ marginBottom: 0 }}>
           {asset.declinedreasons.length ? (
-            asset.declinedreasons.map(getDeclinedReasonLabel)
+            asset.declinedreasons.map((reason) => (
+              <li key={reason}>{getDeclinedReasonLabel(reason)}</li>
+            ))
           ) : (
             <li>no reasons specified</li>
           )}
