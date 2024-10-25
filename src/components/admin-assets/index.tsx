@@ -16,10 +16,10 @@ import EditIcon from '@material-ui/icons/Edit'
 import FilterListIcon from '@material-ui/icons/FilterList'
 
 import {
-  PublishStatuses,
-  ApprovalStatuses,
-  AccessStatuses,
-} from '../../hooks/useDatabaseQuery'
+  PublishStatus,
+  ApprovalStatus,
+  AccessStatus,
+} from '../../modules/common'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 import {
@@ -290,6 +290,7 @@ enum SubView {
   Deleted = 'deleted',
   Declined = 'declined',
   Approved = 'approved',
+  Archived = 'archived',
 }
 
 enum StorageKeys {
@@ -409,27 +410,31 @@ const AdminAssets = () => {
       switch (selectedSubView) {
         case SubView.Pending:
           query = query
-            .eq('publishstatus', PublishStatuses.Published)
-            .eq('approvalstatus', ApprovalStatuses.Waiting)
-            .eq('accessstatus', AccessStatuses.Public)
+            .eq('publishstatus', PublishStatus.Published)
+            .eq('approvalstatus', ApprovalStatus.Waiting)
+            .eq('accessstatus', AccessStatus.Public)
           break
 
         case SubView.Deleted:
-          query = query.eq('accessstatus', AccessStatuses.Deleted)
+          query = query.eq('accessstatus', AccessStatus.Deleted)
+          break
+
+        case SubView.Archived:
+          query = query.eq('accessstatus', AccessStatus.Archived)
           break
 
         case SubView.Approved:
           query = query
-            .eq('publishstatus', PublishStatuses.Published)
-            .eq('approvalstatus', ApprovalStatuses.Approved)
-            .eq('accessstatus', AccessStatuses.Public)
+            .eq('publishstatus', PublishStatus.Published)
+            .eq('approvalstatus', ApprovalStatus.Approved)
+            .eq('accessstatus', AccessStatus.Public)
           break
 
         case SubView.Declined:
           query = query
-            .eq('publishstatus', PublishStatuses.Draft)
-            .eq('approvalstatus', ApprovalStatuses.Declined)
-            .eq('accessstatus', AccessStatuses.Public)
+            .eq('publishstatus', PublishStatus.Draft)
+            .eq('approvalstatus', ApprovalStatus.Declined)
+            .eq('accessstatus', AccessStatus.Public)
       }
 
       return query
@@ -549,6 +554,22 @@ const AdminAssets = () => {
           color="default"
           size="small">
           Deleted
+        </Button>,
+        <Button
+          icon={
+            selectedSubView === SubView.Archived ? (
+              <CheckBoxIcon />
+            ) : (
+              <CheckBoxOutlineBlankIcon />
+            )
+          }
+          onClick={() => {
+            toggleSubView(SubView.Archived)
+            trackAction(analyticsCategoryName, 'Click on view archived assets')
+          }}
+          color="default"
+          size="small">
+          Archived
         </Button>,
         <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,
       ]}>
