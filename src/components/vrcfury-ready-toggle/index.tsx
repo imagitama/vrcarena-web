@@ -38,6 +38,7 @@ const VrcFuryToggle = ({
         if (onDone) {
           onDone()
         }
+
         return
       }
 
@@ -71,7 +72,7 @@ const VrcFuryToggle = ({
         clear={clear}
       />
       <br />
-      <em>Adds "vrcfury_ready" tag to avatar</em>
+      <em>Adds or removes "vrcfury_ready" tag from the asset</em>
     </>
   )
 }
