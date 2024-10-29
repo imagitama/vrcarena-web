@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import { makeStyles } from '@material-ui/core/styles'
+import HelpIcon from '@material-ui/icons/Help'
 
 import { VRCFury as VrcFuryIcon } from '../../icons'
 import { VrcFuryPrefabInfo } from '../../modules/assets'
@@ -16,6 +17,7 @@ import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 import Box from '../box'
 import Link from '../link'
+import Tooltip from '../tooltip'
 
 const useStyles = makeStyles({
   root: {
@@ -28,7 +30,6 @@ const useStyles = makeStyles({
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-    cursor: 'pointer',
     color: vrcFuryOrange,
     '& svg': {
       fill: vrcFuryOrange,
@@ -36,6 +37,7 @@ const useStyles = makeStyles({
       height: '1rem',
       marginRight: '0.5rem',
     },
+    paddingLeft: '0.25rem',
     userSelect: 'none',
   },
   prefabs: {
@@ -44,6 +46,13 @@ const useStyles = makeStyles({
   discordNotice: {
     marginTop: '0.5rem',
   },
+  vrcFuryReadyIcon: {
+    fontSize: '50%',
+    marginLeft: '0.25rem',
+  },
+  clickable: {
+    cursor: 'pointer',
+  },
 })
 
 const vrcFuryAssetId = '21def-vrcfury'
@@ -51,9 +60,11 @@ const vrcFuryAssetId = '21def-vrcfury'
 const VrcFurySettings = ({
   prefabs,
   analyticsCategory = undefined,
+  isVrcFuryReady = null,
 }: {
-  prefabs: VrcFuryPrefabInfo[]
+  prefabs?: VrcFuryPrefabInfo[]
   analyticsCategory?: string
+  isVrcFuryReady?: boolean | null // null for unsure, false for actually no
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [discordServerDatas, setDiscordServerDatas] = useState<
@@ -63,6 +74,10 @@ const VrcFurySettings = ({
 
   const populateDiscordServerData = async () => {
     try {
+      if (!prefabs) {
+        return
+      }
+
       const ids = prefabs
         .filter((prefab) => prefab.discordServerId !== undefined)
         .map((prefab) => prefab.discordServerId || '')
@@ -89,62 +104,79 @@ const VrcFurySettings = ({
   return (
     <Box color={vrcFuryOrange} icon={<VrcFuryIcon />}>
       <div className={classes.root}>
-        <div
-          className={classes.title}
-          onClick={() => {
-            if (discordServerDatas === null) {
-              populateDiscordServerData()
-            }
-            setIsExpanded((currentVal) => !currentVal)
-            if (analyticsCategory && isExpanded === false) {
-              trackAction(analyticsCategory, 'Expand VRCFury prefabs box')
-            }
-          }}>
-          {prefabs.length} third-party VRCFury prefab
-          {prefabs.length > 1 ? 's' : ''}{' '}
-          {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-        </div>
-        {isExpanded ? (
+        {isVrcFuryReady ? (
+          <div className={classes.title}>
+            VRCFury Ready{' '}
+            <Tooltip title="The asset has a Unity prefab with VRCFury components.">
+              <HelpIcon className={classes.vrcFuryReadyIcon} />
+            </Tooltip>
+          </div>
+        ) : null}
+        {prefabs ? (
           <>
-            <Link
-              to={routes.viewAssetWithVar.replace(':assetId', vrcFuryAssetId)}>
-              Click here to learn about VRCFury
-            </Link>
-            <br />
-            <div className={classes.prefabs}>
-              {prefabs.map((prefabInfo) => (
-                <div key={prefabInfo.url}>
-                  <Button
-                    url={prefabInfo.url}
-                    icon={<VrcFuryIcon />}
-                    color="default"
-                    onClick={
-                      analyticsCategory
-                        ? () => {
-                            trackAction(
-                              analyticsCategory,
-                              'Click view VRCFury prefab button',
-                              { url: prefabInfo.url }
-                            )
-                          }
-                        : undefined
-                    }>
-                    View {isDiscordUrl(prefabInfo.url) ? 'Discord' : 'website'}{' '}
-                    prefab
-                  </Button>
-                  {prefabInfo.discordServerId && (
-                    <DiscordServerMustJoinNotice
-                      discordServerId={prefabInfo.discordServerId}
-                      discordServerData={discordServerDatas?.find(
-                        (discordServerData) =>
-                          discordServerData.id === prefabInfo.discordServerId
-                      )}
-                      className={classes.discordNotice}
-                    />
-                  )}
-                </div>
-              ))}
+            <div
+              className={`${classes.title} ${classes.clickable}`}
+              onClick={() => {
+                if (discordServerDatas === null) {
+                  populateDiscordServerData()
+                }
+                setIsExpanded((currentVal) => !currentVal)
+                if (analyticsCategory && isExpanded === false) {
+                  trackAction(analyticsCategory, 'Expand VRCFury prefabs box')
+                }
+              }}>
+              {prefabs.length} third-party VRCFury prefab
+              {prefabs.length > 1 ? 's' : ''}{' '}
+              {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </div>
+            {isExpanded ? (
+              <>
+                <Link
+                  to={routes.viewAssetWithVar.replace(
+                    ':assetId',
+                    vrcFuryAssetId
+                  )}>
+                  Click here to learn about VRCFury
+                </Link>
+                <br />
+                <div className={classes.prefabs}>
+                  {prefabs.map((prefabInfo) => (
+                    <div key={prefabInfo.url}>
+                      <Button
+                        url={prefabInfo.url}
+                        icon={<VrcFuryIcon />}
+                        color="default"
+                        onClick={
+                          analyticsCategory
+                            ? () => {
+                                trackAction(
+                                  analyticsCategory,
+                                  'Click view VRCFury prefab button',
+                                  { url: prefabInfo.url }
+                                )
+                              }
+                            : undefined
+                        }>
+                        View{' '}
+                        {isDiscordUrl(prefabInfo.url) ? 'Discord' : 'website'}{' '}
+                        prefab
+                      </Button>
+                      {prefabInfo.discordServerId && (
+                        <DiscordServerMustJoinNotice
+                          discordServerId={prefabInfo.discordServerId}
+                          discordServerData={discordServerDatas?.find(
+                            (discordServerData) =>
+                              discordServerData.id ===
+                              prefabInfo.discordServerId
+                          )}
+                          className={classes.discordNotice}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : null}
           </>
         ) : null}
       </div>

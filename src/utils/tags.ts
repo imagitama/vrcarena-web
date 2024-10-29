@@ -21,6 +21,7 @@ export const getTagsFromUserInput = (userInput: string): string[] =>
 export const removeDuplicates = (tags: string[]): string[] =>
   tags.filter((value, index, array) => array.indexOf(value) === index)
 
+// TODO: Move to modules/tags?
 export const categories = {
   General: 'General',
   Modelling: 'Modelling',

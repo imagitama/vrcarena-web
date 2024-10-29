@@ -117,6 +117,8 @@ import { handleError } from '../../error-handling'
 import ErrorMessage from '../error-message'
 import ChangeVccUrlForm from '../change-vcc-url-form'
 import AddToVccButton from '../add-to-vcc-button'
+import { tagVrcFuryReady } from '../../vrcfury'
+import VrcFuryToggle from '../vrcfury-ready-toggle'
 
 interface EditorInfo {
   assetId: string | null
@@ -1241,16 +1243,20 @@ const Editor = () => {
                     onOkay={() => hideNotice(vrcFuryInfoNoticeId)}
                     title={
                       <>
+                        We recommend{' '}
                         <a
                           href="https://vrcfury.com"
                           target="_blank"
                           rel="noopener noreferrer">
                           VRCFury
                         </a>{' '}
-                        is a free non-destructive tool for VRChat avatars. It is
-                        our recommended way to add accessories to avatars.
+                        when adding accessories to avatars
                       </>
                     }>
+                    <ul>
+                      <li>free</li>
+                      <li>non-destructive</li>
+                    </ul>
                     <p>
                       Accessory creators can create a Unity prefab with a
                       VRCFury component to make adding accessories really easy.
@@ -1268,15 +1274,28 @@ const Editor = () => {
                   </InfoMessage>
                 )}
                 <FormEditorArea
-                  title="VRCFury Compatibility"
+                  title="VRCFury Ready"
                   icon={() => <VrcFuryIcon />}
-                  isEditable={false}
-                  display={() => (
-                    <>
-                      Use the "Features" tab to indicate that this asset is
-                      ready and tested with VRCFury.
-                    </>
-                  )}
+                  display={() =>
+                    asset.tags.includes(tagVrcFuryReady) ? (
+                      <VrcFurySettings isVrcFuryReady />
+                    ) : (
+                      <NoValueMessage>
+                        No indication that it is VRCFury ready
+                      </NoValueMessage>
+                    )
+                  }
+                  editor={
+                    <VrcFuryToggle
+                      assetId={asset.id}
+                      existingTags={asset.tags}
+                      overrideSave={
+                        onFieldChanged
+                          ? (newTags) => onFieldChanged('tags', newTags)
+                          : undefined
+                      }
+                    />
+                  }
                 />
                 <FormEditorArea
                   title="VRCFury Prefabs"

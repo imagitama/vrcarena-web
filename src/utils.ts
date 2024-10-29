@@ -520,6 +520,13 @@ export const addOrUpdateQueryParam = (name: string, value: string): void => {
   window.history.replaceState(null, '', url.href)
 }
 
+export const isGitRepoUrl = (url: string) =>
+  url.substring(url.length, url.length - 4) === '.git'
+export const isJsonUrl = (url: string) =>
+  url.substring(url.length, url.length - 5) === '.json'
+
+// arrays
+
 export const moveItemInArray = (
   from: number,
   to: number,
@@ -530,11 +537,6 @@ export const moveItemInArray = (
   return newArray
 }
 
-export const isGitRepoUrl = (url: string) =>
-  url.substring(url.length, url.length - 4) === '.git'
-export const isJsonUrl = (url: string) =>
-  url.substring(url.length, url.length - 5) === '.json'
-
 export const getAreArraysSame = (arrayA: any[], arrayB: any[]): boolean => {
   if (arrayA.length !== arrayB.length) return false
 
@@ -543,3 +545,6 @@ export const getAreArraysSame = (arrayA: any[], arrayB: any[]): boolean => {
 
   return sortedA.every((value, index) => value === sortedB[index])
 }
+
+export const removeDuplicates = <T = any>(arr: T[]): T[] =>
+  arr.filter((value, index, array) => array.indexOf(value) === index)

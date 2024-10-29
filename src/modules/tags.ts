@@ -5,7 +5,7 @@ import * as icons from '../icons'
 import { AccessStatus } from './common'
 
 export interface Tag {
-  id: string
+  id: string // tag itself
   label: string
   category: string
   description: string

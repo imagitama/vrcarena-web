@@ -97,6 +97,7 @@ import {
   ApprovalStatus,
   PublishStatus,
 } from '../../modules/common'
+import { tagVrcFuryReady } from '../../vrcfury'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -846,11 +847,13 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                 </Control>
                 <Control>
                   {asset &&
-                    asset.extradata &&
-                    asset.extradata.vrcfury &&
-                    asset.extradata.vrcfury.prefabs.length && (
+                    ((asset.extradata &&
+                      asset.extradata.vrcfury &&
+                      asset.extradata.vrcfury.prefabs.length) ||
+                      asset.tags.includes(tagVrcFuryReady)) && (
                       <VrcFurySettings
-                        prefabs={asset.extradata.vrcfury.prefabs}
+                        isVrcFuryReady={asset.tags.includes(tagVrcFuryReady)}
+                        prefabs={asset.extradata?.vrcfury?.prefabs}
                         analyticsCategory={analyticsCategoryName}
                       />
                     )}

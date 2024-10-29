@@ -6,6 +6,8 @@ import {
   getDataStoreErrorCodeFromError,
 } from '../data-store'
 
+type ClearFunc = () => void
+
 export default <TRecord, TReturnVal = TRecord>(
   collectionName: string | false,
   documentId: string | null = null,
@@ -16,7 +18,7 @@ export default <TRecord, TReturnVal = TRecord>(
   boolean,
   null | DataStoreErrorCode,
   (fields?: Partial<TRecord>, id?: string) => Promise<(null | TReturnVal)[]>,
-  () => void
+  ClearFunc
 ] => {
   const [isSaving, setIsSaving] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)

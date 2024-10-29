@@ -51,7 +51,7 @@ const useStyles = makeStyles(() => ({
   title: {
     fontSize: '125%',
     fontWeight: 100,
-    display: 'flex',
+    // display: 'flex', TODO: Why was this on? Breaks links in titles
     alignItems: 'center',
     position: 'relative',
     zIndex: 50,
