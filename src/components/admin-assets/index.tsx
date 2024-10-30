@@ -37,9 +37,7 @@ import EditorRecordManager from '../editor-record-manager'
 import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
 import AssetOverview from '../asset-overview'
-import Message from '../message'
 import useStorage from '../../hooks/useStorage'
-import AssetEditor, { EditorContext } from '../asset-editor'
 import AssetEditorWithSync from '../asset-editor-with-sync'
 
 const useStyles = makeStyles({

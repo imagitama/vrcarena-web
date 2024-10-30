@@ -90,7 +90,7 @@ const ApproveButton = ({
         onClick({ newApprovalStatus })
       }
 
-      if (beforeApprove) {
+      if (newApprovalStatus === ApprovalStatus.Approved && beforeApprove) {
         const result = await beforeApprove()
 
         if (result !== true) {
@@ -140,6 +140,10 @@ const ApproveButton = ({
       console.error('Failed to update reason', err)
       handleError(err)
     }
+  }
+
+  if (!approvalStatus) {
+    return <>No approval status</>
   }
 
   return (
