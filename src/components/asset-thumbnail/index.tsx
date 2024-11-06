@@ -53,12 +53,14 @@ const AssetThumbnail = ({
   spin = false,
   pauseOnHover = true,
   size = 'full',
+  alt = undefined,
 }: {
   url: string
   className?: string
   spin?: boolean
   pauseOnHover?: boolean
   size?: 'full' | 'small' | 'tiny' | 'micro'
+  alt?: string
 }) => {
   const classes = useStyles()
   return (
@@ -67,7 +69,7 @@ const AssetThumbnail = ({
         src={url || defaultThumbnailUrl}
         width={THUMBNAIL_WIDTH}
         height={THUMBNAIL_HEIGHT}
-        alt="Thumbnail for asset"
+        alt={alt !== undefined ? alt : 'Thumbnail for asset'}
         className={`${className} ${spin ? classes.spin : ''} ${
           pauseOnHover ? classes.pauseOnHover : ''
         }`}

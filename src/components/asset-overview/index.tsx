@@ -417,7 +417,17 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const hideBecauseAdult =
     asset && asset.isadult && !isAdultContentEnabled && !bypassAdultFilterOnce
 
-  useBanner(hideBecauseAdult ? null : asset && asset.bannerurl)
+  const bannerUrl = hideBecauseAdult
+    ? null
+    : asset
+    ? asset.bannerurl
+      ? asset.bannerurl
+      : asset.attachmentsdata && asset.attachmentsdata.length
+      ? asset.attachmentsdata[0].url
+      : null
+    : null
+
+  useBanner(bannerUrl)
 
   const isAllowedToEditAsset = asset && user && getCanUserEditAsset(asset, user)
 
@@ -596,7 +606,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             {isLoading ? (
               <LoadingShimmer width={75} height={75} />
             ) : (
-              <AssetThumbnail url={asset.thumbnailurl} size="micro" />
+              <AssetThumbnail url={asset.thumbnailurl} size="micro" alt="" />
             )}
           </div>
           <div>

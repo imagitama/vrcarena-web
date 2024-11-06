@@ -25,11 +25,16 @@ const useStyles = makeStyles({
     },
   },
   image: {
+    backgroundColor: '#1e1e1e',
+    minHeight: '224px', // 3x 16/9 scaled down
     maxWidth: '33.3%',
     margin: '0.5rem',
+    padding: 0,
     cursor: 'pointer',
     transition: 'all 100ms',
     '& img': {
+      backgroundColor: '#1e1e1e',
+      display: 'block',
       maxWidth: '100%',
       maxHeight: '400px',
       aspectRatio: '1/1',
@@ -97,10 +102,10 @@ const useStyles = makeStyles({
       width: 'auto',
     },
   },
-  shimmer: {
-    width: '30rem',
-    display: 'flex',
-    alignItems: 'center',
+  placeholder: {
+    width: '224px',
+    height: '224px', // 3x 16/9 scaled down
+    backgroundColor: '#1e1e1e',
   },
   hidden: {
     display: 'none',
@@ -154,23 +159,13 @@ const Image = ({
   )
 }
 
-const LoadingShimmers = ({ count }: { count: number }) => {
+const LoadingPlaceholders = ({ count }: { count: number }) => {
   const classes = useStyles()
-
-  // store as ref to avoid re-drawing each re-render
-  const sizesRefs = useRef([
-    getRandomInt(200, 300),
-    getRandomInt(200, 300),
-    getRandomInt(200, 300),
-  ])
-
   const shimmers = []
 
   for (let i = 0; i < count; i++) {
     shimmers.push(
-      <div className={`${classes.image} ${classes.shimmer}`}>
-        <LoadingShimmer height={sizesRefs.current[i]} />
-      </div>
+      <div className={`${classes.image} ${classes.placeholder}`}></div>
     )
   }
 
@@ -210,7 +205,7 @@ const ImageGallery = ({
         selectedIdx !== null ? classes.expanded : ''
       }`}>
       {showLoadingCount ? (
-        <LoadingShimmers count={showLoadingCount} />
+        <LoadingPlaceholders count={showLoadingCount} />
       ) : (
         <>
           <div
