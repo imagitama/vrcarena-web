@@ -44,6 +44,7 @@ import useDatabaseQuery, {
 import AssetsPaginatedView from '../../components/assets-paginated-view'
 import ClaimButton from '../../components/claim-button'
 import UserList from '../../components/user-list'
+import LazyLoad from 'react-lazyload'
 
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
   const getQuery = useCallback(
@@ -360,7 +361,9 @@ const View = () => {
         </>
       ) : null}
 
-      <Claims authorId={authorId} />
+      <LazyLoad placeholder={<LoadingIndicator message="Scroll down..." />}>
+        <Claims authorId={authorId} />
+      </LazyLoad>
     </>
   )
 }

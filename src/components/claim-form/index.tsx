@@ -102,6 +102,7 @@ const ClaimForm = <TData,>({
         isDisabled={isCreating}
         multiline
         rows={3}
+        fullWidth
       />
       <FormControls>
         <Button
