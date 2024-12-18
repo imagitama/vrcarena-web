@@ -476,8 +476,8 @@ export const HomepageFieldNames = {
   patreon: 'patreon',
 }
 
-export function getWhereClausesAsString(
-  whereClauses: PossibleWhereClauses
+export function getWhereClausesAsString<TRecord>(
+  whereClauses: PossibleWhereClauses<TRecord>
 ): string {
   if (whereClauses === undefined) {
     return 'undefined'
@@ -491,7 +491,9 @@ export function getWhereClausesAsString(
   if (Array.isArray(whereClauses)) {
     return whereClauses
       .map((item) =>
-        Array.isArray(item) ? `[${item[0]},${item[1]},${item[2]}]` : item
+        Array.isArray(item)
+          ? `[${item[0] as string},${item[1]},${item[2]}]`
+          : item
       )
       .join(',')
   }
@@ -550,7 +552,11 @@ const getOptionsIfProvided = (
   }
 }
 
-export type WhereClause = [string, Operators, string | boolean | null]
+export type WhereClause<TRecord> = [
+  keyof TRecord,
+  Operators,
+  string | boolean | null
+]
 
 type OrderBy = [string, OrderDirections]
 
@@ -567,21 +573,23 @@ interface OptionsMap {
   subscribe?: boolean // not supported in supabase (without setup)
 }
 
-type PossibleWhereClauses = (WhereClause | string | WhereOperators.OR)[] | false
+type PossibleWhereClauses<TRecord> =
+  | (WhereClause<TRecord> | string | WhereOperators.OR)[]
+  | false
 
-export default <TResult>(
+export default <TRecord>(
   collectionName: string,
-  whereClauses: PossibleWhereClauses,
+  whereClauses: PossibleWhereClauses<TRecord>,
   limitOrOptions?: number | OptionsMap,
   orderBy?: OrderBy,
   subscribe = true,
   startAfter = undefined
-): [boolean, null | DataStoreErrorCode, TResult[] | null, () => void] => {
+): [boolean, null | DataStoreErrorCode, TRecord[] | null, () => void] => {
   if (typeof whereClauses === 'string') {
     throw new Error('Cannot pass id to this hook anymore')
   }
 
-  const [records, setRecords] = useState<TResult[] | null>(null)
+  const [records, setRecords] = useState<TRecord[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
     null

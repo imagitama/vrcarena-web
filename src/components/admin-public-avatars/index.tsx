@@ -278,7 +278,7 @@ const Avatars = () => {
   const [isLoading, isErrored, results, hydrate] =
     useDatabaseQuery<FullPublicAvatarSubmission>(
       'getFullPublicAvatarSubmissions'.toLowerCase(),
-      [[PublicAvatarSubmissionsFieldNames.isDeleted, Operators.EQUALS, false]]
+      [['isdeleted', Operators.EQUALS, false]]
     )
 
   if (isLoading || !Array.isArray(results)) {

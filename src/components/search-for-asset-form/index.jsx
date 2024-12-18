@@ -42,7 +42,7 @@ function SearchForm({
     (query) => query.in(AssetFieldNames.category, selectedCategoryNames),
     [selectedCategoryNames.join(',')]
   )
-  const [isSearching, isErrored, results] = useSearching(
+  const [isSearching, lastErrorCode, results] = useSearching(
     CollectionNames.Assets,
     searchTerm,
     '*',
@@ -54,8 +54,8 @@ function SearchForm({
     return 'Searching...'
   }
 
-  if (isErrored) {
-    return 'Errored'
+  if (lastErrorCode !== null) {
+    return `Error: ${lastErrorCode}`
   }
 
   if (!results) {

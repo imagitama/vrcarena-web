@@ -17,7 +17,7 @@ const subViews = {
 }
 
 const Renderer = ({ items }: { items?: Author[] }) => (
-  <AuthorResults authors={items} />
+  <AuthorResults authors={items || []} />
 )
 
 const AuthorsView = () => {

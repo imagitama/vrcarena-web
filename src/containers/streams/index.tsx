@@ -9,7 +9,7 @@ import useDatabaseQuery, {
   CollectionNames,
   Operators,
   options,
-  UserFieldNames
+  UserFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import { User } from '../../modules/users'
 import Button from '../../components/button'
@@ -18,8 +18,8 @@ import { makeStyles } from '@material-ui/styles'
 const useStyles = makeStyles({
   item: {
     padding: '0.25rem',
-    display: 'inline-block'
-  }
+    display: 'inline-block',
+  },
 })
 
 const getTwitchUsernameFromUrl = (usernameOrUrl: string): string =>
@@ -31,9 +31,9 @@ function Streams() {
   const classes = useStyles()
   const [isLoading, isError, users] = useDatabaseQuery<User>(
     CollectionNames.Users,
-    [[UserFieldNames.twitchUsername, Operators.GREATER_THAN, '']],
+    [['twitchusername', Operators.GREATER_THAN, '']],
     {
-      [options.queryName]: 'streams'
+      [options.queryName]: 'streams',
     }
   )
 
@@ -47,7 +47,7 @@ function Streams() {
 
   return (
     <>
-      {users.map(user => {
+      {users.map((user) => {
         const twitchUsername = getTwitchUsernameFromUrl(user.twitchusername)
         console.log(twitchUsername)
         return (

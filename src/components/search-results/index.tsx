@@ -503,7 +503,7 @@ const NonAssetSearch = () => {
       searchCount,
     ]
   )
-  const [isLoading, isErrored, hits] = useSearching<any[]>(
+  const [isLoading, lastErrorCode, hits] = useSearching<any>(
     searchTableName,
     searchTerm,
     getSearchStatementForTable(searchTableName),
@@ -514,7 +514,7 @@ const NonAssetSearch = () => {
   return (
     <Results
       isLoading={isLoading}
-      isErrored={isErrored}
+      isErrored={lastErrorCode !== null}
       tableName={searchTableName}
       hits={hits || []}
     />

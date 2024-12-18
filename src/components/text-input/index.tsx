@@ -1,34 +1,41 @@
 import React from 'react'
-import TextField from '@material-ui/core/TextField'
+import { makeStyles } from '@material-ui/core/styles'
+import TextField, { TextFieldProps } from '@material-ui/core/TextField'
 
-export default (props: {
-  // standard props
-  fullWidth?: boolean
-  label?: string
-  helperText?: string
-  value?: string | number
-  className?: string
-  multiline?: boolean
-  rows?: number
-  onChange?: (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => void
-  onKeyDown?: (
-    event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => void
-  placeholder?: string
-  size?: string
-  type?: string
-  // custom
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    height: '100%',
+    margin: '0 0.25rem',
+  },
+})
+
+type Props = TextFieldProps & {
   isDisabled?: boolean
-  variant?: 'outlined' | 'standard'
-}) => (
-  // @ts-ignore
-  <TextField
-    {...props}
-    // @ts-ignore
-    multiline={props.rows && props.rows > 0}
-    variant={props.variant || 'outlined'}
-    disabled={props.isDisabled}
-  />
-)
+  variant?: 'outlined'
+  button?: React.ReactElement
+}
+
+const TextInput = ({ button, ...props }: Props) => {
+  const classes = useStyles()
+
+  return (
+    <span className={classes.root}>
+      <TextField
+        {...props}
+        multiline={'rows' in props}
+        variant={props.variant || 'outlined'}
+        disabled={props.isDisabled}
+      />
+      {button
+        ? React.cloneElement(button, { className: classes.button })
+        : null}
+    </span>
+  )
+}
+
+export default TextInput

@@ -115,3 +115,8 @@ export const discordPurple = '#5865F2'
 
 export const viewVrchatAvatarUrlWithVar =
   'https://vrchat.com/home/avatar/:avatarId'
+
+export const messages = {
+  howClaimsWork:
+    'Claiming something does not mean you "own" it. It just indicates to other people that you claim that it is yours.',
+}

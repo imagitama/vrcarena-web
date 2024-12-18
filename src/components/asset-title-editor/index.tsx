@@ -59,11 +59,11 @@ const AssetTitleEditor = ({
   )
   const classes = useStyles()
   const titleRef = useRef<HTMLSpanElement | null>(null)
-  const [isSearching, , searchResults] = useSearching<Asset[]>(
+  const [isSearching, , searchResults] = useSearching<Asset>(
     CollectionNames.Assets,
     searchTerm,
     '*',
-    [AssetFieldNames.title],
+    ['title'],
     undefined,
     5
   )

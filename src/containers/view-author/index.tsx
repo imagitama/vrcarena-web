@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { Link, useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import * as routes from '../../routes'
 import categoryMeta from '../../category-meta'
@@ -21,50 +22,44 @@ import EditorRecordManager from '../../components/editor-record-manager'
 import Message from '../../components/message'
 
 import useUserRecord from '../../hooks/useUserRecord'
-import {
-  CollectionNames as OldCollectionNames,
-  AssetFieldNames,
-  OrderDirections,
-} from '../../hooks/useDatabaseQuery'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
-import { CollectionNames } from '../../data-store'
+import { CollectionNames } from '../../modules/authors'
+import {
+  Claim,
+  ViewNames as ClaimViewNames,
+  FullClaim,
+} from '../../modules/claims'
 import { canEditAuthor } from '../../utils'
 import { trackAction } from '../../analytics'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { FullAuthor } from '../../modules/authors'
 import SaleInfo from '../../components/sale-info'
-import PaginatedView from '../../components/paginated-view'
 import { PublicAsset } from '../../modules/assets'
 import { AccessStatus } from '../../modules/common'
-
-const Renderer = ({ items }: { items?: PublicAsset[] }) => (
-  <AssetResults assets={items} />
-)
+import useDatabaseQuery, {
+  Operators,
+  OrderDirections,
+} from '../../hooks/useDatabaseQuery'
+import AssetsPaginatedView from '../../components/assets-paginated-view'
+import ClaimButton from '../../components/claim-button'
+import UserList from '../../components/user-list'
 
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
-  const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
-    (query) => {
-      query = query.eq(AssetFieldNames.author, author.id)
-      if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
-      }
-      return query
-    },
-    [author.id, isAdultContentEnabled]
+    (query: PostgrestFilterBuilder<PublicAsset>) =>
+      query.eq('author', author.id),
+    [author.id]
   )
 
   return (
-    <PaginatedView
+    <AssetsPaginatedView
       viewName={'getPublicAssets'}
       getQuery={getQuery}
       getQueryString={() => `author:"${author.name}"`}
-      defaultFieldName={AssetFieldNames.createdAt}
-      defaultDirection={OrderDirections.DESC}>
-      <Renderer />
-    </PaginatedView>
+      defaultFieldName={'createdat'}
+      defaultDirection={OrderDirections.DESC}
+    />
   )
 }
 
@@ -73,10 +68,6 @@ const useStyles = makeStyles({
     marginTop: '0',
     marginBottom: '1rem',
     fontSize: '150%',
-  },
-  findMoreAuthorsBtn: {
-    marginTop: '3rem',
-    textAlign: 'center',
   },
   icon: {
     '& svg': {
@@ -110,19 +101,31 @@ const useStyles = makeStyles({
   },
 })
 
-function FindMoreAuthorsBtn() {
-  const classes = useStyles()
+const Claims = ({ authorId }: { authorId: string }) => {
+  const [, lastErrorCode, results] = useDatabaseQuery<FullClaim>(
+    ClaimViewNames.GetFullClaims,
+    [['parent', Operators.EQUALS, authorId]]
+  )
+
+  if (!results || !results.length) {
+    return null
+  }
+
+  if (lastErrorCode !== null) {
+    return <ErrorMessage>Failed to load claims</ErrorMessage>
+  }
 
   return (
-    <div className={classes.findMoreAuthorsBtn}>
-      <Button
-        url={routes.authors}
-        onClick={() =>
-          trackAction('ViewAuthor', 'Click find more authors button')
-        }>
-        Find More Authors
-      </Button>
-    </div>
+    <>
+      <Heading variant="h2">Claims</Heading>
+      <UserList
+        users={results.map((claim) => ({
+          id: claim.createdby,
+          username: claim.createdbyusername,
+          avatarurl: claim.createdbyavatarurl,
+        }))}
+      />
+    </>
   )
 }
 
@@ -328,18 +331,36 @@ const View = () => {
         </div>
       )}
 
+      <br />
+
+      <Button
+        url={routes.authors}
+        onClick={() =>
+          trackAction('ViewAuthor', 'Click find more authors button')
+        }>
+        Find More Authors...
+      </Button>
+
       {user ? (
-        <Button
-          url={routes.createAmendmentWithVar
-            .replace(':parentTable', OldCollectionNames.Authors)
-            .replace(':parentId', authorId)}
-          color="default"
-          icon={<EditIcon />}>
-          Suggest Edit
-        </Button>
+        <>
+          {' '}
+          <Button
+            url={routes.createAmendmentWithVar
+              .replace(':parentTable', CollectionNames.Authors)
+              .replace(':parentId', authorId)}
+            color="default"
+            icon={<EditIcon />}>
+            Suggest Edit
+          </Button>{' '}
+          <ClaimButton
+            parentTable={CollectionNames.Authors}
+            parentId={author.id}
+            parentData={author}
+          />
+        </>
       ) : null}
 
-      <FindMoreAuthorsBtn />
+      <Claims authorId={authorId} />
     </>
   )
 }

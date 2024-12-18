@@ -15,7 +15,6 @@ import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
-import { createRef } from '../../utils'
 import { DataStoreErrorCode } from '../../data-store'
 
 const getLabel = (
@@ -100,8 +99,11 @@ const getIcon = (
   return <ThumbUpIcon />
 }
 
+// TODO: Move to modules
 interface Endorsement {
   id: string
+  asset: string
+  createdby: string
 }
 
 export default ({
@@ -126,16 +128,8 @@ export default ({
     CollectionNames.Endorsements,
     userId
       ? [
-          [
-            EndorsementFieldNames.createdBy,
-            Operators.EQUALS,
-            createRef(CollectionNames.Users, userId),
-          ],
-          [
-            EndorsementFieldNames.asset,
-            Operators.EQUALS,
-            createRef(CollectionNames.Assets, assetId),
-          ],
+          ['createdby', Operators.EQUALS, userId],
+          ['asset', Operators.EQUALS, assetId],
         ]
       : false,
     {
@@ -148,7 +142,7 @@ export default ({
     Array.isArray(myEndorsements) && myEndorsements.length === 1 ? true : false
 
   const [isSaving, isSavingSuccess, lastSavingErrorCode, createOrDelete] =
-    useDatabaseSave(
+    useDatabaseSave<Endorsement>(
       CollectionNames.Endorsements,
       isAlreadyEndorsed && Array.isArray(myEndorsements)
         ? myEndorsements[0].id
@@ -169,10 +163,7 @@ export default ({
       }
 
       await createOrDelete({
-        [EndorsementFieldNames.asset]: createRef(
-          CollectionNames.Assets,
-          assetId
-        ),
+        asset: assetId,
       })
 
       if (onDone) {

@@ -1,14 +1,9 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import VideoPlayer from '../video-player'
-import LoadingShimmer from '../loading-shimmer'
-import {
-  getImageUrlFromYouTubeUrl,
-  getRandomInt,
-  isUrlAYoutubeVideo,
-} from '../../utils'
+import { getImageUrlFromYouTubeUrl, isUrlAYoutubeVideo } from '../../utils'
 import Button from '../button'
 import { useMediaQuery } from 'react-responsive'
 import { mediaQueryForMobiles, queryForMobiles } from '../../media-queries'

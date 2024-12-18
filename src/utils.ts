@@ -548,3 +548,6 @@ export const getAreArraysSame = (arrayA: any[], arrayB: any[]): boolean => {
 
 export const removeDuplicates = <T = any>(arr: T[]): T[] =>
   arr.filter((value, index, array) => array.indexOf(value) === index)
+
+export const cleanupSearchTerm = (searchTerm: string): string =>
+  searchTerm ? searchTerm.trim() : ''

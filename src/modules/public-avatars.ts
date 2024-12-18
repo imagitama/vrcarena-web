@@ -5,13 +5,16 @@ export interface CachedVrchatAvatarRecord {
   avatar: VrchatAvatarData
 }
 
-export interface FullPublicAvatarSubmission {
+export interface PublicAvatarSubmissions {
   id: string
   asset: string
   vrchatavatarid: string
   createdat: Date
   createdby: string
-  // joined
+  isdeleted: string
+}
+
+export interface FullPublicAvatarSubmission extends PublicAvatarSubmissions {
   creatorname: string
   title: string
   thumbnailurl: string

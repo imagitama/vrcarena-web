@@ -371,7 +371,7 @@ const Pages = () => {
   const [isLoadingPages, isErrorLoadingPages, pagesInParent] =
     useDatabaseQuery<Page>(
       CollectionNames.Pages,
-      [[PagesFieldNames.parent, Operators.EQUALS, parentName]],
+      [['parent', Operators.EQUALS, parentName]],
       {
         [options.orderBy]: [PagesFieldNames.pageOrder, OrderDirections.ASC],
       }

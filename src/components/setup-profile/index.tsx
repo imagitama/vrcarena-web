@@ -30,6 +30,7 @@ import UsernameEditor from '../username-editor'
 import Tabs, { useTabs } from '../tabs'
 import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { UserPreferences, CollectionNames } from '../../modules/user'
+import AuthorClaims from './components/author-claims'
 
 const useStyles = makeStyles({
   root: {
@@ -124,7 +125,7 @@ const TabControls = ({
   )
 }
 
-export default ({
+const SetupProfile = ({
   analyticsCategory,
   onDone,
 }: {
@@ -248,6 +249,15 @@ export default ({
             ),
           },
           {
+            name: 'authors',
+            label: 'Authors',
+            contents: (
+              <TabPanel>
+                <AuthorClaims />
+              </TabPanel>
+            ),
+          },
+          {
             name: 'username',
             label: 'Username (required)',
             contents: (
@@ -262,3 +272,5 @@ export default ({
     </div>
   )
 }
+
+export default SetupProfile

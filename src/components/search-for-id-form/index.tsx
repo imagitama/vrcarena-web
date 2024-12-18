@@ -107,7 +107,7 @@ function SearchForm({
   onClickWithIdAndDetails: (id: string, details: any) => void
   renderer?: (props: { result: any; onClick: () => void }) => React.ReactElement
 }) {
-  const [isSearching, isErrored, results] = useSearching<SearchResult[]>(
+  const [isSearching, lastErrorCode, results] = useSearching<SearchResult>(
     getTableOrViewNameForCollectionName(collectionName),
     searchTerm,
     getSearchStatementForCollectionName(collectionName),
@@ -120,8 +120,8 @@ function SearchForm({
     return <>Searching...</>
   }
 
-  if (isErrored) {
-    return <>Errored</>
+  if (lastErrorCode !== null) {
+    return <>Error: {lastErrorCode}</>
   }
 
   if (!results) {

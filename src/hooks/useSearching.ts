@@ -3,18 +3,21 @@ import { handleError } from '../error-handling'
 import { client as supabase } from '../supabase'
 import { setIsSearching } from '../modules/app'
 import { useDispatch } from 'react-redux'
+import { DataStoreErrorCode } from '../data-store'
 
-export default <TResult>(
+export default <TRecord>(
   tableName: string,
   searchTerm: string,
   selectStatement: string,
-  fieldsToSearch: string[],
+  fieldsToSearch: (keyof TRecord)[],
   getQuery?: (query: any) => any,
   limit: number = 50
-): [boolean, boolean, TResult | null] => {
-  const [results, setResults] = useState<TResult | null>(null)
+): [boolean, DataStoreErrorCode | null, TRecord[] | null] => {
+  const [results, setResults] = useState<TRecord[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<DataStoreErrorCode | null>(
+    null
+  )
   const timerRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
@@ -56,22 +59,22 @@ export default <TResult>(
           data
         )
 
-        setResults(data as unknown as TResult)
+        setResults(data as unknown as TRecord[])
         setIsLoading(false)
-        setIsErrored(false)
+        setLastErrorCode(null)
       } catch (err) {
         console.error(
           `useSearching :: "${tableName}" -> "${searchTerm}" :: Failed to search!`,
           err
         )
         setIsLoading(false)
-        setIsErrored(true)
+        setLastErrorCode(DataStoreErrorCode.Unknown) // TODO: Finish
         handleError(err)
       }
     }
 
     setIsLoading(true)
-    setIsErrored(false)
+    setLastErrorCode(null)
 
     if (timerRef.current) {
       clearTimeout(timerRef.current)
@@ -98,5 +101,5 @@ export default <TResult>(
     dispatch(setIsSearching(isLoading))
   }, [isLoading])
 
-  return [isLoading, isErrored, results]
+  return [isLoading, lastErrorCode, results]
 }

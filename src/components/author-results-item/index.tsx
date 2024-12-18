@@ -45,7 +45,7 @@ export default ({
   onClick = undefined,
 }: {
   author: Author
-  onClick?: () => void
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }) => {
   const classes = useStyles()
 

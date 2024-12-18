@@ -4,6 +4,8 @@ export interface Review {
   ratings: Rating[]
   comments: string
   createdat: string
+  createdby: string
+  asset: string
 }
 
 export interface Rating {

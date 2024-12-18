@@ -36,6 +36,7 @@ import ShowMoreInfoToggle from '../../components/show-more-info-toggle'
 import ChangeEmailForm from '../../components/change-email-form'
 import DeleteAccountForm from '../../components/delete-account-form'
 import ChangePasswordForm from '../../components/change-password-form'
+import MyClaims from '../../components/my-claims'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -269,6 +270,16 @@ const View = () => {
               <>
                 <Heading variant="h2">My Reports</Heading>
                 <MyReports />
+              </>
+            ),
+          },
+          {
+            name: 'claims',
+            label: 'My Claims',
+            contents: (
+              <>
+                <Heading variant="h2">My Claims</Heading>
+                <MyClaims />
               </>
             ),
           },

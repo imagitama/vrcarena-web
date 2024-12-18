@@ -52,11 +52,11 @@ export default ({
   )
   const classes = useStyles()
   const [searchTerm, setSearchTerm] = useState<string | undefined>('')
-  const [isSearching, , searchResults] = useSearching<Asset[]>(
+  const [isSearching, , searchResults] = useSearching<Asset>(
     CollectionNames.Assets,
     searchTerm || '',
     '*',
-    [AssetFieldNames.sourceUrl],
+    ['sourceurl'],
     undefined,
     5
   )

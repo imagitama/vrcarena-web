@@ -3,10 +3,9 @@ import { useDispatch } from 'react-redux'
 
 import useDataStore from './useDataStore'
 import { client as supabase } from '../supabase'
+import { cleanupSearchTerm } from '../utils'
 
 const defaultLimit = 50
-
-const cleanupSearchTerm = (searchTerm) => (searchTerm ? searchTerm.trim() : '')
 
 export const getQuery = (
   searchTerm,

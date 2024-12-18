@@ -245,8 +245,8 @@ export default ({
 
   const [isLoadingMyReview, isErrorLoadingMyReview, myReview] =
     useDatabaseQuery<Review>(CollectionNames.Reviews, [
-      [ReviewsFieldNames.asset, Operators.EQUALS, assetId],
-      [ReviewsFieldNames.createdBy, Operators.EQUALS, userId],
+      ['asset', Operators.EQUALS, assetId],
+      ['createdby', Operators.EQUALS, userId],
     ])
 
   const reviewToEdit =
