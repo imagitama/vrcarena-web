@@ -1031,10 +1031,9 @@ const Editor = () => {
                   icon={() => <PersonIcon />}
                   display={AuthorDisplay}
                   editor={
-                    // @ts-ignore
                     <ChangeAuthorForm
                       collectionName={CollectionNames.Assets}
-                      id={assetId}
+                      id={assetId!!}
                     />
                   }
                 />

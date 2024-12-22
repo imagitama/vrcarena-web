@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import useDatabaseQuery, {
   CollectionNames,
   AuthorFieldNames,
-  AssetFieldNames
+  AssetFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -22,22 +22,29 @@ import AuthorResults from '../author-results'
 import AuthorResultsItem from '../author-results-item'
 import Button from '../button'
 import FormControls from '../form-controls'
+import { Author } from '../../modules/authors'
 
 const useStyles = makeStyles({
   form: {
     border: '1px solid rgba(255, 255, 255, 0.5)',
-    padding: '0.5rem'
+    padding: '0.5rem',
   },
   textInput: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 })
 
-const SearchResultRenderer = ({ result, onClick }) => {
+const SearchResultRenderer = ({
+  result,
+  onClick,
+}: {
+  result: Author
+  onClick: () => void
+}) => {
   return (
     <AuthorResultsItem
       author={result}
-      onClick={e => {
+      onClick={(e) => {
         onClick()
         e.preventDefault()
         return false
@@ -46,31 +53,42 @@ const SearchResultRenderer = ({ result, onClick }) => {
   )
 }
 
-const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
+const CreateForm = ({
+  onClick,
+  actionCategory,
+}: {
+  onClick: (authorId: string, authorData: Author) => void
+  actionCategory?: string
+}) => {
   const [name, setName] = useState('')
   const [twitterUsername, setTwitterUsername] = useState('')
   const [gumroadUsername, setGumroadUsername] = useState('')
   const [websiteUrl, setWebsiteUrl] = useState('')
   const [boothUsername, setBoothUsername] = useState('')
-  const [isSaving, isSuccess, isErrored, create, clear] = useDatabaseSave(
-    CollectionNames.Authors
-  )
+  const [isSaving, isSuccess, isErrored, create, clear] =
+    useDatabaseSave<Author>(CollectionNames.Authors)
   const classes = useStyles()
-  const [createdDocument, setCreatedDocument] = useState(null)
+  const [createdDocument, setCreatedDocument] = useState<Author | null>(null)
 
   const onCreate = async () => {
     try {
-      trackAction(actionCategory, 'Click create author button')
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click create author button')
+      }
 
       const newFields = {
         [AuthorFieldNames.name]: name,
         [AuthorFieldNames.twitterUsername]: twitterUsername,
         [AuthorFieldNames.gumroadUsername]: gumroadUsername,
         [AuthorFieldNames.websiteUrl]: websiteUrl,
-        [AuthorFieldNames.boothUsername]: boothUsername
+        [AuthorFieldNames.boothUsername]: boothUsername,
       }
 
       const [document] = await create(newFields)
+
+      if (document === null) {
+        throw new Error('Newly created author is null')
+      }
 
       setCreatedDocument(document)
     } catch (err) {
@@ -84,7 +102,10 @@ const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
   }
 
   const onDone = () => {
-    onClickWithIdAndDetails(createdDocument.id, createdDocument)
+    if (!createdDocument) {
+      throw new Error('Cannot call onDone without a created doc')
+    }
+    onClick(createdDocument.id, createdDocument)
   }
 
   if (isSaving) {
@@ -104,14 +125,7 @@ const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
 
   if (isErrored) {
     return (
-      <ErrorMessage>
-        Failed to create the author - it is probably something internal
-        <br />
-        <br />
-        <Button onClick={() => restart()} color="default">
-          Start Again
-        </Button>
-      </ErrorMessage>
+      <ErrorMessage onRetry={restart}>Failed to create the author</ErrorMessage>
     )
   }
 
@@ -119,28 +133,28 @@ const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
     <div className={classes.form}>
       <p>Enter the name of the author:</p>{' '}
       <TextInput
-        onChange={e => setName(e.target.value)}
+        onChange={(e) => setName(e.target.value)}
         value={name}
         className={classes.textInput}
       />
       <br />
       <p>(Optional) Enter their Twitter username (without the @ symbol):</p>
       <TextInput
-        onChange={e => setTwitterUsername(e.target.value)}
+        onChange={(e) => setTwitterUsername(e.target.value)}
         value={twitterUsername}
         className={classes.textInput}
       />
       <br />
       <p>(Optional) Enter their Gumroad username (eg. "xedthedead"):</p>
       <TextInput
-        onChange={e => setGumroadUsername(e.target.value)}
+        onChange={(e) => setGumroadUsername(e.target.value)}
         value={gumroadUsername}
         className={classes.textInput}
       />
       <br />
       <p>(Optional) Enter their Booth username (eg. "xed the dead"):</p>
       <TextInput
-        onChange={e => setBoothUsername(e.target.value)}
+        onChange={(e) => setBoothUsername(e.target.value)}
         value={boothUsername}
         className={classes.textInput}
       />
@@ -149,7 +163,7 @@ const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
         (Optional) Enter their website URL (eg. "https://www.mywebsite.com"):
       </p>
       <TextInput
-        onChange={e => setWebsiteUrl(e.target.value)}
+        onChange={(e) => setWebsiteUrl(e.target.value)}
         value={websiteUrl}
         className={classes.textInput}
       />
@@ -162,23 +176,26 @@ const CreateForm = ({ onClickWithIdAndDetails, actionCategory }) => {
   )
 }
 
-const AllAuthors = ({ onClickWithIdAndDetails, onCancel }) => {
-  const [isLoading, isErrored, results] = useDatabaseQuery(
+const AllAuthors = ({
+  onClick,
+  onCancel,
+}: {
+  onClick: (authorId: string, authorData: Author) => void
+  onCancel?: () => void
+}) => {
+  const [isLoading, isErrored, results, hydrate] = useDatabaseQuery<Author>(
     'getpublicauthors',
     []
   )
 
-  if (isLoading) {
+  if (isLoading || !results) {
     return <LoadingIndicator message="Finding authors..." />
   }
 
   if (isErrored) {
     return (
-      <ErrorMessage>
-        Failed to find authors - probably an internal error
-        <br />
-        <br />
-        <Button onClick={() => onCancel()}>Start Again</Button>
+      <ErrorMessage onOkay={onCancel} onRetry={hydrate}>
+        Failed to find authors
       </ErrorMessage>
     )
   }
@@ -187,37 +204,49 @@ const AllAuthors = ({ onClickWithIdAndDetails, onCancel }) => {
     <>
       <AuthorResults
         authors={results}
-        onClickWithEventAndIdAndDetails={(e, id, details) => {
-          onClickWithIdAndDetails(id, details)
+        onClick={(e, id, details) => {
+          onClick(id, details)
           e.preventDefault()
           return false
         }}
       />
-      <FormControls>
-        <Button onClick={() => onCancel()} color="default">
-          Cancel
-        </Button>
-      </FormControls>
+      {onCancel ? (
+        <FormControls>
+          <Button onClick={() => onCancel()} color="default">
+            Cancel
+          </Button>
+        </FormControls>
+      ) : null}
     </>
   )
 }
 
-export default ({
+const ChangeAuthorForm = ({
   collectionName,
   id,
   existingAuthorId,
   existingAuthorData,
-  overrideSave = null,
-  onDone = null,
-  actionCategory = null
+  overrideSave,
+  onDone,
+  actionCategory,
+}: {
+  collectionName: string
+  id: string
+  existingAuthorId?: string | null
+  existingAuthorData?: Author | null
+  overrideSave?: (newValue?: string | null) => void
+  onDone?: () => void
+  actionCategory?: string
 }) => {
-  const [selectedAuthorId, setSelectedAuthorId] = useState(existingAuthorId)
-  const [selectedAuthorData, setSelectedAuthorData] = useState(
-    existingAuthorData
+  const [selectedAuthorId, setSelectedAuthorId] = useState<string | null>(
+    existingAuthorId || null
+  )
+  const [selectedAuthorData, setSelectedAuthorData] = useState<Author | null>(
+    existingAuthorData || null
   )
   const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave(
     collectionName,
-    id ? id : false
+    id ? id : null
   )
   const [isCreating, setIsCreating] = useState(false)
   const [isBrowsingAll, setIsBrowsingAll] = useState(false)
@@ -230,11 +259,11 @@ export default ({
     clear()
   }
 
-  const onIdAndDetails = (id, data) => {
+  const onIdAndDetails = (authorId: string, authorData: Author) => {
     setIsCreating(false)
     setIsBrowsingAll(false)
-    setSelectedAuthorId(id)
-    setSelectedAuthorData(data)
+    setSelectedAuthorId(authorId)
+    setSelectedAuthorData(authorData)
   }
 
   const onSave = async () => {
@@ -250,14 +279,16 @@ export default ({
         return
       }
 
-      trackAction(actionCategory, 'Click save author button', {
-        collectionName,
-        id,
-        authorId: newValue
-      })
+      if (actionCategory) {
+        trackAction(actionCategory, 'Click save author button', {
+          collectionName,
+          id,
+          authorId: newValue,
+        })
+      }
 
       await save({
-        [AssetFieldNames.author]: newValue
+        [AssetFieldNames.author]: newValue,
       })
 
       if (onDone) {
@@ -278,13 +309,8 @@ export default ({
 
   if (isSuccess) {
     return (
-      <SuccessMessage>
+      <SuccessMessage onOkay={restart}>
         Resource has been updated with the new author
-        <br />
-        <br />
-        <Button onClick={() => restart()} color="default">
-          Okay
-        </Button>
       </SuccessMessage>
     )
   }
@@ -303,21 +329,12 @@ export default ({
   }
 
   if (isBrowsingAll) {
-    return (
-      <AllAuthors
-        onClickWithIdAndDetails={onIdAndDetails}
-        actionCategory={actionCategory}
-        onCancel={() => restart()}
-      />
-    )
+    return <AllAuthors onClick={onIdAndDetails} onCancel={restart} />
   }
 
   if (isCreating) {
     return (
-      <CreateForm
-        onClickWithIdAndDetails={onIdAndDetails}
-        actionCategory={actionCategory}
-      />
+      <CreateForm onClick={onIdAndDetails} actionCategory={actionCategory} />
     )
   }
 
@@ -328,7 +345,7 @@ export default ({
           You have selected:
           <AuthorResultsItem
             author={selectedAuthorData}
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault()
               return false
             }}
@@ -345,7 +362,7 @@ export default ({
       )
     } else {
       return (
-        <ErrorMessage>
+        <ErrorMessage onOkay={restart}>
           There is an ID but there is no data for that author. This should not
           happen
           <br />
@@ -367,7 +384,6 @@ export default ({
       <br />
       <p>Can't find the author?</p>
       <FormControls>
-        {/* <Button onClick={() => browseAll()}>Browse All</Button>{' '} */}
         <Button onClick={() => create()} icon={<AddIcon />} color="default">
           Create It
         </Button>
@@ -375,3 +391,5 @@ export default ({
     </>
   )
 }
+
+export default ChangeAuthorForm

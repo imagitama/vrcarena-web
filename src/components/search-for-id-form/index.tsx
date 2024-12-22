@@ -169,7 +169,7 @@ export default ({
   collectionName: string
   fieldAsLabel?: string
   onClickWithIdAndDetails: (id: string, details: any) => void
-  renderer?: (props: { result: any }) => React.ReactElement
+  renderer?: (props: { result: any; onClick: () => void }) => React.ReactElement
 }) => {
   const [searchTerm, setSearchTerm] = useState<string | null>(null)
   const classes = useStyles()
