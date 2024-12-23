@@ -3,19 +3,20 @@ import React from 'react'
 
 const useStyles = makeStyles({
   root: {
-    fontStyle: 'italic'
+    fontStyle: 'italic',
+    color: 'rgba(255, 255, 255, 0.5)',
   },
   small: {
-    fontSize: '75%'
-  }
+    fontSize: '75%',
+  },
 })
 
-export default ({
+const HintText = ({
   children,
-  small
+  small,
 }: {
   children: React.ReactNode
-  small: boolean
+  small?: boolean
 }) => {
   const classes = useStyles()
   return (
@@ -24,3 +25,5 @@ export default ({
     </span>
   )
 }
+
+export default HintText

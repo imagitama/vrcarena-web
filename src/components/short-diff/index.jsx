@@ -107,7 +107,7 @@ const useStyles = makeStyles({
     },
   },
   changed: {
-    // outline: '1px solid rgba(255, 255, 0, 0.2)'
+    backgroundColor: 'rgba(255, 255, 0, 0.2)',
   },
   divider: {
     display: 'flex',
@@ -129,7 +129,7 @@ const getLabelForValue = (value) => {
   } else if (value === false) {
     return 'No'
   } else if (value === null) {
-    return '(nothing)'
+    return noValueLabel
   } else if (value instanceof Date) {
     return moment(value).toString()
   } else if (value && typeof value === 'string') {
@@ -514,16 +514,20 @@ function AttachmentsOutput({ fields }) {
 }
 
 const ExtraSourcesOutput = ({ extraSources }) =>
-  (extraSources || []).map((sourceInfo) => (
-    <div>
-      {sourceInfo.url}
-      <br />
-      <br />
-      <VisitSourceButton sourceInfo={sourceInfo} />
-      <br />
-      <br />
-    </div>
-  ))
+  extraSources && extraSources.length ? (
+    extraSources.map((sourceInfo) => (
+      <div>
+        {sourceInfo.url}
+        <br />
+        <br />
+        <VisitSourceButton sourceInfo={sourceInfo} />
+        <br />
+        <br />
+      </div>
+    ))
+  ) : (
+    <NoValueLabel>(no extra sources)</NoValueLabel>
+  )
 
 function ClonableWorldOutput({ fields }) {
   return (
@@ -715,10 +719,6 @@ const RenderersForFields = {
         <Value value={fields[AssetFieldNames.shortDescription]} />
       ),
     },
-    [AssetFieldNames.videoUrl]: {
-      label: 'Video',
-      renderer: ({ fields }) => <div>{fields[AssetFieldNames.videoUrl]}</div>,
-    },
     // TODO: type-safety sometime
     extradata: {
       label: 'Extra Data',
@@ -758,7 +758,7 @@ const getRendererByType = (type, fieldName) => {
     case fieldTypes.text:
       return ({ fields }) => <Value value={fields[fieldName]} />
     case fieldTypes.textMarkdown:
-      return ({ fields }) => <Value value={`${fields[fieldName]}`} />
+      return ({ fields }) => <Value value={fields[fieldName]} />
     case fieldTypes.multichoice:
       return ({ fields, rendererInfo }) => (
         <Value
@@ -820,7 +820,17 @@ const getRendererByType = (type, fieldName) => {
     // case fieldTypes.tags:
     //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
     case fieldTypes.url:
-      return ({ fields }) => <Value value={`URL: ${fields[fieldName]}`} />
+      return ({ fields }) => (
+        <Value
+          value={
+            fields[fieldName] ? (
+              `URL: ${fields[fieldName]}`
+            ) : (
+              <NoValueLabel>(no URL)</NoValueLabel>
+            )
+          }
+        />
+      )
     case fieldTypes.email:
       return ({ fields }) => <Value value={`Email: ${fields[fieldName]}`} />
     case fieldTypes.item:

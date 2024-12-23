@@ -1,38 +1,52 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import SaveIcon from '@material-ui/icons/Save'
 import AddIcon from '@material-ui/icons/Add'
-import CheckIcon from '@material-ui/icons/Check'
-import { makeStyles } from '@material-ui/core/styles'
 
-import useDatabaseQuery, {
-  CollectionNames,
-  AuthorFieldNames,
-  AssetFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
-
 import TextInput from '../text-input'
 import SearchForIdForm from '../search-for-id-form'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
-import AuthorResults from '../author-results'
 import AuthorResultsItem from '../author-results-item'
 import Button from '../button'
 import FormControls from '../form-controls'
-import { Author } from '../../modules/authors'
+import { Author, CollectionNames } from '../../modules/authors'
+import InfoMessage from '../info-message'
+import Paper from '../paper'
+import Heading from '../heading'
+import CheckboxInput from '../checkbox-input'
+import ImageUploader from '../image-uploader'
+import { AVATAR_HEIGHT, AVATAR_WIDTH } from '../../config'
+import { bucketNames } from '../../file-uploading'
 
-const useStyles = makeStyles({
-  form: {
-    border: '1px solid rgba(255, 255, 255, 0.5)',
-    padding: '0.5rem',
-  },
-  textInput: {
-    width: '100%',
-  },
-})
+import authorEditableFields, {
+  SectionNames,
+} from '../../editable-fields/authors'
+import { EditableField } from '../../editable-fields'
+import { fieldTypes } from '../../generic-forms'
+import {
+  Claim,
+  CollectionNames as ClaimCollectionNames,
+} from '../../modules/claims'
+import { Asset } from '../../modules/assets'
+import FormFieldLabel from '../form-field-label'
+import HintText from '../hint-text'
+
+const fieldsBySectionName = authorEditableFields.reduce<{
+  [sectionName: string]: EditableField<Author>[]
+}>(
+  (obj, editableField) => ({
+    ...obj,
+    [editableField.section!]:
+      editableField.section! in obj
+        ? obj[editableField.section!].concat([editableField])
+        : [editableField],
+  }),
+  {}
+)
 
 const SearchResultRenderer = ({
   result,
@@ -53,6 +67,116 @@ const SearchResultRenderer = ({
   )
 }
 
+const FormField = ({
+  editableField,
+  value,
+  onChange,
+}: {
+  editableField: EditableField<Author>
+  value: any
+  onChange: (newValue: any) => void
+}) => (
+  <>
+    <br />
+    <FormInput
+      editableField={editableField}
+      value={value}
+      onChange={onChange}
+    />
+  </>
+)
+
+const FormInput = ({
+  editableField,
+  value,
+  onChange,
+}: {
+  editableField: EditableField<Author>
+  value: any
+  onChange: (newValue: any) => void
+}) => {
+  switch (editableField.type) {
+    case fieldTypes.text:
+    case fieldTypes.textMarkdown:
+      return (
+        <>
+          <TextInput
+            label={editableField.label}
+            onChange={(e) => onChange(e.target.value)}
+            value={value}
+            fullWidth
+            rows={
+              editableField.type === fieldTypes.textMarkdown ? 3 : undefined
+            }
+          />
+          <HintText small>{editableField.hint}</HintText>
+          <br />
+        </>
+      )
+    case fieldTypes.imageUpload:
+      return (
+        <>
+          <FormFieldLabel>{editableField.label}</FormFieldLabel>
+          <br />
+          <br />
+          <ImageUploader
+            onDone={(urls) => onChange(urls[0])}
+            bucketName={bucketNames.authorAvatars}
+            requiredWidth={AVATAR_WIDTH}
+            requiredHeight={AVATAR_HEIGHT}
+          />
+          <HintText small>
+            {editableField.hint} {editableField.imageUploadProperties?.width}x
+            {editableField.imageUploadProperties?.height}
+          </HintText>
+          <br />
+        </>
+      )
+    case fieldTypes.checkbox:
+      return (
+        <>
+          <CheckboxInput
+            label={editableField.label!}
+            onChange={(newVal) => onChange(newVal)}
+            value={value}
+          />
+          <HintText small>{editableField.hint}</HintText>
+        </>
+      )
+    case fieldTypes.multichoice:
+      const currentValue = value as string[]
+      return (
+        <>
+          <FormFieldLabel>{editableField.label}</FormFieldLabel>
+          <br />
+          {editableField.options?.map((option) => (
+            <CheckboxInput
+              key={option.value}
+              label={option.label}
+              value={currentValue.includes(option.value!)}
+              onChange={(newVal) =>
+                onChange(
+                  currentValue.includes(option.value!)
+                    ? currentValue.filter((item) => item !== option.value!)
+                    : currentValue.concat(option.value!)
+                )
+              }
+            />
+          ))}
+          <br />
+          <HintText small>{editableField.hint}</HintText>
+          <br />
+        </>
+      )
+    default:
+      return (
+        <>
+          No renderer for {editableField.name} (type {editableField.type})
+        </>
+      )
+  }
+}
+
 const CreateForm = ({
   onClick,
   actionCategory,
@@ -60,15 +184,36 @@ const CreateForm = ({
   onClick: (authorId: string, authorData: Author) => void
   actionCategory?: string
 }) => {
-  const [name, setName] = useState('')
-  const [twitterUsername, setTwitterUsername] = useState('')
-  const [gumroadUsername, setGumroadUsername] = useState('')
-  const [websiteUrl, setWebsiteUrl] = useState('')
-  const [boothUsername, setBoothUsername] = useState('')
-  const [isSaving, isSuccess, isErrored, create, clear] =
+  const [newFields, setNewFields] = useState<Partial<Author>>({
+    name: '',
+    description: '',
+    websiteurl: '',
+    email: '',
+    twitterusername: '',
+    gumroadusername: '',
+    discordusername: '',
+    discordserverinviteurl: '',
+    patreonusername: '',
+    categories: [],
+    // ownedby: '',
+    discordserverid: '',
+    isopenforcommission: false,
+    commissioninfo: '',
+    showcommissionstatusforassets: false,
+    avatarurl: '',
+    bannerurl: '',
+    boothusername: '',
+    salereason: '',
+    saledescription: '',
+    saleexpiresat: undefined,
+    promourl: '',
+  })
+  const [isSaving, isSuccess, lastErrorCode, create, clear] =
     useDatabaseSave<Author>(CollectionNames.Authors)
-  const classes = useStyles()
-  const [createdDocument, setCreatedDocument] = useState<Author | null>(null)
+  const [isClaiming, setIsClaiming] = useState(false)
+  const [claimingComments, setClaimingComments] = useState('')
+  const [isSavingClaim, , lastClaimErrorCode, createClaim] =
+    useDatabaseSave<Claim>(ClaimCollectionNames.Claims)
 
   const onCreate = async () => {
     try {
@@ -76,21 +221,26 @@ const CreateForm = ({
         trackAction(actionCategory, 'Click create author button')
       }
 
-      const newFields = {
-        [AuthorFieldNames.name]: name,
-        [AuthorFieldNames.twitterUsername]: twitterUsername,
-        [AuthorFieldNames.gumroadUsername]: gumroadUsername,
-        [AuthorFieldNames.websiteUrl]: websiteUrl,
-        [AuthorFieldNames.boothUsername]: boothUsername,
+      if (!newFields.name) {
+        console.warn('Need an author name')
+        return
       }
 
-      const [document] = await create(newFields)
+      const [createdDocument] = await create(newFields)
 
-      if (document === null) {
+      if (createdDocument === null) {
         throw new Error('Newly created author is null')
       }
 
-      setCreatedDocument(document)
+      if (isClaiming) {
+        await createClaim({
+          parenttable: CollectionNames.Authors,
+          parent: createdDocument.id,
+          comments: claimingComments.trim(),
+        })
+      }
+
+      onClick(createdDocument.id, createdDocument)
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -101,131 +251,91 @@ const CreateForm = ({
     clear()
   }
 
-  const onDone = () => {
-    if (!createdDocument) {
-      throw new Error('Cannot call onDone without a created doc')
-    }
-    onClick(createdDocument.id, createdDocument)
-  }
-
-  if (isSaving) {
-    return <LoadingIndicator message="Creating author..." />
+  if (isSaving || isSavingClaim) {
+    return (
+      <LoadingIndicator
+        message={isSaving ? 'Creating author...' : 'Adding claim...'}
+      />
+    )
   }
 
   if (isSuccess) {
     return (
       <SuccessMessage>
         Author created successfully
-        <br />
-        <br />
-        <Button onClick={() => onDone()}>Use the author</Button>
+        {lastClaimErrorCode !== null ? (
+          <>
+            <br />
+            <br />
+            Failed to add claim. You should do this later by viewing the author.
+          </>
+        ) : null}
       </SuccessMessage>
     )
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage onRetry={restart}>Failed to create the author</ErrorMessage>
-    )
-  }
-
-  return (
-    <div className={classes.form}>
-      <p>Enter the name of the author:</p>{' '}
-      <TextInput
-        onChange={(e) => setName(e.target.value)}
-        value={name}
-        className={classes.textInput}
-      />
-      <br />
-      <p>(Optional) Enter their Twitter username (without the @ symbol):</p>
-      <TextInput
-        onChange={(e) => setTwitterUsername(e.target.value)}
-        value={twitterUsername}
-        className={classes.textInput}
-      />
-      <br />
-      <p>(Optional) Enter their Gumroad username (eg. "xedthedead"):</p>
-      <TextInput
-        onChange={(e) => setGumroadUsername(e.target.value)}
-        value={gumroadUsername}
-        className={classes.textInput}
-      />
-      <br />
-      <p>(Optional) Enter their Booth username (eg. "xed the dead"):</p>
-      <TextInput
-        onChange={(e) => setBoothUsername(e.target.value)}
-        value={boothUsername}
-        className={classes.textInput}
-      />
-      <br />
-      <p>
-        (Optional) Enter their website URL (eg. "https://www.mywebsite.com"):
-      </p>
-      <TextInput
-        onChange={(e) => setWebsiteUrl(e.target.value)}
-        value={websiteUrl}
-        className={classes.textInput}
-      />
-      <FormControls>
-        <Button onClick={() => onCreate()} icon={<CheckIcon />}>
-          Create
-        </Button>
-      </FormControls>
-    </div>
-  )
-}
-
-const AllAuthors = ({
-  onClick,
-  onCancel,
-}: {
-  onClick: (authorId: string, authorData: Author) => void
-  onCancel?: () => void
-}) => {
-  const [isLoading, isErrored, results, hydrate] = useDatabaseQuery<Author>(
-    'getpublicauthors',
-    []
-  )
-
-  if (isLoading || !results) {
-    return <LoadingIndicator message="Finding authors..." />
-  }
-
-  if (isErrored) {
-    return (
-      <ErrorMessage onOkay={onCancel} onRetry={hydrate}>
-        Failed to find authors
+      <ErrorMessage onRetry={restart}>
+        Failed to create the author: error code {lastErrorCode}
       </ErrorMessage>
     )
   }
 
+  const onChange = (fieldName: string, fieldValue: any) =>
+    setNewFields((currentFields) => ({
+      ...currentFields,
+      [fieldName]: fieldValue,
+    }))
+
   return (
-    <>
-      <AuthorResults
-        authors={results}
-        onClick={(e, id, details) => {
-          onClick(id, details)
-          e.preventDefault()
-          return false
-        }}
+    <Paper>
+      <Heading variant="h3" noMargin>
+        Create Author
+      </Heading>
+      {Object.entries(fieldsBySectionName).map(
+        ([sectionName, editableFields]) => (
+          <Fragment key={sectionName}>
+            {editableFields
+              .filter((editableField) => !editableField.name.includes('sale'))
+              .map((editableField) => (
+                <FormField
+                  key={editableField.name}
+                  editableField={editableField}
+                  value={newFields[editableField.name]}
+                  onChange={(newVal) => onChange(editableField.name, newVal)}
+                />
+              ))}
+          </Fragment>
+        )
+      )}
+      <Heading variant="h3">Claim</Heading>
+      <CheckboxInput
+        label="I claim to be this author"
+        value={isClaiming}
+        onChange={(e) => setIsClaiming((currentVal) => !currentVal)}
       />
-      {onCancel ? (
-        <FormControls>
-          <Button onClick={() => onCancel()} color="default">
-            Cancel
-          </Button>
-        </FormControls>
+      {isClaiming ? (
+        <TextInput
+          label="Supporting evidence of claim (optional)"
+          value={claimingComments}
+          onChange={(e) => setClaimingComments(e.target.value)}
+          rows={3}
+          fullWidth
+        />
       ) : null}
-    </>
+      <FormControls>
+        <Button onClick={() => onCreate()} icon={<SaveIcon />}>
+          Create And Use
+        </Button>
+      </FormControls>
+    </Paper>
   )
 }
 
 const ChangeAuthorForm = ({
   collectionName,
   id,
-  existingAuthorId,
-  existingAuthorData,
   overrideSave,
   onDone,
   actionCategory,
@@ -238,40 +348,21 @@ const ChangeAuthorForm = ({
   onDone?: () => void
   actionCategory?: string
 }) => {
-  const [selectedAuthorId, setSelectedAuthorId] = useState<string | null>(
-    existingAuthorId || null
-  )
-  const [selectedAuthorData, setSelectedAuthorData] = useState<Author | null>(
-    existingAuthorData || null
-  )
-  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave(
+  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave<Asset>(
     collectionName,
     id ? id : null
   )
   const [isCreating, setIsCreating] = useState(false)
-  const [isBrowsingAll, setIsBrowsingAll] = useState(false)
 
   const restart = () => {
     setIsCreating(false)
-    setIsBrowsingAll(false)
-    setSelectedAuthorId(null)
-    setSelectedAuthorData(null)
     clear()
   }
 
-  const onIdAndDetails = (authorId: string, authorData: Author) => {
-    setIsCreating(false)
-    setIsBrowsingAll(false)
-    setSelectedAuthorId(authorId)
-    setSelectedAuthorData(authorData)
-  }
-
-  const onSave = async () => {
+  const onSave = async (newAuthorId: string | null) => {
     try {
-      const newValue = selectedAuthorId
-
       if (overrideSave) {
-        overrideSave(newValue)
+        overrideSave(newAuthorId)
 
         if (onDone) {
           onDone()
@@ -283,12 +374,12 @@ const ChangeAuthorForm = ({
         trackAction(actionCategory, 'Click save author button', {
           collectionName,
           id,
-          authorId: newValue,
+          authorId: newAuthorId,
         })
       }
 
       await save({
-        [AssetFieldNames.author]: newValue,
+        author: newAuthorId || undefined,
       })
 
       if (onDone) {
@@ -301,10 +392,9 @@ const ChangeAuthorForm = ({
   }
 
   const create = () => setIsCreating(true)
-  const browseAll = () => setIsBrowsingAll(true)
 
   if (isSaving) {
-    return <LoadingIndicator message="Saving..." />
+    return <LoadingIndicator message="Saving asset..." />
   }
 
   if (isSuccess) {
@@ -317,60 +407,12 @@ const ChangeAuthorForm = ({
 
   if (isErrored) {
     return (
-      <ErrorMessage>
-        Failed to save the resource - do you have permission?
-        <br />
-        <br />
-        <Button onClick={() => restart()} color="default">
-          Start Again
-        </Button>
-      </ErrorMessage>
+      <ErrorMessage onOkay={restart}>Failed to save the resource</ErrorMessage>
     )
-  }
-
-  if (isBrowsingAll) {
-    return <AllAuthors onClick={onIdAndDetails} onCancel={restart} />
   }
 
   if (isCreating) {
-    return (
-      <CreateForm onClick={onIdAndDetails} actionCategory={actionCategory} />
-    )
-  }
-
-  if (selectedAuthorId) {
-    if (selectedAuthorData) {
-      return (
-        <>
-          You have selected:
-          <AuthorResultsItem
-            author={selectedAuthorData}
-            onClick={(e) => {
-              e.preventDefault()
-              return false
-            }}
-          />
-          <FormControls>
-            <Button onClick={() => onSave()} icon={<SaveIcon />}>
-              Save
-            </Button>{' '}
-            <Button onClick={() => restart()} color="default">
-              Try Again
-            </Button>
-          </FormControls>
-        </>
-      )
-    } else {
-      return (
-        <ErrorMessage onOkay={restart}>
-          There is an ID but there is no data for that author. This should not
-          happen
-          <br />
-          <br />
-          <Button onClick={() => restart()}>Start Again</Button>
-        </ErrorMessage>
-      )
-    }
+    return <CreateForm onClick={onSave} actionCategory={actionCategory} />
   }
 
   return (
@@ -378,15 +420,18 @@ const ChangeAuthorForm = ({
       <SearchForIdForm
         collectionName={CollectionNames.Authors}
         renderer={SearchResultRenderer}
-        onClickWithIdAndDetails={onIdAndDetails}
+        onClickWithIdAndDetails={onSave}
       />
-      <br />
-      <br />
-      <p>Can't find the author?</p>
+      <InfoMessage>Can't find the author? Create it below</InfoMessage>
       <FormControls>
-        <Button onClick={() => create()} icon={<AddIcon />} color="default">
-          Create It
+        <Button onClick={() => create()} icon={<AddIcon />}>
+          Create Author
         </Button>
+        {onDone ? (
+          <Button onClick={() => onDone()} color="default">
+            Cancel
+          </Button>
+        ) : null}
       </FormControls>
     </>
   )

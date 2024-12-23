@@ -262,7 +262,7 @@ const View = () => {
             actionCategory={analyticsCategory}
           />
 
-          {saleReason !== null ? (
+          {saleReason ? (
             <SaleInfo
               authorId={authorId}
               eventId={saleReason}

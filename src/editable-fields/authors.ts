@@ -13,7 +13,7 @@ import { CollectionNames, Event } from '../modules/events'
 import { getFriendlyDate } from '../utils/dates'
 import { Author } from '../modules/authors'
 
-enum SectionNames {
+export enum SectionNames {
   Basic = 'Basic',
   Promo = 'Promo',
   Social = 'Social',
@@ -28,7 +28,7 @@ const fields: EditableField<Author>[] = [
     type: fieldTypes.text,
     isRequired: true,
     section: SectionNames.Basic,
-    hint: 'The full name of the author. Usually their store page like Gumroad username. If more than one person but together you made something combine your names together.',
+    hint: 'If multiple people worked together on assets then put both of their names here.',
   },
   {
     name: 'categories',
@@ -123,7 +123,7 @@ const fields: EditableField<Author>[] = [
     label: 'Discord Username',
     type: fieldTypes.text,
     default: '',
-    hint: 'Their personal Discord username. Usually contains a hash and 4 digits ie PeanutBuddha#1234',
+    hint: 'Their personal Discord username',
     section: SectionNames.Social,
   },
   {
@@ -131,7 +131,7 @@ const fields: EditableField<Author>[] = [
     label: 'Discord Server Invite URL',
     type: fieldTypes.text,
     default: '',
-    hint: 'A URL people can visit to join the Discord server. eg. https://discord.gg/gpD7fq Is hidden if server ID is provided',
+    hint: 'A URL people can visit to join the Discord server. eg. https://discord.gg/gpD7fq',
     section: SectionNames.Social,
   },
   {
@@ -144,7 +144,7 @@ const fields: EditableField<Author>[] = [
   },
   {
     name: 'patreonusername',
-    label: 'Patreon username',
+    label: 'Patreon Username',
     type: fieldTypes.text,
     default: '',
     hint: 'The name in the URL like https://patreon.com/[username]',
@@ -152,7 +152,7 @@ const fields: EditableField<Author>[] = [
   },
   {
     name: 'boothusername',
-    label: 'Booth username',
+    label: 'Booth.pm Username',
     type: fieldTypes.text,
     default: '',
     hint: 'The name in the URL like https://[username].booth.pm',
@@ -169,7 +169,7 @@ const fields: EditableField<Author>[] = [
   },
   {
     name: 'showcommissionstatusforassets',
-    label: 'Show in assets',
+    label: 'Show commission status in assets',
     type: fieldTypes.checkbox,
     default: true,
     hint: 'Show a message at the top of each asset they have authored that they are open or closed for commissions.',

@@ -274,9 +274,6 @@ const AmendmentEditor = ({
         <WarningMessage>
           Please review ALL fields to ensure your amendment is correct before
           submitting it for approval
-          <br />
-          <br />
-          You are changing {changedFieldNames.length} fields
         </WarningMessage>
         <Heading variant="h2">Fields</Heading>
         <ShortDiff

@@ -119,6 +119,7 @@ import ChangeVccUrlForm from '../change-vcc-url-form'
 import AddToVccButton from '../add-to-vcc-button'
 import { tagVrcFuryReady } from '../../vrcfury'
 import VrcFuryToggle from '../vrcfury-ready-toggle'
+import Link from '../link'
 
 interface EditorInfo {
   assetId: string | null
@@ -515,7 +516,10 @@ const AuthorDisplay = ({
   return (
     <Heading variant="h1" noMargin>
       <span className={classes.authorHeading}>
-        by <span className={classes.fakeLink}>{fields.authorname}</span>
+        by{' '}
+        <Link to={routes.viewAuthorWithVar.replace(':authorId', value)}>
+          {fields.authorname}
+        </Link>
       </span>
     </Heading>
   )
