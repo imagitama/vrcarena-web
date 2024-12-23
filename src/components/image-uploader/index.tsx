@@ -309,23 +309,7 @@ const getImageInfo = async (file: File): Promise<ImageInfo> => {
   })
 }
 
-const ImageUploader = ({
-  onDone,
-  onCancel = undefined,
-  bucketName,
-  directoryPath = '', // root
-  requiredWidth = undefined,
-  requiredHeight = undefined,
-  maxSizeBytes = undefined,
-  allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp'],
-  allowMultiple = false,
-  allowCropping = true,
-  preloadImageUrl = undefined,
-  preloadFile = undefined,
-  resetOnDone = false,
-  children,
-  clickToOpen = true,
-}: {
+export interface ImageUploaderProps {
   onDone: (urls: string[]) => void
   bucketName: string
   directoryPath?: string
@@ -344,7 +328,25 @@ const ImageUploader = ({
   resetOnDone?: boolean
   clickToOpen?: boolean
   children?: any // (props: { triggerOpen: () => void }) => React.ReactElement
-}) => {
+}
+
+const ImageUploader = ({
+  onDone,
+  onCancel = undefined,
+  bucketName,
+  directoryPath = '', // root
+  requiredWidth = undefined,
+  requiredHeight = undefined,
+  maxSizeBytes = undefined,
+  allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp'],
+  allowMultiple = false,
+  allowCropping = true,
+  preloadImageUrl = undefined,
+  preloadFile = undefined,
+  resetOnDone = false,
+  children,
+  clickToOpen = true,
+}: ImageUploaderProps) => {
   if (!onDone) {
     throw new Error('Need a onDone')
   }

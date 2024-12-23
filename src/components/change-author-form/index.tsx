@@ -34,6 +34,7 @@ import {
 import { Asset } from '../../modules/assets'
 import FormFieldLabel from '../form-field-label'
 import HintText from '../hint-text'
+import ImageUploaderWithPreview from '../image-uploader-with-preview'
 
 const fieldsBySectionName = authorEditableFields.reduce<{
   [sectionName: string]: EditableField<Author>[]
@@ -119,7 +120,9 @@ const FormInput = ({
           <FormFieldLabel>{editableField.label}</FormFieldLabel>
           <br />
           <br />
-          <ImageUploader
+          <ImageUploaderWithPreview
+            value={value}
+            onClear={() => onChange('')}
             onDone={(urls) => onChange(urls[0])}
             bucketName={bucketNames.authorAvatars}
             requiredWidth={AVATAR_WIDTH}
