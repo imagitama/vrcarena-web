@@ -258,7 +258,7 @@ const AttachmentEditor = ({
           <div>
             Enter the URL here:
             <TextInput
-              value={fields.url}
+              value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               className={classes.textInput}
             />
