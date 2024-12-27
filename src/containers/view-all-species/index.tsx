@@ -223,7 +223,11 @@ const View = () => {
           options={
             speciesItems
               ? speciesItems.map((speciesItem) => ({
-                  label: speciesItem.pluralname,
+                  label: `${speciesItem.pluralname}${
+                    speciesItem.singularname !== speciesItem.pluralname
+                      ? ` (${speciesItem.singularname})`
+                      : ''
+                  })`,
                   data: speciesItem.id,
                 }))
               : []
