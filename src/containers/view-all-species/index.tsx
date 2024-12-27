@@ -227,7 +227,7 @@ const View = () => {
                     speciesItem.singularname !== speciesItem.pluralname
                       ? ` (${speciesItem.singularname})`
                       : ''
-                  })`,
+                  }`,
                   data: speciesItem.id,
                 }))
               : []
