@@ -1,13 +1,6 @@
 import { PopularCurrency } from '../currency'
 import { FullAttachment } from './attachments'
-import {
-  FeaturedStatus,
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-  PinnedStatus,
-  MetaRecord,
-} from './common'
+import { MetaRecord } from './common'
 import { Tag } from './tags'
 
 // TODO: Better func here as technically FullAsset has speciesnames

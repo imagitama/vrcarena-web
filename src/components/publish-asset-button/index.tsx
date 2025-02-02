@@ -16,7 +16,7 @@ import FormControls from '../form-controls'
 import useHistory from '../../hooks/useHistory'
 import useTimer from '../../hooks/useTimer'
 import * as routes from '../../routes'
-import { PublishErrorCode, getErrorMessageForCode } from '../../assets'
+import { PublishErrorCode, getErrorMessageForCode } from '../../utils/assets'
 
 enum BlockingErrorTypes {
   NO_TITLE = 'NO_TITLE',

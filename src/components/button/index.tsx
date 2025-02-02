@@ -133,7 +133,6 @@ const Button = forwardRef(
           // @ts-ignore
           props.color === 'tertiary' ? classes.tertiary : ''
         }`}
-        title={title}
         {...props}>
         <span
           className={`${classes.label} ${isLoading ? classes.loading : ''}`}>

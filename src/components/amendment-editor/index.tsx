@@ -10,7 +10,7 @@ import {
   mergeNewFieldsIntoParent,
 } from '../../utils/amendments'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { getFieldNameAndValueForOutput } from '../../assets'
+import { getFieldNameAndValueForOutput } from '../../utils/assets'
 import { CollectionNames } from '../../data-store'
 
 import ErrorMessage from '../error-message'

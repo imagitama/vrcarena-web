@@ -84,7 +84,7 @@ import FeaturesEditor from '../features-editor'
 import VrcFurySettings from '../vrcfury-settings'
 import VrcFurySettingsEditor from '../vrcfury-settings-editor'
 import PublishAssetButton from '../publish-asset-button'
-import { getCanAssetBePublished } from '../../assets'
+import { getCanAssetBePublished } from '../../utils/assets'
 import CategoryItem from '../category-item'
 import {
   Asset,

@@ -1,22 +1,23 @@
 import { useCallback, useState } from 'react'
 import { client as supabase } from '../supabase'
 import useSupabaseClient from './useSupabaseClient'
+import { handleError } from '../error-handling'
 
 enum ErrorCode {
   Unknown = 0,
 }
 
-const useDataStoreFunction = <TPayload extends object, TResult>(
+const useDataStoreFunction = <TPayload extends object, TRecord>(
   name: string
 ): [
   boolean,
   null | ErrorCode,
-  null | TResult,
-  (payload: TPayload) => Promise<void>
+  null | TRecord[],
+  (payload: TPayload) => Promise<null | TRecord[]>
 ] => {
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
-  const [lastResult, setLastResult] = useState<null | TResult>(null)
+  const [lastResult, setLastResult] = useState<null | TRecord[]>(null)
   const supabase = useSupabaseClient()
 
   const callFunction = useCallback(
@@ -24,25 +25,22 @@ const useDataStoreFunction = <TPayload extends object, TResult>(
       setIsLoading(true)
       setLastErrorCode(null)
 
-      const { data, error } = await supabase
-        .rpc('randomly_update_species_thumbnail', payload)
-        .select('*')
+      const { data, error } = await supabase.rpc(name, payload).select('*')
 
       if (error) {
         console.error(
           `Failed to use data store function "${name}": ${error.message}`
         )
+        handleError(error)
         setLastErrorCode(ErrorCode.Unknown)
-        return
+        return null
       }
 
-      const result = data[0]
-
-      setLastResult(result)
+      setLastResult(data)
       setIsLoading(false)
       setLastErrorCode(null)
 
-      return result
+      return data
     },
     [name]
   )

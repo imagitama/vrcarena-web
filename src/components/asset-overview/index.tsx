@@ -31,10 +31,10 @@ import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
-import { getCanUserEditAsset } from '../../assets'
+import { getCanUserEditAsset } from '../../utils/assets'
 import Link from '../../components/link'
 import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
-import categoryMeta, { getCategoryMeta } from '../../category-meta'
+import { getCategoryMeta } from '../../category-meta'
 import {
   AssetCategory,
   FullAsset,

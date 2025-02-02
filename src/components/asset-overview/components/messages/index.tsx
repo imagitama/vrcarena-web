@@ -16,7 +16,7 @@ import {
   getArchivedReasonLabel,
   getDeclinedReasonLabel,
   getDeletionReasonLabel,
-} from '../../../../assets'
+} from '../../../../utils/assets'
 import ErrorMessage from '../../../error-message'
 import WarningMessage from '../../../warning-message'
 

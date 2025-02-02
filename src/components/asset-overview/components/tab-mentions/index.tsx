@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled'
 import TabContext from '../../context'
@@ -7,6 +7,11 @@ import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
 import { Asset } from '../../../../modules/assets'
 import { RelationItem, RelationsItems } from '../../../relations'
 import { SupabaseClient } from '@supabase/supabase-js'
+import useDataStoreFunction from '../../../../hooks/useDataStoreFunction'
+import LoadingIndicator from '../../../loading-indicator'
+import AssetResults from '../../../asset-results'
+import ErrorMessage from '../../../error-message'
+import NoResultsMessage from '../../../no-results-message'
 
 const useStyles = makeStyles({
   item: { margin: '0.5rem' },
@@ -52,31 +57,33 @@ const Renderer = ({ items }: { items?: Asset[] }) => {
 export default () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const { assetId } = useContext(TabContext)
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) => {
-      const query = supabase
-        .rpc('getmentions', {
-          assetid: assetId,
-          include_adult: isAdultContentEnabled,
-        })
-        .select<any, Asset>('*')
+  const [isLoading, lastErrorCode, assets, callFunction] = useDataStoreFunction<
+    { assetid: string; include_adult: boolean },
+    Asset
+  >('getmentions') // TODO: only public assets
 
-      return query
-    },
-    [assetId, isAdultContentEnabled]
-  )
+  useEffect(() => {
+    callFunction({
+      assetid: assetId,
+      include_adult: isAdultContentEnabled,
+    })
+  }, [assetId])
+
+  if (lastErrorCode !== null) {
+    return <ErrorMessage>Failed to load mentions: {lastErrorCode}</ErrorMessage>
+  }
+
+  if (isLoading || !assets) {
+    return <LoadingIndicator message="Loading mentions..." />
+  }
+
+  if (!assets.length) {
+    return <NoResultsMessage>No mentions found</NoResultsMessage>
+  }
 
   return (
     <div>
-      {/* @ts-ignore idk */}
-      <PaginatedView<Asset>
-        collectionName="getmentions"
-        // @ts-ignore
-        getQuery={getQuery}
-        defaultFieldName="createdat"
-        defaultDirection={OrderDirections.DESC}>
-        <Renderer />
-      </PaginatedView>
+      <AssetResults assets={assets} />
     </div>
   )
 }

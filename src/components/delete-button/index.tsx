@@ -11,7 +11,7 @@ import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { AccessStatus, MetaRecord } from '../../modules/common'
 import ButtonDropdown from '../button-dropdown'
-import { deletionReasonMeta } from '../../assets'
+import { deletionReasonMeta } from '../../utils/assets'
 import {
   DeletionReason,
   CollectionNames as AssetCollectionNames,

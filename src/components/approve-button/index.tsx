@@ -13,7 +13,7 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 import ButtonDropdown from '../button-dropdown'
 import { ApprovalStatus, MetaRecord, PublishStatus } from '../../modules/common'
 import { AssetMeta, DeclinedReason } from '../../modules/assets'
-import { declinedReasonMeta } from '../../assets'
+import { declinedReasonMeta } from '../../utils/assets'
 import { getAreArraysSame } from '../../utils'
 
 const ApproveButton = ({
