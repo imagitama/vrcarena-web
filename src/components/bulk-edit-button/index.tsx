@@ -35,6 +35,8 @@ import Paper from '../paper'
 import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 import { RootState } from '../../modules'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export enum BulkAction {
   RemoveTag,
@@ -56,7 +58,12 @@ interface Handler {
   Form?: () => React.ReactElement | null
   FormPerAsset?: ({ asset }: { asset: Asset }) => React.ReactElement | null
   Preview: ({ asset }: { asset: Asset }) => React.ReactElement | null
-  Action: (assetId: string, asset: Asset, data: any) => Promise<void>
+  Action: (
+    client: SupabaseClient,
+    assetId: string,
+    asset: Asset,
+    data: any
+  ) => Promise<void>
 }
 
 const Handlers: { [key in BulkAction]: Handler } = {
@@ -188,6 +195,7 @@ const Render = () => {
   >(null)
   const enterBulkEditMode = () => dispatch(enterBulkEditModeAction())
   const leaveBulkEditMode = () => dispatch(leaveBulkEditModeAction())
+  const supabase = useSupabaseClient()
 
   const reset = () => {
     setSelectedBulkAction(null)
@@ -222,7 +230,7 @@ const Render = () => {
               return existingData
             }
 
-            return readRecord<Asset>(CollectionNames.Assets, id)
+            return readRecord<Asset>(supabase, CollectionNames.Assets, id)
           })
         )
 
@@ -285,7 +293,7 @@ const Render = () => {
         throw new Error(`Could not find asset "${id}" in data`)
       }
 
-      await actionFn(id, asset, newData)
+      await actionFn(supabase, id, asset, newData)
 
       setAssetIdsWaitingToEdit((currentIds) => {
         if (!currentIds) {

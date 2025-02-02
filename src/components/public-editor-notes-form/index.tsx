@@ -106,7 +106,7 @@ const PublicEditorNotesForm = ({
       <span className={classes.label}>Public notes from editors:</span>
       <TextInput
         multiline
-        rows={2}
+        minRows={2}
         value={newEditorNotes}
         onChange={(e) => setNewEditorNotes(e.target.value)}
       />

@@ -15,7 +15,9 @@ if (!supabaseKey) {
   throw new Error('Supabase key is empty')
 }
 
-export const client = createClient(supabaseUrl, supabaseKey)
+export let client = createClient(supabaseUrl, supabaseKey, {
+  accessToken: () => Promise.resolve(activeJwt),
+})
 
 let loggedInUserId: null | string = null
 let onJwtTokenChangedCallbacks: ((newToken: string | null) => void)[] = []
@@ -28,6 +30,12 @@ const errorCodes = {
   NO_USERADMINMETA: 'NO_USERADMINMETA',
 }
 
+interface GetSupabaseJwtResult {
+  token: string
+  expiryTimestamp: number
+  errorCode: string
+}
+
 export const getUserId = () => loggedInUserId
 
 const refreshJwt = async () => {
@@ -35,7 +43,7 @@ const refreshJwt = async () => {
 
   const {
     data: { token, expiryTimestamp, errorCode },
-  } = await callFunction('getSupabaseJwt')
+  } = await callFunction<GetSupabaseJwtResult>('getSupabaseJwt')
 
   if (errorCode) {
     console.error(`Error code from JWT function: ${errorCode}`)
@@ -43,19 +51,17 @@ const refreshJwt = async () => {
   }
 
   if (!token) {
-    throw new Error(`Could not set Supabase user ID: no JWT!`)
+    throw new Error(`Could not set Supabase user ID: no JWT`)
   }
 
   nextJwtExpiryDate = new Date(expiryTimestamp * 1000)
 
-  console.debug(`JWT:
-token: ${token}
+  console.debug(`token: ${token}
 expires: ${nextJwtExpiryDate}
 currently: ${new Date()}`)
 
-  client.auth.setAuth(token)
-
   activeJwt = token
+
   // let our React hooks (like useSupabaseUserId()) know
   onJwtTokenChangedCallbacks.forEach((cb) => cb(activeJwt))
 
@@ -97,9 +103,6 @@ firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
       console.debug(`Firebase user has signed out, signing out of Supabase...`)
 
-      // @ts-ignore
-      client.auth.setAuth(null)
-
       activeJwt = null
       loggedInUserId = null
 
@@ -113,7 +116,9 @@ firebase.auth().onAuthStateChanged(async (user) => {
       return
     }
 
-    console.debug(`Firebase user has signed in, getting a new JWT...`, { user })
+    console.debug(`Firebase user has signed in, getting a new JWT...`, {
+      uid: user.uid,
+    })
 
     const userId = user.uid
     loggedInUserId = userId
@@ -145,7 +150,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
     queueRefreshJwt()
 
-    await loadUserIntoStore(userId)
+    await loadUserIntoStore(client, userId)
 
     await saveLastLoggedInDate(userId)
   } catch (err) {

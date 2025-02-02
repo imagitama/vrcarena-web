@@ -1,6 +1,7 @@
 import { AccessStatus } from './common'
+import { UserRoles } from './users'
 
-export interface Comment {
+export interface Comment extends Record<string, unknown> {
   id: string
   comment: string
   isprivate: boolean
@@ -24,7 +25,7 @@ export interface CommentMeta {
 export interface FullComment extends Comment, CommentMeta {
   createdbyusername: string
   createdbyavatarurl: string
-  createdbyrole: string
+  createdbyrole: UserRoles
   mentions: string[]
 }
 

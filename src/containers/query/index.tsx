@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@material-ui/core/styles'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { Helmet } from 'react-helmet'
 
 import BigSearchInput from '../../components/big-search-input'
@@ -27,7 +26,7 @@ import {
   PublicAsset,
   ViewNames,
 } from '../../modules/assets'
-import { query } from '../../data-store'
+import { GetQuery } from '../../data-store'
 import { CollectionNames as AuthorCollectionNames } from '../../modules/authors'
 import { CollectionNames as UserCollectionNames } from '../../modules/users'
 import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
@@ -35,9 +34,9 @@ import Link from '../../components/link'
 import { handleError } from '../../error-handling'
 import ErrorMessage from '../../components/error-message'
 import Message from '../../components/message'
-import WarningMessage from '../../components/warning-message'
 import useDataStore from '../../hooks/useDataStore'
-import { client as supabase } from '../../supabase'
+import { SupabaseClient } from '@supabase/supabase-js'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -100,7 +99,7 @@ export enum Operator {
 }
 
 export interface Operation {
-  fieldName: keyof FullAsset
+  fieldName: Extract<keyof FullAsset, string>
   operator: Operator
   value: string | string[]
 }
@@ -117,10 +116,12 @@ export enum Platforms {
   github,
 }
 
-const getFieldNameFromSortField = (fieldName: string): keyof FullAsset => {
+const getFieldNameFromSortField = (
+  fieldName: string
+): Extract<keyof FullAsset, string> => {
   if (fieldName in sortableFieldMap) {
     // @ts-ignore
-    return sortableFieldMap[fieldName] as keyof FullAsset
+    return sortableFieldMap[fieldName] as Extract<keyof FullAsset, string>
   }
   throw new Error(`Unknown field "${fieldName}" to sort by`)
 }
@@ -311,6 +312,7 @@ const getColumnNameForFieldName = (fieldName: string) => {
 class CouldNotFindIdError extends Error {}
 
 const getIdIfNotId = async (
+  client: SupabaseClient,
   idOrName: string,
   fieldName: string
 ): Promise<string> => {
@@ -328,9 +330,10 @@ const getIdIfNotId = async (
 
   console.debug(`Query.getID`, { collectionName, columnName, name: idOrName })
 
-  const { data: results } = await query<{ id: string }>(collectionName, '*', {
-    [columnName]: idOrName,
-  })
+  const { data: results } = await client
+    .from(collectionName)
+    .select('*')
+    .is(columnName, idOrName)
 
   console.debug(`Query.getID.result`, { results })
 
@@ -350,9 +353,9 @@ const getIsFieldNameArray = (fieldName: string): boolean =>
   fieldName === AssetFieldNames.tags
 
 export const extendQueryFromUserInput = (
-  baseQuery: PostgrestFilterBuilder<FullAsset>,
+  baseQuery: GetQuery<FullAsset>,
   operations: Operation[]
-): PostgrestFilterBuilder<FullAsset> => {
+): GetQuery<FullAsset> => {
   let query = baseQuery
 
   console.debug(`Query`, { operations })
@@ -484,7 +487,7 @@ export default () => {
   const partialTag = getPartialTagFromUserInput(userInput)
 
   const getSuggestionsQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       supabase
         .from(CollectionNames.TagStats)
         .select('*')
@@ -493,7 +496,7 @@ export default () => {
     [partialTag]
   )
   const [isAutocompleting, setIsAutocompleting] = useState(false)
-  const [, , suggestions] = useDataStore<Suggestion[]>(
+  const [, , suggestions] = useDataStore<Suggestion>(
     isAutocompleting && partialTag.length >= 3 ? getSuggestionsQuery : null
   )
 
@@ -535,6 +538,8 @@ export default () => {
     }
   }, [userInput])
 
+  const client = useSupabaseClient()
+
   useEffect(() => {
     ;(async () => {
       try {
@@ -548,10 +553,10 @@ export default () => {
           const newValue = Array.isArray(operation.value)
             ? await Promise.all(
                 operation.value.map((value) =>
-                  getIdIfNotId(value, operation.fieldName)
+                  getIdIfNotId(client, value, operation.fieldName)
                 )
               )
-            : await getIdIfNotId(operation.value, operation.fieldName)
+            : await getIdIfNotId(client, operation.value, operation.fieldName)
 
           finalOperations.push({
             ...operation,

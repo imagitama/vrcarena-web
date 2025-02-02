@@ -23,6 +23,7 @@ const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers)
 
 export const store: Store<RootState> = createStore(
   createRootReducer(history),
+  // @ts-ignore idk
   initialState as RootState,
   composedEnhancers
 )

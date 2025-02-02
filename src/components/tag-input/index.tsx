@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { client as supabase } from '../../supabase'
 import { areasByCategory } from '../../areas'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { FullTag } from '../../modules/tags'
@@ -24,6 +23,7 @@ import AutocompleteInput, { AutocompleteOption } from '../autocomplete-input'
 import TagChips from '../tag-chips'
 import { Asset } from '../../modules/assets'
 import ChatGptSuggestTags from '../chatgpt-suggest-tags'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   fullWidth: {
@@ -241,23 +241,25 @@ const TagInput = ({
 
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
-  const getQuery = useDelimit(() => {
-    if (textInput.length < 2) {
-      return null
-    }
+  const getQuery = useDelimit(
+    (supabase: SupabaseClient) => {
+      if (textInput.length < 2) {
+        return null
+      }
 
-    let query = supabase
-      .rpc<FullTag>('autocompletetags', {
-        input: textInput,
-      })
-      .select('*')
+      let query = supabase
+        .rpc<any, FullTag>('autocompletetags', {
+          input: textInput,
+          include_adult: isAdultContentEnabled,
+        })
+        .select('*')
 
-    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
+      return query
+    },
+    [textInput, isAdultContentEnabled]
+  )
 
-    return query
-  }, [textInput, isAdultContentEnabled])
-
-  const [isLoading, , searchResults] = useDataStore<FullTag[]>(getQuery)
+  const [isLoading, , searchResults] = useDataStore<FullTag>(getQuery)
 
   useEffect(() => {
     if (currentTags) {

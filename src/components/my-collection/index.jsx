@@ -7,12 +7,11 @@ import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
 import useUserId from '../../hooks/useUserId'
-import { client as supabase } from '../../supabase'
 
 export default () => {
   const userId = useUserId()
   const getQuery = useCallback(
-    () =>
+    (supabase) =>
       supabase
         .from('getCollectionAssetResults'.toLowerCase())
         .select('*')

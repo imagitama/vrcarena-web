@@ -25,7 +25,7 @@ export enum PinnedStatus {
   Unpinned = 'unpinned',
 }
 
-export interface MetaRecord {
+export interface MetaRecord extends Record<string, unknown> {
   editornotes: string
   featuredstatus: FeaturedStatus
   accessstatus: AccessStatus

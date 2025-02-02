@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { handleError } from '../error-handling'
-import { client as supabase } from '../supabase'
 import { mapFieldsForDatabase } from '../utils'
 import {
   CommonRecordFields,
@@ -9,6 +8,7 @@ import {
   DataStoreOptions,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
+import useSupabaseClient from './useSupabaseClient'
 
 const useDataStoreEdit = <TRecord>(
   collectionName: string,
@@ -32,6 +32,7 @@ const useDataStoreEdit = <TRecord>(
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
     null
   )
+  const supabase = useSupabaseClient()
 
   const clear = () => {
     setIsSuccess(false)
@@ -57,11 +58,8 @@ const useDataStoreEdit = <TRecord>(
       const fieldsForUpdate = mapFieldsForDatabase(fields) as TRecord
 
       const { error } = await supabase
-        .from<TRecord & CommonRecordFields>(collectionName)
-        .update(fieldsForUpdate, {
-          returning: 'representation',
-        })
-        // @ts-ignore
+        .from(collectionName)
+        .update<TRecord>(fieldsForUpdate)
         .eq('id', id)
 
       if (error) {

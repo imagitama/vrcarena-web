@@ -48,7 +48,7 @@ const useStyles = makeStyles({
       opacity: '1 !important',
     },
     '& svg': {
-      width: '1em',
+      fontSize: '150%',
     },
   },
   twitterBtn: {

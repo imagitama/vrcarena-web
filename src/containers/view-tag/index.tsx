@@ -17,13 +17,12 @@ import { getLabelForTag } from '../../utils/tags'
 import Message from '../../components/message'
 import { AccessStatus } from '../../modules/common'
 import { PublicAsset } from '../../modules/assets'
-import { GetQueryFn } from '../../components/paginated-view'
+import { GetQuery } from '../../data-store'
 
 const AssetsForTag = ({ tag }: { tag: string }) => {
-  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
-    (query) => query.contains('tags', `{${tag}}`),
-    [tag]
-  )
+  const getQuery = useCallback<
+    (query: GetQuery<PublicAsset>) => GetQuery<PublicAsset>
+  >((query) => query.contains('tags', `{${tag}}`), [tag])
   return <AssetsPaginatedView getQuery={getQuery} />
 }
 

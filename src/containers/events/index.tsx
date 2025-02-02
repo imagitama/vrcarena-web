@@ -15,11 +15,11 @@ import NoResultsMessage from '../../components/no-results-message'
 import * as routes from '../../routes'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useDataStore from '../../hooks/useDataStore'
-import { client as supabase } from '../../supabase'
 import { Event, ViewNames } from '../../modules/events'
 import Calendar from '../../components/calendar'
 import { getIsDateInFuture, getIsDateInPast } from '../../utils/dates'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -29,12 +29,18 @@ const useStyles = makeStyles({
 
 function Events() {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(() => {
-    let query = supabase.from<Event>(ViewNames.GetPublicEvents).select('*')
-    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
-    return query
-  }, [isAdultContentEnabled])
-  const [isLoading, lastErrorCode, events] = useDataStore<Event[]>(
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      let query = supabase
+        .from(ViewNames.GetPublicEvents)
+        .select<any, Event>('*')
+      query =
+        isAdultContentEnabled === false ? query.is('isadult', false) : query
+      return query
+    },
+    [isAdultContentEnabled]
+  )
+  const [isLoading, lastErrorCode, events] = useDataStore<Event>(
     getQuery,
     'events'
   )

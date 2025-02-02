@@ -1,6 +1,6 @@
 import { CommonMetaFieldNames } from '../data-store'
 
-export const mergeNewFieldsIntoParent = (newFields, parent) => {
+export const mergeNewFieldsIntoParent = (newFields: any, parent: any): any => {
   const newParent = { ...parent }
   delete newParent.id
   delete newParent[CommonMetaFieldNames.createdAt]
@@ -32,7 +32,7 @@ export const mergeNewFieldsIntoParent = (newFields, parent) => {
   return newParent
 }
 
-export const getChangedFieldNames = (oldFields, newFields) => {
+export const getChangedFieldNames = (oldFields: any, newFields: any): any => {
   const changedFieldNames = []
 
   for (const fieldName in newFields) {

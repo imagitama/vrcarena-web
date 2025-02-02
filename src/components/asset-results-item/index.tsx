@@ -13,6 +13,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import * as routes from '../../routes'
 import {
   Asset,
+  FullAsset,
   PublicAsset,
   Relation,
   getIsPublicAsset,
@@ -153,7 +154,7 @@ const SpeciesOutput = ({
   if ('speciesnames' in asset) {
     return (
       <>
-        {divider} {asset.speciesnames.join(', ')}
+        {divider} {(asset as FullAsset).speciesnames.join(', ')}
       </>
     )
   }

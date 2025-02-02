@@ -93,7 +93,7 @@ export enum ResolutionStatus {
   Resolved = 'resolved',
 }
 
-export interface ReportMeta {
+export interface ReportMeta extends Record<string, unknown> {
   editornotes: string
   resolutionstatus: ResolutionStatus
   resolvedat: Date

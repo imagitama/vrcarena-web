@@ -4,7 +4,7 @@ export interface SurveyQuestionResponse {
   comments?: string
 }
 
-export interface SurveyResponse {
+export interface SurveyResponse extends Record<string, unknown> {
   parenttable: string
   parent: string
   questionresponses: SurveyQuestionResponse[]
@@ -17,5 +17,5 @@ export interface SurveyResponseRecord extends SurveyResponse {
 }
 
 export const CollectionNames = {
-  SurveyResponses: 'surveyresponses'
+  SurveyResponses: 'surveyresponses',
 }

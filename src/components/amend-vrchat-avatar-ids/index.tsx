@@ -100,7 +100,7 @@ export default ({ assetId }: { assetId: string }) => {
       </p>
       <TextInput
         multiline
-        rows={5}
+        minRows={5}
         value={comments}
         onChange={(e) => setComments(e.target.value)}
         fullWidth

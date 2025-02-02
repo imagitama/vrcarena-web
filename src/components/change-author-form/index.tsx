@@ -300,13 +300,18 @@ const CreateForm = ({
         ([sectionName, editableFields]) => (
           <Fragment key={sectionName}>
             {editableFields
-              .filter((editableField) => !editableField.name.includes('sale'))
+              .filter(
+                (editableField) =>
+                  !(editableField.name as string).includes('sale')
+              )
               .map((editableField) => (
                 <FormField
                   key={editableField.name}
                   editableField={editableField}
                   value={newFields[editableField.name]}
-                  onChange={(newVal) => onChange(editableField.name, newVal)}
+                  onChange={(newVal) =>
+                    onChange(editableField.name as string, newVal)
+                  }
                 />
               ))}
           </Fragment>

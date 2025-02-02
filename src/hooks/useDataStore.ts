@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-// @ts-ignore
-import { PostgrestError, SupabaseQueryBuilder } from '@supabase/supabase-js'
+import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 import { handleError } from '../error-handling'
 import { inDevelopment } from '../environment'
 import {
   DataStoreErrorCode,
   DataStoreOptions,
+  GetQuery,
   PostgresErrorCode,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
+import useSupabaseClient from './useSupabaseClient'
 
 /**
  * TODO: Decide if to delete this hook and return to useDatabaseQuery as it abstracts Supabase
@@ -30,29 +31,29 @@ const getOptions = (
         quietHydrate: false,
       }
 
-export default <TResult>(
+export default <TRecord>(
   getQuery:
     | null
-    | (() =>
-        | SupabaseQueryBuilder<TResult>
-        | Promise<SupabaseQueryBuilder<TResult>>
-        | null),
+    | ((
+        client: SupabaseClient
+      ) => GetQuery<TRecord> | Promise<GetQuery<TRecord>> | null),
   queryNameOrOptions?: string | UseDataStoreOptions
 ): [
   boolean,
   null | DataStoreErrorCode,
-  null | TResult,
+  null | TRecord[],
   null | number,
   () => void,
   boolean
 ] => {
-  const [result, setResult] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const client = useSupabaseClient()
+  const [result, setResult] = useState<null | TRecord[]>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [lastErrorCode, setLastErrorCode] = useState<DataStoreErrorCode | null>(
     null
   )
   const [isHydrating, setIsHydrating] = useState(false)
-  const [totalCount, setTotalCount] = useState(null)
+  const [totalCount, setTotalCount] = useState<null | number>(null)
   const isUnmountedRef = useRef(false)
   const timerRef = useRef<number>(0)
 
@@ -81,7 +82,7 @@ export default <TResult>(
       setLastErrorCode(null)
       timerRef.current = inDevelopment() ? performance.now() : 0
 
-      const result = await getQuery()
+      const result = await getQuery(client)
 
       if (!result) {
         console.debug(

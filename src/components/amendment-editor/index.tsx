@@ -27,6 +27,7 @@ import GenericEditor from '../generic-editor'
 import WarningMessage from '../warning-message'
 import Heading from '../heading'
 import { Asset } from '../../modules/assets'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles({
   cols: {
@@ -157,6 +158,7 @@ const AmendmentEditor = ({
   }>({})
   const [isPreviewVisible, setIsPreviewVisible] = useState(false)
   const [comments, setComments] = useState('')
+  const supabase = useSupabaseClient()
 
   if (isLoadingParent || !parent) {
     return <LoadingIndicator message="Loading parent..." />
@@ -225,6 +227,7 @@ const AmendmentEditor = ({
 
     // we store the data as IDs but still need to output it as "authorName" etc.
     const [outputFieldName, outputValue] = await getFieldNameAndValueForOutput(
+      supabase,
       fieldName as keyof Asset,
       newValue
     )
@@ -286,7 +289,7 @@ const AmendmentEditor = ({
         <p>Why are you changing this asset? What is wrong with it?</p>
         <TextInput
           multiline
-          rows={5}
+          minRows={5}
           value={comments}
           onChange={(e) => setComments(e.target.value)}
           className={classes.commentsField}

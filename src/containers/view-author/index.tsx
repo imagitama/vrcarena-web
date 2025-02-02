@@ -45,13 +45,12 @@ import AssetsPaginatedView from '../../components/assets-paginated-view'
 import ClaimButton from '../../components/claim-button'
 import UserList from '../../components/user-list'
 import LazyLoad from 'react-lazyload'
+import { GetQuery } from '../../data-store'
 
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
-  const getQuery = useCallback(
-    (query: PostgrestFilterBuilder<PublicAsset>) =>
-      query.eq('author', author.id),
-    [author.id]
-  )
+  const getQuery = useCallback<
+    (query: GetQuery<PublicAsset>) => GetQuery<PublicAsset>
+  >((query) => query.eq('author', author.id), [author.id])
 
   return (
     <AssetsPaginatedView

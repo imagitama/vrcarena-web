@@ -4,7 +4,6 @@ import CheckroomIcon from '@mui/icons-material/Checkroom'
 
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { client as supabase } from '../../supabase'
 import { Asset, AssetCategory } from '../../modules/assets'
 import * as routes from '../../routes'
 
@@ -12,6 +11,7 @@ import AssetResults from '../asset-results'
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 import FindMoreAssetsButton from '../find-more-assets-button'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -27,25 +27,29 @@ const LinkedAccessories = ({
   limit?: number
 }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(() => {
-    let query = supabase
-      .from<Asset>('getPublicAssets'.toLowerCase())
-      .select('*', {
-        count: 'estimated',
-      })
-      .eq('category', AssetCategory.Accessory)
-      // TODO: Since changing children => relations we need to create a SQL functions to lookup relation
-      // @ts-ignore
-      .contains('children', [assetId])
-      .limit(limit)
-      // @ts-ignore
-      .order('random')
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      let query = supabase
+        .from('getPublicAssets'.toLowerCase())
+        .select<any, Asset>('*', {
+          count: 'estimated',
+        })
+        .eq('category', AssetCategory.Accessory)
+        // TODO: Since changing children => relations we need to create a SQL functions to lookup relation
+        // @ts-ignore
+        .contains('children', [assetId])
+        .limit(limit)
+        // @ts-ignore
+        .order('random')
 
-    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
+      query =
+        isAdultContentEnabled === false ? query.is('isadult', false) : query
 
-    return query
-  }, [assetId, isAdultContentEnabled])
-  const [isLoading, lastErrorCode, results, totalCount] = useDataStore<Asset[]>(
+      return query
+    },
+    [assetId, isAdultContentEnabled]
+  )
+  const [isLoading, lastErrorCode, results, totalCount] = useDataStore<Asset>(
     getQuery,
     'linked-accessories'
   )

@@ -1,5 +1,5 @@
-import { callFunction, callFunctionWithFile } from './firebase'
-import { client } from './supabase'
+import { SupabaseClient } from '@supabase/supabase-js'
+import { callFunctionWithFile } from './firebase'
 import { v4 as uuidv4 } from 'uuid'
 
 const getFilenameWithoutExtension = (filename: string): string =>
@@ -38,6 +38,7 @@ interface SupabaseStorageError {
 }
 
 export const uploadFile = async (
+  supabase: SupabaseClient,
   file: File,
   bucketName: string,
   fullPathInsideBucket: string,
@@ -80,7 +81,7 @@ export const uploadFile = async (
     `Uploading ${file.name} to ${bucketName}/${fullPathToUploadTo}...`
   )
 
-  const { error } = await client.storage
+  const { error } = await supabase.storage
     .from(bucketName)
     .upload(fullPathToUploadTo, file, {
       upsert: false,
@@ -102,7 +103,7 @@ export const uploadFile = async (
     throw error
   }
 
-  const { data } = client.storage
+  const { data } = supabase.storage
     .from(bucketName)
     .getPublicUrl(fullPathToUploadTo)
 
@@ -110,7 +111,7 @@ export const uploadFile = async (
     throw new Error('Could not get public URL: no data')
   }
 
-  const { publicURL: url } = data
+  const { publicUrl: url } = data
 
   console.debug(`File uploaded to ${url}`)
 

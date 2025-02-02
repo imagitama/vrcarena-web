@@ -324,7 +324,7 @@ const AttachmentEditor = ({
                 onChange={(e) => setField('description', e.target.value)}
                 className={classes.textInput}
                 multiline
-                rows={5}
+                minRows={5}
               />
               Tags (optional)
               <TagInput

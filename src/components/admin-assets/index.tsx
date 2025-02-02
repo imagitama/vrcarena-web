@@ -7,7 +7,6 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import { makeStyles } from '@material-ui/styles'
@@ -39,6 +38,7 @@ import FormattedDate from '../formatted-date'
 import AssetOverview from '../asset-overview'
 import useStorage from '../../hooks/useStorage'
 import AssetEditorWithSync from '../asset-editor-with-sync'
+import { GetQuery } from '../../data-store'
 
 const useStyles = makeStyles({
   pass: {
@@ -398,9 +398,7 @@ const AdminAssets = () => {
   )
   const [userIdToFilter, setUserIdToFilter] = useState('')
   const getQuery = useCallback(
-    (
-      query: PostgrestFilterBuilder<FullAsset>
-    ): PostgrestFilterBuilder<FullAsset> => {
+    (query: GetQuery<FullAsset>): GetQuery<FullAsset> => {
       if (userIdToFilter) {
         query = query.eq('createdby', userIdToFilter)
       }

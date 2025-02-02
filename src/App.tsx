@@ -113,6 +113,14 @@ const CreateAsset = lazy(() =>
       import(/* webpackChunkName: "create-asset" */ './containers/create-asset')
   )
 )
+const CreateAssetSync = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "create-asset-sync" */ './containers/create-asset-sync'
+      )
+  )
+)
 const EditAsset = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "edit-asset" */ './containers/edit-asset')
@@ -537,6 +545,7 @@ const MainContent = () => {
         <Route exact path={routes.signUp} component={SignUp} />
         <Route exact path={routes.logout} component={Logout} />
         <Route exact path={routes.createAsset} component={CreateAsset} />
+        <Route exact path={'/create-asset-sync'} component={CreateAssetSync} />
         <Route exact path={routes.oldEditAssetWithVar} component={EditAsset} />
         <Route exact path={routes.editAssetWithVar} component={EditAsset} />
         <Route

@@ -9,7 +9,7 @@ import LoadingIndicator from '../../../loading-indicator'
 import ErrorMessage from '../../../error-message'
 import { Asset, ViewNames } from '../../../../modules/assets'
 
-interface RelatedAssetsResult {
+interface RelatedAssetsResult extends Record<string, unknown> {
   results: Asset[]
 }
 

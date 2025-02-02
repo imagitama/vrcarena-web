@@ -23,6 +23,7 @@ import {
 } from './modules/discordservers'
 import { UserAdminMeta } from './modules/users'
 import { AccessStatus, ApprovalStatus, PublishStatus } from './modules/common'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 // we grab all of this stuff in the SQL query
 // but while the user is editing this stuff we can't grab it
@@ -30,6 +31,7 @@ import { AccessStatus, ApprovalStatus, PublishStatus } from './modules/common'
 // TODO: Do this in a generic way like with "refs" in Firestore and "populateRefs: true"
 // NOTE: This is the WORST performant way to do this stuff (especially grabbing children...)
 export const getFieldNameAndValueForOutput = async (
+  supabase: SupabaseClient,
   fieldName: keyof Asset,
   newValue: any
 ): Promise<[keyof FullAsset, any]> => {
@@ -40,6 +42,7 @@ export const getFieldNameAndValueForOutput = async (
       }
 
       const author = await readRecord<Author>(
+        supabase,
         AuthorCollectionNames.Authors,
         newValue
       )
@@ -54,6 +57,7 @@ export const getFieldNameAndValueForOutput = async (
 
       for (const speciesId of newValue) {
         const { singularname } = await readRecord<Species>(
+          supabase,
           SpeciesCollectionNames.Species,
           speciesId
         )
@@ -68,6 +72,7 @@ export const getFieldNameAndValueForOutput = async (
       }
 
       const discordServerData = await readRecord<DiscordServer>(
+        supabase,
         DiscordServerCollectionNames.DiscordServers,
         newValue
       )

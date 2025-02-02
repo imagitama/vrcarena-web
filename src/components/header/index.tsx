@@ -37,11 +37,7 @@ const useStyles = makeStyles({
     display: 'flex',
     position: 'relative',
     padding: '1rem',
-    [mediaQueryForTabletsOrBelow]: {
-      // height: '160px',
-    },
     [mediaQueryForMobiles]: {
-      // height: '120px',
       padding: '0.5rem',
       flexDirection: 'column',
     },

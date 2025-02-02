@@ -84,7 +84,7 @@ const TagBlacklistEditor = () => {
         value={userInput}
         onChange={(e) => setUserInput(e.target.value)}
         multiline
-        rows={2}
+        minRows={2}
         label=""
       />
       <p>

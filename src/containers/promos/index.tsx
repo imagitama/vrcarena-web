@@ -94,9 +94,10 @@ const AuthorPromo = ({
 }
 
 const PromosContainer = () => {
-  const [isLoading, isError, results] = useSupabaseView(
-    'getAuthorsForVrchatWorld'
-  )
+  const [isLoading, isError, results] =
+    useSupabaseView<GetPublicAuthorsWithVrchatAvatarsResult>(
+      'getAuthorsForVrchatWorld'
+    )
   const classes = useStyles()
 
   if (isLoading || !Array.isArray(results)) {

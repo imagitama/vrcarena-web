@@ -6,11 +6,10 @@ import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
-import { client as supabase } from '../../supabase'
 
 export default ({ userId }) => {
   const getQuery = useCallback(
-    () =>
+    (supabase) =>
       supabase
         .from('getWishlistAssetResults'.toLowerCase())
         .select('*')

@@ -1,15 +1,12 @@
 import React, { useCallback, useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled'
-import { client as supabase } from '../../../../supabase'
 import TabContext from '../../context'
 import PaginatedView from '../../../paginated-view'
-import {
-  AssetFieldNames,
-  OrderDirections,
-} from '../../../../hooks/useDatabaseQuery'
+import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
 import { Asset } from '../../../../modules/assets'
-import { RelationsItems, RelationItem } from '../../../relations'
+import { RelationItem, RelationsItems } from '../../../relations'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   item: { margin: '0.5rem' },
@@ -55,25 +52,26 @@ const Renderer = ({ items }: { items?: Asset[] }) => {
 export default () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const { assetId } = useContext(TabContext)
-  const getQuery = useCallback(() => {
-    let query = supabase
-      .rpc('getmentions', {
-        assetid: assetId,
-      })
-      .select('*')
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      const query = supabase
+        .rpc('getmentions', {
+          assetid: assetId,
+          include_adult: isAdultContentEnabled,
+        })
+        .select<any, Asset>('*')
 
-    query =
-      isAdultContentEnabled === false
-        ? query.is(AssetFieldNames.isAdult, false)
-        : query
-
-    return query
-  }, [assetId, isAdultContentEnabled])
+      return query
+    },
+    [assetId, isAdultContentEnabled]
+  )
 
   return (
     <div>
+      {/* @ts-ignore idk */}
       <PaginatedView<Asset>
         collectionName="getmentions"
+        // @ts-ignore
         getQuery={getQuery}
         defaultFieldName="createdat"
         defaultDirection={OrderDirections.DESC}>

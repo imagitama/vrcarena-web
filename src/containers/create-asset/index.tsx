@@ -24,6 +24,9 @@ import { handleError } from '../../error-handling'
 import Link from '../../components/link'
 import LoadingIndicator from '../../components/loading-indicator'
 import { useHistory } from 'react-router'
+import useIsEditor from '../../hooks/useIsEditor'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 
 const useStyles = makeStyles((theme) => ({
   // global
@@ -122,13 +125,14 @@ const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
 }
 
 const View = () => {
-  const [, , user] = useUserRecord()
   const [isCreating, setIsCreating] = useState(false)
   const [isError, setIsError] = useState(false)
   const classes = useStyles()
   const [isLoadingDrafts, isErrorLoadingDrafts, drafts] = useMyDrafts()
   const [showRules, setShowRules] = useState(false)
   const { push } = useHistory()
+  const supabase = useSupabaseClient()
+  const isLoggedIn = useIsLoggedIn()
 
   useEffect(() => {
     if (isLoadingDrafts || !drafts) {
@@ -147,6 +151,7 @@ const View = () => {
       setIsError(false)
 
       const newDraftRecord = await insertRecord<{ title: string }, Asset>(
+        supabase,
         CollectionNames.Assets,
         {
           title: 'My draft asset',
@@ -211,7 +216,7 @@ const View = () => {
     )
   }
 
-  if (!user) {
+  if (!isLoggedIn) {
     return <NoPermissionMessage />
   }
 
@@ -230,15 +235,26 @@ const View = () => {
   return <>Waiting</>
 }
 
-export default () => (
-  <>
-    <Helmet>
-      <title>Upload a new asset to the site | VRCArena</title>
-      <meta
-        name="description"
-        content="Complete the form, submit it for approval and your asset will be visible on the site."
-      />
-    </Helmet>
-    <View />
-  </>
-)
+export default () => {
+  // const isEditor = useIsEditor()
+  // const { push } = useHistory()
+
+  // useEffect(() => {
+  //   if (isEditor) {
+  //     push('/create-asset-sync')
+  //   }
+  // }, [isEditor])
+
+  return (
+    <>
+      <Helmet>
+        <title>Upload a new asset to the site | VRCArena</title>
+        <meta
+          name="description"
+          content="Complete the form, submit it for approval and your asset will be visible on the site."
+        />
+      </Helmet>
+      <View />
+    </>
+  )
+}

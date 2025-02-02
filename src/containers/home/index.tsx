@@ -171,7 +171,7 @@ interface HomepageContent {
 
 const Tiles = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const [isLoading, isError, results] = useSupabaseView<HomepageContent[]>(
+  const [isLoading, isError, results] = useSupabaseView<HomepageContent>(
     `${isAdultContentEnabled ? '' : 'non'}adulthomepagecontent`
   )
 

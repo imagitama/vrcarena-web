@@ -160,7 +160,7 @@ const LoadingPlaceholders = ({ count }: { count: number }) => {
 
   for (let i = 0; i < count; i++) {
     shimmers.push(
-      <div className={`${classes.image} ${classes.placeholder}`}></div>
+      <div key={i} className={`${classes.image} ${classes.placeholder}`}></div>
     )
   }
 

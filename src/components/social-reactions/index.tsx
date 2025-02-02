@@ -12,12 +12,13 @@ import {
   SocialReactionInsertFields,
 } from '../../modules/social'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import { client } from '../../supabase'
 import { handleError } from '../../error-handling'
 import useUserId from '../../hooks/useUserId'
 import { insertRecord } from '../../data-store'
 import ErrorMessage from '../error-message'
 import useClickAway from '../../hooks/useClickAway'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -44,20 +45,22 @@ const useStyles = makeStyles({
 })
 
 const updateMyReaction = async (
+  client: SupabaseClient,
   socialPostId: string,
   newEmoji: string,
   myUserId: string
 ): Promise<void> => {
   try {
     console.debug(`Updating my reaction to ${socialPostId} to ${newEmoji}...`)
+
     await client
-      .from<SocialReaction>(CollectionNames.SocialReactions)
-      .update({
-        // parent: 'abc',
+      .from(CollectionNames.SocialReactions)
+      .update<Partial<SocialReaction>>({
         emoji: newEmoji,
       })
       .eq('parent', socialPostId)
       .eq('createdby', myUserId)
+
     console.debug(`Reaction updated successfully`)
   } catch (err) {
     console.error(err)
@@ -66,16 +69,20 @@ const updateMyReaction = async (
 }
 
 const deleteMyReactions = async (
+  client: SupabaseClient,
   socialPostId: string,
   myUserId: string
 ): Promise<void> => {
   try {
     console.debug(`Deleting my reactions to ${socialPostId}...`)
+
     await client
-      .from<SocialReaction>(CollectionNames.SocialReactions)
+      .from(CollectionNames.SocialReactions)
       .delete()
+      // TODO: Improve type safety
       .eq('parent', socialPostId)
       .eq('createdby', myUserId)
+
     console.debug(`Reactions deleted successfully`)
   } catch (err) {
     console.error(err)
@@ -103,8 +110,8 @@ const SocialReactions = ({
   const [isFailed, setIsFailed] = useState(false)
   const myUserId = useUserId()
   const rootRef = useRef<HTMLDivElement>(null)
-
   const onClickAway = useCallback(() => setWantsToReact(false), [])
+  const supabase = useSupabaseClient()
 
   useClickAway(rootRef, onClickAway)
 
@@ -133,13 +140,14 @@ const SocialReactions = ({
           console.debug(
             `Selected emoji is the same what I reacted with, removing...`
           )
-          await deleteMyReactions(socialPostId, myUserId)
+          await deleteMyReactions(supabase, socialPostId, myUserId)
         } else {
           console.debug(`Selected emoji is a new one, updating...`)
-          await updateMyReaction(socialPostId, emoji, myUserId)
+          await updateMyReaction(supabase, socialPostId, emoji, myUserId)
         }
       } else {
         await insertRecord<SocialReactionInsertFields, SocialReaction>(
+          supabase,
           CollectionNames.SocialReactions,
           {
             parent: socialPostId,

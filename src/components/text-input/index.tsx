@@ -27,7 +27,7 @@ const TextInput = ({ button, ...props }: Props) => {
     <span className={classes.root}>
       <TextField
         {...props}
-        multiline={'rows' in props}
+        multiline={props.minRows !== undefined}
         variant={props.variant || 'outlined'}
         disabled={props.isDisabled}
       />

@@ -4,6 +4,7 @@ import {
   AnalyticsFieldNames,
   insertRecord,
 } from './data-store'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export const trackAction = (
   category: string,
@@ -23,6 +24,7 @@ export const trackAction = (
 }
 
 export const trackInternalAction = async (
+  supabase: SupabaseClient,
   category: string,
   action: string,
   parentTable: string,
@@ -30,7 +32,7 @@ export const trackInternalAction = async (
   extraData: any = null
 ) => {
   try {
-    await insertRecord(CollectionNames.Analytics, {
+    await insertRecord(supabase, CollectionNames.Analytics, {
       [AnalyticsFieldNames.category]: category,
       [AnalyticsFieldNames.action]: action,
       [AnalyticsFieldNames.parentTable]: parentTable,

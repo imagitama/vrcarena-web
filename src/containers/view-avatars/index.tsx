@@ -21,6 +21,7 @@ import {
   ViewNames,
 } from '../../modules/assets'
 import AssetsPaginatedView from '../../components/assets-paginated-view'
+import { GetQuery } from '../../data-store'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   return getCategoryMeta(categoryName).name
@@ -39,7 +40,9 @@ interface AssetWithSpeciesData extends Asset {
 const categoryName = AssetCategory.Avatar
 
 const ViewAvatarsView = () => {
-  const getQuery = useCallback(
+  const getQuery = useCallback<
+    (query: GetQuery<PublicAsset>) => GetQuery<PublicAsset>
+  >(
     (query) => {
       query = query.eq(AssetFieldNames.category, categoryName)
       return query

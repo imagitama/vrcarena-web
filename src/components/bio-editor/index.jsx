@@ -81,7 +81,7 @@ export default ({ onSaveClick = undefined }) => {
       <TextField
         value={bioValue}
         onChange={(e) => setBioValue(e.target.value)}
-        rows={5}
+        minRows={5}
         multiline
         variant="outlined"
         className={classes.bioTextField}

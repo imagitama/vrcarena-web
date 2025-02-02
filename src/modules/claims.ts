@@ -3,7 +3,7 @@ export enum ClaimStatus {
   Deleted = 'deleted',
 }
 
-export interface Claim {
+export interface Claim extends Record<string, unknown> {
   id: string
   parenttable: string
   parent: string

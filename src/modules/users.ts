@@ -1,4 +1,4 @@
-export interface SocialMediaUsernames {
+export interface SocialMediaUsernames extends Record<string, unknown> {
   // profile
   vrchatuserid: string
   vrchatusername: string

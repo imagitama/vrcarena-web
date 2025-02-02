@@ -24,8 +24,10 @@ import {
 } from './getItems'
 import { deleteRecord } from '../../data-store'
 import { cartIdsStorageKey, clear as clearCart } from '../../cart'
-import { client, getUserId } from '../../supabase'
+import { getUserId } from '../../supabase'
 import { CollectionNames } from '../../modules/notifications'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -53,6 +55,9 @@ const useStyles = makeStyles({
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
+    '& svg': {
+      fontSize: '150%',
+    },
   },
   iconItem: {
     '&:hover': {
@@ -74,7 +79,7 @@ interface MenuItemDetails {
   icon?: any
   count?: null | number
   items?: MenuItemData[]
-  getItems?: () => Promise<MenuItemData[]>
+  getItems?: (supabase: SupabaseClient) => Promise<MenuItemData[]>
   onClick?: (id: string) => void | Promise<void>
   hideIfNone?: boolean
   loggedInOnly?: boolean
@@ -131,6 +136,7 @@ const getLoggedOutMenuItems = (currentPath: string) => [
 ]
 
 const getMenu = (
+  supabase: SupabaseClient,
   currentPath: string,
   userId: string | null
 ): { [id: string]: MenuItemDetails } => ({
@@ -143,7 +149,7 @@ const getMenu = (
         return
       }
       console.debug(`Clicked notification ${id}...`)
-      await deleteRecord(CollectionNames.Notifications, id)
+      await deleteRecord(supabase, CollectionNames.Notifications, id)
     },
     loggedInOnly: true,
     noItemsMessage: 'No notifications',
@@ -157,7 +163,7 @@ const getMenu = (
 
       console.debug(`Clearing all notifications...`)
 
-      await client
+      await supabase
         .from(CollectionNames.Notifications)
         .delete()
         .eq('recipient', userId)
@@ -217,6 +223,7 @@ export default ({
   const [menuItems, setMenuItems] = useState<{ [id: string]: MenuItemData[] }>(
     {}
   )
+  const supabase = useSupabaseClient()
 
   const toggleMenu = (id: string) => {
     if (openId === id) {
@@ -234,7 +241,7 @@ export default ({
     }
   }
 
-  const menu = getMenu(location.pathname, userId)
+  const menu = getMenu(supabase, location.pathname, userId)
 
   const hydrateMenu = async (id: string) => {
     try {
@@ -246,7 +253,7 @@ export default ({
 
       console.debug(`Hydrating menu ${id}...`)
 
-      const newItemsResult = await menuDetails.getItems()
+      const newItemsResult = await menuDetails.getItems(supabase)
 
       setMenuItems((currentItems) => ({
         ...currentItems,

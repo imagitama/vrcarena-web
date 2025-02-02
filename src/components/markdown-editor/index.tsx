@@ -109,7 +109,7 @@ This is a caption
             value={content}
             onChange={(e) => onChange(e.target.value)}
             multiline
-            rows={75}
+            minRows={75}
             rowsMax={25}
             className={classes.input}
             variant="outlined"

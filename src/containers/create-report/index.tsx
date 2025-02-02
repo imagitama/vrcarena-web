@@ -186,7 +186,7 @@ const View = () => {
           onFieldChange(ReportFieldNames.comments, e.target.value)
         }
         multiline
-        rows={5}
+        minRows={5}
       />
       <FormControls>
         <Button onClick={onCreateBtnClick}>Create</Button>

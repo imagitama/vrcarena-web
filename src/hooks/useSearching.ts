@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef } from 'react'
 import { handleError } from '../error-handling'
-import { client as supabase } from '../supabase'
 import { setIsSearching } from '../modules/app'
 import { useDispatch } from 'react-redux'
 import { DataStoreErrorCode } from '../data-store'
+import useSupabaseClient from './useSupabaseClient'
 
 export default <TRecord>(
   tableName: string,
   searchTerm: string,
   selectStatement: string,
-  fieldsToSearch: (keyof TRecord)[],
+  fieldsToSearch: Extract<keyof TRecord, string>[],
   getQuery?: (query: any) => any,
   limit: number = 50
 ): [boolean, DataStoreErrorCode | null, TRecord[] | null] => {
@@ -19,6 +19,7 @@ export default <TRecord>(
     null
   )
   const timerRef = useRef<NodeJS.Timeout>()
+  const supabase = useSupabaseClient()
 
   useEffect(() => {
     if (!searchTerm) {

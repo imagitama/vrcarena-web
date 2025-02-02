@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { handleError } from '../error-handling'
-import { client as supabase } from '../supabase'
-import { mapFieldsForDatabase } from '../utils'
 import {
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
+import useSupabaseClient from './useSupabaseClient'
 
-export default <TRecord>(
+export default <TRecord extends Record<string, unknown>>(
   collectionName: string
 ): [
   boolean,
@@ -31,6 +30,7 @@ export default <TRecord>(
     null
   )
   const [id, setId] = useState<null | string>(null)
+  const supabase = useSupabaseClient()
 
   const clear = () => {
     setIsSuccess(false)
@@ -53,13 +53,10 @@ export default <TRecord>(
         throw new Error(`Cannot provide an id when performing create`)
       }
 
-      const fieldsForInsert = mapFieldsForDatabase(fields)
-
       const { data, error } = await supabase
-        .from(collectionName)
-        .insert(fieldsForInsert, {
-          returning: 'representation',
-        })
+        .from<any, { Row1: TRecord; Insert: TRecord }>(collectionName)
+        .insert([fields as TRecord])
+        .select<'*', TRecord>()
 
       if (error) {
         console.error(error)

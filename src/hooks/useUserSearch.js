@@ -1,6 +1,4 @@
 import { useCallback, useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
-
 import useDataStore from './useDataStore'
 import { client as supabase } from '../supabase'
 import { cleanupSearchTerm } from '../utils'
@@ -50,7 +48,8 @@ export default (searchTerm, filtersByFieldName = {}, limit = defaultLimit) => {
   }, [searchTerm])
 
   const getQueryForHook = useCallback(
-    () => getQuery(actualSearchTerm, filtersByFieldName, limit),
+    (supabase) =>
+      getQuery(supabase, actualSearchTerm, filtersByFieldName, limit),
     [
       actualSearchTerm,
       Object.keys(filtersByFieldName).join('+'),

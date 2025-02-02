@@ -8,11 +8,11 @@ import {
 } from '../../modules/assets'
 import AssetResultsItem from '../asset-results-item'
 import Markdown from '../markdown'
-import { client as supabase } from '../../supabase'
 import useDataStore from '../../hooks/useDataStore'
 import LoadingIndicator from '../loading-indicator'
 import NoResultsMessage from '../no-results-message'
 import ErrorMessage from '../error-message'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -96,16 +96,15 @@ export const RelationItem = ({
 
 const Relations = ({ relations }: { relations: Relation[] }) => {
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       supabase
         .from('getpublicassets')
         .select('*')
         .or(relations.map(({ asset }) => `id.eq.${asset}`).join(',')),
     [relations.map(({ asset }) => asset).join('+')]
   )
-  const [isLoadingAssets, lastErrorCodeLoadingAssets, assets] = useDataStore<
-    PublicAsset[]
-  >(getQuery, 'relations')
+  const [isLoadingAssets, lastErrorCodeLoadingAssets, assets] =
+    useDataStore<PublicAsset>(getQuery, 'relations')
   const classes = useStyles()
 
   const relationsWithData = assets

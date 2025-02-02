@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
 import useDataStore from '../../hooks/useDataStore'
 import { ReviewsFieldNames } from '../../data-store'
-import { client as supabase } from '../../supabase'
 
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 import ReviewResults from '../review-results'
 import { Review } from '../../modules/reviews'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export default ({
   assetId,
@@ -16,7 +16,7 @@ export default ({
   shimmer?: boolean
 }) => {
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       shimmer
         ? null
         : supabase
@@ -25,7 +25,7 @@ export default ({
             .eq(ReviewsFieldNames.asset, assetId),
     [assetId, shimmer]
   )
-  const [isLoading, lastErrorCode, reviews] = useDataStore<Review[]>(
+  const [isLoading, lastErrorCode, reviews] = useDataStore<Review>(
     getQuery,
     'reviews-by-asset-id'
   )

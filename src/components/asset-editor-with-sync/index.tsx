@@ -16,6 +16,7 @@ import AssetEditor, {
 import Heading from '../../components/heading'
 import SyncForm from '../../components/sync-form'
 import ExperimentalArea from '../experimental-area'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const SyncFormWrapper = () => {
   const {
@@ -65,6 +66,7 @@ const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
   const [assetRecord, setAssetRecord] = useState<FullAsset | null>(null)
   const [newFields, setNewFields] = useState<Asset | null>(null)
   const [isSyncFormVisible, setIsSyncFormVisible] = useState(false)
+  const supabase = useSupabaseClient()
 
   const hydrate = async () => {
     console.debug(`AssetEditorWithSync.hydrate`, { assetId })
@@ -78,6 +80,7 @@ const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
 
     try {
       const rawAssetFields = await readRecord<FullAsset>(
+        supabase,
         'getFullAssets',
         assetId
       )

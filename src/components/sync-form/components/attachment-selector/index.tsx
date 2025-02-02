@@ -26,6 +26,7 @@ import { bucketNames } from '../../../../file-uploading'
 import NoResultsMessage from '../../../no-results-message'
 import AttachmentMeta from '../../../attachment-meta'
 import WarningMessage from '../../../warning-message'
+import useSupabaseClient from '../../../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles({
   attachmentsSelector: {},
@@ -162,6 +163,7 @@ const AttachmentsSelector = ({
     updateDatabaseOperation,
   } = useBulkDataStore()
   const { setField } = useSync()
+  const supabase = useSupabaseClient()
 
   const resetEverything = () => {
     resetDatabaseOperations(0)
@@ -199,6 +201,7 @@ const AttachmentsSelector = ({
             AttachmentFields,
             Attachment
           >(
+            supabase,
             CollectionNames.Attachments,
             {
               reason: AttachmentReason.AssetFile,

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 
 export default (
-  callback: () => void,
+  callback: (...args: any[]) => any,
   subscription: any[],
   timer = 500
-): (() => void) | null => {
+): ((...args: any[]) => any) | null => {
   const timerRef = useRef<NodeJS.Timeout>()
   const delimitedCallbackRef = useRef<(() => void) | null>(callback)
   const [, rerender] = useState(0)

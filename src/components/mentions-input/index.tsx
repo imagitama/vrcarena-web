@@ -148,13 +148,13 @@ const Output = ({ value, map }: { value: string; map: UsernameMapping }) => {
           return <em>@...</em>
         }
 
-        return <em>@{result[0]}</em>
+        return <em key={index}>@{result[0]}</em>
       } else {
-        return <span>{part}</span>
+        return <span key={index}>{part}</span>
       }
     })
 
-    elements.push(<div>{chunks}</div>)
+    elements.push(<div key={line}>{chunks}</div>)
   }
 
   return <>{elements}</>

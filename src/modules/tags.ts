@@ -4,7 +4,7 @@ import { categories } from '../utils/tags'
 import * as icons from '../icons'
 import { AccessStatus } from './common'
 
-export interface Tag {
+export interface Tag extends Record<string, unknown> {
   id: string // tag itself
   label: string
   category: string
@@ -18,7 +18,7 @@ export interface Tag {
   lastmodifiedat: Date
 }
 
-export interface TagMeta {
+export interface TagMeta extends Record<string, unknown> {
   id: string
   editornotes: string
   accessstatus: AccessStatus
@@ -28,7 +28,7 @@ export interface TagMeta {
   createdat: Date
 }
 
-export interface TagStats {
+export interface TagStats extends Record<string, unknown> {
   tag: string
   count: number
 }

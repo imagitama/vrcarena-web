@@ -64,7 +64,7 @@ const Editor = ({
       <TextInput
         label="Comments (optional)"
         multiline
-        rows={2}
+        minRows={2}
         fullWidth
         value={newSourceInfo.comments}
         onChange={(e) => {

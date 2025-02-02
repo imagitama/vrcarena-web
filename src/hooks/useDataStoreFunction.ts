@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { client as supabase } from '../supabase'
+import useSupabaseClient from './useSupabaseClient'
 
 enum ErrorCode {
   Unknown = 0,
@@ -16,6 +17,7 @@ const useDataStoreFunction = <TPayload extends object, TResult>(
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
   const [lastResult, setLastResult] = useState<null | TResult>(null)
+  const supabase = useSupabaseClient()
 
   const callFunction = useCallback(
     async (payload: TPayload) => {

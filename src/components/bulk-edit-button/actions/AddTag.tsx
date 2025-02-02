@@ -4,19 +4,22 @@ import { Asset, CollectionNames, FullAsset } from '../../../modules/assets'
 import TextInput from '../../text-input'
 import TagDiff from '../../tag-diff'
 import { useState } from 'react'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export const Action = async (
+  supabase: SupabaseClient,
   assetId: string,
   asset: Asset,
   newData: { all: Asset }
 ): Promise<void> => {
   const tagToAdd = newData.all.tags[0]
-  console.log('ACTION - ADD TAG', asset.tags, newData.all.tags, tagToAdd)
+
   if (asset.tags.includes(tagToAdd)) {
     return
   }
-  await updateRecord(CollectionNames.Assets, assetId, {
-    tags: asset.tags.concat([tagToAdd])
+
+  await updateRecord(supabase, CollectionNames.Assets, assetId, {
+    tags: asset.tags.concat([tagToAdd]),
   })
 }
 
@@ -50,13 +53,13 @@ export const Form = () => {
       Add tag{' '}
       <TextInput
         value={userInput}
-        onChange={e => {
+        onChange={(e) => {
           const newUserInput = e.target.value.trim()
           setUserInput(newUserInput)
           setNewData({
             all: {
-              tags: [newUserInput]
-            }
+              tags: [newUserInput],
+            },
           })
         }}
         size="small"

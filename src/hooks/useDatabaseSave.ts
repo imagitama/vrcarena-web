@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { handleError } from '../error-handling'
-import { client as supabase } from '../supabase'
 import {
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
+import useSupabaseClient from './useSupabaseClient'
 
 type ClearFunc = () => void
 
@@ -25,6 +25,7 @@ export default <TRecord, TReturnVal = TRecord>(
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
     null
   )
+  const supabase = useSupabaseClient()
 
   const clear = () => {
     setIsSuccess(false)
@@ -84,7 +85,7 @@ export default <TRecord, TReturnVal = TRecord>(
         if (isDelete) {
           const { error } = await supabase
             .from(collectionName)
-            .delete({ returning: 'representation' })
+            .delete()
             .eq('id', idToSave)
 
           if ((Array.isArray(error) && error.length > 0) || error) {
@@ -98,7 +99,7 @@ export default <TRecord, TReturnVal = TRecord>(
 
           const { error } = await supabase
             .from(collectionName)
-            .update(fields, { returning: 'representation' })
+            .update(fields)
             .eq('id', idToSave)
 
           if ((Array.isArray(error) && error.length > 0) || error) {
@@ -118,9 +119,8 @@ export default <TRecord, TReturnVal = TRecord>(
 
         const { data, error } = await supabase
           .from(collectionName)
-          .insert(fields, {
-            returning: 'representation',
-          })
+          .insert(fields)
+          .select()
 
         if ((Array.isArray(error) && error.length > 0) || error) {
           console.error(error)

@@ -4,7 +4,6 @@ import useDataStore from '../../hooks/useDataStore'
 import { CommentFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsEditor from '../../hooks/useIsEditor'
 
-import { client as supabase } from '../../supabase'
 import { getQueryParam } from '../../utils'
 import { trackAction } from '../../analytics'
 import { CollectionNames } from '../../modules/assets'
@@ -15,6 +14,7 @@ import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 import AddCommentForm from '../add-comment-form'
 import WarningMessage from '../warning-message'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export default ({
   collectionName,
@@ -31,7 +31,7 @@ export default ({
 }) => {
   const isEditor = useIsEditor()
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       shimmer
         ? null
         : supabase
@@ -46,9 +46,8 @@ export default ({
     [collectionName, parentId, shimmer, isEditor, getPrivate]
   )
 
-  const [isLoading, lastErrorCode, results, , hydrate] = useDataStore<
-    FullComment[]
-  >(shimmer ? null : getQuery, 'get-comments')
+  const [isLoading, lastErrorCode, results, , hydrate] =
+    useDataStore<FullComment>(shimmer ? null : getQuery, 'get-comments')
 
   if (isLoading || shimmer) {
     return (

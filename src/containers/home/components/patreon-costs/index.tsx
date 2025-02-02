@@ -3,10 +3,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { totalCostPerMonth } from '../../../../costs'
 import { colorPalette } from '../../../../config'
 
-const defaultText = `All of the costs for running the site are paid by our amazing
-Patreon supporters. The lowest tier is $1 to unlock bonus features
-such as featuring on the homepage.`
-
 const useStyles = makeStyles({
   root: {
     '& > div': {

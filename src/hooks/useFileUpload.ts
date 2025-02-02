@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { handleError } from '../error-handling'
 import { uploadFile } from '../file-uploading'
+import useSupabaseClient from './useSupabaseClient'
 
 type UploadFunc = (
   file: File,
@@ -20,6 +21,7 @@ export default (): [
   const [percentageDone, setPercentageDone] = useState(0)
   const [lastError, setLastError] = useState<Error | null>(null)
   const [downloadUrl, setDownloadUrl] = useState('')
+  const supabase = useSupabaseClient()
 
   const upload: UploadFunc = async (file, bucketName, fullUploadFullPath) => {
     setIsUploading(true)
@@ -29,10 +31,11 @@ export default (): [
 
     try {
       const url = await uploadFile(
+        supabase,
         file,
         bucketName,
         fullUploadFullPath,
-        progressPercentage => setPercentageDone(progressPercentage)
+        (progressPercentage) => setPercentageDone(progressPercentage)
       )
 
       setIsUploading(false)

@@ -4,13 +4,13 @@ import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 
 import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
-import { client as supabase } from '../../supabase'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import VrchatAvatar from '../vrchat-avatar'
 import PublicAvatarForm from '../public-avatar-form'
 import { CachedVrchatAvatarRecord } from '../../modules/public-avatars'
 import FindMoreAssetsButton from '../find-more-assets-button'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   avatars: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -26,18 +26,17 @@ export default ({
   showAddButton?: boolean
 }) => {
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       avatarIds.length === 0
-        ? false
+        ? null
         : supabase
             .from(CollectionNames.VrchatAvatars)
             .select('*')
             .or(avatarIds.map((avatarId) => `id.eq.${avatarId}`).join(',')),
     [avatarIds.join(',')]
   )
-  const [isLoading, lastErrorCode, results] = useDataStore<
-    CachedVrchatAvatarRecord[]
-  >(getQuery, 'vrchat-avatars')
+  const [isLoading, lastErrorCode, results] =
+    useDataStore<CachedVrchatAvatarRecord>(getQuery, 'vrchat-avatars')
   const classes = useStyles()
   const [isAddFormVisible, setIsAddFormVisible] = useState(false)
 

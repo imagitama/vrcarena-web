@@ -21,6 +21,7 @@ import AreaNavigation from '../../components/area-navigation'
 import Link from '../../components/link'
 import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 import AssetsPaginatedView from '../../components/assets-paginated-view'
+import { GetQuery } from '../../data-store'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   const category = getCategoryMeta(categoryName)
@@ -35,10 +36,10 @@ function getDescriptionByCategoryName(categoryName: AssetCategory): string {
 const ViewCategoryView = () => {
   const { categoryName } = useParams<{ categoryName: AssetCategory }>()
   const { pathname } = useLocation()
-  const getQuery = useCallback(
-    (
-      query: PostgrestFilterBuilder<PublicAsset>
-    ): PostgrestFilterBuilder<PublicAsset> => {
+  const getQuery = useCallback<
+    (query: GetQuery<PublicAsset>) => GetQuery<PublicAsset>
+  >(
+    (query) => {
       query = query.eq('category', categoryName)
       return query
     },

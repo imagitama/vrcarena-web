@@ -14,7 +14,7 @@ import useSupabaseView from '../../hooks/useSupabaseView'
 import { costs, patreonTax, totalCostPerMonth } from '../../costs'
 
 const PatreonStatus = () => {
-  const [isLoading, isError, members] = useSupabaseView<CachedPatreonMember[]>(
+  const [isLoading, isError, members] = useSupabaseView<CachedPatreonMember>(
     'getAnonymousPatreonMembers'
   )
 

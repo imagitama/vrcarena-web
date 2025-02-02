@@ -78,7 +78,7 @@ interface TimelineEvent<T> {
   originalrecord: T
 }
 
-interface TimelineData {
+interface TimelineData extends Record<string, unknown> {
   id: string // asset id
   assethistory: TimelineEvent<HistoryEntry>[]
   assetmetahistory: TimelineEvent<HistoryEntry>[]
@@ -189,7 +189,9 @@ const getLabelForResolutionStatus = (
   }
 }
 
-const getLabelForAssetField = (fieldName: keyof Asset): string => {
+const getLabelForAssetField = (
+  fieldName: Extract<keyof Asset, string>
+): string => {
   const editableField = assetEditableFields.find(
     (editableField) => editableField.name === fieldName
   )
@@ -243,7 +245,9 @@ const LabelForEntry = ({
               changed{' '}
               {Object.keys(changesWithoutMetafields)
                 .map((fieldName) =>
-                  getLabelForAssetField(fieldName as keyof Asset)
+                  getLabelForAssetField(
+                    fieldName as Extract<keyof Asset, string>
+                  )
                 )
                 .join(', ')}
             </>

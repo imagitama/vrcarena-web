@@ -128,7 +128,7 @@ export default ({
       Resolution notes (public):
       <TextInput
         fullWidth
-        rows={5}
+        minRows={5}
         multiline
         onChange={(e) => setNewResolutionNotes(e.target.value)}
         value={newResolutionNotes}

@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { client as supabase } from '../../supabase'
 import { Asset } from '../../modules/assets'
 import * as routes from '../../routes'
 
@@ -12,6 +11,7 @@ import AssetResults from '../asset-results'
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 import FindMoreAssetsButton from '../find-more-assets-button'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -27,23 +27,26 @@ export default ({
   limit?: number
 }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(() => {
-    let query = supabase
-      .from('getPublicAssets'.toLowerCase())
-      .select('*', {
-        count: 'estimated',
-      })
-      .contains(AssetFieldNames.children, [assetId])
-      .limit(limit)
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      let query = supabase
+        .from('getPublicAssets'.toLowerCase())
+        .select('*', {
+          count: 'estimated',
+        })
+        .contains(AssetFieldNames.children, [assetId])
+        .limit(limit)
 
-    query =
-      isAdultContentEnabled === false
-        ? query.is(AssetFieldNames.isAdult, false)
-        : query
+      query =
+        isAdultContentEnabled === false
+          ? query.is(AssetFieldNames.isAdult, false)
+          : query
 
-    return query
-  }, [assetId, isAdultContentEnabled])
-  const [isLoading, lastErrorCode, results, totalCount] = useDataStore<Asset[]>(
+      return query
+    },
+    [assetId, isAdultContentEnabled]
+  )
+  const [isLoading, lastErrorCode, results, totalCount] = useDataStore<Asset>(
     getQuery,
     'linked-assets'
   )

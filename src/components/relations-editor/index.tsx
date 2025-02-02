@@ -119,7 +119,7 @@ const RelationEditorForm = ({
       />
       <TextInput
         multiline
-        rows={2}
+        minRows={2}
         fullWidth
         value={newRelation.comments}
         onChange={(e) => setField('comments', e.target.value)}

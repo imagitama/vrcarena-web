@@ -27,6 +27,7 @@ import Message from '../../components/message'
 import WarningMessage from '../../components/warning-message'
 import CheckboxInput from '../../components/checkbox-input'
 import AssetEditorMini from '../../components/asset-editor-mini'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 interface FetchWorldDataAndThumbnailResult {
   world: VrchatWorld
@@ -242,6 +243,7 @@ const Forms = ({
     [worldId: string]: string | null
   }>({})
   const [automaticallyApprove, setAutomaticallyApprove] = useState(false)
+  const supabase = useSupabaseClient()
 
   const onProceed = () => setNeedsToConfirm(true)
   const onCancel = () => setNeedsToConfirm(false)
@@ -265,6 +267,7 @@ const Forms = ({
         }
 
         const asset = await insertRecord<any, Asset>(
+          supabase,
           CollectionNames.Assets,
           fieldsToInsert,
           false // ensure we do a SELECT to get ID
@@ -281,7 +284,7 @@ const Forms = ({
       if (automaticallyApprove) {
         console.debug(`Automatically approving...`)
 
-        await updateRecords(CollectionNames.AssetMeta, assetIds, {
+        await updateRecords(supabase, CollectionNames.AssetMeta, assetIds, {
           [AssetMetaFieldNames.publishStatus]: PublishStatuses.Published,
           [AssetMetaFieldNames.approvalStatus]: ApprovalStatuses.Approved,
         })
@@ -450,7 +453,7 @@ const BulkAddVrchatWorlds = () => {
       </p>
       <TextInput
         multiline
-        rows={10}
+        minRows={10}
         fullWidth
         value={textValue}
         onChange={(e) => setTextValue(e.target.value)}

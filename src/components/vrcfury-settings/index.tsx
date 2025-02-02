@@ -18,6 +18,7 @@ import { trackAction } from '../../analytics'
 import Box from '../box'
 import Link from '../link'
 import Tooltip from '../tooltip'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles({
   root: {
@@ -71,6 +72,7 @@ const VrcFurySettings = ({
     null | DiscordServer[]
   >(null)
   const classes = useStyles()
+  const supabase = useSupabaseClient()
 
   const populateDiscordServerData = async () => {
     try {
@@ -91,6 +93,7 @@ const VrcFurySettings = ({
       }
 
       const result = await readRecordsById<DiscordServer>(
+        supabase,
         CollectionNames.DiscordServers,
         ids
       )

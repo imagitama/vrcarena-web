@@ -66,7 +66,7 @@ const Question = ({
       {question.allowComments !== false ? (
         <TextInput
           fullWidth
-          rows={2}
+          minRows={2}
           value={currentResponse.comments}
           onChange={onCommentBoxChange}
         />

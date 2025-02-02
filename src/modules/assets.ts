@@ -48,7 +48,7 @@ export interface SourceInfo {
 }
 
 // minimal data shared between ALL views
-export interface CoreAssetFields {
+export interface CoreAssetFields extends Record<string, unknown> {
   title: string
   thumbnailurl: string
   author: string // id
@@ -61,7 +61,7 @@ export interface CoreAssetFields {
   tags: string[] // used for "free" check and to group into areas
 }
 
-export interface AssetFields extends CoreAssetFields {
+export interface AssetFields extends CoreAssetFields, Record<string, unknown> {
   sourceurl: string
   description: string
   shortdescription: string
@@ -84,7 +84,7 @@ export interface AssetFields extends CoreAssetFields {
   vccurl?: string
 }
 
-export interface Asset extends AssetFields {
+export interface Asset extends AssetFields, Record<string, unknown> {
   id: string
   createdat: Date
 }
@@ -203,10 +203,33 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   publishedbyusername: string
 }
 
+export enum AssetSyncStatus {
+  Waiting = 'waiting',
+  Processing = 'processing',
+  Failed = 'failed',
+  Success = 'success',
+}
+
+export interface AssetSyncQueueItemFields extends Record<string, unknown> {
+  sourceurl: string
+}
+
+export interface AssetSyncQueueItem extends AssetSyncQueueItemFields {
+  id: string
+  status: AssetSyncStatus
+  failedreason: string
+  createdassetid: string
+  lastmodifiedby: string
+  lastmodifiedat: string
+  createdby: string
+  createdat: string
+}
+
 export enum CollectionNames {
   Assets = 'assets',
   AssetsMeta = 'assetmeta',
   TagStats = 'tagstats',
+  AssetSyncQueue = 'assetsyncqueue',
 }
 
 export enum ViewNames {
@@ -214,6 +237,7 @@ export enum ViewNames {
   GetPublicAssets = 'getpublicassets',
   RelatedAssets = 'relatedassets',
   GetNewPublicAssets = 'getnewpublicassets',
+  GetMyAssetSyncQueuedItems = 'getmyassetsyncqueueditems',
 }
 
 // legacy

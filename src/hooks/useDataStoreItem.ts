@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { client as supabase } from '../supabase'
 import { handleError } from '../error-handling'
 import {
   DataStoreError,
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
+import useSupabaseClient from './useSupabaseClient'
 
 type HydrateFunction = () => void
 
@@ -13,7 +13,7 @@ type HydrateFunction = () => void
  * Uses a single item inside the data store.
  * Returns if loading, if errored and the result of the last query (null = waiting, record or false = NO record).
  */
-export default <TResult>(
+export default <TResult extends Record<string, unknown>>(
   collectionName: string,
   id: string | false,
   queryName: string = 'unnamed',
@@ -30,6 +30,7 @@ export default <TResult>(
     null
   )
   const isUnmountedRef = useRef(false)
+  const supabase = useSupabaseClient()
 
   const doIt = async () => {
     try {
@@ -47,7 +48,7 @@ export default <TResult>(
 
       const { error, data } = await supabase
         .from(collectionName.toLowerCase())
-        .select(`id, ${select}`)
+        .select<any, TResult>(`id, ${select}`)
         .eq('id', id)
 
       console.debug(

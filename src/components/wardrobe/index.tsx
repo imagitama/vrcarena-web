@@ -19,7 +19,6 @@ import useQueryParams from '../../hooks/useQueryParams'
 import useStorage from '../../hooks/useStorage'
 
 import * as routes from '../../routes'
-import { client as supabase } from '../../supabase'
 import { WEBSITE_FULL_URL } from '../../config'
 import {
   groupAssetsIntoAreas,
@@ -56,6 +55,7 @@ import {
   ApprovalStatuses,
   PublishStatuses,
 } from '../../hooks/useDatabaseQuery'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   output: {
@@ -280,20 +280,24 @@ const useAccessories = (): AssetsByArea => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
   // TODO: Replace with useDatabaseQuery
-  const getQuery = useCallback(() => {
-    let query = supabase
-      .from<FullAsset>(ViewNames.GetFullAssets)
-      .select('*')
-      .eq('category', AssetCategory.Accessory)
-      .eq('publishstatus', PublishStatuses.Published)
-      .eq('approvalstatus', ApprovalStatuses.Approved)
-      .eq('accessstatus', AccessStatuses.Public)
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      let query = supabase
+        .from(ViewNames.GetFullAssets)
+        .select<any, FullAsset>('*')
+        .eq('category', AssetCategory.Accessory)
+        .eq('publishstatus', PublishStatuses.Published)
+        .eq('approvalstatus', ApprovalStatuses.Approved)
+        .eq('accessstatus', AccessStatuses.Public)
 
-    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
+      query =
+        isAdultContentEnabled === false ? query.is('isadult', false) : query
 
-    return query
-  }, [isAdultContentEnabled])
-  const [isLoading, lastErrorCode, assets] = useDataStore<FullAsset[]>(
+      return query
+    },
+    [isAdultContentEnabled]
+  )
+  const [isLoading, lastErrorCode, assets] = useDataStore<FullAsset>(
     getQuery,
     'wardrobe'
   )

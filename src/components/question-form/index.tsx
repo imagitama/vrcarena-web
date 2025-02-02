@@ -67,7 +67,7 @@ const QuestionForm = ({
             value={questionFields.question}
             fullWidth
             multiline
-            rows={2}
+            minRows={2}
             onChange={(e) => onFieldChange('question', e.target.value)}
           />
           <CheckboxInput
