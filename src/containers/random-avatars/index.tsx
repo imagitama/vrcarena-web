@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import ShuffleIcon from '@material-ui/icons/Shuffle'
 
-import { client as supabase } from '../../supabase'
 import * as routes from '../../routes'
 import { Asset } from '../../modules/assets'
 
@@ -14,19 +13,23 @@ import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import AssetResults from '../../components/asset-results'
 import Button from '../../components/button'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const View = ({ count }: { count: number }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(() => {
-    let query = supabase.from('getrandompublicavatars').select('*').limit(5)
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      let query = supabase.from('getrandompublicavatars').select('*').limit(5)
 
-    if (!isAdultContentEnabled) {
-      query = query.eq(AssetFieldNames.isAdult, false)
-    }
+      if (!isAdultContentEnabled) {
+        query = query.eq(AssetFieldNames.isAdult, false)
+      }
 
-    return query
-  }, [isAdultContentEnabled, count])
-  const [isLoading, lastErrorCode, avatars] = useDataStore<Asset[]>(getQuery)
+      return query
+    },
+    [isAdultContentEnabled, count]
+  )
+  const [isLoading, lastErrorCode, avatars] = useDataStore<Asset>(getQuery)
 
   if (isLoading || !avatars) {
     return <LoadingIndicator message="Finding random avatars..." />

@@ -128,7 +128,10 @@ interface EditorInfo {
   setIsSyncFormVisible: (newVal: boolean) => void
   // optional
   onPublished?: () => void
-  onFieldChanged?: (fieldName: keyof Asset, newVal: any) => void
+  onFieldChanged?: (
+    fieldName: Extract<keyof Asset, string>,
+    newVal: any
+  ) => void
   onAssetChanged?: (newFields: Asset) => void
   // for amendments and uploading images
   originalAssetId?: string

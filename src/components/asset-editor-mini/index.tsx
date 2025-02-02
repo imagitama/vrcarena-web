@@ -56,7 +56,7 @@ const AssetEditorMini = ({
             value={newFields.description}
             onChange={(e) => setField('description', e.target.value)}
             multiline
-            rows={2}
+            minRows={2}
           />
         </div>
       </div>

@@ -117,7 +117,7 @@ export default ({
         label="Message"
         fullWidth
         multiline
-        rows={3}
+        minRows={3}
         helperText="Markdown supported"
       />
       <br />

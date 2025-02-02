@@ -72,6 +72,11 @@ const createOurTheme = (isDark) =>
           },
         },
       },
+      MuiSvgIcon: {
+        root: {
+          fontSize: '100%',
+        },
+      },
     },
   })
 

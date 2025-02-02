@@ -106,7 +106,7 @@ const DescriptionEditor = ({
             }
           }}
           multiline
-          rows={15}
+          minRows={15}
           className={classes.input}
         />
         <Checkbox

@@ -18,7 +18,7 @@ import TextInput from '../text-input'
 import screenshotUrl from './assets/images/screenshot.webp'
 import FormControls from '../form-controls'
 
-interface PublicAvatarCreateFields {
+interface PublicAvatarCreateFields extends Record<string, unknown> {
   asset: string
   vrchatAvatarId: string
 }
@@ -26,17 +26,17 @@ interface PublicAvatarCreateFields {
 const useStyles = makeStyles({
   controls: {
     margin: '0.5rem 0',
-    display: 'flex'
+    display: 'flex',
   },
   input: {
     width: '100%',
-    marginRight: '0.25rem'
+    marginRight: '0.25rem',
   },
   message: {
     fontSize: '125%',
     textAlign: 'center',
-    marginBottom: '0.5rem'
-  }
+    marginBottom: '0.5rem',
+  },
 })
 
 // we have bots submitting this ID for some reason
@@ -47,9 +47,10 @@ const Form = ({ assetId }: { assetId: string }) => {
     throw new Error('Asset ID not provided')
   }
 
-  const [isCreating, isSuccess, isFailed, create] = useDataStoreCreate<
-    PublicAvatarCreateFields
-  >(CollectionNames.PublicAvatarSubmissions)
+  const [isCreating, isSuccess, isFailed, create] =
+    useDataStoreCreate<PublicAvatarCreateFields>(
+      CollectionNames.PublicAvatarSubmissions
+    )
   const [userInput, setUserInput] = useState<string>('')
   const [isInvalidAvatarId, setIsInvalidAvatarId] = useState<boolean>(false)
   const [isSuccessOverride, setIsSuccessOverride] = useState<boolean>(false)
@@ -71,7 +72,9 @@ const Form = ({ assetId }: { assetId: string }) => {
       }
 
       if (blockedAvatarIds.includes(vrchatAvatarId)) {
-        await new Promise(resolve => setTimeout(() => resolve(undefined), 1000))
+        await new Promise((resolve) =>
+          setTimeout(() => resolve(undefined), 1000)
+        )
         setIsSuccessOverride(true)
         clearfterDelay()
         return
@@ -79,7 +82,7 @@ const Form = ({ assetId }: { assetId: string }) => {
 
       await create({
         asset: assetId,
-        vrchatAvatarId
+        vrchatAvatarId,
       })
 
       setUserInput('')
@@ -113,7 +116,7 @@ const Form = ({ assetId }: { assetId: string }) => {
       <div className={classes.controls}>
         <TextInput
           value={userInput}
-          onChange={e => setUserInput(e.target.value)}
+          onChange={(e) => setUserInput(e.target.value)}
           isDisabled={isCreating}
           size="small"
           className={classes.input}
@@ -129,7 +132,7 @@ const Form = ({ assetId }: { assetId: string }) => {
 
 export default ({
   assetId,
-  isExpanded: isExpandedByDefault = false
+  isExpanded: isExpandedByDefault = false,
 }: {
   assetId: string
   isExpanded?: boolean

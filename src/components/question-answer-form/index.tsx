@@ -63,7 +63,7 @@ const QuestionAnswerForm = ({
             value={questionAnswerFields.answer}
             onChange={(e) => onFieldChange('answer', e.target.value)}
             multiline
-            rows={2}
+            minRows={2}
           />
           <br />
           <br />

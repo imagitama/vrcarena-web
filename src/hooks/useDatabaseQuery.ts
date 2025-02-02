@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { inDevelopment } from '../environment'
 import { handleError } from '../error-handling'
-import { client as supabase } from '../supabase'
 import {
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
+import useSupabaseClient from './useSupabaseClient'
 
 export enum Operators {
   IS = 'IS', // works for NULL vals
@@ -595,6 +595,8 @@ export default <TResult>(
   const limitAsString = getLimitAsString(options.limit)
   const offset = options.offset
 
+  const supabase = useSupabaseClient()
+
   async function doIt(initiallyLoading = true) {
     try {
       if (inDevelopment()) {
@@ -618,7 +620,7 @@ export default <TResult>(
 
       let queryChain = supabase
         .from(collectionName.toLowerCase())
-        .select(selectQuery)
+        .select<string, TResult>(selectQuery)
 
       // or an array of searches
       if (Array.isArray(whereClauses)) {

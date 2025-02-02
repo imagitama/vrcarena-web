@@ -26,6 +26,7 @@ import GenericOutputItem from '../generic-output-item'
 import ResolutionStatus from '../resolution-status'
 import Link from '../link'
 import UsernameLink from '../username-link'
+import { GetQuery } from '../../data-store'
 
 function ReportsTable({
   reports,
@@ -138,9 +139,7 @@ export default () => {
   const [selectedSubView, setSelectedSubView] = useState(subViews.PENDING)
   const [userIdToFilter, setUserIdToFilter] = useState('')
   const getQuery = useCallback(
-    (
-      query: PostgrestFilterBuilder<FullReport>
-    ): PostgrestFilterBuilder<FullReport> => {
+    (query: GetQuery<FullReport>): GetQuery<FullReport> => {
       if (userIdToFilter) {
         query = query.eq('createdby', userIdToFilter)
       }

@@ -4,24 +4,28 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useDataStore from '../../hooks/useDataStore'
-import { client as supabase } from '../../supabase'
 import { FullTag } from '../../modules/tags'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export default () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
-  const getQuery = useCallback(() => {
-    let query = supabase
-      .from('getFullTags'.toLowerCase())
-      .select('*')
-      .order('count', { ascending: false })
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      let query = supabase
+        .from('getFullTags'.toLowerCase())
+        .select('*')
+        .order('count', { ascending: false })
 
-    query = isAdultContentEnabled === false ? query.is('isadult', false) : query
+      query =
+        isAdultContentEnabled === false ? query.is('isadult', false) : query
 
-    return query
-  }, [isAdultContentEnabled])
+      return query
+    },
+    [isAdultContentEnabled]
+  )
 
-  const [isLoading, lastErrorCode, allTagDetails] = useDataStore<FullTag[]>(
+  const [isLoading, lastErrorCode, allTagDetails] = useDataStore<FullTag>(
     getQuery,
     'all-tags-browser'
   )

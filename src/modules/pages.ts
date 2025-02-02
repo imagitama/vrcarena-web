@@ -1,4 +1,4 @@
-export interface Page {
+export interface Page extends Record<string, unknown> {
   id: string
   parent: string
   title: string

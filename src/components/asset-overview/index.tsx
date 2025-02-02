@@ -14,7 +14,6 @@ import WarningIcon from '@material-ui/icons/Warning'
 
 import useDataStore from '../../hooks/useDataStore'
 import useBanner from '../../hooks/useBanner'
-import { client as supabase } from '../../supabase'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useIsEditor from '../../hooks/useIsEditor'
 import useUserRecord from '../../hooks/useUserRecord'
@@ -87,6 +86,7 @@ import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 import Block from '../block'
 import Questions from '../questions'
 import { AttachmentType } from '../../modules/attachments'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -370,7 +370,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       supabase
         .from(ViewNames.GetFullAssets)
         .select('*')
@@ -380,14 +380,13 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     // need to sub to logged in as view does NOT remount forcing a query reload (we have to do it ourselves)
     [rawAssetId, isLoggedIn]
   )
-  const [isLoadingAsset, lastErrorCode, results, , hydrate] = useDataStore<
-    FullAsset[]
-  >(getQuery, 'asset-overview')
+  const [isLoadingAsset, lastErrorCode, results, , hydrate] =
+    useDataStore<FullAsset>(getQuery, 'asset-overview')
   const asset = results && results.length ? results[0] : null
   const assetId = asset ? asset.id : rawAssetId
   const classes = useStyles()
   const [, , user] = useUserRecord()
-  useBanner(asset && asset.bannerurl)
+  useBanner(asset && asset.bannerurl ? asset.bannerurl : undefined)
   const [isPedestalExpanded, setIsPedestalExpanded] = useState(false)
 
   const isAllowedToEditAsset = asset && user && getCanUserEditAsset(asset, user)

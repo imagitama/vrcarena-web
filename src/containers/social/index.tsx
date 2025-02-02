@@ -16,6 +16,7 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import Center from '../../components/center'
 import NoResultsMessage from '../../components/no-results-message'
 import useTimer from '../../hooks/useTimer'
+import { GetQuery } from '../../data-store'
 
 const useStyles = makeStyles({
   spinning: {
@@ -34,7 +35,7 @@ const useStyles = makeStyles({
 export const SocialFeed = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
-    (query: PostgrestFilterBuilder<FullSocialPost>) => {
+    (query: GetQuery<FullSocialPost>) => {
       query = query.is('parent', null)
       if (!isAdultContentEnabled) {
         query = query.eq('isadult', false)
@@ -43,9 +44,8 @@ export const SocialFeed = () => {
     },
     [isAdultContentEnabled]
   )
-  const [isLoading, isError, result, , hydrate] = useSupabaseView<
-    FullSocialPost[]
-  >('getpublicsocialposts', getQuery)
+  const [isLoading, isError, result, , hydrate] =
+    useSupabaseView<FullSocialPost>('getpublicsocialposts', getQuery)
   const classes = useStyles()
   const isLoggedIn = useIsLoggedIn()
 

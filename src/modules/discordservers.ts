@@ -4,7 +4,7 @@ import {
   PublishStatuses,
 } from '../hooks/useDatabaseQuery'
 
-export interface DiscordServerFields {
+export interface DiscordServerFields extends Record<string, unknown> {
   name: string
   description?: string
   widgetid?: string

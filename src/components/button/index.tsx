@@ -4,6 +4,7 @@ import MaterialButton from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import Tooltip from '../tooltip'
 
 interface ButtonProps {
   children?: React.ReactNode
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '0.5rem',
     display: 'flex', // fix line height issue
     '& svg': {
+      fontSize: '150%',
       fill: (props: ButtonProps) =>
         props.color === 'default'
           ? theme.palette.common.black
@@ -89,41 +91,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ButtonContents = ({
-  url,
-  className,
-  openInNewTab,
-  children,
-}: {
-  url?: string
-  className?: string
-  openInNewTab?: boolean
-  children: React.ReactNode
-}) => {
-  if (url) {
-    if (url.substr(0, 1) === '/') {
-      return (
-        <Link to={url} className={className}>
-          {children}
-        </Link>
-      )
-    } else {
-      return (
-        <a
-          href={url}
-          className={className}
-          {...(openInNewTab
-            ? { target: '_blank', rel: 'noopener noreferrer' }
-            : {})}>
-          {children}
-        </a>
-      )
-    }
-  }
-
-  return <>{children}</>
-}
-
 const Button = ({
   children,
   onClick = undefined,
@@ -141,40 +108,72 @@ const Button = ({
 }: ButtonProps) => {
   const classes = useStyles(props)
 
-  const iconToUse = checked === true ? <CheckBoxIcon /> : checked === false ? <CheckBoxOutlineBlankIcon /> : icon
+  const iconToUse =
+    checked === true ? (
+      <CheckBoxIcon />
+    ) : checked === false ? (
+      <CheckBoxOutlineBlankIcon />
+    ) : (
+      icon
+    )
 
-  return (
-    <ButtonContents url={url} openInNewTab={openInNewTab} className={className}>
-      <MaterialButton
-        variant="contained"
+  const contents = (
+    <MaterialButton
+      variant="contained"
+      // @ts-ignore
+      color="primary"
+      onClick={onClick}
+      disabled={isDisabled}
+      className={`${classes.root} ${url ? '' : className} ${
         // @ts-ignore
-        color="primary"
-        onClick={onClick}
-        disabled={isDisabled}
-        className={`${classes.root} ${url ? '' : className} ${
-          // @ts-ignore
-          props.color === 'tertiary' ? classes.tertiary : ''
-        }`}
-        title={title}
-        {...props}>
-        <span
-          className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
-          {!switchIconSide && children ? <>{children} </> : null}
-          {iconToUse && (
-            <span
-              className={`${classes.icon} ${iconOnly ? classes.noMargin : ''} ${
-                props.size === 'small' ? classes.small : ''
-              } ${switchIconSide ? classes.switchIconSide : ''} ${
-                children ? '' : classes.noChildren
-              }`}>
-              {iconToUse}
-            </span>
-          )}
-          {switchIconSide && children ? <>{children} </> : null}
-        </span>
-      </MaterialButton>
-    </ButtonContents>
+        props.color === 'tertiary' ? classes.tertiary : ''
+      }`}
+      {...props}>
+      <span className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
+        {!switchIconSide && children ? <>{children} </> : null}
+        {iconToUse && (
+          <span
+            className={`${classes.icon} ${iconOnly ? classes.noMargin : ''} ${
+              props.size === 'small' ? classes.small : ''
+            } ${switchIconSide ? classes.switchIconSide : ''} ${
+              children ? '' : classes.noChildren
+            }`}>
+            {iconToUse}
+          </span>
+        )}
+        {switchIconSide && children ? <>{children} </> : null}
+      </span>
+    </MaterialButton>
   )
+
+  const contentsWithTitle = title ? (
+    <Tooltip title={title}>{contents}</Tooltip>
+  ) : (
+    contents
+  )
+
+  if (url) {
+    if (url.substring(0, 1) === '/') {
+      return (
+        <Link to={url} className={className}>
+          {contentsWithTitle}
+        </Link>
+      )
+    } else {
+      return (
+        <a
+          href={url}
+          className={className}
+          {...(openInNewTab
+            ? { target: '_blank', rel: 'noopener noreferrer' }
+            : {})}>
+          {contentsWithTitle}
+        </a>
+      )
+    }
+  }
+
+  return contentsWithTitle
 }
 
 export default Button

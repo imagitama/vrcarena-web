@@ -4,11 +4,11 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import * as routes from '../../routes'
 import useDataStore from '../../hooks/useDataStore'
-import { client as supabase } from '../../supabase'
 import { Event, PublicEvent, ViewNames } from '../../modules/events'
 import { FeaturedStatus } from '../../modules/common'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import { getFriendlyDate } from '../../utils/dates'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -89,15 +89,15 @@ const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000
 
 const HeaderCurrentEvents = () => {
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       supabase
-        .from<PublicEvent>(ViewNames.GetPublicEvents)
-        .select('*')
+        .from(ViewNames.GetPublicEvents)
+        .select<any, PublicEvent>('*')
         .eq('featuredstatus', FeaturedStatus.Featured)
         .gt('endsat', new Date().toISOString()),
     []
   )
-  const [isLoading, lastErrorCode, events] = useDataStore<Event[]>(
+  const [isLoading, lastErrorCode, events] = useDataStore<PublicEvent>(
     getQuery,
     'current-events'
   )

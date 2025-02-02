@@ -1,4 +1,4 @@
-export interface Author {
+export interface Author extends Record<string, unknown> {
   id: string
   name: string
   description: string
@@ -28,7 +28,7 @@ export interface Author {
   createdby: string
 }
 
-export interface AuthorMeta {
+export interface AuthorMeta extends Record<string, unknown> {
   id: string
   approvalstatus: string
   approvedat: Date

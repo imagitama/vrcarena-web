@@ -168,7 +168,7 @@ const LoadingShimmers = ({ count }: { count: number }) => {
 
   for (let i = 0; i < count; i++) {
     shimmers.push(
-      <div className={`${classes.image} ${classes.shimmer}`}>
+      <div key={i} className={`${classes.image} ${classes.shimmer}`}>
         <LoadingShimmer height={sizesRefs.current[i]} />
       </div>
     )

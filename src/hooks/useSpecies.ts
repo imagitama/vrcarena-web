@@ -1,26 +1,18 @@
 import { useEffect, useState } from 'react'
 import { readAllRecords } from '../data-store'
-import { handleError } from '../error-handling'
 import { Species } from '../modules/species'
 import { CollectionNames } from './useDatabaseQuery'
+import useSupabaseClient from './useSupabaseClient'
+import { handleError } from '../error-handling'
 
 // storing this in memory so we assume the species list won't change very frequently
 let knownSpecies: Species[] = []
-
-const hydrateAllSpecies = async () => {
-  try {
-    const results = await readAllRecords<Species>(CollectionNames.Species)
-    knownSpecies = results
-  } catch (err) {
-    console.error(err)
-    handleError(err)
-  }
-}
 
 export default (): [Species[], boolean, boolean, () => void] => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isErrored, setIsErrored] = useState<boolean>(false)
   const [results, setResults] = useState<Species[]>(knownSpecies)
+  const supabase = useSupabaseClient()
 
   const hydrate = async () => {
     try {
@@ -29,15 +21,20 @@ export default (): [Species[], boolean, boolean, () => void] => {
       setIsLoading(true)
       setIsErrored(false)
 
-      await hydrateAllSpecies()
+      const results = await readAllRecords<Species>(
+        supabase,
+        CollectionNames.Species
+      )
+      knownSpecies = results
 
       setResults(knownSpecies)
       setIsLoading(false)
       setIsErrored(false)
     } catch (err) {
+      console.error(err)
+      handleError(err)
       setIsLoading(false)
       setIsErrored(true)
-      console.error(err)
     }
   }
 

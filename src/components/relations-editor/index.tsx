@@ -115,7 +115,7 @@ const RelationEditorForm = ({
       <div className={classes.formLabel}>3. Add some comments (optional)</div>
       <TextInput
         multiline
-        rows={2}
+        minRows={2}
         fullWidth
         value={newRelation.comments}
         onChange={(e) => onCommentsChange(e.target.value)}

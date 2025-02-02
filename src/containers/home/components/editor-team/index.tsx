@@ -28,8 +28,7 @@ const useStyles = makeStyles({
 })
 
 const EditorTeam = () => {
-  const [isLoading, isError, users] =
-    useSupabaseView<FullUser[]>('getstaffusers')
+  const [isLoading, isError, users] = useSupabaseView<FullUser>('getstaffusers')
   const classes = useStyles()
 
   const isPlaceholder = isLoading || isError || !Array.isArray(users)

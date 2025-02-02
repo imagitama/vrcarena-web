@@ -78,7 +78,7 @@ export default () => {
       ) : null}
       <TextInput
         multiline
-        rows={5}
+        minRows={5}
         value={userInput}
         onChange={(e) => setUserInput(e.target.value)}
       />

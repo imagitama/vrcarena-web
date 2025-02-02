@@ -6,19 +6,19 @@ import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
-import { client as supabase } from '../../supabase'
 import { Asset } from '../../modules/assets'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const CollectionForUser = ({ userId }: { userId: string }) => {
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       supabase
         .from('getCollectionAssetResults'.toLowerCase())
         .select('*')
         .eq('userid', userId),
     [userId]
   )
-  const [isLoading, lastErrorCode, assetsInCollection] = useDataStore<Asset[]>(
+  const [isLoading, lastErrorCode, assetsInCollection] = useDataStore<Asset>(
     getQuery,
     'collection-for-user'
   )

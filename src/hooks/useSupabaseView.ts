@@ -1,32 +1,36 @@
 import { useCallback } from 'react'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
-import { client as supabase } from '../supabase'
 import useDataStore from './useDataStore'
-import { DataStoreErrorCode } from '../data-store'
+import { DataStoreErrorCode, GetQuery } from '../data-store'
+import { SupabaseClient } from '@supabase/supabase-js'
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
-export default <TResult, TItem = any>(
+export default <TRecord>(
   viewName: string,
-  getQuery?:
-    | null
-    | ((query: PostgrestFilterBuilder<TItem>) => PostgrestFilterBuilder<TItem>),
+  getQuery?: null | ((query: GetQuery<TRecord>) => GetQuery<TRecord>),
   queryName?: string
 ): [
   boolean,
   null | DataStoreErrorCode,
-  null | TResult,
+  null | TRecord[],
   null | number,
   () => void
 ] => {
-  const mainGetQuery = useCallback(() => {
-    let query = supabase.from(viewName.toLowerCase()).select('*')
+  const mainGetQuery = useCallback(
+    (supabase: SupabaseClient): PostgrestFilterBuilder<any, any, TRecord[]> => {
+      let query = supabase
+        .from(viewName.toLowerCase())
+        .select<string, TRecord>('*')
 
-    if (getQuery) {
-      query = getQuery(query)
-    }
+      if (getQuery) {
+        // @ts-ignore idk
+        query = getQuery(query)
+      }
 
-    return query
-  }, [viewName, getQuery])
+      return query
+    },
+    [viewName, getQuery]
+  )
   const [isLoading, lastErrorCode, result, totalCount, hydrate] =
-    useDataStore<TResult>(mainGetQuery, queryName)
+    useDataStore<TRecord>(mainGetQuery, queryName)
   return [isLoading, lastErrorCode, result, totalCount, hydrate]
 }

@@ -1,4 +1,4 @@
-export interface SocialMediaUsernames {
+export interface SocialMediaUsernames extends Record<string, unknown> {
   // profile
   vrchatuserid: string
   vrchatusername: string
@@ -10,6 +10,12 @@ export interface SocialMediaUsernames {
   neosvrusername: string
   chilloutvrusername: string
   patreonusername: string
+}
+
+export enum Roles {
+  User = 'user',
+  Editor = 'editor',
+  Admin = 'admin',
 }
 
 export interface User extends SocialMediaUsernames {
@@ -35,7 +41,7 @@ export interface UserMeta {
 }
 
 export interface UserAdminMeta {
-  role: string
+  role: Roles
 }
 
 export interface FullUser extends User, UserMeta, UserAdminMeta {}

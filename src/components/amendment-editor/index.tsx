@@ -290,7 +290,7 @@ const AmendmentEditor = ({
         <p>Why are you changing this asset? What is wrong with it?</p>
         <TextInput
           multiline
-          rows={5}
+          minRows={5}
           value={comments}
           onChange={(e) => setComments(e.target.value)}
           className={classes.commentsField}

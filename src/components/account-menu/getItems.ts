@@ -8,14 +8,17 @@ import {
   PublishStatuses,
 } from '../../hooks/useDatabaseQuery'
 import { retrieveFromLocalStorage } from '../../storage'
-import { client, getUserId } from '../../supabase'
+import { getUserId } from '../../supabase'
 import * as routes from '../../routes'
 import { getLabelForNotification, getLinkUrl } from '../../notifications'
 import { CollectionNames as NotificationsCollectionNames } from '../../modules/notifications'
 
 import { MenuItemData } from '../menu'
+import { SupabaseClient } from '@supabase/supabase-js'
 
-export const cart = async (): Promise<MenuItemData[]> => {
+export const cart = async (
+  supabase: SupabaseClient
+): Promise<MenuItemData[]> => {
   try {
     const ids: string[] = retrieveFromLocalStorage(cartIdsStorageKey) || []
 
@@ -23,10 +26,11 @@ export const cart = async (): Promise<MenuItemData[]> => {
       return []
     }
 
-    const { data, error } = await client
-      .from<Asset>(CollectionNames.Assets)
+    // TODO: Use hook/abstraction
+    const { data, error } = await supabase
+      .from(CollectionNames.Assets)
       // TODO: Better type safety
-      .select(`id, title, thumbnailurl`)
+      .select<string, Asset>(`id, title, thumbnailurl`)
       .or(ids.map((id) => `id.eq.${id}`).join(','))
 
     if (!data) {
@@ -62,7 +66,9 @@ export const cart = async (): Promise<MenuItemData[]> => {
   }
 }
 
-export const queue = async (): Promise<MenuItemData[]> => {
+export const queue = async (
+  supabase: SupabaseClient
+): Promise<MenuItemData[]> => {
   try {
     const userId = getUserId()
 
@@ -70,9 +76,11 @@ export const queue = async (): Promise<MenuItemData[]> => {
       return []
     }
 
-    const { data, error } = await client
-      .from<FullAsset>('getFullAssets'.toLowerCase())
-      .select(`*`)
+    // TODO: Use hook/abstraction
+    const { data, error } = await supabase
+      // TODO: Use const
+      .from('getFullAssets'.toLowerCase())
+      .select<string, FullAsset>(`*`)
       .eq('createdby', userId)
       .eq('publishstatus', PublishStatuses.Published)
       .eq('approvalstatus', ApprovalStatuses.Waiting)
@@ -118,7 +126,9 @@ interface FullNotification extends Notification {
   parentdata: Object
 }
 
-export const notifications = async (): Promise<MenuItemData[]> => {
+export const notifications = async (
+  supabase: SupabaseClient
+): Promise<MenuItemData[]> => {
   try {
     const userId = getUserId()
 
@@ -126,9 +136,10 @@ export const notifications = async (): Promise<MenuItemData[]> => {
       return []
     }
 
-    const { data, error } = await client
-      .from<FullNotification>('getFullNotification'.toLowerCase())
-      .select(`*`)
+    // TODO: Use hook/abstraction
+    const { data, error } = await supabase
+      .from('getFullNotification'.toLowerCase())
+      .select<string, FullNotification>(`*`)
       .eq('recipient', userId)
       .limit(25)
 
@@ -149,6 +160,7 @@ export const notifications = async (): Promise<MenuItemData[]> => {
       onRemove: async () => {
         console.debug(`Removing notification ${notification.id}...`)
         await deleteRecord(
+          supabase,
           NotificationsCollectionNames.Notifications,
           notification.id
         )

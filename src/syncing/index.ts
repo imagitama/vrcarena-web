@@ -32,6 +32,8 @@ export const getSyncPlatformNameFromUrl = (
   return undefined
 }
 
+export const getCanSync = (url: string): boolean => getSyncPlatformNameFromUrl(url) !== undefined
+
 export enum SyncFieldTypes {
   Text = 'text',
   Markdown = 'markdown', // basically just description (shows the quote toggle)

@@ -2,12 +2,10 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import LaunchIcon from '@material-ui/icons/Launch'
 import { makeStyles } from '@material-ui/core/styles'
-// import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import EditIcon from '@material-ui/icons/Edit'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 
 import * as routes from '../../routes'
-import { client, client as supabase } from '../../supabase'
 
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
@@ -41,8 +39,9 @@ import FormattedDate from '../../components/formatted-date'
 import { mediaQueryForMobiles } from '../../media-queries'
 import EventAttendanceButton from '../../components/event-attendance-button'
 import EventAttendanceResults from '../../components/event-attendance-results'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useUserId from '../../hooks/useUserId'
+import { SupabaseClient } from '@supabase/supabase-js'
+import { PublicAsset } from '../../modules/assets'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
@@ -69,18 +68,6 @@ const useStyles = makeStyles({
       margin: '2rem 0 0',
     },
   },
-  // callToAction: {
-  //   marginTop: '2rem',
-  // },
-  // description: {
-  //   margin: '2rem 0',
-  //   '& p:first-child': {
-  //     marginTop: 0,
-  //   },
-  //   '& p:last-child': {
-  //     marginBottom: 0,
-  //   },
-  // },
   dates: {
     marginTop: '2rem',
     display: 'flex',
@@ -103,14 +90,6 @@ const useStyles = makeStyles({
     marginTop: '0.5rem',
     fontSize: '100%',
   },
-  // meta: {
-  //   marginTop: '5rem',
-  //   fontSize: '75%',
-  //   opacity: '0.8',
-  //   '& dd': {
-  //     margin: 0,
-  //   },
-  // },
   authors: {},
   authorItem: {
     display: 'flex',
@@ -145,45 +124,30 @@ const useStyles = makeStyles({
   controlGroup: {
     marginBottom: '1rem',
   },
-  // miniLoadingIndicator: {
-  //   position: 'absolute',
-  //   top: 0,
-  //   left: 0,
-  //   opacity: 0,
-  //   animation: '150ms $pulseMiniLoadingIndicator infinite alternate',
-  //   '& svg': {
-  //     fontSize: '50%',
-  //   },
-  // },
-  // '@keyframes pulseMiniLoadingIndicator': {
-  //   from: {
-  //     opacity: 0,
-  //   },
-  //   to: {
-  //     opacity: 0.2,
-  //   },
-  // },
 })
 
 const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(() => {
-    if (!tagsToSearch.length) {
-      return false
-    }
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      if (!tagsToSearch.length) {
+        return null
+      }
 
-    let query = supabase
-      .from('getPublicAssets'.toLowerCase())
-      .select('*')
-      .contains(AssetFieldNames.tags, tagsToSearch)
+      let query = supabase
+        .from('getPublicAssets'.toLowerCase())
+        .select<string, PublicAsset>('*')
+        .contains(AssetFieldNames.tags, tagsToSearch)
 
-    if (!isAdultContentEnabled) {
-      query = query.eq(AssetFieldNames.isAdult, false)
-    }
+      if (!isAdultContentEnabled) {
+        query = query.eq(AssetFieldNames.isAdult, false)
+      }
 
-    return query
-  }, [isAdultContentEnabled, tagsToSearch.join('+')])
-  const [isLoading, lastErrorCode, results] = useDataStore(
+      return query
+    },
+    [isAdultContentEnabled, tagsToSearch.join('+')]
+  )
+  const [isLoading, lastErrorCode, results] = useDataStore<PublicAsset>(
     getQuery,
     'assets-for-event'
   )
@@ -249,14 +213,17 @@ const AuthorResults = ({ authors }: { authors: FullAuthor[] }) => {
 }
 
 const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
-  const getQuery = useCallback(() => {
-    let query = supabase
-      .from('getPublicAuthors'.toLowerCase())
-      .select('*')
-      .eq(AuthorFieldNames.saleReason, eventId)
+  const getQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      let query = supabase
+        .from('getPublicAuthors'.toLowerCase())
+        .select<string, FullAuthor>('*')
+        .eq(AuthorFieldNames.saleReason, eventId)
 
-    return query
-  }, [eventId])
+      return query
+    },
+    [eventId]
+  )
   const [isLoading, lastErrorCode, authors] = useDataStore<FullAuthor>(
     getQuery,
     'authors-for-event'
@@ -291,14 +258,14 @@ const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
 const View = () => {
   const { eventId: eventIdOrSlug } = useParams<{ eventId: string }>()
   const getQuery = useCallback(
-    () =>
-      client
+    (supabase: SupabaseClient) =>
+      supabase
         .from(ViewNames.GetFullEvents)
-        .select('*')
+        .select<string, FullEvent>('*')
         .or(`id.eq.${eventIdOrSlug},slug.eq.${eventIdOrSlug}`),
     [eventIdOrSlug]
   )
-  const [isLoading, isError, events, , hydrate] = useDataStore<FullEvent[]>(
+  const [isLoading, isError, events, , hydrate] = useDataStore<FullEvent>(
     getQuery,
     { queryName: 'view-event', quietHydrate: true }
   )
@@ -365,11 +332,6 @@ const View = () => {
               to={routes.viewEventWithVar.replace(':eventId', eventIdOrSlug)}>
               {name || '(unnamed)'}
             </Link>{' '}
-            {/* {isHydrating ? (
-              <span className={classes.miniLoadingIndicator}>
-                <LoadingIndicator />
-              </span>
-            ) : null} */}
           </Heading>
         </div>
         <div className={classes.dates}>

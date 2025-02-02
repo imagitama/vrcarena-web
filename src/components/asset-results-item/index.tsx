@@ -12,6 +12,7 @@ import LinkIcon from '@material-ui/icons/Link'
 import * as routes from '../../routes'
 import {
   Asset,
+  FullAsset,
   PublicAsset,
   Relation,
   getIsPublicAsset,
@@ -38,7 +39,7 @@ const useStyles = makeStyles({
     },
     '&:hover $relation svg': {
       transform: 'rotate(360deg) !important',
-    }
+    },
   },
   selected: {
     backgroundColor: '#656565',
@@ -151,7 +152,7 @@ const SpeciesOutput = ({
   if ('speciesnames' in asset) {
     return (
       <>
-        {divider} {asset.speciesnames.join(', ')}
+        {divider} {(asset as FullAsset).speciesnames.join(', ')}
       </>
     )
   }
@@ -203,7 +204,9 @@ const AssetResultsItem = ({
             <CardMedia
               className={classes.cardMedia}
               image={asset && asset.thumbnailurl ? asset.thumbnailurl : ''}
-              title={asset && asset.title ? `Thumbnail for ${asset.title}` : ''}>
+              title={
+                asset && asset.title ? `Thumbnail for ${asset.title}` : ''
+              }>
               {!asset || !asset.thumbnailurl ? <DefaultThumbnail /> : undefined}
             </CardMedia>
           </LazyLoad>

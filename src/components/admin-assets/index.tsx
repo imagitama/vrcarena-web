@@ -31,6 +31,7 @@ import PaginatedView from '../paginated-view'
 import EditorRecordManager from '../editor-record-manager'
 import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
+import { GetQuery } from '../../data-store'
 
 const useStyles = makeStyles({
   pass: {
@@ -267,9 +268,7 @@ const AdminAssets = () => {
   const [selectedSubView, setSelectedSubView] = useState(subViews.PENDING)
   const [userIdToFilter, setUserIdToFilter] = useState('')
   const getQuery = useCallback(
-    (
-      query: PostgrestFilterBuilder<FullAsset>
-    ): PostgrestFilterBuilder<FullAsset> => {
+    (query: GetQuery<FullAsset>): GetQuery<FullAsset> => {
       if (userIdToFilter) {
         query = query.eq('createdby', userIdToFilter)
       }

@@ -1,8 +1,10 @@
 import { store } from './store'
 import { USER_IS_LOADING, USER_LOADED, USER_UNLOADED } from './modules/user'
 import { readRecord } from './data-store'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export const loadUserIntoStore = async (
+  supabase: SupabaseClient,
   userId: string | null,
   showLoading: boolean = true
 ) => {
@@ -18,7 +20,7 @@ export const loadUserIntoStore = async (
     })
   }
 
-  const user = await readRecord('getmyuser', userId)
+  const user = await readRecord(supabase, 'getmyuser', userId)
 
   console.debug(`auth.loadUserIntoStore.user`, user)
 

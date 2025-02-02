@@ -15,7 +15,6 @@ import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import * as routes from '../../routes'
 import { WEBSITE_FULL_URL } from '../../config'
-import { client as supabase } from '../../supabase'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
@@ -47,7 +46,7 @@ const ERRORS = {
   EMPTY: 'EMPTY',
 }
 
-const getErrorIfSlugIsTaken = async (slug) => {
+const getErrorIfSlugIsTaken = async (supabase, slug) => {
   const { data: assetsWithSlug } = await supabase
     .from(CollectionNames.Assets)
     .select(AssetFieldNames.slug)
@@ -94,6 +93,7 @@ export default ({
   const [, , user] = useUserRecord()
   const [hasConfirmed, setHasConfirmed] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const supabase = useSupabaseClient()
 
   const onSaveBtnClick = async () => {
     try {
@@ -137,7 +137,7 @@ export default ({
 
       setIsLoading(true)
 
-      const errorIfTaken = await getErrorIfSlugIsTaken(newSlugValue)
+      const errorIfTaken = await getErrorIfSlugIsTaken(supabase, newSlugValue)
 
       setIsLoading(false)
 

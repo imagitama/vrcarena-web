@@ -2,17 +2,18 @@ import { updateRecord } from '../../../data-store'
 import { useBulkEdit } from '../context'
 import { Asset, CollectionNames } from '../../../modules/assets'
 import SpeciesDropdown from '../../species-dropdown'
-import { useEffect } from 'react'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export const Action = async (
+  supabase: SupabaseClient,
   assetId: string,
   asset: Asset,
   newData: { [assetId: string]: Asset }
 ): Promise<void> => {
   const newSpecies = newData[assetId].species
-  console.log('ACTION - CHANGE SPECIES', assetId, asset, newData, newSpecies)
-  await updateRecord(CollectionNames.Assets, assetId, {
-    species: newSpecies
+
+  await updateRecord(supabase, CollectionNames.Assets, assetId, {
+    species: newSpecies,
   })
 }
 
@@ -38,9 +39,9 @@ export const FormPerAsset = ({ asset }: { asset: Asset }) => {
       ...newData,
       [asset.id]: {
         species: newSpeciesIds.includes(speciesId)
-          ? newSpeciesIds.filter(id => id !== speciesId)
-          : newSpeciesIds.concat(speciesId)
-      }
+          ? newSpeciesIds.filter((id) => id !== speciesId)
+          : newSpeciesIds.concat(speciesId),
+      },
     })
 
   return (
@@ -48,7 +49,7 @@ export const FormPerAsset = ({ asset }: { asset: Asset }) => {
       Change species:
       <SpeciesDropdown
         selectedSpeciesIds={newSpeciesIds}
-        onSpeciesClickWithId={id => toggleSpeciesId(id)}
+        onSpeciesClickWithId={(id) => toggleSpeciesId(id)}
       />
     </>
   )

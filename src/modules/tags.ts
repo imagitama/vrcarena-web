@@ -3,7 +3,7 @@ import { fieldTypes } from '../generic-forms'
 import { categories } from '../utils/tags'
 import * as icons from '../icons'
 
-export interface Tag {
+export interface Tag extends Record<string, unknown> {
   id: string
   label: string
   category: string
@@ -17,7 +17,7 @@ export interface Tag {
   lastmodifiedat: Date
 }
 
-export interface TagMeta {
+export interface TagMeta extends Record<string, unknown> {
   id: string
   editornotes: string
   accessstatus: 'public' | 'deleted'
@@ -27,7 +27,7 @@ export interface TagMeta {
   createdat: Date
 }
 
-export interface TagStats {
+export interface TagStats extends Record<string, unknown> {
   tag: string
   count: number
 }

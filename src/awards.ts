@@ -3,10 +3,10 @@ export const allAwardIds = {
   '1_asset_approved': '1_asset_approved',
   '5_assets_approved': '5_assets_approved',
   '20_assets_approved': '20_assets_approved',
-  '100_assets_approved': '100_assets_approved'
+  '100_assets_approved': '100_assets_approved',
 }
 
-export const getNameForAwardId = awardId => {
+export const getNameForAwardId = (awardId: string): string => {
   switch (awardId) {
     case allAwardIds['1_year_anniversary']:
       return '1 Year Anniversary'

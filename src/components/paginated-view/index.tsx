@@ -10,7 +10,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/Add'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import SortControls, { SortOption } from '../sort-controls'
 import PagesNavigation from '../pages-navigation'
@@ -24,18 +23,22 @@ import useHistory from '../../hooks/useHistory'
 import useSorting from '../../hooks/useSorting'
 import useDataStore from '../../hooks/useDataStore'
 import useIsEditor from '../../hooks/useIsEditor'
-import { client as supabase } from '../../supabase'
 import {
   OrderDirections,
   AccessStatuses,
   PublishStatuses,
   ApprovalStatuses,
 } from '../../hooks/useDatabaseQuery'
-import { CommonMetaFieldNames, DataStoreErrorCode } from '../../data-store'
+import {
+  CommonMetaFieldNames,
+  DataStoreErrorCode,
+  GetQuery,
+} from '../../data-store'
 import useScrollMemory from '../../hooks/useScrollMemory'
 import { getPathForQueryString } from '../../queries'
 import { scrollToTop } from '../../utils'
 import WarningMessage from '../warning-message'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -61,9 +64,9 @@ const limitPerPage = 50
 type Filters = { [fieldName: string]: string | null }
 
 type GetQueryFn<TRecord> = (
-  currentQuery: PostgrestFilterBuilder<TRecord>,
+  currentQuery: GetQuery<TRecord>,
   selectedSubView: string | null
-) => PostgrestFilterBuilder<TRecord> | Promise<PostgrestFilterBuilder<TRecord>>
+) => GetQuery<TRecord> | Promise<GetQuery<TRecord>>
 
 interface SubViewConfig {
   id: string | number | null
@@ -132,89 +135,91 @@ const Page = () => {
           (sortOption) => sortOption.fieldName === sorting?.fieldName
         )
       : false
-  const pageGetQuery = useCallback(async () => {
-    const rangeStart = (currentPageNumber - 1) * limitPerPage
-    const rangeEnd = rangeStart + limitPerPage - 1
+  const pageGetQuery = useCallback(
+    async (supabase: SupabaseClient) => {
+      const rangeStart = (currentPageNumber - 1) * limitPerPage
+      const rangeEnd = rangeStart + limitPerPage - 1
 
-    const isAscending =
-      sorting && isSortingValid
-        ? sorting.direction === OrderDirections.ASC
-        : false
+      const isAscending =
+        sorting && isSortingValid
+          ? sorting.direction === OrderDirections.ASC
+          : false
 
-    let query: any
+      let query: any
 
-    // "exact" gives us correct count at a cost of performance
-    // "estimated" is better for performance but is always capped at the max read number (1000)
-    const selectOptions: {
-      count: 'exact' | 'planned' | 'estimated' | null | undefined
-    } = { count: 'exact' }
+      // "exact" gives us correct count at a cost of performance
+      // "estimated" is better for performance but is always capped at the max read number (1000)
+      const selectOptions: {
+        count: 'exact' | 'planned' | 'estimated' | null | undefined
+      } = { count: 'exact' }
 
-    if (!collectionName && !viewName) {
-      throw new Error(
-        'Cannot query for paginated results - need collection name or view name!'
-      )
-    }
-
-    if (viewName) {
-      query = supabase.from(
-        (isEditor && editorViewName ? editorViewName : viewName).toLowerCase()
-      )
-      query = query.select('*', selectOptions)
-
-      // supabase does not have support for "views" but the underlying REST API does so jam it in here
-      // TODO: Investigate as apparently supported: https://github.com/supabase/supabase/issues/190#issuecomment-689591527
-      // query.url = new URL(`${supabase.restUrl}/${viewName.toLowerCase()}`)
-    } else if (collectionName) {
-      query = supabase.from(collectionName)
-      query = query.select(select, selectOptions)
-    } else {
-      throw new Error(
-        'Cannot render PaginatedView: need view or collection name'
-      )
-    }
-
-    if (getQuery) {
-      query = getQuery(query, selectedSubView)
-    }
-
-    for (const [fieldName, fieldValue] of Object.entries(filters)) {
-      if (fieldValue) {
-        query = query.eq(fieldName, fieldValue)
+      if (!collectionName && !viewName) {
+        throw new Error(
+          'Cannot query for paginated results - need collection name or view name!'
+        )
       }
-    }
 
-    // toLowerCase incase they saved an old camelCase field name which breaks SQL
-    query = query.range(rangeStart, rangeEnd)
+      if (viewName) {
+        query = supabase.from(
+          (isEditor && editorViewName ? editorViewName : viewName).toLowerCase()
+        )
+        query = query.select('*', selectOptions)
 
-    if (sorting && isSortingValid) {
-      query = query.order(sorting.fieldName.toLowerCase(), {
-        ascending: isAscending,
-      })
-    }
+        // supabase does not have support for "views" but the underlying REST API does so jam it in here
+        // TODO: Investigate as apparently supported: https://github.com/supabase/supabase/issues/190#issuecomment-689591527
+        // query.url = new URL(`${supabase.restUrl}/${viewName.toLowerCase()}`)
+      } else if (collectionName) {
+        query = supabase.from(collectionName)
+        query = query.select(select, selectOptions)
+      } else {
+        throw new Error(
+          'Cannot render PaginatedView: need view or collection name'
+        )
+      }
 
-    // hack
-    if (sorting && sorting.fieldName === 'pluralname') {
-      query = query.order('title', {
-        ascending: true,
-      })
-    }
+      if (getQuery) {
+        query = getQuery(query, selectedSubView)
+      }
 
-    return query
-  }, [
-    viewName,
-    getQuery,
-    currentPageNumber,
-    sorting ? `${sorting.fieldName}.${sorting.direction}` : null,
-    selectedSubView,
-    Object.values(filters).join('+'),
-    isEditor,
-  ])
-  const [isLoading, lastErrorCode, items, totalCount, hydrate] = useDataStore<
-    any[]
-  >(pageGetQuery, {
-    queryName: `paginated-view-${collectionName || viewName}`,
-    uncatchErrorCodes: [DataStoreErrorCode.BadRange],
-  })
+      for (const [fieldName, fieldValue] of Object.entries(filters)) {
+        if (fieldValue) {
+          query = query.eq(fieldName, fieldValue)
+        }
+      }
+
+      // toLowerCase incase they saved an old camelCase field name which breaks SQL
+      query = query.range(rangeStart, rangeEnd)
+
+      if (sorting && isSortingValid) {
+        query = query.order(sorting.fieldName.toLowerCase(), {
+          ascending: isAscending,
+        })
+      }
+
+      // hack
+      if (sorting && sorting.fieldName === 'pluralname') {
+        query = query.order('title', {
+          ascending: true,
+        })
+      }
+
+      return query
+    },
+    [
+      viewName,
+      getQuery,
+      currentPageNumber,
+      sorting ? `${sorting.fieldName}.${sorting.direction}` : null,
+      selectedSubView,
+      Object.values(filters).join('+'),
+      isEditor,
+    ]
+  )
+  const [isLoading, lastErrorCode, items, totalCount, hydrate] =
+    useDataStore<any>(pageGetQuery, {
+      queryName: `paginated-view-${collectionName || viewName}`,
+      uncatchErrorCodes: [DataStoreErrorCode.BadRange],
+    })
 
   useScrollMemory(isLoading === false && lastErrorCode === null)
 

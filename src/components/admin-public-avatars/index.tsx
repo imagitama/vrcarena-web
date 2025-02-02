@@ -32,6 +32,7 @@ import {
   CachedVrchatAvatarRecord,
   FullPublicAvatarSubmission,
 } from '../../modules/public-avatars'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 interface SyncMissingAvatarSubmissionsResult {
   success: boolean
@@ -167,6 +168,7 @@ const ApplyAvatarsForm = ({
   const [isSavingSubmissions, setIsSavingSubmissions] = useState(false)
   const [isSavingSuccess, setIsSavingSuccess] = useState(false)
   const onDoneAfterDelay = useTimer(() => onDone(), 2000)
+  const supabase = useSupabaseClient()
 
   const onSelect = (id: string) =>
     setSelectedAvatarIds((currentIds) => currentIds.concat([id]))
@@ -186,6 +188,7 @@ const ApplyAvatarsForm = ({
     setIsSavingSuccess(false)
 
     await updateRecords<{ isdeleted: boolean }>(
+      supabase,
       CollectionNames.PublicAvatarSubmissions,
       submissions.map((submission) => submission.id),
       {

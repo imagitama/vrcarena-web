@@ -14,8 +14,8 @@ const useStyles = makeStyles({
   root: {
     '& > div': {
       display: 'flex',
-      alignItems: 'center'
-    }
+      alignItems: 'center',
+    },
   },
   income: {},
   expenditure: {},
@@ -25,27 +25,27 @@ const useStyles = makeStyles({
     width: '50%',
     textAlign: 'right',
     paddingRight: '1rem',
-    fontSize: '80%'
+    fontSize: '80%',
   },
   cost: {
-    fontSize: '150%'
+    fontSize: '150%',
   },
   negative: {
     color: colorPalette.negative,
-    animation: '500ms $pulseNegativeCost infinite alternate'
+    animation: '500ms $pulseNegativeCost infinite alternate',
   },
   '@keyframes pulseNegativeCost': {
     from: {
-      opacity: 1
+      opacity: 1,
     },
     to: {
-      opacity: 0.5
-    }
-  }
+      opacity: 0.5,
+    },
+  },
 })
 
 export default () => {
-  const [isLoading, isError, members] = useSupabaseView<CachedPatreonMember[]>(
+  const [isLoading, isError, members] = useSupabaseView<CachedPatreonMember>(
     'getAnonymousPatreonMembers'
   )
   const classes = useStyles()

@@ -7,7 +7,7 @@ export interface SocialAttachment {
   url: string
 }
 
-export interface SocialPostFields {
+export interface SocialPostFields extends Record<string, unknown> {
   parent: string | null
   text: string
   isadult: boolean

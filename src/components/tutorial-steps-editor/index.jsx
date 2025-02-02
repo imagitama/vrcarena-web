@@ -11,7 +11,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import {
   TutorialStepFieldNames,
   CollectionNames,
-  AssetFieldNames
+  AssetFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
@@ -30,17 +30,17 @@ const useStyles = makeStyles({
   step: {
     marginBottom: '1rem',
     '&:last-child': {
-      margin: 0
-    }
+      margin: 0,
+    },
   },
   controls: {
     marginTop: '0.5rem',
-    textAlign: 'right'
+    textAlign: 'right',
   },
   label: {
     fontWeight: 'bold',
-    marginTop: '0.5rem'
-  }
+    marginTop: '0.5rem',
+  },
 })
 
 function Label({ children }) {
@@ -85,7 +85,7 @@ function StepEditor({
   onSave,
   onMoveUp,
   onMoveDown,
-  onDelete
+  onDelete,
 }) {
   const [isImageUploaderVisible, setIsImageUploaderVisible] = useState(false)
   const classes = useStyles()
@@ -116,7 +116,7 @@ function StepEditor({
         <Label>Step Title</Label>
         <TextInput
           value={step[TutorialStepFieldNames.title]}
-          onChange={e =>
+          onChange={(e) =>
             updateStepField(TutorialStepFieldNames.title, e.target.value)
           }
           style={{ width: '100%' }}
@@ -124,10 +124,10 @@ function StepEditor({
         <Label>Instructions</Label>
         <TextInput
           value={step[TutorialStepFieldNames.description]}
-          onChange={e =>
+          onChange={(e) =>
             updateStepField(TutorialStepFieldNames.description, e.target.value)
           }
-          rows={10}
+          minRows={10}
           multiline
           style={{ width: '100%' }}
         />
@@ -140,7 +140,7 @@ function StepEditor({
         {!step[TutorialStepFieldNames.imageUrls] || isImageUploaderVisible ? (
           <ImageUploader
             directoryPath={`tutorial-step-attachments/${assetId}`}
-            onUploadedWithUrl={optimizedUrl => {
+            onUploadedWithUrl={(optimizedUrl) => {
               updateStepField(TutorialStepFieldNames.imageUrls, optimizedUrl)
               setIsImageUploaderVisible(false)
             }}
@@ -177,7 +177,7 @@ function StepEditor({
 }
 
 function getStepsAsString(steps) {
-  return steps.map(step => step[TutorialStepFieldNames.uniqueName]).join('+')
+  return steps.map((step) => step[TutorialStepFieldNames.uniqueName]).join('+')
 }
 
 function moveItemInArray(from, to, array) {
@@ -191,7 +191,7 @@ export default ({
   existingSteps,
   onDone,
   actionCategory,
-  overrideSave = null
+  overrideSave = null,
 }) => {
   const [stepsBeingEdited, setStepsBeingEdited] = useState([])
   const classes = useStyles()
@@ -216,7 +216,7 @@ export default ({
       trackAction(actionCategory, 'Click save tutorial steps', assetId)
 
       await save({
-        [AssetFieldNames.tutorialSteps]: stepsBeingEdited
+        [AssetFieldNames.tutorialSteps]: stepsBeingEdited,
       })
 
       onDone()
@@ -235,25 +235,25 @@ export default ({
   }
 
   const addStep = () => {
-    setStepsBeingEdited(steps =>
+    setStepsBeingEdited((steps) =>
       steps.concat([
         {
           [TutorialStepFieldNames.title]: '',
-          [TutorialStepFieldNames.description]: ''
-        }
+          [TutorialStepFieldNames.description]: '',
+        },
       ])
     )
   }
 
-  const moveStepUp = stepIdx => {
+  const moveStepUp = (stepIdx) => {
     setStepsBeingEdited(moveItemInArray(stepIdx, stepIdx - 1, stepsBeingEdited))
   }
 
-  const moveStepDown = stepIdx => {
+  const moveStepDown = (stepIdx) => {
     setStepsBeingEdited(moveItemInArray(stepIdx, stepIdx + 1, stepsBeingEdited))
   }
 
-  const deleteStep = stepIdx => {
+  const deleteStep = (stepIdx) => {
     setStepsBeingEdited(stepsBeingEdited.splice(stepIdx, 1))
   }
 
@@ -261,7 +261,7 @@ export default ({
     const step = stepsBeingEdited[stepIdx]
     const newStep = {
       ...step,
-      ...newStepFields
+      ...newStepFields,
     }
 
     // fix undefined error if no image attached
@@ -286,7 +286,7 @@ export default ({
                 assetId={assetId}
                 step={step}
                 number={idx + 1}
-                onSave={newStepFields => saveStep(idx, newStepFields)}
+                onSave={(newStepFields) => saveStep(idx, newStepFields)}
                 onMoveUp={() => moveStepUp(idx)}
                 onMoveDown={() => moveStepDown(idx)}
                 onDelete={() => deleteStep(idx)}

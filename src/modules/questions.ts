@@ -1,4 +1,4 @@
-export interface QuestionFields {
+export interface QuestionFields extends Record<string, unknown> {
   question: string
   isoriginalcreator: boolean
   asset: string
@@ -17,7 +17,7 @@ export interface FullQuestion extends Question {
   answers: FullQuestionAnswer[]
 }
 
-export interface QuestionAnswerFields {
+export interface QuestionAnswerFields extends Record<string, unknown> {
   parent: string // question ID
   answer: string
   sourceurl: string

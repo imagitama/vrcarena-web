@@ -15,8 +15,8 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 const useStyles = makeStyles({
   label: {
     fontSize: '75%',
-    display: 'block'
-  }
+    display: 'block',
+  },
 })
 
 export default ({
@@ -24,7 +24,7 @@ export default ({
   metaCollectionName,
   existingEditorNotes = undefined,
   onClick = null,
-  onDone = null
+  onDone = null,
 }) => {
   const [isLoadingMeta, isErroredLoadingMeta, metaRecord] = useDataStoreItem(
     metaCollectionName,
@@ -76,7 +76,7 @@ export default ({
       }
 
       await saveMetaRecord({
-        [CommonMetaFieldNames.editorNotes]: newEditorNotes || ''
+        [CommonMetaFieldNames.editorNotes]: newEditorNotes || '',
       })
 
       if (onDone) {
@@ -93,9 +93,9 @@ export default ({
       <span className={classes.label}>Public notes from editors:</span>
       <TextInput
         multiline
-        rows={2}
+        minRows={2}
         value={newEditorNotes}
-        onChange={e => setNewEditorNotes(e.target.value)}
+        onChange={(e) => setNewEditorNotes(e.target.value)}
       />
       <Button onClick={onSaveBtnClick} size="small">
         Save

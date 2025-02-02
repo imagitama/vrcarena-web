@@ -1,7 +1,8 @@
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
-import { PostgrestError } from '@supabase/supabase-js'
-import { client as supabase } from './supabase'
-import { getIsUuid } from './utils'
+import {
+  PostgrestFilterBuilder,
+  PostgrestTransformBuilder,
+} from '@supabase/postgrest-js'
+import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
 export interface CommonRecordFields {
   id: string
@@ -202,33 +203,8 @@ export const PagesFieldNames = {
   lastModifiedAt: 'lastmodifiedat',
 }
 
-export const query = <TRecord>(
-  collectionName: string,
-  selectFieldNames: string,
-  where: { [key: string]: string },
-  settings: { startAt?: number; limit?: number } = {}
-): PostgrestFilterBuilder<TRecord> => {
-  let queryChain = supabase.from(collectionName).select(selectFieldNames || '*')
-
-  if (getIsUuid(selectFieldNames)) {
-    console.log('it is a uuid!', selectFieldNames)
-    queryChain = queryChain.eq(standardFieldNames.id, selectFieldNames)
-  }
-
-  for (const [key, value] of Object.entries(where)) {
-    queryChain = queryChain.eq(key, value)
-  }
-
-  if (settings.startAt && settings.limit) {
-    queryChain = queryChain.range(settings.startAt, settings.limit)
-  } else if (settings.limit) {
-    queryChain = queryChain.limit(settings.limit)
-  }
-
-  return queryChain
-}
-
 export const readRecord = async <TRecord>(
+  supabase: SupabaseClient,
   tableName: string,
   id: string,
   defaultVal?: TRecord
@@ -258,12 +234,13 @@ export const readRecord = async <TRecord>(
 }
 
 export const readRecordsById = async <TRecord>(
+  supabase: SupabaseClient,
   tableName: string,
   ids: string[]
 ): Promise<TRecord[]> => {
   let query = supabase
-    .from<TRecord>(tableName)
-    .select('*')
+    .from(tableName)
+    .select<'*', TRecord>('*')
     .or(ids.map((id) => `id.eq.${id}`).join(','))
 
   const { error, data } = await query
@@ -281,6 +258,7 @@ export const readRecordsById = async <TRecord>(
 }
 
 export const readAllRecords = async <TRecord>(
+  supabase: SupabaseClient,
   tableName: string
 ): Promise<TRecord[]> => {
   const { error, data } = await supabase.from(tableName).select('*')
@@ -296,14 +274,15 @@ export const readAllRecords = async <TRecord>(
 }
 
 export const simpleSearchRecords = async <TRecord>(
+  supabase: SupabaseClient,
   tableName: string,
   searchTermsByField: { [fieldName in keyof Partial<TRecord>]: string },
   limit: number = 1000,
   orderBy?: keyof TRecord
 ): Promise<TRecord[] | null> => {
   let query = supabase
-    .from<TRecord>(tableName)
-    .select('*')
+    .from(tableName)
+    .select<'*', TRecord>('*')
     .or(
       Object.entries(searchTermsByField)
         .map(([fieldName, searchText]) => `${fieldName}.ilike.${searchText}`)
@@ -312,7 +291,7 @@ export const simpleSearchRecords = async <TRecord>(
     .limit(limit)
 
   if (orderBy) {
-    query = query.order(orderBy, { ascending: false })
+    query = query.order(orderBy as string, { ascending: false })
   }
 
   const { error, data } = await query
@@ -328,6 +307,7 @@ export const simpleSearchRecords = async <TRecord>(
 }
 
 export const updateRecord = async <TFields>(
+  supabase: SupabaseClient,
   tableName: string,
   id: string,
   newVal: TFields
@@ -363,6 +343,7 @@ export const updateRecord = async <TFields>(
 }
 
 export const updateRecords = async <TFields>(
+  supabase: SupabaseClient,
   tableName: string,
   ids: string[],
   newVal: TFields
@@ -397,18 +378,15 @@ export const updateRecords = async <TFields>(
 }
 
 export const insertRecord = async <TFields, TReturnVal>(
+  supabase: SupabaseClient,
   tableName: string,
   newVal: TFields,
   minimal = true
 ): Promise<TReturnVal> => {
-  // const id = generateUid()
   const { error, data } = await supabase
     .from(tableName)
-    // returning = minimal so it does not perform a SELECT which might not work because of security
-    .insert(
-      { ...newVal },
-      { returning: minimal ? 'minimal' : 'representation' }
-    )
+    .insert({ ...newVal })
+    .select()
 
   console.debug(`insertRecord`, tableName, data, error)
 
@@ -431,6 +409,7 @@ export const insertRecord = async <TFields, TReturnVal>(
 }
 
 export const deleteRecord = async (
+  supabase: SupabaseClient,
   tableName: string,
   id: string
 ): Promise<null> => {
@@ -498,6 +477,7 @@ export enum DataStoreErrorCode {
   ViolateUniqueConstraint,
   BadRange,
   Unknown,
+  ChannelError,
 }
 
 export const getDataStoreErrorCodeFromPostgrestError = (
@@ -528,3 +508,5 @@ export const getDataStoreErrorCodeFromError = (
 
   return DataStoreErrorCode.Unknown
 }
+
+export type GetQuery<TRecord> = PostgrestFilterBuilder<any, any, TRecord[]>

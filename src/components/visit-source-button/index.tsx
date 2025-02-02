@@ -22,6 +22,7 @@ import {
   isItchProductUrl,
 } from '../../utils'
 import { formatPrice } from '../../currency'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles({
   button: {
@@ -125,6 +126,7 @@ const VisitSourceButton = ({
   isExtraSource?: boolean
 }) => {
   const classes = useStyles()
+  const supabase = useSupabaseClient()
 
   const onBtnClick = async () => {
     try {
@@ -146,6 +148,7 @@ const VisitSourceButton = ({
           { url: sourceInfo.url, assetId }
         )
         trackInternalAction(
+          supabase,
           analyticsCategoryName,
           analyticsEvent || 'Click visit source button',
           OldCollectionNames.Assets,

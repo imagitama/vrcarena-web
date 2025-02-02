@@ -179,7 +179,7 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
       <TextInput
         value={newComments}
         onChange={(e) => setNewComments(e.target.value)}
-        rows={3}
+        minRows={3}
         multiline
         className={classes.input}
       />
@@ -384,7 +384,7 @@ export default ({
         <TextInput
           value={newComments}
           onChange={(e) => setNewComments(e.target.value)}
-          rows={5}
+          minRows={5}
           multiline
           className={classes.input}
         />

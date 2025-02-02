@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { client as supabase } from '../supabase'
 import { handleError } from '../error-handling'
 import {
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
+import useSupabaseClient from './useSupabaseClient'
 
 interface QueryOptions<TItem> {
   queryName?: string
@@ -32,6 +32,7 @@ export default <TItem>(
   )
   const [totalCount, setTotalCount] = useState<number | null>(null)
   const hasInitialResultsRef = useRef(false)
+  const supabase = useSupabaseClient()
 
   const hydrate = async () => {
     try {
@@ -71,7 +72,7 @@ export default <TItem>(
 
       // TODO: Do this better
       if (options.orderBy) {
-        query = query.order(options.orderBy, { ascending: true })
+        query = query.order(options.orderBy as string, { ascending: true })
       }
 
       const { error, data, count } = await query

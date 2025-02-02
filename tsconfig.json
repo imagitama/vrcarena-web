@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node", "jest"],
+    "types": ["node", "jest", "webpack-env"],
     "target": "es2015",
     "lib": [
       "dom",

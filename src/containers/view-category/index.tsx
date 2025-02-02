@@ -20,6 +20,7 @@ import AssetsByArea from '../../components/assets-by-area'
 import AreaNavigation from '../../components/area-navigation'
 import Link from '../../components/link'
 import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
+import { GetQuery } from '../../data-store'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   const category = getCategoryMeta(categoryName)
@@ -52,9 +53,7 @@ const ViewCategoryView = () => {
   const { pathname } = useLocation()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
-    (
-      query: PostgrestFilterBuilder<PublicAsset>
-    ): PostgrestFilterBuilder<PublicAsset> => {
+    (query: GetQuery<PublicAsset>): GetQuery<PublicAsset> => {
       query = query.eq('category', categoryName)
       if (!isAdultContentEnabled) {
         query = query.eq('isadult', false)

@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { handleError } from '../error-handling'
-import { client as supabase } from '../supabase'
 import { setIsSearching } from '../modules/app'
 import { useDispatch } from 'react-redux'
+import useSupabaseClient from './useSupabaseClient'
 
 export default <TResult>(
   tableName: string,
@@ -16,6 +16,7 @@ export default <TResult>(
   const [isLoading, setIsLoading] = useState(false)
   const [isErrored, setIsErrored] = useState(false)
   const timerRef = useRef<NodeJS.Timeout>()
+  const supabase = useSupabaseClient()
 
   useEffect(() => {
     if (!searchTerm) {

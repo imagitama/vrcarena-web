@@ -19,11 +19,11 @@ import { trackAction } from '../../analytics'
 const useStyles = makeStyles({
   input: {
     width: '100%',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   controls: {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 })
 
 export default ({
@@ -31,7 +31,7 @@ export default ({
   description = '',
   onDone = null,
   actionCategory,
-  overrideSave = null
+  overrideSave = null,
 }) => {
   const userId = useUserId()
   const [newDescriptionValue, setNewDescriptionValue] = useState(description)
@@ -71,7 +71,7 @@ export default ({
       trackAction(actionCategory, 'Click save short description button')
 
       await save({
-        [AssetFieldNames.shortDescription]: newDescriptionValue
+        [AssetFieldNames.shortDescription]: newDescriptionValue,
       })
 
       if (onDone) {
@@ -87,11 +87,11 @@ export default ({
     <Paper>
       <TextField
         value={newDescriptionValue}
-        onChange={e => {
+        onChange={(e) => {
           setNewDescriptionValue(e.target.value)
         }}
         multiline
-        rows={2}
+        minRows={2}
         className={classes.input}
       />
       <div className={classes.controls}>

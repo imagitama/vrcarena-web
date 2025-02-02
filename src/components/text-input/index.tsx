@@ -9,7 +9,7 @@ export default (props: {
   value?: string | number
   className?: string
   multiline?: boolean
-  rows?: number
+  minRows?: number
   onChange?: (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => void
@@ -26,7 +26,7 @@ export default (props: {
   <TextField
     {...props}
     // @ts-ignore
-    multiline={props.rows && props.rows > 0}
+    multiline={props.minRows && props.minRows > 0}
     variant={props.variant || 'outlined'}
     disabled={props.isDisabled}
   />

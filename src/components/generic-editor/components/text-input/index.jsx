@@ -6,6 +6,6 @@ export default ({ onChange, value, multiline }) => (
     onChange={(e) => onChange(e.target.value)}
     value={value}
     multiline={multiline === true}
-    rows={multiline ? 3 : 0}
+    minRows={multiline ? 3 : 0}
   />
 )

@@ -7,25 +7,26 @@ import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useDatabaseQuery, {
   CollectionNames,
   LikeFieldNames,
-  Operators
+  Operators,
 } from '../../hooks/useDatabaseQuery'
 import { createRef } from '../../utils'
 import { handleError } from '../../error-handling'
 import { deleteRecord } from '../../data-store'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles({
   root: {
     opacity: 0.3,
     cursor: 'pointer',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   liked: {
-    opacity: 1
+    opacity: 1,
   },
   icon: {
-    fontSize: 'inherit'
-  }
+    fontSize: 'inherit',
+  },
 })
 
 export default ({ collectionName, parentId }) => {
@@ -37,18 +38,19 @@ export default ({ collectionName, parentId }) => {
           [
             LikeFieldNames.parent,
             Operators.EQUALS,
-            createRef(collectionName, parentId)
+            createRef(collectionName, parentId),
           ],
           [
             LikeFieldNames.createdBy,
             Operators.EQUALS,
-            createRef(CollectionNames.Users, userId)
-          ]
+            createRef(CollectionNames.Users, userId),
+          ],
         ]
       : false
   )
   const [, , , save] = useDatabaseSave(CollectionNames.Likes, parentId)
   const classes = useStyles()
+  const supabase = useSupabaseClient()
 
   const hasLiked = result && result.length > 0
 
@@ -56,10 +58,10 @@ export default ({ collectionName, parentId }) => {
     try {
       if (!hasLiked) {
         await save({
-          [LikeFieldNames.parent]: createRef(collectionName, parentId)
+          [LikeFieldNames.parent]: createRef(collectionName, parentId),
         })
       } else {
-        await deleteRecord(CollectionNames.Likes, result[0].id)
+        await deleteRecord(supabase, CollectionNames.Likes, result[0].id)
       }
     } catch (err) {
       console.error(err)

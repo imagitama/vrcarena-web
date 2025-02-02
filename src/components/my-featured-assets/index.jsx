@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import { client as supabase } from '../../supabase'
 import useDataStore from '../../hooks/useDataStore'
 import useUserId from '../../hooks/useUserId'
 
@@ -12,7 +11,7 @@ import NoResultsMessage from '../no-results-message'
 export default () => {
   const userId = useUserId()
   const getQuery = useCallback(
-    () =>
+    (supabase) =>
       supabase
         .from('getFullAssets'.toLowerCase())
         .select('*')

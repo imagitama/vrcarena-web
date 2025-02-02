@@ -88,7 +88,7 @@ function ItemEditor({
           onChange={(e) =>
             updateItemField(PlaylistItemsFieldNames.comments, e.target.value)
           }
-          rows={10}
+          minRows={10}
           multiline
           style={{ width: '100%' }}
         />

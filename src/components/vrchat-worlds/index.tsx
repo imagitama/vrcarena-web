@@ -4,7 +4,6 @@ import DeleteIcon from '@material-ui/icons/Delete'
 
 import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
-import { client as supabase } from '../../supabase'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import VrchatWorld from '../vrchat-world'
@@ -13,6 +12,7 @@ import {
   VrchatWorld as VrchatWorldStructure,
 } from '../../modules/vrchat-cache'
 import Button from '../button'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -30,18 +30,17 @@ export default ({
   onUseForAsset?: (id: string, worldData: VrchatWorldStructure | null) => void
 }) => {
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       worldIds.length === 0
-        ? false
+        ? null
         : supabase
             .from(CollectionNames.VrchatWorlds)
             .select('*')
             .or(worldIds.map((worldId) => `id.eq.${worldId}`).join(',')),
     [worldIds.join(',')]
   )
-  const [isLoading, lastErrorCode, results] = useDataStore<
-    CachedVrchatWorldRecord[]
-  >(getQuery, 'vrchat-worlds')
+  const [isLoading, lastErrorCode, results] =
+    useDataStore<CachedVrchatWorldRecord>(getQuery, 'vrchat-worlds')
   const classes = useStyles()
 
   if (!worldIds) {

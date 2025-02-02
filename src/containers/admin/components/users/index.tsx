@@ -17,7 +17,6 @@ import {
   CollectionNameCommentsMeta,
   FullComment,
 } from '../../../../modules/comments'
-import { client as supabase } from '../../../../supabase'
 import LoadingIndicator from '../../../../components/loading-indicator'
 import Markdown from '../../../../components/markdown'
 import Button from '../../../../components/button'
@@ -32,6 +31,8 @@ import GenericOutputItem from '../../../../components/generic-output-item'
 import Message from '../../../../components/message'
 import { handleError } from '../../../../error-handling'
 import { AccessStatuses } from '../../../../hooks/useDatabaseQuery'
+import useSupabaseClient from '../../../../hooks/useSupabaseClient'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const BulkControls = ({
   ids,
@@ -45,6 +46,7 @@ const BulkControls = ({
   const [wantsToDelete, setWantsToDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isError, setIsError] = useState(false)
+  const supabase = useSupabaseClient()
 
   if (!ids.length) {
     return null
@@ -116,7 +118,7 @@ const BulkControls = ({
 
 const CommentsByUser = ({ userId }: { userId: string }) => {
   const getQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       supabase
         .from('getfullcomments'.toLowerCase())
         .select('*', {
@@ -127,7 +129,7 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
     [userId]
   )
   const [isLoadingComments, lastErrorCodeLoadingComments, comments, , hydrate] =
-    useDataStore<FullComment[]>(getQuery, 'user-comments')
+    useDataStore<FullComment>(getQuery, 'user-comments')
   const [selectedCommentIds, setSelectedCommentIds] = useState<string[]>([])
 
   if (isLoadingComments || !comments) {

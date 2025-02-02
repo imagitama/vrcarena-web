@@ -3,6 +3,7 @@ import { AutocompleteOption } from '../components/autocomplete-input'
 import { simpleSearchRecords } from '../data-store'
 import { handleError } from '../error-handling'
 import { CollectionNames, User } from '../modules/users'
+import useSupabaseClient from './useSupabaseClient'
 
 const useUserTagging = (
   internalText: string
@@ -17,6 +18,7 @@ const useUserTagging = (
   const [users, setUsers] = useState<User[] | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const [atSymbolIndex, setAtSymbolIndex] = useState(-1)
+  const supabase = useSupabaseClient()
 
   useEffect(
     () => () => {
@@ -95,6 +97,7 @@ const useUserTagging = (
       setIsLoading(true)
 
       const newUsers = await simpleSearchRecords<User>(
+        supabase,
         CollectionNames.Users,
         {
           username: `%${searchTerm}%`,

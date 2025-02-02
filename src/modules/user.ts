@@ -20,7 +20,7 @@ export interface NotificationPreferences {
   events: NotificationPreferencesEvents
 }
 
-export interface UserPreferences {
+export interface UserPreferences extends Record<string, unknown> {
   id: string
   enabledadultcontent: boolean
   notificationemail: string

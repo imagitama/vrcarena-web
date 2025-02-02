@@ -2,7 +2,6 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useHistory, useParams } from 'react-router'
 import EditIcon from '@material-ui/icons/Edit'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import { makeStyles } from '@material-ui/core/styles'
@@ -31,8 +30,9 @@ import {
 
 import * as routes from '../../routes'
 import { prepareValueForQuery } from '../../queries'
-import { client as supabase } from '../../supabase'
 import { trackAction } from '../../analytics'
+import { GetQuery } from '../../data-store'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -58,9 +58,7 @@ const AssetsForSpecies = ({
   ]
 
   const getQuery = useCallback(
-    (
-      query: PostgrestFilterBuilder<PublicAsset>
-    ): PostgrestFilterBuilder<PublicAsset> => {
+    (query: GetQuery<PublicAsset>): GetQuery<PublicAsset> => {
       query = query
         .overlaps('species', speciesIdsToSearchFor)
         .eq('category', AssetCategory.Avatar)
@@ -144,33 +142,36 @@ const View = () => {
   }>()
   const isEditor = useIsEditor()
   const getSpeciesQuery = useCallback(
-    () =>
+    (supabase: SupabaseClient) =>
       supabase
-        .from<Species>(ViewNames.GetFullSpecies)
-        .select('*')
+        .from(ViewNames.GetFullSpecies)
+        .select<string, FullSpecies>('*')
         // TODO: Type safe this
         .or(`id.eq.${speciesIdOrSlug},slug.eq.${speciesIdOrSlug}`),
     [speciesIdOrSlug]
   )
   const [isLoadingSpecies, lastErrorCodeLoadingSpecies, speciesResults] =
-    useDataStore<FullSpecies[]>(getSpeciesQuery, 'view-species')
+    useDataStore<FullSpecies>(getSpeciesQuery, 'view-species')
   const classes = useStyles()
 
   const species =
     speciesResults && speciesResults.length === 1 ? speciesResults[0] : null
 
-  const getChildrenQuery = useCallback(() => {
-    if (!species) {
-      return null
-    }
-    const query = supabase
-      .from<Species>(CollectionNames.Species)
-      .select('*')
-      .eq('parent', species.id)
-    return query
-  }, [species && species.id])
+  const getChildrenQuery = useCallback(
+    (supabase: SupabaseClient) => {
+      if (!species) {
+        return null
+      }
+      const query = supabase
+        .from(CollectionNames.Species)
+        .select<'*', Species>('*')
+        .eq('parent', species.id)
+      return query
+    },
+    [species && species.id]
+  )
   const [isLoadingChildren, lastErrorCodeLoadingChildren, childSpecies] =
-    useDataStore<Species[]>(
+    useDataStore<Species>(
       species ? getChildrenQuery : null,
       'view-species-children'
     )

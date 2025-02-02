@@ -1,6 +1,6 @@
 import { AccessStatuses, ApprovalStatuses } from '../hooks/useDatabaseQuery'
 
-export interface AttachmentFields {
+export interface AttachmentFields extends Record<string, unknown> {
   reason: AttachmentReason
   url: string
   type: AttachmentType | null

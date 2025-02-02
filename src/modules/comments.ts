@@ -1,4 +1,6 @@
-export interface Comment {
+import { Roles } from './users'
+
+export interface Comment extends Record<string, unknown> {
   id: string
   comment: string
   isprivate: boolean
@@ -22,7 +24,7 @@ export interface CommentMeta {
 export interface FullComment extends Comment, CommentMeta {
   createdbyusername: string
   createdbyavatarurl: string
-  createdbyrole: string
+  createdbyrole: Roles
   mentions: string[]
 }
 

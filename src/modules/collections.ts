@@ -1,6 +1,6 @@
 import { PublicAsset } from './assets'
 
-export interface Collection {
+export interface Collection extends Record<string, unknown> {
   id: string
   title: string
   description: string
@@ -14,7 +14,7 @@ export interface CollectionItem {
 }
 
 // different table = different cols
-export interface CollectionForUser {
+export interface CollectionForUser extends Record<string, unknown> {
   id: string
   assets: string[]
 }
