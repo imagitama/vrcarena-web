@@ -95,15 +95,17 @@ export const RelationItem = ({
 }
 
 const Relations = ({ relations }: { relations: Relation[] }) => {
+  const hasRelations = relations && relations.length
+
   const getQuery = useCallback(
     (supabase: SupabaseClient) =>
-      relations && relations.length
+      hasRelations
         ? supabase
             .from('getpublicassets')
             .select('*')
             .or(relations.map(({ asset }) => `id.eq.${asset}`).join(','))
         : null,
-    [relations.map(({ asset }) => asset).join('+')]
+    [hasRelations, relations.map(({ asset }) => asset).join('+')]
   )
   const [isLoadingAssets, lastErrorCodeLoadingAssets, assets] =
     useDataStore<PublicAsset>(getQuery, 'relations')
@@ -132,12 +134,8 @@ const Relations = ({ relations }: { relations: Relation[] }) => {
     return <ErrorMessage>Failed to load relations</ErrorMessage>
   }
 
-  if (isLoadingAssets || !assets) {
+  if (hasRelations && (isLoadingAssets || !assets)) {
     return <LoadingIndicator message="Loading relations..." />
-  }
-
-  if (!assets.length) {
-    return <NoResultsMessage>No relations found</NoResultsMessage>
   }
 
   return (
@@ -148,7 +146,9 @@ const Relations = ({ relations }: { relations: Relation[] }) => {
             <div className={classes.label}>{getLabelForType(relationType)}</div>
             <RelationsItems>
               {relationsForType.map((relation) => {
-                const asset = assets.find(({ id }) => id === relation.asset)
+                const asset = assets
+                  ? assets.find(({ id }) => id === relation.asset)
+                  : null
 
                 if (!asset) {
                   throw new Error(
