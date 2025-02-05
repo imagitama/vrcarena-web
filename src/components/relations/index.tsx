@@ -97,10 +97,12 @@ export const RelationItem = ({
 const Relations = ({ relations }: { relations: Relation[] }) => {
   const getQuery = useCallback(
     (supabase: SupabaseClient) =>
-      supabase
-        .from('getpublicassets')
-        .select('*')
-        .or(relations.map(({ asset }) => `id.eq.${asset}`).join(',')),
+      relations && relations.length
+        ? supabase
+            .from('getpublicassets')
+            .select('*')
+            .or(relations.map(({ asset }) => `id.eq.${asset}`).join(','))
+        : null,
     [relations.map(({ asset }) => asset).join('+')]
   )
   const [isLoadingAssets, lastErrorCodeLoadingAssets, assets] =
