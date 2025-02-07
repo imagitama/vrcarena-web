@@ -211,6 +211,7 @@ export interface AssetSyncQueueItem extends AssetSyncQueueItemFields {
   id: string
   status: AssetSyncStatus
   failedreason: string
+  syncedfields: string[] | null
   createdassetid: string
   lastmodifiedby: string
   lastmodifiedat: string

@@ -249,8 +249,6 @@ export default ({
     )
   }
 
-  console.log(lastValidationErrorTypes, BlockingErrorTypes)
-
   const blockingValidationErrorTypes = lastValidationErrorTypes.filter(
     (errorType) => Object.values(BlockingErrorTypes).includes(errorType as any)
   )

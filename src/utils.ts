@@ -257,6 +257,20 @@ export function isGumroadUrl(url: string): boolean {
   return url.includes('gumroad.com')
 }
 
+export const getIsGumroadProductUrl = (url: string): boolean => {
+  try {
+    const parsedUrl = new URL(url)
+
+    if (!/\.gumroad\.com$/.test(parsedUrl.hostname)) {
+      return false
+    }
+
+    return /^\/l\/[^/]+$/.test(parsedUrl.pathname)
+  } catch {
+    return false
+  }
+}
+
 export function isBoothUrl(url: string): boolean {
   return url.includes('booth.pm')
 }
@@ -286,12 +300,6 @@ export const base64EncodeString = (string: string): string => btoa(string)
 export const parseBase64String = (string: string): string => atob(string)
 
 export const copyTextToClipboard = (text: string): Promise<void> => {
-  if (!location.href.includes('https')) {
-    console.warn('Cannot copy text in insecure location')
-    return Promise.resolve()
-  }
-
-  // new api - https only
   return navigator.clipboard.writeText(text)
 }
 

@@ -14,6 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import AddIcon from '@material-ui/icons/Add'
 import LaunchIcon from '@material-ui/icons/Launch'
 import EditIcon from '@material-ui/icons/Edit'
+import InfoIcon from '@material-ui/icons/Info'
 
 import * as routes from '../../routes'
 
@@ -24,7 +25,7 @@ import useUserRecord from '../../hooks/useUserRecord'
 
 import Link from '../../components/link'
 import TextInput from '../../components/text-input'
-import { getCanSync } from '../../syncing'
+import { cleanupSourceUrl, getCanSync } from '../../syncing'
 import Tooltip from '../../components/tooltip'
 import FormControls from '../../components/form-controls'
 import { handleError } from '../../error-handling'
@@ -34,10 +35,10 @@ import {
   CollectionNames,
   ViewNames,
   AssetSyncStatus,
+  Asset,
 } from '../../modules/assets'
 import useDataStoreCreateBulk from '../../hooks/useDataStoreCreateBulk'
-import useDataStoreItemsSync from '../../hooks/useDataStoreItemsSync'
-import useDatabaseQuery from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { OrderDirections } from '../../hooks/useDatabaseQuery'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import LoadingShimmer from '../../components/loading-shimmer'
@@ -45,8 +46,13 @@ import { colorPalette } from '../../config'
 import { capitalize } from '../../utils'
 import useDataStoreDelete from '../../hooks/useDataStoreDelete'
 import SuccessMessage from '../../components/success-message'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import { getFriendlyDate } from '../../utils/dates'
+import useDataStoreItemSync from '../../hooks/useDataStoreItemSync'
+import CopyThing from '../../components/copy-thing'
+import Message from '../../components/message'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   heading: {
     textAlign: 'center',
     padding: '2rem 0',
@@ -71,7 +77,18 @@ const useStyles = makeStyles({
     color: colorPalette.positive,
   },
   waiting: {},
-})
+  failedFieldsRoot: {
+    border: `1px solid ${colorPalette.warning}`,
+    color: colorPalette.warning,
+    padding: '0.25rem',
+    margin: '0.25rem 0',
+    fontSize: '75%',
+    borderRadius: theme.shape.borderRadius,
+  },
+  deletedRow: {
+    opacity: 0.5,
+  },
+}))
 
 const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
   const classes = useStyles()
@@ -110,16 +127,42 @@ const getClassForStatus = (
   }
 }
 
-const QueuedStatus = ({ status }: { status: AssetSyncStatus }) => {
+const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
   const classes = useStyles()
 
   return (
     <span
       className={`${classes.queuedStatus} ${getClassForStatus(
-        status,
+        queuedItem.status,
         classes
       )}`}>
-      {capitalize(status)}
+      {capitalize(queuedItem.status)}{' '}
+      <CopyThing
+        text={queuedItem.id}
+        title={
+          <>
+            Queued {getFriendlyDate(new Date(queuedItem.createdat))}
+            {queuedItem.lastmodifiedat &&
+            queuedItem.lastmodifiedat !== queuedItem.createdat ? (
+              <>
+                <br />
+                Last updated{' '}
+                {getFriendlyDate(new Date(queuedItem.lastmodifiedat))}
+              </>
+            ) : null}
+            {queuedItem.status === AssetSyncStatus.Failed &&
+            queuedItem.failedreason ? (
+              <>
+                <br />
+                Failed: {queuedItem.failedreason}
+              </>
+            ) : (
+              ''
+            )}
+          </>
+        }>
+        <InfoIcon />
+      </CopyThing>
     </span>
   )
 }
@@ -127,14 +170,21 @@ const QueuedStatus = ({ status }: { status: AssetSyncStatus }) => {
 const DeleteButton = ({
   queuedItem,
   isBusy,
+  onDelete,
 }: {
   queuedItem: AssetSyncQueueItem
   isBusy: boolean
+  onDelete: () => void
 }) => {
   const [isDeleting, isSuccess, lastErrorCode, performDelete] =
     useDataStoreDelete(CollectionNames.AssetSyncQueue, queuedItem.id, {
       queryName: 'delete-queued-item-button',
     })
+
+  const onClickDelete = async () => {
+    await performDelete()
+    onDelete()
+  }
 
   return (
     <>
@@ -142,9 +192,13 @@ const DeleteButton = ({
         color="default"
         icon={<DeleteIcon className="test" />}
         iconOnly
-        onClick={() => performDelete()}
+        onClick={onClickDelete}
         title="Remove asset from queue"
-        isDisabled={isBusy || isDeleting}
+        isDisabled={
+          isBusy ||
+          isDeleting ||
+          queuedItem.status === AssetSyncStatus.Processing
+        }
       />
       {isSuccess ? (
         <SuccessMessage>Item removed from queue</SuccessMessage>
@@ -154,6 +208,149 @@ const DeleteButton = ({
         <LoadingIndicator message="Removing..." />
       ) : null}
     </>
+  )
+}
+
+const LoadingRow = () => (
+  <TableRow>
+    <TableCell>
+      <LoadingShimmer width="100%" height="15px" />
+    </TableCell>
+    <TableCell>
+      <LoadingShimmer width="100%" height="15px" />
+    </TableCell>
+    <TableCell>
+      <LoadingShimmer width="100%" height="15px" />
+    </TableCell>
+  </TableRow>
+)
+
+interface ImportantField {
+  name: Extract<keyof Asset, string>
+  description: string
+}
+
+const importantFields: ImportantField[] = [
+  {
+    name: 'isadult',
+    description: 'If it is NSFW/adult',
+  },
+  {
+    name: 'species',
+    description: 'Species',
+  },
+  {
+    name: 'tags',
+    description: 'Tags',
+  },
+  {
+    name: 'vrchatclonableavatarids',
+    description: 'Any VRChat avatars you can clone',
+  },
+  {
+    name: 'relations',
+    description: 'If it depends on another asset (relations)',
+  },
+]
+
+const MissingFields = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
+  const syncedFieldNames = queuedItem.syncedfields!
+  const classes = useStyles()
+
+  return (
+    <div className={classes.failedFieldsRoot}>
+      These fields require your manual attention:
+      <ul>
+        {importantFields
+          .filter(
+            (fieldInfo) =>
+              syncedFieldNames.find(
+                (syncedFieldName) => syncedFieldName === fieldInfo.name
+              ) === undefined
+          )
+          .map((fieldInfo) => (
+            <li key={fieldInfo.name}>{fieldInfo.description}</li>
+          ))}
+      </ul>
+    </div>
+  )
+}
+
+const QueuedItemRow = ({
+  queuedItem: originalQueuedItem,
+  isBusy,
+}: {
+  queuedItem: AssetSyncQueueItem
+  isBusy: boolean
+}) => {
+  const [isSubscribing, lastSubscribeErrorCode, liveQueuedItem] =
+    useDataStoreItemSync<AssetSyncQueueItem>(
+      CollectionNames.AssetSyncQueue,
+      originalQueuedItem.id,
+      `get-my-asset-sync-queued-item_${originalQueuedItem.id}_SYNCED`
+    )
+  const [isDeleted, setIsDeleted] = useState(false)
+  const classes = useStyles()
+
+  const onDelete = () => setIsDeleted(true)
+
+  const queuedItem = liveQueuedItem || originalQueuedItem
+
+  if (isSubscribing) {
+    return <LoadingRow />
+  }
+
+  if (lastSubscribeErrorCode !== null) {
+    return (
+      <TableRow>
+        <TableCell colSpan={999}>
+          <ErrorMessage>
+            Failed to subscribe: {lastSubscribeErrorCode}
+          </ErrorMessage>
+        </TableCell>
+      </TableRow>
+    )
+  }
+
+  return (
+    <TableRow className={`${isDeleted ? classes.deletedRow : ''}`}>
+      <TableCell>
+        {queuedItem.sourceurl}{' '}
+        <a
+          href={queuedItem.sourceurl}
+          target="_blank"
+          rel="noopener noreferrer">
+          <LaunchIcon />
+        </a>
+      </TableCell>
+      <TableCell>
+        <QueuedStatus queuedItem={queuedItem} />
+        {queuedItem.status === AssetSyncStatus.Success ? (
+          <>
+            <br />
+            {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
+              <MissingFields queuedItem={queuedItem} />
+            ) : null}
+            <Button
+              url={routes.viewAssetWithVar.replace(
+                ':assetId',
+                queuedItem.createdassetid
+              )}
+              size="small"
+              color="default">
+              View Asset
+            </Button>
+          </>
+        ) : null}
+      </TableCell>
+      <TableCell>
+        <DeleteButton
+          queuedItem={queuedItem}
+          isBusy={isBusy}
+          onDelete={onDelete}
+        />
+      </TableCell>
+    </TableRow>
   )
 }
 
@@ -172,19 +369,14 @@ const View = () => {
     CollectionNames.AssetSyncQueue,
     { queryName: 'add-asset-sync-queue-items' }
   )
-  const [isLoading, lastErrorCode, staticResults, hydrate] =
+  const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<AssetSyncQueueItem>(
       ViewNames.GetMyAssetSyncQueuedItems,
       [],
       {
         queryName: 'get-my-asset-sync-queued-items',
+        orderBy: ['createdat', OrderDirections.DESC],
       }
-    )
-  const [isSubscribing, lastSubscribeErrorCode, liveResults] =
-    useDataStoreItemsSync<AssetSyncQueueItem>(
-      CollectionNames.AssetSyncQueue,
-      staticResults ? staticResults.map((doc) => doc.id) : false,
-      'get-my-asset-sync-queued-items_SYNCED'
     )
 
   const acceptRules = () => setShowRules(false)
@@ -207,12 +399,17 @@ const View = () => {
 
   const addEmptySource = () => setSourceUrls((urls) => urls.concat(['']))
 
+  let validSourceUrls = newSourceUrls.filter(getCanSync)
+  validSourceUrls = validSourceUrls.filter(
+    (sourceUrl, i) => validSourceUrls.indexOf(sourceUrl) === i
+  )
+
   const processItems = async () => {
     try {
       const records: AssetSyncQueueItemFields[] = []
 
-      for (const url of newSourceUrls) {
-        const cleanedUrl = url.trim()
+      for (const url of validSourceUrls) {
+        const cleanedUrl = cleanupSourceUrl(url)
 
         if (!getCanSync(cleanedUrl)) {
           console.warn(
@@ -237,30 +434,23 @@ const View = () => {
           .map((record) => record.id)
           .join(', ')}`
       )
+
+      hydrate()
+
+      setSourceUrls([])
     } catch (err) {
       console.error(err)
       handleError(err)
     }
   }
 
-  const results =
-    liveResults && staticResults
-      ? staticResults.map(
-          (staticResult) => liveResults[staticResult.id] || staticResult
-        )
-      : staticResults
-
-  if (lastErrorCode !== null || lastSubscribeErrorCode !== null) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load queued assets: {lastErrorCode || lastSubscribeErrorCode}
-      </ErrorMessage>
+      <ErrorMessage>Failed to load queued assets: {lastErrorCode}</ErrorMessage>
     )
   }
 
-  const isBusy = isCreating || isLoading || isSubscribing
-
-  const validSourceUrls = newSourceUrls.filter(getCanSync)
+  const isBusy = isCreating || isLoading
 
   return (
     <>
@@ -274,53 +464,20 @@ const View = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {isLoading || isSubscribing ? (
+            {isLoading ? (
               <>
-                <TableRow>
-                  <TableCell>
-                    <LoadingShimmer width="100%" height="15px" />
-                  </TableCell>
-                  <TableCell>
-                    <LoadingShimmer width="100%" height="15px" />
-                  </TableCell>
-                  <TableCell>
-                    <LoadingShimmer width="100%" height="15px" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <LoadingShimmer width="100%" height="15px" />
-                  </TableCell>
-                  <TableCell>
-                    <LoadingShimmer width="100%" height="15px" />
-                  </TableCell>
-                  <TableCell>
-                    <LoadingShimmer width="100%" height="15px" />
-                  </TableCell>
-                </TableRow>
+                <LoadingRow />
+                <LoadingRow />
+                <LoadingRow />
               </>
-            ) : results ? (
-              results.map((queuedItem, i) => {
-                return (
-                  <TableRow key={queuedItem.id}>
-                    <TableCell>
-                      {queuedItem.sourceurl}{' '}
-                      <a
-                        href={queuedItem.sourceurl}
-                        target="_blank"
-                        rel="noopener noreferrer">
-                        <LaunchIcon />
-                      </a>
-                    </TableCell>
-                    <TableCell>
-                      Queued: <QueuedStatus status={queuedItem.status} />
-                    </TableCell>
-                    <TableCell>
-                      <DeleteButton queuedItem={queuedItem} isBusy={isBusy} />
-                    </TableCell>
-                  </TableRow>
-                )
-              })
+            ) : queuedItems ? (
+              queuedItems.map((queuedItem) => (
+                <QueuedItemRow
+                  key={queuedItem.id}
+                  queuedItem={queuedItem}
+                  isBusy={isBusy}
+                />
+              ))
             ) : (
               <TableRow>
                 <TableCell colSpan={999}>You have no assets queued</TableCell>
@@ -338,6 +495,10 @@ const View = () => {
                       placeholder="eg. https://rezilloryker.gumroad.com/l/Canis"
                       isDisabled={isBusy}
                     />
+                    {cleanupSourceUrl(newSourceUrl)}{' '}
+                    {getCanSync(cleanupSourceUrl(newSourceUrl)) ? (
+                      <CheckIcon />
+                    ) : null}
                   </TableCell>
                   <TableCell>
                     {getCanSync(newSourceUrl) ? (
@@ -397,7 +558,7 @@ const View = () => {
           onClick={processItems}
           size="large"
           icon={<CheckIcon />}
-          isDisabled={isBusy}>
+          isDisabled={isBusy || !validSourceUrls.length}>
           Add {validSourceUrls.length} Sources To Queue
         </Button>
       </FormControls>
@@ -405,15 +566,53 @@ const View = () => {
   )
 }
 
-export default () => (
-  <>
-    <Helmet>
-      <title>Upload a new asset to the site | VRCArena</title>
-      <meta
-        name="description"
-        content="Complete the form, submit it for approval and your asset will be visible on the site."
-      />
-    </Helmet>
-    <View />
-  </>
-)
+export default () => {
+  const isLoggedIn = useIsLoggedIn()
+
+  if (!isLoggedIn) {
+    return <NoPermissionMessage />
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>Upload a new asset to the site | VRCArena</title>
+        <meta
+          name="description"
+          content="Complete the form, submit it for approval and your asset will be visible on the site."
+        />
+      </Helmet>
+      <Message title="Asset Queue">
+        This will be the new way to create assets on the site. It is better
+        because:
+        <ul>
+          <li>
+            add multiple assets to the site at once{' '}
+            <strong>in the background</strong>
+          </li>
+          <li>
+            more fields are automatically processed:
+            <ul>
+              <li>
+                thumbnail if any image is square (or cropped from the first
+                image it finds)
+              </li>
+              <li>category (from title and description)</li>
+              <li>author (created automatically)</li>
+              <li>price</li>
+            </ul>
+          </li>
+        </ul>
+        Future plans:
+        <ul>
+          <li>other platforms like Itch, Booth and Jinxxy</li>
+        </ul>
+        <em>
+          Please DM me on Discord: @nutterbuddha with any feedback about the new
+          system
+        </em>
+      </Message>
+      <View />
+    </>
+  )
+}

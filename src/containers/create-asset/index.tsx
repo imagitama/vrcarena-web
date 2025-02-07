@@ -27,6 +27,8 @@ import { useHistory } from 'react-router'
 import useIsEditor from '../../hooks/useIsEditor'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import useIsPatron from '../../hooks/useIsPatron'
+import Message from '../../components/message'
 
 const useStyles = makeStyles((theme) => ({
   // global
@@ -236,14 +238,8 @@ const View = () => {
 }
 
 export default () => {
-  // const isEditor = useIsEditor()
-  // const { push } = useHistory()
-
-  // useEffect(() => {
-  //   if (isEditor) {
-  //     push('/create-asset-sync')
-  //   }
-  // }, [isEditor])
+  const isEditor = useIsEditor()
+  const isPatreon = useIsPatron()
 
   return (
     <>
@@ -254,6 +250,15 @@ export default () => {
           content="Complete the form, submit it for approval and your asset will be visible on the site."
         />
       </Helmet>
+      {isEditor || isPatreon ? (
+        <Message>
+          Hello Patreon supporter! Would you like to help test the new asset
+          queue system? Gumroad products only.
+          <br />
+          <br />
+          <Button url={'/create-asset-sync'}>Yes!</Button>
+        </Message>
+      ) : null}
       <View />
     </>
   )

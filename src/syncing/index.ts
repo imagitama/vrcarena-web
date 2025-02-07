@@ -1,4 +1,5 @@
 import {
+  getIsGumroadProductUrl,
   isBoothUrl,
   isDiscordUrl,
   isGumroadUrl,
@@ -16,10 +17,10 @@ export enum SyncPlatformName {
 export const getSyncPlatformNameFromUrl = (
   url: string
 ): SyncPlatformName | undefined => {
-  // TODO: rename these  funcs to "isGumroadProductUrl" more explicit
-  if (isGumroadUrl(url)) {
+  if (getIsGumroadProductUrl(url)) {
     return SyncPlatformName.Gumroad
   }
+  // TODO: rename these  funcs to "isGumroadProductUrl" more explicit
   if (isBoothUrl(url)) {
     return SyncPlatformName.Booth
   }
@@ -32,7 +33,8 @@ export const getSyncPlatformNameFromUrl = (
   return undefined
 }
 
-export const getCanSync = (url: string): boolean => getSyncPlatformNameFromUrl(url) !== undefined
+export const getCanSync = (url: string): boolean =>
+  getSyncPlatformNameFromUrl(url) !== undefined
 
 export enum SyncFieldTypes {
   Text = 'text',
@@ -113,4 +115,15 @@ export interface SyncAttachment {
   type: SyncAttachmentType
   value: string
   additionalData: any
+}
+
+export const cleanupSourceUrl = (url: string): string => {
+  try {
+    const parsedUrl = new URL(url)
+    return `${parsedUrl.origin}${
+      parsedUrl.pathname !== '/' ? parsedUrl.pathname : ''
+    }`
+  } catch (error) {
+    return ''
+  }
 }

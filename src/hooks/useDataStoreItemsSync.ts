@@ -25,106 +25,110 @@ export default <TResult extends { [key: string]: any }>(
   null | DataStoreErrorCode,
   null | { [id: string]: TResult } | false
 ] => {
-  const [results, setResults] = useState<
-    null | { [id: string]: TResult } | false
-  >(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
-    null
+  throw new Error(
+    'DOES NOT WORK - supabase no support: https://github.com/supabase/realtime-js/issues/97'
   )
-  const isUnmountedRef = useRef(false)
-  const channelRef = useRef<null | RealtimeChannel>(null)
-  const supabase = useSupabaseClient()
 
-  const doIt = async () => {
-    try {
-      if (!collectionName || !ids) {
-        console.debug(
-          `useDataStoreItemSync :: ${queryName} :: no collection name or ID - skipping`
-        )
-        return
-      }
+  // const [results, setResults] = useState<
+  //   null | { [id: string]: TResult } | false
+  // >(null)
+  // const [isLoading, setIsLoading] = useState(false)
+  // const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
+  //   null
+  // )
+  // const isUnmountedRef = useRef(false)
+  // const channelRef = useRef<null | RealtimeChannel>(null)
+  // const supabase = useSupabaseClient()
 
-      const filter = ids.map((id) => `id=eq.${id}`).join(',')
+  // const doIt = async () => {
+  //   try {
+  //     if (!collectionName || !ids) {
+  //       console.debug(
+  //         `useDataStoreItemsSync :: ${queryName} :: no collection name or ID - skipping`
+  //       )
+  //       return
+  //     }
 
-      console.debug(
-        `useDataStoreItemSync :: ${queryName} :: ${collectionName} :: running getQuery`,
-        { collectionName, filter }
-      )
+  //     const filter = `${ids.map((id) => `id=eq.${id}`).join(' or ')}`
 
-      setIsLoading(true)
-      setLastErrorCode(null)
+  //     console.debug(
+  //       `useDataStoreItemsSync :: ${queryName} :: ${collectionName} :: running getQuery`,
+  //       { collectionName, filter }
+  //     )
 
-      const onData = (payload: RealtimePostgresChangesPayload<TResult>) => {
-        console.debug(`useDataStoreItemSync :: ${queryName} :: onData`, {
-          payload,
-        })
+  //     setIsLoading(true)
+  //     setLastErrorCode(null)
 
-        const updatedRecord = payload.new
+  //     const onData = (payload: RealtimePostgresChangesPayload<TResult>) => {
+  //       console.debug(`useDataStoreItemsSync :: ${queryName} :: onData`, {
+  //         payload,
+  //       })
 
-        setResults((currentResults) => {
-          const newResults = { ...currentResults }
-          newResults[(updatedRecord as any).id] = updatedRecord as TResult
-          return newResults
-        })
-      }
+  //       const updatedRecord = payload.new
 
-      const channel = supabase
-        .channel(collectionName)
-        .on(
-          REALTIME_LISTEN_TYPES.POSTGRES_CHANGES,
-          {
-            event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.ALL,
-            schema: 'public',
-            table: collectionName,
-            filter,
-          },
-          onData
-        )
-        .subscribe((status, err) => {
-          console.debug(
-            `useDataStoreItemSync :: ${queryName} :: Status '${status}'`
-          )
-          if (err) {
-            console.error(err)
-            handleError(err)
-            setLastErrorCode(DataStoreErrorCode.ChannelError)
-          }
-        })
+  //       setResults((currentResults) => {
+  //         const newResults = { ...currentResults }
+  //         newResults[(updatedRecord as any).id] = updatedRecord as TResult
+  //         return newResults
+  //       })
+  //     }
 
-      channelRef.current = channel
+  //     const channel = supabase
+  //       .channel(collectionName)
+  //       .on(
+  //         REALTIME_LISTEN_TYPES.POSTGRES_CHANGES,
+  //         {
+  //           event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.ALL,
+  //           schema: 'public',
+  //           table: collectionName,
+  //           filter,
+  //         },
+  //         onData
+  //       )
+  //       .subscribe((status, err) => {
+  //         console.debug(
+  //           `useDataStoreItemsSync :: ${queryName} :: Status '${status}'`
+  //         )
+  //         if (err) {
+  //           console.error(err)
+  //           handleError(err)
+  //           setLastErrorCode(DataStoreErrorCode.ChannelError)
+  //         }
+  //       })
 
-      if (isUnmountedRef.current) {
-        console.debug(
-          `useDataStoreItemSync :: Query complete but component has unmounted, skipping re-render...`
-        )
-        return
-      }
+  //     channelRef.current = channel
 
-      setIsLoading(false)
-      setLastErrorCode(null)
-    } catch (err) {
-      console.error(err)
-      handleError(err)
-      setIsLoading(false)
-      setLastErrorCode(getDataStoreErrorCodeFromError(err))
-    }
-  }
+  //     if (isUnmountedRef.current) {
+  //       console.debug(
+  //         `useDataStoreItemsSync :: Query complete but component has unmounted, skipping re-render...`
+  //       )
+  //       return
+  //     }
 
-  useEffect(() => {
-    // fix setting state on unmounted component
-    isUnmountedRef.current = false
+  //     setIsLoading(false)
+  //     setLastErrorCode(null)
+  //   } catch (err) {
+  //     console.error(err)
+  //     handleError(err)
+  //     setIsLoading(false)
+  //     setLastErrorCode(getDataStoreErrorCodeFromError(err))
+  //   }
+  // }
 
-    doIt()
+  // useEffect(() => {
+  //   // fix setting state on unmounted component
+  //   isUnmountedRef.current = false
 
-    return () => {
-      isUnmountedRef.current = true
+  //   doIt()
 
-      if (channelRef.current) {
-        channelRef.current.unsubscribe()
-      }
-    }
-  }, [collectionName, ids ? ids.join('+') : false])
+  //   return () => {
+  //     isUnmountedRef.current = true
 
-  return [isLoading, lastErrorCode, results]
+  //     if (channelRef.current) {
+  //       channelRef.current.unsubscribe()
+  //     }
+  //   }
+  // }, [collectionName, ids ? ids.join('+') : false])
+
+  // return [isLoading, lastErrorCode, results]
 }

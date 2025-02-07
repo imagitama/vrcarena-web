@@ -522,7 +522,7 @@ function getLimitAsString(limit: number | undefined): string {
   return limit.toString()
 }
 
-export function getOrderByAsString(orderBy?: OrderBy): string {
+export function getOrderByAsString(orderBy?: OrderBy<any>): string {
   if (!orderBy) {
     return ''
   }
@@ -543,8 +543,8 @@ export const options = {
 }
 
 const getOptionsIfProvided = (
-  maybeOptions: OptionsMap | number | undefined
-): OptionsMap | false => {
+  maybeOptions: OptionsMap<any> | number | undefined
+): OptionsMap<any> | false => {
   if (typeof maybeOptions === 'object') {
     return maybeOptions
   } else {
@@ -558,13 +558,13 @@ export type WhereClause<TRecord> = [
   string | boolean | null
 ]
 
-type OrderBy = [string, OrderDirections]
+type OrderBy<TRecord> = [keyof TRecord, OrderDirections]
 
-interface OptionsMap {
+interface OptionsMap<TRecord> {
   queryName?: string
   limit?: number
   startAfter?: DatabaseResult
-  orderBy?: OrderBy
+  orderBy?: OrderBy<TRecord>
   offset?: number
   supabase?: {
     foreignTable?: string
@@ -580,8 +580,8 @@ type PossibleWhereClauses<TRecord> =
 export default <TRecord>(
   collectionName: string,
   whereClauses: PossibleWhereClauses<TRecord>,
-  limitOrOptions?: number | OptionsMap,
-  orderBy?: OrderBy,
+  limitOrOptions?: number | OptionsMap<TRecord>,
+  orderBy?: OrderBy<TRecord>,
   subscribe = true,
   startAfter = undefined
 ): [boolean, null | DataStoreErrorCode, TRecord[] | null, () => void] => {
@@ -596,7 +596,7 @@ export default <TRecord>(
   )
   const isUnmountedRef = useRef(false)
 
-  const options: OptionsMap = getOptionsIfProvided(limitOrOptions) || {
+  const options: OptionsMap<TRecord> = getOptionsIfProvided(limitOrOptions) || {
     limit: typeof limitOrOptions === 'number' ? limitOrOptions : undefined,
     orderBy,
     subscribe,
@@ -699,7 +699,7 @@ export default <TRecord>(
       }
 
       if (options.orderBy) {
-        queryChain = queryChain.order(options.orderBy[0], {
+        queryChain = queryChain.order(options.orderBy[0] as string, {
           ascending: options.orderBy[1] === OrderDirections.ASC,
         })
       }
