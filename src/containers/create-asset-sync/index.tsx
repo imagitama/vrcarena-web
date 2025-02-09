@@ -51,6 +51,7 @@ import { getFriendlyDate } from '../../utils/dates'
 import useDataStoreItemSync from '../../hooks/useDataStoreItemSync'
 import CopyThing from '../../components/copy-thing'
 import Message from '../../components/message'
+import ExperimentalMessage from '../../components/experimental-message'
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -589,36 +590,15 @@ export default () => {
           content="Complete the form, submit it for approval and your asset will be visible on the site."
         />
       </Helmet>
-      <Message title="Asset Queue">
-        This will be the new way to create assets on the site. It is better
-        because:
-        <ul>
-          <li>
-            add multiple assets to the site at once{' '}
-            <strong>in the background</strong>
-          </li>
-          <li>
-            more fields are automatically processed:
-            <ul>
-              <li>
-                thumbnail if any image is square (or cropped from the first
-                image it finds)
-              </li>
-              <li>category (from title and description)</li>
-              <li>author (created automatically)</li>
-              <li>price</li>
-            </ul>
-          </li>
-        </ul>
-        Future plans:
-        <ul>
-          <li>other platforms like Itch, Booth and Jinxxy</li>
-        </ul>
-        <em>
-          Please DM me on Discord: @nutterbuddha with any feedback about the new
-          system
-        </em>
-      </Message>
+      <ExperimentalMessage title="Asset Queue">
+        This is the new way of syncing assets with Gumroad, Itch.io, Jinxxy and
+        Booth. It now happens <em>in the background</em>, you can add multiple
+        at a time and syncs more fields.
+        <br />
+        <br />
+        Please DM me on Discord: @nutterbuddha with any feedback about the new
+        system.
+      </ExperimentalMessage>
       <View />
     </>
   )
