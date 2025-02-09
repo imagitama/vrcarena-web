@@ -66,15 +66,15 @@ interface HttpsCallableResult<TData> {
   readonly data: TData
 }
 
-export const callFunction = async <TResult>(
+export const callFunction = async <TPayload, TResult>(
   name: string,
-  data?: any,
-  inDevResult?: any
+  data?: TPayload,
+  inDevResult?: TResult
 ): Promise<HttpsCallableResult<TResult>> => {
   console.debug(`calling function "${name}"`, data)
 
   if (inDevelopment() && inDevResult) {
-    return Promise.resolve(inDevResult)
+    return Promise.resolve({ data: inDevResult })
   }
 
   const result = await firebase.app().functions().httpsCallable(name)(data)

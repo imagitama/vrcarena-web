@@ -14,7 +14,6 @@ import {
 } from '../../syncing'
 import GumroadSyncInfo from '../../syncing/gumroad'
 import BoothSyncInfo from '../../syncing/booth'
-import DiscordSyncInfo from '../../syncing/discord'
 import ItchSyncInfo from '../../syncing/itch'
 
 import useFirebaseFunction from '../../hooks/useFirebaseFunction'
@@ -32,6 +31,7 @@ import { addQuotesToDescription } from '../../utils/formatting'
 import { SyncContext } from './hooks/useSync'
 import FormField from './components/form-field'
 import WarningMessage from '../warning-message'
+import { capitalize } from '../../utils'
 
 export const getSyncPlatformInfoFromName = (
   name: SyncPlatformName
@@ -41,8 +41,6 @@ export const getSyncPlatformInfoFromName = (
       return GumroadSyncInfo
     case SyncPlatformName.Booth:
       return BoothSyncInfo
-    case SyncPlatformName.Discord:
-      return DiscordSyncInfo
     case SyncPlatformName.Itch:
       return ItchSyncInfo
     default:
@@ -201,7 +199,7 @@ const SyncForm = <TRecord extends object>({
 
     const payload = {
       urlToSync,
-      platformName: SyncPlatformName[platformName],
+      platformName,
     }
 
     console.debug(`SyncForm.sync`, { payload })
@@ -322,7 +320,7 @@ const SyncForm = <TRecord extends object>({
   if (isLoading) {
     return (
       <LoadingIndicator
-        message={`Syncing with ${SyncPlatformName[platformName]}...`}
+        message={`Syncing with ${capitalize(platformName)}...`}
       />
     )
   }
@@ -352,7 +350,7 @@ const SyncForm = <TRecord extends object>({
     return (
       <>
         <Button icon={<SyncIcon />} onClick={() => sync()}>
-          Sync With {SyncPlatformName[platformName]}
+          Sync With {capitalize(platformName)}
         </Button>
       </>
     )

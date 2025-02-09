@@ -232,6 +232,10 @@ interface ImportantField {
 
 const importantFields: ImportantField[] = [
   {
+    name: 'category',
+    description: 'Category',
+  },
+  {
     name: 'isadult',
     description: 'If it is NSFW/adult',
   },
@@ -271,6 +275,11 @@ const MissingFields = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
           .map((fieldInfo) => (
             <li key={fieldInfo.name}>{fieldInfo.description}</li>
           ))}
+        {queuedItem.syncedfields?.includes('vrchatclonableavatarids') ? (
+          <li>
+            VRChat avatar URLs were detected but need to be manually synced
+          </li>
+        ) : null}
       </ul>
     </div>
   )
@@ -495,15 +504,13 @@ const View = () => {
                       placeholder="eg. https://rezilloryker.gumroad.com/l/Canis"
                       isDisabled={isBusy}
                     />
-                    {cleanupSourceUrl(newSourceUrl)}{' '}
-                    {getCanSync(cleanupSourceUrl(newSourceUrl)) ? (
-                      <CheckIcon />
-                    ) : null}
                   </TableCell>
                   <TableCell>
                     {getCanSync(newSourceUrl) ? (
                       <>
                         <CheckIcon /> Can Be Synced
+                        <br />
+                        {cleanupSourceUrl(newSourceUrl)}
                       </>
                     ) : newSourceUrl ? (
                       <>

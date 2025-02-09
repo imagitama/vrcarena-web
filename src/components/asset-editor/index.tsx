@@ -26,16 +26,11 @@ import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord
 import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon.svg'
 import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
 
-import {
-  AssetFieldNames,
-  CollectionNames,
-  PatreonStatuses,
-} from '../../hooks/useDatabaseQuery'
+import { CollectionNames, PatreonStatuses } from '../../hooks/useDatabaseQuery'
 
 import * as routes from '../../routes'
 import { getCategoryMeta } from '../../category-meta'
 import { adultSearchTerms, nsfwRules, WEBSITE_FULL_URL } from '../../config'
-import { isGumroadUrl } from '../../utils'
 import { getDoesAssetNeedPublishing } from '../../utils/assets'
 import useUserRecord from '../../hooks/useUserRecord'
 
@@ -120,6 +115,7 @@ import AddToVccButton from '../add-to-vcc-button'
 import { tagVrcFuryReady } from '../../vrcfury'
 import VrcFuryToggle from '../vrcfury-ready-toggle'
 import Link from '../link'
+import { getIsGumroadProductUrl } from '../../gumroad'
 
 interface EditorInfo {
   assetId: string | null
@@ -917,7 +913,9 @@ const Editor = () => {
                   icon={() => <SyncIcon />}
                   display={GumroadSettingsDisplay}
                   doWeRender={
-                    asset && asset.sourceurl && isGumroadUrl(asset.sourceurl)
+                    asset &&
+                    asset.sourceurl &&
+                    getIsGumroadProductUrl(asset.sourceurl)
                       ? true
                       : false
                   }

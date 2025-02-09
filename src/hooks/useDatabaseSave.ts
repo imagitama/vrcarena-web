@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { handleError } from '../error-handling'
 import {
+  DataStoreError,
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
@@ -104,9 +105,9 @@ export default <TRecord, TReturnVal = TRecord>(
 
           if ((Array.isArray(error) && error.length > 0) || error) {
             if (Array.isArray(error)) {
-              throw error[0]
+              throw new DataStoreError('Failed to update record', error[0])
             } else {
-              throw error
+              throw new DataStoreError('Failed to update record', error)
             }
           }
         }
@@ -124,7 +125,7 @@ export default <TRecord, TReturnVal = TRecord>(
 
         if ((Array.isArray(error) && error.length > 0) || error) {
           console.error(error)
-          throw new Error(`Failed to insert doc`)
+          throw new DataStoreError(`Failed to insert doc`, error)
         }
 
         if (!data || !data.length || data.length === 0) {

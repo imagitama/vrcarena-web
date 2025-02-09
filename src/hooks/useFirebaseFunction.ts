@@ -20,7 +20,7 @@ export default <TPayload, TResult>(
       setIsLoading(true)
       setIsErrored(false)
 
-      const data = await callFunction<TResult>(functionName, payload)
+      const data = await callFunction<TPayload, TResult>(functionName, payload)
 
       setResult(data.data as unknown as TResult)
       setIsLoading(false)

@@ -29,24 +29,29 @@ import CheckboxInput from '../../components/checkbox-input'
 import AssetEditorMini from '../../components/asset-editor-mini'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 
-interface FetchWorldDataAndThumbnailResult {
+interface GetVrchatWorldDetailsPayload {
+  worldId: string
+  convertThumbnail: boolean
+}
+
+interface GetVrchatWorldDetailsResult {
   world: VrchatWorld
   thumbnailUrl: string
 }
 
 const fetchWorldDataAndThumbnailById = async (
   id: string
-): Promise<FetchWorldDataAndThumbnailResult> => {
+): Promise<GetVrchatWorldDetailsResult> => {
   // NOTE: This function also dumps it into a cache for later retrieval
   const {
     data: { world, thumbnailUrl },
-  } = await callFunction<FetchWorldDataAndThumbnailResult>(
-    'getVrchatWorldDetails',
-    {
-      worldId: id,
-      convertThumbnail: true, // note: 300x300
-    }
-  )
+  } = await callFunction<
+    GetVrchatWorldDetailsPayload,
+    GetVrchatWorldDetailsResult
+  >('getVrchatWorldDetails', {
+    worldId: id,
+    convertThumbnail: true, // note: 300x300
+  })
 
   return {
     world,

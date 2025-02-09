@@ -29,6 +29,8 @@ import {
 import { trackAction } from '../../analytics'
 
 import Paper from '../paper'
+import { getAuthorUrlForItchUsername } from '../../itch'
+import { getAuthorUrlForJinxxyUsername } from '../../jinxxy'
 
 export const socialMediaType = {
   twitter: 'twitter',
@@ -97,9 +99,11 @@ function SocialMediaListItem({
 
   const contents = (
     <>
-      <div className={classes.iconWrapper}>
-        <Icon className={`${classes.icon} ${iconClass || ''}`} />
-      </div>
+      {Icon && (
+        <div className={classes.iconWrapper}>
+          <Icon className={`${classes.icon} ${iconClass || ''}`} />
+        </div>
+      )}
       {label}
     </>
   )
@@ -121,7 +125,7 @@ function SocialMediaListItem({
   return <Paper className={classes.item}>{wrapper}</Paper>
 }
 
-export default ({
+const SocialMediaList = ({
   actionCategory,
   socialMedia: {
     websiteUrl,
@@ -139,6 +143,8 @@ export default ({
     patreonUsername,
     discordServerInviteUrl,
     boothUsername,
+    itchUsername,
+    jinxxyUsername,
   },
 }: {
   actionCategory: string
@@ -158,6 +164,8 @@ export default ({
     patreonUsername?: string
     discordServerInviteUrl?: string
     boothUsername?: string
+    itchUsername?: string
+    jinxxyUsername?: string
   }
 }) => {
   const classes = useStyles()
@@ -262,6 +270,22 @@ export default ({
       url: getUrlForBoothByUsername(boothUsername),
       type: 'booth',
     },
+    {
+      id: 'itchUsername',
+      icon: null, // TODO
+      // icon: BoothIcon,
+      label: itchUsername,
+      url: getAuthorUrlForItchUsername(itchUsername!),
+      type: 'itch',
+    },
+    {
+      id: 'jinxxyUsername',
+      icon: null, // TODO
+      // icon: BoothIcon,
+      label: jinxxyUsername,
+      url: getAuthorUrlForJinxxyUsername(jinxxyUsername!),
+      type: 'jinxxy',
+    },
   ]
   return (
     <div className={classes.items}>
@@ -275,3 +299,5 @@ export default ({
     </div>
   )
 }
+
+export default SocialMediaList

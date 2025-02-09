@@ -7,7 +7,10 @@ export const optimizeImageByUrl = async (
 ): Promise<string> => {
   const {
     data: { optimizedUrl },
-  } = await callFunction<{ optimizedUrl: string }>('downloadAndOptimizeImage', {
+  } = await callFunction<
+    { imageUrl: string; bucketName: string; bucketPath?: string },
+    { optimizedUrl: string }
+  >('downloadAndOptimizeImage', {
     imageUrl,
     bucketName,
     bucketPath: bucketPath || '', // errors if this is not a string

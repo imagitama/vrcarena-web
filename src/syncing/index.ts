@@ -1,34 +1,31 @@
-import {
-  getIsGumroadProductUrl,
-  isBoothUrl,
-  isDiscordUrl,
-  isGumroadUrl,
-  isItchProductUrl,
-} from '../utils'
+import { getIsBoothProductUrl } from '../booth'
+import { getIsGumroadProductUrl } from '../gumroad'
+import { getIsItchProductUrl } from '../itch'
+import { getIsJinxxyProductUrl } from '../jinxxy'
 
+// shared with backend
 export enum SyncPlatformName {
-  Gumroad,
-  Booth,
-  Discord,
-  Itch,
-  // etc.
+  Gumroad = 'gumroad',
+  Booth = 'booth',
+  Itch = 'itch',
+  Jinxxy = 'jinxxy',
 }
 
+// shared with backend
 export const getSyncPlatformNameFromUrl = (
   url: string
 ): SyncPlatformName | undefined => {
   if (getIsGumroadProductUrl(url)) {
     return SyncPlatformName.Gumroad
   }
-  // TODO: rename these  funcs to "isGumroadProductUrl" more explicit
-  if (isBoothUrl(url)) {
+  if (getIsBoothProductUrl(url)) {
     return SyncPlatformName.Booth
   }
-  if (isDiscordUrl(url)) {
-    return SyncPlatformName.Discord
-  }
-  if (isItchProductUrl(url)) {
+  if (getIsItchProductUrl(url)) {
     return SyncPlatformName.Itch
+  }
+  if (getIsJinxxyProductUrl(url)) {
+    return SyncPlatformName.Jinxxy
   }
   return undefined
 }

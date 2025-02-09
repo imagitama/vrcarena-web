@@ -13,7 +13,7 @@ import SuccessMessage from '../success-message'
 import AuthorResultsItem from '../author-results-item'
 import Button from '../button'
 import FormControls from '../form-controls'
-import { Author, CollectionNames } from '../../modules/authors'
+import { Author, AuthorFields, CollectionNames } from '../../modules/authors'
 import InfoMessage from '../info-message'
 import Paper from '../paper'
 import Heading from '../heading'
@@ -187,13 +187,15 @@ const CreateForm = ({
   onClick: (authorId: string, authorData: Author) => void
   actionCategory?: string
 }) => {
-  const [newFields, setNewFields] = useState<Partial<Author>>({
+  const [newFields, setNewFields] = useState<AuthorFields>({
     name: '',
     description: '',
     websiteurl: '',
     email: '',
     twitterusername: '',
     gumroadusername: '',
+    itchusername: '',
+    jinxxyusername: '',
     discordusername: '',
     discordserverinviteurl: '',
     patreonusername: '',

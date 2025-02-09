@@ -53,7 +53,7 @@ const SyncForm = ({ onDone }: { onDone: () => void }) => {
 
       const {
         data: { error, successfulAvatarIds },
-      } = await callFunction<SyncMissingAvatarSubmissionsResult>(
+      } = await callFunction<{}, SyncMissingAvatarSubmissionsResult>(
         'syncMissingAvatarSubmissions'
       )
 

@@ -10,19 +10,20 @@ import * as config from '../../config'
 import { SourceInfo } from '../../modules/assets'
 import Button from '../button'
 import {
-  isBoothUrl,
   isGitHubUrl,
-  isGumroadUrl,
   isTwitterUrl,
   isVrchatAvatarUrl,
   isVrchatWorldUrl,
   isDiscordUrl,
   isGoogleDriveUrl,
   isPatreonUrl,
-  isItchProductUrl,
 } from '../../utils'
 import { formatPrice } from '../../currency'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
+import { getIsItchProductUrl } from '../../itch'
+import { getIsBoothProductUrl } from '../../booth'
+import { getIsGumroadProductUrl } from '../../gumroad'
+import { getIsJinxxyProductUrl } from '../../jinxxy'
 
 const useStyles = makeStyles({
   button: {
@@ -50,7 +51,7 @@ function getButtonLabel(
 
   const prefix = isExtraSource ? 'Also On' : 'Get From'
 
-  if (isGumroadUrl(sourceUrl)) {
+  if (getIsGumroadProductUrl(sourceUrl)) {
     return `${prefix} Gumroad`
   }
 
@@ -74,12 +75,16 @@ function getButtonLabel(
     return `${prefix} Discord`
   }
 
-  if (isBoothUrl(sourceUrl)) {
+  if (getIsBoothProductUrl(sourceUrl)) {
     return `${prefix} Booth`
   }
 
-  if (isItchProductUrl(sourceUrl)) {
+  if (getIsItchProductUrl(sourceUrl)) {
     return `${prefix} itch.io`
+  }
+
+  if (getIsJinxxyProductUrl(sourceUrl)) {
+    return `${prefix} Jinxxy`
   }
 
   if (isGoogleDriveUrl(sourceUrl)) {
@@ -94,7 +99,7 @@ function getButtonLabel(
 }
 
 const addReferrerToGumroadUrl = (url: string) => {
-  if (url && isGumroadUrl(url)) {
+  if (url && getIsGumroadProductUrl(url)) {
     // TODO: Probably re-build URL from scratch
     return `${url}${url.includes('?') ? '' : '?'}&referrer=${encodeURIComponent(
       config.WEBSITE_FULL_URL

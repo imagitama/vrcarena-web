@@ -1,18 +1,19 @@
 import { AccessStatus, ApprovalStatus, PublishStatus } from './common'
 
-export interface Author extends Record<string, unknown> {
-  id: string
+export interface AuthorFields extends Record<string, unknown> {
   name: string
   description: string
   websiteurl: string
   email: string
   twitterusername: string
   gumroadusername: string
+  itchusername: string
+  jinxxyusername: string
   discordusername: string
   discordserverinviteurl: string
   patreonusername: string
   categories: string[]
-  ownedby: string
+  // ownedby: string
   discordserverid: string
   isopenforcommission: boolean
   commissioninfo: string
@@ -22,8 +23,12 @@ export interface Author extends Record<string, unknown> {
   boothusername: string
   salereason: string
   saledescription: string
-  saleexpiresat: Date
+  saleexpiresat: Date | undefined
   promourl: string
+}
+
+export interface Author extends AuthorFields {
+  id: string
   lastmodifiedat: Date
   lastmodifiedby: string
   createdat: Date

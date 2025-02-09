@@ -197,7 +197,10 @@ export default ({
 
       const {
         data: { error },
-      } = await callFunction<{ error?: string }>('publishAsset', { assetId })
+      } = await callFunction<{ assetId: string }, { error?: string }>(
+        'publishAsset',
+        { assetId }
+      )
 
       if (error) {
         console.error(`Failed to publish asset: ${error}`)

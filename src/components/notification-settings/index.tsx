@@ -162,7 +162,13 @@ const useAnonymousSave = (
 
       const {
         data: { error },
-      } = await callFunction<{ error?: string }>('saveNotificationPrefs', {
+      } = await callFunction<
+        {
+          anonymousDetails: AnonymousDetails
+          newPrefs: NotificationPreferences
+        },
+        { error?: string }
+      >('saveNotificationPrefs', {
         anonymousDetails,
         newPrefs: unsubscribeFromEverything ? newPrefsButDisabled : newPrefs,
       })

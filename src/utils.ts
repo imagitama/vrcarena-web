@@ -253,28 +253,6 @@ export function fixAccessingImagesUsingToken(url: string): string {
   return url.split('?')[0]
 }
 
-export function isGumroadUrl(url: string): boolean {
-  return url.includes('gumroad.com')
-}
-
-export const getIsGumroadProductUrl = (url: string): boolean => {
-  try {
-    const parsedUrl = new URL(url)
-
-    if (!/\.gumroad\.com$/.test(parsedUrl.hostname)) {
-      return false
-    }
-
-    return /^\/l\/[^/]+$/.test(parsedUrl.pathname)
-  } catch {
-    return false
-  }
-}
-
-export function isBoothUrl(url: string): boolean {
-  return url.includes('booth.pm')
-}
-
 export function isAbsoluteUrl(url: string): boolean {
   return url.includes('http')
 }
@@ -364,21 +342,6 @@ export function isGoogleDriveUrl(url: string): boolean {
 
 export function isDiscordUrl(url: string): boolean {
   return url.includes('discordapp.com') || url.includes('discord.com')
-}
-
-export const isItchProductUrl = (url: string): boolean => {
-  try {
-    const urlObject = new URL(url)
-
-    if (urlObject.hostname.endsWith('itch.io')) {
-      const parts = urlObject.hostname.split('.')
-      return parts.length === 3 && urlObject.pathname.trim() !== '/'
-    }
-
-    return false
-  } catch (error) {
-    return false
-  }
 }
 
 export const getImageUrlFromYouTubeUrl = (url: string): string =>

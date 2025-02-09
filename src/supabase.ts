@@ -43,7 +43,7 @@ const refreshJwt = async () => {
 
   const {
     data: { token, expiryTimestamp, errorCode },
-  } = await callFunction<GetSupabaseJwtResult>('getSupabaseJwt')
+  } = await callFunction<void, GetSupabaseJwtResult>('getSupabaseJwt')
 
   if (errorCode) {
     console.error(`Error code from JWT function: ${errorCode}`)

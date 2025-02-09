@@ -117,7 +117,7 @@ export default ({
       // NOTE: This function also dumps it into a cache for later retrieval
       const {
         data: { avatar },
-      } = await callFunction<{ avatar: VrchatAvatar }>(
+      } = await callFunction<{ avatarId: string }, { avatar: VrchatAvatar }>(
         'getVrchatAvatarDetails',
         {
           avatarId,

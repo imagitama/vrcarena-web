@@ -167,6 +167,8 @@ const View = () => {
     discordusername: discordUsername,
     twitterusername: twitterUsername,
     patreonusername: patreonUsername,
+    itchusername: itchUsername,
+    jinxxyusername: jinxxyUsername,
     discordserverinviteurl: discordServerInviteUrl,
     lastmodifiedby: lastModifiedBy,
     boothusername: boothUsername,
@@ -252,11 +254,13 @@ const View = () => {
               email,
               websiteUrl,
               gumroadUsername,
-              discordUsername: discordUsername,
-              twitterUsername: twitterUsername,
-              patreonUsername: patreonUsername,
-              discordServerInviteUrl: discordServerInviteUrl,
-              boothUsername: boothUsername,
+              discordUsername,
+              twitterUsername,
+              patreonUsername,
+              discordServerInviteUrl,
+              boothUsername,
+              itchUsername,
+              jinxxyUsername,
             }}
             actionCategory={analyticsCategory}
           />

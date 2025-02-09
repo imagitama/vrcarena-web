@@ -119,6 +119,22 @@ const fields: EditableField<Author>[] = [
     section: SectionNames.Social,
   },
   {
+    name: 'itchusername',
+    label: 'Itch.io Username',
+    type: fieldTypes.text,
+    default: '',
+    hint: 'eg. Tosca is "xtosca" which is from an Itch.io URL like https://xtosca.itcho.io/someproduct',
+    section: SectionNames.Social,
+  },
+  {
+    name: 'jinxxyusername',
+    label: 'Jinxxy Username',
+    type: fieldTypes.text,
+    default: '',
+    hint: 'eg. Tosca is "xtosca" which is from a Jinxxy URL like https://jinxxy.com/xtosca/someproduct',
+    section: SectionNames.Social,
+  },
+  {
     name: 'discordusername',
     label: 'Discord Username',
     type: fieldTypes.text,
