@@ -37,6 +37,7 @@ import ChangeEmailForm from '../../components/change-email-form'
 import DeleteAccountForm from '../../components/delete-account-form'
 import ChangePasswordForm from '../../components/change-password-form'
 import MyClaims from '../../components/my-claims'
+import Discord from './components/discord'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -280,6 +281,16 @@ const View = () => {
               <>
                 <Heading variant="h2">My Claims</Heading>
                 <MyClaims />
+              </>
+            ),
+          },
+          {
+            name: 'discord',
+            label: 'Discord',
+            contents: (
+              <>
+                <Heading variant="h2">Discord</Heading>
+                <Discord />
               </>
             ),
           },
