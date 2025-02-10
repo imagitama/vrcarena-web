@@ -518,3 +518,13 @@ export const getDataStoreErrorCodeFromError = (
 }
 
 export type GetQuery<TRecord> = PostgrestFilterBuilder<any, any, TRecord[]>
+
+export const escapeValue = (value: string): string => {
+  const reservedChars = [',', '.', ':', '(', ')']
+
+  if (reservedChars.some((char) => value.includes(char))) {
+    return `%22${value}%22`
+  }
+
+  return value
+}

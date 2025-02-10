@@ -26,7 +26,7 @@ import {
   PublicAsset,
   ViewNames,
 } from '../../modules/assets'
-import { GetQuery } from '../../data-store'
+import { GetQuery, escapeValue } from '../../data-store'
 import { CollectionNames as AuthorCollectionNames } from '../../modules/authors'
 import { CollectionNames as UserCollectionNames } from '../../modules/users'
 import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
@@ -333,7 +333,7 @@ const getIdIfNotId = async (
   const { data: results } = await client
     .from(collectionName)
     .select('*')
-    .is(columnName, idOrName)
+    .eq(columnName, escapeValue(idOrName))
 
   console.debug(`Query.getID.result`, { results })
 
@@ -377,8 +377,8 @@ export const extendQueryFromUserInput = (
             (value) =>
               `${operation.fieldName}${
                 getIsFieldNameArray(operation.fieldName)
-                  ? `.cs.{${value}}`
-                  : `.eq.${value}`
+                  ? `.cs.{${escapeValue(value)}}`
+                  : `.eq.${escapeValue(value)}`
               }`
           )
           .join(',')
@@ -386,19 +386,39 @@ export const extendQueryFromUserInput = (
         query = query.or(filters)
         break
       case Operator.MINUS:
-        methods.push(['not', 'tags', 'cs', `{${operation.value}}`])
-        query = query.not('tags', 'cs', `{${operation.value}}`)
+        methods.push([
+          'not',
+          'tags',
+          'cs',
+          `{${escapeValue(operation.value as string)}}`,
+        ])
+        query = query.not(
+          'tags',
+          'cs',
+          `{${escapeValue(operation.value as string)}}`
+        )
         break
       case Operator.WILDCARD:
         if (Array.isArray(operation.value)) {
           throw new Error('Should not be an array')
         }
-        methods.push(['ilike', operation.fieldName, operation.value])
-        query = query.ilike(operation.fieldName, operation.value)
+        methods.push([
+          'ilike',
+          operation.fieldName,
+          escapeValue(operation.value),
+        ])
+        query = query.ilike(operation.fieldName, escapeValue(operation.value))
         break
       case Operator.FILTER:
-        methods.push(['eq', operation.fieldName, operation.value])
-        query = query.eq(operation.fieldName, operation.value)
+        methods.push([
+          'eq',
+          operation.fieldName,
+          escapeValue(operation.value as string),
+        ])
+        query = query.eq(
+          operation.fieldName,
+          escapeValue(operation.value as string)
+        )
         break
       case Operator.SORT:
         const opts = {
