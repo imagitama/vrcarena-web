@@ -13,23 +13,34 @@ interface GenerateCodeResult {
   code?: string
 }
 
+// shared with backend
+enum LinkWithVrchatAccountErrorCode {
+  NeedLinkCode = 'NeedLinkCode',
+  NeedVrchatUsername = 'NeedVrchatUsername',
+  VrchatUserDoesNotExist = 'VrchatUserDoesNotExist',
+  VrchatStatusDoesNotHaveCode = 'VrchatStatusDoesNotHaveCode',
+  Unknown = 'Unknown',
+}
+
 interface LinkPayload {}
 
 interface LinkResult {
   success: boolean
   vrchatUserId?: string
-  errorCode?: number
+  errorCode?: LinkWithVrchatAccountErrorCode
 }
 
-const getMessageForErrorCode = (code: number): string => {
+const getMessageForErrorCode = (
+  code: LinkWithVrchatAccountErrorCode
+): string => {
   switch (code) {
-    case 0:
+    case LinkWithVrchatAccountErrorCode.NeedLinkCode:
       return 'you have not generated a code yet'
-    case 1:
+    case LinkWithVrchatAccountErrorCode.NeedVrchatUsername:
       return 'you do not have a VRChat username set on your user profile'
-    case 2:
+    case LinkWithVrchatAccountErrorCode.VrchatUserDoesNotExist:
       return 'the VRChat username you have set does not appear to exist'
-    case 3:
+    case LinkWithVrchatAccountErrorCode.VrchatStatusDoesNotHaveCode:
       return 'the VRChat account was found but the status does not include the code'
     default:
       throw new Error(`Unknown code ${code}`)
@@ -138,6 +149,7 @@ const LinkAccountWithVrchatForm = () => {
     <>
       <p>To link your VRChat account with your VRCArena account you must:</p>
       <ol>
+        <li>Add your VRChat username to your account (go to Social tab)</li>
         <li>Generate a unique 4 digit code</li>
         <li>
           Add the code somewhere in your VRChat in-game status (not your bio)
