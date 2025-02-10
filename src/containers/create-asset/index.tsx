@@ -482,20 +482,12 @@ const QueuedItemRow = ({
 }
 
 const View = () => {
-  const [, , user] = useUserRecord()
   const [showRules, setShowRules] = useState(true)
   const [newSourceUrls, setSourceUrls] = useState([''])
-  const [
-    isCreating,
-    isCreateSuccess,
-    lastCreateErrorCode,
-    create,
-    clear,
-    createdDocs,
-  ] = useDataStoreCreateBulk<AssetSyncQueueItem>(
-    CollectionNames.AssetSyncQueue,
-    { queryName: 'add-asset-sync-queue-items' }
-  )
+  const [isCreating, isCreateSuccess, lastCreateErrorCode, create] =
+    useDataStoreCreateBulk<AssetSyncQueueItem>(CollectionNames.AssetSyncQueue, {
+      queryName: 'add-asset-sync-queue-items',
+    })
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<AssetSyncQueueItem>(
       ViewNames.GetMyAssetSyncQueuedItems,
@@ -507,10 +499,6 @@ const View = () => {
     )
 
   const acceptRules = () => setShowRules(false)
-
-  if (!user) {
-    return <NoPermissionMessage />
-  }
 
   if (showRules) {
     return <RulesForm onAccept={acceptRules} />
@@ -686,6 +674,11 @@ const View = () => {
           isDisabled={isBusy || !validSourceUrls.length}>
           Add {validSourceUrls.length} Sources To Queue
         </Button>
+        {lastCreateErrorCode !== null ? (
+          <ErrorMessage>
+            Failed to add to queue: {lastCreateErrorCode}
+          </ErrorMessage>
+        ) : null}
       </FormControls>
     </>
   )
