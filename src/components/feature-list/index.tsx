@@ -131,10 +131,12 @@ const LoadingFeature = () => {
   )
 }
 
-const useTags = (existingTagsData?: Tag[]) =>
+const useMatchingTags = (existingTagsData?: Tag[]) =>
   useDataStoreItems<Tag>(
-    existingTagsData && existingTagsData.length ? '' : CollectionNames.Tags,
-    undefined,
+    CollectionNames.Tags,
+    existingTagsData && existingTagsData.length
+      ? existingTagsData.map((tagsData) => tagsData.id)
+      : false,
     { queryName: 'tags-for-features', orderBy: 'id' }
   )
 
@@ -148,7 +150,11 @@ const FeatureList = ({
   shimmer?: boolean
 }) => {
   const classes = useStyles()
-  const [isLoadingFeatures, , tagsData] = useTags(existingTagsData)
+  const [isLoadingFeatures, , tagsData] = useMatchingTags(existingTagsData)
+
+  if (!existingTagsData || !existingTagsData.length) {
+    return null
+  }
 
   if (shimmer || isLoadingFeatures) {
     return (

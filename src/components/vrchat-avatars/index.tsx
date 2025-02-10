@@ -8,7 +8,7 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import VrchatAvatar from '../vrchat-avatar'
 import PublicAvatarForm from '../public-avatar-form'
-import { CachedVrchatAvatarRecord } from '../../modules/public-avatars'
+import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
 import FindMoreAssetsButton from '../find-more-assets-button'
 import { SupabaseClient } from '@supabase/supabase-js'
 
@@ -36,7 +36,7 @@ export default ({
     [avatarIds.join(',')]
   )
   const [isLoading, lastErrorCode, results] =
-    useDataStore<CachedVrchatAvatarRecord>(getQuery, 'vrchat-avatars')
+    useDataStore<VrchatAvatarCachedItem>(getQuery, 'vrchat-avatars')
   const classes = useStyles()
   const [isAddFormVisible, setIsAddFormVisible] = useState(false)
 
@@ -56,7 +56,7 @@ export default ({
     <div>
       <div className={classes.avatars}>
         {avatarIds.map((avatarId) => {
-          const vrchatAvatarRecord = results.find(
+          const cachedAvatarItem = results.find(
             (result) => result.id === avatarId
           )
 
@@ -65,7 +65,10 @@ export default ({
               key={avatarId}
               avatarId={avatarId}
               avatarData={
-                vrchatAvatarRecord ? vrchatAvatarRecord.avatar : undefined
+                cachedAvatarItem ? cachedAvatarItem.avatar : undefined
+              }
+              thumbnailUrl={
+                cachedAvatarItem ? cachedAvatarItem.thumbnailurl : undefined
               }
             />
           )

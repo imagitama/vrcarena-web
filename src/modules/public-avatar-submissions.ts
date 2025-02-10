@@ -1,9 +1,5 @@
-import { VrchatAvatar as VrchatAvatarData } from '../components/vrchat-avatar'
-
-export interface CachedVrchatAvatarRecord {
-  id: string
-  avatar: VrchatAvatarData
-}
+import { VrchatAvatar } from '../vrchat'
+import { VrchatAvatarCachedItem } from './vrchat-cache'
 
 export interface PublicAvatarSubmissions {
   id: string
@@ -19,8 +15,8 @@ export interface FullPublicAvatarSubmission extends PublicAvatarSubmissions {
   title: string
   thumbnailurl: string
   existingavatarids: string[]
-  existingavatardata: CachedVrchatAvatarRecord[]
-  avatar?: VrchatAvatarData
+  existingavatardata: VrchatAvatarCachedItem[]
+  avatar?: VrchatAvatar
 }
 
 export const CollectionNames = {

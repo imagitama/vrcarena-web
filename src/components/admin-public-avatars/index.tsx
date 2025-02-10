@@ -20,18 +20,17 @@ import {
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
-import VrchatAvatar, {
-  VrchatAvatar as VrchatAvatarData,
-} from '../vrchat-avatar'
+import VrchatAvatar from '../vrchat-avatar'
+import { VrchatAvatar as VrchatAvatarData } from '../../vrchat'
 import AssetResultsItem from '../asset-results-item'
 import Button from '../button'
 import CheckboxInput from '../checkbox-input'
 import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import {
   CollectionNames,
-  CachedVrchatAvatarRecord,
   FullPublicAvatarSubmission,
-} from '../../modules/public-avatars'
+} from '../../modules/public-avatar-submissions'
+import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 interface SyncMissingAvatarSubmissionsResult {
@@ -158,7 +157,7 @@ const ApplyAvatarsForm = ({
 }: {
   assetId: string
   existingAvatarIds: string[]
-  existingAvatarData: CachedVrchatAvatarRecord[]
+  existingAvatarData: VrchatAvatarCachedItem[]
   submissions: FullPublicAvatarSubmission[]
   onDone: () => void
 }) => {

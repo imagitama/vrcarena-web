@@ -13,11 +13,10 @@ import {
   AssetFieldNames,
   CollectionNames,
   AssetMetaFieldNames,
-  AccessStatuses,
   PublishStatuses,
   ApprovalStatuses,
 } from '../../hooks/useDatabaseQuery'
-import { VrchatWorld } from '../../modules/vrchat-cache'
+import { VrchatWorld } from '../../vrchat'
 import { insertRecord, updateRecords } from '../../data-store'
 import { Asset } from '../../modules/assets'
 import Link from '../../components/link'

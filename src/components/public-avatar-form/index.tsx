@@ -20,7 +20,7 @@ import FormControls from '../form-controls'
 
 interface PublicAvatarCreateFields extends Record<string, unknown> {
   asset: string
-  vrchatAvatarId: string
+  vrchatavatarid: string
 }
 
 const useStyles = makeStyles({
@@ -82,7 +82,7 @@ const Form = ({ assetId }: { assetId: string }) => {
 
       await create({
         asset: assetId,
-        vrchatAvatarId,
+        vrchatavatarid: vrchatAvatarId,
       })
 
       setUserInput('')

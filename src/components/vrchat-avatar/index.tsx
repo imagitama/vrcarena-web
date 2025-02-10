@@ -16,6 +16,7 @@ import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
 import Button from '../button'
 import { viewVrchatAvatarUrlWithVar } from '../../config'
+import { UnityPackage, VrchatAvatar } from '../../vrchat'
 
 const chipMargin = '0.25rem'
 
@@ -54,8 +55,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-// avatar: https://vrchatapi.github.io/docs/api#get-/avatars/-avatarId-
-
 const getDateFromVrchatApiDate = (vrchatApiDate: string): Date =>
   new Date(vrchatApiDate)
 
@@ -65,38 +64,25 @@ const getIsPcCompatible = (unityPackages: UnityPackage[]): boolean =>
   unityPackages.find(({ platform }) => platform === 'standalonewindows') !==
   undefined
 
-interface UnityPackage {
-  platform: 'android' | 'standalonewindows'
-}
-
-export interface VrchatAvatar {
-  id: string
-  imageUrl: string
-  name: string
-  authorName: string
-  created_at: string
-  updated_at: string
-  description: string
-  release_status: string
-  unityPackages: UnityPackage[]
-}
-
 export default ({
   avatarId,
   avatarData,
+  thumbnailUrl,
   allowFetch = false,
 }: {
   avatarId: string
   avatarData?: VrchatAvatar
+  thumbnailUrl?: string
   allowFetch?: boolean
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [lastError, setLastError] = useState<null | Error>(null)
-  const [newData, setNewData] = useState<null | VrchatAvatar>(null)
+  const [newData, setNewData] = useState<
+    null | (VrchatAvatar & { thumbnailUrl: string })
+  >(null)
 
   const {
     id,
-    imageUrl,
     name,
     authorName,
     created_at,
@@ -105,6 +91,12 @@ export default ({
     release_status,
     unityPackages = [],
   } = newData || avatarData || {}
+
+  const imageUrl =
+    newData?.thumbnailUrl ||
+    thumbnailUrl ||
+    newData?.imageUrl ||
+    avatarData?.imageUrl
 
   const fetchData = async (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -116,15 +108,18 @@ export default ({
 
       // NOTE: This function also dumps it into a cache for later retrieval
       const {
-        data: { avatar },
-      } = await callFunction<{ avatarId: string }, { avatar: VrchatAvatar }>(
-        'getVrchatAvatarDetails',
-        {
-          avatarId,
-        }
-      )
+        data: { avatar, thumbnailUrl },
+      } = await callFunction<
+        { avatarId: string },
+        { avatar: VrchatAvatar; thumbnailUrl: string }
+      >('getVrchatAvatarDetails', {
+        avatarId,
+      })
 
-      setNewData(avatar)
+      setNewData({
+        ...avatar,
+        thumbnailUrl,
+      })
       setIsLoading(false)
       setLastError(null)
     } catch (err) {
