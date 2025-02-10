@@ -483,7 +483,7 @@ const QueuedItemRow = ({
 
 const View = () => {
   const [, , user] = useUserRecord()
-  const [showRules, setShowRules] = useState(false)
+  const [showRules, setShowRules] = useState(true)
   const [newSourceUrls, setSourceUrls] = useState([''])
   const [
     isCreating,
