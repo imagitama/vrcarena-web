@@ -196,6 +196,13 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   publishedbyusername: string
 }
 
+export interface SmallAsset extends Asset, AssetMeta {
+  createdbyusername: string
+  authorname: string
+  speciesnames: string[]
+  publishedbyusername: string
+}
+
 export enum AssetSyncStatus {
   Waiting = 'waiting',
   Processing = 'processing',

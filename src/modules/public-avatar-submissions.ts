@@ -1,7 +1,7 @@
 import { VrchatAvatar } from '../vrchat'
 import { VrchatAvatarCachedItem } from './vrchat-cache'
 
-export interface PublicAvatarSubmissions {
+export interface PublicAvatarSubmission {
   id: string
   asset: string
   vrchatavatarid: string
@@ -10,7 +10,7 @@ export interface PublicAvatarSubmissions {
   isdeleted: string
 }
 
-export interface FullPublicAvatarSubmission extends PublicAvatarSubmissions {
+export interface FullPublicAvatarSubmission extends PublicAvatarSubmission {
   creatorname: string
   title: string
   thumbnailurl: string

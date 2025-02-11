@@ -15,10 +15,14 @@ export const keys = {
  * A hook that lets us tap into storage on the device (browser). Only local right now.
  */
 const useStorage = <TResult>(
-  key: string,
+  key: string | false,
   defaultValue?: TResult
 ): [TResult | null, (newValue: TResult) => void, () => void] => {
   try {
+    if (key === false) {
+      return [null, () => undefined, () => undefined]
+    }
+
     // @ts-ignore this 3rd party hook tries to encode/parse JSON for us NOT strings
     const [value, ...rest]: [TResult, (newValue: TResult) => void, () => void] =
       useLocalStorage(key)

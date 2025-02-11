@@ -23,11 +23,12 @@ import useHistory from '../../hooks/useHistory'
 import useSorting from '../../hooks/useSorting'
 import useDataStore from '../../hooks/useDataStore'
 import useIsEditor from '../../hooks/useIsEditor'
-import {
+import useDatabaseQuery, {
   OrderDirections,
   AccessStatuses,
   PublishStatuses,
   ApprovalStatuses,
+  WhereClause,
 } from '../../hooks/useDatabaseQuery'
 import {
   CommonMetaFieldNames,
@@ -114,6 +115,7 @@ interface PaginatedViewData<TRecord> {
   subViews?: SubViewConfig[]
   sortOptions?: SortOption<TRecord>[]
   getQueryString?: () => string
+  whereClauses?: WhereClause<TRecord>[]
 }
 
 // @ts-ignore
@@ -142,6 +144,7 @@ const Page = () => {
     internalPageNumber,
     setInternalPageNumber,
     getQueryString,
+    whereClauses,
   } = usePaginatedView()
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
   const [sorting] = useSorting(
@@ -157,11 +160,12 @@ const Page = () => {
           (sortOption) => sortOption.fieldName === sorting?.fieldName
         )
       : false
+
+  const rangeStart = (currentPageNumber - 1) * limitPerPage
+  const rangeEnd = rangeStart + limitPerPage - 1
+
   const pageGetQuery = useCallback(
     async (supabase: SupabaseClient) => {
-      const rangeStart = (currentPageNumber - 1) * limitPerPage
-      const rangeEnd = rangeStart + limitPerPage - 1
-
       const isAscending =
         sorting && isSortingValid
           ? sorting.direction === OrderDirections.ASC
@@ -174,6 +178,10 @@ const Page = () => {
       const selectOptions: {
         count: 'exact' | 'planned' | 'estimated' | null | undefined
       } = { count: 'exact' }
+
+      if (whereClauses) {
+        return
+      }
 
       if (!collectionName && !viewName) {
         throw new Error(
@@ -237,11 +245,40 @@ const Page = () => {
       isEditor,
     ]
   )
-  const [isLoading, lastErrorCode, items, totalCount, hydrate] =
-    useDataStore<any>(pageGetQuery, {
-      queryName: `paginated-view-${collectionName || viewName}`,
-      uncatchErrorCodes: [DataStoreErrorCode.BadRange],
-    })
+  const [
+    isLoadingDataStore,
+    lastErrorCodeDataStore,
+    itemsDataStore,
+    totalCountDataStore,
+    hydrateDataStore,
+  ] = useDataStore<any>(whereClauses ? null : pageGetQuery, {
+    queryName: `paginated-view-${collectionName || viewName}`,
+    uncatchErrorCodes: [DataStoreErrorCode.BadRange],
+  })
+
+  const [
+    isLoadingQuery,
+    lastErrorCodeQuery,
+    itemsQuery,
+    hydrateQuery,
+    totalCountQuery,
+  ] = useDatabaseQuery(
+    collectionName || viewName || '',
+    whereClauses || false,
+    {
+      offset: rangeStart,
+      limit: limitPerPage,
+      orderBy: sorting ? [sorting.fieldName, sorting.direction] : undefined,
+    }
+  )
+
+  const isLoading = whereClauses ? isLoadingQuery : isLoadingDataStore
+  const lastErrorCode = whereClauses
+    ? lastErrorCodeQuery
+    : lastErrorCodeDataStore
+  const items = whereClauses ? itemsQuery : itemsDataStore
+  const totalCount = whereClauses ? totalCountQuery : totalCountDataStore
+  const hydrate = whereClauses ? hydrateQuery : hydrateDataStore
 
   useScrollMemory(isLoading === false && lastErrorCode === null)
 
@@ -253,7 +290,11 @@ const Page = () => {
         </NoResultsMessage>
       )
     }
-    return <ErrorMessage>Failed to load page!</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to load page: error code {lastErrorCode}
+      </ErrorMessage>
+    )
   }
 
   if (isLoading || !items) {
@@ -373,6 +414,7 @@ export interface PaginatedViewProps<TRecord> {
   showCommonMetaControls?: boolean
   getQueryString?: () => string
   limit?: number
+  whereClauses?: WhereClause<TRecord>[]
 }
 
 const PaginatedView = <TRecord,>({
@@ -394,6 +436,7 @@ const PaginatedView = <TRecord,>({
   showCommonMetaControls = false,
   getQueryString = undefined,
   limit = undefined,
+  whereClauses,
 }: PaginatedViewProps<TRecord>) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
@@ -436,6 +479,7 @@ const PaginatedView = <TRecord,>({
         internalPageNumber,
         setInternalPageNumber,
         getQueryString,
+        whereClauses,
       }}>
       <div className={classes.root}>
         <div className={classes.controls}>

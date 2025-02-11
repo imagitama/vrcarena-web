@@ -7,7 +7,6 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'

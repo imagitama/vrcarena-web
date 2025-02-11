@@ -6,7 +6,6 @@ import Heading from '../../components/heading'
 import LoadingIndicator from '../../components/loading-indicator'
 import NoPermissionMessage from '../../components/no-permission-message'
 import ErrorMessage from '../../components/error-message'
-import AdminHistory from '../../components/admin-history'
 import AdminAssets from '../../components/admin-assets'
 import AdminAmendments from '../../components/admin-amendments'
 import AdminReports from '../../components/admin-reports'
@@ -15,6 +14,7 @@ import AdminNotices from '../../components/admin-notices'
 import AdminUsers from './components/users'
 
 import AdminHome from './components/home'
+import History from './components/history'
 
 import useUserRecord from '../../hooks/useUserRecord'
 import * as routes from '../../routes'
@@ -94,16 +94,7 @@ const View = () => {
             contents: (
               <>
                 <Heading variant="h2">History</Heading>
-                <p>
-                  Whenever someone creates or edits any record anywhere, the
-                  site records what fields were modified. This table outputs a
-                  simple and filtered list of events on the site.
-                </p>
-                <p>
-                  You can view the history of any asset by scrolling to the
-                  bottom of its page.
-                </p>
-                <AdminHistory />
+                <History />
               </>
             ),
           },

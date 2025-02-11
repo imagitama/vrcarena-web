@@ -22,3 +22,7 @@ export const editMessage = 'Edit'
 export enum CollectionNames {
   History = 'history',
 }
+
+export enum ViewNames {
+  GetFullHistory = 'getfullhistory',
+}

@@ -584,12 +584,15 @@ export default <TRecord>(
   orderBy?: OrderBy<TRecord>,
   subscribe = true,
   startAfter = undefined
-): [boolean, null | DataStoreErrorCode, TRecord[] | null, () => void] => {
-  if (typeof whereClauses === 'string') {
-    throw new Error('Cannot pass id to this hook anymore')
-  }
-
+): [
+  boolean,
+  null | DataStoreErrorCode,
+  TRecord[] | null,
+  () => void,
+  number | null
+] => {
   const [records, setRecords] = useState<TRecord[] | null>(null)
+  const [count, setCount] = useState<null | number>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
     null
@@ -634,7 +637,7 @@ export default <TRecord>(
 
       let queryChain = supabase
         .from(collectionName.toLowerCase())
-        .select<string, TRecord>(selectQuery)
+        .select<string, TRecord>(selectQuery, { count: 'exact' })
 
       // or an array of searches
       if (Array.isArray(whereClauses)) {
@@ -737,6 +740,7 @@ export default <TRecord>(
       } else {
         // weird timing issue where loading=false but users=null so set it before the other flags
         setRecords(result.data)
+        setCount(result.count)
         setIsLoading(false)
         setLastErrorCode(null)
       }
@@ -782,5 +786,5 @@ export default <TRecord>(
     doIt(false)
   }
 
-  return [isLoading, lastErrorCode, records, hydrate]
+  return [isLoading, lastErrorCode, records, hydrate, count]
 }

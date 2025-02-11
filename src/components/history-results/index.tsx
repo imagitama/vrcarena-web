@@ -72,7 +72,7 @@ const HistoryResults = ({ results }: { results: HistoryEntry[] }) => (
         <TableRow>
           <TableCell>Message</TableCell>
           <TableCell>Data</TableCell>
-          <TableCell>User</TableCell>
+          <TableCell>Logged By</TableCell>
           <TableCell>Date</TableCell>
         </TableRow>
       </TableHead>

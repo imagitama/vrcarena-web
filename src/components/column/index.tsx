@@ -3,24 +3,28 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles({
   columns: {
-    display: 'flex'
+    display: 'flex',
   },
   withPadding: {
-    padding: '0.5rem'
+    padding: '0.5rem',
   },
-  column: {}
+  column: {},
 })
 
 export const Column = ({
   children,
-  width = 50
+  width = 50,
+  padding = false,
 }: {
   children: React.ReactNode
   width?: number
+  padding?: boolean
 }) => {
   const classes = useStyles()
   return (
-    <div className={classes.column} style={{ width: `${width}%` }}>
+    <div
+      className={`${classes.column} ${padding ? classes.withPadding : ''}`}
+      style={{ width: `${width}%` }}>
       {children}
     </div>
   )
@@ -28,7 +32,7 @@ export const Column = ({
 
 export const Columns = ({
   children,
-  padding = false
+  padding = false,
 }: {
   children: React.ReactNode
   padding?: boolean
