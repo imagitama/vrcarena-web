@@ -25,6 +25,7 @@ interface PublicAvatarCreateFields extends Record<string, unknown> {
 
 const useStyles = makeStyles({
   controls: {
+    width: '100%',
     margin: '0.5rem 0',
     display: 'flex',
   },
@@ -112,20 +113,23 @@ const Form = ({ assetId }: { assetId: string }) => {
           try again.
         </ErrorMessage>
       ) : null}
-      Enter the URL or ID of the avatar:
+
       <div className={classes.controls}>
         <TextInput
+          label="Enter the URL of the avatar or the avatar ID"
+          placeholder="eg. avtr_69f1893b-2d7c-4d19-beb4-45a3c17ddd0f"
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
           isDisabled={isCreating}
           size="small"
           className={classes.input}
+          fullWidth
         />{' '}
         <Button isDisabled={isCreating} onClick={() => send()}>
           Send
         </Button>
       </div>
-      <img src={screenshotUrl} width="50%" />
+      <img src={screenshotUrl} width="25%" />
     </>
   )
 }

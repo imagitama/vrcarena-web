@@ -16,40 +16,40 @@ const analyticsCategoryName = 'ViewAssetEditor'
 
 const useStyles = makeStyles({
   root: {
-    padding: '0.5rem'
+    padding: '0.5rem',
   },
   label: {
     marginBottom: '0.5rem',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   inputWrapper: {
-    display: 'flex'
+    display: 'flex',
   },
   input: {
     flex: 1,
-    marginRight: '0.5rem'
+    marginRight: '0.5rem',
   },
   message: {
     textAlign: 'center',
     padding: '1rem 0',
-    fontStyle: 'italic'
+    fontStyle: 'italic',
   },
   results: {
-    marginTop: '1rem'
+    marginTop: '1rem',
   },
   result: {
     padding: '0.5rem',
     '&:nth-child(even)': {
-      background: 'rgba(255, 255, 255, 0.1)'
-    }
+      background: 'rgba(255, 255, 255, 0.1)',
+    },
   },
   avatarOutput: {
-    padding: '0.5rem'
+    padding: '0.5rem',
   },
   form: {
     padding: '1rem',
-    border: '1px solid rgba(255, 255, 255, 0.1)'
-  }
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+  },
 })
 
 export default ({ assetId, avatarIds = [], onDone, overrideSave = null }) => {
@@ -92,7 +92,7 @@ export default ({ assetId, avatarIds = [], onDone, overrideSave = null }) => {
       )
 
       await save({
-        [AssetFieldNames.vrchatClonableAvatarIds]: newAvatarIds
+        [AssetFieldNames.vrchatClonableAvatarIds]: newAvatarIds,
       })
 
       onDone()
@@ -102,11 +102,11 @@ export default ({ assetId, avatarIds = [], onDone, overrideSave = null }) => {
     }
   }
 
-  const addAvatarId = avatarId =>
-    setNewAvatarIds(currentAvatarIds => currentAvatarIds.concat([avatarId]))
-  const removeAvatarId = avatarId =>
-    setNewAvatarIds(currentAvatarIds =>
-      currentAvatarIds.filter(id => id !== avatarId)
+  const addAvatarId = (avatarId) =>
+    setNewAvatarIds((currentAvatarIds) => currentAvatarIds.concat([avatarId]))
+  const removeAvatarId = (avatarId) =>
+    setNewAvatarIds((currentAvatarIds) =>
+      currentAvatarIds.filter((id) => id !== avatarId)
     )
 
   return (
@@ -121,10 +121,15 @@ export default ({ assetId, avatarIds = [], onDone, overrideSave = null }) => {
       </div>
       {newAvatarIds.length ? (
         <div className={classes.results}>
-          {newAvatarIds.map(avatarId => (
+          {newAvatarIds.map((avatarId) => (
             <div key={avatarId} className={classes.result}>
               {avatarId}{' '}
-              <Button onClick={() => removeAvatarId(avatarId)}>Remove</Button>
+              <Button
+                onClick={() => removeAvatarId(avatarId)}
+                color="default"
+                size="small">
+                Remove
+              </Button>
             </div>
           ))}
         </div>

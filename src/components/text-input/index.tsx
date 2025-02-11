@@ -8,6 +8,9 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  fullWidth: {
+    width: '100%',
+  },
   button: {
     height: '100%',
     margin: '0 0.25rem',
@@ -24,7 +27,8 @@ const TextInput = ({ button, ...props }: Props) => {
   const classes = useStyles()
 
   return (
-    <span className={classes.root}>
+    <span
+      className={`${classes.root} ${props.fullWidth ? classes.fullWidth : ''}`}>
       <TextField
         {...props}
         multiline={props.minRows !== undefined}
