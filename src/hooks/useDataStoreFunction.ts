@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { client as supabase } from '../supabase'
 import useSupabaseClient from './useSupabaseClient'
 import { handleError } from '../error-handling'
@@ -8,7 +8,9 @@ enum ErrorCode {
 }
 
 const useDataStoreFunction = <TPayload extends object, TRecord>(
-  name: string
+  name: string,
+  autoCall: boolean = false,
+  autoCallPayload?: TPayload
 ): [
   boolean,
   null | ErrorCode,
@@ -44,6 +46,14 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
     },
     [name]
   )
+
+  useEffect(() => {
+    if (!autoCall) {
+      return
+    }
+
+    callFunction(autoCallPayload!)
+  }, [autoCall])
 
   return [isLoading, lastErrorCode, lastResult, callFunction]
 }

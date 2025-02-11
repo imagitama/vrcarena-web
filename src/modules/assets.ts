@@ -241,6 +241,10 @@ export enum ViewNames {
   GetMyAssetSyncQueuedItems = 'getmyassetsyncqueueditems',
 }
 
+export enum FunctionNames {
+  SearchAssets = 'searchassets',
+}
+
 // legacy
 
 export const AssetFieldNames = {

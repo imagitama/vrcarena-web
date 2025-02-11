@@ -65,15 +65,31 @@ const mapHitsToAssetSearchResults = (
     description: hit.description,
   }))
 
-export default (
+interface AlgoliaApiError {
+  name: string // ApiError
+  message: string // "This operation cannot be processed, the application is blocked. Contact us to unblock it."
+  status: number // 403
+}
+
+interface AlgoliaClientError {
+  name: string
+  message: string
+}
+
+export enum ErrorCode {
+  ApiError,
+  Unknown,
+}
+
+export default <T>(
   indexName: string,
   keywords: string,
   filters?: string,
   limit?: number
-): [boolean, boolean, AssetSearchResult[] | null] => {
-  const [results, setResults] = useState<AssetSearchResult[] | null>(null)
+): [boolean, null | ErrorCode, T[] | null] => {
+  const [results, setResults] = useState<T[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
   const timerRef = useRef<NodeJS.Timeout>()
   const indexRef = useRef<SearchIndex>()
 
@@ -97,9 +113,9 @@ export default (
         }
 
         setIsLoading(true)
-        setIsErrored(false)
+        setLastErrorCode(null)
 
-        console.debug(`Algolia Search`, keywords, filters)
+        console.debug(`searching with algolia`, { keywords, filters })
 
         const { hits } = await indexRef.current.search<AlgoliaAssetRecord>(
           keywords,
@@ -110,17 +126,22 @@ export default (
           }
         )
 
-        console.debug(`Algolia Search complete`, hits)
+        console.debug(`searching with algolia complete`, { hits })
 
-        const newResults = mapHitsToAssetSearchResults(hits)
+        // TODO: do generically
+        const newResults = mapHitsToAssetSearchResults(hits) as unknown as T[]
 
         setResults(newResults)
         setIsLoading(false)
-        setIsErrored(false)
+        setLastErrorCode(null)
       } catch (err) {
         console.error(err)
         setIsLoading(false)
-        setIsErrored(true)
+        setLastErrorCode(
+          err && (err as AlgoliaApiError).status
+            ? ErrorCode.ApiError
+            : ErrorCode.Unknown
+        )
       }
     }
 
@@ -131,5 +152,5 @@ export default (
     timerRef.current = setTimeout(() => doIt(), 500)
   }, [indexName, keywords, filters])
 
-  return [isLoading, isErrored, results]
+  return [isLoading, lastErrorCode, results]
 }

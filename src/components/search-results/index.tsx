@@ -6,7 +6,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import { makeStyles } from '@material-ui/core/styles'
 
 import useSearching from '../../hooks/useSearching'
-import useAssetSearch from '../../hooks/useAssetSearch'
+import useAssetSearch, { ErrorCode } from '../../hooks/useAssetSearch'
 import { searchIndexNameLabels, changeSearchTableName } from '../../modules/app'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
@@ -39,6 +39,7 @@ import UserList from '../user-list'
 import SearchFilters from '../search-filters'
 import WarningMessage from '../warning-message'
 import { AssetCategory } from '../../modules/assets'
+import { DataStoreErrorCode } from '../../data-store'
 
 const useStyles = makeStyles({
   tableButton: {
@@ -87,26 +88,30 @@ function ViewAllAuthorsBtn() {
 
 function Results({
   isLoading,
-  isErrored,
+  lastErrorCode,
   tableName,
   hits,
 }: {
   isLoading: boolean
-  isErrored: boolean
+  lastErrorCode: ErrorCode | DataStoreErrorCode | null
   tableName: string
   hits: any[]
 }) {
   const { searchFilters } = useAppSearch()
   const classes = useStyles()
 
-  if (isLoading && hits.length === 0) {
+  if (lastErrorCode !== null) {
     return (
-      <div className={classes.waitingForResultsMsg}>Waiting for results...</div>
+      <ErrorMessage>
+        Failed to perform search: error code {lastErrorCode}
+      </ErrorMessage>
     )
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to perform search</ErrorMessage>
+  if (isLoading) {
+    return (
+      <div className={classes.waitingForResultsMsg}>Waiting for results...</div>
+    )
   }
 
   if (!hits.length) {
@@ -437,7 +442,7 @@ const AssetSearch = () => {
     return result
   }, {})
 
-  const [isLoading, isErrored, hits] = useAssetSearch(
+  const [isLoading, lastErrorCode, hits] = useAssetSearch(
     searchTerm,
     filtersByFieldName,
     200 // "Rexouium" has 153 results as of Oct 2022
@@ -449,7 +454,7 @@ const AssetSearch = () => {
       <TagSearchHint searchTerm={searchTerm} />
       <Results
         isLoading={isLoading}
-        isErrored={isErrored}
+        lastErrorCode={lastErrorCode}
         tableName={CollectionNames.Assets}
         hits={hits || []}
       />
@@ -514,7 +519,7 @@ const NonAssetSearch = () => {
   return (
     <Results
       isLoading={isLoading}
-      isErrored={lastErrorCode !== null}
+      lastErrorCode={lastErrorCode}
       tableName={searchTableName}
       hits={hits || []}
     />
