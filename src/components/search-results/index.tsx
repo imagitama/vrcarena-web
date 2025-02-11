@@ -40,6 +40,9 @@ import SearchFilters from '../search-filters'
 import WarningMessage from '../warning-message'
 import { AssetCategory } from '../../modules/assets'
 import { DataStoreErrorCode } from '../../data-store'
+import InfoMessage from '../info-message'
+import HidableMessage from '../hidable-message'
+import LoadingIndicator from '../loading-indicator'
 
 const useStyles = makeStyles({
   tableButton: {
@@ -110,7 +113,9 @@ function Results({
 
   if (isLoading) {
     return (
-      <div className={classes.waitingForResultsMsg}>Waiting for results...</div>
+      <div className={classes.waitingForResultsMsg}>
+        <LoadingIndicator message="Searching..." />
+      </div>
     )
   }
 
@@ -442,7 +447,7 @@ const AssetSearch = () => {
     return result
   }, {})
 
-  const [isLoading, lastErrorCode, hits] = useAssetSearch(
+  const [isLoading, lastErrorCode, hits, usingSimpleSearch] = useAssetSearch(
     searchTerm,
     filtersByFieldName,
     200 // "Rexouium" has 153 results as of Oct 2022
@@ -450,6 +455,12 @@ const AssetSearch = () => {
 
   return (
     <>
+      {usingSimpleSearch ? (
+        <HidableMessage noticeId="using-simple-search">
+          Our search provider Algolia is currently unavailable. Falling back to
+          a worse search. The search results you see might not be as good.
+        </HidableMessage>
+      ) : null}
       <CategoryAndSpeciesSearchHint searchTerm={searchTerm} />
       <TagSearchHint searchTerm={searchTerm} />
       <Results

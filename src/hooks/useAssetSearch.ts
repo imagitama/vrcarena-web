@@ -19,7 +19,7 @@ const useAssetSearch = (
   searchTerm: string,
   filtersByFieldName: { [fieldName: string]: string[] } = {},
   limit = defaultLimit
-): [boolean, null | ErrorCode, AssetSearchResult[] | null] => {
+): [boolean, null | ErrorCode, AssetSearchResult[] | null, boolean] => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
   // always start with this filter to minimize chance of mistakenly showing it
@@ -41,8 +41,7 @@ const useAssetSearch = (
       limit
     )
 
-  // const usingSimpleSearch = lastAlgoliaErrorCode !== null
-  const usingSimpleSearch = true
+  const usingSimpleSearch = lastAlgoliaErrorCode !== null
 
   const [isSimpleLoading, lastSimpleErrorCode, simpleResults] =
     useDataStoreFunction<
@@ -66,7 +65,12 @@ const useAssetSearch = (
     dispatch(setIsSearching(isLoading))
   }, [isLoading])
 
-  return [isLoading, hasErrorCode ? ErrorCode.Unknown : null, assets]
+  return [
+    isLoading,
+    hasErrorCode ? ErrorCode.Unknown : null,
+    assets,
+    usingSimpleSearch,
+  ]
 }
 
 export default useAssetSearch
