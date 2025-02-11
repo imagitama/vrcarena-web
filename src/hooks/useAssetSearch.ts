@@ -45,13 +45,13 @@ const useAssetSearch = (
   const usingSimpleSearch = true
 
   const [isSimpleLoading, lastSimpleErrorCode, simpleResults] =
-    useDataStoreFunction<{ search_term: string }, AssetSearchResult>(
-      FunctionNames.SearchAssets,
-      usingSimpleSearch,
-      {
-        search_term: searchTerm,
-      }
-    )
+    useDataStoreFunction<
+      { search_term: string; include_adult: boolean },
+      AssetSearchResult
+    >(FunctionNames.SearchAssets, usingSimpleSearch, {
+      search_term: searchTerm,
+      include_adult: isAdultContentEnabled,
+    })
 
   const dispatch = useDispatch()
 
