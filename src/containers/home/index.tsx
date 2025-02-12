@@ -315,7 +315,7 @@ export default () => {
           </p>
           <p>
             We are <strong>not for profit</strong> and run entirely by our
-            awesome <strong>volunteers</strong>.
+            awesome <strong>volunteers</strong> since May 2020!
           </p>
         </ContentBlock>
         <Tiles />
