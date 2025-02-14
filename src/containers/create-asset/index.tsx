@@ -715,6 +715,9 @@ export default () => {
             new system.
             <br />
             <br />
+            <strong>NSFW assets on sites like Jinxxy are not supported</strong>
+            <br />
+            <br />
             <Button
               onClick={() => setIsCreatingManually(true)}
               color="default"
