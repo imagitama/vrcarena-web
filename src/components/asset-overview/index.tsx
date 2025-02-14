@@ -829,7 +829,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     }
                     analyticsCategoryName={analyticsCategoryName}
                     analyticsEvent="Click visit source button"
-                    extraSources={asset?.extrasources}
+                    // extraSources={asset?.extrasources}
                   />
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
                   <MiniSaleInfo />

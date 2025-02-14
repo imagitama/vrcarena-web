@@ -116,7 +116,6 @@ const VisitSourceButton = ({
   onClick,
   analyticsCategoryName,
   analyticsEvent,
-  extraSources,
   isExtraSource = false,
 }: {
   sourceInfo?: SourceInfo
@@ -125,9 +124,7 @@ const VisitSourceButton = ({
   analyticsEvent?: string
   isLarge?: boolean
   isAssetLoading?: boolean
-  sourceUrl?: string
   onClick?: (payload: { assetId?: string; sourceUrl: string }) => void
-  extraSources?: SourceInfo[]
   isExtraSource?: boolean
 }) => {
   const classes = useStyles()

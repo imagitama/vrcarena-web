@@ -23,6 +23,11 @@ import {
 import { UserAdminMeta } from '../modules/users'
 import { AccessStatus, ApprovalStatus, PublishStatus } from '../modules/common'
 import { SupabaseClient } from '@supabase/supabase-js'
+import { getIsGumroadProductUrl } from '../gumroad'
+import { getIsBoothProductUrl } from '../booth'
+import { getIsJinxxyProductUrl } from '../jinxxy'
+import { getIsItchProductUrl } from '../itch'
+import { cleanupSourceUrl as cleanupSyncSourceUrl } from '../syncing'
 
 export const getDoesAssetNeedPublishing = (assetMeta: AssetMeta): boolean =>
   assetMeta.publishstatus === PublishStatus.Draft
@@ -303,4 +308,17 @@ export const getErrorMessageForCode = (errorCode: string): string => {
     default:
       return 'Unknown'
   }
+}
+
+export const cleanupSourceUrl = (url: string): string => {
+  if (
+    getIsGumroadProductUrl(url) ||
+    getIsBoothProductUrl(url) ||
+    getIsJinxxyProductUrl(url) ||
+    getIsItchProductUrl(url)
+  ) {
+    return cleanupSyncSourceUrl(url)
+  }
+
+  return url.trim()
 }

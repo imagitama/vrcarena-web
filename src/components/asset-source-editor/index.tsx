@@ -16,6 +16,8 @@ import LoadingIndicator from '../loading-indicator'
 import WarningMessage from '../warning-message'
 import { Asset } from '../../modules/assets'
 import TextInput from '../text-input'
+import { cleanupSourceUrl } from '../../utils/assets'
+import VisitSourceButton from '../visit-source-button'
 
 const useStyles = makeStyles({
   textInput: {
@@ -43,10 +45,8 @@ export default ({
   actionCategory?: string
   overrideSave?: (newUrl: string | undefined) => void
 }) => {
-  const [newSourceUrl, setNewSourceUrl] = useState<string | undefined>(
-    sourceUrl
-  )
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
+  const [userInput, setUserInput] = useState<string>(sourceUrl || '')
+  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -60,6 +60,8 @@ export default ({
     undefined,
     5
   )
+
+  const newSourceUrl = cleanupSourceUrl(userInput)
 
   const onSave = async () => {
     try {
@@ -77,7 +79,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.sourceUrl]: newSourceUrl,
+        sourceurl: newSourceUrl,
       })
 
       if (onDone) {
@@ -118,14 +120,13 @@ export default ({
 
     return (
       <>
-        <TextInput
+        {/* <TextInput
           className={classes.textInput}
-          value={newSourceUrl}
+          value={userInput}
           variant="outlined"
           multiline
           isDisabled
-        />
-
+        /> */}
         {isSearching ? (
           <LoadingIndicator message="Checking for duplicates..." />
         ) : searchResultsWithoutSelf && searchResultsWithoutSelf.length ? (
@@ -152,16 +153,30 @@ export default ({
     )
   }
 
-  const isInvalidPatreonUrl = getIsInvalidPatreonUrl(newSourceUrl)
+  const isInvalidPatreonUrl = getIsInvalidPatreonUrl(userInput)
+
+  console.debug('URL', { userInput, newSourceUrl })
 
   return (
     <>
       <TextInput
         className={classes.textInput}
-        value={newSourceUrl}
-        onChange={(e) => setNewSourceUrl(e.target.value)}
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
         variant="outlined"
         multiline
+      />
+      <br />
+      Preview:
+      <br />
+      <br />
+      <VisitSourceButton
+        sourceInfo={{
+          url: newSourceUrl,
+          price: null,
+          pricecurrency: null,
+          comments: '',
+        }}
       />
       {isInvalidPatreonUrl ? (
         <WarningMessage>
