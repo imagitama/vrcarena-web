@@ -5,21 +5,21 @@ import Button from '../button'
 const useStyles = makeStyles({
   root: {
     textAlign: 'center',
-    margin: '2rem 0'
+    margin: '2rem 0',
   },
   msg: {
     display: 'block',
-    fontStyle: 'italic'
+    fontStyle: 'italic',
   },
   btn: {
-    marginTop: '1rem'
-  }
+    marginTop: '1rem',
+  },
 })
 
-export default ({
+const NoResultsMessage = ({
   children,
   callToActionLabel = '',
-  callToActionUrl = ''
+  callToActionUrl = '',
 }: {
   children?: React.ReactNode
   callToActionLabel?: string
@@ -37,3 +37,5 @@ export default ({
     </div>
   )
 }
+
+export default NoResultsMessage

@@ -32,6 +32,7 @@ import {
 } from '../../modules/public-avatar-submissions'
 import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
+import NoResultsMessage from '../no-results-message'
 
 interface SyncMissingAvatarSubmissionsResult {
   success: boolean
@@ -292,7 +293,7 @@ const Avatars = () => {
   }
 
   if (!results.length) {
-    return <ErrorMessage>No avatars found for query</ErrorMessage>
+    return <NoResultsMessage>No avatars found for query</NoResultsMessage>
   }
 
   const resultsByAssetId: {

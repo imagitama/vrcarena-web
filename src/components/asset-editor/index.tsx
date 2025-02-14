@@ -905,7 +905,8 @@ const Editor = () => {
                     />
                   }
                 />
-                <FormEditorArea
+                {/* disabled for now as function is failing and we have new auto-sync */}
+                {/* <FormEditorArea
                   fieldName="gumroad"
                   title="Auto Sync"
                   description="Automatically sync with Gumroad once per day. Experimental."
@@ -926,7 +927,7 @@ const Editor = () => {
                       settings={asset.gumroad}
                     />
                   }
-                />
+                /> */}
                 <FormEditorArea
                   title="Price"
                   description="The price of the asset."
