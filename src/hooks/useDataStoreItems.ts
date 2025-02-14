@@ -33,6 +33,7 @@ export default <TItem>(
   const [totalCount, setTotalCount] = useState<number | null>(null)
   const hasInitialResultsRef = useRef(false)
   const supabase = useSupabaseClient()
+  const hasUnmountedRef = useRef(false)
 
   const hydrate = async () => {
     try {
@@ -91,6 +92,10 @@ export default <TItem>(
         )
       }
 
+      if (hasUnmountedRef.current) {
+        return
+      }
+
       setResult(data as TItem[])
       setTotalCount(count || null)
 
@@ -108,10 +113,21 @@ export default <TItem>(
     } catch (err) {
       console.error(err)
       handleError(err)
+
+      if (hasUnmountedRef.current) {
+        return
+      }
+
       setLastErrorCode(getDataStoreErrorCodeFromError(err))
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      hasUnmountedRef.current = true
+    }
+  }, [])
 
   useEffect(() => {
     hydrate()

@@ -31,9 +31,9 @@ const History = ({
         ]
       : [],
     {
-      [options.limit]: limit,
-      [options.orderBy]: ['createdat', OrderDirections.DESC],
-      [options.queryName]: 'admin-history',
+      limit: limit,
+      orderBy: ['createdat', OrderDirections.DESC],
+      queryName: 'admin-history',
     }
   )
 
@@ -70,9 +70,9 @@ const MetaHistory = ({
         ]
       : [],
     {
-      [options.limit]: limit,
-      [options.orderBy]: ['createdat', OrderDirections.DESC],
-      [options.queryName]: 'admin-history',
+      limit: limit,
+      orderBy: ['createdat', OrderDirections.DESC],
+      queryName: 'admin-history',
     }
   )
 

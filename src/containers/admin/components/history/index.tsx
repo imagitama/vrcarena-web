@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react'
-import useDatabaseQuery, {
+import React, { useMemo } from 'react'
+import {
   Operators,
   OrderDirections,
   WhereClause,
@@ -10,14 +10,12 @@ import {
   createMessage,
   editMessage,
 } from '../../../../modules/history'
-import LoadingIndicator from '../../../../components/loading-indicator'
-import ErrorMessage from '../../../../components/error-message'
 import HistoryResults from '../../../../components/history-results'
 
 import { CollectionNames as UsersCollectionNames } from '../../../../modules/user'
 import { CollectionNames as AssetsCollectionNames } from '../../../../modules/assets'
 import Filters, { Filter, FilterType } from '../../../../components/filters'
-import useFilters, { StoredFilter } from '../../../../hooks/useFilters'
+import useFilters from '../../../../hooks/useFilters'
 import PaginatedView from '../../../../components/paginated-view'
 
 const filters: Filter<HistoryEntry>[] = [
@@ -62,19 +60,6 @@ const History = () => {
       ]),
     [JSON.stringify(activeFilters)]
   )
-
-  // const [isLoading, lastErrorCode, historyEntries] =
-  //   useDatabaseQuery<HistoryEntry>(ViewNames.GetFullHistory, whereClauses, {
-  //     orderBy: ['createdat', OrderDirections.DESC],
-  //   })
-
-  // if (lastErrorCode !== null) {
-  //   return <ErrorMessage>Failed to load history entries</ErrorMessage>
-  // }
-
-  // if (isLoading || !historyEntries) {
-  //   return <LoadingIndicator message="Loading history entries..." />
-  // }
 
   return (
     <>

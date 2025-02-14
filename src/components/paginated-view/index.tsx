@@ -298,7 +298,7 @@ const Page = () => {
   }
 
   if (isLoading || !items) {
-    return <LoadingIndicator message="Loading page..." />
+    return <LoadingIndicator message={`Loading page ${currentPageNumber}...`} />
   }
 
   if (!items.length) {
