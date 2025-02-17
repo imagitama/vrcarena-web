@@ -30,6 +30,7 @@ import { capitalize } from '../../../../utils'
 import FormattedDate from '../../../../components/formatted-date'
 import UsernameLink from '../../../../components/username-link'
 import GenericOutputLabel from '../../../../components/generic-output-label'
+import FormControls from '../../../../components/form-controls'
 
 const parentName = 'admin'
 const pageName = 'notepad'
@@ -222,18 +223,28 @@ const AdminQueue = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {queueItems.map((queueItem) => (
-            <TableRow key={queueItem.record.id}>
-              <TableCell>{queueItem.id}</TableCell>
-              <TableCell>{capitalize(queueItem.type)}</TableCell>
-              <TableCell>
-                <QueueItemLabel queueItem={queueItem} />
-              </TableCell>
-              <TableCell>
-                <FormattedDate date={queueItem.createdat} />
+          {queueItems.length > 0 ? (
+            queueItems.map((queueItem) => (
+              <TableRow key={queueItem.record.id}>
+                <TableCell>{queueItem.id}</TableCell>
+                <TableCell>{capitalize(queueItem.type)}</TableCell>
+                <TableCell>
+                  <QueueItemLabel queueItem={queueItem} />
+                </TableCell>
+                <TableCell>
+                  <FormattedDate date={queueItem.createdat} />
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={999}>
+                <FormControls>
+                  <em>No items in queue</em>
+                </FormControls>
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </Paper>
