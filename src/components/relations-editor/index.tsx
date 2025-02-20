@@ -25,11 +25,15 @@ import ErrorMessage from '../error-message'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import SuccessMessage from '../success-message'
 import Markdown from '../markdown'
-import { getLabelForType } from '../relations'
+import { RelationItem, RelationsItems, getLabelForType } from '../relations'
 import useTimer from '../../hooks/useTimer'
 import { formHideDelay } from '../../config'
 import RadioInputs from '../radio-inputs'
 import HidableMessage from '../hidable-message'
+import Paper from '../paper'
+import Heading from '../heading'
+import CheckboxInput from '../checkbox-input'
+import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles({
   editor: {
@@ -59,6 +63,7 @@ const RelationEditorForm = ({
       asset: '',
       type: RelationType.Parent,
       comments: '',
+      requiresVerification: false,
     }
   )
   const [assetsData, setAssetsData] = useState<(Asset | PublicAsset)[]>(
@@ -85,10 +90,11 @@ const RelationEditorForm = ({
     onDone(newRelation)
   }
 
-  console.debug(`RelationsEditor.render`, { newRelation })
-
   return (
-    <div className={classes.editor}>
+    <Paper className={classes.editor}>
+      <Heading variant="h3" noTopMargin>
+        Asset
+      </Heading>
       {newRelation.asset ? (
         <>
           <AssetResultsItem
@@ -109,6 +115,7 @@ const RelationEditorForm = ({
           limit={10}
         />
       )}
+      <Heading variant="h3">Relation</Heading>
       <RadioInputs
         value={newRelation.type}
         onChange={(newValue) => setField('type', newValue as RelationType)}
@@ -117,6 +124,20 @@ const RelationEditorForm = ({
           label: key,
         }))}
       />
+      <CheckboxInput
+        label="Verification of the parent asset is required (explain in comments)"
+        value={newRelation.requiresVerification || false}
+        onChange={(e) =>
+          setField(
+            'requiresVerification',
+            newRelation.requiresVerification == true ? false : true
+          )
+        }
+      />
+      <WarningMessage>
+        Please explain here if customers need to be "verified" to get this asset
+        (such as a Discord bot)
+      </WarningMessage>
       <TextInput
         multiline
         minRows={2}
@@ -130,7 +151,7 @@ const RelationEditorForm = ({
           Done
         </Button>
       </FormControls>
-    </div>
+    </Paper>
   )
 }
 
@@ -165,13 +186,7 @@ const Renderer = ({ item }: { item: Item<Relation> }) => {
     return <ErrorMessage>Failed to load asset</ErrorMessage>
   }
 
-  return (
-    <div>
-      <div className={classes.label}>{getLabelForType(item.type)}</div>
-      <AssetResultsItem asset={asset} />
-      <Markdown source={item.comments} />
-    </div>
-  )
+  return <RelationItem asset={asset} relation={item} />
 }
 
 const validateRelations = (relations: Relation[]): boolean => {

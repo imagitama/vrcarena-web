@@ -4,7 +4,6 @@ import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
-import Typography from '@material-ui/core/Typography'
 import LazyLoad from 'react-lazyload'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import LinkIcon from '@material-ui/icons/Link'
@@ -42,6 +41,23 @@ const useStyles = makeStyles({
       transform: 'rotate(360deg) !important',
     },
   },
+  tiny: {
+    width: '100%',
+    fontSize: '75%',
+    '& $cardMedia': {
+      width: '100px',
+      height: '100px',
+    },
+    '& $cardContent': {
+      padding: '5px',
+    },
+    '& a': {
+      display: 'flex',
+    },
+  },
+  button: {
+    font: 'inherit',
+  },
   selected: {
     backgroundColor: '#656565',
   },
@@ -50,7 +66,10 @@ const useStyles = makeStyles({
   },
   // overrides
   cardContent: {
-    padding: '12px !important', // also fixes last-child padding
+    padding: '12px', // also fixes last-child padding
+    '&:last-child': {
+      paddingBottom: '12px',
+    },
   },
   cardMedia: {
     transition: 'all 500ms',
@@ -64,23 +83,23 @@ const useStyles = makeStyles({
   title: {
     display: 'flex',
     alignItems: 'center',
+    fontSize: '1.15em',
     '& span': {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      fontSize: '1rem',
     },
     '& svg': {
       marginLeft: '2px',
-      fontSize: '80%',
+      fontSize: '0.8em',
     },
   },
   author: {
-    fontSize: '90%',
+    fontSize: '0.85em',
     marginBottom: '6px',
   },
   microText: {
-    fontSize: '85%',
+    fontSize: '0.85em',
     textTransform: 'uppercase',
     lineHeight: '1.25',
     height: '16px',
@@ -93,7 +112,7 @@ const useStyles = makeStyles({
     display: 'inline-flex',
     alignItems: 'center',
     '& svg': {
-      fontSize: '100%',
+      fontSize: '1em',
       transform: 'rotate(90deg)',
       transition: 'transform 500ms',
     },
@@ -173,6 +192,7 @@ const AssetResultsItem = ({
   // settings
   isSelected = false,
   isDimmed = false,
+  isTiny = false,
   controls: Controls,
   // extra
   toggleEditMode = undefined,
@@ -180,9 +200,10 @@ const AssetResultsItem = ({
   asset?: Asset | PublicAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
   relation?: Relation
+  isTiny?: boolean // relation verification required
   isSelected?: boolean
   isDimmed?: boolean
-  controls?: React.FC
+  controls?: React.FC | null
   toggleEditMode?: () => void
 }) => {
   const classes = useStyles()
@@ -193,8 +214,8 @@ const AssetResultsItem = ({
     <Card
       className={`${classes.root} ${isSelected ? classes.selected : ''} ${
         isDimmed ? classes.dimmed : ''
-      }`}>
-      <CardActionArea>
+      } ${isTiny ? classes.tiny : ''}`}>
+      <CardActionArea className={classes.button}>
         <Link
           to={
             asset
@@ -216,7 +237,7 @@ const AssetResultsItem = ({
             </CardMedia>
           </LazyLoad>
           <CardContent className={classes.cardContent}>
-            <Typography className={classes.title}>
+            <div className={classes.title}>
               {asset && asset.title ? (
                 <>
                   <span title={asset.title.trim()}>{asset.title.trim()}</span>
@@ -225,8 +246,8 @@ const AssetResultsItem = ({
               ) : (
                 <LoadingShimmer width="100%" height="40px" />
               )}
-            </Typography>
-            <Typography className={classes.author}>
+            </div>
+            <div className={classes.author}>
               {asset ? (
                 getIsPublicAsset(asset) && asset.authorname ? (
                   `by ${asset.authorname}`
@@ -234,8 +255,8 @@ const AssetResultsItem = ({
               ) : (
                 <LoadingShimmer width="80px" height="15px" />
               )}
-            </Typography>
-            <Typography className={classes.microText}>
+            </div>
+            <div className={classes.microText}>
               <strong>
                 {asset ? (
                   getCategoryMeta(asset.category).nameSingular
@@ -244,12 +265,12 @@ const AssetResultsItem = ({
                 )}
               </strong>{' '}
               <SpeciesOutput asset={asset} relation={relation} />
-            </Typography>
+            </div>
             <div className={classes.moreInfo}>
               <div className={classes.controls}>
                 {Controls ? (
                   <Controls />
-                ) : (
+                ) : Controls !== null ? (
                   <>
                     <AddToCartButton
                       assetId={asset?.id}
@@ -267,7 +288,7 @@ const AssetResultsItem = ({
                       </div>
                     )}
                   </>
-                )}
+                ) : null}
               </div>
               {showMoreInfo && asset && 'price' in asset ? (
                 asset.price > 0 || (getIsPublicAsset(asset) && asset.isfree) ? (

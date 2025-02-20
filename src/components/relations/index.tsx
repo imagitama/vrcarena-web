@@ -10,9 +10,9 @@ import AssetResultsItem from '../asset-results-item'
 import Markdown from '../markdown'
 import useDataStore from '../../hooks/useDataStore'
 import LoadingIndicator from '../loading-indicator'
-import NoResultsMessage from '../no-results-message'
 import ErrorMessage from '../error-message'
 import { SupabaseClient } from '@supabase/supabase-js'
+import Paper from '../paper'
 
 const useStyles = makeStyles({
   root: {
@@ -35,15 +35,11 @@ const useStyles = makeStyles({
     fontSize: '150%',
     marginBottom: '0.5rem',
   },
-  comments: {
-    marginTop: '0.5rem',
-    fontStyle: 'italic',
-    '& > p:last-child': {
-      marginBottom: 0,
-    },
-  },
   itemLabel: {
     marginTop: '0.5rem',
+  },
+  comments: {
+    marginTop: '0.25rem',
   },
 })
 
@@ -86,9 +82,9 @@ export const RelationItem = ({
         relation={showRelation ? relation : undefined}
       />
       {relation.comments ? (
-        <div className={classes.comments}>
+        <Paper className={classes.comments}>
           <Markdown source={relation.comments} />
-        </div>
+        </Paper>
       ) : null}
     </div>
   )

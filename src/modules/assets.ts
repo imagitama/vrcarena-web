@@ -31,6 +31,7 @@ export interface Relation {
   asset: string
   type: string
   comments: string
+  requiresVerification?: boolean
 }
 
 export interface SourceInfo {

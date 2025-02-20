@@ -98,6 +98,7 @@ import {
 } from '../../modules/common'
 import { tagVrcFuryReady } from '../../vrcfury'
 import { SupabaseClient } from '@supabase/supabase-js'
+import RequiresVerificationNotice from '../requires-verification-notice'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -807,6 +808,24 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             ) : null}
             {isLoading || (asset && asset.sourceurl) ? (
               <ControlGroup>
+                {asset?.relations.find(
+                  (relation) => relation.requiresVerification
+                ) ? (
+                  <Control>
+                    <RequiresVerificationNotice
+                      relations={asset.relations}
+                      relationsData={asset.relationsdata}
+                    />
+                  </Control>
+                ) : null}
+                {asset?.discordserver ? (
+                  <Control>
+                    <DiscordServerMustJoinNotice
+                      discordServerId={asset?.discordserver}
+                      discordServerData={asset?.discordserverdata || undefined}
+                    />
+                  </Control>
+                ) : null}
                 <Control>
                   {asset && asset.sourceurl && isGitHubUrl(asset.sourceurl) ? (
                     <GitHubReleases
@@ -847,14 +866,6 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                       </Control>
                     ))
                   : null}
-                <Control>
-                  {asset?.discordserver ? (
-                    <DiscordServerMustJoinNotice
-                      discordServerId={asset?.discordserver}
-                      discordServerData={asset?.discordserverdata || undefined}
-                    />
-                  ) : null}
-                </Control>
                 <Control>
                   {asset &&
                     ((asset.extradata &&

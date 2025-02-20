@@ -12,9 +12,13 @@ import TextInput from '../text-input'
 import Select from '../select'
 
 const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    alignContent: 'center',
+  },
   dropdown: {
     width: '29%',
-    marginLeft: '1%',
+    marginRight: '1%',
   },
   textInput: {
     width: '70%',
@@ -69,30 +73,36 @@ const AssetSearch = ({
         />
       ) : null}
 
-      <div>
-        <TextInput
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Search for an asset"
-          className={classes.textInput}
-        />
-        <Select
-          onChange={(e) =>
-            setSelectedCategory((e.target.value as string) || null)
-          }
-          className={classes.dropdown}
-          value={selectedCategory || 'all'}>
-          <MenuItem value="all" selected={selectedCategory === null}>
-            All Categories
-          </MenuItem>
-          {Object.entries(categoryMeta).map(([categoryName, categoryInfo]) => (
-            <MenuItem
-              value={categoryName}
-              selected={categoryName === selectedCategory}>
-              {categoryInfo.nameSingular}
+      <div className={classes.root}>
+        <div className={classes.dropdown}>
+          <Select
+            onChange={(e) =>
+              setSelectedCategory((e.target.value as string) || null)
+            }
+            value={selectedCategory || 'all'}
+            fullWidth>
+            <MenuItem value="all" selected={selectedCategory === null}>
+              All Categories
             </MenuItem>
-          ))}
-        </Select>
+            {Object.entries(categoryMeta).map(
+              ([categoryName, categoryInfo]) => (
+                <MenuItem
+                  value={categoryName}
+                  selected={categoryName === selectedCategory}>
+                  {categoryInfo.nameSingular}
+                </MenuItem>
+              )
+            )}
+          </Select>
+        </div>
+        <div className={classes.textInput}>
+          <TextInput
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder="Search for an asset"
+            fullWidth
+          />
+        </div>
       </div>
     </>
   )

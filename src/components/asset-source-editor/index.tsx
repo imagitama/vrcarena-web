@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import CheckIcon from '@material-ui/icons/Check'
 
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
+import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useSearching from '../../hooks/useSearching'
 import { handleError } from '../../error-handling'
@@ -18,6 +18,7 @@ import { Asset } from '../../modules/assets'
 import TextInput from '../text-input'
 import { cleanupSourceUrl } from '../../utils/assets'
 import VisitSourceButton from '../visit-source-button'
+import { getIsDiscordMessageUrl, getIsDiscordUrl } from '../../discord'
 
 const useStyles = makeStyles({
   textInput: {
@@ -155,8 +156,6 @@ export default ({
 
   const isInvalidPatreonUrl = getIsInvalidPatreonUrl(userInput)
 
-  console.debug('URL', { userInput, newSourceUrl })
-
   return (
     <>
       <TextInput
@@ -183,6 +182,24 @@ export default ({
           It looks like you have linked to a Patreon homepage. Please change
           your URL to link directly to your Patreon post (even if it is a locked
           post)
+        </WarningMessage>
+      ) : null}
+      {getIsDiscordUrl(userInput) && !getIsDiscordMessageUrl(userInput) ? (
+        <WarningMessage>
+          It looks like you have linked to a Discord server invite. We recommend
+          that you link directly to the message in your server that has the
+          asset. Then go to the "Extra" tab and connect your Discord server and
+          provide the invite URL there.
+          <br />
+          <br />
+          Example good URL:
+          <br />
+          https://discord.com/channels/734993431507763289/736972936581349506/1338845707876044851
+          <br />
+          <br />
+          Bad URL:
+          <br />
+          https://discord.gg/T5x8gQwK
         </WarningMessage>
       ) : null}
       {isSaving ? (
