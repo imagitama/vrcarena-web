@@ -808,7 +808,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             ) : null}
             {isLoading || (asset && asset.sourceurl) ? (
               <ControlGroup>
-                {asset?.relations.find(
+                {asset?.relations?.find(
                   (relation) => relation.requiresVerification
                 ) ? (
                   <Control>
