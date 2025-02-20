@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import WarningIcon from '@material-ui/icons/Warning'
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser'
@@ -40,9 +40,9 @@ const RequiresVerificationNotice = ({
   relationsData: Asset[]
 }) => {
   const classes = useStyles()
-  const relationIdx = relations
-    .filter((relation, idx) => relation.requiresVerification)
-    .map((relation, idx) => idx)[0]
+  const relationsToRender = relations.filter(
+    (relation) => relation.requiresVerification === true
+  )
 
   return (
     <Box icon={<VerifiedUserIcon />}>
@@ -52,15 +52,21 @@ const RequiresVerificationNotice = ({
       <div className={classes.desc}>
         The author has indicated there is additional verification steps required
         to get this asset:
-        <br />
-        <br />
-        <AssetResultsItem
-          asset={relationsData[relationIdx]}
-          isTiny
-          controls={null}
-        />
-        <br />
-        {relations[relationIdx].comments}
+        {relationsToRender.map((relation) => (
+          <Fragment key={relation.asset}>
+            <br />
+            <br />
+            <AssetResultsItem
+              asset={relationsData.find(
+                (asset) => asset.id === relation?.asset
+              )}
+              isTiny
+              controls={null}
+            />
+            <br />
+            {relation!.comments}
+          </Fragment>
+        ))}
       </div>
     </Box>
   )

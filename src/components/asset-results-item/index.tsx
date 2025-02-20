@@ -66,7 +66,8 @@ const useStyles = makeStyles({
   },
   // overrides
   cardContent: {
-    padding: '12px', // also fixes last-child padding
+    overflow: 'hidden', // for tiny clipping
+    padding: '12px',
     '&:last-child': {
       paddingBottom: '12px',
     },
