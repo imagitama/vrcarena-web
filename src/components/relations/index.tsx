@@ -27,6 +27,7 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
   },
   relation: {
+    width: '200px', // fix comments outside of bounds
     position: 'relative',
     height: '100%',
     margin: '0 0.5rem 0.5rem 0',
