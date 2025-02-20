@@ -227,14 +227,18 @@ const AssetResultsItem = ({
               : ''
           }
           onClick={onClick}>
-          <LazyLoad height={200}>
+          <LazyLoad
+            height={isTiny ? 100 : 200}
+            placeholder={<DefaultThumbnail isTiny={isTiny} />}>
             <CardMedia
               className={classes.cardMedia}
               image={asset && asset.thumbnailurl ? asset.thumbnailurl : ''}
               title={
                 asset && asset.title ? `Thumbnail for ${asset.title}` : ''
               }>
-              {!asset || !asset.thumbnailurl ? <DefaultThumbnail /> : undefined}
+              {!asset || !asset.thumbnailurl ? (
+                <DefaultThumbnail isTiny={isTiny} />
+              ) : undefined}
             </CardMedia>
           </LazyLoad>
           <CardContent className={classes.cardContent}>

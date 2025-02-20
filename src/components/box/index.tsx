@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   content: {
+    overflow: 'hidden', // prevent horizontal overflow with tiny assets
     padding: '0.5rem',
   },
 }))
