@@ -7,6 +7,7 @@ import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
 import useUserId from '../../hooks/useUserId'
+import { Asset } from '../../modules/assets'
 
 export default () => {
   const userId = useUserId()
@@ -18,7 +19,7 @@ export default () => {
         .eq('userid', userId),
     [userId]
   )
-  const [isLoading, lastErrorCode, myCollection] = useDataStore(
+  const [isLoading, lastErrorCode, myCollection] = useDataStore<Asset>(
     getQuery,
     'my-collection'
   )

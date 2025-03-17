@@ -27,11 +27,11 @@ export interface SearchableProperties {
   renderer: (props: { item: any }) => React.ReactElement
 }
 
-export interface CustomProperties {
+export interface CustomProperties<TRecord, TFieldData> {
   renderer: (props: {
-    onChange: (newValue: any) => void
-    value: any
-    databaseResult?: any // the raw data for the original item
+    onChange: (newValue: TFieldData) => void
+    value: TFieldData
+    databaseResult: TRecord // the raw data for the original item
   }) => React.ReactElement
 }
 
@@ -42,15 +42,15 @@ export interface ItemProperties {
   // renderer: (props: { item: any }) => React.ReactElement
 }
 
-export interface EditableField<TData> {
-  name: keyof TData
+export interface EditableField<TRecord, TFieldData = undefined> {
+  name: keyof TRecord
   label?: string // optional for hidden fields
   type: keyof typeof fieldTypes
   default?: any
   hint?: string
   imageUploadProperties?: ImageUploadProperties
   searchableProperties?: SearchableProperties
-  customProperties?: CustomProperties
+  customProperties?: CustomProperties<TRecord, TFieldData>
   itemProperties?: ItemProperties
   isRequired?: boolean
   options?: Option[]

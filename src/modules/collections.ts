@@ -7,6 +7,7 @@ export interface Collection extends Record<string, unknown> {
   thumbnailurl: string
   items: CollectionItem[]
   createdat: string
+  createdby: string
 }
 
 export interface CollectionItem {

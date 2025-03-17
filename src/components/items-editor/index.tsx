@@ -120,7 +120,7 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
 }: {
   items: Item<TItem>[]
   onChange: (newItems: Item<TItem>[]) => void
-  editor: React.ComponentType<
+  editor?: React.ComponentType<
     {
       item: Item<TItem>
       index: number
@@ -227,7 +227,7 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
                   className={`${classes.item} ${
                     idx === activeIndexToEdit ? classes.activeForEditing : ''
                   } ${itemClassName}`}>
-                  {idx === activeIndexToEdit ? (
+                  {idx === activeIndexToEdit && editor ? (
                     <div>
                       {/* @ts-ignore */}
                       {React.createElement(editor, {
@@ -267,7 +267,7 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
                               <DeleteIcon />
                             </div>
                           ) : null}
-                          {allowEditing ? (
+                          {allowEditing && editor ? (
                             <div onClick={() => onEditIdxClick(idx)}>
                               <EditIcon />
                             </div>

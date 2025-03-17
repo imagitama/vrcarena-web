@@ -394,6 +394,14 @@ const ViewCollection = lazy(() =>
       )
   )
 )
+const EditCollection = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "edit-collection" */ './containers/edit-collection'
+      )
+  )
+)
 const Query = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "query" */ './containers/query')
@@ -746,6 +754,11 @@ const MainContent = () => {
           exact
           path={routes.viewCollectionsWithPageNumberVar}
           component={ViewAllCollections}
+        />
+        <Route
+          exact
+          path={routes.editCollectionWithVar}
+          component={EditCollection}
         />
         <Route
           exact

@@ -3,8 +3,9 @@ import { PagesFieldNames, PlaylistsFieldNames } from '../data-store'
 import { fieldTypes } from '../generic-forms'
 import MarkdownEditor from '../components/markdown-editor'
 import { EditableField } from './'
+import { Page } from '../modules/pages'
 
-const fields: EditableField<any>[] = [
+const fields: EditableField<Page, string>[] = [
   {
     name: PagesFieldNames.title,
     label: 'Title',

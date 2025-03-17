@@ -110,7 +110,7 @@ This is a caption
             onChange={(e) => onChange(e.target.value)}
             multiline
             minRows={75}
-            rowsMax={25}
+            maxRows={25}
             className={classes.input}
             variant="outlined"
             disabled={isDisabled}

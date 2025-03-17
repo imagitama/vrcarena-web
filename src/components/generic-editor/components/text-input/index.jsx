@@ -7,5 +7,6 @@ export default ({ onChange, value, multiline }) => (
     value={value}
     multiline={multiline === true}
     minRows={multiline ? 3 : 0}
+    fullWidth
   />
 )

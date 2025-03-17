@@ -1,49 +1,49 @@
 import React from 'react'
-import { PlaylistsFieldNames } from '../data-store'
 import { fieldTypes } from '../generic-forms'
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '../config'
 import PlaylistItemsEditor from '../components/playlist-items-editor'
 import { bucketNames } from '../file-uploading'
 import { EditableField } from './'
+import { CollectionItem, FullCollection } from '../modules/collections'
 
-const fields: EditableField<any>[] = [
+const fields: EditableField<FullCollection, CollectionItem[]>[] = [
   {
-    name: PlaylistsFieldNames.title,
+    name: 'title',
     label: 'Title',
     type: fieldTypes.text,
-    isRequired: true
+    isRequired: true,
   },
   {
-    name: PlaylistsFieldNames.description,
+    name: 'description',
     label: 'Description',
     type: fieldTypes.textMarkdown,
-    default: ''
+    default: '',
   },
   {
-    name: PlaylistsFieldNames.thumbnailUrl,
+    name: 'thumbnailurl',
     label: 'Thumbnail',
     type: fieldTypes.imageUpload,
     imageUploadProperties: {
       width: THUMBNAIL_WIDTH,
       height: THUMBNAIL_HEIGHT,
-      bucketName: bucketNames.playlistThumbnails
+      bucketName: bucketNames.playlistThumbnails,
     },
-    default: ''
+    default: '',
   },
   {
-    name: PlaylistsFieldNames.items,
+    name: 'items',
     label: 'Assets',
     type: fieldTypes.custom,
     customProperties: {
       renderer: ({ onChange, value, databaseResult }) => (
         <PlaylistItemsEditor
-          items={value}
+          currentItems={value}
           onChange={onChange}
-          itemsAssetData={databaseResult ? databaseResult.itemsassetdata : []}
+          assetsData={databaseResult ? databaseResult.itemsassetdata : []}
         />
-      )
-    }
-  }
+      ),
+    },
+  },
 ]
 
 export default fields

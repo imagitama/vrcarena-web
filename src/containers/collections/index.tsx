@@ -7,13 +7,19 @@ import BodyText from '../../components/body-text'
 import PaginatedView from '../../components/paginated-view'
 import { OrderDirections } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
-import CollectionResults from '../../components/collection-results'
+import ResultsItems from '../../components/results-items'
 import { Collection, ViewNames } from '../../modules/collections'
+import CollectionResultsItem from '../../components/collection-results-item'
+import Button from '../../components/button'
 
 const description = 'Browse the collections of assets created by our users.'
 
 const Renderer = ({ items }: { items?: Collection[] }) => (
-  <CollectionResults collections={items} />
+  <ResultsItems>
+    {items!.map((item) => (
+      <CollectionResultsItem key={item.id} collection={item} />
+    ))}
+  </ResultsItems>
 )
 
 export default () => {
@@ -32,7 +38,16 @@ export default () => {
         viewName={ViewNames.GetPublicCollections}
         defaultFieldName="createdat"
         defaultDirection={OrderDirections.ASC}
-        urlWithPageNumberVar={routes.viewCollectionsWithPageNumberVar}>
+        urlWithPageNumberVar={routes.viewCollectionsWithPageNumberVar}
+        extraControls={[
+          <Button
+            url={routes.myAccountWithTabNameVar.replace(
+              ':tabName',
+              'collection'
+            )}>
+            My Collections
+          </Button>,
+        ]}>
         <Renderer />
       </PaginatedView>
     </>

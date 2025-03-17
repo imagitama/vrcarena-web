@@ -1,10 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
+import EditIcon from '@material-ui/icons/Edit'
+
 import Link from '../../components/link'
-
 import * as routes from '../../routes'
-
 import Markdown from '../../components/markdown'
 import ErrorMessage from '../../components/error-message'
 import LoadingIndicator from '../../components/loading-indicator'
@@ -16,8 +16,12 @@ import AssetResults from '../../components/asset-results'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { FullCollection, ViewNames } from '../../modules/collections'
 import NoResultsMessage from '../../components/no-results-message'
+import UsernameLink from '../../components/username-link'
+import useUserId from '../../hooks/useUserId'
+import useIsEditor from '../../hooks/useIsEditor'
+import { PublicAsset } from '../../modules/assets'
 
-const analyticsCategory = 'ViewDiscordServer'
+const analyticsCategory = 'ViewCollection'
 
 const View = () => {
   const { collectionId } = useParams<{ collectionId: string }>()
@@ -26,6 +30,8 @@ const View = () => {
     collectionId,
     'view-collection'
   )
+  const userId = useUserId()
+  const isEditor = useIsEditor()
 
   if (isLoading) {
     return <LoadingIndicator message="Loading collectiion..." />
@@ -39,7 +45,19 @@ const View = () => {
     return <ErrorMessage>The collection does not exist</ErrorMessage>
   }
 
-  const { id: playlistId, title, description, itemsassetdata } = result
+  const {
+    title,
+    items,
+    description,
+    itemsassetdata,
+    createdby,
+    createdbyusername,
+  } = result
+
+  // @ts-ignore
+  const validAssets: PublicAsset[] = (items || [])
+    .map((item) => itemsassetdata.find((asset) => asset.id === item.asset))
+    .filter((result) => result !== undefined)
 
   return (
     <>
@@ -56,16 +74,20 @@ const View = () => {
         <Link
           to={routes.viewCollectionWithVar.replace(
             ':collectionId',
-            playlistId
+            collectionId
           )}>
           {title || '(no title)'}
         </Link>
       </Heading>
 
+      <Heading variant="h2" noTopMargin>
+        by <UsernameLink username={createdbyusername} id={createdby} />
+      </Heading>
+
       {description && <Markdown source={description} />}
 
-      {itemsassetdata.length ? (
-        <AssetResults assets={itemsassetdata} />
+      {validAssets.length ? (
+        <AssetResults assets={validAssets} />
       ) : (
         <NoResultsMessage>No assets in this collection</NoResultsMessage>
       )}
@@ -78,7 +100,18 @@ const View = () => {
             trackAction(analyticsCategory, 'Click view all collections button')
           }>
           View All Collections
-        </Button>
+        </Button>{' '}
+        {userId === createdby || isEditor ? (
+          <Button
+            url={routes.editCollectionWithVar.replace(
+              ':collectionId',
+              collectionId
+            )}
+            color="default"
+            icon={<EditIcon />}>
+            Edit
+          </Button>
+        ) : null}
       </PageControls>
     </>
   )

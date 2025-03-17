@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   rightCol: {},
   header: {
     lineHeight: 1,
+    marginBottom: '8px',
   },
   message: {
     marginTop: '-8px',
@@ -62,7 +63,7 @@ export default ({
 }: {
   title: string
   message: string
-  hide: () => void
+  hide?: () => void
 }) => {
   const classes = useStyles()
 
@@ -78,9 +79,11 @@ export default ({
         <div className={classes.message}>
           <Markdown source={message} />
         </div>
-        <div className={classes.hideBtn} onClick={hide}>
-          <CloseIcon />
-        </div>
+        {hide ? (
+          <div className={classes.hideBtn} onClick={hide}>
+            <CloseIcon />
+          </div>
+        ) : null}
       </div>
     </Paper>
   )
