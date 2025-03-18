@@ -16,13 +16,13 @@ import LaunchIcon from '@material-ui/icons/Launch'
 import EditIcon from '@material-ui/icons/Edit'
 import InfoIcon from '@material-ui/icons/Info'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 import * as routes from '../../routes'
 
 import Button from '../../components/button'
 import NoPermissionMessage from '../../components/no-permission-message'
-
-import useUserRecord from '../../hooks/useUserRecord'
 
 import Link from '../../components/link'
 import TextInput from '../../components/text-input'
@@ -40,7 +40,10 @@ import {
   FullAsset,
 } from '../../modules/assets'
 import useDataStoreCreateBulk from '../../hooks/useDataStoreCreateBulk'
-import useDatabaseQuery, { OrderDirections } from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, {
+  Operators,
+  OrderDirections,
+} from '../../hooks/useDatabaseQuery'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import LoadingShimmer from '../../components/loading-shimmer'
@@ -427,18 +430,6 @@ const QueuedItemRow = ({
     return <LoadingRow />
   }
 
-  if (lastSubscribeErrorCode !== null) {
-    return (
-      <TableRow>
-        <TableCell colSpan={999}>
-          <ErrorMessage>
-            Failed to subscribe: {lastSubscribeErrorCode}
-          </ErrorMessage>
-        </TableCell>
-      </TableRow>
-    )
-  }
-
   return (
     <TableRow className={`${isDeleted ? classes.deletedRow : ''}`}>
       <TableCell>
@@ -469,6 +460,11 @@ const QueuedItemRow = ({
             </Button>
           </>
         ) : null}
+        {lastSubscribeErrorCode !== null ? (
+          <ErrorMessage>
+            Failed to subscribe: {lastSubscribeErrorCode}
+          </ErrorMessage>
+        ) : null}
       </TableCell>
       <TableCell>
         <DeleteButton
@@ -481,6 +477,9 @@ const QueuedItemRow = ({
   )
 }
 
+const oneWeekAgo = new Date()
+oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+
 const View = () => {
   const [showRules, setShowRules] = useState(true)
   const [newSourceUrls, setSourceUrls] = useState([''])
@@ -488,10 +487,13 @@ const View = () => {
     useDataStoreCreateBulk<AssetSyncQueueItem>(CollectionNames.AssetSyncQueue, {
       queryName: 'add-asset-sync-queue-items',
     })
+  const [isOldItemsShown, setIsOldItemsShown] = useState(false)
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<AssetSyncQueueItem>(
       ViewNames.GetMyAssetSyncQueuedItems,
-      [],
+      isOldItemsShown
+        ? []
+        : [['createdat', Operators.GREATER_THAN, oneWeekAgo.toISOString()]],
       {
         queryName: 'get-my-asset-sync-queued-items',
         orderBy: ['createdat', OrderDirections.DESC],
@@ -680,6 +682,15 @@ const View = () => {
           </ErrorMessage>
         ) : null}
       </FormControls>
+      <Button
+        onClick={() => setIsOldItemsShown((currentVal) => !currentVal)}
+        size="small"
+        color="default"
+        icon={
+          isOldItemsShown ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
+        }>
+        Show Old Queued Assets
+      </Button>
     </>
   )
 }
