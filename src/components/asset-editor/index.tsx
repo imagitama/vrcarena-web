@@ -391,7 +391,7 @@ const ShouldBeAdultWarning = ({ asset }: { asset: Asset }) => {
 
 const getFriendlySyncPlatformName = (
   syncPlatformName: SyncPlatformName
-): string | undefined => {
+): string => {
   switch (syncPlatformName) {
     case SyncPlatformName.Gumroad:
       return 'Gumroad'
@@ -399,6 +399,11 @@ const getFriendlySyncPlatformName = (
       return 'Booth'
     case SyncPlatformName.Itch:
       return 'Itch.io'
+    case SyncPlatformName.Jinxxy:
+      return 'Jinxxy'
+    default:
+      console.warn(`Could not get label for platform ${syncPlatformName}`)
+      return syncPlatformName
   }
 }
 
@@ -414,12 +419,6 @@ const SyncButton = ({
   onSync: () => void
 }) => {
   const label = getFriendlySyncPlatformName(syncPlatformName)
-
-  if (!label) {
-    console.error(`Could not get label for platform ${syncPlatformName}`)
-    handleError(`Could not get label for platform ${syncPlatformName}`)
-    return <ErrorMessage>Failed to render sync button</ErrorMessage>
-  }
 
   return (
     <FormControls>
