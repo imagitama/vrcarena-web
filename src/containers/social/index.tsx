@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import RefreshIcon from '@material-ui/icons/Refresh'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Button from '../../components/button'

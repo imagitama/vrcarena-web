@@ -38,6 +38,7 @@ import DeleteAccountForm from '../../components/delete-account-form'
 import ChangePasswordForm from '../../components/change-password-form'
 import MyClaims from '../../components/my-claims'
 import Discord from './components/discord'
+import InfoMessage from '../../components/info-message'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -221,6 +222,15 @@ const View = () => {
                 <Heading variant="h2">Patreon</Heading>
                 <PatreonConnectForm />
                 <Heading variant="h3">My Featured Assets</Heading>
+                <InfoMessage title="How It Works">
+                  A Patreon supporter can feature any asset on the site (even
+                  ones you didn't publish). Every day the featured asset is
+                  rotated until all queued assets have been featured.
+                  <br />
+                  <br />
+                  Click the "Feature" button on any asset to add it to the
+                  queue.
+                </InfoMessage>
                 <MyFeaturedAssets />
               </>
             ),

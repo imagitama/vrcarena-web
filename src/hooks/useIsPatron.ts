@@ -1,4 +1,4 @@
-import { CollectionNames } from '../modules/assets'
+import { CollectionNames } from '../modules/users'
 import { PatreonStatus, UserMeta } from '../modules/users'
 import useDataStoreItem from './useDataStoreItem'
 import useUserId from './useUserId'
@@ -6,9 +6,11 @@ import useUserId from './useUserId'
 const useIsPatron = (): boolean | null => {
   const userId = useUserId()
   const [, , userMeta] = useDataStoreItem<UserMeta>(
-    CollectionNames.AssetsMeta,
+    CollectionNames.UsersMeta,
     userId || false
   )
+
+  console.debug('meta', userMeta)
 
   return userMeta ? userMeta.patreonstatus === PatreonStatus.Patron : null
 }

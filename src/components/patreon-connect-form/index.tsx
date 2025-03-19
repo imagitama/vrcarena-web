@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
+import RefreshIcon from '@material-ui/icons/Refresh'
 
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
@@ -10,7 +11,7 @@ import {
   CollectionNames,
   UserMetaFieldNames,
   options,
-  PatreonStatuses
+  PatreonStatuses,
 } from '../../hooks/useDatabaseQuery'
 
 import Button from '../button'
@@ -19,61 +20,78 @@ import ErrorMessage from '../error-message'
 import Paper from '../paper'
 import Heading from '../heading'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import Message from '../message'
+import { UserMeta } from '../../modules/users'
 
-const patreonOAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${
-  process.env.REACT_APP_PATREON_CLIENT_ID
-}&redirect_uri=${
-  process.env.REACT_APP_PATREON_REDIRECT_URI
-}&scope=identity%20campaigns.members`
+const patreonOAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${process.env.REACT_APP_PATREON_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_PATREON_REDIRECT_URI}&scope=identity%20campaigns.members`
 let oauthCode
 
-const getPatreonUserInfoWithCode = oauthCode => {
-  return callFunction('getPatreonUserInfo', {
-    code: oauthCode
+interface GetPatreonUserPayload {
+  code: string
+}
+
+interface GetPatreonUserInfoResult {
+  rewardIds: string[]
+}
+
+const getPatreonUserInfoWithCode = async (
+  oauthCode: string
+): Promise<GetPatreonUserInfoResult> => {
+  const { data } = await callFunction<
+    GetPatreonUserPayload,
+    GetPatreonUserInfoResult
+  >('getPatreonUserInfo', {
+    code: oauthCode,
   })
+  return data
 }
 
 const useStyles = makeStyles({
   connectedMessage: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   icon: {
     fontSize: '150%',
-    marginRight: '1rem'
+    marginRight: '1rem',
   },
   rewardItem: {
-    marginBottom: '0.5rem'
-  }
+    marginBottom: '0.5rem',
+  },
 })
 
-const rewardMetaById = {
-  '4508629': {
+interface RewardMeta {
+  title: string
+  description: string
+}
+
+const rewardMetaById: { [key: number]: RewardMeta } = {
+  4508629: {
     title: 'Pedestals',
     description:
-      'When you edit an asset you can upload a special 360 degree video of your asset to show it off. Instructions are in our Discord server under #patrons.'
+      'When you edit an asset you can upload a special 360 degree video of your asset to show it off. Instructions are in our Discord server under #patrons.',
   },
-  '4508436': {
+  4508436: {
     title: 'Shout-out on the site',
     description:
-      'Your name and avatar is listed on the Patreons page on this site (click More in navigation and click Patreon).'
+      'Your name and avatar is listed on the Patreons page on this site (click More in navigation and click Patreon).',
   },
-  '5934668': {
+  5934668: {
     title: 'Feature Asset',
     description:
-      'When editing your assets you can click the Feature button and it will be randomly selected to be shown on the homepage.'
-  }
+      'When editing your assets you can click the Feature button and it will be randomly selected to be shown on the homepage.',
+  },
 }
 
 export default () => {
   const userId = useUserId()
-  const [
-    isLoadingMeta,
-    isErrorLoadingMeta,
-    metaResult,
-    hydrate
-  ] = useDataStoreItem(CollectionNames.UserMeta, userId, 'usermeta-patreon')
-  const [isComplete, setIsComplete] = useState(false)
+  const [isLoadingMeta, isErrorLoadingMeta, metaResult, hydrate] =
+    useDataStoreItem<UserMeta>(
+      CollectionNames.UserMeta,
+      userId || false,
+      'usermeta-patreon'
+    )
+  const [isComplete, setIsComplete] = useState<boolean | null>(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isErrored, setIsErrored] = useState(false)
   const classes = useStyles()
@@ -81,7 +99,7 @@ export default () => {
   useEffect(() => {
     async function main() {
       try {
-        let queryParams = window.location.search
+        let queryParams: any = window.location.search
 
         if (!queryParams) {
           return
@@ -90,7 +108,9 @@ export default () => {
         queryParams = queryParams.replace('?', '')
         queryParams = queryParams.split('&')
         queryParams = queryParams
-          .map(paramWithEquals => paramWithEquals.split('='))
+          // @ts-ignore
+          .map((paramWithEquals) => paramWithEquals.split('='))
+          // @ts-ignore
           .reduce((params, [key, val]) => ({ ...params, [key]: val }), {})
 
         if (!queryParams.code) {
@@ -103,9 +123,7 @@ export default () => {
 
         oauthCode = queryParams.code
 
-        const {
-          data: { rewardIds }
-        } = await getPatreonUserInfoWithCode(oauthCode)
+        const { rewardIds } = await getPatreonUserInfoWithCode(oauthCode)
 
         if (!rewardIds) {
           throw new Error(
@@ -157,33 +175,32 @@ export default () => {
   }
 
   const isPatron =
-    metaResult &&
-    metaResult[UserMetaFieldNames.patreonStatus] === PatreonStatuses.Patron
+    metaResult && metaResult.patreonstatus === PatreonStatuses.Patron
 
   if (isComplete || isPatron) {
     if (isPatron) {
       return (
         <>
-          <Paper>
-            <div className={classes.icon}>
-              <CheckIcon />
-            </div>
-            <div>
-              You have successfully connected your VRCArena account with
-              Patreon!
-            </div>
-          </Paper>
+          <Message icon={<CheckIcon />}>
+            You have successfully connected your VRCArena account with Patreon
+          </Message>
           <p>
-            You can click this button to refresh your account:{' '}
-            <Button url={patreonOAuthUrl} openInNewTab={false}>
+            You can click this button to refresh your account:
+            <br />
+            <br />
+            <Button
+              url={patreonOAuthUrl}
+              openInNewTab={false}
+              icon={<RefreshIcon />}
+              color="default">
               Refresh with Patreon
             </Button>
           </p>
           <Heading variant="h3">Rewards</Heading>
-          {metaResult[UserMetaFieldNames.patreonRewardIds].length
-            ? metaResult[UserMetaFieldNames.patreonRewardIds]
-                .filter(rewardId => rewardId in rewardMetaById)
-                .map(rewardId => (
+          {metaResult.patreonrewardids.length
+            ? metaResult.patreonrewardids
+                .filter((rewardId) => rewardId in rewardMetaById)
+                .map((rewardId) => (
                   <Paper key={rewardId} className={classes.rewardItem}>
                     <strong>{rewardMetaById[rewardId].title}</strong>
                     <p>{rewardMetaById[rewardId].description}</p>

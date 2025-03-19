@@ -184,7 +184,6 @@ const EditorRecordManager = ({
             <div className={classes.cell}>
               <FeatureButton
                 id={id}
-                metaCollectionName={metaCollectionName}
                 existingFeaturedStatus={existingFeaturedStatus}
                 onDone={onDone}
               />

@@ -36,6 +36,7 @@ export enum PatreonStatus {
 
 export interface UserMeta extends Record<string, unknown> {
   patreonstatus: PatreonStatus
+  patreonrewardids: number[]
   linkedvrchatuserid: string
   vrchatlinkcode: number
   discorduserid: number

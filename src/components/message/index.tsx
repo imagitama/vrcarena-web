@@ -27,9 +27,11 @@ const useStyles = makeStyles(() => ({
     zIndex: 10,
   },
   icon: {
-    alignSelf: 'baseline',
+    height: '100%',
+    // alignSelf: 'baseline', TODO: Why this
     marginRight: '1rem',
     display: 'flex',
+    alignItems: 'center',
   },
   chariot: {
     position: 'absolute',
