@@ -1436,7 +1436,7 @@ const Editor = () => {
                     )
                   }
                 />
-                <FormEditorArea
+                {/* Disabled 19mar25 until we decide what to do with it <FormEditorArea
                   fieldName="slug"
                   title="Slug"
                   description="A slug is a user-friendly name for the asset shown in the URL instead of the ID. Keep it very short (like 5-10 characters)."
@@ -1450,7 +1450,7 @@ const Editor = () => {
                       <PatreonOnlyMessage />
                     )
                   }
-                />
+                /> */}
               </>
             ),
           },
