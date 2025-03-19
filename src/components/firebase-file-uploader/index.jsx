@@ -8,7 +8,7 @@ import { handleError } from '../../error-handling'
 
 const useStyles = makeStyles({
   container: {
-    position: 'relative'
+    position: 'relative',
   },
   input: {
     position: 'absolute',
@@ -17,23 +17,23 @@ const useStyles = makeStyles({
     width: '100%',
     height: '100%',
     opacity: 0,
-    zIndex: 100
-  }
+    zIndex: 100,
+  },
 })
 
 export default ({
   onDownloadUrl,
   directoryPath = '',
   filePrefix = '',
-  children,
+  children = null,
   mimeTypes = [],
-  onCancel = null
+  onCancel = null,
 }) => {
   const [isUploading, percentageDone, , , upload] = useFileUpload()
   const classes = useStyles()
   const [currentFile, setCurrentFile] = useState(null)
 
-  const onFileChange = files => {
+  const onFileChange = (files) => {
     setCurrentFile(files[0])
 
     if (children) {
@@ -73,7 +73,7 @@ export default ({
         <input
           className={classes.input}
           type="file"
-          onChange={event => onFileChange(event.target.files)}
+          onChange={(event) => onFileChange(event.target.files)}
           multiple={false}
           accept={mimeTypes.join(',')}
         />
@@ -86,7 +86,7 @@ export default ({
     <>
       <input
         type="file"
-        onChange={event => onFileChange(event.target.files)}
+        onChange={(event) => onFileChange(event.target.files)}
         multiple={false}
         accept={mimeTypes.join(',')}
       />

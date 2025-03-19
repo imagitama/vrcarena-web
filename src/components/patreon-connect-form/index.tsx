@@ -22,6 +22,8 @@ import Heading from '../heading'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import Message from '../message'
 import { UserMeta } from '../../modules/users'
+import WarningMessage from '../warning-message'
+import NoResultsMessage from '../no-results-message'
 
 const patreonOAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${process.env.REACT_APP_PATREON_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_PATREON_REDIRECT_URI}&scope=identity%20campaigns.members`
 let oauthCode
@@ -197,16 +199,22 @@ export default () => {
             </Button>
           </p>
           <Heading variant="h3">Rewards</Heading>
-          {metaResult.patreonrewardids.length
-            ? metaResult.patreonrewardids
-                .filter((rewardId) => rewardId in rewardMetaById)
-                .map((rewardId) => (
-                  <Paper key={rewardId} className={classes.rewardItem}>
-                    <strong>{rewardMetaById[rewardId].title}</strong>
-                    <p>{rewardMetaById[rewardId].description}</p>
-                  </Paper>
-                ))
-            : '(no rewards found)'}
+          <WarningMessage>
+            As of March 2025 we have disabled "pedestals" and "custom slugs" as
+            they are old, hardly used features that are extra work to maintain.
+          </WarningMessage>
+          {metaResult.patreonrewardids.length ? (
+            metaResult.patreonrewardids
+              .filter((rewardId) => rewardId in rewardMetaById)
+              .map((rewardId) => (
+                <Paper key={rewardId} className={classes.rewardItem}>
+                  <strong>{rewardMetaById[rewardId].title}</strong>
+                  <p>{rewardMetaById[rewardId].description}</p>
+                </Paper>
+              ))
+          ) : (
+            <NoResultsMessage>No rewards found</NoResultsMessage>
+          )}
         </>
       )
     } else {

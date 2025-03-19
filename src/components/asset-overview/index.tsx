@@ -48,7 +48,6 @@ import ErrorMessage from '../error-message'
 import LoadingShimmer from '../loading-shimmer'
 import ImageGallery from '../image-gallery'
 import FeatureList from '../feature-list'
-import PedestalVideo from '../pedestal-video'
 import Price from '../price'
 import TagChips from '../tag-chips'
 import Button from '../button'
@@ -554,54 +553,35 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
         {asset && isAssetWaitingForApproval(asset) ? (
           <QueuedAssetInfo asset={asset} hydrate={hydrate} />
         ) : null}
-        <Messages />
-        {asset && asset.pedestalvideourl ? (
-          <div
-            className={`${classes.pedestalWrapper} ${
-              isPedestalExpanded ? classes.expanded : ''
-            }`}
-            onClick={() => setIsPedestalExpanded((currentVal) => !currentVal)}>
-            <PedestalVideo
-              videoUrl={asset.pedestalvideourl}
-              fallbackImageUrl={asset.pedestalfallbackimageurl}
-            />
-          </div>
-        ) : (
-          <ImageGallery
-            images={
-              isLoading
-                ? []
-                : mediaAttachments.length
-                ? mediaAttachments.slice(0, 3).map((attachment) => ({
-                    url: attachment.url,
-                  }))
-                : [
-                    {
-                      url: asset.thumbnailurl,
-                    },
-                  ]
-            }
-            onClickImage={() =>
-              trackAction(
-                analyticsCategoryName,
-                'Click attached image thumbnail to open gallery'
-              )
-            }
-            onMoveNext={() =>
-              trackAction(
-                analyticsCategoryName,
-                'Click go next image in gallery'
-              )
-            }
-            onMovePrev={() =>
-              trackAction(
-                analyticsCategoryName,
-                'Click go prev image in gallery'
-              )
-            }
-            showLoadingCount={isLoading ? 3 : 0}
-          />
-        )}
+        <Messages />(
+        <ImageGallery
+          images={
+            isLoading
+              ? []
+              : mediaAttachments.length
+              ? mediaAttachments.slice(0, 3).map((attachment) => ({
+                  url: attachment.url,
+                }))
+              : [
+                  {
+                    url: asset.thumbnailurl,
+                  },
+                ]
+          }
+          onClickImage={() =>
+            trackAction(
+              analyticsCategoryName,
+              'Click attached image thumbnail to open gallery'
+            )
+          }
+          onMoveNext={() =>
+            trackAction(analyticsCategoryName, 'Click go next image in gallery')
+          }
+          onMovePrev={() =>
+            trackAction(analyticsCategoryName, 'Click go prev image in gallery')
+          }
+          showLoadingCount={isLoading ? 3 : 0}
+        />
         <div className={classes.primaryMetadata}>
           <div className={classes.primaryMetadataThumb}>
             {isLoading ? (

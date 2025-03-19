@@ -254,11 +254,6 @@ const ResetPassword = lazy(() =>
       )
   )
 )
-const Pedestals = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "pedestals" */ './containers/pedestals')
-  )
-)
 const MemoryGame = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "memory" */ './containers/memory')
@@ -702,7 +697,6 @@ const MainContent = () => {
         />
         <Route exact path={routes.patreon} component={Patreon} />
         <Route exact path={routes.resetPassword} component={ResetPassword} />
-        <Route exact path={routes.pedestals} component={Pedestals} />
         <Route exact path={routes.vsScreen} component={VsScreen} />
         <Route
           exact

@@ -17,7 +17,6 @@ import AssetThumbnail from '../asset-thumbnail'
 import Markdown from '../markdown'
 import TagChip from '../tag-chip'
 import TutorialSteps from '../tutorial-steps'
-import PedestalVideo from '../pedestal-video'
 import SketchfabEmbed from '../sketchfab-embed'
 import AssetResultsItem from '../asset-results-item'
 import AuthorResultsItem from '../author-results-item'
@@ -202,34 +201,6 @@ function BannerOutput({ fields }) {
         </div>
       ) : (
         <NoValueLabel>(no banner)</NoValueLabel>
-      )}
-    </div>
-  )
-}
-
-function PedestalVideoValue({ fields }) {
-  const classes = useStyles()
-  return (
-    <div className={classes.pedestalVideo}>
-      {fields[AssetFieldNames.pedestalVideoUrl] ? (
-        <PedestalVideo videoUrl={fields[AssetFieldNames.pedestalVideoUrl]} />
-      ) : (
-        <NoValueLabel>(no pedestal video)</NoValueLabel>
-      )}
-    </div>
-  )
-}
-
-function PedestalFallbackImageValue({ fields }) {
-  const classes = useStyles()
-  return (
-    <div className={classes.pedestalVideo}>
-      {fields[AssetFieldNames.pedestalFallbackImageUrl] ? (
-        <PedestalVideo
-          fallbackImageUrl={fields[AssetFieldNames.pedestalFallbackImageUrl]}
-        />
-      ) : (
-        <NoValueLabel>(no pedestal fallback image)</NoValueLabel>
       )}
     </div>
   )
@@ -599,14 +570,6 @@ const RenderersForFields = {
     [AssetFieldNames.bannerUrl]: {
       label: 'Banner',
       renderer: ({ fields }) => <BannerOutput fields={fields} />,
-    },
-    [AssetFieldNames.pedestalVideoUrl]: {
-      label: 'Pedestal Video',
-      renderer: ({ fields }) => <PedestalVideoValue fields={fields} />,
-    },
-    [AssetFieldNames.pedestalFallbackImageUrl]: {
-      label: 'Pedestal Image',
-      renderer: ({ fields }) => <PedestalFallbackImageValue fields={fields} />,
     },
     // title stuff
     [AssetFieldNames.thumbnailUrl]: {

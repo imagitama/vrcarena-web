@@ -67,8 +67,6 @@ import VrchatAvatars from '../vrchat-avatars'
 import SketchfabEmbedEditor from '../sketchfab-embed-editor'
 import SketchfabEmbed from '../sketchfab-embed'
 import SyncWithGumroadSettings from '../sync-with-gumroad-settings'
-import PedestalVideo from '../pedestal-video'
-import PedestalUploadForm from '../pedestal-upload-form'
 import AssetShortDescriptionEditor from '../asset-short-description-editor'
 import SlugEditor from '../slug-editor'
 import RelationsEditor from '../relations-editor'
@@ -684,20 +682,6 @@ const SketchfabDisplay = ({ value }: { value: string }) => (
     )}
   </>
 )
-
-const PedestalDisplay = ({ fields }: { fields: FullAsset }) => {
-  const classes = useStyles()
-  return (
-    <div className={classes.pedestalVideo}>
-      <PedestalVideo
-        videoUrl={fields.pedestalvideourl || placeholderPedestalVideoUrl}
-        fallbackImageUrl={
-          fields.pedestalfallbackimageurl || placeholderPedestalFallbackImageUrl
-        }
-      />
-    </div>
-  )
-}
 
 const ShortDescriptionDisplay = ({ value }: { value: string }) =>
   value ? (
@@ -1389,36 +1373,6 @@ const Editor = () => {
                   <BecomePatronMessage />
                 )}
                 <FormEditorArea
-                  title="Pedestal"
-                  description="A pedestal is a 10 second, 360 degree rotating video of your 3D model. It is used on the asset page, on the homepage (if featured) and in various other places."
-                  icon={() => <ControlCameraIcon />}
-                  display={PedestalDisplay}
-                  editor={
-                    isPatron ? (
-                      <PedestalUploadForm
-                        assetId={assetId}
-                        // @ts-ignore
-                        overrideSave={
-                          onFieldChanged
-                            ? (
-                                newVideoUrl: string,
-                                newFallbackImageUrl: string
-                              ) => {
-                                onFieldChanged('pedestalvideourl', newVideoUrl)
-                                onFieldChanged(
-                                  'pedestalfallbackimageurl',
-                                  newFallbackImageUrl
-                                )
-                              }
-                            : undefined
-                        }
-                      />
-                    ) : (
-                      <PatreonOnlyMessage />
-                    )
-                  }
-                />
-                <FormEditorArea
                   fieldName="shortdescription"
                   title="Featured Asset Description"
                   description="This description is used instead of the normal one whenever the asset is featured on the homepage."
@@ -1436,21 +1390,11 @@ const Editor = () => {
                     )
                   }
                 />
-                {/* Disabled 19mar25 until we decide what to do with it <FormEditorArea
-                  fieldName="slug"
-                  title="Slug"
-                  description="A slug is a user-friendly name for the asset shown in the URL instead of the ID. Keep it very short (like 5-10 characters)."
-                  icon={() => <BugReportIcon />}
-                  display={SlugDisplay}
-                  editor={
-                    isPatron ? (
-                      // @ts-ignore
-                      <SlugEditor assetId={assetId} />
-                    ) : (
-                      <PatreonOnlyMessage />
-                    )
-                  }
-                /> */}
+                <WarningMessage>
+                  As of March 2025 we have disabled "pedestals" and "custom
+                  slugs" as they are old, hardly used features that are extra
+                  work to maintain.
+                </WarningMessage>
               </>
             ),
           },
