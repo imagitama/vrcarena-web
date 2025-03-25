@@ -69,11 +69,18 @@ const getInitialFieldsToSave = <TRecord,>(
       case SyncFieldTypes.Attachments:
         value = []
         break
+      case SyncFieldTypes.RecordId:
+        if (field.value) {
+          value = field.value
+        }
+        break
       default:
         value = field.value || ''
     }
 
-    obj[field.ourName as string] = value
+    if (value !== undefined) {
+      obj[field.ourName as string] = value
+    }
   }
 
   return obj as TRecord
