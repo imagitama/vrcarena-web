@@ -138,22 +138,30 @@ const getOutputForErrorCode = (errorCode: ErrorCode): string => {
   }
 }
 
-const validationErrorMessages = {
-  FIELD_EMPTY: 'is empty',
+enum ValidationReason {
+  Empty,
 }
 
-const getValidationErrorMessages = <TRecord extends object>(
+const getValidationIssues = <TRecord extends object>(
   fields: TRecord
-): string[] => {
-  const messages = []
+): ValidationIssue[] => {
+  const issues: ValidationIssue[] = []
 
   for (const fieldName in fields) {
     if (!fields[fieldName]) {
-      messages.push(validationErrorMessages.FIELD_EMPTY)
+      issues.push({
+        fieldName,
+        reason: ValidationReason.Empty,
+      })
     }
   }
 
-  return messages
+  return issues
+}
+
+interface ValidationIssue {
+  fieldName: string
+  reason: ValidationReason
 }
 
 const SyncForm = <TRecord extends object>({
@@ -186,8 +194,9 @@ const SyncForm = <TRecord extends object>({
     SyncResult
   >('syncWithPlatform')
   const [isNoticeHidden, hideNotice] = useNotice('experimental-sync')
-  const [lastValidationErrorMessages, setLastValidationErrorMessages] =
-    useState<string[]>([])
+  const [lastValidationIssues, setLastValidationIssues] = useState<
+    ValidationIssue[]
+  >([])
 
   const [isSaving, , isSavingError, save] = useDatabaseSave(
     collectionName,
@@ -195,7 +204,7 @@ const SyncForm = <TRecord extends object>({
   )
 
   const sync = async () => {
-    setLastValidationErrorMessages([])
+    setLastValidationIssues([])
 
     const payload = {
       urlToSync,
@@ -282,12 +291,11 @@ const SyncForm = <TRecord extends object>({
         return
       }
 
-      const newValidationErrorMessages =
-        getValidationErrorMessages(fieldsToActuallySave)
-      setLastValidationErrorMessages(newValidationErrorMessages)
+      const newValidationIssues = getValidationIssues(fieldsToActuallySave)
+      setLastValidationIssues(newValidationIssues)
 
-      if (newValidationErrorMessages.length) {
-        console.debug('validation errors:', newValidationErrorMessages)
+      if (newValidationIssues.length) {
+        console.debug('validation issues:', newValidationIssues)
         return
       }
 
@@ -390,13 +398,17 @@ const SyncForm = <TRecord extends object>({
           fields you want to overwrite your record with:
         </InfoMessage>
       ) : null}
-      {lastValidationErrorMessages.length ? (
+      {lastValidationIssues.length ? (
         <WarningMessage>
           There was an issue with applying your changes. Are you sure you have
           completed all of the steps?
-          <br />
-          <br />
-          {lastValidationErrorMessages.join(', ')}
+          <ul>
+            {lastValidationIssues.map((issue) => (
+              <li key={issue.fieldName}>
+                {issue.fieldName} {issue.reason}
+              </li>
+            ))}
+          </ul>
         </WarningMessage>
       ) : null}
       {platformInfo.fields
