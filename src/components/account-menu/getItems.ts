@@ -48,17 +48,25 @@ export const cart = async (
         label: 'NOTE: You cannot purchase anything from VRCArena.',
         disabled: true,
       } as MenuItemData,
-    ].concat(
-      data.map((asset) => ({
-        id: asset.id,
-        url: routes.viewAssetWithVar.replace(
-          ':assetId',
-          asset.slug || asset.id
-        ),
-        label: asset.title,
-        imageUrl: asset.thumbnailurl,
-      }))
-    )
+    ]
+      .concat(
+        data.map((asset) => ({
+          id: asset.id,
+          url: routes.viewAssetWithVar.replace(
+            ':assetId',
+            asset.slug || asset.id
+          ),
+          label: asset.title,
+          imageUrl: asset.thumbnailurl,
+        }))
+      )
+      .concat([
+        {
+          id: 'view-cart',
+          label: 'View Cart',
+          url: routes.cart,
+        },
+      ])
   } catch (err) {
     console.error(err)
     handleError(err)

@@ -497,6 +497,11 @@ const Compare = lazy(() =>
     () => import(/* webpackChunkName: "compare" */ './containers/compare')
   )
 )
+const Cart = lazy(() =>
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "cart" */ './containers/cart')
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -534,6 +539,7 @@ const MainContent = () => {
         <Redirect from={'/privacy-policy'} to={routes.privacyPolicy} />
         <Redirect from={'/dcma-policy'} to={routes.dmcaPolicy} />
         <Route exact path={routes.home} component={Home} />
+        <Route exact path={routes.cart} component={Cart} />
         <Route exact path={routes.worldBuilder} component={WorldBuilder} />
         <Route exact path={routes.social} component={Social} />
         <Route exact path={routes.login} component={Login} />
