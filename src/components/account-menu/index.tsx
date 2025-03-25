@@ -326,7 +326,13 @@ export default ({
               onClick={() => toggleMenu(id)}>
               {badge !== false ? (
                 <Badge
-                  badgeContent={menuItems[id] ? menuItems[id].length : null}
+                  badgeContent={
+                    menuItems[id]
+                      ? menuItems[id].filter(
+                          (item) => item.includeInCount !== false
+                        ).length
+                      : null
+                  }
                   color="primary">
                   {label ? label : Icon ? <Icon /> : null}
                 </Badge>

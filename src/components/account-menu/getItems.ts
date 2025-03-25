@@ -47,6 +47,7 @@ export const cart = async (
         id: 'info',
         label: 'NOTE: You cannot purchase anything from VRCArena.',
         disabled: true,
+        includeInCount: false,
       } as MenuItemData,
     ]
       .concat(
@@ -65,6 +66,7 @@ export const cart = async (
           id: 'view-cart',
           label: 'View Cart',
           url: routes.cart,
+          includeInCount: false,
         },
       ])
   } catch (err) {

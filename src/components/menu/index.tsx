@@ -47,6 +47,7 @@ export interface MenuItemData {
   date?: Date
   disabled?: boolean
   onRemove?: () => void | Promise<void>
+  includeInCount?: boolean
 }
 
 export default ({
