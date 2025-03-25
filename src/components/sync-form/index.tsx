@@ -287,6 +287,7 @@ const SyncForm = <TRecord extends object>({
       setLastValidationErrorMessages(newValidationErrorMessages)
 
       if (newValidationErrorMessages.length) {
+        console.debug('validation errors:', newValidationErrorMessages)
         return
       }
 
@@ -393,6 +394,9 @@ const SyncForm = <TRecord extends object>({
         <WarningMessage>
           There was an issue with applying your changes. Are you sure you have
           completed all of the steps?
+          <br />
+          <br />
+          {lastValidationErrorMessages.join(', ')}
         </WarningMessage>
       ) : null}
       {platformInfo.fields
