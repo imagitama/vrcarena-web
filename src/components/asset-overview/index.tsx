@@ -553,7 +553,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
         {asset && isAssetWaitingForApproval(asset) ? (
           <QueuedAssetInfo asset={asset} hydrate={hydrate} />
         ) : null}
-        <Messages />(
+        <Messages />
         <ImageGallery
           images={
             isLoading
