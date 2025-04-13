@@ -36,7 +36,7 @@ const attachmentTypesMeta: { [key: string]: { name: string } } = {
   //   name: 'File (link to a ZIP, RAR, etc)',
   // },
   [AttachmentType.Url]: {
-    name: 'Other URL (YouTube video, social media post, etc)',
+    name: 'URL (YouTube video, social media post, etc)',
   },
 }
 

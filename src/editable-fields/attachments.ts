@@ -53,8 +53,9 @@ const fields: EditableField<Attachment>[] = [
     name: 'isadult',
     label: 'Is adult',
     type: fieldTypes.checkbox,
-    allowEmpty: true,
-    default: null,
+    // TODO: only allow empty if has a parent (so it inherits)
+    // allowEmpty: true,
+    // default: null,
   },
   {
     name: 'tags',

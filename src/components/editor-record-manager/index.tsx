@@ -73,6 +73,7 @@ const EditorRecordManager = ({
   // other
   callOnDoneOnEditorNotes = true,
   showBox = true,
+  comments,
 }: {
   id: string
   metaCollectionName: string
@@ -98,6 +99,7 @@ const EditorRecordManager = ({
   beforeApprove?: () => boolean | Promise<boolean>
   callOnDoneOnEditorNotes?: boolean
   showBox?: boolean
+  comments?: string
 }) => {
   const classes = useStyles()
   return (
@@ -108,6 +110,12 @@ const EditorRecordManager = ({
             Edit
           </Button>
         </div>
+      ) : null}
+      {comments ? (
+        <>
+          <br />
+          {comments}
+        </>
       ) : null}
       <div className={classes.rows}>
         <div className={classes.row}>

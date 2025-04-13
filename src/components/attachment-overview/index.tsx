@@ -128,7 +128,9 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
           </Link>
         </Heading>
       )}
-      <Heading variant="h2">{getLabelForReason(attachment.reason)}</Heading>
+      <Heading variant="h2" noTopMargin>
+        {getLabelForReason(attachment.reason)}
+      </Heading>
       <div className={classes.output}>
         <AttachmentOutput attachment={attachment} />
       </div>
@@ -166,20 +168,12 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
       {isEditor && (
         <>
           <br />
-          <Button
-            url={routes.editAttachmentWithVar.replace(
+          <br />
+          <EditorRecordManager
+            editUrl={routes.editAttachmentWithVar.replace(
               ':attachmentId',
               attachment.id
             )}
-            icon={<EditIcon />}>
-            Edit Attachment
-          </Button>
-          <br />
-          <br />
-          Note: Attachments waiting for approval are still public
-          <br />
-          <br />
-          <EditorRecordManager
             id={attachment.id}
             metaCollectionName={CollectionNames.AttachmentsMeta}
             existingApprovalStatus={attachment.approvalstatus}
@@ -188,6 +182,7 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
             showPublishButtons={false}
             showStatuses
             onDone={hydrate}
+            comments="Note: Attachments waiting for approval are still public"
           />
         </>
       )}

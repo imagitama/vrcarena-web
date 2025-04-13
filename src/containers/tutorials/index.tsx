@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import AddIcon from '@material-ui/icons/Add'
 import useDatabaseQuery, {
   Operators,
+  OrderDirections,
   WhereClause,
 } from '../../hooks/useDatabaseQuery'
 import {
@@ -37,7 +38,10 @@ const useTutorials = () => {
 
   return useDatabaseQuery<FullAttachment>(
     ViewNames.GetFullAttachments,
-    whereClauses
+    whereClauses,
+    {
+      orderBy: ['createdat', OrderDirections.DESC],
+    }
   )
 }
 
