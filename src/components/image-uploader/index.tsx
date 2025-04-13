@@ -531,6 +531,13 @@ const ImageUploader = ({
           )}
         </div>
       </div>
+      {onCancel && (
+        <FormControls>
+          <Button color="default" onClick={onCancel}>
+            Cancel
+          </Button>
+        </FormControls>
+      )}
     </div>
   )
 }

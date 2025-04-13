@@ -95,14 +95,16 @@ const CategoryButtons = ({
   const classes = useStyles()
   return (
     <div className={classes.buttons}>
-      {Object.values(AssetCategory).map((categoryName) => (
-        <CategoryButton
-          key={categoryName}
-          onClick={() => onSelect(categoryName)}
-          isSelected={categoryName === selectedCategory}
-          meta={categoryMeta[categoryName]}
-        />
-      ))}
+      {Object.values(AssetCategory)
+        .filter((name) => name !== AssetCategory.Tutorial)
+        .map((categoryName) => (
+          <CategoryButton
+            key={categoryName}
+            onClick={() => onSelect(categoryName)}
+            isSelected={categoryName === selectedCategory}
+            meta={categoryMeta[categoryName]}
+          />
+        ))}
     </div>
   )
 }

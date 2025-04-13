@@ -502,6 +502,11 @@ const Cart = lazy(() =>
     () => import(/* webpackChunkName: "cart" */ './containers/cart')
   )
 )
+const Tutorials = lazy(() =>
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "tutorials" */ './containers/tutorials')
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -578,6 +583,7 @@ const MainContent = () => {
           path={routes.viewAvatarsWithPageVar}
           component={ViewAvatars}
         />
+        <Route exact path={routes.tutorials} component={Tutorials} />
         <Route
           exact
           path={routes.viewCategoryWithVar.replace(':categoryName', 'world')}
@@ -613,6 +619,16 @@ const MainContent = () => {
           component={DeprecatedRouteView}
         />
         <Route exact path={routes.viewAvatars} component={ViewAvatars} />
+        <Route
+          exact
+          path={routes.editAttachmentWithVar}
+          component={EditAttachment}
+        />
+        <Route
+          exact
+          path={routes.viewAttachmentWithVar}
+          component={ViewAttachment}
+        />
         <Route
           exact
           path={routes.viewCategoryWithVar}
@@ -802,16 +818,6 @@ const MainContent = () => {
           exact
           path={[routes.compareWithVars, routes.compareWithVar]}
           component={Compare}
-        />
-        <Route
-          exact
-          path={routes.viewAttachmentWithVar}
-          component={ViewAttachment}
-        />
-        <Route
-          exact
-          path={routes.editAttachmentWithVar}
-          component={EditAttachment}
         />
         <Route
           exact

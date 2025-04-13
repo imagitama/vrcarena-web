@@ -137,6 +137,7 @@ export const editAttachmentWithVar = '/attachments/:attachmentId/edit'
 export const compareWithVar = '/compare/:assetId'
 export const compareWithVars = '/compare/:assetId?with=:otherAssetIds'
 export const cart = '/cart'
+export const tutorials = '/tutorials'
 
 // deprecated
 export const news = '/news'

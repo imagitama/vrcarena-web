@@ -86,6 +86,9 @@ const useStyles = makeStyles({
     fontSize: '0.85em',
     marginBottom: '6px',
   },
+  noMargin: {
+    marginBottom: 0,
+  },
   microText: {
     fontSize: '0.85em',
     textTransform: 'uppercase',
@@ -164,9 +167,16 @@ const ResultsItem = ({
               {isadult ? <LoyaltyIcon /> : null}
             </div>
             {createdbyusername ? (
-              <div className={classes.author}>by {createdbyusername}</div>
+              <div
+                className={`${classes.author} ${
+                  description ? '' : classes.noMargin
+                }`}>
+                by {createdbyusername}
+              </div>
             ) : null}
-            <div className={classes.microText}>{description}</div>
+            {description ? (
+              <div className={classes.microText}>{description}</div>
+            ) : null}
           </CardContent>
         </Link>
       </CardActionArea>

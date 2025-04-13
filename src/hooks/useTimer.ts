@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react'
+import { formHideDelay } from '../config'
 
 export default (
   callback: () => void,
-  timer: number,
+  delayMs: number = formHideDelay,
   autoStart: boolean = false
 ): (() => void) => {
   const timerRef = useRef<NodeJS.Timeout>()
 
   const startTimer = () => {
-    timerRef.current = setTimeout(callback, timer)
+    timerRef.current = setTimeout(callback, delayMs)
   }
 
   useEffect(
@@ -23,8 +24,8 @@ export default (
         }
       }
     },
-    // todo: handle timer or callback changes
-    [timer]
+    // handle callback changes eg. useCallback
+    [delayMs]
   )
 
   return startTimer

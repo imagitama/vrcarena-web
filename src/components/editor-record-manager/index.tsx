@@ -111,7 +111,7 @@ const EditorRecordManager = ({
       ) : null}
       <div className={classes.rows}>
         <div className={classes.row}>
-          {showStatuses && (
+          {showStatuses && showPublishButtons && (
             <div className={classes.cell}>
               <MetaStatus status={existingPublishStatus} type={PublishStatus} />
             </div>

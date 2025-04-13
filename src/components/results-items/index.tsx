@@ -13,9 +13,12 @@ const useStyles = makeStyles({
   },
 })
 
-type Item = any
+type Item<TItem> = TItem & {
+  id: string
+  linkUrl?: string
+}
 
-const ResultsItems = ({
+const ResultsItems = <TItem extends Object>({
   items,
   children,
   selectedAssetIds = [],
@@ -25,13 +28,13 @@ const ResultsItems = ({
   shimmerCount = 3,
   hydrate = undefined,
 }: {
-  items?: Item[]
+  items?: Item<TItem>[]
   children?: React.ReactNode[]
   selectedAssetIds?: string[]
   dimUnselected?: boolean
   onClickWithEventAndAsset?: (
     event: React.SyntheticEvent<HTMLElement>,
-    item: Item
+    item: Item<TItem>
   ) => void
   shimmer?: boolean
   shimmerCount?: number

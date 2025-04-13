@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import LaunchIcon from '@material-ui/icons/Launch'
-import Paper from '../paper'
 import FormattedDate from '../formatted-date'
 import {
   Attachment,
@@ -11,7 +10,6 @@ import {
 } from '../../modules/attachments'
 import TagChips from '../tag-chips'
 import useUserId from '../../hooks/useUserId'
-import useIsEditor from '../../hooks/useIsEditor'
 import Link from '../link'
 import * as routes from '../../routes'
 
@@ -63,15 +61,13 @@ const AttachmentMeta = ({
 }) => {
   const classes = useStyles()
   const userId = useUserId()
-  const isEditor = useIsEditor()
 
   if (!attachment) {
     return <>No attachment for meta</>
   }
 
   return (
-    <Paper className={classes.paper}>
-      {isEditor ? 'Always visible to editors' : ''}
+    <div className={classes.paper}>
       <dl>
         <dt>Type</dt>
         <dd>
@@ -131,7 +127,7 @@ const AttachmentMeta = ({
         )}>
         View Full
       </Link>
-    </Paper>
+    </div>
   )
 }
 

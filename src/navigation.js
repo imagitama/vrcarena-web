@@ -55,11 +55,18 @@ export function getLabelForMenuItem(Label) {
 }
 
 export default [
-  ...Object.entries(categoriesMeta).map(([name, meta]) => ({
-    id: `category-${name}`,
-    label: meta.name,
-    url: routes.viewCategoryWithVar.replace(':categoryName', name),
-  })),
+  ...Object.entries(categoriesMeta)
+    .filter(([name]) => name !== AssetCategory.Tutorial)
+    .map(([name, meta]) => ({
+      id: `category-${name}`,
+      label: meta.name,
+      url: routes.viewCategoryWithVar.replace(':categoryName', name),
+    })),
+  {
+    id: 'tutorials',
+    label: 'Tutorials',
+    url: routes.tutorials,
+  },
   {
     id: 'species',
     label: 'Species',

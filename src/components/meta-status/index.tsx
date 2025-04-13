@@ -72,7 +72,7 @@ const MetaStatus = ({ status, type }: { status: any; type: any }) => {
   const classes = useStyles()
 
   if (!status) {
-    return <div>Unknown</div>
+    return <div>Unknown status: {status}</div>
   }
 
   const metas =

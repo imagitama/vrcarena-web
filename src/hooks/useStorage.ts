@@ -14,10 +14,17 @@ export const keys = {
 /**
  * A hook that lets us tap into storage on the device (browser). Only local right now.
  */
-const useStorage = <TResult>(
+function useStorage<TResult>(
+  key: string | false
+): [TResult | null, (newValue: TResult) => void, () => void]
+function useStorage<TResult>(
+  key: string | false,
+  defaultValue: TResult
+): [TResult, (newValue: TResult) => void, () => void]
+function useStorage<TResult>(
   key: string | false,
   defaultValue?: TResult
-): [TResult | null, (newValue: TResult) => void, () => void] => {
+): [TResult | null, (newValue: TResult) => void, () => void] {
   try {
     if (key === false) {
       return [null, () => undefined, () => undefined]

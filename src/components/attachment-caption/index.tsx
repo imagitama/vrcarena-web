@@ -10,6 +10,7 @@ import {
 
 import * as routes from '../../routes'
 import { CollectionNames } from '../../modules/assets'
+import Paper from '../paper'
 
 const getParentLink = (parentTable: string, parentId: string): string => {
   switch (parentTable) {
@@ -33,14 +34,16 @@ const AttachmentCaption = ({
   attachment,
   includeMeta,
   includeParents,
+  className,
 }: {
   attachment: FullAttachment | Attachment
   includeMeta: boolean
   includeParents: boolean
+  className?: string
 }) => {
   const isEditor = useIsEditor()
   return (
-    <>
+    <Paper className={className}>
       {includeParents ? (
         <>
           Posted by{' '}
@@ -74,7 +77,7 @@ const AttachmentCaption = ({
       {includeMeta || isEditor ? (
         <AttachmentMeta attachment={attachment} />
       ) : null}
-    </>
+    </Paper>
   )
 }
 

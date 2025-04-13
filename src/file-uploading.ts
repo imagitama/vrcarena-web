@@ -200,4 +200,5 @@ export const bucketNames = {
   socialPostAttachments: 'socialpost-attachments',
   authorPromos: 'author-promos',
   temp: 'temp',
+  attachmentThumbnails: 'attachment-thumbnails',
 }

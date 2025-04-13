@@ -206,9 +206,6 @@ const AttachmentsForm = ({
           attachmentsData: allAttachmentDatas,
         }}
         emptyItem={''}
-        // onAdd={() =>
-        //   setNewAttachmentIds((currentIds) => currentIds.concat([null]))
-        // }
         itemClassName={classes.item}
       />
       <FormControls>

@@ -574,7 +574,7 @@ interface OptionsMap<TRecord> {
 }
 
 type PossibleWhereClauses<TRecord> =
-  | (WhereClause<TRecord> | string | WhereOperators.OR)[]
+  | (WhereClause<TRecord> | WhereOperators.OR)[]
   | false
 
 export default <TRecord>(

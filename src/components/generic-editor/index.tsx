@@ -33,33 +33,56 @@ import ItemInput from './components/item-input'
 import Tabs from '../tabs'
 import DateInput from './components/date-input'
 
-function getInputForFieldType(type: keyof typeof fieldTypes) {
+export type GenericInputProps = Omit<EditableField<any>, 'type'> & {
+  value: any
+  defaultValue: any
+  onChange: (newVal: any) => void
+  extraFormData: any
+  setFieldsValues: (updates: Record) => void
+  databaseResult: any
+}
+
+type GenericInput = (props: GenericInputProps) => JSX.Element
+
+function getInputForFieldType(type: keyof typeof fieldTypes): GenericInput {
   switch (type) {
     case fieldTypes.text:
+      // @ts-ignore
       return TextInput
     case fieldTypes.textMarkdown:
+      // @ts-ignore
       return TextMarkdownInput
     case fieldTypes.checkbox:
       return CheckboxInput
     case fieldTypes.multichoice:
+      // @ts-ignore
       return MultichoiceInput
     case fieldTypes.imageUpload:
+      // @ts-ignore
       return ImageUploadInput
     case fieldTypes.searchable:
+      // @ts-ignore
       return SearchableInput
     case fieldTypes.singlechoice:
+      // @ts-ignore
       return SinglechoiceInput
     case fieldTypes.date:
+      // @ts-ignore
       return DateInput
     case fieldTypes.assets:
+      // @ts-ignore
       return AssetsInput
     case fieldTypes.custom:
+      // @ts-ignore
       return CustomInput
     case fieldTypes.tags:
+      // @ts-ignore
       return TagsInput
     case fieldTypes.dropdown:
+      // @ts-ignore
       return DropdownInput
     case fieldTypes.item:
+      // @ts-ignore
       return ItemInput
     default:
       throw new Error(`Invalid field type "${type}"`)

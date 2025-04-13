@@ -8,6 +8,8 @@ import userMeta from './user-meta'
 import playlists from './playlists'
 import pages from './pages'
 import { fieldTypes } from '../generic-forms'
+import attachments from './attachments'
+import { CollectionNames as AttachmentCollectionNames } from '../modules/attachments'
 
 export interface Option {
   value: string | null
@@ -58,6 +60,7 @@ export interface EditableField<TRecord, TFieldData = undefined> {
   length?: number
   multiline?: true
   section?: string
+  allowEmpty?: boolean // if boolean column can be "empty" or undefined
 }
 
 // @ts-ignore
@@ -70,6 +73,7 @@ const editableFieldsByCollectionName: {
   [OldCollectionNames.UserMeta]: userMeta,
   [CollectionNames.Playlists]: playlists,
   [CollectionNames.Pages]: pages,
+  [AttachmentCollectionNames.Attachments]: attachments,
 }
 
 export default editableFieldsByCollectionName

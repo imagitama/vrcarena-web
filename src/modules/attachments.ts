@@ -8,7 +8,7 @@ export interface AttachmentFields extends Record<string, unknown> {
   title: string
   description: string
   license: string | null
-  isadult: boolean | null
+  isadult: boolean | null // null means inherit
   tags: string[]
   // these arent needed as assets can connect to attachments
   parenttable?: string
@@ -35,6 +35,7 @@ export interface FullAttachment extends Attachment {
 export enum AttachmentReason {
   AssetFile = 'asset-file',
   UserAdded = 'user-added',
+  Tutorial = 'tutorial',
 }
 
 export enum AttachmentType {
