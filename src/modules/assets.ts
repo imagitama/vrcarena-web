@@ -227,6 +227,11 @@ export interface AssetSyncQueueItem extends AssetSyncQueueItemFields {
   createdat: string
 }
 
+export interface FullAssetSyncQueueItem extends AssetSyncQueueItem {
+  createdbyusername: string
+  lastmodifiedbyusername: string
+}
+
 export enum CollectionNames {
   Assets = 'assets',
   AssetsMeta = 'assetmeta',
@@ -240,6 +245,7 @@ export enum ViewNames {
   RelatedAssets = 'relatedassets',
   GetNewPublicAssets = 'getnewpublicassets',
   GetMyAssetSyncQueuedItems = 'getmyassetsyncqueueditems',
+  GetFullMyAssetSyncQueuedItems = 'getfullassetsyncqueueditems',
 }
 
 export enum FunctionNames {

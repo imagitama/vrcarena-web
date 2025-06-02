@@ -21,6 +21,7 @@ import * as routes from '../../routes'
 
 import { UserRoles } from '../../modules/users'
 import Link from '../../components/link'
+import AdminAssetSyncQueue from './components/asset-queue'
 
 const View = () => {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -176,6 +177,11 @@ const View = () => {
                 <AdminUsers />
               </>
             ),
+          },
+          {
+            name: 'asset-sync-queue',
+            label: 'Asset Sync Queue',
+            contents: <AdminAssetSyncQueue />,
           },
         ]}
       />
