@@ -42,12 +42,13 @@ import {
 } from '../../modules/assets'
 import FormControls from '../form-controls'
 import useDataStoreCreateBulk from '../../hooks/useDataStoreCreateBulk'
-import { DataStoreErrorCode } from '../../data-store'
+import { DataStoreErrorCode, updateRecord } from '../../data-store'
 import { handleError } from '../../error-handling'
 import WarningMessage from '../warning-message'
 import UsernameLink from '../username-link'
 import FormattedDate from '../formatted-date'
 import { callFunction } from '../../firebase'
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles((theme) => ({
   queuedStatus: {
@@ -284,6 +285,7 @@ const QueuedItemRow = ({
     )
   const [isDeleted, setIsDeleted] = useState(false)
   const classes = useStyles()
+  const client = useSupabaseClient()
 
   const onDelete = () => setIsDeleted(true)
 
@@ -352,14 +354,44 @@ const QueuedItemRow = ({
           <Button
             onClick={async () => {
               try {
-                const code = prompt('What is the super secret code?')
                 console.log('Retrying...')
-                console.log(
-                  'Result of retry:',
-                  await callFunction('manuallyProcessQueuedAsset', {
-                    code,
-                    id: queuedItem.id,
-                  })
+
+                if (queuedItem.status === AssetSyncStatus.Waiting) {
+                  console.debug(
+                    'Status already "waiting" so forcing it by failing it then resetting back'
+                  )
+
+                  console.debug(
+                    'Result:',
+                    await updateRecord(
+                      client,
+                      CollectionNames.AssetSyncQueue,
+                      queuedItem.id,
+                      {
+                        status: AssetSyncStatus.Failed,
+                      }
+                    )
+                  )
+
+                  console.debug('Waiting a moment')
+
+                  await new Promise((resolve) => setTimeout(resolve, 500))
+                }
+
+                console.debug(
+                  'Setting it to "waiting" triggers the special "try it again" function ;)'
+                )
+
+                console.debug(
+                  'Result:',
+                  await updateRecord(
+                    client,
+                    CollectionNames.AssetSyncQueue,
+                    queuedItem.id,
+                    {
+                      status: AssetSyncStatus.Waiting,
+                    }
+                  )
                 )
               } catch (err) {
                 console.error(err)
