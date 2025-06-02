@@ -8,6 +8,7 @@ import Button from '../button'
 import TextInput from '../text-input'
 import Select, { MenuItem } from '../select'
 import useUserId from '../../hooks/useUserId'
+import ButtonDropdown from '../button-dropdown'
 
 const useStyles = makeStyles({
   root: {
@@ -25,13 +26,13 @@ const useStyles = makeStyles({
 
 const UserIdInput = ({
   onChange,
-  initialValue,
+  value,
 }: {
   onChange: (value: null | string) => void
-  initialValue: FilterValue
+  value: any
 }) => {
   const userId = useUserId()
-  const [userIdText, setUserIdText] = useState(initialValue)
+  const [userIdText, setUserIdText] = useState(value)
 
   return (
     <>
@@ -61,13 +62,13 @@ const UserIdInput = ({
 const EqualInput = ({
   filter,
   onChange,
-  initialValue,
+  value,
 }: {
-  filter: Filter<any>
+  filter: EqualFilter<any>
   onChange: (value: null | string) => void
-  initialValue: FilterValue
+  value: any
 }) => {
-  const [text, setText] = useState(initialValue)
+  const [text, setText] = useState(value)
 
   return (
     <>
@@ -100,39 +101,78 @@ const EqualInput = ({
 const FilterRenderer = ({
   filter,
   onChange,
-  initialValue,
+  value,
 }: {
   filter: Filter<any>
-  onChange: (value: null | string) => void
-  initialValue: FilterValue
+  onChange: (value: null | any) => void
+  value: any
 }) => {
   switch (filter.type) {
     case FilterType.Equal:
       return (
         <EqualInput
-          filter={filter}
-          initialValue={initialValue}
+          filter={filter as EqualFilter<any>}
+          value={value}
           onChange={onChange}
         />
       )
     case FilterType.UserId:
-      return <UserIdInput initialValue={initialValue} onChange={onChange} />
+      return <UserIdInput value={value} onChange={onChange} />
+    case FilterType.Multichoice:
+      return (
+        <MultichoiceInput
+          filter={filter as MultichoiceFilter<any, any>}
+          value={value}
+          onChange={onChange}
+        />
+      )
     default:
-      return <>Unknown filter type "{filter.type}"</>
+      return <>Unknown filter "{JSON.stringify(filter)}"</>
   }
 }
 
-type FilterValue = string
+const MultichoiceInput = ({
+  filter,
+  value,
+  onChange,
+}: {
+  filter: MultichoiceFilter<any, any>
+  value: any[]
+  onChange: (newVal: any[]) => void
+}) => {
+  const actualValue = value || filter.default
+
+  const onSelect = (id: string) =>
+    onChange(
+      actualValue.includes(id)
+        ? actualValue.filter((subId) => subId !== id)
+        : actualValue.concat([id])
+    )
+
+  return (
+    <ButtonDropdown
+      label="Status"
+      color="default"
+      options={filter.options.map((enumKey) => ({
+        id: enumKey,
+        label: enumKey,
+      }))}
+      selectedIds={actualValue}
+      onSelect={onSelect}
+      closeOnSelect={false}
+    />
+  )
+}
 
 function FilterControl({
   filter,
-  initialValue,
+  value,
   isEnabled,
   onToggle,
   onChange,
 }: {
   filter: Filter<any>
-  initialValue: FilterValue
+  value: any
   isEnabled: boolean
   onToggle: () => void
   onChange: (newVal: any) => void
@@ -147,11 +187,7 @@ function FilterControl({
         label={filter.label}
       />
       {isEnabled ? (
-        <FilterRenderer
-          filter={filter}
-          initialValue={initialValue}
-          onChange={onChange}
-        />
+        <FilterRenderer filter={filter} value={value} onChange={onChange} />
       ) : null}
     </div>
   )
@@ -160,14 +196,30 @@ function FilterControl({
 export enum FilterType {
   Equal,
   UserId,
+  Multichoice,
 }
 
-export interface Filter<T> {
-  fieldName: Extract<keyof T, string>
+interface BaseFilter<TRecord> {
+  fieldName: Extract<keyof TRecord, string>
   type: FilterType
   label: string
+}
+
+interface EqualFilter<TRecord> extends BaseFilter<TRecord> {
+  type: FilterType.Equal
   suggestions?: string[]
 }
+
+interface MultichoiceFilter<TRecord, TEnum> extends BaseFilter<TRecord> {
+  type: FilterType.Multichoice
+  options: TEnum[]
+  default: TEnum[]
+}
+
+export type Filter<TRecord, TEnum = undefined> =
+  | MultichoiceFilter<TRecord, TEnum>
+  | EqualFilter<TRecord>
+  | BaseFilter<TRecord>
 
 const Filters = <T,>({
   filters,
@@ -234,7 +286,7 @@ const Filters = <T,>({
                   ) !== undefined
                 : false
             }
-            initialValue={
+            value={
               unappliedFilters.find(
                 (unappliedFilter) =>
                   unappliedFilter.fieldName === filter.fieldName

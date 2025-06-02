@@ -16,7 +16,7 @@ export enum Operators {
 }
 
 export enum WhereOperators {
-  OR,
+  OR = 'or',
 }
 
 export enum OrderDirections {
@@ -639,6 +639,8 @@ export default <TRecord>(
         .from(collectionName.toLowerCase())
         .select<string, TRecord>(selectQuery, { count: 'exact' })
 
+      console.log('HERE', whereClauses)
+
       // or an array of searches
       if (Array.isArray(whereClauses)) {
         const isOrStatement = whereClauses.find(
@@ -679,16 +681,20 @@ export default <TRecord>(
                 break
               case Operators.IS:
                 // supports "IS NULL" SQL operator
+                // @ts-ignore
                 queryChain = queryChain.is(field, value)
                 break
               case Operators.GREATER_THAN:
+                // @ts-ignore
                 queryChain = queryChain.gt(field, value)
                 break
               case Operators.ARRAY_CONTAINS:
                 const valueToUse = Array.isArray(value) ? value : [value]
+                // @ts-ignore
                 queryChain = queryChain.contains(field, valueToUse)
                 break
               default:
+                // @ts-ignore
                 queryChain = queryChain.filter(field, operator, value)
             }
           }

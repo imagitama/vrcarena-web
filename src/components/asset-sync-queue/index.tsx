@@ -416,9 +416,9 @@ const AssetSyncQueue = ({
   showMoreInfo,
 }: {
   items: AssetSyncQueueItem[] | null
-  isLoading: boolean
-  lastErrorCode: DataStoreErrorCode | null
-  hydrate: () => void
+  isLoading?: boolean
+  lastErrorCode?: DataStoreErrorCode | null
+  hydrate?: () => void
   showMoreInfo?: boolean
 }) => {
   const [newSourceUrls, setSourceUrls] = useState([''])
@@ -473,7 +473,9 @@ const AssetSyncQueue = ({
           .join(', ')}`
       )
 
-      hydrate()
+      if (hydrate) {
+        hydrate()
+      }
 
       setSourceUrls([])
     } catch (err) {
@@ -482,13 +484,13 @@ const AssetSyncQueue = ({
     }
   }
 
-  if (lastErrorCode !== null) {
+  if (lastErrorCode && lastErrorCode !== null) {
     return (
       <ErrorMessage>Failed to load queued assets: {lastErrorCode}</ErrorMessage>
     )
   }
 
-  const isBusy = isCreating || isLoading
+  const isBusy: boolean = isCreating || (isLoading ? isLoading : false)
 
   return (
     <>

@@ -123,6 +123,11 @@ export const PaginatedViewContext = createContext<PaginatedViewData>()
 export const usePaginatedView = (): PaginatedViewData<any> =>
   useContext(PaginatedViewContext)
 
+export interface RendererProps<T> {
+  items: T[]
+  hydrate: () => void
+}
+
 const Page = () => {
   const { push } = useHistory()
   const { pageNumber = '1' } = useParams<{ pageNumber: string }>()
