@@ -48,6 +48,7 @@ import useSupabaseUserId from './hooks/useSupabaseUserId'
 import useBannerUrl from './hooks/useBannerUrl'
 import DeprecatedRouteView from './containers/deprecated-route'
 import ErrorMessage from './components/error-message'
+import FuralityBanner from './components/furality-banner'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -862,6 +863,7 @@ export default () => {
           <div className={`${isHome ? '' : classes.mainContainer}`}>
             <BannedNotice />
             <Notices isHome={isHome} />
+            <FuralityBanner isHome={isHome} />
             <UnapprovedAssetsMessage />
             <DraftAssetsMessage />
             <ErrorBoundary>

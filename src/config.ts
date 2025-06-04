@@ -8,6 +8,9 @@ export const DISCORD_URL = 'https://discord.gg/UVs9V58'
 export const PATREON_BECOME_PATRON_URL =
   'https://www.patreon.com/bePatron?u=43812267'
 export const EMAIL = 'contact@vrcarena.com'
+export const FURALITY_URL = `https://furality.org/?referrer=${encodeURIComponent(
+  WEBSITE_FULL_URL
+)}`
 
 export const BANNER_WIDTH = 1280
 export const BANNER_HEIGHT = 300
