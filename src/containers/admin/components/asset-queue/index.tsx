@@ -40,8 +40,6 @@ const AdminAssetSyncQueue = () => {
       return newClauses
     }, [] as WhereClause<AssetSyncQueueItem>[])
 
-  console.log('WHERE', whereClauses)
-
   return (
     <>
       <ButtonDropdown

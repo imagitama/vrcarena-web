@@ -121,13 +121,6 @@ export default ({
 
     return (
       <>
-        {/* <TextInput
-          className={classes.textInput}
-          value={userInput}
-          variant="outlined"
-          multiline
-          isDisabled
-        /> */}
         {isSearching ? (
           <LoadingIndicator message="Checking for duplicates..." />
         ) : searchResultsWithoutSelf && searchResultsWithoutSelf.length ? (

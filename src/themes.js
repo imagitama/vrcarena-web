@@ -77,6 +77,24 @@ const createOurTheme = (isDark) =>
           fontSize: '100%',
         },
       },
+      MuiButton: {
+        contained: {
+          backgroundColor: '#e0e0e0',
+          '&:hover': {
+            backgroundColor: '#bdbdbd', // darker grey
+          },
+        },
+        text: {
+          '&:hover': {
+            backgroundColor: '#bdbdbd', // light grey hover for text buttons
+          },
+        },
+        outlined: {
+          '&:hover': {
+            backgroundColor: '#bdbdbd',
+          },
+        },
+      },
     },
   })
 

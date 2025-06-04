@@ -39,6 +39,7 @@ import {
   AssetCategory,
   FullAsset,
   RelationType,
+  SourceInfo,
   ViewNames,
 } from '../../modules/assets'
 
@@ -98,6 +99,7 @@ import {
 import { tagVrcFuryReady } from '../../vrcfury'
 import { SupabaseClient } from '@supabase/supabase-js'
 import RequiresVerificationNotice from '../requires-verification-notice'
+import HintText from '../hint-text'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -753,25 +755,6 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             ) : null}
           </div>
           <div className={classes.rightCol}>
-            {isLoading ||
-            (asset && (asset.price || getIsAssetFree(asset.tags))) ? (
-              <ControlGroup>
-                <Control>
-                  <Price
-                    isLoading={isLoading}
-                    price={
-                      isLoading
-                        ? 123.45
-                        : getIsAssetFree(asset.tags)
-                        ? 0
-                        : asset.price
-                    }
-                    priceCurrency={asset ? asset.pricecurrency : 'USD'}
-                    showPriceWarning
-                  />
-                </Control>
-              </ControlGroup>
-            ) : null}
             {asset && asset.vccurl ? (
               <ControlGroup>
                 <Control>
@@ -806,46 +789,44 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     />
                   </Control>
                 ) : null}
-                <Control>
-                  {asset && asset.sourceurl && isGitHubUrl(asset.sourceurl) ? (
+
+                {asset && asset.sourceurl && isGitHubUrl(asset.sourceurl) ? (
+                  <Control>
                     <GitHubReleases
                       gitHubUrl={asset.sourceurl}
                       showErrorOnNotFound={false}
                     />
-                  ) : null}
-                  <VisitSourceButton
-                    isAssetLoading={isLoading}
-                    assetId={assetId}
-                    sourceInfo={
-                      asset
-                        ? {
-                            url: asset.sourceurl,
-                            price: null,
-                            pricecurrency: null,
-                            comments: '',
-                          }
-                        : undefined
-                    }
-                    analyticsCategoryName={analyticsCategoryName}
-                    analyticsEvent="Click visit source button"
-                    // extraSources={asset?.extrasources}
-                  />
+                  </Control>
+                ) : null}
+
+                {asset ? (
+                  [
+                    {
+                      url: asset.sourceurl,
+                      price: asset.price,
+                      pricecurrency: asset.pricecurrency,
+                    } as SourceInfo,
+                  ]
+                    .concat(asset.extrasources)
+                    .map((sourceInfo) => (
+                      <Control key={sourceInfo.url}>
+                        <VisitSourceButton sourceInfo={sourceInfo} />
+                      </Control>
+                    ))
+                ) : (
+                  <Control>
+                    <VisitSourceButton isAssetLoading />
+                  </Control>
+                )}
+
+                <HintText>
+                  *prices are an indication only and may be outdated
+                </HintText>
+
+                <Control>
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
                   <MiniSaleInfo />
                 </Control>
-                {asset && asset.extrasources
-                  ? asset.extrasources.map((sourceInfo) => (
-                      <Control>
-                        <VisitSourceButton
-                          sourceInfo={sourceInfo}
-                          assetId={assetId}
-                          analyticsCategoryName={analyticsCategoryName}
-                          analyticsEvent="Click visit extra source button"
-                          isExtraSource
-                        />
-                      </Control>
-                    ))
-                  : null}
                 <Control>
                   {asset &&
                     ((asset.extradata &&

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PhotoIcon from '@material-ui/icons/Photo'
@@ -13,7 +13,6 @@ import TextFormatIcon from '@material-ui/icons/TextFormat'
 import PetsIcon from '@material-ui/icons/Pets'
 import CategoryIcon from '@material-ui/icons/Category'
 import PanoramaIcon from '@material-ui/icons/Panorama'
-import BugReportIcon from '@material-ui/icons/BugReport'
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
 import PersonIcon from '@material-ui/icons/Person'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
@@ -21,6 +20,7 @@ import ControlCameraIcon from '@material-ui/icons/ControlCamera'
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered'
 import { Tachometer as TachometerIcon } from '@emotion-icons/boxicons-regular/Tachometer'
 import { ListStars as ListStarsIcon } from '@emotion-icons/bootstrap/ListStars'
+import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 
 import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord.svg'
 import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon.svg'
@@ -66,9 +66,7 @@ import VrchatAvatarIdsForm from '../vrchat-avatar-ids-form'
 import VrchatAvatars from '../vrchat-avatars'
 import SketchfabEmbedEditor from '../sketchfab-embed-editor'
 import SketchfabEmbed from '../sketchfab-embed'
-import SyncWithGumroadSettings from '../sync-with-gumroad-settings'
 import AssetShortDescriptionEditor from '../asset-short-description-editor'
-import SlugEditor from '../slug-editor'
 import RelationsEditor from '../relations-editor'
 import Relations from '../relations'
 import LicenseEditor from '../license-editor'
@@ -100,19 +98,15 @@ import Attachments from '../attachments'
 import AssetAttachmentsEditor from '../asset-attachments-editor'
 
 // @ts-ignore assets
-import placeholderPedestalVideoUrl from '../../assets/videos/placeholder-pedestal.webm'
-import placeholderPedestalFallbackImageUrl from '../../assets/videos/placeholder-pedestal-fallback.webp'
 import { getSyncPlatformNameFromUrl, SyncPlatformName } from '../../syncing'
 import ExtraSourcesEditor from '../extra-sources-editor'
 import VisitSourceButton from '../visit-source-button'
-import { handleError } from '../../error-handling'
-import ErrorMessage from '../error-message'
 import ChangeVccUrlForm from '../change-vcc-url-form'
 import AddToVccButton from '../add-to-vcc-button'
 import { tagVrcFuryReady } from '../../vrcfury'
 import VrcFuryToggle from '../vrcfury-ready-toggle'
 import Link from '../link'
-import { getIsGumroadProductUrl } from '../../gumroad'
+import Paper from '../paper'
 
 interface EditorInfo {
   assetId: string | null
@@ -427,49 +421,53 @@ const SyncButton = ({
   )
 }
 
-const AssetSource = ({ url }: { url: string }) => {
+const AssetSource = ({
+  sourceInfo,
+  showSyncButton,
+}: {
+  sourceInfo: SourceInfo | null
+  showSyncButton?: boolean
+}) => {
   const { setIsSyncFormVisible } = useEditor()
-  const classes = useStyles()
 
-  if (!url) {
+  if (!sourceInfo) {
     return <NoValueMessage>No URL set</NoValueMessage>
   }
 
-  const syncPlatformName = getSyncPlatformNameFromUrl(url)
+  const syncPlatformName = getSyncPlatformNameFromUrl(sourceInfo.url)
 
   const onSync = () => setIsSyncFormVisible(true)
 
   return (
-    <div>
-      {url}
-      <br />
-      <br />
-      <VisitSourceButton
-        sourceInfo={{ url, price: null, pricecurrency: null, comments: '' }}
-      />
-      {syncPlatformName !== undefined ? (
+    <>
+      <Heading noTopMargin variant="h3">
+        Current URL:
+      </Heading>
+      <a href={sourceInfo.url} target="_blank" rel="noopener noreferrer">
+        {sourceInfo.url} <OpenInNewIcon />
+      </a>
+      <Heading variant="h3">Preview:</Heading>
+      <VisitSourceButton sourceInfo={sourceInfo} />
+      {showSyncButton && syncPlatformName !== undefined ? (
         <SyncButton syncPlatformName={syncPlatformName} onSync={onSync} />
       ) : null}
-    </div>
+    </>
   )
 }
 
 const SourceDisplay = ({ value }: { value: string }) => (
-  <AssetSource url={value} />
+  <AssetSource
+    sourceInfo={{ url: value, price: null, pricecurrency: null, comments: '' }}
+  />
 )
 
 const ExtraSourcesDisplay = ({ value }: { value: SourceInfo[] }) =>
   value && value.length ? (
     <>
       {value.map((sourceInfo) => (
-        <>
-          {sourceInfo.url}
-          <br />
-          <br />
-          <VisitSourceButton sourceInfo={sourceInfo} />
-          <br />
-          <br />
-        </>
+        <Paper margin key={sourceInfo.url}>
+          <AssetSource sourceInfo={sourceInfo} showSyncButton={false} />
+        </Paper>
       ))}
     </>
   ) : (
@@ -869,8 +867,10 @@ const Editor = () => {
                 <FormEditorArea
                   fieldName="sourceurl"
                   isRequired
-                  title="Source URL"
-                  description="Where can I get this asset? Enter a Gumroad or Booth URL and we can automatically get info for it."
+                  title="Primary Source URL"
+                  description={
+                    'The recommended place to purchase or download this asset. Some URLs can be used to "sync" data like Gumroad, Booth, Itch.io and Jinxxy.'
+                  }
                   icon={() => <PhotoIcon />}
                   display={SourceDisplay}
                   editor={
@@ -913,7 +913,7 @@ const Editor = () => {
                 /> */}
                 <FormEditorArea
                   title="Price"
-                  description="The price of the asset."
+                  description="The price when visiting the primary source. Extra sources can have their own prices."
                   icon={() => <AttachMoneyIcon />}
                   display={() => (
                     <PriceDisplay value={asset.price} fields={asset} />

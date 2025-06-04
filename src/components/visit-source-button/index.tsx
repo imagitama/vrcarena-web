@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import LaunchIcon from '@material-ui/icons/Launch'
+import HelpIcon from '@material-ui/icons/Help'
 
 import { handleError } from '../../error-handling'
 import { trackAction, trackInternalAction } from '../../analytics'
@@ -18,17 +19,27 @@ import {
   isGoogleDriveUrl,
   isPatreonUrl,
 } from '../../utils'
-import { formatPrice } from '../../currency'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 import { getIsItchProductUrl } from '../../itch'
 import { getIsBoothProductUrl } from '../../booth'
 import { getIsGumroadProductUrl } from '../../gumroad'
 import { getIsJinxxyProductUrl } from '../../jinxxy'
+import Price from '../price'
+import Tooltip from '../tooltip'
 
 const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    alignItems: 'flex-start',
+  },
   button: {
     [mediaQueryForMobiles]: {
       width: '100%',
+    },
+  },
+  buttonWithPrice: {
+    '& > *': {
+      paddingLeft: '7.5px',
     },
   },
   extraSource: {
@@ -39,63 +50,61 @@ const useStyles = makeStyles({
     fontSize: '75%',
     padding: '0.1rem',
   },
+  price: {
+    marginRight: '10px',
+  },
+  icon: {
+    margin: '5px 0 0 5px',
+    opacity: 0.5, // same as "HintText"
+  },
 })
 
-function getButtonLabel(
-  sourceUrl: string | undefined,
-  isExtraSource: boolean
-): string {
-  if (!sourceUrl) {
-    return '(no source URL)'
-  }
-
-  const prefix = isExtraSource ? 'Also On' : 'Get From'
-
+function getButtonLabel(sourceUrl: string): string {
   if (getIsGumroadProductUrl(sourceUrl)) {
-    return `${prefix} Gumroad`
+    return `Gumroad`
   }
 
   if (isTwitterUrl(sourceUrl)) {
-    return 'View Source Tweet'
+    return 'Tweet'
   }
 
   if (isVrchatAvatarUrl(sourceUrl)) {
-    return 'View VRChat Avatar'
+    return 'VRC Avatar'
   }
 
   if (isVrchatWorldUrl(sourceUrl)) {
-    return 'View VRChat World'
+    return 'VRC World'
   }
 
   if (isPatreonUrl(sourceUrl)) {
-    return `${prefix} Patreon`
+    return `Patreon`
   }
 
   if (isDiscordUrl(sourceUrl)) {
-    return `${prefix} Discord`
+    return `Discord`
   }
 
   if (getIsBoothProductUrl(sourceUrl)) {
-    return `${prefix} Booth`
+    return `Booth`
   }
 
   if (getIsItchProductUrl(sourceUrl)) {
-    return `${prefix} itch.io`
+    return `itch.io`
   }
 
   if (getIsJinxxyProductUrl(sourceUrl)) {
-    return `${prefix} Jinxxy`
+    return `Jinxxy`
   }
 
   if (isGoogleDriveUrl(sourceUrl)) {
-    return 'Download from Google Drive'
+    return 'Google Drive'
   }
 
   if (isGitHubUrl(sourceUrl)) {
-    return `${prefix} GitHub`
+    return `GitHub`
   }
 
-  return isExtraSource ? 'View Other Source' : 'Visit Source'
+  return 'Source'
 }
 
 const addReferrerToGumroadUrl = (url: string) => {
@@ -165,7 +174,7 @@ const VisitSourceButton = ({
   }
 
   return (
-    <>
+    <div className={classes.root}>
       <Button
         color={!isExtraSource ? 'primary' : 'default'}
         url={sourceInfo ? addReferrerToGumroadUrl(sourceInfo.url) : undefined}
@@ -174,22 +183,25 @@ const VisitSourceButton = ({
         size={isLarge ? 'large' : undefined}
         className={`${classes.button} ${
           isExtraSource ? classes.extraSource : ''
-        }`}
+        } ${sourceInfo?.price ? classes.buttonWithPrice : ''}`}
         isLoading={isAssetLoading}>
-        {getButtonLabel(sourceInfo?.url, isExtraSource)}
+        {sourceInfo?.price ? (
+          <Price
+            price={sourceInfo?.price}
+            priceCurrency={sourceInfo?.pricecurrency!}
+            isGreyscale
+            className={classes.price}
+            small
+          />
+        ) : null}
+        {sourceInfo ? getButtonLabel(sourceInfo?.url) : 'Loading...'}
       </Button>
-      {sourceInfo?.comments || sourceInfo?.price ? (
-        <div className={classes.comments}>
-          {sourceInfo.comments}
-          {sourceInfo?.price && sourceInfo.pricecurrency
-            ? `${sourceInfo.comments ? ' - ' : ''}${formatPrice(
-                sourceInfo.price,
-                sourceInfo.pricecurrency
-              )}`
-            : ''}
-        </div>
-      ) : null}
-    </>
+      {sourceInfo?.comments && (
+        <Tooltip title={sourceInfo?.comments}>
+          <HelpIcon className={classes.icon} />
+        </Tooltip>
+      )}
+    </div>
   )
 }
 

@@ -19,24 +19,24 @@ const useStyles = makeStyles((theme) => ({
     'border-radius': '3px 4px 4px 3px',
 
     // @ts-ignore
-    'border-left': `1px solid ${theme.palette.tertiary.main}`,
+    borderLeft: `1px solid ${theme.palette.tertiary.main}`,
 
     /* This makes room for the triangle */
-    'margin-left': '19px',
+    marginLeft: '19px',
 
     position: 'relative',
 
     color: 'white',
-    'line-height': '38px',
+    lineHeight: '38px',
 
-    padding: '0 10px 0 10px',
+    padding: '0 10px',
 
     /* Makes the triangle */
     '&:before': {
       content: '""',
       position: 'absolute',
       display: 'block',
-      left: '-19px',
+      left: '-18.5px',
       width: '0',
       height: '0',
       'border-top': '19px solid transparent',
@@ -62,23 +62,16 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
   },
   currency: {
-    fontSize: '75%',
+    fontSize: '65%',
   },
   loading: {
     // more blur than everything else as price is sensitive and we dont want to give the wrong price!
     filter: 'blur(3px)',
   },
   small: {
-    // PURPLE VARIANT:
-    // 'background-color': '#6E4A9E',
-    // 'border-left': `1px solid #6E4A9E`,
-    // '&:before': {
-    //   'border-right': `12px solid #6E4A9E`,
-    // },
-
     height: '24px',
-    'margin-left': '12px',
-    'line-height': '22px',
+    marginLeft: '12px',
+    lineHeight: '24px',
     padding: '0 7px 0 7px',
 
     '&:before': {
@@ -105,6 +98,14 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '100%',
     },
   },
+  greyscale: {
+    backgroundColor: '#e0e0e0',
+    borderLeftColor: `#e0e0e0`,
+    '&:before': {
+      borderRightColor: `#e0e0e0`,
+    },
+    color: '#5d5d5d',
+  },
 }))
 
 // show "+" symbol as some gumroad products have multiple variants
@@ -115,12 +116,16 @@ const Price = ({
   isLoading = false,
   small = false,
   showPriceWarning = false, // only used on assetoverview
+  isGreyscale = false,
+  className,
 }: {
   price: number
   priceCurrency: keyof typeof popularCurrencies
   isLoading?: boolean
   small?: boolean
   showPriceWarning?: boolean
+  isGreyscale?: boolean
+  className?: string
 }) => {
   const classes = useStyles()
 
@@ -129,13 +134,16 @@ const Price = ({
   return (
     <div>
       <div
-        className={`${classes.tag} ${small ? classes.small : ''}`}
+        className={`${classes.tag} ${small ? classes.small : ''} ${
+          isGreyscale ? classes.greyscale : ''
+        } ${className}`}
         title="This price may be different on the official website.">
         <span className={`${isLoading ? classes.loading : ''}`}>
           <span className={classes.price}>
             {price === 0 || price === null
               ? 'FREE'
               : formatPrice(price, priceCurrency, false)}
+            *
           </span>{' '}
           {price === 0 ? null : (
             <span className={classes.currency}>{currency}</span>
