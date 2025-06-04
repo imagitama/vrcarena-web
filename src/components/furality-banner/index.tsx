@@ -61,7 +61,7 @@ const useStyles = makeStyles({
       fontSize: '100%',
     },
     [mediaQueryForMobiles]: {
-      padding: '0.5rem',
+      padding: '0.5rem 1rem 0.5rem 0.5rem',
       fontSize: '100%',
     },
   },
