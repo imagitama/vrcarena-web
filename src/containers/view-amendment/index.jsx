@@ -15,7 +15,7 @@ import CommentList from '../../components/comment-list'
 
 import {
   CollectionNames as OldCollectionNames,
-  ApprovalStatuses
+  ApprovalStatuses,
 } from '../../hooks/useDatabaseQuery'
 import useIsEditor from '../../hooks/useIsEditor'
 
@@ -24,11 +24,12 @@ import useUserId from '../../hooks/useUserId'
 import { CommonMetaFieldNames } from '../../data-store'
 import {
   AmendmentsFieldNames,
-  GetFullAmendmentsFieldNames
+  GetFullAmendmentsFieldNames,
 } from '../../modules/amendments'
 import AuthorResultsItem from '../../components/author-results-item'
 import AmendmentEditorRecordManager from '../../components/amendment-editor-record-manager'
 import Message from '../../components/message'
+import { ViewNames } from '../../modules/assets'
 
 const Asset = ({ assetId }) => {
   const [isLoading, isError, asset] = useDataStoreItem(
@@ -66,10 +67,10 @@ const Author = ({ authorId }) => {
   return <AuthorResultsItem author={author} />
 }
 
-const getViewNameForParentTable = parentTable => {
+const getViewNameForParentTable = (parentTable) => {
   switch (parentTable) {
     case OldCollectionNames.Assets:
-      return 'getfullassets'
+      return ViewNames.GetFullAssets
     case OldCollectionNames.Authors:
       return 'getfullauthors'
     default:
@@ -120,16 +121,12 @@ const Parent = ({ table, id, data }) => {
 const View = () => {
   const { amendmentId } = useParams()
   const userId = useUserId()
-  const [
-    isLoadingAmendment,
-    isErroredLoadingAmendment,
-    amendment,
-    hydrate
-  ] = useDataStoreItem(
-    'getFullAmendments'.toLowerCase(),
-    userId ? amendmentId : false,
-    'view-amendment'
-  )
+  const [isLoadingAmendment, isErroredLoadingAmendment, amendment, hydrate] =
+    useDataStoreItem(
+      'getFullAmendments'.toLowerCase(),
+      userId ? amendmentId : false,
+      'view-amendment'
+    )
   const isEditor = useIsEditor()
 
   if (!userId) {
@@ -156,7 +153,7 @@ const View = () => {
     [AmendmentsFieldNames.createdBy]: createdBy,
     [CommonMetaFieldNames.approvalStatus]: approvalStatus,
     [CommonMetaFieldNames.editorNotes]: editorNotes,
-    [GetFullAmendmentsFieldNames.createdByUsername]: createdByUsername
+    [GetFullAmendmentsFieldNames.createdByUsername]: createdByUsername,
   } = amendment
 
   return (

@@ -639,8 +639,6 @@ export default <TRecord>(
         .from(collectionName.toLowerCase())
         .select<string, TRecord>(selectQuery, { count: 'exact' })
 
-      console.log('HERE', whereClauses)
-
       // or an array of searches
       if (Array.isArray(whereClauses)) {
         const isOrStatement = whereClauses.find(

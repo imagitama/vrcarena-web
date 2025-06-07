@@ -7,11 +7,12 @@ import useDataStoreItem from '../../hooks/useDataStoreItem'
 import Wardrobe from '../../components/wardrobe'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
+import { ViewNames } from '../../modules/assets'
 
 const View = () => {
   const { assetId } = useParams()
   const [isLoading, isErrored, baseAsset] = useDataStoreItem(
-    'getfullassets',
+    ViewNames.GetFullAssets,
     assetId,
     'accessorize'
   )

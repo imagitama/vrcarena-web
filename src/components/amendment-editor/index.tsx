@@ -26,7 +26,7 @@ import ShortDiff from '../short-diff'
 import GenericEditor from '../generic-editor'
 import WarningMessage from '../warning-message'
 import Heading from '../heading'
-import { Asset } from '../../modules/assets'
+import { Asset, ViewNames } from '../../modules/assets'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles({
@@ -122,7 +122,7 @@ const ParentEditor = ({
 const getViewNameForParentTable = (parentTable: string): string => {
   switch (parentTable) {
     case OldCollectionNames.Assets:
-      return 'getfullassets'
+      return ViewNames.GetFullAssets
     case OldCollectionNames.Authors:
       return 'getfullauthors'
     default:

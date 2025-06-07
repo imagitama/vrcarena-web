@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import MultiDiff from '../../components/multi-diff'
-import type { Asset } from '../../modules/assets'
+import { ViewNames, type Asset } from '../../modules/assets'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
@@ -38,7 +38,7 @@ const Compare = () => {
   const [otherAssetIds, setOtherAssetIds] = useState(initialOtherAssetIds)
 
   const [isLoading, isError, assets] = useDataStoreItems<Asset>(
-    'getfullassets',
+    ViewNames.GetFullAssets,
     allAssetIds.length ? allAssetIds : false,
     {
       quietHydrate: true,

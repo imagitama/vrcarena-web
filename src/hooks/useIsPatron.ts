@@ -10,8 +10,6 @@ const useIsPatron = (): boolean | null => {
     userId || false
   )
 
-  console.debug('meta', userMeta)
-
   return userMeta ? userMeta.patreonstatus === PatreonStatus.Patron : null
 }
 

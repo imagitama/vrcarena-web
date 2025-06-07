@@ -31,6 +31,11 @@ import FormattedDate from '../../../../components/formatted-date'
 import UsernameLink from '../../../../components/username-link'
 import GenericOutputLabel from '../../../../components/generic-output-label'
 import FormControls from '../../../../components/form-controls'
+import {
+  AdminQueueItem,
+  AdminQueueItemType,
+  ViewNames,
+} from '../../../../modules/admin-queue'
 
 const parentName = 'admin'
 const pageName = 'notepad'
@@ -65,43 +70,6 @@ const Notepad = () => {
     </>
   )
 }
-
-enum AdminQueueItemType {
-  Asset = 'asset',
-  Amendment = 'amendment',
-  Report = 'report',
-  Avatar = 'avatar',
-}
-
-interface AdminQueueItemBase {
-  id: number
-  type: AdminQueueItemType
-  record: SmallAsset | FullAmendment | FullReport | PublicAvatarSubmission
-  createdat: string
-}
-
-interface AssetAdminQueueItem extends AdminQueueItemBase {
-  type: AdminQueueItemType.Asset
-  record: SmallAsset
-}
-interface AmendmentAdminQueueItem extends AdminQueueItemBase {
-  type: AdminQueueItemType.Amendment
-  record: FullAmendment
-}
-interface ReportAdminQueueItem extends AdminQueueItemBase {
-  type: AdminQueueItemType.Report
-  record: FullReport
-}
-interface AvatarAdminQueueItem extends AdminQueueItemBase {
-  type: AdminQueueItemType.Avatar
-  record: PublicAvatarSubmission
-}
-
-type AdminQueueItem =
-  | AssetAdminQueueItem
-  | AmendmentAdminQueueItem
-  | ReportAdminQueueItem
-  | AvatarAdminQueueItem
 
 const QueueItemLabel = ({ queueItem }: { queueItem: AdminQueueItem }) => {
   switch (queueItem.type) {
@@ -201,7 +169,7 @@ const QueueItemLabel = ({ queueItem }: { queueItem: AdminQueueItem }) => {
 
 const AdminQueue = () => {
   const [isLoading, lastErrorCode, queueItems] =
-    useDataStoreItems<AdminQueueItem>('getadminqueue', undefined)
+    useDataStoreItems<AdminQueueItem>(ViewNames.GetAdminQueue, undefined)
 
   if (isLoading) {
     return <LoadingIndicator message="Loading queue..." />

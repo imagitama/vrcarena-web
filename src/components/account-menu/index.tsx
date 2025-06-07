@@ -19,7 +19,6 @@ import { useLocation } from 'react-router'
 import { handleError } from '../../error-handling'
 import {
   cart as getItemsForCart,
-  queue as getItemsForQueue,
   notifications as getItemsForNotifications,
 } from './getItems'
 import { deleteRecord } from '../../data-store'
@@ -173,12 +172,6 @@ const getMenu = (
         callback()
       }, 30 * 60 * 1000) // 30 seconds
     },
-  },
-  queue: {
-    icon: AssignmentTurnedInIcon,
-    getItems: getItemsForQueue,
-    hideIfNone: true,
-    loggedInOnly: true,
   },
   cart: {
     icon: ShoppingCartIcon,

@@ -1,5 +1,10 @@
 import { deleteRecord } from '../../data-store'
-import { Asset, CollectionNames, FullAsset } from '../../modules/assets'
+import {
+  Asset,
+  CollectionNames,
+  FullAsset,
+  ViewNames,
+} from '../../modules/assets'
 import { handleError } from '../../error-handling'
 import { cartIdsStorageKey } from '../../cart'
 import {
@@ -69,52 +74,6 @@ export const cart = async (
           includeInCount: false,
         },
       ])
-  } catch (err) {
-    console.error(err)
-    handleError(err)
-    return []
-  }
-}
-
-export const queue = async (
-  supabase: SupabaseClient
-): Promise<MenuItemData[]> => {
-  try {
-    const userId = getUserId()
-
-    if (!userId) {
-      return []
-    }
-
-    // TODO: Use hook/abstraction
-    const { data, error } = await supabase
-      // TODO: Use const
-      .from('getFullAssets'.toLowerCase())
-      .select<string, FullAsset>(`*`)
-      .eq('createdby', userId)
-      .eq('publishstatus', PublishStatuses.Published)
-      .eq('approvalstatus', ApprovalStatuses.Waiting)
-      .eq('accessstatus', AccessStatuses.Public)
-      .order('createdat', {
-        ascending: false,
-      })
-      .limit(25)
-
-    if (!data) {
-      console.warn(`Failed to get assets for queue: no data`)
-      return []
-    }
-
-    if (error) {
-      throw new Error('Failed to get queued assets')
-    }
-
-    return data.map((asset) => ({
-      id: asset.id,
-      url: routes.viewAssetWithVar.replace(':assetId', asset.slug || asset.id),
-      label: asset.title,
-      imageUrl: asset.thumbnailurl,
-    }))
   } catch (err) {
     console.error(err)
     handleError(err)
