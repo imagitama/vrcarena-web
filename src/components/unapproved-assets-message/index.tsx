@@ -17,7 +17,7 @@ const UnapprovedAssetsMessage = () => {
   const [isLoading, lastErrorCode, queueItems] =
     useDataStoreItems<AdminQueueItem>(
       ViewNames.GetAdminQueue,
-      isEditor ? false : undefined
+      isEditor ? undefined : false
     )
 
   if (isLoading || !queueItems || !queueItems.length) {
