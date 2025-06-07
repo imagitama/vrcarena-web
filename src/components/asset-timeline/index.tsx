@@ -11,28 +11,23 @@ import { makeStyles } from '@material-ui/core/styles'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 
-import {
-  CollectionNames as CommentsCollectionNames,
-  CommentsMetaFieldNames,
-} from '../../modules/comments'
+import { CollectionNames as CommentsCollectionNames } from '../../modules/comments'
 import { createMessage, editMessage, HistoryEntry } from '../../modules/history'
 import {
   Asset,
+  AssetMeta,
   CollectionNames as AssetsCollectionNames,
 } from '../../modules/assets'
 import {
-  ApprovalStatuses,
-  AssetMetaFieldNames,
-  UserMetaFieldNames,
-} from '../../hooks/useDatabaseQuery'
-import {
-  AmendmentsMetaFieldNames,
   CollectionNames as AmendmentsCollectionNames,
+  FullAmendment,
+  AmendmentMeta,
 } from '../../modules/amendments'
 import { CollectionNames as UsersCollectionNames } from '../../modules/users'
 import {
+  FullReport,
+  Report,
   CollectionNames as ReportsCollectionNames,
-  ReportMetaFieldNames,
   ResolutionStatus,
 } from '../../modules/reports'
 import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
@@ -55,6 +50,7 @@ import { fieldTypes } from '../../generic-forms'
 import TagChips from '../tag-chips'
 import { EditableField } from '../../editable-fields'
 import Markdown from '../markdown'
+import { CommonMetaRecordFields } from '../../data-store'
 
 enum Positivity {
   Positive = 'positive',
@@ -253,48 +249,48 @@ const LabelForEntry = ({
             </>
           )
         case AssetsCollectionNames.AssetsMeta:
-          if (data.changes[AssetMetaFieldNames.approvalStatus]) {
+          if ((data.changes as AssetMeta).approvalstatus) {
             return (
               <>
                 {getLabelForApprovalStatus(
-                  data.changes[AssetMetaFieldNames.approvalStatus]
+                  (data.changes as AssetMeta).approvalstatus
                 )}
               </>
             )
-          } else if (data.changes[AssetMetaFieldNames.accessStatus]) {
+          } else if ((data.changes as AssetMeta).accessstatus) {
             return (
               <>
                 {getLabelForAccessStatus(
-                  data.changes[AssetMetaFieldNames.accessStatus]
+                  (data.changes as AssetMeta).accessstatus
                 )}
               </>
             )
-          } else if (data.changes[AssetMetaFieldNames.publishStatus]) {
+          } else if ((data.changes as AssetMeta).publishstatus) {
             return (
               <>
                 {getLabelForPublishStatus(
-                  data.changes[AssetMetaFieldNames.publishStatus]
+                  (data.changes as AssetMeta).publishstatus
                 )}
               </>
             )
-          } else if (data.changes[AssetMetaFieldNames.editorNotes]) {
+          } else if ((data.changes as AssetMeta).editornotes) {
             return <>changed editor notes for asset</>
           } else {
             return null
           }
         case AmendmentsCollectionNames.AmendmentsMeta:
-          if (data.changes[AmendmentsMetaFieldNames.approvalstatus]) {
+          if ((data.changes as AmendmentMeta).approvalstatus) {
             return (
               <>
-                {AmendmentsMetaFieldNames.approvalstatus ===
-                ApprovalStatuses.Approved
+                {(data.changes as AmendmentMeta).approvalstatus ===
+                ApprovalStatus.Approved
                   ? 'applied'
                   : getLabelForApprovalStatus(
-                      data.changes[AmendmentsMetaFieldNames.approvalstatus]
+                      (data.changes as AmendmentMeta).approvalstatus
                     )}
               </>
             )
-          } else if (data.changes[AmendmentsMetaFieldNames.editornotes]) {
+          } else if ((data.changes as AmendmentMeta).editornotes) {
             return <>changed editor notes for amendment</>
           }
         case UsersCollectionNames.Users:
@@ -304,31 +300,24 @@ const LabelForEntry = ({
             )
           }
         case UsersCollectionNames.UsersMeta:
-          if (data.changes[UserMetaFieldNames.banStatus]) {
-            return (
-              <>
-                {getLabelForBanStatus(
-                  data.changes[UserMetaFieldNames.banStatus]
-                )}{' '}
-                user
-              </>
-            )
+          if (data.changes.banstatus) {
+            return <>{getLabelForBanStatus(data.changes.banstatus)} user</>
           }
         case AuthorsCollectionNames.Authors:
           return <>edited author</>
         case ReportsCollectionNames.ReportsMeta:
-          if (data.changes[ReportMetaFieldNames.resolutionstatus]) {
+          if ((data.changes as FullReport).resolutionstatus) {
             return (
               <>
                 {getLabelForResolutionStatus(
-                  data.changes[ReportMetaFieldNames.resolutionstatus]
+                  (data.changes as FullReport).resolutionstatus
                 )}{' '}
                 report
               </>
             )
-          } else if (data.changes[ReportMetaFieldNames.resolutionnotes]) {
+          } else if ((data.changes as FullReport).resolutionnotes) {
             return <>changed the resolution notes</>
-          } else if (data.changes[ReportMetaFieldNames.editornotes]) {
+          } else if ((data.changes as FullReport).editornotes) {
             return <>changed editor notes for report</>
           } else {
             return (
@@ -336,11 +325,11 @@ const LabelForEntry = ({
             )
           }
         case CommentsCollectionNames.CommentsMeta:
-          if (data.changes[CommentsMetaFieldNames.accessStatus]) {
+          if ((data.changes as MetaRecord).accessstatus) {
             return (
               <>
                 {getLabelForAccessStatus(
-                  data.changes[CommentsMetaFieldNames.accessStatus]
+                  (data.changes as MetaRecord).accessstatus
                 )}{' '}
                 comment
               </>

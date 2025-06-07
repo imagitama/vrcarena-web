@@ -1,12 +1,10 @@
-import { CommonMetaFieldNames } from '../data-store'
-
 export const mergeNewFieldsIntoParent = (newFields: any, parent: any): any => {
   const newParent = { ...parent }
   delete newParent.id
-  delete newParent[CommonMetaFieldNames.createdAt]
-  delete newParent[CommonMetaFieldNames.createdBy]
-  delete newParent[CommonMetaFieldNames.lastModifiedAt]
-  delete newParent[CommonMetaFieldNames.lastModifiedBy]
+  delete newParent.createdat
+  delete newParent.createdby
+  delete newParent.lastmodifiedat
+  delete newParent.lastmodifiedby
   delete newParent.ts
 
   for (const fieldName in parent) {

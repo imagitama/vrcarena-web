@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { readAllRecords } from '../data-store'
-import { Species } from '../modules/species'
-import { CollectionNames } from './useDatabaseQuery'
+import { CollectionNames, Species } from '../modules/species'
 import useSupabaseClient from './useSupabaseClient'
 import { handleError } from '../error-handling'
 

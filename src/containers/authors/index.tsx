@@ -6,7 +6,6 @@ import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
 import AuthorResults from '../../components/author-results'
 
-import { AuthorFieldNames } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import PaginatedView from '../../components/paginated-view'
 import { Author } from '../../modules/authors'
@@ -24,7 +23,7 @@ const AuthorsView = () => {
   const getQuery = useCallback((query, selectedSubView) => {
     switch (selectedSubView) {
       case subViews.OPEN_FOR_COMMISSION:
-        return query.is(AuthorFieldNames.isOpenForCommission, true)
+        return query.is('isopenforcommission', true)
       default:
         return query
     }

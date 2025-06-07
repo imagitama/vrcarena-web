@@ -25,22 +25,20 @@ import useDataStore from '../../hooks/useDataStore'
 import useIsEditor from '../../hooks/useIsEditor'
 import useDatabaseQuery, {
   OrderDirections,
-  AccessStatuses,
-  PublishStatuses,
-  ApprovalStatuses,
   WhereClause,
 } from '../../hooks/useDatabaseQuery'
-import {
-  CommonMetaFieldNames,
-  DataStoreErrorCode,
-  GetQuery,
-} from '../../data-store'
+import { DataStoreErrorCode, GetQuery } from '../../data-store'
 import useScrollMemory from '../../hooks/useScrollMemory'
 import { getPathForQueryString } from '../../queries'
 import { scrollToTop } from '../../utils'
 import WarningMessage from '../warning-message'
 import { mediaQueryForMobiles } from '../../media-queries'
 import { SupabaseClient } from '@supabase/supabase-js'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+} from '../../modules/common'
 
 const useStyles = makeStyles({
   root: {
@@ -498,20 +496,20 @@ const PaginatedView = <TRecord,>({
               <ControlGroup>
                 <CommonMetaControl
                   label="Access"
-                  fieldName={CommonMetaFieldNames.accessStatus}
-                  fieldMap={AccessStatuses}
+                  fieldName={'accessstatus'}
+                  fieldMap={AccessStatus}
                 />
                 &nbsp;
                 <CommonMetaControl
                   label="Approval"
-                  fieldName={CommonMetaFieldNames.approvalStatus}
-                  fieldMap={ApprovalStatuses}
+                  fieldName={'approvalstatus'}
+                  fieldMap={ApprovalStatus}
                 />
                 &nbsp;
                 <CommonMetaControl
                   label="Publish"
-                  fieldName={CommonMetaFieldNames.publishStatus}
-                  fieldMap={PublishStatuses}
+                  fieldName={'publishstatus'}
+                  fieldMap={PublishStatus}
                 />
               </ControlGroup>
             ) : null}

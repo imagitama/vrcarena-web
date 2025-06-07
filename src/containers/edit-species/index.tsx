@@ -5,10 +5,9 @@ import { Helmet } from 'react-helmet'
 import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 import NoPermissionMessage from '../../components/no-permission-message'
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import useIsEditor from '../../hooks/useIsEditor'
-import { editableFields } from '../../modules/species'
+import { CollectionNames, editableFields } from '../../modules/species'
 
 const View = () => {
   const { speciesId } = useParams<{ speciesId: string }>()
@@ -27,7 +26,7 @@ const View = () => {
         collectionName={CollectionNames.Species}
         id={speciesId}
         analyticsCategory="EditSpecies"
-        getSuccessUrl={newId =>
+        getSuccessUrl={(newId) =>
           routes.viewSpeciesWithVar.replace(
             ':speciesIdOrSlug',
             newId || speciesId

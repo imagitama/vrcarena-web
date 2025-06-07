@@ -1,35 +1,5 @@
 import { ApprovalStatus } from './common'
 
-export const AmendmentsFieldNames = {
-  parentTable: 'parenttable',
-  parent: 'parent',
-  fields: 'fields',
-  comments: 'comments',
-  lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat',
-  createdBy: 'createdby',
-  createdAt: 'createdat',
-}
-
-export const GetFullAmendmentsFieldNames = {
-  parentData: 'parentdata',
-  createdByUsername: 'createdbyusername',
-}
-
-export const AmendmentsMetaFieldNames = {
-  id: 'id',
-  approvalstatus: 'approvalstatus',
-  approvedat: 'approvedat',
-  approvedby: 'approvedby',
-  editornotes: 'editornotes',
-  lastmodifiedat: 'lastmodifiedat',
-  lastmodifiedby: 'lastmodifiedby',
-  createdat: 'createdat',
-  createdby: 'createdby',
-}
-
-// types
-
 export interface Amendment extends AmendmentFields {
   id: string
   lastmodifiedby: string
@@ -38,20 +8,32 @@ export interface Amendment extends AmendmentFields {
   createdat: Date
 }
 
-export interface AmendmentFields {
+export interface AmendmentFields extends Record<string, unknown> {
   parenttable: string
   parent: string
   fields: { [fieldName: string]: any }
   comments: string
 }
 
-export interface FullAmendment extends Amendment {
+export interface AmendmentMeta {
+  approvalstatus: ApprovalStatus
+  approvedat: string // date
+  approvedby: string // id
+  editornotes: string
+}
+
+export interface FullAmendment extends Amendment, AmendmentMeta {
   approvalstatus: ApprovalStatus
   parentdata: any
   createdbyusername: any
 }
 
-export const CollectionNames = {
-  Amendments: 'amendments',
-  AmendmentsMeta: 'amendmentsmeta',
+export enum CollectionNames {
+  Amendments = 'amendments',
+  AmendmentsMeta = 'amendmentsmeta',
+}
+
+export enum ViewNames {
+  GetFullAmendments = 'getfullamendments',
+  GetAmendmentsWaitingForApproval = 'getamendmentswaitingforapproval',
 }

@@ -6,14 +6,13 @@ import BodyText from '../../components/body-text'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import useDatabaseQuery, {
-  CollectionNames,
   Operators,
   options,
-  UserFieldNames,
 } from '../../hooks/useDatabaseQuery'
 import { User } from '../../modules/users'
 import Button from '../../components/button'
 import { makeStyles } from '@material-ui/styles'
+import { CollectionNames } from '../../modules/user'
 
 const useStyles = makeStyles({
   item: {

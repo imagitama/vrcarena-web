@@ -1,11 +1,8 @@
 import React, { useEffect, useRef } from 'react'
-import Markdown from '../markdown'
 import Link from '../../components/link'
 import { makeStyles } from '@material-ui/core/styles'
 
 import useUserRecord from '../../hooks/useUserRecord'
-import { CollectionNames as OldCollectionNames } from '../../hooks/useDatabaseQuery'
-import { CollectionNames } from '../../data-store'
 
 import { canEditComments } from '../../permissions'
 import * as routes from '../../routes'
@@ -18,11 +15,13 @@ import StaffBadge from '../staff-badge'
 import LoadingShimmer from '../loading-shimmer'
 import EditorRecordManager from '../editor-record-manager'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import { FullComment } from '../../modules/comments'
+import { CollectionNames, FullComment } from '../../modules/comments'
 import ReportButton from '../report-button'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import MentionsOutput from '../mentions-output'
 import { AccessStatus } from '../../modules/common'
+import useIsEditor from '../../hooks/useIsEditor'
+import NoResultsMessage from '../no-results-message'
 
 const useStyles = makeStyles({
   cols: {
@@ -102,7 +101,7 @@ export default ({
   showControls = true,
   shorten = false,
 }: {
-  comment: FullComment
+  comment?: FullComment
   isHighlighted?: boolean
   performScroll?: boolean
   shimmer?: boolean
@@ -114,6 +113,7 @@ export default ({
   const classes = useStyles()
   const htmlElementRef = useRef(null)
   const isLoggedIn = useIsLoggedIn()
+  const isEditor = useIsEditor()
 
   useEffect(() => {
     if (!performScroll) {
@@ -140,7 +140,7 @@ export default ({
     createdbyusername: createdByUsername,
     createdbyavatarurl: createdByAvatarUrl,
     createdbyrole: createdByRole,
-  } = comment
+  } = comment || {}
 
   const isDeleted = accessStatus === AccessStatus.Deleted
 
@@ -169,7 +169,9 @@ export default ({
         ) : (
           '(no creator)'
         )}{' '}
-        {getIsRoleAStaffMember(createdByRole) && <StaffBadge isSmall />}
+        {createdByRole && getIsRoleAStaffMember(createdByRole) && (
+          <StaffBadge isSmall />
+        )}
         {shimmer ? null : (
           <div className={classes.meta}>
             <div className={classes.metaItems}>
@@ -182,18 +184,29 @@ export default ({
         <div className={classes.contentWrapper}>
           {shimmer ? (
             <LoadingShimmer width={400} height={25} />
-          ) : (!isDeleted || canEditComments(user)) && commentText ? (
+          ) : isDeleted ? (
+            <NoResultsMessage>
+              Comment deleted
+              {isEditor && (
+                <>
+                  <br />
+                  <br />
+                  Original message: {commentText}
+                </>
+              )}
+            </NoResultsMessage>
+          ) : (
             <div className={classes.content}>
               <MentionsOutput
-                text={shorten ? shortenComment(commentText) : commentText}
-                mentions={mentions}
+                text={shorten ? shortenComment(commentText!) : commentText!}
+                mentions={mentions!}
               />
             </div>
-          ) : null}
+          )}
           {showControls && isLoggedIn && id ? (
-            <ReportButton id={id} type={OldCollectionNames.Comments} small />
+            <ReportButton id={id} type={CollectionNames.Comments} small />
           ) : null}
-          {showControls && !shimmer && canEditComments(user) && id && (
+          {showControls && !shimmer && isEditor && id && (
             <div className={classes.controls}>
               <div className={classes.control}>
                 <EditorRecordManager

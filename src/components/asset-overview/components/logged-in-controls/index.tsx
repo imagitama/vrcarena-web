@@ -3,9 +3,7 @@ import RssFeedIcon from '@material-ui/icons/RssFeed'
 import EditIcon from '@material-ui/icons/Edit'
 
 import * as routes from '../../../../routes'
-import { CollectionNames } from '../../../../hooks/useDatabaseQuery'
 import useUserRecord from '../../../../hooks/useUserRecord'
-import { canFeatureAssets } from '../../../../permissions'
 
 import Button from '../../../button'
 import SubscriptionEditor from '../../../subscription-editor'
@@ -14,6 +12,7 @@ import FeatureButton from '../../../feature-button'
 import TabContext from '../../context'
 import Control from '../control'
 import useIsPatron from '../../../../hooks/useIsPatron'
+import { CollectionNames } from '../../../../modules/assets'
 
 export default () => {
   const {

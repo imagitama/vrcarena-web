@@ -1,8 +1,7 @@
 // TODO: Move to utils/index.ts
 
 import { validate as validateUuid } from 'uuid'
-import { PatreonStatuses, UserRoles } from './hooks/useDatabaseQuery'
-import { FullUser } from './modules/users'
+import { FullUser, PatreonStatus, UserRoles } from './modules/users'
 
 export function scrollToTop(isSmooth: boolean = true): void {
   console.debug(`Scrolling to top...`)
@@ -97,7 +96,7 @@ export function canEditPedestal(user: FullUser) {
     return true
   }
 
-  if (user.patreonstatus === PatreonStatuses.Patron) {
+  if (user.patreonstatus === PatreonStatus.Patron) {
     return true
   }
 
@@ -153,7 +152,7 @@ function getValidUrl(url: string): string {
   return url.toLowerCase()
 }
 
-export function isUrl(string: any): string is string {
+export function getIsUrl(string: any): string is string {
   try {
     new URL(string)
     return true
@@ -162,7 +161,7 @@ export function isUrl(string: any): string is string {
   }
 }
 
-export function isUrlAnImage(url: string): boolean {
+export function getIsUrlAnImage(url: string): boolean {
   const validUrl = getValidUrl(url)
   return (
     validUrl.includes('jpg') ||
@@ -173,17 +172,17 @@ export function isUrlAnImage(url: string): boolean {
   )
 }
 
-export function isUrlAVideo(url: string): boolean {
+export function getIsUrlAVideo(url: string): boolean {
   const validUrl = getValidUrl(url)
   return validUrl.includes('.mp4') || validUrl.includes('.avi')
 }
 
-export function isUrlAFbx(url: string): boolean {
+export function getIsUrlAFbx(url: string): boolean {
   const validUrl = getValidUrl(url)
   return validUrl.includes('.fbx')
 }
 
-export function isUrlAYoutubeVideo(url: string): boolean {
+export function getIsUrlAYoutubeVideo(url: string): boolean {
   const validUrl = getValidUrl(url)
   return validUrl.includes('youtu.be') || validUrl.includes('youtube.com')
 }
@@ -194,16 +193,9 @@ export const getYouTubeVideoIdFromUrl = (url: string): string => {
   return url.match(/([a-z0-9_-]{11})/gim)[0]
 }
 
-export function isUrlNotAnImageOrVideo(url: string): boolean {
+export function getIsUrlNotAnImageOrVideo(url: string): boolean {
   const validUrl = getValidUrl(url)
-  return !isUrlAnImage(validUrl) && !isUrlAVideo(validUrl)
-}
-
-export function isUrlATweet(url: string): boolean {
-  const validUrl = getValidUrl(url)
-  return /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(es)?\/(\d+)$/.test(
-    validUrl
-  )
+  return !getIsUrlAnImage(validUrl) && !getIsUrlAVideo(validUrl)
 }
 
 export function getFilenameFromUrl(url: string): string {
@@ -211,7 +203,7 @@ export function getFilenameFromUrl(url: string): string {
     return ''
   }
 
-  if (isUrlAYoutubeVideo(url)) {
+  if (getIsUrlAYoutubeVideo(url)) {
     return 'YouTube Video'
   }
 
@@ -233,16 +225,6 @@ export function getFilenameFromUrl(url: string): string {
     .pop()
 }
 
-export function createRef(collectionName: string, id: string): string {
-  // NOTE: This used to return { ref: { collectionName, id }} but Supabase/SQL doesn't support "refs"
-  // so we just use a string and trust the column is set properly
-  return id
-}
-
-export function isRef(value: any): boolean {
-  return value && typeof value === 'object' && value.hasOwnProperty('ref')
-}
-
 // even if you grant public access to a Firebase bucket
 // if you provide an access ID it will still error?
 // so strip that out
@@ -253,13 +235,10 @@ export function fixAccessingImagesUsingToken(url: string): string {
   return url.split('?')[0]
 }
 
-export function isAbsoluteUrl(url: string): boolean {
-  return url.includes('http')
-}
+export const getIsUrlAbsolute = (url: string): boolean => url.includes('http')
 
-export function isGitHubUrl(url: string): boolean {
-  return url.includes('github.com')
-}
+export const getIsGitHubUrl = (url: string): boolean =>
+  url.includes('github.com')
 
 export const getQueryParam = (name: string): string | null => {
   // eslint-disable-next-line
@@ -284,7 +263,7 @@ export const copyTextToClipboard = (text: string): Promise<void> => {
 export const getAvatarIdFromUserInput = (userInput: string): string | null => {
   let result = ''
 
-  if (isUrl(userInput)) {
+  if (getIsUrl(userInput)) {
     const parsedResult = userInput.split('?')[0].split('/').pop()
 
     if (!parsedResult) {
@@ -314,38 +293,16 @@ export const mapFieldsForDatabase = (fields: {
     {}
   )
 
-export const getIsVrchatWorldId = (value: string): boolean =>
-  typeof value === 'string' && value.substring(0, 4) === 'wrld'
-
-export function isVrchatAvatarUrl(url: string): boolean {
-  return url.includes('vrchat.com/home/avatar')
-}
-
-export function isVrchatWorldUrl(url: string): boolean {
-  return (
-    url.includes('vrchat.com/home/world') ||
-    url.includes('vrchat.com/home/launch?worldId')
-  )
-}
-
-export function isTwitterUrl(url: string): boolean {
-  return url.includes('twitter.com')
-}
-
-export function isPatreonUrl(url: string): boolean {
-  return url.includes('patreon.com')
-}
-
-export function isGoogleDriveUrl(url: string): boolean {
+export function getIsGoogleDriveUrl(url: string): boolean {
   return url.includes('drive.google.com')
 }
 
-export function isDiscordUrl(url: string): boolean {
+export function getIsDiscordUrl(url: string): boolean {
   return url.includes('discordapp.com') || url.includes('discord.com')
 }
 
 export const getImageUrlFromYouTubeUrl = (url: string): string =>
-  isUrlAYoutubeVideo(url)
+  getIsUrlAYoutubeVideo(url)
     ? `https://ytimg.googleusercontent.com/vi/${getYouTubeVideoIdFromUrl(
         url
       )}/sddefault.jpg`
@@ -522,3 +479,11 @@ export const removeDuplicates = <T = any>(arr: T[]): T[] =>
 
 export const cleanupSearchTerm = (searchTerm: string): string =>
   searchTerm ? searchTerm.trim() : ''
+
+export const getIsUrlRisky = (url: string): boolean => {
+  if (getIsGoogleDriveUrl(url) || getIsGitHubUrl(url) || getIsDiscordUrl(url)) {
+    return true
+  }
+
+  return false
+}

@@ -1,15 +1,17 @@
 import React from 'react'
-import { CollectionNames as OldCollectionNames } from '../hooks/useDatabaseQuery'
-import { CollectionNames } from '../data-store'
 import authors from './authors'
 import users from './users'
 import discordServers from './discord-servers'
 import userMeta from './user-meta'
-import playlists from './playlists'
 import pages from './pages'
 import { fieldTypes } from '../generic-forms'
 import attachments from './attachments'
-import { CollectionNames as AttachmentCollectionNames } from '../modules/attachments'
+
+import { CollectionNames as AttachmentsCollectionNames } from '../modules/attachments'
+import { CollectionNames as UsersCollectionNames } from '../modules/users'
+import { CollectionNames as DiscordServersCollectionNames } from '../modules/discordservers'
+import { CollectionNames as AuthorsCollectionNames } from '../modules/authors'
+import { CollectionNames as PagesCollectionNames } from '../modules/pages'
 
 export interface Option {
   value: string | null
@@ -41,7 +43,6 @@ export interface ItemProperties {
   collectionName: string
   fieldAsLabel?: string
   getLabel?: (item: any) => string
-  // renderer: (props: { item: any }) => React.ReactElement
 }
 
 export interface EditableField<TRecord, TFieldData = undefined> {
@@ -67,13 +68,12 @@ export interface EditableField<TRecord, TFieldData = undefined> {
 const editableFieldsByCollectionName: {
   [collectionName: string]: EditableField<any>[]
 } = {
-  [OldCollectionNames.Authors]: authors,
-  [OldCollectionNames.Users]: users,
-  [OldCollectionNames.DiscordServers]: discordServers,
-  [OldCollectionNames.UserMeta]: userMeta,
-  [CollectionNames.Playlists]: playlists,
-  [CollectionNames.Pages]: pages,
-  [AttachmentCollectionNames.Attachments]: attachments,
+  [AuthorsCollectionNames.Authors]: authors,
+  [UsersCollectionNames.Users]: users,
+  [DiscordServersCollectionNames.DiscordServers]: discordServers,
+  [UsersCollectionNames.UsersMeta]: userMeta,
+  [PagesCollectionNames.Pages]: pages,
+  [AttachmentsCollectionNames.Attachments]: attachments,
 }
 
 export default editableFieldsByCollectionName

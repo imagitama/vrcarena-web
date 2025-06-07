@@ -3,7 +3,6 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CancelIcon from '@material-ui/icons/Cancel'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 
 import Button from '../button'
@@ -12,7 +11,11 @@ import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import ButtonDropdown from '../button-dropdown'
 import { ApprovalStatus, MetaRecord, PublishStatus } from '../../modules/common'
-import { AssetMeta, DeclinedReason } from '../../modules/assets'
+import {
+  AssetMeta,
+  DeclinedReason,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
 import { declinedReasonMeta } from '../../utils/assets'
 import { getAreArraysSame } from '../../utils'
 
@@ -79,7 +82,7 @@ const ApproveButton = ({
     ? metaRecord.approvalstatus
     : undefined
 
-  const isAsset = metaCollectionName === CollectionNames.AssetMeta
+  const isAsset = metaCollectionName === AssetsCollectionNames.AssetsMeta
 
   const onClickApprove = async () => onNewStatus(ApprovalStatus.Approved)
   const onClickDecline = async () => onNewStatus(ApprovalStatus.Declined)

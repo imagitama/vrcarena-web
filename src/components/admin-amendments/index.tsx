@@ -4,15 +4,14 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
-import { CommonMetaFieldNames } from '../../data-store'
 
 import Button from '../button'
 import PaginatedView from '../paginated-view'
 import AmendmentResults from '../amendment-results'
 import TextInput from '../text-input'
-import { ApprovalStatuses } from '../../hooks/useDatabaseQuery'
 import { FullAmendment } from '../../modules/amendments'
 import NoResultsMessage from '../no-results-message'
+import { ApprovalStatus } from '../../modules/common'
 
 const Renderer = ({ items }: { items?: FullAmendment[] }) =>
   items ? (
@@ -50,29 +49,20 @@ export default () => {
   const getQuery = useCallback(
     (query) => {
       if (userIdToFilter) {
-        query = query.eq(CommonMetaFieldNames.createdBy, userIdToFilter)
+        query = query.eq('createdby', userIdToFilter)
       }
 
       switch (selectedSubView) {
         case subViews.WAITING:
-          query = query.eq(
-            CommonMetaFieldNames.approvalStatus,
-            ApprovalStatuses.Waiting
-          )
+          query = query.eq('approvalstatus', ApprovalStatus.Waiting)
           break
 
         case subViews.APPROVED:
-          query = query.eq(
-            CommonMetaFieldNames.approvalStatus,
-            ApprovalStatuses.Approved
-          )
+          query = query.eq('approvalstatus', ApprovalStatus.Approved)
           break
 
         case subViews.REJECTED:
-          query = query.eq(
-            CommonMetaFieldNames.approvalStatus,
-            ApprovalStatuses.Declined
-          )
+          query = query.eq('approvalstatus', ApprovalStatus.Declined)
       }
 
       return query

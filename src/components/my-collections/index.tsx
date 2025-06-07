@@ -9,6 +9,7 @@ import Notice from '../notice'
 import useMyCollections from '../../hooks/useMyCollections'
 import ResultsItems from '../results-items'
 import CollectionResultsItem from '../collection-results-item'
+import InfoMessage from '../info-message'
 
 const MyCollections = () => {
   const [isLoading, isErrored, myCollections] = useMyCollections()
@@ -45,10 +46,11 @@ export default () => {
       <MyCollection />
       <Heading variant="h2">Collections</Heading>
       <MyCollections />
-      <Notice
-        title="Creating a collection"
-        message="Create a new collection by viewing an asset and use the button in the sidebar"
-      />
+      <Heading variant="h2">Creating Collections</Heading>
+      <InfoMessage>
+        When viewing an asset click "Add To Collection" in the sidebar to add to
+        an existing or create a new collection.
+      </InfoMessage>
     </>
   )
 }

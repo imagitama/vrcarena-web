@@ -65,7 +65,7 @@ function SyncDiscordServerButton({
   return (
     <Button onClick={onClick} icon={<SyncIcon />}>
       {isLoading
-        ? 'Working...'
+        ? 'Loading data...'
         : isSuccess === true
         ? 'Synced'
         : isSuccess === false

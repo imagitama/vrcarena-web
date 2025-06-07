@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 
 import TagInput from '../tag-input'
-import { Asset } from '../../modules/assets'
+import { Asset, CollectionNames } from '../../modules/assets'
 
 const AssetTagsEditor = ({
   assetId,
@@ -23,7 +22,7 @@ const AssetTagsEditor = ({
   actionCategory?: string
   asset?: Asset
 }) => {
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
+  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
     assetId ? CollectionNames.Assets : false,
     assetId
   )
@@ -44,7 +43,7 @@ const AssetTagsEditor = ({
       }
 
       await save({
-        [AssetFieldNames.tags]: newTags,
+        tags: newTags,
       })
 
       if (onDone) {

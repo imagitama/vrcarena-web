@@ -5,17 +5,17 @@ import useUserId from '../../hooks/useUserId'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import AssetResults from '../asset-results'
-import { AssetMetaFieldNames } from '../../hooks/useDatabaseQuery'
 import NoResultsMessage from '../no-results-message'
+import { ViewNames } from '../../modules/assets'
 
 export default () => {
   const userId = useUserId()
   const getQuery = useCallback(
     (supabase) =>
       supabase
-        .from('getFullAssets'.toLowerCase())
+        .from(ViewNames.GetFullAssets)
         .select('*')
-        .eq(AssetMetaFieldNames.featuredBy, userId),
+        .eq('featuredby', userId),
     [userId]
   )
   const [isLoading, lastErrorCode, results] = useDataStore(

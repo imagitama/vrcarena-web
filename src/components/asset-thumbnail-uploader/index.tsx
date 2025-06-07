@@ -1,12 +1,10 @@
 import React, { useRef, useEffect } from 'react'
 
-import { CollectionNames, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
-import WarningMessage from '../warning-message'
 import ImageUploader from '../image-uploader'
 
 import { handleError } from '../../error-handling'
@@ -17,6 +15,7 @@ import {
   NONATTACHMENT_MAX_SIZE_BYTES,
 } from '../../config'
 import { bucketNames } from '../../file-uploading'
+import { Asset, CollectionNames } from '../../modules/assets'
 
 export default ({
   assetId = undefined,
@@ -36,7 +35,7 @@ export default ({
   // for amendments to work
   assetIdForBucket?: string
 }) => {
-  const [isSaving, isSuccess, isErrored, save] = useDatabaseSave(
+  const [isSaving, isSuccess, isErrored, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -80,7 +79,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.thumbnailUrl]: url,
+        thumbnailurl: url,
       })
 
       if (onDone) {

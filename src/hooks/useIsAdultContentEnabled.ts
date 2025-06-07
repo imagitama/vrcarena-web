@@ -1,5 +1,4 @@
 import { alreadyOver18Key } from '../config'
-import { UserPreferencesFieldNames } from '../modules/user'
 import useStorage from './useStorage'
 import useUserPreferences from './useUserPreferences'
 
@@ -9,10 +8,7 @@ export default (): boolean => {
 
   let isEnabled = false
 
-  if (
-    userPreferences &&
-    userPreferences[UserPreferencesFieldNames.enabledAdultContent]
-  ) {
+  if (userPreferences && userPreferences.enabledadultcontent) {
     isEnabled = true
   }
 

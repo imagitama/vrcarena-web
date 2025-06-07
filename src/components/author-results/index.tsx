@@ -11,7 +11,7 @@ const AuthorResults = ({
   authors,
   onClick,
 }: {
-  authors: Author[]
+  authors?: Author[]
   onClick?: (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     authorId: string,
@@ -22,13 +22,17 @@ const AuthorResults = ({
 
   return (
     <div className={classes.root}>
-      {authors.map((author) => (
-        <AuthorResultsItem
-          key={author.id}
-          author={author}
-          onClick={onClick ? (e) => onClick(e, author.id, author) : undefined}
-        />
-      ))}
+      {authors
+        ? authors.map((author) => (
+            <AuthorResultsItem
+              key={author.id}
+              author={author}
+              onClick={
+                onClick ? (e) => onClick(e, author.id, author) : undefined
+              }
+            />
+          ))
+        : null}
     </div>
   )
 }

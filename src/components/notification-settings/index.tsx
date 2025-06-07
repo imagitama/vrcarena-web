@@ -28,7 +28,7 @@ import {
   CollectionNames,
   NotificationPreferences,
   NotificationPreferencesEvents,
-  UserPreferencesFieldNames,
+  UserPreferences,
 } from '../../modules/user'
 
 const useStyles = makeStyles({
@@ -204,10 +204,8 @@ const NotificationSettings = ({
   const myUserId = useUserId()
   const [isLoadingPreferences, isErrorLoadingPreferences, userPreferences] =
     useUserPreferences()
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
-    CollectionNames.UserPreferences,
-    myUserId
-  )
+  const [isSaving, isSaveSuccess, isSaveError, save] =
+    useDatabaseSave<UserPreferences>(CollectionNames.UserPreferences, myUserId)
   const [newPrefs, setNewPrefs] = useState(defaultNotificationPrefs)
   const [notificationEmail, setNotificationEmail] = useState('')
   const classes = useStyles()
@@ -284,8 +282,8 @@ const NotificationSettings = ({
       console.debug(`Saving preferences...`)
 
       await save({
-        [UserPreferencesFieldNames.notificationPrefs]: newPrefs,
-        [UserPreferencesFieldNames.notificationEmail]: notificationEmail,
+        notificationprefs: newPrefs,
+        notificationemail: notificationEmail,
       })
     } catch (err) {
       console.error('Failed to save user preferences', err)

@@ -11,7 +11,7 @@ import AdultContentToggle from '../../components/adult-content-toggle'
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
 import NoPermissionMessage from '../../components/no-permission-message'
-import MyUploads from '../../components/my-uploads'
+import MyAssets from '../../components/my-assets'
 import SocialMediaUsernamesEditor from '../../components/social-media-usernames-editor'
 import BioEditor from '../../components/bio-editor'
 import MyFeaturedAssets from '../../components/my-featured-assets'
@@ -24,14 +24,12 @@ import MyReports from '../../components/my-reports'
 
 import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'
-import { UserFieldNames } from '../../hooks/useDatabaseQuery'
 
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 import PatreonConnectForm from '../../components/patreon-connect-form'
 import VrPlatformChooser from '../../components/vr-platform-chooser'
 import LinkAccountWithVrchatForm from '../../components/link-with-vrchat-account-form'
-import TagBlacklistEditor from '../../components/tag-blacklist-editor'
 import ShowMoreInfoToggle from '../../components/show-more-info-toggle'
 import ChangeEmailForm from '../../components/change-email-form'
 import DeleteAccountForm from '../../components/delete-account-form'
@@ -241,7 +239,7 @@ const View = () => {
             contents: (
               <>
                 <Heading variant="h2">My Assets</Heading>
-                <MyUploads />
+                <MyAssets />
               </>
             ),
           },

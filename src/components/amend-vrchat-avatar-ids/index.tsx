@@ -1,10 +1,6 @@
 import React, { useState } from 'react'
 import CheckIcon from '@material-ui/icons/Check'
 
-import {
-  CollectionNames as OldCollectionNames,
-  AssetFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 
 import { handleError } from '../../error-handling'
@@ -18,8 +14,11 @@ import SuccessMessage from '../success-message'
 import GetVrchatAvatarDetails from '../get-vrchat-avatar-details'
 import VrchatAvatarComponent from '../vrchat-avatar'
 import { VrchatAvatar } from '../../vrchat'
-import { CollectionNames } from '../../data-store'
-import { AmendmentFields } from '../../modules/amendments'
+import { AmendmentFields, CollectionNames } from '../../modules/amendments'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
 
 export default ({ assetId }: { assetId: string }) => {
   const [isSaving, isSuccess, isErroredSaving, createAmendment] =
@@ -55,11 +54,11 @@ export default ({ assetId }: { assetId: string }) => {
   const onCreate = async () => {
     try {
       const newAmendment: AmendmentFields = {
-        parenttable: OldCollectionNames.Assets,
+        parenttable: AssetsCollectionNames.Assets,
         parent: assetId,
         fields: {
-          [AssetFieldNames.vrchatClonableAvatarIds]: [newAvatarId],
-        },
+          vrchatclonableavatarids: [newAvatarId],
+        } as Partial<Asset>,
         comments,
       }
 

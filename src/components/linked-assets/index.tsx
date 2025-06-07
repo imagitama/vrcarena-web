@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { Asset } from '../../modules/assets'
+import { Asset, ViewNames } from '../../modules/assets'
 import * as routes from '../../routes'
 
 import AssetResults from '../asset-results'
@@ -30,17 +29,15 @@ export default ({
   const getQuery = useCallback(
     (supabase: SupabaseClient) => {
       let query = supabase
-        .from('getPublicAssets'.toLowerCase())
+        .from(ViewNames.GetPublicAssets)
         .select('*', {
           count: 'estimated',
         })
-        .contains(AssetFieldNames.children, [assetId])
+        .contains('children', [assetId])
         .limit(limit)
 
       query =
-        isAdultContentEnabled === false
-          ? query.is(AssetFieldNames.isAdult, false)
-          : query
+        isAdultContentEnabled === false ? query.is('isadult', false) : query
 
       return query
     },

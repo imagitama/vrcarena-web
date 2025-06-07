@@ -4,16 +4,27 @@ import { makeStyles } from '@material-ui/core/styles'
 import useSearching from '../../hooks/useSearching'
 import TextInput from '../text-input'
 import Button from '../button'
-import {
-  AssetFieldNames,
-  AuthorFieldNames,
-  CollectionNames,
-  DiscordServerFieldNames,
-  SpeciesFieldNames,
-  UserFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
-import { ViewNames } from '../../modules/discordservers'
+import {
+  ViewNames as DiscordServersViewNames,
+  CollectionNames as DiscordServersCollectionNames,
+} from '../../modules/discordservers'
+import {
+  ViewNames as UsersViewNames,
+  CollectionNames as UsersCollectionNames,
+} from '../../modules/users'
+import {
+  ViewNames as AuthorsViewNames,
+  CollectionNames as AuthorsCollectionNames,
+} from '../../modules/authors'
+import {
+  ViewNames as AssetsViewNames,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
+import {
+  ViewNames as CommentsViewNames,
+  CollectionNames as CommentsCollectionNames,
+} from '../../modules/comments'
 
 const useStyles = makeStyles({
   textInput: {
@@ -40,16 +51,16 @@ const useStyles = makeStyles({
 // TODO: Use enums and types
 const getSearchStatementForCollectionName = (collectionName: string) => {
   switch (collectionName) {
-    case CollectionNames.Assets:
-      return `${AssetFieldNames.title}, ${AssetFieldNames.description}, ${AssetFieldNames.thumbnailUrl}, ${AssetFieldNames.tags}, ${AssetFieldNames.isAdult}`
-    case CollectionNames.Users:
-      return `${UserFieldNames.username}, ${UserFieldNames.avatarUrl}`
-    case CollectionNames.Authors:
-      return `${AuthorFieldNames.name}, ${AuthorFieldNames.avatarUrl}`
-    case CollectionNames.DiscordServers:
-      return DiscordServerFieldNames.name
+    case AssetsCollectionNames.Assets:
+      return `title, description, thumbnailUrl, tags, isAdult`
+    case UsersCollectionNames.Users:
+      return `username, avatarurl`
+    case AuthorsCollectionNames.Authors:
+      return `name, avatarurl`
+    case DiscordServersCollectionNames.DiscordServers:
+      return 'name'
     case SpeciesCollectionNames.Species:
-      return `${SpeciesFieldNames.pluralName}`
+      return `pluralname`
     default:
       throw new Error(
         `Cannot get search statement: index ${collectionName} not configured!`
@@ -58,18 +69,20 @@ const getSearchStatementForCollectionName = (collectionName: string) => {
 }
 
 // TODO: Use enums and types
-const getFieldsToSearchForCollectionName = (collectionName: string) => {
+const getFieldsToSearchForCollectionName = (
+  collectionName: string
+): string[] => {
   switch (collectionName) {
-    case CollectionNames.Assets:
-      return [AssetFieldNames.title]
-    case CollectionNames.Users:
-      return [UserFieldNames.username]
-    case CollectionNames.Authors:
-      return [AuthorFieldNames.name]
-    case CollectionNames.DiscordServers:
-      return [DiscordServerFieldNames.name]
+    case AssetsCollectionNames.Assets:
+      return ['title']
+    case UsersCollectionNames.Users:
+      return ['username']
+    case AuthorsCollectionNames.Authors:
+      return ['name']
+    case DiscordServersCollectionNames.DiscordServers:
+      return ['name']
     case SpeciesCollectionNames.Species:
-      return [SpeciesFieldNames.pluralName]
+      return ['pluralname']
     default:
       throw new Error(
         `Cannot get search statement: index ${collectionName} not configured!`
@@ -80,12 +93,12 @@ const getFieldsToSearchForCollectionName = (collectionName: string) => {
 // TODO: Use enums and types
 const getTableOrViewNameForCollectionName = (collectionName: string) => {
   switch (collectionName) {
-    case CollectionNames.Authors:
-      return 'getpublicauthors'
-    case CollectionNames.DiscordServers:
-      return ViewNames.GetPublicDiscordServers
-    case CollectionNames.Comments:
-      return 'getpubliccomments'
+    case AuthorsCollectionNames.Authors:
+      return AuthorsViewNames.GetPublicAuthors
+    case DiscordServersCollectionNames.DiscordServers:
+      return DiscordServersViewNames.GetPublicDiscordServers
+    case CommentsCollectionNames.Comments:
+      return CommentsViewNames.GetPublicComments
     default:
       return collectionName
   }

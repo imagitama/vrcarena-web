@@ -11,13 +11,6 @@ import {
   parseSearchTermFromUrlPath,
 } from '../../utils'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import {
-  AssetFieldNames,
-  AssetMetaFieldNames,
-  AuthorFieldNames,
-  SpeciesFieldNames,
-  UserFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import AssetResults from '../../components/asset-results'
 import PaginatedView from '../../components/paginated-view'
 import {
@@ -104,10 +97,9 @@ export interface Operation {
   value: string | string[]
 }
 
-export const sortableFieldMap = {
-  created: AssetFieldNames.createdAt,
-  // updated: AssetFieldNames.lastModifiedAt,
-  approved: AssetMetaFieldNames.approvedAt,
+export const sortableFieldMap: { [key: string]: keyof FullAsset } = {
+  created: 'createdat',
+  approved: 'approvedat',
 }
 
 export enum Platforms {
@@ -281,7 +273,7 @@ export const getOperationsFromUserInput = (userInput: string): Operation[] => {
   return mergedOperations
 }
 
-const getCollectionNameForFieldName = (fieldName: string) => {
+const getCollectionNameForFieldName = (fieldName: string): string | null => {
   switch (fieldName) {
     case 'author':
       return AuthorCollectionNames.Authors
@@ -295,15 +287,15 @@ const getCollectionNameForFieldName = (fieldName: string) => {
   }
 }
 
-const getColumnNameForFieldName = (fieldName: string) => {
+const getColumnNameForFieldName = (fieldName: string): string => {
   switch (fieldName) {
     case 'author':
-      return AuthorFieldNames.name
+      return 'name'
     case 'species':
-      return SpeciesFieldNames.pluralName
+      return 'pluralname'
     case 'createdby':
     case 'lastmodifiedby':
-      return UserFieldNames.username
+      return 'username'
     default:
       throw new Error(`Cannot get column name for field name "${fieldName}"`)
   }
@@ -350,7 +342,7 @@ const getIdIfNotId = async (
 }
 
 const getIsFieldNameArray = (fieldName: string): boolean =>
-  fieldName === AssetFieldNames.tags
+  fieldName === ('tags' as keyof FullAsset)
 
 export const extendQueryFromUserInput = (
   baseQuery: GetQuery<FullAsset>,
@@ -601,7 +593,7 @@ export default () => {
       query = extendQueryFromUserInput(query, operations)
 
       if (isAdultContentEnabled !== true) {
-        query = query.eq(AssetFieldNames.isAdult, false)
+        query = query.eq('isadult', false)
       }
 
       return query

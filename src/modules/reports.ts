@@ -1,4 +1,5 @@
-import { CollectionNames as ExistingCollectionNames } from '../hooks/useDatabaseQuery'
+import { CollectionNames as AssetsCollectionNames } from './assets'
+import { CollectionNames as CommentsCollectionNames } from './comments'
 
 const commonReportReasonKeys = {
   OFFENSIVE_CONTENT: 'OFFENSIVE_CONTENT',
@@ -7,7 +8,7 @@ const commonReportReasonKeys = {
 }
 
 export const reportReasonsKeysByCollection = {
-  [ExistingCollectionNames.Assets]: {
+  [AssetsCollectionNames.Assets]: {
     OUTDATED_CONTENT: 'OUTDATED_CONTENT',
     BROKEN_SOURCE: 'BROKEN_SOURCE',
     CLAIM_OWNERSHIP: 'CLAIM_OWNERSHIP',
@@ -31,28 +32,28 @@ const commonReasons: ReportReason[] = [
 ]
 
 const reasonsByCollectionName: { [collectionName: string]: ReportReason[] } = {
-  [ExistingCollectionNames.Assets]: [
+  [AssetsCollectionNames.Assets]: [
     {
       value:
-        reportReasonsKeysByCollection[ExistingCollectionNames.Assets]
+        reportReasonsKeysByCollection[AssetsCollectionNames.Assets]
           .BROKEN_SOURCE,
       label: 'Broken or invalid source',
     },
     {
       value:
-        reportReasonsKeysByCollection[ExistingCollectionNames.Assets]
+        reportReasonsKeysByCollection[AssetsCollectionNames.Assets]
           .OUTDATED_CONTENT,
       label:
         'Outdated content (eg. thumbnail, attachments, etc.). Please provide a link to the correct content',
     },
     {
       value:
-        reportReasonsKeysByCollection[ExistingCollectionNames.Assets].TAKEDOWN,
+        reportReasonsKeysByCollection[AssetsCollectionNames.Assets].TAKEDOWN,
       label:
         'I am the creator of this asset and I have read the takedown policy and want it to be taken down',
     },
   ],
-  [ExistingCollectionNames.Comments]: [],
+  [CommentsCollectionNames.Comments]: [],
 }
 
 interface ReportReason {
@@ -107,20 +108,12 @@ export interface FullReport extends Report, ReportMeta {
   resolvedbyusername: string
 }
 
-export const ReportMetaFieldNames = {
-  editornotes: 'editornotes',
-  resolutionstatus: 'resolutionstatus',
-  resolvedat: 'resolvedat',
-  resolvedby: 'resolvedby',
-  resolutionnotes: 'resolutionnotes',
-  createdBy: 'createdby',
-  createdAt: 'createdat',
-  lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat',
+export enum CollectionNames {
+  Reports = 'reports',
+  // TODO: Pluralize this sometime
+  ReportsMeta = 'reportmeta',
 }
 
-export const CollectionNames = {
-  Reports: 'reports',
-  // TODO: Pluralize this sometime
-  ReportsMeta: 'reportmeta',
+export enum ViewNames {
+  GetFullReports = 'getfullreports',
 }

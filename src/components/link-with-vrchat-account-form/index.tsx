@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react'
+import CheckIcon from '@material-ui/icons/Check'
 import useFirebaseFunction from '../../hooks/useFirebaseFunction'
 import useUserRecord from '../../hooks/useUserRecord'
 import Button from '../button'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
+import Paper from '../paper'
+import Heading from '../heading'
 
 interface GenerateCodePayload {}
 
@@ -104,10 +107,12 @@ const Form = () => {
   if (user.vrchatlinkcode) {
     return (
       <>
-        Your link code is <strong>{user.vrchatlinkcode}</strong>
-        <br />
-        <br />
-        <Button onClick={onClickPerformLink}>Complete Link</Button>
+        <Heading variant="h3">
+          Your link code is <strong>{user.vrchatlinkcode}</strong>
+        </Heading>
+        <Button onClick={onClickPerformLink} size="large" icon={<CheckIcon />}>
+          Complete Link
+        </Button>
       </>
     )
   }
@@ -146,8 +151,10 @@ const LinkAccountWithVrchatForm = () => {
   }
 
   return (
-    <>
-      <p>To link your VRChat account with your VRCArena account you must:</p>
+    <Paper>
+      <div>
+        To link your VRChat account with your VRCArena account you must:
+      </div>
       <ol>
         <li>Add your VRChat username to your account (go to Social tab)</li>
         <li>Generate a unique 4 digit code</li>
@@ -157,7 +164,7 @@ const LinkAccountWithVrchatForm = () => {
         <li>Click the link button here</li>
       </ol>
       <Form />
-    </>
+    </Paper>
   )
 }
 

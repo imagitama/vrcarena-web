@@ -29,15 +29,12 @@ export interface FullComment extends Comment, CommentMeta {
   mentions: string[]
 }
 
-// deprecated
-export const CollectionNameComments = 'comments'
-export const CollectionNameCommentsMeta = 'commentsmeta'
-
-export const CollectionNames = {
-  Comments: 'comments',
-  CommentsMeta: 'commentsmeta',
+export enum CollectionNames {
+  Comments = 'comments',
+  CommentsMeta = 'commentsmeta',
 }
 
-export const CommentsMetaFieldNames = {
-  accessStatus: 'accessstatus',
+export enum ViewNames {
+  GetPublicComments = 'getpubliccomments',
+  GetFullComments = 'getfullcomments',
 }

@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import SaveIcon from '@material-ui/icons/Save'
 import CheckIcon from '@material-ui/icons/Check'
 
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
-
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 
@@ -14,6 +12,7 @@ import Button from '../button'
 import FormControls from '../form-controls'
 import {
   Asset,
+  CollectionNames,
   ExtraData,
   VrcFuryPrefabInfo,
   VrcFurySettings,
@@ -91,7 +90,7 @@ const PrefabEditor = ({
           />
         ) : item.discordserverdata && discordServerId ? (
           <DiscordServerResultsItem
-            discordServer={{ id: discordServerId, ...item.discordserverdata }}
+            discordServer={{ ...item.discordserverdata }}
           />
         ) : (
           <div>

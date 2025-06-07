@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import CheckIcon from '@material-ui/icons/Check'
 
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useSearching from '../../hooks/useSearching'
 import { handleError } from '../../error-handling'
@@ -13,7 +12,7 @@ import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
 import FormControls from '../form-controls'
 import Heading from '../heading'
-import { Asset } from '../../modules/assets'
+import { Asset, CollectionNames } from '../../modules/assets'
 import { ASSET_TITLE_MAX_LENGTH } from '../../config'
 import WarningMessage from '../warning-message'
 
@@ -53,7 +52,7 @@ const AssetTitleEditor = ({
 }) => {
   const [newTitleValue, setNewTitleValue] = useState(title || '')
   const [searchTerm, setSearchTerm] = useState('')
-  const [isSaving, isSaveSuccess, lastError, save] = useDatabaseSave(
+  const [isSaving, isSaveSuccess, lastError, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -116,7 +115,7 @@ const AssetTitleEditor = ({
       }
 
       await save({
-        [AssetFieldNames.title]: newTitleValue.trim(),
+        title: newTitleValue.trim(),
       })
 
       if (onDone) {

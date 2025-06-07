@@ -1,19 +1,17 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
-import MenuItem from '@material-ui/core/MenuItem'
 
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 
-import TextInput from '../text-input'
 import Button from '../button'
 import FormControls from '../form-controls'
-import { popularCurrencies, PopularCurrency } from '../../currency'
+import { PopularCurrency } from '../../currency'
 import WarningMessage from '../warning-message'
 import PriceInput from '../price-input'
+import { Asset, CollectionNames } from '../../modules/assets'
 
 const useStyles = makeStyles({
   inputWrapper: {
@@ -58,7 +56,7 @@ const PriceEditor = ({
   const [newPriceCurrency, setNewPriceCurrency] = useState<PopularCurrency>(
     currentPriceCurrency || 'USD'
   )
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
+  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
     assetId ? CollectionNames.Assets : false,
     assetId
   )
@@ -81,8 +79,8 @@ const PriceEditor = ({
       }
 
       await save({
-        [AssetFieldNames.price]: newPrice,
-        [AssetFieldNames.priceCurrency]: newPriceCurrency,
+        price: newPrice,
+        pricecurrency: newPriceCurrency,
       })
 
       if (onDone) {

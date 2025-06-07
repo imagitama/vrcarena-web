@@ -16,7 +16,7 @@ import { popularCurrencies } from '../../currency'
 import SpeciesResultItem from '../species-result-item'
 import TagDiffChips from '../tag-diff-chips'
 import { Attachment, AttachmentType } from '../../modules/attachments'
-import { isUrlAYoutubeVideo } from '../../utils'
+import { getIsUrlAYoutubeVideo } from '../../utils'
 import Link from '../link'
 import Button from '../button'
 import Price from '../price'
@@ -207,7 +207,7 @@ const AttachmentRenderer = ({
     case AttachmentType.Image:
       return <img src={url} />
     case AttachmentType.Url:
-      if (isUrlAYoutubeVideo(url)) {
+      if (getIsUrlAYoutubeVideo(url)) {
         return <div>YouTube Video: {url}</div>
       }
     default:

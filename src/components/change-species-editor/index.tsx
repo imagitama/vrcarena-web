@@ -4,7 +4,6 @@ import SaveIcon from '@material-ui/icons/Save'
 import Button from '../button'
 import FormControls from '../form-controls'
 
-import { CollectionNames, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
 
@@ -12,7 +11,7 @@ import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import SpeciesSelector from '../species-selector'
-import { Asset } from '../../modules/assets'
+import { Asset, CollectionNames } from '../../modules/assets'
 import Heading from '../heading'
 import Message from '../message'
 
@@ -25,7 +24,7 @@ function isSpeciesIdActive(
 
 function SpeciesButtons({
   activeSpeciesIds,
-  onClickSpecies
+  onClickSpecies,
 }: {
   activeSpeciesIds: string[]
   onClickSpecies: (id: string) => void
@@ -45,7 +44,7 @@ export default ({
   actionCategory = undefined,
   onDone = undefined,
   onCancel = undefined,
-  overrideSave = undefined
+  overrideSave = undefined,
 }: {
   assetId?: string
   activeSpeciesIds?: string[]
@@ -60,7 +59,7 @@ export default ({
     activeSpeciesIds ? false : assetId ? assetId : false,
     'change-species-editor'
   )
-  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave(
+  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -101,9 +100,9 @@ export default ({
   }
 
   const onClickSpecies = (speciesId: string) =>
-    setNewSpeciesIds(currentIds =>
+    setNewSpeciesIds((currentIds) =>
       isSpeciesIdActive(speciesId, newSpeciesIds)
-        ? currentIds.filter(id => id !== speciesId)
+        ? currentIds.filter((id) => id !== speciesId)
         : currentIds.concat([speciesId])
     )
 
@@ -123,7 +122,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.species]: newSpeciesIds
+        species: newSpeciesIds,
       })
 
       if (onDone) {

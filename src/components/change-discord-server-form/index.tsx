@@ -4,7 +4,6 @@ import AddIcon from '@material-ui/icons/Add'
 import CheckIcon from '@material-ui/icons/Check'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
@@ -12,7 +11,11 @@ import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import { AssetFields, DiscordServerData } from '../../modules/assets'
-import { DiscordServer, ViewNames } from '../../modules/discordservers'
+import {
+  CollectionNames,
+  DiscordServer,
+  ViewNames,
+} from '../../modules/discordservers'
 
 import TextInput from '../text-input'
 import SearchForIdForm from '../search-for-id-form'
@@ -357,7 +360,6 @@ const Form = ({
           You have selected:
           <DiscordServerResultsItem
             discordServer={{
-              id: selectedDiscordServerId,
               ...selectedDiscordServerData,
             }}
             onClick={(e) => {

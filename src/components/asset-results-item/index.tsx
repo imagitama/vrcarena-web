@@ -8,6 +8,7 @@ import LazyLoad from 'react-lazyload'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import LinkIcon from '@material-ui/icons/Link'
 import EditIcon from '@material-ui/icons/Edit'
+import Chip from '@material-ui/core/Chip'
 
 import * as routes from '../../routes'
 import {
@@ -15,6 +16,10 @@ import {
   FullAsset,
   PublicAsset,
   Relation,
+  getIsAssetDeleted,
+  getIsAssetVisibleToEveryone,
+  getIsAssetWaitingForApproval,
+  getIsFullAsset,
   getIsPublicAsset,
 } from '../../modules/assets'
 import Link from '../link'
@@ -26,6 +31,8 @@ import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AddToCartButton from '../add-to-cart-button'
 import DefaultThumbnail from '../default-thumbnail'
 import { AssetSearchResult } from '../../hooks/useAlgoliaSearch'
+import { getIsAssetADraft } from '../../utils/assets'
+import { AccessStatus } from '../../modules/common'
 
 const useStyles = makeStyles({
   root: {
@@ -137,9 +144,51 @@ const useStyles = makeStyles({
       opacity: 1,
     },
   },
+  // chips
+  visibleToEveryone: {
+    backgroundColor: 'rgb(0, 100, 0)',
+  },
+  waitingForApproval: {
+    backgroundColor: 'rgb(100, 100, 0)',
+  },
+  draft: {},
+  deleted: {
+    backgroundColor: 'rgb(100, 0, 0)',
+  },
 })
 
 const divider = '/'
+
+const AssetState = ({ asset }: { asset: FullAsset }) => {
+  const classes = useStyles()
+
+  if (asset.accessstatus === AccessStatus.Deleted) {
+    return <Chip className={classes.deleted} label="Deleted" />
+  }
+
+  if (asset.accessstatus === AccessStatus.Archived) {
+    return <Chip className={classes.deleted} label="Archived" />
+  }
+
+  if (getIsAssetWaitingForApproval(asset)) {
+    return (
+      <Chip
+        className={classes.waitingForApproval}
+        label="Waiting For Approval"
+      />
+    )
+  }
+
+  if (getIsAssetADraft(asset)) {
+    return <Chip className={classes.draft} label="Draft" />
+  }
+
+  if (getIsAssetVisibleToEveryone(asset)) {
+    return <Chip className={classes.visibleToEveryone} label="Visible" />
+  }
+
+  return null
+}
 
 const SpeciesOutput = ({
   asset,
@@ -197,8 +246,9 @@ const AssetResultsItem = ({
   controls: Controls,
   // extra
   toggleEditMode = undefined,
+  showState = false,
 }: {
-  asset?: Asset | PublicAsset | AssetSearchResult
+  asset?: Asset | PublicAsset | FullAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
   relation?: Relation
   isTiny?: boolean // relation verification required
@@ -206,6 +256,7 @@ const AssetResultsItem = ({
   isDimmed?: boolean
   controls?: React.FC | null
   toggleEditMode?: () => void
+  showState?: boolean
 }) => {
   const classes = useStyles()
   const [, , prefs] = useUserPreferences()
@@ -295,7 +346,7 @@ const AssetResultsItem = ({
                   </>
                 ) : null}
               </div>
-              {showMoreInfo && asset && 'price' in asset ? (
+              {showMoreInfo && asset && 'price' in asset && asset.price ? (
                 asset.price > 0 || (getIsPublicAsset(asset) && asset.isfree) ? (
                   <Price
                     price={asset.price}
@@ -304,6 +355,9 @@ const AssetResultsItem = ({
                   />
                 ) : null
               ) : null}
+              {showState && getIsFullAsset(asset) && (
+                <AssetState asset={asset} />
+              )}
             </div>
           </CardContent>{' '}
         </Link>

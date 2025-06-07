@@ -5,11 +5,10 @@ import { Helmet } from 'react-helmet'
 import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
-
 import * as routes from '../../routes'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import NoPermissionMessage from '../../components/no-permission-message'
+import { CollectionNames } from '../../modules/authors'
 
 const View = () => {
   const { authorId } = useParams<{ authorId: string }>()
@@ -26,7 +25,7 @@ const View = () => {
         viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewAuthorWithVar.replace(':authorId', authorId)}
-        getSuccessUrl={newId =>
+        getSuccessUrl={(newId) =>
           routes.viewAuthorWithVar.replace(':authorId', newId || authorId)
         }
         cancelUrl={

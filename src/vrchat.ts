@@ -44,3 +44,17 @@ export interface VrchatWorld {
   version: number
   visits: number
 }
+
+export const getIsVrchatWorldId = (value: string): boolean =>
+  typeof value === 'string' && value.substring(0, 4) === 'wrld'
+
+export const getIsVrchatAvatarUrl = (url: string): boolean =>
+  url.includes('vrchat.com/home/avatar')
+
+export const getIsVrchatWorldUrl = (url: string): boolean =>
+  url.includes('vrchat.com/home/world') ||
+  url.includes('vrchat.com/home/launch?worldId')
+
+export const getVrchatWorldLaunchUrlForId = (worldId: string): string => {
+  return `vrchat://launch?ref=vrchat.com&id=${worldId}:0`
+}

@@ -1,11 +1,32 @@
 import { PopularCurrency } from '../currency'
 import { FullAttachment } from './attachments'
-import { MetaRecord } from './common'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  MetaRecord,
+  PublishStatus,
+} from './common'
 import { Tag } from './tags'
 
 // TODO: Better func here as technically FullAsset has speciesnames
 export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
   asset && 'speciesnames' in asset
+
+export const getIsFullAsset = (asset: any): asset is FullAsset =>
+  asset && 'createdbyusername' in asset
+
+export const getIsAssetWaitingForApproval = (asset: FullAsset): boolean =>
+  asset.publishstatus == PublishStatus.Published &&
+  asset.approvalstatus == ApprovalStatus.Waiting &&
+  asset.accessstatus == AccessStatus.Public
+
+export const getIsAssetVisibleToEveryone = (asset: FullAsset): boolean =>
+  asset.accessstatus === AccessStatus.Public &&
+  asset.approvalstatus === ApprovalStatus.Approved &&
+  asset.publishstatus === PublishStatus.Published
+
+export const getIsAssetDeleted = (asset: FullAsset): boolean =>
+  asset.accessstatus == AccessStatus.Deleted
 
 export enum RelationType {
   Parent = 'parent',
@@ -49,7 +70,7 @@ export interface CoreAssetFields extends Record<string, unknown> {
   category: AssetCategory
   slug: string
   isadult: boolean
-  price: number
+  price: number | null
   pricecurrency: PopularCurrency
   species: string[]
   tags: string[] // used for "free" check and to group into areas
@@ -101,6 +122,7 @@ export interface VrcFuryPrefabInfo {
 export interface TutorialStep {}
 
 export interface DiscordServerData {
+  id: string
   name: string
   inviteurl?: string
   requirespatreon?: boolean
@@ -144,6 +166,7 @@ export enum DeclinedReason {
 }
 
 export interface AssetMeta extends MetaRecord {
+  id: string
   publishedby: string
   featuredby: string
   lastmodifiedby: string
@@ -169,7 +192,6 @@ export interface AssetStats {
 export interface PublicAsset extends CoreAssetFields {
   id: string
   authorname: string
-  isfree: boolean
   speciesnames: string[]
   // meta
   createdat: string
@@ -246,44 +268,9 @@ export enum ViewNames {
   GetNewPublicAssets = 'getnewpublicassets',
   GetMyAssetSyncQueuedItems = 'getmyassetsyncqueueditems',
   GetFullMyAssetSyncQueuedItems = 'getfullassetsyncqueueditems',
+  GetRandomPublicAvatars = 'getrandompublicavatars',
 }
 
 export enum FunctionNames {
   SearchAssets = 'searchassets',
-}
-
-// legacy
-
-export const AssetFieldNames = {
-  title: 'title',
-  isAdult: 'isadult',
-  tags: 'tags',
-  createdBy: 'createdby',
-  createdAt: 'createdat',
-  category: 'category',
-  species: 'species',
-  sourceUrl: 'sourceurl',
-  videoUrl: 'videourl',
-  lastModifiedBy: 'lastmodifiedby',
-  lastModifiedAt: 'lastmodifiedat',
-  thumbnailUrl: 'thumbnailurl',
-  description: 'description',
-  author: 'author',
-  children: 'children',
-  discordServer: 'discordserver',
-  bannerUrl: 'bannerurl',
-  tutorialSteps: 'tutorialsteps',
-  pedestalVideoUrl: 'pedestalvideourl',
-  pedestalFallbackImageUrl: 'pedestalfallbackimageurl',
-  sketchfabEmbedUrl: 'sketchfabembedurl',
-  slug: 'slug',
-  clonableWorld: 'clonableworld',
-  vrchatClonableWorldIds: 'vrchatclonableworldids',
-  vrchatClonableAvatarIds: 'vrchatclonableavatarids',
-  shortDescription: 'shortdescription',
-  price: 'price',
-  priceCurrency: 'pricecurrency',
-  gumroad: 'gumroad',
-  ranks: 'ranks',
-  relations: 'relations',
 }

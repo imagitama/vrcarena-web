@@ -1,17 +1,7 @@
 import { deleteRecord } from '../../data-store'
-import {
-  Asset,
-  CollectionNames,
-  FullAsset,
-  ViewNames,
-} from '../../modules/assets'
+import { Asset, CollectionNames } from '../../modules/assets'
 import { handleError } from '../../error-handling'
 import { cartIdsStorageKey } from '../../cart'
-import {
-  AccessStatuses,
-  ApprovalStatuses,
-  PublishStatuses,
-} from '../../hooks/useDatabaseQuery'
 import { retrieveFromLocalStorage } from '../../storage'
 import { getUserId } from '../../supabase'
 import * as routes from '../../routes'

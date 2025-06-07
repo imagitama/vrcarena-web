@@ -79,7 +79,7 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
       userId || false,
       'social-media-usernames-editor'
     )
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
+  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDatabaseSave(
     CollectionNames.Users,
     userId
   )
@@ -142,18 +142,6 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
       [name]: newVal,
     })
 
-  if (isLoadingProfile || isSaving) {
-    return (
-      <LoadingIndicator
-        message={`${isSaving ? 'Saving' : 'Loading'} your profile...`}
-      />
-    )
-  }
-
-  if (isErroredLoadingProfile) {
-    return <ErrorMessage>Failed to lookup your user profile</ErrorMessage>
-  }
-
   return (
     <>
       <Field>
@@ -164,6 +152,8 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
             onChange={(e) =>
               updateFormFieldValue('vrchatuserid', e.target.value)
             }
+            isDisabled={isSaving}
+            fullWidth
           />
           <Hint>
             To find your ID, log in to VRChat website, click your username and
@@ -180,6 +170,8 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
             onChange={(e) =>
               updateFormFieldValue('vrchatusername', e.target.value)
             }
+            isDisabled={isSaving}
+            fullWidth
           />
           <Hint>Displayed on your profile and for linking your account.</Hint>
         </Input>
@@ -192,6 +184,8 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
             onChange={(e) =>
               updateFormFieldValue('discordusername', e.target.value)
             }
+            isDisabled={isSaving}
+            fullWidth
           />
           <Hint>eg. MyName#1234</Hint>
         </Input>
@@ -204,6 +198,8 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
             onChange={(e) =>
               updateFormFieldValue('twitterusername', e.target.value)
             }
+            isDisabled={isSaving}
+            fullWidth
           />
           <Hint>Without the @ symbol eg. MyTwitterName</Hint>
         </Input>
@@ -216,6 +212,8 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
             onChange={(e) =>
               updateFormFieldValue('telegramusername', e.target.value)
             }
+            isDisabled={isSaving}
+            fullWidth
           />
           <Hint>Without @ symbol eg. MyTelegramUsername</Hint>
         </Input>
@@ -228,6 +226,8 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
             onChange={(e) =>
               updateFormFieldValue('youtubechannelid', e.target.value)
             }
+            isDisabled={isSaving}
+            fullWidth
           />
           <Hint>
             Get your channel ID by visiting your channel and in the address bar
@@ -243,6 +243,8 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
             onChange={(e) =>
               updateFormFieldValue('twitchusername', e.target.value)
             }
+            isDisabled={isSaving}
+            fullWidth
           />
         </Input>
       </Field>
@@ -254,23 +256,29 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
             onChange={(e) =>
               updateFormFieldValue('patreonusername', e.target.value)
             }
+            isDisabled={isSaving}
+            fullWidth
           />
           <Hint>The name in the URL like https://patreon.com/[username]</Hint>
         </Input>
       </Field>
+      {isSaving && <LoadingIndicator message="Saving..." />}
+      {isSaveSuccess ? (
+        <SuccessMessage>
+          Your social media accounts have been saved
+        </SuccessMessage>
+      ) : lastErrorCode ? (
+        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+      ) : null}
       <FormControls>
         <Button
           onClick={onSaveBtnClick}
           isDisabled={isSaving}
-          icon={<SaveIcon />}>
+          icon={<SaveIcon />}
+          size="large">
           Save
         </Button>
       </FormControls>
-      {isSaveError ? (
-        <ErrorMessage>Failed to save. Please try again</ErrorMessage>
-      ) : isSaveSuccess ? (
-        <SuccessMessage>Saved successfully</SuccessMessage>
-      ) : null}
     </>
   )
 }

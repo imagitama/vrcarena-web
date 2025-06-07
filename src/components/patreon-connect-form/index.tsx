@@ -7,12 +7,7 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
 import useUserId from '../../hooks/useUserId'
-import {
-  CollectionNames,
-  UserMetaFieldNames,
-  options,
-  PatreonStatuses,
-} from '../../hooks/useDatabaseQuery'
+import { options } from '../../hooks/useDatabaseQuery'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
@@ -24,6 +19,9 @@ import Message from '../message'
 import { UserMeta } from '../../modules/users'
 import WarningMessage from '../warning-message'
 import NoResultsMessage from '../no-results-message'
+import { CollectionNames } from '../../modules/user'
+import useIsPatron from '../../hooks/useIsPatron'
+import SuccessMessage from '../success-message'
 
 const patreonOAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${process.env.REACT_APP_PATREON_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_PATREON_REDIRECT_URI}&scope=identity%20campaigns.members`
 let oauthCode
@@ -89,7 +87,7 @@ export default () => {
   const userId = useUserId()
   const [isLoadingMeta, isErrorLoadingMeta, metaResult, hydrate] =
     useDataStoreItem<UserMeta>(
-      CollectionNames.UserMeta,
+      CollectionNames.UsersMeta,
       userId || false,
       'usermeta-patreon'
     )
@@ -97,6 +95,7 @@ export default () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isErrored, setIsErrored] = useState(false)
   const classes = useStyles()
+  const isPatron = useIsPatron()
 
   useEffect(() => {
     async function main() {
@@ -163,7 +162,7 @@ export default () => {
   )
 
   if (isLoading || isLoadingMeta) {
-    return <LoadingIndicator message="Working..." />
+    return <LoadingIndicator message="Loading data..." />
   }
 
   if (isErrored || isErrorLoadingMeta) {
@@ -176,16 +175,13 @@ export default () => {
     )
   }
 
-  const isPatron =
-    metaResult && metaResult.patreonstatus === PatreonStatuses.Patron
-
   if (isComplete || isPatron) {
     if (isPatron) {
       return (
         <>
-          <Message icon={<CheckIcon />}>
+          <SuccessMessage icon={<CheckIcon />}>
             You have successfully connected your VRCArena account with Patreon
-          </Message>
+          </SuccessMessage>
           <p>
             You can click this button to refresh your account:
             <br />
@@ -203,7 +199,7 @@ export default () => {
             As of March 2025 we have disabled "pedestals" and "custom slugs" as
             they are old, hardly used features that are extra work to maintain.
           </WarningMessage>
-          {metaResult.patreonrewardids.length ? (
+          {metaResult && metaResult.patreonrewardids.length ? (
             metaResult.patreonrewardids
               .filter((rewardId) => rewardId in rewardMetaById)
               .map((rewardId) => (

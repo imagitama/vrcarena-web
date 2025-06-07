@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { isUrl, isUrlAVideo, isUrlAYoutubeVideo } from '../../utils'
+import { getIsUrl, getIsUrlAVideo, getIsUrlAYoutubeVideo } from '../../utils'
 import Button from '../button'
 import FormControls from '../form-controls'
 import TextInput from '../text-input'
@@ -35,16 +35,16 @@ export default ({
 
     const cleanedUpUrl = textInput.trim()
 
-    if (!isUrl(cleanedUpUrl)) {
+    if (!getIsUrl(cleanedUpUrl)) {
       console.warn(`Text input is not a URL: ${cleanedUpUrl}`)
       return
     }
 
     setFinalUrl(cleanedUpUrl)
 
-    if (isUrlAYoutubeVideo(cleanedUpUrl)) {
+    if (getIsUrlAYoutubeVideo(cleanedUpUrl)) {
       setType(types.YOUTUBE_VIDEO)
-    } else if (isUrlAVideo(cleanedUpUrl)) {
+    } else if (getIsUrlAVideo(cleanedUpUrl)) {
       setType(types.VIDEO)
     } else {
       setType(types.OTHER)

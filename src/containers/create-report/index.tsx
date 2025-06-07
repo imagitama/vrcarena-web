@@ -16,7 +16,6 @@ import Heading from '../../components/heading'
 import TextInput from '../../components/text-input'
 import FormControls from '../../components/form-controls'
 
-import { CollectionNames, ReportFieldNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
 
@@ -26,10 +25,12 @@ import { trackAction } from '../../analytics'
 import { DISCORD_URL } from '../../config'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import {
+  CollectionNames,
   getReasonsForCollectionName,
   Report,
   reportReasonsKeysByCollection,
 } from '../../modules/reports'
+import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 import GenericOutputItem from '../../components/generic-output-item'
 
 const analyticsCategory = 'CreateReport'
@@ -56,9 +57,12 @@ const View = () => {
   const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Report>(
     CollectionNames.Reports
   )
-  const [fieldData, setFieldData] = useState({
-    [ReportFieldNames.reason]: null,
-    [ReportFieldNames.comments]: '',
+  const [fieldData, setFieldData] = useState<{
+    reason: string
+    comments: string
+  }>({
+    reason: '',
+    comments: '',
   })
   const [createdDocId, setCreatedDocId] = useState<string | null>(null)
   const classes = useStyles()
@@ -119,15 +123,15 @@ const View = () => {
     trackAction(analyticsCategory, 'Click create report button')
 
     // TODO: Output this invalid data to user
-    if (!fieldData[ReportFieldNames.reason]) {
+    if (!fieldData.reason) {
       return
     }
 
     try {
       const [createdReport] = await save({
         ...fieldData,
-        [ReportFieldNames.parentTable]: parentTable,
-        [ReportFieldNames.parent]: parentId,
+        parenttable: parentTable,
+        parent: parentId,
       })
 
       if (!createdReport) {
@@ -159,19 +163,18 @@ const View = () => {
       <Heading variant="h2">Reason</Heading>
       <Select
         className={classes.input}
-        value={fieldData[ReportFieldNames.reason]}
+        value={fieldData['reason']}
         variant="outlined"
-        onChange={(e) =>
-          onFieldChange(ReportFieldNames.reason, e.target.value as string)
-        }>
+        onChange={(e) => onFieldChange('reason', e.target.value as string)}>
         {getReasonsForCollectionName(parentTable).map((reason) => (
           <MenuItem key={reason.value} value={reason.value}>
             {reason.label}
           </MenuItem>
         ))}
       </Select>
-      {fieldData[ReportFieldNames.reason] ===
-        reportReasonsKeysByCollection[CollectionNames.Assets].TAKEDOWN && (
+      {fieldData['reason'] ===
+        reportReasonsKeysByCollection[AssetsCollectionNames.Assets]
+          .TAKEDOWN && (
         <WarningMessage>
           Before submitting a takedown request please read our{' '}
           <Link to={routes.takedownPolicy}>takedown policy</Link> and ensure you
@@ -182,9 +185,7 @@ const View = () => {
       <p>Explain your reasoning. Provide evidence if necessary.</p>
       <TextInput
         className={classes.input}
-        onChange={(e) =>
-          onFieldChange(ReportFieldNames.comments, e.target.value)
-        }
+        onChange={(e) => onFieldChange('comments', e.target.value)}
         multiline
         minRows={5}
       />

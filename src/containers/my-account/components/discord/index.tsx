@@ -32,7 +32,8 @@ const Discord = () => {
   if (!discordUserId) {
     return (
       <NoResultsMessage>
-        No Discord details found for your account
+        No Discord details found for your account. You must sign up with Discord
+        for this to work
       </NoResultsMessage>
     )
   }

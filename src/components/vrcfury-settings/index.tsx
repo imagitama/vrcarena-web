@@ -9,7 +9,7 @@ import { VrcFuryPrefabInfo } from '../../modules/assets'
 import Button from '../button'
 import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
 import { vrcFuryOrange } from '../../config'
-import { isDiscordUrl } from '../../utils'
+import { getIsDiscordUrl } from '../../utils'
 import { CollectionNames, DiscordServer } from '../../modules/discordservers'
 import { readRecordsById } from '../../data-store'
 import { handleError } from '../../error-handling'
@@ -161,7 +161,9 @@ const VrcFurySettings = ({
                             : undefined
                         }>
                         View{' '}
-                        {isDiscordUrl(prefabInfo.url) ? 'Discord' : 'website'}{' '}
+                        {getIsDiscordUrl(prefabInfo.url)
+                          ? 'Discord'
+                          : 'website'}{' '}
                         prefab
                       </Button>
                       {prefabInfo.discordServerId && (

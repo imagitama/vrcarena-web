@@ -2,10 +2,9 @@ import React, { useCallback, useState } from 'react'
 import ShuffleIcon from '@material-ui/icons/Shuffle'
 
 import * as routes from '../../routes'
-import { Asset } from '../../modules/assets'
+import { Asset, ViewNames } from '../../modules/assets'
 
 import useDataStore from '../../hooks/useDataStore'
-import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
 import Heading from '../../components/heading'
@@ -19,10 +18,13 @@ const View = ({ count }: { count: number }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
     (supabase: SupabaseClient) => {
-      let query = supabase.from('getrandompublicavatars').select('*').limit(5)
+      let query = supabase
+        .from(ViewNames.GetRandomPublicAvatars)
+        .select('*')
+        .limit(5)
 
       if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
+        query = query.eq('isadult', false)
       }
 
       return query

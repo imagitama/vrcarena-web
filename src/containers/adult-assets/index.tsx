@@ -12,10 +12,9 @@ import Button from '../../components/button'
 import PaginatedView from '../../components/paginated-view'
 
 import { alreadyOver18Key } from '../../config'
-import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useStorage from '../../hooks/useStorage'
 import { trackAction } from '../../analytics'
-import categoryMeta, { getCategoryMeta } from '../../category-meta'
+import { getCategoryMeta } from '../../category-meta'
 import useUserPreferences from '../../hooks/useUserPreferences'
 import { AssetCategory, PublicAsset } from '../../modules/assets'
 
@@ -49,10 +48,7 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => {
 }
 
 const Assets = () => {
-  const getQuery = useCallback(
-    (query) => query.is(AssetFieldNames.isAdult, true),
-    []
-  )
+  const getQuery = useCallback((query) => query.is('isadult', true), [])
   return (
     <PaginatedView<PublicAsset>
       viewName={`getPublicAssets`}

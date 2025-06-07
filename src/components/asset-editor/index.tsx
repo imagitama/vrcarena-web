@@ -26,8 +26,6 @@ import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord
 import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon.svg'
 import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
 
-import { CollectionNames, PatreonStatuses } from '../../hooks/useDatabaseQuery'
-
 import * as routes from '../../routes'
 import { getCategoryMeta } from '../../category-meta'
 import { adultSearchTerms, nsfwRules, WEBSITE_FULL_URL } from '../../config'
@@ -58,8 +56,6 @@ import ChangeCategoryForm from '../change-category-form'
 import AssetBannerEditor from '../asset-banner-editor'
 import Price from '../price'
 import PriceEditor from '../price-editor'
-import TutorialSteps from '../tutorial-steps'
-import TutorialStepsEditor from '../tutorial-steps-editor'
 import ToggleAdultForm from '../toggle-adult-form'
 import ChangeDiscordServerForm from '../change-discord-server-form'
 import VrchatAvatarIdsForm from '../vrchat-avatar-ids-form'
@@ -81,8 +77,8 @@ import {
   AssetCategory,
   FullAsset,
   SourceInfo,
+  CollectionNames as AssetsCollectionNames,
 } from '../../modules/assets'
-import { inDevelopment } from '../../environment'
 import TagChip from '../tag-chip'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import { defaultBorderRadius } from '../../themes'
@@ -107,6 +103,7 @@ import { tagVrcFuryReady } from '../../vrcfury'
 import VrcFuryToggle from '../vrcfury-ready-toggle'
 import Link from '../link'
 import Paper from '../paper'
+import useIsPatron from '../../hooks/useIsPatron'
 
 interface EditorInfo {
   assetId: string | null
@@ -587,18 +584,17 @@ const TagsDisplay = ({ value }: { value: string[] }) => (
   </>
 )
 
-const PriceDisplay = ({ value, fields }: { value: number; fields: Asset }) =>
+const PriceDisplay = ({
+  value,
+  fields,
+}: {
+  value: number | null
+  fields: Asset
+}) =>
   value ? (
     <Price price={value} priceCurrency={fields.pricecurrency} />
   ) : (
     <NoValueMessage>No price set</NoValueMessage>
-  )
-
-const TutorialStepsDisplay = ({ value }: { value: string }) =>
-  value && value.length ? (
-    <TutorialSteps steps={value} />
-  ) : (
-    <NoValueMessage>No tutorial steps have been defined</NoValueMessage>
   )
 
 const RelationsDisplay = ({
@@ -688,37 +684,6 @@ const ShortDescriptionDisplay = ({ value }: { value: string }) =>
     <NoValueMessage>No short description set</NoValueMessage>
   )
 
-const SlugDisplay = ({ value }: { value: string }) => (
-  <>
-    {value ? (
-      `${WEBSITE_FULL_URL}${routes.viewAssetWithVar.replace(':assetId', value)}`
-    ) : (
-      <NoValueMessage>No slug set</NoValueMessage>
-    )}
-  </>
-)
-
-const GumroadSettingsDisplay = ({ fields }: { fields: FullAsset }) => {
-  const classes = useStyles()
-
-  const isSyncWithGumroadEnabled =
-    fields.gumroad && fields.gumroad.sync === true
-
-  return (
-    <div className={classes.iconAndText}>
-      {isSyncWithGumroadEnabled ? (
-        <>
-          <CheckIcon /> Sync with Gumroad enabled
-        </>
-      ) : (
-        <>
-          <ClearIcon /> Not syncing with Gumroad
-        </>
-      )}
-    </div>
-  )
-}
-
 const FeaturesDisplay = ({ fields }: { fields?: FullAsset }) => {
   if (!fields) {
     return null
@@ -800,15 +765,11 @@ const Editor = () => {
     useEditor()
   const [, , user] = useUserRecord()
   const [hiddenNotices, hideNotice] = useNotices()
+  const isPatron = useIsPatron()
 
   if (!asset) {
     return null
   }
-
-  const isPatron =
-    (user && user.patreonstatus === PatreonStatuses.Patron) || inDevelopment()
-
-  const isSyncWithGumroadEnabled = asset.gumroad && asset.gumroad.sync === true
 
   return (
     <>
@@ -888,29 +849,6 @@ const Editor = () => {
                     />
                   }
                 />
-                {/* disabled for now as function is failing and we have new auto-sync */}
-                {/* <FormEditorArea
-                  fieldName="gumroad"
-                  title="Auto Sync"
-                  description="Automatically sync with Gumroad once per day. Experimental."
-                  icon={() => <SyncIcon />}
-                  display={GumroadSettingsDisplay}
-                  doWeRender={
-                    asset &&
-                    asset.sourceurl &&
-                    getIsGumroadProductUrl(asset.sourceurl)
-                      ? true
-                      : false
-                  }
-                  editor={
-                    <SyncWithGumroadSettings
-                      assetId={assetId}
-                      isEnabled={isSyncWithGumroadEnabled}
-                      // @ts-ignore
-                      settings={asset.gumroad}
-                    />
-                  }
-                /> */}
                 <FormEditorArea
                   title="Price"
                   description="The price when visiting the primary source. Extra sources can have their own prices."
@@ -989,11 +927,7 @@ const Editor = () => {
                   icon={() => <TextFormatIcon />}
                   display={TitleDisplay}
                   editor={
-                    <AssetTitleEditor
-                      assetId={assetId}
-                      // @ts-ignore
-                      title={asset.title}
-                    />
+                    <AssetTitleEditor assetId={assetId} title={asset.title} />
                   }
                 />
                 <FormEditorArea
@@ -1004,7 +938,6 @@ const Editor = () => {
                   icon={() => <TextFormatIcon />}
                   display={DescriptionDisplay}
                   editor={
-                    // @ts-ignore
                     <DescriptionEditor
                       assetId={assetId}
                       description={asset.description}
@@ -1020,7 +953,7 @@ const Editor = () => {
                   display={AuthorDisplay}
                   editor={
                     <ChangeAuthorForm
-                      collectionName={CollectionNames.Assets}
+                      collectionName={AssetsCollectionNames.Assets}
                       id={assetId!!}
                     />
                   }
@@ -1089,32 +1022,6 @@ const Editor = () => {
               </>
             ),
           },
-          ...(asset.category === AssetCategory.Tutorial
-            ? [
-                {
-                  name: 'tutorialSteps',
-                  label: 'Tutorial',
-                  contents: (
-                    <>
-                      <FormEditorArea
-                        fieldName="tutorialsteps"
-                        title="Tutorial Steps"
-                        description="The steps to complete the tutorial."
-                        icon={() => <FormatListNumberedIcon />}
-                        display={TutorialStepsDisplay}
-                        editor={
-                          // @ts-ignore
-                          <TutorialStepsEditor
-                            assetId={assetId}
-                            existingSteps={asset.tutorialsteps || []}
-                          />
-                        }
-                      />
-                    </>
-                  ),
-                },
-              ]
-            : []),
           {
             name: 'attachments',
             label: 'Attachments',
@@ -1350,7 +1257,6 @@ const Editor = () => {
                   icon={() => <VRChatIcon />}
                   display={VrchatAvatarsDisplay}
                   editor={
-                    // @ts-ignore
                     <VrchatAvatarIdsForm
                       assetId={assetId}
                       avatarIds={asset.vrchatclonableavatarids}
@@ -1435,7 +1341,7 @@ const Editor = () => {
                   display={DiscordServerDisplay}
                   editor={
                     <ChangeDiscordServerForm
-                      collectionName={CollectionNames.Assets}
+                      collectionName={AssetsCollectionNames.Assets}
                       id={assetId || undefined}
                       existingDiscordServerId={asset.discordserver}
                       existingDiscordServerData={

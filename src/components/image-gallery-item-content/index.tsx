@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { isUrlAYoutubeVideo } from '../../utils'
+import { getIsUrlAYoutubeVideo } from '../../utils'
 import YouTubePlayer from '../youtube-player'
 
 const useStyles = makeStyles({
@@ -26,7 +26,7 @@ export default ({
 }) => {
   const classes = useStyles()
 
-  return isUrlAYoutubeVideo(url) ? (
+  return getIsUrlAYoutubeVideo(url) ? (
     <div className={classes.customContent}>
       <YouTubePlayer url={url} />
     </div>

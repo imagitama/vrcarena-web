@@ -4,7 +4,6 @@ import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { CollectionNames, Species } from '../../modules/species'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
-import { SpeciesFieldNames } from '../../hooks/useDatabaseQuery'
 import AutocompleteInput from '../autocomplete-input'
 import { findItemAndParents } from '../../utils'
 

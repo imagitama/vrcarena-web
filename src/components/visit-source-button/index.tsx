@@ -6,19 +6,10 @@ import HelpIcon from '@material-ui/icons/Help'
 import { handleError } from '../../error-handling'
 import { trackAction, trackInternalAction } from '../../analytics'
 import { mediaQueryForMobiles } from '../../media-queries'
-import { CollectionNames as OldCollectionNames } from '../../hooks/useDatabaseQuery'
 import * as config from '../../config'
 import { SourceInfo } from '../../modules/assets'
 import Button from '../button'
-import {
-  isGitHubUrl,
-  isTwitterUrl,
-  isVrchatAvatarUrl,
-  isVrchatWorldUrl,
-  isDiscordUrl,
-  isGoogleDriveUrl,
-  isPatreonUrl,
-} from '../../utils'
+import { getIsGitHubUrl, getIsGoogleDriveUrl } from '../../utils'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 import { getIsItchProductUrl } from '../../itch'
 import { getIsBoothProductUrl } from '../../booth'
@@ -26,6 +17,10 @@ import { getIsGumroadProductUrl } from '../../gumroad'
 import { getIsJinxxyProductUrl } from '../../jinxxy'
 import Price from '../price'
 import Tooltip from '../tooltip'
+import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
+import { getIsDiscordUrl } from '../../discord'
+import { getIsPatreonUrl } from '../../patreon'
+import { getIsVrchatAvatarUrl, getIsVrchatWorldUrl } from '../../vrchat'
 
 const useStyles = makeStyles({
   root: {
@@ -64,23 +59,19 @@ function getButtonLabel(sourceUrl: string): string {
     return `Gumroad`
   }
 
-  if (isTwitterUrl(sourceUrl)) {
-    return 'Tweet'
-  }
-
-  if (isVrchatAvatarUrl(sourceUrl)) {
+  if (getIsVrchatAvatarUrl(sourceUrl)) {
     return 'VRC Avatar'
   }
 
-  if (isVrchatWorldUrl(sourceUrl)) {
+  if (getIsVrchatWorldUrl(sourceUrl)) {
     return 'VRC World'
   }
 
-  if (isPatreonUrl(sourceUrl)) {
+  if (getIsPatreonUrl(sourceUrl)) {
     return `Patreon`
   }
 
-  if (isDiscordUrl(sourceUrl)) {
+  if (getIsDiscordUrl(sourceUrl)) {
     return `Discord`
   }
 
@@ -96,11 +87,11 @@ function getButtonLabel(sourceUrl: string): string {
     return `Jinxxy`
   }
 
-  if (isGoogleDriveUrl(sourceUrl)) {
+  if (getIsGoogleDriveUrl(sourceUrl)) {
     return 'Google Drive'
   }
 
-  if (isGitHubUrl(sourceUrl)) {
+  if (getIsGitHubUrl(sourceUrl)) {
     return `GitHub`
   }
 
@@ -108,6 +99,10 @@ function getButtonLabel(sourceUrl: string): string {
 }
 
 const addReferrerToUrl = (url: string) => {
+  // TODO: Ensure all assets have at least empty string
+  if (!url) {
+    return ''
+  }
   // TODO: Probably re-build URL from scratch
   return `${url}${url.includes('?') ? '' : '?'}&referrer=${encodeURIComponent(
     config.WEBSITE_FULL_URL
@@ -159,7 +154,7 @@ const VisitSourceButton = ({
           supabase,
           analyticsCategoryName,
           analyticsEvent || 'Click visit source button',
-          OldCollectionNames.Assets,
+          AssetsCollectionNames.Assets,
           assetId || '',
           { url: sourceInfo.url }
         )
@@ -191,7 +186,9 @@ const VisitSourceButton = ({
             small
           />
         ) : null}
-        {sourceInfo ? getButtonLabel(sourceInfo?.url) : 'Loading...'}
+        {sourceInfo && sourceInfo.url
+          ? getButtonLabel(sourceInfo.url)
+          : 'Loading...'}
       </Button>
       {sourceInfo?.comments && (
         <Tooltip title={sourceInfo?.comments}>

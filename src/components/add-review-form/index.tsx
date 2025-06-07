@@ -8,7 +8,6 @@ import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
-import { ReviewsFieldNames } from '../../data-store'
 import { allowedRatings, RatingMeta } from '../../ratings'
 
 import ErrorMessage from '../error-message'
@@ -253,7 +252,7 @@ export default ({
     myReview !== null && Array.isArray(myReview) ? myReview[0] : null
   const inEditMode = !!reviewToEdit
 
-  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave(
+  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave<Review>(
     CollectionNames.Reviews,
     reviewToEdit ? reviewToEdit.id : null
   )
@@ -328,10 +327,10 @@ export default ({
       }
 
       await save({
-        [ReviewsFieldNames.asset]: assetId,
-        [ReviewsFieldNames.comments]: newComments,
-        [ReviewsFieldNames.overallRating]: newOverallRatingNumber,
-        [ReviewsFieldNames.ratings]: newRatings,
+        asset: assetId,
+        comments: newComments,
+        overallrating: newOverallRatingNumber,
+        ratings: newRatings,
       })
 
       if (onDone) {

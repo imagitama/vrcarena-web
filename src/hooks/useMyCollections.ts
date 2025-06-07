@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import { DataStoreErrorCode, PlaylistsFieldNames } from '../data-store'
+import { DataStoreErrorCode } from '../data-store'
 import useDataStore from './useDataStore'
 import useUserId from './useUserId'
-import { Collection } from '../modules/collections'
+import { Collection, ViewNames } from '../modules/collections'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 export default (): [
@@ -18,10 +18,10 @@ export default (): [
     (supabase: SupabaseClient) =>
       userId
         ? supabase
-            .from('getPublicPlaylists'.toLowerCase())
+            .from(ViewNames.GetPublicCollections)
             .select('*')
-            .eq(PlaylistsFieldNames.createdBy, userId)
-            .order(PlaylistsFieldNames.createdAt, { ascending: false })
+            .eq('createdby', userId)
+            .order('createdat', { ascending: false })
         : null,
     [userId]
   )

@@ -8,8 +8,7 @@ import PaginatedView from '../../components/paginated-view'
 import DiscordServerResults from '../../components/discord-server-results'
 
 import * as routes from '../../routes'
-import { DiscordServerFieldNames } from '../../hooks/useDatabaseQuery'
-import { DiscordServer } from '../../modules/discordservers'
+import { DiscordServer, ViewNames } from '../../modules/discordservers'
 
 const Renderer = ({ items }: { items?: DiscordServer[] }) => (
   <DiscordServerResults discordServers={items || []} />
@@ -30,8 +29,8 @@ const DiscordServersView = () => {
       </Heading>
       <BodyText>A list of Discord servers.</BodyText>
       <PaginatedView<DiscordServer>
-        viewName="getPublicDiscordServers"
-        editorViewName="getFullDiscordServers"
+        viewName={ViewNames.GetPublicDiscordServers}
+        editorViewName={ViewNames.GetFullDiscordServers}
         sortKey="discord-servers"
         defaultFieldName="name"
         urlWithPageNumberVar={routes.viewDiscordServersWithPageNumberVar}

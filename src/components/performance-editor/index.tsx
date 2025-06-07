@@ -14,9 +14,8 @@ import {
   getPerformanceRankLabel,
 } from '../../avatar-performance'
 import { handleError } from '../../error-handling'
-import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { CollectionNames } from '../../modules/assets'
+import { Asset, CollectionNames } from '../../modules/assets'
 import Button from '../button'
 import ErrorMessage from '../error-message'
 import FormControls from '../form-controls'
@@ -185,10 +184,8 @@ const PerformanceEditor = ({
   overrideSave?: (newTags: string[]) => void
 }) => {
   const [newTags, setNewTags] = useState<string[]>(currentTags)
-  const [isSaving, isSaveSuccess, isSaveError, save, clear] = useDatabaseSave(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, isSaveError, save, clear] =
+    useDatabaseSave<Asset>(CollectionNames.Assets, assetId)
   const classes = useStyles()
 
   if (isSaving) {
@@ -227,7 +224,7 @@ const PerformanceEditor = ({
       }
 
       await save({
-        [AssetFieldNames.tags]: newTags,
+        tags: newTags,
       })
 
       if (onDone) {

@@ -189,7 +189,9 @@ const SocialMediaList = ({
       id: 'gumroad',
       icon: GumroadIcon,
       label: gumroadUsername ? 'Gumroad' : undefined,
-      url: getUrlForGumroadUsername(gumroadUsername),
+      url: gumroadUsername
+        ? getUrlForGumroadUsername(gumroadUsername)
+        : undefined,
       type: 'gumroad',
     },
     {
@@ -232,42 +234,52 @@ const SocialMediaList = ({
       id: 'twitterUsername',
       icon: TwitterIcon,
       label: twitterUsername ? `@${twitterUsername}` : undefined,
-      url: getUrlForTwitterUsername(twitterUsername),
+      url: twitterUsername
+        ? getUrlForTwitterUsername(twitterUsername)
+        : undefined,
       type: 'twitter',
     },
     {
       id: 'telegramUsername',
       icon: TelegramIcon,
       label: telegramUsername ? `@${telegramUsername}` : undefined,
-      url: getUrlForTelegramUsername(telegramUsername),
+      url: telegramUsername
+        ? getUrlForTelegramUsername(telegramUsername)
+        : undefined,
       type: 'telegram',
     },
     {
       id: 'youtubeChannelId',
       icon: YouTubeIcon,
       label: youtubeChannelId ? `YouTube Channel` : undefined,
-      url: getUrlForYouTubeChannelByChannelId(youtubeChannelId),
+      url: youtubeChannelId
+        ? getUrlForYouTubeChannelByChannelId(youtubeChannelId)
+        : undefined,
       type: 'youtube',
     },
     {
       id: 'twitchUsername',
       icon: TwitchIcon,
       label: twitchUsername,
-      url: getUrlForTwitchByUsername(twitchUsername),
+      url: twitchUsername
+        ? getUrlForTwitchByUsername(twitchUsername)
+        : undefined,
       type: 'twitch',
     },
     {
       id: 'patreonUsername',
       icon: PatreonIcon,
       label: patreonUsername,
-      url: getUrlForPatreonByUsername(patreonUsername),
+      url: patreonUsername
+        ? getUrlForPatreonByUsername(patreonUsername)
+        : undefined,
       type: 'patreon',
     },
     {
       id: 'boothUsername',
       icon: BoothIcon,
       label: boothUsername,
-      url: getUrlForBoothByUsername(boothUsername),
+      url: boothUsername ? getUrlForBoothByUsername(boothUsername) : undefined,
       type: 'booth',
     },
     {
@@ -275,7 +287,7 @@ const SocialMediaList = ({
       icon: null, // TODO
       // icon: BoothIcon,
       label: itchUsername,
-      url: getAuthorUrlForItchUsername(itchUsername!),
+      url: itchUsername ? getAuthorUrlForItchUsername(itchUsername) : undefined,
       type: 'itch',
     },
     {
@@ -283,7 +295,9 @@ const SocialMediaList = ({
       icon: null, // TODO
       // icon: BoothIcon,
       label: jinxxyUsername,
-      url: getAuthorUrlForJinxxyUsername(jinxxyUsername!),
+      url: jinxxyUsername
+        ? getAuthorUrlForJinxxyUsername(jinxxyUsername)
+        : undefined,
       type: 'jinxxy',
     },
   ]

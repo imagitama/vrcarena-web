@@ -4,7 +4,7 @@ import useDatabaseQuery, {
   Operators,
 } from '../../hooks/useDatabaseQuery'
 import { makeStyles } from '@material-ui/core/styles'
-import { views, FullNotice } from '../../modules/notices'
+import { ViewNames, FullNotice } from '../../modules/notices'
 import Notice from '../notice'
 import ErrorMessage from '../error-message'
 import {
@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 
 const Notices = ({ isHome = false }: { isHome: boolean }) => {
   const [isLoading, isErrored, results] = useDatabaseQuery<FullNotice>(
-    views.getFullNotices,
+    ViewNames.GetFullNotices,
     [['isvisible', Operators.EQUALS, true]],
     100,
     ['orderby', OrderDirections.ASC]

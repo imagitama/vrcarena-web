@@ -23,6 +23,7 @@ const AssetResults = ({
   shimmer = false,
   shimmerCount = 3,
   hydrate = undefined,
+  showStates = false,
 }: {
   assets?: (Asset | PublicAsset)[]
   selectedAssetIds?: string[]
@@ -34,6 +35,7 @@ const AssetResults = ({
   shimmer?: boolean
   shimmerCount?: number
   hydrate?: () => void
+  showStates?: boolean
 }) => {
   const classes = useStyles()
   const [assetIdToEdit, setAssetIdToEdit] = useState<null | string>(null)
@@ -74,6 +76,7 @@ const AssetResults = ({
                 toggleEditMode={
                   hydrate ? () => toggleEditMode(asset.id) : undefined
                 }
+                showState={showStates}
               />
             </div>
           ))}

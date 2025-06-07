@@ -16,7 +16,7 @@ import {
 import { insertRecord } from '../../../../data-store'
 import { handleError } from '../../../../error-handling'
 import Button from '../../../button'
-import { isUrlAnImage } from '../../../../utils'
+import { getIsUrlAnImage } from '../../../../utils'
 import FormControls from '../../../form-controls'
 import CheckboxInput from '../../../checkbox-input'
 import AttachmentOutput from '../../../attachment'
@@ -131,7 +131,7 @@ const DatabaseOperationOutput = <TRecord extends object>({
   state: DatabaseOperation<TRecord>
 }) => {
   if (state.isLoading) {
-    return <LoadingIndicator message="Working..." />
+    return <LoadingIndicator message="Loading data..." />
   }
 
   if (state.lastError) {
@@ -193,7 +193,10 @@ const AttachmentsSelector = ({
           let urlToUse: string = url
 
           // gumroad is WEBP but they dont want to admit it >:(
-          if (isUrlAnImage(url) || url.includes('public-files.gumroad.com')) {
+          if (
+            getIsUrlAnImage(url) ||
+            url.includes('public-files.gumroad.com')
+          ) {
             urlToUse = await optimizeImageByUrl(url, bucketNames.attachments)
           }
 

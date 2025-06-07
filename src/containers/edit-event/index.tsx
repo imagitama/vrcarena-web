@@ -6,10 +6,9 @@ import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 import Message from '../../components/message'
 
-import { CollectionNames } from '../../data-store'
 import * as routes from '../../routes'
 import * as config from '../../config'
-import { EditableFields } from '../../modules/events'
+import { CollectionNames, EditableFields } from '../../modules/events'
 
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 
@@ -71,7 +70,7 @@ export default () => {
         saveBtnAction="Click save button"
         viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
-        getSuccessUrl={newId =>
+        getSuccessUrl={(newId) =>
           newId
             ? routes.viewEventWithVar.replace(':eventId', newId)
             : routes.events

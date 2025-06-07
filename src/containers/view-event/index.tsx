@@ -6,11 +6,8 @@ import EditIcon from '@material-ui/icons/Edit'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 
 import * as routes from '../../routes'
-
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { AssetFieldNames, AuthorFieldNames } from '../../hooks/useDatabaseQuery'
-
 import Link from '../../components/link'
 import ErrorMessage from '../../components/error-message'
 import Heading from '../../components/heading'
@@ -41,7 +38,7 @@ import EventAttendanceButton from '../../components/event-attendance-button'
 import EventAttendanceResults from '../../components/event-attendance-results'
 import useUserId from '../../hooks/useUserId'
 import { SupabaseClient } from '@supabase/supabase-js'
-import { PublicAsset } from '../../modules/assets'
+import { PublicAsset, ViewNames as AssetsViewNames } from '../../modules/assets'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
@@ -135,12 +132,12 @@ const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
       }
 
       let query = supabase
-        .from('getPublicAssets'.toLowerCase())
+        .from(AssetsViewNames.GetPublicAssets)
         .select<string, PublicAsset>('*')
-        .contains(AssetFieldNames.tags, tagsToSearch)
+        .contains('tags', tagsToSearch)
 
       if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
+        query = query.eq('isadult', false)
       }
 
       return query
@@ -218,7 +215,7 @@ const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
       let query = supabase
         .from('getPublicAuthors'.toLowerCase())
         .select<string, FullAuthor>('*')
-        .eq(AuthorFieldNames.saleReason, eventId)
+        .eq('salereason', eventId)
 
       return query
     },

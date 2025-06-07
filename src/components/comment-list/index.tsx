@@ -1,13 +1,12 @@
 import React, { useCallback } from 'react'
 
 import useDataStore from '../../hooks/useDataStore'
-import { CommentFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsEditor from '../../hooks/useIsEditor'
 
 import { getQueryParam } from '../../utils'
 import { trackAction } from '../../analytics'
 import { CollectionNames } from '../../modules/assets'
-import { FullComment } from '../../modules/comments'
+import { FullComment, ViewNames } from '../../modules/comments'
 
 import CommentItem from '../comment'
 import ErrorMessage from '../error-message'
@@ -23,8 +22,8 @@ export default ({
   className = '',
   getPrivate = false,
 }: {
-  collectionName: string
-  parentId: string
+  collectionName?: string
+  parentId?: string
   shimmer?: boolean
   className?: string
   getPrivate?: boolean
@@ -36,13 +35,16 @@ export default ({
         ? null
         : supabase
             .from(
-              (isEditor ? 'getFullComments' : 'getPublicComments').toLowerCase()
+              (isEditor
+                ? ViewNames.GetFullComments
+                : ViewNames.GetPublicComments
+              ).toLowerCase()
             )
             .select('*')
-            .eq(CommentFieldNames.parentTable, collectionName)
-            .eq(CommentFieldNames.parent, parentId)
-            .eq(CommentFieldNames.isPrivate, getPrivate)
-            .order(CommentFieldNames.createdAt, { ascending: false }),
+            .eq('parenttable', collectionName)
+            .eq('parent', parentId)
+            .eq('isprivate', getPrivate)
+            .order('createdat', { ascending: false }),
     [collectionName, parentId, shimmer, isEditor, getPrivate]
   )
 
@@ -52,12 +54,9 @@ export default ({
   if (isLoading || shimmer) {
     return (
       <div className={className}>
-        {/* @ts-ignore */}
-        <CommentItem shimmer comment={{}} />
-        {/* @ts-ignore */}
-        <CommentItem shimmer comment={{}} />
-        {/* @ts-ignore */}
-        <CommentItem shimmer comment={{}} />
+        <CommentItem shimmer />
+        <CommentItem shimmer />
+        <CommentItem shimmer />
       </div>
     )
   }
@@ -98,18 +97,20 @@ export default ({
           not monitor these comments.
         </WarningMessage>
       ) : null}
-      <AddCommentForm
-        collectionName={collectionName}
-        parentId={parentId}
-        asPrivate={getPrivate}
-        onAddClick={() =>
-          trackAction('CommentList', 'Click add comment button', {
-            collectionName,
-            parentId,
-          })
-        }
-        onDone={() => hydrate()}
-      />
+      {collectionName && parentId && (
+        <AddCommentForm
+          collectionName={collectionName}
+          parentId={parentId}
+          asPrivate={getPrivate}
+          onAddClick={() =>
+            trackAction('CommentList', 'Click add comment button', {
+              collectionName,
+              parentId,
+            })
+          }
+          onDone={() => hydrate()}
+        />
+      )}
     </div>
   )
 }

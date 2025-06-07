@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
-import { Notice, collectionName } from '../../modules/notices'
+import { Notice, CollectionNames } from '../../modules/notices'
 import Button from '../button'
 import EditNoticeForm from '../edit-notice-form'
 import ErrorMessage from '../error-message'
@@ -9,7 +9,7 @@ import NoticeRenderer from '../notice'
 
 export default () => {
   const [isLoading, isError, notices] = useDataStoreItems<Notice>(
-    collectionName,
+    CollectionNames.Notices,
     undefined
   )
   const [editId, setEditId] = useState<string | undefined>(undefined)

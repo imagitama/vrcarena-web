@@ -20,10 +20,8 @@ import useUserRecord from '../../hooks/useUserRecord'
 import {
   getDescriptionForHtmlMeta,
   getOpenGraphUrlForRouteUrl,
-  isGitHubUrl,
-  isGoogleDriveUrl,
-  isTwitterUrl,
-  isDiscordUrl,
+  getIsGitHubUrl,
+  getIsUrlRisky,
 } from '../../utils'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
@@ -41,6 +39,7 @@ import {
   RelationType,
   SourceInfo,
   ViewNames,
+  getIsAssetWaitingForApproval,
 } from '../../modules/assets'
 
 import AssetThumbnail from '../asset-thumbnail'
@@ -49,7 +48,6 @@ import ErrorMessage from '../error-message'
 import LoadingShimmer from '../loading-shimmer'
 import ImageGallery from '../image-gallery'
 import FeatureList from '../feature-list'
-import Price from '../price'
 import TagChips from '../tag-chips'
 import Button from '../button'
 import AssetResultsItem from '../asset-results-item'
@@ -100,6 +98,7 @@ import { tagVrcFuryReady } from '../../vrcfury'
 import { SupabaseClient } from '@supabase/supabase-js'
 import RequiresVerificationNotice from '../requires-verification-notice'
 import HintText from '../hint-text'
+import { getVrchatWorldLaunchUrlForId } from '../../vrchat'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -292,41 +291,12 @@ const NsfwIcon = () => {
   )
 }
 
-const getIsAssetFree = (tags: string[]): boolean =>
-  tags && tags.includes('free')
-
-const getLabelForCategory = (category: string): string => {
-  switch (category) {
-    case AssetCategory.Avatar:
-      return 'Accessories'
-    default:
-      return 'Linked Assets'
-  }
-}
-
-const getVrchatWorldLaunchUrlForId = (worldId: string): string => {
-  return `vrchat://launch?ref=vrchat.com&id=${worldId}:0`
-}
-
 const analyticsCategoryName = 'ViewAsset'
-
-const isRiskyUrl = (url: string): boolean => {
-  if (
-    isGoogleDriveUrl(url) ||
-    isGitHubUrl(url) ||
-    isDiscordUrl(url) ||
-    isTwitterUrl(url)
-  ) {
-    return true
-  }
-
-  return false
-}
 
 const RiskyFileNotice = ({ sourceUrl }: { sourceUrl?: string }) => {
   const classes = useStyles()
 
-  if (!sourceUrl || (sourceUrl && !isRiskyUrl(sourceUrl))) {
+  if (!sourceUrl || (sourceUrl && !getIsUrlRisky(sourceUrl))) {
     return null
   }
 
@@ -384,11 +354,6 @@ const Area = ({
     </Block>
   )
 }
-
-const isAssetWaitingForApproval = (asset: FullAsset): boolean =>
-  asset.publishstatus == PublishStatus.Published &&
-  asset.approvalstatus == ApprovalStatus.Waiting &&
-  asset.accessstatus == AccessStatus.Public
 
 const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()
@@ -552,7 +517,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             ) : null}
           </Helmet>
         )}
-        {asset && isAssetWaitingForApproval(asset) ? (
+        {asset && getIsAssetWaitingForApproval(asset) ? (
           <QueuedAssetInfo asset={asset} hydrate={hydrate} />
         ) : null}
         <Messages />
@@ -790,7 +755,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                   </Control>
                 ) : null}
 
-                {asset && asset.sourceurl && isGitHubUrl(asset.sourceurl) ? (
+                {asset && asset.sourceurl && getIsGitHubUrl(asset.sourceurl) ? (
                   <Control>
                     <GitHubReleases
                       gitHubUrl={asset.sourceurl}
@@ -807,7 +772,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                       pricecurrency: asset.pricecurrency,
                     } as SourceInfo,
                   ]
-                    .concat(asset.extrasources)
+                    .concat(asset.extrasources || []) // TODO: Ensure data is always empty array
                     .map((sourceInfo) => (
                       <Control key={sourceInfo.url}>
                         <VisitSourceButton sourceInfo={sourceInfo} />

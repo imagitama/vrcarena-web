@@ -1,7 +1,7 @@
 import React from 'react'
 import LaunchIcon from '@material-ui/icons/Launch'
 import { AttachmentType, AttachmentFields } from '../../modules/attachments'
-import { isUrlAYoutubeVideo } from '../../utils'
+import { getIsUrlAYoutubeVideo } from '../../utils'
 import VideoPlayer from '../video-player'
 import Button from '../button'
 
@@ -18,7 +18,7 @@ const Attachment = ({
     case AttachmentType.Image:
       return <img src={url} width={width} />
     case AttachmentType.Url:
-      if (isUrlAYoutubeVideo(url)) {
+      if (getIsUrlAYoutubeVideo(url)) {
         return (
           <VideoPlayer
             url={url}

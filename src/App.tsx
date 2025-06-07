@@ -21,7 +21,6 @@ import ViewSpecies from './containers/view-species'
 import ViewCategory from './containers/view-category'
 import ViewAvatars from './containers/view-avatars'
 import ViewAllSpecies from './containers/view-all-species'
-import VsScreen from './containers/vs-screen'
 
 import PageHeader from './components/header'
 import PageFooter from './components/footer'
@@ -255,25 +254,6 @@ const ResetPassword = lazy(() =>
       )
   )
 )
-const MemoryGame = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "memory" */ './containers/memory')
-  )
-)
-const GuessTheAvatarGame = lazy(() =>
-  catchChunkDeaths(
-    () =>
-      import(
-        /* webpackChunkName: "guess-the-avatar" */ './containers/guess-the-avatar'
-      )
-  )
-)
-const LaunchWorld = lazy(() =>
-  catchChunkDeaths(
-    () =>
-      import(/* webpackChunkName: "launch-world" */ './containers/launch-world')
-  )
-)
 const SetupProfile = lazy(() =>
   catchChunkDeaths(
     () =>
@@ -300,11 +280,6 @@ const DmcaPolicy = lazy(() =>
   catchChunkDeaths(
     () =>
       import(/* webpackChunkName: "dmca-policy" */ './containers/dmca-policy')
-  )
-)
-const ViewAward = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "view-award" */ './containers/view-award')
   )
 )
 const TakedownPolicy = lazy(() =>
@@ -440,11 +415,6 @@ const RandomAvatars = lazy(() =>
       )
   )
 )
-const BulkAdd = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "bulk-add" */ './containers/bulk-add')
-  )
-)
 const QueryCheatsheetContainer = lazy(() =>
   catchChunkDeaths(
     () =>
@@ -559,7 +529,6 @@ const MainContent = () => {
           path={[routes.viewAssetWithVar, routes.viewAssetWithVarAndTabVar]}
           component={ViewAsset}
         />
-        <Route exact path={routes.launchWorldWithVar} component={LaunchWorld} />
         <Route
           exact
           path={routes.adminWithTabNameVarAndPageNumberVar}
@@ -720,7 +689,6 @@ const MainContent = () => {
         />
         <Route exact path={routes.patreon} component={Patreon} />
         <Route exact path={routes.resetPassword} component={ResetPassword} />
-        <Route exact path={routes.vsScreen} component={VsScreen} />
         <Route
           exact
           path={[routes.createTag, routes.editTagWithVar]}
@@ -728,12 +696,6 @@ const MainContent = () => {
         />
         <Route exact path={routes.viewTagWithVar} component={ViewTag} />
         <Route exact path={routes.tags} component={Tags} />
-        <Route exact path={routes.memoryGame} component={MemoryGame} />
-        <Route
-          exact
-          path={routes.guessTheAvatar}
-          component={GuessTheAvatarGame}
-        />
         <Route exact path={routes.setupProfile} component={SetupProfile} />
         <Route
           exact
@@ -742,7 +704,6 @@ const MainContent = () => {
         />
         <Route exact path={routes.viewReportWithVar} component={ViewReport} />
         <Route exact path={routes.dmcaPolicy} component={DmcaPolicy} />
-        <Route exact path={routes.viewAwardWithVar} component={ViewAward} />
         <Route
           exact
           path={routes.createAmendmentWithVar}
@@ -812,7 +773,6 @@ const MainContent = () => {
           ]}
           component={Query}
         />
-        <Route exact path={routes.bulkAdd} component={BulkAdd} />
         <Route exact path={routes.promos} component={Promos} />
         <Route exact path={routes.imageAtlas} component={ImageAtlas} />
         <Route
@@ -860,7 +820,7 @@ export default () => {
         <Banner />
         <PageHeader />
         <main className="main">
-          <div className={`${isHome ? '' : classes.mainContainer}`}>
+          <div className={classes.mainContainer}>
             <BannedNotice />
             <Notices isHome={isHome} />
             <FuralityBanner isHome={isHome} />

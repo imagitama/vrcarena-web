@@ -10,13 +10,8 @@ import ClearIcon from '@material-ui/icons/Clear'
 
 import Paper from '../../../../components/paper'
 import TextInput from '../../../../components/text-input'
-import { CommonFieldNames, CommonMetaFieldNames } from '../../../../data-store'
 import useDataStore from '../../../../hooks/useDataStore'
-import {
-  CollectionNameComments,
-  CollectionNameCommentsMeta,
-  FullComment,
-} from '../../../../modules/comments'
+import { CollectionNames, FullComment } from '../../../../modules/comments'
 import LoadingIndicator from '../../../../components/loading-indicator'
 import Markdown from '../../../../components/markdown'
 import Button from '../../../../components/button'
@@ -30,9 +25,9 @@ import useQueryParam from '../../../../hooks/useQueryParam'
 import GenericOutputItem from '../../../../components/generic-output-item'
 import Message from '../../../../components/message'
 import { handleError } from '../../../../error-handling'
-import { AccessStatuses } from '../../../../hooks/useDatabaseQuery'
 import useSupabaseClient from '../../../../hooks/useSupabaseClient'
 import { SupabaseClient } from '@supabase/supabase-js'
+import { AccessStatus } from '../../../../modules/common'
 
 const BulkControls = ({
   ids,
@@ -60,9 +55,9 @@ const BulkControls = ({
       console.debug(`Deleting ${ids.length} comments...`)
 
       const { error } = await supabase
-        .from(CollectionNameCommentsMeta)
+        .from(CollectionNames.CommentsMeta)
         .update({
-          [CommonMetaFieldNames.accessStatus]: AccessStatuses.Deleted,
+          accessstatus: AccessStatus.Deleted,
         })
         .in('id', ids)
 
@@ -124,8 +119,8 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
         .select('*', {
           count: 'estimated',
         })
-        .eq(CommonFieldNames.createdBy, userId)
-        .order(CommonFieldNames.createdAt, { ascending: false }),
+        .eq('createdby', userId)
+        .order('createdat', { ascending: false }),
     [userId]
   )
   const [isLoadingComments, lastErrorCodeLoadingComments, comments, , hydrate] =
@@ -216,8 +211,8 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
                 <TableCell>
                   <EditorRecordManager
                     id={comment.id}
-                    collectionName={CollectionNameComments}
-                    metaCollectionName={CollectionNameCommentsMeta}
+                    collectionName={CollectionNames.Comments}
+                    metaCollectionName={CollectionNames.CommentsMeta}
                     existingAccessStatus={comment.accessstatus}
                     existingEditorNotes={comment.editornotes}
                     // @ts-ignore

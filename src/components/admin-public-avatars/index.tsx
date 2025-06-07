@@ -138,10 +138,6 @@ const AddToAssetButton = ({
   )
 }
 
-const PublicAvatarSubmissionsFieldNames = {
-  isDeleted: 'isdeleted',
-}
-
 interface AvatarListItem {
   key: string
   isNew: boolean

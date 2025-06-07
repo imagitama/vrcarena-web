@@ -16,7 +16,6 @@ import Markdown from '../../components/markdown'
 import Button from '../../components/button'
 
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { PagesFieldNames } from '../../data-store'
 import useDatabaseQuery, {
   Operators,
   options,
@@ -373,7 +372,7 @@ const Pages = () => {
       CollectionNames.Pages,
       [['parent', Operators.EQUALS, parentName]],
       {
-        [options.orderBy]: [PagesFieldNames.pageOrder, OrderDirections.ASC],
+        [options.orderBy]: ['pageorder', OrderDirections.ASC],
       }
     )
   const [selectedLineOfText, setSelectedLineOfText] = useState<string>('')

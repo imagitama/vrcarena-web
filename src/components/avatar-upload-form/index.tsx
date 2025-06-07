@@ -6,7 +6,6 @@ import ImageUploader from '../image-uploader'
 import Heading from '../heading'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { CollectionNames, UserFieldNames } from '../../hooks/useDatabaseQuery'
 import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'
 
@@ -19,11 +18,13 @@ import {
 } from '../../config'
 import { bucketNames } from '../../file-uploading'
 import WarningMessage from '../warning-message'
+import { CollectionNames, User } from '../../modules/users'
+import Avatar, { sizes } from '../avatar'
 
 export default ({ onClick = undefined }: { onClick?: () => void }) => {
   const userId = useUserId()
   const [, , user, hydrate] = useUserRecord()
-  const [isSaving, , isErrored, save] = useDatabaseSave(
+  const [isSaving, , isErrored, save] = useDatabaseSave<User>(
     CollectionNames.Users,
     userId
   )
@@ -37,7 +38,7 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
       }
 
       await save({
-        [UserFieldNames.avatarUrl]: url,
+        avatarurl: url,
       })
 
       hydrate()
@@ -62,17 +63,7 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
   return (
     <>
       <Heading variant="h3">Current Avatar</Heading>
-      <br />
-      {user.avatarurl ? (
-        <img
-          src={user.avatarurl}
-          alt="Your avatar"
-          width={AVATAR_WIDTH}
-          height={AVATAR_HEIGHT}
-        />
-      ) : (
-        <DefaultAvatar stringForDecision={user.username} />
-      )}
+      <Avatar url={user.avatarurl} size={sizes.MEDIUM} />
       <Heading variant="h3">Upload New Avatar</Heading>
       <ImageUploader
         onDone={onUploadedWithUrls}

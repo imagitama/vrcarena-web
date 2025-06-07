@@ -22,10 +22,6 @@ export interface CachedDiscordMessage {
   cachedat: Date
 }
 
-export const discordMessageCacheFieldNames = {
-  sentAt: 'sentat'
-}
-
-export const collectionNames = {
-  discordMessageCache: 'discordmessagecache'
+export enum CollectionNames {
+  DiscordMessageCache = 'discordmessagecache',
 }

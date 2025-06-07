@@ -6,18 +6,15 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
 
-import Button from '../button'
-import FormControls from '../form-controls'
-
-import { CollectionNames, AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import useUserId from '../../hooks/useUserId'
-
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import categoryMeta, { CategoryMeta } from '../../category-meta'
-import { Asset, AssetCategory } from '../../modules/assets'
+import { Asset, AssetCategory, CollectionNames } from '../../modules/assets'
+
 import LoadingIndicator from '../loading-indicator'
+import Button from '../button'
+import FormControls from '../form-controls'
 
 const useStyles = makeStyles({
   buttons: {
@@ -122,7 +119,7 @@ const ChangeCategoryForm = ({
   onDone?: () => void
   overrideSave?: (newCategory: AssetCategory) => void
 }) => {
-  const [isSaving, , , save] = useDatabaseSave(
+  const [isSaving, , , save] = useDatabaseSave<Asset>(
     assetId ? CollectionNames.Assets : false,
     assetId
   )
@@ -148,7 +145,7 @@ const ChangeCategoryForm = ({
       }
 
       await save({
-        [AssetFieldNames.category]: newCategory,
+        category: newCategory,
       })
 
       if (onDone) {

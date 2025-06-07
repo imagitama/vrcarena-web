@@ -56,7 +56,12 @@ export interface FullAuthor extends AuthorMeta, Author {
   createdbyavatarurl: string
 }
 
-export const CollectionNames = {
-  Authors: 'authors',
-  AuthorsMeta: 'authormeta', // TODO: Rename collection
+export enum CollectionNames {
+  Authors = 'authors',
+  AuthorsMeta = 'authormeta', // TODO: Rename collection
+}
+
+export enum ViewNames {
+  GetFullAuthors = 'getfullauthors',
+  GetPublicAuthors = 'getpublicauthors',
 }

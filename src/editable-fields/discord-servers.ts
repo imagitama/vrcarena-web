@@ -1,58 +1,57 @@
-import { DiscordServerFieldNames } from '../hooks/useDatabaseQuery'
 import { fieldTypes } from '../generic-forms'
-import { EditableField } from '.'
+import { EditableField } from './'
+import { DiscordServer } from '../modules/discordservers'
 
-const fields: EditableField<any>[] = [
+const fields: EditableField<DiscordServer>[] = [
   {
-    name: DiscordServerFieldNames.name,
+    name: 'name',
     label: 'Name',
     type: fieldTypes.text,
     isRequired: true,
-    hint: 'The name of the server'
+    hint: 'The name of the server',
   },
   {
-    name: DiscordServerFieldNames.description,
+    name: 'description',
     label: 'Description',
     type: fieldTypes.textMarkdown,
     default: '',
-    hint: 'A description of the server.'
+    hint: 'A description of the server.',
   },
   {
-    name: DiscordServerFieldNames.widgetId,
+    name: 'widgetid',
     label: 'Widget ID',
     default: '',
     type: fieldTypes.text,
-    hint:
-      'Enable widgets and paste the server ID here so that we can display a widget for it.'
+    hint: 'Enable widgets and paste the server ID here so that we can display a widget for it.',
   },
   {
-    name: DiscordServerFieldNames.iconUrl,
+    name: 'iconurl',
     label: 'Icon URL',
     type: fieldTypes.text,
     default: '',
-    hint: 'The URL to the icon of the server'
+    hint: 'The URL to the icon of the server',
   },
   {
-    name: DiscordServerFieldNames.inviteUrl,
+    name: 'inviteurl',
     label: 'Invite URL',
     default: '',
     type: fieldTypes.text,
-    hint: 'The invite URL of the server. Remember to not make it expire!'
+    hint: 'The invite URL of the server. Remember to not make it expire!',
   },
   {
-    name: DiscordServerFieldNames.requiresPatreon,
+    name: 'requirespatreon',
     label: 'Requires Patreon?',
     default: false,
     type: fieldTypes.checkbox,
-    hint: 'Do you need to be a Patreon sub to join this server?'
+    hint: 'Do you need to be a Patreon sub to join this server?',
   },
   {
-    name: DiscordServerFieldNames.patreonUrl,
+    name: 'patreonurl',
     label: 'Patreon URL',
     default: '',
     type: fieldTypes.text,
-    hint: 'The URL to the Patreon you need to be a sub for to join it'
-  }
+    hint: 'The URL to the Patreon you need to be a sub for to join it',
+  },
 ]
 
 export default fields

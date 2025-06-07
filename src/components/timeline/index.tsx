@@ -1,47 +1,51 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import {
+  CommentMeta,
   CollectionNames as CommentsCollectionNames,
-  CommentsMetaFieldNames,
 } from '../../modules/comments'
 import {
   createMessage,
   editMessage,
   FullHistoryEntry,
 } from '../../modules/history'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
+import {
+  AssetMeta,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
 import { getUrlForParent, getLabelForParent } from '../../relations'
 import Link from '../link'
 import UsernameLink from '../username-link'
-import {
-  AccessStatuses,
-  ApprovalStatuses,
-  AssetMetaFieldNames,
-  BanStatuses,
-  PublishStatuses,
-  UserMetaFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import FormattedDate from '../formatted-date'
 import {
-  AmendmentsMetaFieldNames,
+  AmendmentMeta,
   CollectionNames as AmendmentsCollectionNames,
 } from '../../modules/amendments'
-import { CollectionNames as UsersCollectionNames } from '../../modules/users'
+import {
+  BanStatus,
+  UserMeta,
+  CollectionNames as UsersCollectionNames,
+} from '../../modules/users'
 import ErrorBoundary from '../error-boundary'
 import {
+  ReportMeta,
   CollectionNames as ReportsCollectionNames,
-  ReportMetaFieldNames,
   ResolutionStatus,
 } from '../../modules/reports'
 import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+} from '../../modules/common'
 
 const getLabelForApprovalStatus = (approvalStatus: string): string => {
   switch (approvalStatus) {
-    case ApprovalStatuses.Approved:
+    case ApprovalStatus.Approved:
       return 'approved'
-    case ApprovalStatuses.Declined:
+    case ApprovalStatus.Declined:
       return 'declined'
-    case ApprovalStatuses.Waiting:
+    case ApprovalStatus.Waiting:
       return 'reverted back to waiting'
     default:
       throw new Error(`Unknown approval status: ${approvalStatus}`)
@@ -50,9 +54,9 @@ const getLabelForApprovalStatus = (approvalStatus: string): string => {
 
 const getLabelForAccessStatus = (accessStatus: string): string => {
   switch (accessStatus) {
-    case AccessStatuses.Deleted:
+    case AccessStatus.Deleted:
       return 'moved to trash'
-    case AccessStatuses.Public:
+    case AccessStatus.Public:
       return 'moved out of trash'
     default:
       throw new Error(`Unknown access status: ${accessStatus}`)
@@ -61,9 +65,9 @@ const getLabelForAccessStatus = (accessStatus: string): string => {
 
 const getLabelForPublishStatus = (publishStatus: string): string => {
   switch (publishStatus) {
-    case PublishStatuses.Draft:
+    case PublishStatus.Draft:
       return 'moved back to draft'
-    case PublishStatuses.Published:
+    case PublishStatus.Published:
       return 'published for approval'
     default:
       throw new Error(`Unknown publish status: ${publishStatus}`)
@@ -72,9 +76,9 @@ const getLabelForPublishStatus = (publishStatus: string): string => {
 
 const getLabelForBanStatus = (banStatus: string): string => {
   switch (banStatus) {
-    case BanStatuses.Banned:
+    case BanStatus.Banned:
       return 'banned'
-    case BanStatuses.Unbanned:
+    case BanStatus.Unbanned:
       return 'unbanned'
     default:
       throw new Error(`Unknown publish status: ${banStatus}`)
@@ -140,48 +144,48 @@ const LabelForEntry = ({
         case AssetsCollectionNames.Assets:
           return <>changed {Object.keys(changesWithoutMetafields).join(', ')}</>
         case AssetsCollectionNames.AssetsMeta:
-          if (data.changes[AssetMetaFieldNames.approvalStatus]) {
+          if ((data.changes as AssetMeta).approvalstatus) {
             return (
               <>
                 {getLabelForApprovalStatus(
-                  data.changes[AssetMetaFieldNames.approvalStatus]
+                  (data.changes as AssetMeta).approvalstatus
                 )}
               </>
             )
-          } else if (data.changes[AssetMetaFieldNames.accessStatus]) {
+          } else if ((data.changes as AssetMeta).accessstatus) {
             return (
               <>
                 {getLabelForAccessStatus(
-                  data.changes[AssetMetaFieldNames.accessStatus]
+                  (data.changes as AssetMeta).accessstatus
                 )}
               </>
             )
-          } else if (data.changes[AssetMetaFieldNames.publishStatus]) {
+          } else if ((data.changes as AssetMeta).publishstatus) {
             return (
               <>
                 {getLabelForPublishStatus(
-                  data.changes[AssetMetaFieldNames.publishStatus]
+                  (data.changes as AssetMeta).publishstatus
                 )}
               </>
             )
-          } else if (data.changes[AssetMetaFieldNames.editorNotes]) {
+          } else if ((data.changes as AssetMeta).editornotes) {
             return <>changed editor notes for asset</>
           } else {
             return null
           }
         case AmendmentsCollectionNames.AmendmentsMeta:
-          if (data.changes[AmendmentsMetaFieldNames.approvalstatus]) {
+          if ((data.changes as AmendmentMeta).approvalstatus) {
             return (
               <>
-                {AmendmentsMetaFieldNames.approvalstatus ===
-                ApprovalStatuses.Approved
+                {(data.changes as AmendmentMeta).approvalstatus ===
+                ApprovalStatus.Approved
                   ? 'applied'
                   : getLabelForApprovalStatus(
-                      data.changes[AmendmentsMetaFieldNames.approvalstatus]
+                      (data.changes as AmendmentMeta).approvalstatus
                     )}
               </>
             )
-          } else if (data.changes[AmendmentsMetaFieldNames.editornotes]) {
+          } else if ((data.changes as AmendmentMeta).editornotes) {
             return <>changed editor notes for amendment</>
           }
         case UsersCollectionNames.Users:
@@ -191,12 +195,10 @@ const LabelForEntry = ({
             )
           }
         case UsersCollectionNames.UsersMeta:
-          if (data.changes[UserMetaFieldNames.banStatus]) {
+          if ((data.changes as UserMeta).banstatus) {
             return (
               <>
-                {getLabelForBanStatus(
-                  data.changes[UserMetaFieldNames.banStatus]
-                )}{' '}
+                {getLabelForBanStatus((data.changes as UserMeta).banstatus)}{' '}
                 user
               </>
             )
@@ -204,18 +206,18 @@ const LabelForEntry = ({
         case AuthorsCollectionNames.Authors:
           return <>edited author</>
         case ReportsCollectionNames.ReportsMeta:
-          if (data.changes[ReportMetaFieldNames.resolutionstatus]) {
+          if ((data.changes as ReportMeta).resolutionstatus) {
             return (
               <>
                 {getLabelForResolutionStatus(
-                  data.changes[ReportMetaFieldNames.resolutionstatus]
+                  (data.changes as ReportMeta).resolutionstatus
                 )}{' '}
                 report
               </>
             )
-          } else if (data.changes[ReportMetaFieldNames.resolutionnotes]) {
+          } else if ((data.changes as ReportMeta).resolutionnotes) {
             return <>changed the resolution notes</>
-          } else if (data.changes[ReportMetaFieldNames.editornotes]) {
+          } else if ((data.changes as ReportMeta).editornotes) {
             return <>changed editor notes for report</>
           } else {
             return (
@@ -223,11 +225,11 @@ const LabelForEntry = ({
             )
           }
         case CommentsCollectionNames.CommentsMeta:
-          if (data.changes[CommentsMetaFieldNames.accessStatus]) {
+          if ((data.changes as CommentMeta).accessstatus) {
             return (
               <>
                 {getLabelForAccessStatus(
-                  data.changes[CommentsMetaFieldNames.accessStatus]
+                  (data.changes as CommentMeta).accessstatus
                 )}{' '}
                 comment
               </>

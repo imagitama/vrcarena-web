@@ -2,16 +2,11 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import CheckIcon from '@material-ui/icons/Check'
 
-import { CollectionNames as OldCollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
-import {
-  getChangedFieldNames,
-  mergeNewFieldsIntoParent,
-} from '../../utils/amendments'
+import { mergeNewFieldsIntoParent } from '../../utils/amendments'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { getFieldNameAndValueForOutput } from '../../utils/assets'
-import { CollectionNames } from '../../data-store'
 
 import ErrorMessage from '../error-message'
 import FormControls from '../form-controls'
@@ -21,12 +16,21 @@ import Message from '../message'
 import TextInput from '../text-input'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
-import { AmendmentsFieldNames } from '../../modules/amendments'
 import ShortDiff from '../short-diff'
 import GenericEditor from '../generic-editor'
 import WarningMessage from '../warning-message'
 import Heading from '../heading'
-import { Asset, ViewNames } from '../../modules/assets'
+import {
+  Asset,
+  ViewNames,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
+import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
+import {
+  Amendment,
+  AmendmentFields,
+  CollectionNames as AmendmentsCollectionNames,
+} from '../../modules/amendments'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const useStyles = makeStyles({
@@ -90,7 +94,7 @@ const ParentEditor = ({
   insertExtraFields: (extraFields: { [fieldName: string]: any }) => void
 }) => {
   switch (type) {
-    case OldCollectionNames.Assets:
+    case AssetsCollectionNames.Assets:
       return (
         <EditorContext.Provider
           // @ts-ignore
@@ -103,10 +107,10 @@ const ParentEditor = ({
           <AssetEditor />
         </EditorContext.Provider>
       )
-    case OldCollectionNames.Authors:
+    case AuthorsCollectionNames.Authors:
       return (
         <GenericEditor
-          collectionName={OldCollectionNames.Authors}
+          collectionName={AuthorsCollectionNames.Authors}
           id={id}
           overrideFields={{}}
           onFieldChanged={onFieldChanged}
@@ -121,9 +125,9 @@ const ParentEditor = ({
 
 const getViewNameForParentTable = (parentTable: string): string => {
   switch (parentTable) {
-    case OldCollectionNames.Assets:
+    case AssetsCollectionNames.Assets:
       return ViewNames.GetFullAssets
-    case OldCollectionNames.Authors:
+    case AuthorsCollectionNames.Authors:
       return 'getfullauthors'
     default:
       throw new Error(`Cannot get view name for parent "${parentTable}"`)
@@ -148,10 +152,11 @@ const AmendmentEditor = ({
       parentId || false,
       'amendment-editor-parent'
     )
-  const [isSaving, isSuccess, isErroredSaving, saveOrCreate] = useDatabaseSave(
-    CollectionNames.Amendments,
-    amendmentId
-  )
+  const [isSaving, isSuccess, isErroredSaving, saveOrCreate] =
+    useDatabaseSave<AmendmentFields>(
+      AmendmentsCollectionNames.Amendments,
+      amendmentId
+    )
   const [newFieldsForSaving, setNewFieldsForSaving] = useState({})
   const [newFieldsForOutput, setNewFieldsForOutput] = useState<{
     [fieldName: string]: any
@@ -206,10 +211,10 @@ const AmendmentEditor = ({
   const onCreate = async () => {
     try {
       await saveOrCreate({
-        [AmendmentsFieldNames.parentTable]: parentTable,
-        [AmendmentsFieldNames.parent]: parentId,
-        [AmendmentsFieldNames.fields]: newFieldsForSaving,
-        [AmendmentsFieldNames.comments]: comments,
+        parenttable: parentTable,
+        parent: parentId,
+        fields: newFieldsForSaving,
+        comments: comments,
       })
     } catch (err) {
       console.error('Failed to save amendment', err)
@@ -218,8 +223,6 @@ const AmendmentEditor = ({
   }
 
   const onEdit = async () => {}
-
-  const changedFieldNames = getChangedFieldNames(parent, newFieldsForOutput)
 
   // note: each little form does its own save so we override EVERY one with this func
   const onFieldChanged = async (fieldName: string, newValue: any) => {
@@ -269,8 +272,6 @@ const AmendmentEditor = ({
     parent
   )
 
-  console.debug(`AmendmentEditor.render`, { parentWithFieldsForOutput })
-
   if (isPreviewVisible) {
     return (
       <div>
@@ -280,7 +281,7 @@ const AmendmentEditor = ({
         </WarningMessage>
         <Heading variant="h2">Fields</Heading>
         <ShortDiff
-          type={parentTable}
+          type={parentTable as any}
           oldFields={parent}
           newFields={parentWithFieldsForOutput}
           onlyNewFields={newFieldsForSaving}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { handleError } from '../../error-handling'
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import Button from '../button'
 import CheckboxInput from '../checkbox-input'
@@ -8,6 +7,7 @@ import ErrorMessage from '../error-message'
 import FormControls from '../form-controls'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
+import { Asset, CollectionNames } from '../../modules/assets'
 
 const publicAvatarsBannedTag = 'public_avatars_banned'
 
@@ -23,7 +23,7 @@ export default ({
   onDone: () => void
 }) => {
   const [newTags, setNewTags] = useState<string[]>(tags)
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
+  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -59,7 +59,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.tags]: newTags,
+        tags: newTags,
       })
 
       onDone()

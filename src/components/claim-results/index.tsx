@@ -52,11 +52,15 @@ const ClaimResults = ({ claims }: { claims: FullClaim[] }) => {
       {claims.map((claim) => (
         <div key={claim.id} className={classes.item}>
           <Heading variant="h3">{getTitleForClaim(claim)}</Heading>
-          <Renderer
-            parentTable={claim.parenttable}
-            parentId={claim.parent}
-            parentData={claim.parentdata}
-          />
+          {claim.parentdata ? (
+            <Renderer
+              parentTable={claim.parenttable}
+              parentId={claim.parent}
+              parentData={claim.parentdata}
+            />
+          ) : (
+            '(no data)'
+          )}
         </div>
       ))}
     </div>

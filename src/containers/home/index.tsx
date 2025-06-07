@@ -28,12 +28,6 @@ import LoadingIndicator from '../../components/loading-indicator'
 const contentMaxWidth = '900px'
 
 const useStyles = makeStyles({
-  root: {
-    padding: '2rem 0',
-    [mediaQueryForMobiles]: {
-      padding: '1rem 0',
-    },
-  },
   contentBlock: {
     fontWeight: 200, // 100 for message titles, 400 for body
     width: 'calc(100% - 2rem)',
@@ -306,20 +300,18 @@ export default () => {
           content="A website that has info about avatars, accessories, tutorials and tools for VR games like VRChat."
         />
       </Helmet>
-      <div className={classes.root}>
-        <ContentBlock buttonUrl={routes.about} buttonLabel="Learn More">
-          <p>
-            A free, community-driven, wiki-style collection of VR avatars,
-            accessories, retextures and tutorials categorized and tagged to help
-            you find what you're after.
-          </p>
-          <p>
-            We are <strong>not for profit</strong> and run entirely by our
-            awesome <strong>volunteers</strong> since May 2020!
-          </p>
-        </ContentBlock>
-        <Tiles />
-      </div>
+      <ContentBlock buttonUrl={routes.about} buttonLabel="Learn More">
+        <p>
+          A free, community-driven, wiki-style collection of VR avatars,
+          accessories, retextures and tutorials categorized and tagged to help
+          you find what you're after.
+        </p>
+        <p>
+          We are <strong>not for profit</strong> and run entirely by our awesome{' '}
+          <strong>volunteers</strong> since May 2020!
+        </p>
+      </ContentBlock>
+      <Tiles />
     </>
   )
 }

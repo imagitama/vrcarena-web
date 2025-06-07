@@ -6,7 +6,7 @@ import Link from '../link'
 
 const useStyles = makeStyles({
   root: {
-    margin: '1rem 0.5rem 0.5rem'
+    margin: '1rem 0.5rem 0.5rem',
   },
   cardActionArea: {
     height: '100%',
@@ -16,26 +16,26 @@ const useStyles = makeStyles({
       justifyContent: 'center',
       padding: '0 3rem',
       height: '100%',
-      color: 'inherit'
-    }
+      color: 'inherit',
+    },
   },
   text: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
-    fontSize: '125%'
+    fontSize: '125%',
   },
   subtext: {
-    marginTop: '1rem'
-  }
+    marginTop: '1rem',
+  },
 })
 
 export default ({
   icon: Icon,
   label,
   onClick = undefined,
-  url = undefined
+  url = undefined,
 }: {
   label: string
   icon?: React.ReactElement
@@ -46,7 +46,7 @@ export default ({
   return (
     <Card className={classes.root}>
       <CardActionArea onClick={onClick} className={classes.cardActionArea}>
-        <Link to={url}>
+        <Link to={url!}>
           <span className={classes.text}>
             {Icon}
             <span className={classes.subtext}>{label}</span>

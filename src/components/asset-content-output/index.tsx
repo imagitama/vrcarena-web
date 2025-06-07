@@ -2,15 +2,19 @@ import React from 'react'
 import YouTubePlayer from 'react-player/youtube'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { isUrlAYoutubeVideo, isUrlAnImage, isUrlAVideo } from '../../utils'
+import {
+  getIsUrlAYoutubeVideo,
+  getIsUrlAnImage,
+  getIsUrlAVideo,
+} from '../../utils'
 import VideoPlayer from '../video-player'
 import { trackAction } from '../../analytics'
 
 const getImageUrlFromUrls = (fileUrls: string[]): string | undefined =>
-  fileUrls.find((url) => isUrlAnImage(url))
+  fileUrls.find((url) => getIsUrlAnImage(url))
 
 const getVideoUrlFromUrls = (fileUrls: string[]): string | undefined =>
-  fileUrls.find((url) => isUrlAVideo(url))
+  fileUrls.find((url) => getIsUrlAVideo(url))
 
 const useStyles = makeStyles({
   small: {
@@ -50,7 +54,7 @@ export default ({
     return <VideoPlayer url={attachedVideoUrl} />
   }
 
-  if (isUrlAYoutubeVideo(sourceUrl)) {
+  if (getIsUrlAYoutubeVideo(sourceUrl)) {
     return (
       <YouTubePlayer
         url={sourceUrl}

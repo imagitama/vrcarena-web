@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
-import { PostgrestError } from '@supabase/supabase-js'
 
 import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { CollectionNames, UserFieldNames } from '../../hooks/useDatabaseQuery'
 import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
@@ -14,6 +12,8 @@ import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import { DataStoreErrorCode } from '../../data-store'
+import { User } from '../../modules/users'
+import { CollectionNames } from '../../modules/user'
 
 const useStyles = makeStyles({
   root: {
@@ -37,11 +37,10 @@ const getMessageForErrorCode = (errorCode: DataStoreErrorCode): string => {
 const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
   const userId = useUserId()
   const [isLoadingUser, isErrorLoadingUser, user, hydrate] = useUserRecord()
-  const [isSaving, isSaveSuccess, lastSaveErrorCode, save] = useDataStoreEdit<{
-    username: string
-  }>(CollectionNames.Users, userId || false, {
-    uncatchErrorCodes: [DataStoreErrorCode.ViolateUniqueConstraint],
-  })
+  const [isSaving, isSaveSuccess, lastSaveErrorCode, save] =
+    useDataStoreEdit<User>(CollectionNames.Users, userId || false, {
+      uncatchErrorCodes: [DataStoreErrorCode.ViolateUniqueConstraint],
+    })
 
   if (!user) {
     throw new Error('Need a user')
@@ -75,7 +74,7 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
       }
 
       await save({
-        [UserFieldNames.username]: fieldValue,
+        username: fieldValue,
       })
 
       hydrate()

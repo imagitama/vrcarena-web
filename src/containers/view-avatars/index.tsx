@@ -5,12 +5,7 @@ import ShuffleIcon from '@material-ui/icons/Shuffle'
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
-import PaginatedView from '../../components/paginated-view'
-import AssetResults from '../../components/asset-results'
 import Button from '../../components/button'
-
-import { AssetFieldNames, OrderDirections } from '../../hooks/useDatabaseQuery'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
 import { getCategoryMeta } from '../../category-meta'
 import * as routes from '../../routes'
@@ -31,12 +26,6 @@ function getDescriptionByCategoryName(categoryName: AssetCategory): string {
   return getCategoryMeta(categoryName).shortDescription
 }
 
-interface AssetWithSpeciesData extends Asset {
-  speciesid: string // species to group by
-  pluralname: string
-  avatarcount: number
-}
-
 const categoryName = AssetCategory.Avatar
 
 const ViewAvatarsView = () => {
@@ -44,7 +33,7 @@ const ViewAvatarsView = () => {
     (query: GetQuery<PublicAsset>) => GetQuery<PublicAsset>
   >(
     (query) => {
-      query = query.eq(AssetFieldNames.category, categoryName)
+      query = query.eq('category', categoryName)
       return query
     },
     [categoryName]

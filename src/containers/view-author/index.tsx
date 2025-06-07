@@ -22,11 +22,7 @@ import Message from '../../components/message'
 import useUserRecord from '../../hooks/useUserRecord'
 
 import { CollectionNames } from '../../modules/authors'
-import {
-  Claim,
-  ViewNames as ClaimViewNames,
-  FullClaim,
-} from '../../modules/claims'
+import { ViewNames as ClaimViewNames, FullClaim } from '../../modules/claims'
 import { canEditAuthor } from '../../utils'
 import { trackAction } from '../../analytics'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
@@ -44,6 +40,7 @@ import ClaimButton from '../../components/claim-button'
 import UserList from '../../components/user-list'
 import LazyLoad from 'react-lazyload'
 import { GetQuery } from '../../data-store'
+import { FullUser } from '../../modules/users'
 
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
   const getQuery = useCallback<
@@ -117,11 +114,14 @@ const Claims = ({ authorId }: { authorId: string }) => {
     <>
       <Heading variant="h2">Claims</Heading>
       <UserList
-        users={results.map((claim) => ({
-          id: claim.createdby,
-          username: claim.createdbyusername,
-          avatarurl: claim.createdbyavatarurl,
-        }))}
+        users={results.map(
+          (claim) =>
+            ({
+              id: claim.createdby,
+              username: claim.createdbyusername,
+              avatarurl: claim.createdbyavatarurl,
+            } as FullUser)
+        )}
       />
     </>
   )

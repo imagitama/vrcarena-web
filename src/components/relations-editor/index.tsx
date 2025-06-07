@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
-import EditIcon from '@material-ui/icons/Edit'
 import CheckIcon from '@material-ui/icons/Check'
 
 import { handleError } from '../../error-handling'
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import {
   Asset,
+  CollectionNames,
   FullAsset,
   PublicAsset,
   Relation,
@@ -219,7 +218,7 @@ const RelationsEditor = ({
   onCancel?: () => void
   overrideSave?: (newRelations: Relation[]) => void
 }) => {
-  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave(
+  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -261,7 +260,7 @@ const RelationsEditor = ({
       }
 
       await save({
-        [AssetFieldNames.relations]: newRelations,
+        relations: newRelations,
       })
 
       startSaveDoneTimer()

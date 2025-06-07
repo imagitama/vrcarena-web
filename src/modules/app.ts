@@ -1,12 +1,15 @@
 import { AnyAction, Dispatch } from 'redux'
-import { CollectionNames } from '../hooks/useDatabaseQuery'
-import { Asset } from './assets'
-import { UserPreferences } from './user'
+import { Asset, CollectionNames as AssetsCollectionNames } from './assets'
+import {
+  UserPreferences,
+  CollectionNames as UsersCollectionNames,
+} from './user'
+import { CollectionNames as AuthorsCollectionNames } from './authors'
 
 export const searchIndexNameLabels = {
-  [CollectionNames.Assets]: 'assets',
-  [CollectionNames.Authors]: 'authors',
-  [CollectionNames.Users]: 'users',
+  [AssetsCollectionNames.Assets]: 'assets',
+  [AuthorsCollectionNames.Authors]: 'authors',
+  [UsersCollectionNames.Users]: 'users',
 }
 
 function isSearchRoute() {
@@ -32,7 +35,7 @@ function getInitialSearchIndexName() {
     return foundSearchIndex[0]
   }
 
-  return CollectionNames.Assets
+  return AssetsCollectionNames.Assets
 }
 
 function getInitialSearchTerm() {

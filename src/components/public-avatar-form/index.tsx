@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { formHideDelay } from '../../config'
-import { CollectionNames } from '../../data-store'
 import { handleError } from '../../error-handling'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 import useTimer from '../../hooks/useTimer'
@@ -17,6 +16,7 @@ import TextInput from '../text-input'
 
 import screenshotUrl from './assets/images/screenshot.webp'
 import FormControls from '../form-controls'
+import { CollectionNames } from '../../modules/public-avatar-submissions'
 
 interface PublicAvatarCreateFields extends Record<string, unknown> {
   asset: string

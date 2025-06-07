@@ -36,17 +36,11 @@ export interface UserPreferences extends Record<string, unknown> {
   showmoreinfo: boolean
 }
 
-export const CollectionNames = {
-  Users: 'users',
-  UsersMeta: 'usermeta',
-  UsersAdminMeta: 'useradminmeta',
-  UserPreferences: 'userpreferences',
-}
-
-export const UserPreferencesFieldNames = {
-  enabledAdultContent: 'enabledadultcontent',
-  notificationEmail: 'notificationemail',
-  notificationPrefs: 'notificationprefs',
+export enum CollectionNames {
+  Users = 'users',
+  UsersMeta = 'usermeta',
+  UsersAdminMeta = 'useradminmeta',
+  UserPreferences = 'userpreferences',
 }
 
 export default (state = initialState, action: AnyAction) => {

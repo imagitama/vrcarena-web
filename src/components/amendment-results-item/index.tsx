@@ -3,7 +3,6 @@ import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { CollectionNames as OldCollectionNames } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import Link from '../../components/link'
 
@@ -16,6 +15,8 @@ import AmendmentEditorRecordManager from '../amendment-editor-record-manager'
 import useIsEditor from '../../hooks/useIsEditor'
 import AssetResultsItem from '../asset-results-item'
 import AuthorResultsItem from '../author-results-item'
+import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
+import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
 
 const useStyles = makeStyles({
   mainCell: {
@@ -25,9 +26,9 @@ const useStyles = makeStyles({
 
 const ParentRenderer = ({ table, data }: { table: string; data: any }) => {
   switch (table) {
-    case OldCollectionNames.Assets:
+    case AssetsCollectionNames.Assets:
       return <AssetResultsItem asset={data} />
-    case OldCollectionNames.Authors:
+    case AuthorsCollectionNames.Authors:
       return <AuthorResultsItem author={data} />
     default:
       return <>Unknown table "{table}"</>
@@ -107,7 +108,7 @@ export default ({
         <TableCell colSpan={999} style={{ marginBottom: '1rem' }}>
           {isExpanded ? (
             <ShortDiff
-              type={parentTable}
+              type={parentTable as any}
               oldFields={parentData}
               newFields={fields}
               onlyNewFields={fields}

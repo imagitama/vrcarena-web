@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDataStore from '../../hooks/useDataStore'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
@@ -11,6 +10,7 @@ import PublicAvatarForm from '../public-avatar-form'
 import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
 import FindMoreAssetsButton from '../find-more-assets-button'
 import { SupabaseClient } from '@supabase/supabase-js'
+import { CollectionNames } from '../../modules/vrchatavatars'
 
 const useStyles = makeStyles({
   avatars: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },

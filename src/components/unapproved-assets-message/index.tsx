@@ -1,5 +1,4 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper'
 import Link from '../link'
 import * as routes from '../../routes'
 import useIsEditor from '../../hooks/useIsEditor'

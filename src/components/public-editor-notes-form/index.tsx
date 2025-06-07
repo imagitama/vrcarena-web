@@ -3,11 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import {
-  CommonMetaFieldNames,
-  CommonMetaRecordFields,
-  CommonRecordFields,
-} from '../../data-store'
+import { CommonMetaRecordFields, CommonRecordFields } from '../../data-store'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
@@ -17,6 +13,7 @@ import TextInput from '../text-input'
 import LoadingIndicator from '../loading-indicator'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import FormControls from '../form-controls'
+import { MetaRecord } from '../../modules/common'
 
 const useStyles = makeStyles({
   label: {
@@ -44,10 +41,8 @@ const PublicEditorNotesForm = ({
       existingEditorNotes !== undefined ? false : id,
       'editor-notes-form'
     )
-  const [isSaving, , isErroredSavingAsset, saveMetaRecord] = useDatabaseSave(
-    metaCollectionName,
-    id
-  )
+  const [isSaving, , isErroredSavingAsset, saveMetaRecord] =
+    useDatabaseSave<MetaRecord>(metaCollectionName, id)
 
   const [newEditorNotes, setNewEditorNotes] = useState(
     existingEditorNotes || ''
@@ -89,7 +84,7 @@ const PublicEditorNotesForm = ({
       }
 
       await saveMetaRecord({
-        [CommonMetaFieldNames.editorNotes]: newEditorNotes || '',
+        editornotes: newEditorNotes || '',
       })
 
       if (onDone) {

@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
 import * as routes from '../../routes'
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 
 import Link from '../../components/link'
@@ -15,10 +14,13 @@ import CommentList from '../../components/comment-list'
 import NoPermissionMessage from '../../components/no-permission-message'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import {
+  CollectionNames,
   FullReport,
   reportReasonsKeysByCollection,
   ResolutionStatus,
+  ViewNames,
 } from '../../modules/reports'
+import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 import NoResultsMessage from '../../components/no-results-message'
 import WarningMessage from '../../components/warning-message'
 import FormattedDate from '../../components/formatted-date'
@@ -35,7 +37,7 @@ const View = () => {
   const isEditor = useIsEditor()
 
   const [isLoading, isError, report, hydrate] = useDataStoreItem<FullReport>(
-    'getFullReports'.toLowerCase(),
+    ViewNames.GetFullReports,
     isLoggedIn ? reportId : false,
     'view-report'
   )
@@ -126,7 +128,8 @@ const View = () => {
       <Heading variant="h2">Reason</Heading>
       {reason || '(no reason)'}
       {reason ===
-        reportReasonsKeysByCollection[CollectionNames.Assets].TAKEDOWN && (
+        reportReasonsKeysByCollection[AssetsCollectionNames.Assets]
+          .TAKEDOWN && (
         <WarningMessage>
           Please ensure this report aligns with our{' '}
           <Link to={routes.takedownPolicy}>takedown policy</Link>.

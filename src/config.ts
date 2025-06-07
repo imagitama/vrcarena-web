@@ -1,5 +1,5 @@
-import { SpeciesFieldNames } from './hooks/useDatabaseQuery'
 import otherSpeciesThumbnailUrl from './assets/images/other-species.webp'
+import { SpeciesFields } from './modules/species'
 
 export const BUSINESS_NAME = 'VRCArena' // privacy policy, TOS, DMCA, etc.
 export const WEBSITE_FULL_URL = 'https://www.vrcarena.com'
@@ -29,12 +29,14 @@ export const ASSET_TITLE_MAX_LENGTH = 60
 export const NONATTACHMENT_MAX_SIZE_BYTES = 4194304
 
 export const otherSpeciesKey = 'other-species'
-export const otherSpeciesMeta = {
-  [SpeciesFieldNames.pluralName]: 'Other Species',
-  [SpeciesFieldNames.singularName]: 'Other Species',
-  [SpeciesFieldNames.description]: 'Assets that do not have a species.',
-  [SpeciesFieldNames.shortDescription]: 'Assets that do not have a species.',
-  [SpeciesFieldNames.thumbnailSourceUrl]: otherSpeciesThumbnailUrl,
+
+// @ts-ignore
+export const otherSpeciesMeta: SpeciesFields = {
+  pluralname: 'Other Species',
+  singularname: 'Other Species',
+  description: 'Assets that do not have a species.',
+  shortdescription: 'Assets that do not have a species.',
+  thumbnailsourceurl: otherSpeciesThumbnailUrl,
 }
 
 export const alreadyOver18Key = 'already-over-18'

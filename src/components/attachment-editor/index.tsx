@@ -3,13 +3,13 @@ import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import { handleError } from '../../error-handling'
 import {
   Attachment,
   AttachmentFields,
   AttachmentReason,
   AttachmentType,
+  CollectionNames,
 } from '../../modules/attachments'
 
 import ImageUploader from '../image-uploader'
@@ -24,17 +24,13 @@ import FormControls from '../form-controls'
 import { bucketNames } from '../../file-uploading'
 import AttachmentOutput from '../attachment'
 import InfoMessage from '../info-message'
-import { getYouTubeVideoIdFromUrl, isUrlAYoutubeVideo } from '../../utils'
+import { getYouTubeVideoIdFromUrl, getIsUrlAYoutubeVideo } from '../../utils'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../../config'
 
 const attachmentTypesMeta: { [key: string]: { name: string } } = {
   [AttachmentType.Image]: {
     name: 'Image',
   },
-  // disabled as we want to avoid hosting anything (use google drive or something)
-  // [AttachmentType.File]: {
-  //   name: 'File (link to a ZIP, RAR, etc)',
-  // },
   [AttachmentType.Url]: {
     name: 'URL (YouTube video, social media post, etc)',
   },
@@ -117,7 +113,7 @@ function TypeSelector({
 }
 
 const getPreloadImageUrl = (url: string): string | undefined => {
-  if (isUrlAYoutubeVideo(url)) {
+  if (getIsUrlAYoutubeVideo(url)) {
     return `https://i.ytimg.com/vi/${getYouTubeVideoIdFromUrl(
       url
     )}/hqdefault.jpg`

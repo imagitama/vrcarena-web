@@ -2,12 +2,8 @@ import {
   extendQueryFromUserInput,
   getOperationsFromUserInput,
   Operation,
-  Operator
+  Operator,
 } from '../'
-import {
-  AssetFieldNames,
-  AssetMetaFieldNames
-} from '../../../hooks/useDatabaseQuery'
 
 jest.mock('../../../supabase', () => {})
 
@@ -27,7 +23,7 @@ describe('Query view', () => {
         'approved:my_user_name_or_id',
         'parent:my_asset_id',
         'sort:created:asc',
-        'sort:created:desc'
+        'sort:created:desc',
       ]
       const userInput = chunks.join(' ')
 
@@ -35,65 +31,65 @@ describe('Query view', () => {
 
       expect(result).toEqual([
         {
-          fieldName: AssetFieldNames.tags,
+          fieldName: 'tags',
           operator: Operator.MINUS,
-          value: 'not_tag'
+          value: 'not_tag',
         },
         {
-          fieldName: AssetFieldNames.tags,
+          fieldName: 'tags',
           operator: Operator.WILDCARD,
-          value: 'wildc*rd'
+          value: 'wildc*rd',
         },
         {
-          fieldName: AssetFieldNames.createdBy,
+          fieldName: 'createdby',
           operator: Operator.FILTER,
-          value: 'my_user_name_or_id'
+          value: 'my_user_name_or_id',
         },
         {
-          fieldName: AssetFieldNames.author,
+          fieldName: 'author',
           operator: Operator.FILTER,
-          value: 'my_author_name_or_id'
+          value: 'my_author_name_or_id',
         },
         {
-          fieldName: AssetFieldNames.category,
+          fieldName: 'category',
           operator: Operator.FILTER,
-          value: 'avatar'
+          value: 'avatar',
         },
         {
-          fieldName: AssetFieldNames.species,
+          fieldName: 'species',
           operator: Operator.FILTER,
-          value: 'my_species_or_id'
+          value: 'my_species_or_id',
         },
         {
-          fieldName: AssetFieldNames.sourceUrl,
+          fieldName: 'sourceurl',
           operator: Operator.FILTER,
-          value: 'gumroad'
+          value: 'gumroad',
         },
         {
-          fieldName: AssetMetaFieldNames.approvedBy,
+          fieldName: 'approvedby',
           operator: Operator.FILTER,
-          value: 'my_user_name_or_id'
+          value: 'my_user_name_or_id',
         },
         {
           fieldName: 'relations',
           operator: Operator.FILTER,
-          value: 'my_asset_id'
+          value: 'my_asset_id',
         },
         {
           fieldName: 'createdat',
           operator: Operator.SORT,
-          value: 'asc'
+          value: 'asc',
         },
         {
           fieldName: 'createdat',
           operator: Operator.SORT,
-          value: 'desc'
+          value: 'desc',
         },
         {
-          fieldName: AssetFieldNames.tags,
+          fieldName: 'tags',
           operator: Operator.OR,
-          value: ['or_tag', 'or_another_tag']
-        }
+          value: ['or_tag', 'or_another_tag'],
+        },
       ])
     })
   })
@@ -113,7 +109,7 @@ describe('Query view', () => {
         'approved:my_user_name_or_id',
         'parent:my_asset_id',
         'sort:created:asc',
-        'sort:created:desc'
+        'sort:created:desc',
       ]
       const userInput = chunks.join(' ')
 
@@ -156,7 +152,7 @@ describe('Query view', () => {
           filter: jest.fn(() => thisQuery),
           match: jest.fn(() => thisQuery),
           // transform
-          order: jest.fn(() => thisQuery)
+          order: jest.fn(() => thisQuery),
         }
 
         return thisQuery
@@ -166,63 +162,63 @@ describe('Query view', () => {
         {
           fieldName: 'tags',
           operator: Operator.MINUS,
-          value: 'not_tag'
+          value: 'not_tag',
         },
         {
           fieldName: 'tags',
           operator: Operator.WILDCARD,
-          value: 'wildc*rd'
+          value: 'wildc*rd',
         },
         {
           fieldName: 'createdby',
           operator: Operator.FILTER,
-          value: 'my_user_name_or_id'
+          value: 'my_user_name_or_id',
         },
         {
           fieldName: 'author',
           operator: Operator.FILTER,
-          value: 'my_author_name_or_id'
+          value: 'my_author_name_or_id',
         },
         {
           fieldName: 'category',
           operator: Operator.FILTER,
-          value: 'avatar'
+          value: 'avatar',
         },
         {
           fieldName: 'species',
           operator: Operator.FILTER,
-          value: 'my_species_or_id'
+          value: 'my_species_or_id',
         },
         {
           fieldName: 'sourceurl',
           operator: Operator.FILTER,
-          value: 'gumroad'
+          value: 'gumroad',
         },
         {
           fieldName: 'approvedby',
           operator: Operator.FILTER,
-          value: 'my_user_name_or_id'
+          value: 'my_user_name_or_id',
         },
         {
           fieldName: 'relations',
           operator: Operator.FILTER,
-          value: 'my_asset_id'
+          value: 'my_asset_id',
         },
         {
           fieldName: 'createdat',
           operator: Operator.SORT,
-          value: 'asc'
+          value: 'asc',
         },
         {
           fieldName: 'createdat',
           operator: Operator.SORT,
-          value: 'desc'
+          value: 'desc',
         },
         {
           fieldName: 'tags',
           operator: Operator.OR,
-          value: ['or_tag', 'or_another_tag']
-        }
+          value: ['or_tag', 'or_another_tag'],
+        },
       ]
 
       const query = extendQueryFromUserInput(mockQuery(), operations)

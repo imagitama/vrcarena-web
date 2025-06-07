@@ -1,10 +1,14 @@
 import React from 'react'
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
-
 import AssetResultsItem from '../../components/asset-results-item'
-import { Asset } from '../../modules/assets'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
 import Comment from '../comment'
-import { FullComment } from '../../modules/comments'
+import {
+  FullComment,
+  CollectionNames as CommentsCollectionNames,
+} from '../../modules/comments'
 import Link from '../link'
 import { getUrlForParent } from '../../relations'
 
@@ -25,9 +29,9 @@ export default ({
     )
   }
   switch (type) {
-    case CollectionNames.Assets:
+    case AssetsCollectionNames.Assets:
       return <AssetResultsItem asset={data as Asset} />
-    case CollectionNames.Comments:
+    case CommentsCollectionNames.Comments:
       return (
         <Comment comment={data as FullComment} showControls={false} shorten />
       )

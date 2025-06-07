@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react'
 import AttachFileIcon from '@material-ui/icons/AttachFile'
-import { CollectionNames } from '../../../../hooks/useDatabaseQuery'
 import useIsLoggedIn from '../../../../hooks/useIsLoggedIn'
 import ImageGallery from '../../../image-gallery'
 import Button from '../../../button'
@@ -10,6 +9,7 @@ import TabContext from '../../context'
 import { AttachmentReason } from '../../../../modules/attachments'
 import AttachmentsByParent from '../../../attachments-by-parent'
 import Paper from '../../../paper'
+import { CollectionNames } from '../../../../modules/assets'
 
 const TabAttachments = () => {
   const { assetId, isLoading, hydrate } = useContext(TabContext)

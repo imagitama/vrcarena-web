@@ -10,12 +10,6 @@ import useAssetSearch, { ErrorCode } from '../../hooks/useAssetSearch'
 import { searchIndexNameLabels, changeSearchTableName } from '../../modules/app'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
-import {
-  AssetFieldNames,
-  AuthorFieldNames,
-  CollectionNames,
-  UserFieldNames,
-} from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { mediaQueryForMobiles } from '../../media-queries'
 import { adultSearchTerms } from '../../config'
@@ -40,9 +34,29 @@ import SearchFilters from '../search-filters'
 import WarningMessage from '../warning-message'
 import { AssetCategory } from '../../modules/assets'
 import { DataStoreErrorCode } from '../../data-store'
-import InfoMessage from '../info-message'
 import HidableMessage from '../hidable-message'
 import LoadingIndicator from '../loading-indicator'
+
+import {
+  ViewNames as DiscordServersViewNames,
+  CollectionNames as DiscordServersCollectionNames,
+} from '../../modules/discordservers'
+import {
+  ViewNames as UsersViewNames,
+  CollectionNames as UsersCollectionNames,
+} from '../../modules/users'
+import {
+  ViewNames as AuthorsViewNames,
+  CollectionNames as AuthorsCollectionNames,
+} from '../../modules/authors'
+import {
+  ViewNames as AssetsViewNames,
+  CollectionNames as AssetsCollectionNames,
+} from '../../modules/assets'
+import {
+  ViewNames as CommentsViewNames,
+  CollectionNames as CommentsCollectionNames,
+} from '../../modules/comments'
 
 const useStyles = makeStyles({
   tableButton: {
@@ -124,19 +138,19 @@ function Results({
       <>
         <NoResultsMessage>
           Nothing found matching your search term
-          {tableName === CollectionNames.Assets && searchFilters.length
+          {tableName === AssetsCollectionNames.Assets && searchFilters.length
             ? ` (${searchFilters.length} filter${
                 searchFilters.length > 1 ? 's' : ''
               } applied)`
             : ''}
         </NoResultsMessage>
-        {tableName === CollectionNames.Authors && <ViewAllAuthorsBtn />}
+        {tableName === AuthorsCollectionNames.Authors && <ViewAllAuthorsBtn />}
       </>
     )
   }
 
   switch (tableName) {
-    case CollectionNames.Assets:
+    case AssetsCollectionNames.Assets:
       return (
         <>
           <AssetResults assets={hits} />
@@ -150,14 +164,14 @@ function Results({
           </Button>
         </>
       )
-    case CollectionNames.Authors:
+    case AuthorsCollectionNames.Authors:
       return (
         <>
           <AuthorResults authors={hits} />
           <ViewAllAuthorsBtn />
         </>
       )
-    case CollectionNames.Users:
+    case UsersCollectionNames.Users:
       return <UserList users={hits} />
     default:
       return (
@@ -189,12 +203,12 @@ const AdultContentMessage = () => {
 
 const getSearchStatementForTable = (tableName: string): string => {
   switch (tableName) {
-    case CollectionNames.Assets:
-      return `${AssetFieldNames.title}, ${AssetFieldNames.description}, ${AssetFieldNames.thumbnailUrl}, ${AssetFieldNames.tags}, ${AssetFieldNames.isAdult}, ${AssetFieldNames.category}`
-    case CollectionNames.Users:
-      return `${UserFieldNames.username}, ${UserFieldNames.avatarUrl}`
-    case CollectionNames.Authors:
-      return `${AuthorFieldNames.name}, ${AuthorFieldNames.avatarUrl}`
+    case AssetsCollectionNames.Assets:
+      return `title, description, thumbnailurl, tags, isadult, category`
+    case UsersCollectionNames.Users:
+      return `username, avatarurl`
+    case AuthorsCollectionNames.Authors:
+      return `name, avatarurl`
     default:
       throw new Error(
         `Cannot get search statement: table ${tableName} does not exist!`
@@ -204,12 +218,12 @@ const getSearchStatementForTable = (tableName: string): string => {
 
 const getFieldsToSearchForTable = (tableName: string): string[] => {
   switch (tableName) {
-    case CollectionNames.Assets:
-      return [AssetFieldNames.title]
-    case CollectionNames.Users:
-      return [UserFieldNames.username]
-    case CollectionNames.Authors:
-      return [AuthorFieldNames.name]
+    case AssetsCollectionNames.Assets:
+      return ['title']
+    case UsersCollectionNames.Users:
+      return ['username']
+    case AuthorsCollectionNames.Authors:
+      return ['name']
     default:
       throw new Error(
         `Cannot get search statement: table ${tableName} does not exist!`
@@ -466,7 +480,7 @@ const AssetSearch = () => {
       <Results
         isLoading={isLoading}
         lastErrorCode={lastErrorCode}
-        tableName={CollectionNames.Assets}
+        tableName={AssetsCollectionNames.Assets}
         hits={hits || []}
       />
     </>
@@ -480,14 +494,12 @@ const NonAssetSearch = () => {
 
   const getQuery = useCallback(
     (query) => {
-      if (searchTableName !== CollectionNames.Assets) {
+      if (searchTableName !== AssetsCollectionNames.Assets) {
         return query
       }
 
       query =
-        isAdultContentEnabled === false
-          ? query.is(AssetFieldNames.isAdult, false)
-          : query
+        isAdultContentEnabled === false ? query.is('isadult', false) : query
 
       const filtersByFieldName = searchFilters.reduce<{
         [fieldName: string]: string[]
@@ -551,7 +563,7 @@ export default () => {
   return (
     <>
       <div className={classes.items}>
-        {searchTableName === CollectionNames.Assets ? (
+        {searchTableName === AssetsCollectionNames.Assets ? (
           <SearchFilters />
         ) : (
           <div style={{ width: '100%' }} />
@@ -561,7 +573,7 @@ export default () => {
       {isSearchTermAdult(searchTerm) && !isAdultContentEnabled ? (
         <AdultContentMessage />
       ) : null}
-      {searchTableName === CollectionNames.Assets ? (
+      {searchTableName === AssetsCollectionNames.Assets ? (
         <>
           <AssetSearch />
         </>

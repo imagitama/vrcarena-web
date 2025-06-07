@@ -117,11 +117,6 @@ export const getCanUserEditAsset = (
   return false
 }
 
-export const getIsAssetPublic = (assetMeta: AssetMeta): boolean =>
-  assetMeta.accessstatus === AccessStatus.Public &&
-  assetMeta.approvalstatus === ApprovalStatus.Approved &&
-  assetMeta.publishstatus === PublishStatus.Published
-
 export const getIsAssetADraft = (assetMeta: AssetMeta): boolean =>
   assetMeta.publishstatus === PublishStatus.Draft
 

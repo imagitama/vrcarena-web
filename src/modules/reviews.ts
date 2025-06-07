@@ -1,3 +1,5 @@
+import { Asset } from './assets'
+
 export interface Review {
   id: string
   overallrating: number
@@ -7,6 +9,15 @@ export interface Review {
   createdby: string
   asset: string
 }
+
+// @ts-ignore
+export interface FullReview extends Review {
+  asset: Asset
+  createdbyusername: string
+  createdbyavatarurl: string
+}
+
+export type PublicReview = FullReview
 
 export interface Rating {
   name: string
@@ -19,5 +30,6 @@ export enum CollectionNames {
 }
 
 export enum ViewNames {
+  GetPublicReviews = 'getpublicreviews',
   GetPublicReviewsForPublicAssets = 'getpublicreviewsforpublicassets',
 }

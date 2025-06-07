@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import DeleteIcon from '@material-ui/icons/Delete'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { CommonMetaFieldNames } from '../../data-store'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'

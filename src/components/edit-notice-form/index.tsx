@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { handleError } from '../../error-handling'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import {
-  collectionName as collectionNameNotices,
-  Notice,
-  NoticeFields,
-  NoticesFieldNames,
-} from '../../modules/notices'
+import { CollectionNames, Notice, NoticeFields } from '../../modules/notices'
 import Button from '../button'
 import CheckboxInput from '../checkbox-input'
 import ErrorMessage from '../error-message'
@@ -31,8 +26,8 @@ export default ({
     orderby: 0,
     isvisible: false,
   })
-  const [isSaving, isSuccess, isError, createOrEdit] = useDatabaseSave(
-    collectionNameNotices,
+  const [isSaving, isSuccess, isError, createOrEdit] = useDatabaseSave<Notice>(
+    CollectionNames.Notices,
     id
   )
 
@@ -97,7 +92,7 @@ export default ({
       </Heading>
       <TextInput
         value={fields.hideid}
-        onChange={(e) => setField(NoticesFieldNames.hideid, e.target.value)}
+        onChange={(e) => setField('hideid', e.target.value)}
         label="Hide ID"
         fullWidth
         helperText="Unique ID (all lowercase letters) used to know if notice hidden in browser"
@@ -105,7 +100,7 @@ export default ({
       <br />
       <TextInput
         value={fields.title}
-        onChange={(e) => setField(NoticesFieldNames.title, e.target.value)}
+        onChange={(e) => setField('title', e.target.value)}
         label="Title"
         fullWidth
         helperText="Shown at top"
@@ -113,7 +108,7 @@ export default ({
       <br />
       <TextInput
         value={fields.message}
-        onChange={(e) => setField(NoticesFieldNames.message, e.target.value)}
+        onChange={(e) => setField('message', e.target.value)}
         label="Message"
         fullWidth
         multiline
@@ -123,16 +118,13 @@ export default ({
       <br />
       <CheckboxInput
         value={fields.isvisible}
-        // @ts-ignore
-        onChange={(newVal) => setField(NoticesFieldNames.isVisible, newVal)}
+        onChange={(newVal) => setField('isvisible', newVal)}
         label="Is visible"
       />
       <br />
       <TextInput
         value={fields.orderby}
-        onChange={(e) =>
-          setField(NoticesFieldNames.orderby, parseInt(e.target.value))
-        }
+        onChange={(e) => setField('orderby', parseInt(e.target.value))}
         label="Order"
         fullWidth
         helperText="The index to display to the user. 0 means first. 999 would be last."

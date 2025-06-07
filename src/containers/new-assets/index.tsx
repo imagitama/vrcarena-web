@@ -2,14 +2,7 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 
 import Heading from '../../components/heading'
-import PaginatedView from '../../components/paginated-view'
 import AssetResults from '../../components/asset-results'
-
-import {
-  AssetFieldNames,
-  AssetMetaFieldNames,
-} from '../../hooks/useDatabaseQuery'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
 import { PublicAsset, ViewNames } from '../../modules/assets'
 import AssetsPaginatedView from '../../components/assets-paginated-view'

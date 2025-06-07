@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import useUserId from './useUserId'
 import useDataStore from './useDataStore'
-import { AssetFieldNames } from './useDatabaseQuery'
 import { FullAsset } from '../modules/assets'
 import { DataStoreErrorCode } from '../data-store'
 import { SupabaseClient } from '@supabase/supabase-js'
@@ -12,7 +11,7 @@ export default (): [boolean, null | DataStoreErrorCode, FullAsset[] | null] => {
     return supabase
       .from('getDraftAssets'.toLowerCase())
       .select('*')
-      .eq(AssetFieldNames.createdBy, userId)
+      .eq('createdby', userId)
   }, [])
   const [isLoading, lastErrorCode, result] = useDataStore<FullAsset>(
     getQuery,

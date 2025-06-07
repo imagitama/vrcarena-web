@@ -6,17 +6,17 @@ import useDataStore from '../../hooks/useDataStore'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import AmendmentResults from '../amendment-results'
-import { AmendmentsFieldNames, FullAmendment } from '../../modules/amendments'
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
+import { FullAmendment, ViewNames } from '../../modules/amendments'
+import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 
 export default ({ assetId }: { assetId: string }) => {
   const getQuery = useCallback(
     (client: SupabaseClient) =>
       client
-        .from('getAmendmentsWaitingForApproval'.toLowerCase())
+        .from(ViewNames.GetAmendmentsWaitingForApproval)
         .select('*')
-        .eq(AmendmentsFieldNames.parentTable, CollectionNames.Assets)
-        .eq(AmendmentsFieldNames.parent, assetId),
+        .eq('parenttable', AssetsCollectionNames.Assets)
+        .eq('parent', assetId),
     [assetId]
   )
   const [isLoading, lastErrorCode, results] = useDataStore<FullAmendment>(

@@ -1,3 +1,5 @@
+import { Species } from './species'
+
 export interface SocialMediaUsernames extends Record<string, unknown> {
   // profile
   vrchatuserid: string
@@ -18,7 +20,7 @@ export interface User extends SocialMediaUsernames {
   // basic stuff
   username: string
   avatarurl: string
-  favoritespecies: string
+  favoritespecies: string | null
   bio: string
 
   // meta
@@ -40,6 +42,8 @@ export interface UserMeta extends Record<string, unknown> {
   linkedvrchatuserid: string
   vrchatlinkcode: number
   discorduserid: number
+  banstatus: BanStatus
+  banreason: string
 }
 
 export enum BanStatus {
@@ -58,10 +62,19 @@ export interface UserAdminMeta {
   role: UserRoles
 }
 
-export interface FullUser extends User, UserMeta, UserAdminMeta {}
-
-export const CollectionNames = {
-  Users: 'users',
-  UsersMeta: 'usermeta',
-  UsersAdminMeta: 'useradminmeta',
+export interface FullUser extends User, UserMeta, UserAdminMeta {
+  favoritespeciesdata: Species
 }
+
+export enum CollectionNames {
+  Users = 'users',
+  UsersMeta = 'usermeta',
+  UsersAdminMeta = 'useradminmeta',
+}
+
+export enum ViewNames {
+  GetFullUsers = 'getfullusers',
+}
+
+export const getIsFullUser = (user: User | FullUser): user is FullUser =>
+  'role' in user

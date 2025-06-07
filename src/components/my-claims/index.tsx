@@ -7,7 +7,6 @@ import ErrorMessage from '../error-message'
 import useUserId from '../../hooks/useUserId'
 import NoResultsMessage from '../no-results-message'
 import { FullClaim, ViewNames } from '../../modules/claims'
-import { CommonMetaFieldNames } from '../../data-store'
 import ClaimResults from '../claim-results'
 
 const MyClaims = () => {
@@ -28,6 +27,8 @@ const MyClaims = () => {
   if (!results.length) {
     return <NoResultsMessage>You have not made any claims</NoResultsMessage>
   }
+
+  console.log('CLAIMS', results)
 
   return <ClaimResults claims={results} />
 }

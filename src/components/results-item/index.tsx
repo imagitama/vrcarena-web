@@ -6,11 +6,8 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import LazyLoad from 'react-lazyload'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
-// import LinkIcon from '@material-ui/icons/Link'
-// import EditIcon from '@material-ui/icons/Edit'
 
 import Link from '../link'
-// import LoadingShimmer from '../loading-shimmer'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import DefaultThumbnail from '../default-thumbnail'
 
@@ -152,7 +149,7 @@ const ResultsItem = ({
         isDimmed ? classes.dimmed : ''
       } ${isTiny ? classes.tiny : ''}`}>
       <CardActionArea className={classes.button}>
-        <Link to={linkUrl}>
+        <Link to={linkUrl!}>
           <LazyLoad height={200} placeholder={<DefaultThumbnail />}>
             <CardMedia
               className={classes.cardMedia}

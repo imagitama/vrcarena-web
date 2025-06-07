@@ -9,7 +9,6 @@ import AreaNavigation from '../../components/area-navigation'
 import Heading from '../../components/heading'
 
 import { getCategoryMeta } from '../../category-meta'
-import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
 import { areasByCategory } from '../../areas'
@@ -41,10 +40,10 @@ const ViewAreaView = () => {
   const getQuery = useCallback(
     (query) => {
       query = query
-        .eq(AssetFieldNames.category, categoryName)
-        .overlaps(AssetFieldNames.tags, getTags(categoryName, areaName))
+        .eq('category', categoryName)
+        .overlaps('tags', getTags(categoryName, areaName))
       if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
+        query = query.eq('isadult', false)
       }
       return query
     },

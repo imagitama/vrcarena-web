@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import VideoPlayer from '../video-player'
-import { getImageUrlFromYouTubeUrl, isUrlAYoutubeVideo } from '../../utils'
+import { getImageUrlFromYouTubeUrl, getIsUrlAYoutubeVideo } from '../../utils'
 import Button from '../button'
 import { useMediaQuery } from 'react-responsive'
 import { mediaQueryForMobiles, queryForMobiles } from '../../media-queries'
@@ -120,7 +120,7 @@ const Image = ({
 }) => {
   const classes = useStyles()
   const isMobile = useMediaQuery({ query: queryForMobiles })
-  const isYoutube = isUrlAYoutubeVideo(image.url)
+  const isYoutube = getIsUrlAYoutubeVideo(image.url)
 
   return (
     <div

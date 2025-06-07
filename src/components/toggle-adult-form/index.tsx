@@ -1,12 +1,12 @@
 import React from 'react'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 
-import { AssetFieldNames, CollectionNames } from '../../hooks/useDatabaseQuery'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 
 import Button from '../button'
 import WarningMessage from '../warning-message'
+import { Asset, CollectionNames } from '../../modules/assets'
 
 export default ({
   assetId,
@@ -19,7 +19,10 @@ export default ({
   onDone: () => void
   overrideSave?: (newValue: boolean) => void
 }) => {
-  const [isSaving, , , save] = useDatabaseSave(CollectionNames.Assets, assetId)
+  const [isSaving, , , save] = useDatabaseSave<Asset>(
+    CollectionNames.Assets,
+    assetId
+  )
 
   const onToggleClick = async () => {
     try {
@@ -39,7 +42,7 @@ export default ({
       }
 
       await save({
-        [AssetFieldNames.isAdult]: newIsAdultValue,
+        isadult: newIsAdultValue,
       })
 
       if (onDone) {

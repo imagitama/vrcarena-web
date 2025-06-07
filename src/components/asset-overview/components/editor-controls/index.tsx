@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import { CollectionNames } from '../../../../hooks/useDatabaseQuery'
 import EditorRecordManager from '../../../editor-record-manager'
 import TabContext from '../../context'
 import Control from '../control'
+import { CollectionNames } from '../../../../modules/assets'
 
 export default () => {
   const { assetId, asset, isLoading, hydrate } = useContext(TabContext)
@@ -16,7 +16,7 @@ export default () => {
       <EditorRecordManager
         id={assetId}
         collectionName={CollectionNames.Assets}
-        metaCollectionName={CollectionNames.AssetMeta}
+        metaCollectionName={CollectionNames.AssetsMeta}
         existingApprovalStatus={asset.approvalstatus}
         existingPublishStatus={asset.publishstatus}
         existingAccessStatus={asset.accessstatus}

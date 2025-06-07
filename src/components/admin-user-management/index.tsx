@@ -6,14 +6,14 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 
-import useDatabaseQuery, { CollectionNames } from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery from '../../hooks/useDatabaseQuery'
 
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import Link from '../../components/link'
 
 import * as routes from '../../routes'
-import { User } from '../../modules/users'
+import { CollectionNames, User } from '../../modules/users'
 
 const AdminUserManagement = () => {
   const [isLoading, isErrored, users] = useDatabaseQuery<User>(

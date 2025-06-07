@@ -1,5 +1,5 @@
 import {
-  AmendmentsFieldNames,
+  Amendment,
   CollectionNames as AmendmentsCollectionNames,
 } from './modules/amendments'
 import {
@@ -102,7 +102,7 @@ export const getLabelForParent = (
         : '(no report reason)'
     case AmendmentsCollectionNames.AmendmentsMeta:
       if (parentChildData) {
-        return `${parentChildData[AmendmentsFieldNames.parentTable]} amendment`
+        return `${(parentChildData as Amendment).parenttable} amendment`
       } else {
         return `amendment`
       }

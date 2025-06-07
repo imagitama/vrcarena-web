@@ -1,10 +1,7 @@
 import { inDevelopment } from './environment'
-import {
-  CollectionNames,
-  AnalyticsFieldNames,
-  insertRecord,
-} from './data-store'
+import { insertRecord } from './data-store'
 import { SupabaseClient } from '@supabase/supabase-js'
+import { AnalyticsEntry, CollectionNames } from './modules/analytics'
 
 export const trackAction = (
   category: string,
@@ -32,13 +29,17 @@ export const trackInternalAction = async (
   extraData: any = null
 ) => {
   try {
-    await insertRecord(supabase, CollectionNames.Analytics, {
-      [AnalyticsFieldNames.category]: category,
-      [AnalyticsFieldNames.action]: action,
-      [AnalyticsFieldNames.parentTable]: parentTable,
-      [AnalyticsFieldNames.parent]: parentId,
-      [AnalyticsFieldNames.extraData]: extraData,
-    })
+    await insertRecord<AnalyticsEntry, AnalyticsEntry>(
+      supabase,
+      CollectionNames.Analytics,
+      {
+        category: category,
+        action: action,
+        parentTable: parentTable,
+        parent: parentId,
+        extraData: extraData,
+      }
+    )
   } catch (err) {
     console.error(
       `Could not track internal action: ${(err as Error).message}`,

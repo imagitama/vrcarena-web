@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import LazyLoad from 'react-lazyload'
 import LoadingIndicator from '../loading-indicator'
 import Link from '../link'
-import { isAbsoluteUrl } from '../../utils'
+import { getIsUrlAbsolute } from '../../utils'
 import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
@@ -78,7 +78,7 @@ const Block = ({
         <div className={`${classes.root} ${className}`}>
           <div className={classes.title}>
             {url ? (
-              isAbsoluteUrl(url) ? (
+              getIsUrlAbsolute(url) ? (
                 <a href={url} target="_blank" rel="noopener noreferrer">
                   {titleToRender}
                 </a>

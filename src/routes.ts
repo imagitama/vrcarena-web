@@ -117,7 +117,6 @@ export const editPageWithParentAndPageVar = '/:parentName/:pageName/edit'
 export const createPageWithParentAndPageVar = '/:parentName/:pageName/create'
 export const unsubscribe = '/unsubscribe'
 export const randomAvatars = '/category/avatar/random'
-export const bulkAdd = '/bulk-add'
 export const ranks = '/ranks'
 export const ranksWithQueryParams =
   '/ranks?rankIds=:rankIds&primaryRankId=:primaryRankId'

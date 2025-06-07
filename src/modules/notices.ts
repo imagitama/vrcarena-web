@@ -13,17 +13,10 @@ export interface Notice extends NoticeFields {
 
 export interface FullNotice extends Notice {}
 
-export const collectionName = 'notices'
-
-export const NoticesFieldNames = {
-  hideid: 'hideid',
-  title: 'title',
-  message: 'message',
-  orderby: 'orderby',
-  createdAt: 'createdat',
-  isVisible: 'isvisible',
+export enum CollectionNames {
+  Notices = 'notices',
 }
 
-export const views = {
-  getFullNotices: 'getFullNotices',
+export enum ViewNames {
+  GetFullNotices = 'getFullNotices',
 }

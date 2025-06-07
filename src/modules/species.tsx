@@ -4,10 +4,8 @@ import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../config'
 import { EditableField } from '../editable-fields'
 import { bucketNames } from '../file-uploading'
 import { fieldTypes } from '../generic-forms'
-import { SpeciesFieldNames } from '../hooks/useDatabaseQuery'
 
-export interface Species {
-  id: string
+export interface SpeciesFields extends Record<string, any> {
   parent: string
   type: 'genus' | 'species'
   singularname: string
@@ -20,6 +18,10 @@ export interface Species {
   ispopular: boolean
   slug: string
   redirectto: string // ID
+}
+
+export interface Species extends SpeciesFields {
+  id: string
   lastmodifiedat: Date
   lastmodifiedby: string
   createdat: Date
@@ -47,7 +49,7 @@ export const editableFields: EditableField<Species>[] = [
     hint: 'If this is a child of a Genus (avoid nesting too many levels)',
     searchableProperties: {
       collectionName: CollectionNames.Species,
-      fieldAsLabel: SpeciesFieldNames.pluralName,
+      fieldAsLabel: 'pluralname',
       renderer: ({ item }: { item: Species }) => (
         <SpeciesResultItem speciesItem={item} />
       ),
@@ -105,7 +107,7 @@ export const editableFields: EditableField<Species>[] = [
     hint: 'Redirect every visit to this species to another species',
     searchableProperties: {
       collectionName: CollectionNames.Species,
-      fieldAsLabel: SpeciesFieldNames.pluralName,
+      fieldAsLabel: 'pluralname',
       renderer: ({ item }: { item: Species }) => (
         <SpeciesResultItem speciesItem={item} />
       ),

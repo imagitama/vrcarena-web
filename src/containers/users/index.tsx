@@ -6,19 +6,18 @@ import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router'
 
 import * as routes from '../../routes'
-import { CollectionNames, UserFieldNames } from '../../hooks/useDatabaseQuery'
 import UserList from '../../components/user-list'
 import Heading from '../../components/heading'
 import PaginatedView from '../../components/paginated-view'
 import Button from '../../components/button'
 import { trackAction } from '../../analytics'
 import { changeSearchTableName } from '../../modules/app'
-import { User } from '../../modules/users'
+import { User, CollectionNames } from '../../modules/users'
 
 const sortKey = 'view-users'
 const analyticsCategory = 'view-users'
 
-const Renderer = ({ items }: { items?: User[] }) => <UserList users={items} />
+const Renderer = ({ items }: { items?: User[] }) => <UserList users={items!} />
 
 const subViews = {
   ALL: 'all',
@@ -65,7 +64,7 @@ export default () => {
       <PaginatedView<User>
         viewName={selectedSubView === subViews.STAFF ? 'getStaffUsers' : ''}
         collectionName={CollectionNames.Users}
-        select={`id, ${UserFieldNames.username}, ${UserFieldNames.avatarUrl}`}
+        select={`id, username, avatarurl`}
         getQuery={getQuery}
         sortKey={sortKey}
         sortOptions={[

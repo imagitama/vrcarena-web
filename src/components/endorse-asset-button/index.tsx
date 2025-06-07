@@ -6,8 +6,6 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import Button from '../button'
 
 import useDatabaseQuery, {
-  CollectionNames,
-  EndorsementFieldNames,
   Operators,
   options,
 } from '../../hooks/useDatabaseQuery'
@@ -16,6 +14,7 @@ import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
 import { DataStoreErrorCode } from '../../data-store'
+import { CollectionNames } from '../../modules/endorsements'
 
 const getLabel = (
   isLoggedIn: boolean,

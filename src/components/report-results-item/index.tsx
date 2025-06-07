@@ -3,22 +3,22 @@ import Link from '../../components/link'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 
-import { CollectionNames } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
 import WarningMessage from '../../components/warning-message'
 
 import FormattedDate from '../formatted-date'
 import {
   FullReport,
-  reportReasonsKeysByCollection
+  reportReasonsKeysByCollection,
 } from '../../modules/reports'
 import GenericOutputItem from '../generic-output-item'
 import ResolutionStatus from '../resolution-status'
+import { CollectionNames } from '../../modules/assets'
 
 export default ({
   report,
   showParentDetails = true,
-  analyticsCategoryName = ''
+  analyticsCategoryName = '',
 }: {
   report: FullReport
   showParentDetails?: boolean
@@ -41,7 +41,7 @@ export default ({
     // view
     parentdata,
     createdbyusername: createdByUsername,
-    resolvedbyusername: resolvedByUsername
+    resolvedbyusername: resolvedByUsername,
   } = report
 
   return (

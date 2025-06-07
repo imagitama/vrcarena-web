@@ -5,11 +5,10 @@ import Heading from '../../components/heading'
 import PaginatedView from '../../components/paginated-view'
 import ReviewResults from '../../components/review-results'
 import WarningMessage from '../../components/warning-message'
-import { AssetFieldNames } from '../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { Review, ViewNames } from '../../modules/reviews'
+import { PublicReview, ViewNames } from '../../modules/reviews'
 
-const Renderer = ({ items }: { items?: Review[] }) => (
+const Renderer = ({ items }: { items?: PublicReview[] }) => (
   <ReviewResults reviews={items} includeAssets />
 )
 
@@ -18,7 +17,7 @@ const ReviewsView = () => {
   const getQuery = useCallback(
     (query) => {
       if (!isAdultContentEnabled) {
-        query = query.eq(AssetFieldNames.isAdult, false)
+        query = query.eq('isadult', false)
       }
       return query
     },
@@ -40,7 +39,7 @@ const ReviewsView = () => {
           Please contact us if you believe a review contains incorrect info or
           is very unfair or unjust.
         </WarningMessage>
-        <PaginatedView<Review>
+        <PaginatedView<PublicReview>
           viewName={ViewNames.GetPublicReviewsForPublicAssets}
           getQuery={getQuery}
           defaultFieldName="createdat">

@@ -1,20 +1,15 @@
 import React, { useCallback } from 'react'
-import {
-  AccessStatuses,
-  ApprovalStatuses,
-  AssetFieldNames,
-  PublishStatuses,
-} from '../../../../hooks/useDatabaseQuery'
 import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled'
 import useUserOverview from '../../useUserOverview'
 import PaginatedView from '../../../paginated-view'
 import AssetResults from '../../../asset-results'
 import WarningMessage from '../../../warning-message'
+import { PublicAsset, ViewNames } from '../../../../modules/assets'
 import {
-  CollectionNames,
-  PublicAsset,
-  ViewNames,
-} from '../../../../modules/assets'
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+} from '../../../../modules/common'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -28,12 +23,12 @@ const TabAssets = () => {
   const getQuery = useCallback(
     (query) => {
       query = query
-        .eq(AssetFieldNames.createdBy, userId)
-        .eq('publishstatus', PublishStatuses.Published)
-        .eq('approvalstatus', ApprovalStatuses.Approved)
-        .eq('accessstatus', AccessStatuses.Public)
+        .eq('createdby', userId)
+        .eq('publishstatus', PublishStatus.Published)
+        .eq('approvalstatus', ApprovalStatus.Approved)
+        .eq('accessstatus', AccessStatus.Public)
       if (isAdultContentEnabled !== true) {
-        query = query.eq(AssetFieldNames.isAdult, false)
+        query = query.eq('isadult', false)
       }
       return query
     },

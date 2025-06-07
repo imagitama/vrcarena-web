@@ -41,21 +41,18 @@ import ErrorMessage from '../error-message'
 import Paper from '../paper'
 import { base64EncodeString, parseBase64String } from '../../utils'
 import {
-  Asset,
   AssetCategory,
-  CollectionNames,
-  CoreAssetFields,
   FullAsset,
   PublicAsset,
   RelationType,
   ViewNames,
 } from '../../modules/assets'
-import {
-  AccessStatuses,
-  ApprovalStatuses,
-  PublishStatuses,
-} from '../../hooks/useDatabaseQuery'
 import { SupabaseClient } from '@supabase/supabase-js'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+} from '../../modules/common'
 
 const useStyles = makeStyles({
   output: {
@@ -286,9 +283,9 @@ const useAccessories = (): AssetsByArea => {
         .from(ViewNames.GetFullAssets)
         .select<any, FullAsset>('*')
         .eq('category', AssetCategory.Accessory)
-        .eq('publishstatus', PublishStatuses.Published)
-        .eq('approvalstatus', ApprovalStatuses.Approved)
-        .eq('accessstatus', AccessStatuses.Public)
+        .eq('publishstatus', PublishStatus.Published)
+        .eq('approvalstatus', ApprovalStatus.Approved)
+        .eq('accessstatus', AccessStatus.Public)
 
       query =
         isAdultContentEnabled === false ? query.is('isadult', false) : query
@@ -712,7 +709,7 @@ const Wardrobe = ({
   showThumbnail = true,
 }: {
   assetId: string
-  baseAsset: PublicAsset
+  baseAsset: PublicAsset | FullAsset
   showThumbnail?: boolean
 }) => {
   const assetsByArea = useAccessories()
