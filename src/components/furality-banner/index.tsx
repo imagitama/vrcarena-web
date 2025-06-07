@@ -108,7 +108,7 @@ const useStyles = makeStyles({
   },
 })
 
-const FuralityBanner = ({ isHome }: { isHome: boolean }) => {
+const FuralityBanner = () => {
   const [isHidden, hide] = useNotice('furality-sombra')
   const classes = useStyles()
 
@@ -117,7 +117,7 @@ const FuralityBanner = ({ isHome }: { isHome: boolean }) => {
   }
 
   return (
-    <div className={`${classes.root} ${isHome ? classes.isHome : ''}`}>
+    <div className={classes.root}>
       <div className={classes.inner}>
         <div onClick={hide} className={classes.icon}>
           <CloseIcon />

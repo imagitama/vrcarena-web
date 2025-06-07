@@ -808,10 +808,6 @@ const MainContent = () => {
 export default () => {
   const classes = useStyles()
   const location = useLocation()
-  const isMobile = useMediaQuery({ query: queryForMobiles })
-  const hasBannerSet = useBannerUrl()!!
-
-  const isHome = location.pathname === '/'
 
   return (
     <ErrorBoundary>
@@ -822,8 +818,8 @@ export default () => {
         <main className="main">
           <div className={classes.mainContainer}>
             <BannedNotice />
-            <Notices isHome={isHome} />
-            <FuralityBanner isHome={isHome} />
+            <Notices />
+            <FuralityBanner />
             <UnapprovedAssetsMessage />
             <DraftAssetsMessage />
             <ErrorBoundary>

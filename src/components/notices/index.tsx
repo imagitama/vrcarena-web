@@ -7,23 +7,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import { ViewNames, FullNotice } from '../../modules/notices'
 import Notice from '../notice'
 import ErrorMessage from '../error-message'
-import {
-  mediaQueryForMobiles,
-  mediaQueryForTabletsOrBelow,
-} from '../../media-queries'
+import { mediaQueryForMobiles } from '../../media-queries'
 import useNotices from '../../hooks/useNotices'
 
 const useStyles = makeStyles({
-  home: {
-    with: '100vw',
-    padding: '2rem',
-    [mediaQueryForTabletsOrBelow]: {
-      padding: '1rem',
-    },
-    [mediaQueryForMobiles]: {
-      padding: '0.5rem',
-    },
-  },
   notice: {
     marginBottom: '1rem',
     [mediaQueryForMobiles]: {
@@ -32,7 +19,7 @@ const useStyles = makeStyles({
   },
 })
 
-const Notices = ({ isHome = false }: { isHome: boolean }) => {
+const Notices = () => {
   const [isLoading, isErrored, results] = useDatabaseQuery<FullNotice>(
     ViewNames.GetFullNotices,
     [['isvisible', Operators.EQUALS, true]],
@@ -59,13 +46,13 @@ const Notices = ({ isHome = false }: { isHome: boolean }) => {
   }
 
   return (
-    <div className={isHome ? classes.home : ''}>
+    <>
       {noticesToShow.map((notice) => (
         <div className={classes.notice} key={notice.id}>
           <Notice {...notice} hide={() => hideNoticeById(notice.hideid)} />
         </div>
       ))}
-    </div>
+    </>
   )
 }
 
