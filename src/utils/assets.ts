@@ -7,6 +7,7 @@ import {
   DeclinedReason,
   DeletionReason,
   FullAsset,
+  getIsAssetADraft,
 } from '../modules/assets'
 import {
   Author,
@@ -116,9 +117,6 @@ export const getCanUserEditAsset = (
 
   return false
 }
-
-export const getIsAssetADraft = (assetMeta: AssetMeta): boolean =>
-  assetMeta.publishstatus === PublishStatus.Draft
 
 export const getIsUserIdCreatorOfAsset = (
   assetMeta: AssetMeta,

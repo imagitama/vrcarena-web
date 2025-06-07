@@ -16,6 +16,8 @@ import {
   FullAsset,
   PublicAsset,
   Relation,
+  getIsAssetADraft,
+  getIsAssetDeclined,
   getIsAssetDeleted,
   getIsAssetVisibleToEveryone,
   getIsAssetWaitingForApproval,
@@ -31,7 +33,6 @@ import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AddToCartButton from '../add-to-cart-button'
 import DefaultThumbnail from '../default-thumbnail'
 import { AssetSearchResult } from '../../hooks/useAlgoliaSearch'
-import { getIsAssetADraft } from '../../utils/assets'
 import { AccessStatus } from '../../modules/common'
 
 const useStyles = makeStyles({
@@ -155,6 +156,9 @@ const useStyles = makeStyles({
   deleted: {
     backgroundColor: 'rgb(100, 0, 0)',
   },
+  declined: {
+    backgroundColor: 'rgb(100, 0, 0)',
+  },
 })
 
 const divider = '/'
@@ -177,6 +181,10 @@ const AssetState = ({ asset }: { asset: FullAsset }) => {
         label="Waiting For Approval"
       />
     )
+  }
+
+  if (getIsAssetDeclined(asset)) {
+    return <Chip className={classes.declined} label="Declined" />
   }
 
   if (getIsAssetADraft(asset)) {
