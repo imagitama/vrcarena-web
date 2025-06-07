@@ -107,14 +107,11 @@ function getButtonLabel(sourceUrl: string): string {
   return 'Source'
 }
 
-const addReferrerToGumroadUrl = (url: string) => {
-  if (url && getIsGumroadProductUrl(url)) {
-    // TODO: Probably re-build URL from scratch
-    return `${url}${url.includes('?') ? '' : '?'}&referrer=${encodeURIComponent(
-      config.WEBSITE_FULL_URL
-    )}`
-  }
-  return url
+const addReferrerToUrl = (url: string) => {
+  // TODO: Probably re-build URL from scratch
+  return `${url}${url.includes('?') ? '' : '?'}&referrer=${encodeURIComponent(
+    config.WEBSITE_FULL_URL
+  )}`
 }
 
 const VisitSourceButton = ({
@@ -177,7 +174,7 @@ const VisitSourceButton = ({
     <div className={classes.root}>
       <Button
         color={!isExtraSource ? 'primary' : 'default'}
-        url={sourceInfo ? addReferrerToGumroadUrl(sourceInfo.url) : undefined}
+        url={sourceInfo ? addReferrerToUrl(sourceInfo.url) : undefined}
         icon={<LaunchIcon />}
         onClick={onBtnClick}
         size={isLarge ? 'large' : undefined}
