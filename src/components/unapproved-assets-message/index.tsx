@@ -20,7 +20,7 @@ const UnapprovedAssetsMessage = () => {
       isEditor ? false : undefined
     )
 
-  if (isLoading || !queueItems) {
+  if (isLoading || !queueItems || !queueItems.length) {
     return null
   }
 
