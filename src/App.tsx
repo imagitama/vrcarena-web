@@ -21,6 +21,7 @@ import ViewSpecies from './containers/view-species'
 import ViewCategory from './containers/view-category'
 import ViewAvatars from './containers/view-avatars'
 import ViewAllSpecies from './containers/view-all-species'
+import Search from './containers/search'
 
 import PageHeader from './components/header'
 import PageFooter from './components/footer'
@@ -505,6 +506,7 @@ const MainContent = () => {
         <Redirect from={'/privacy-policy'} to={routes.privacyPolicy} />
         <Redirect from={'/dcma-policy'} to={routes.dmcaPolicy} />
         <Route exact path={routes.home} component={Home} />
+        <Route exact path={routes.searchWithVar} component={Search} />
         <Route exact path={routes.cart} component={Cart} />
         <Route exact path={routes.worldBuilder} component={WorldBuilder} />
         <Route exact path={routes.social} component={Social} />
