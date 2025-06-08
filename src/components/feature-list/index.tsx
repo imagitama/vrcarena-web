@@ -124,12 +124,15 @@ const Feature = ({
   return (
     <div className={classes.feature}>
       <Tooltip title={data.description}>
-        <Link to={routes.queryWithVar.replace(':query', tag)}>
-          <span className={classes.featureIcon}>
-            <Icon />
-          </span>{' '}
-          {data.label || getLabelForTag(tag)}
-        </Link>
+        {/* div for tooltip */}
+        <div>
+          <Link to={routes.queryWithVar.replace(':query', tag)}>
+            <span className={classes.featureIcon}>
+              <Icon />
+            </span>{' '}
+            {data.label || getLabelForTag(tag)}
+          </Link>
+        </div>
       </Tooltip>
     </div>
   )
