@@ -219,7 +219,7 @@ const AttachmentsSelector = ({
               license: '',
               tags: [],
             },
-            false
+            true
           )
 
           if (!createdRecord) {

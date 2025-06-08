@@ -96,8 +96,12 @@ const ManualCreateView = () => {
         {
           title: 'My draft asset',
         },
-        false
+        true
       )
+
+      if (!newDraftRecord) {
+        throw new Error('Did not return a draft')
+      }
 
       push(routes.editAssetWithVar.replace(':assetId', newDraftRecord.id))
     } catch (err) {

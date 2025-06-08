@@ -191,12 +191,18 @@ export const insertRecord = async <TFields, TReturnVal>(
   supabase: SupabaseClient,
   tableName: string,
   newVal: TFields,
-  minimal = true
-): Promise<TReturnVal> => {
-  const { error, data } = await supabase
+  selectAfter = false
+): Promise<TReturnVal | void> => {
+  let query: PostgrestFilterBuilder<any, any, null, unknown> = supabase
     .from(tableName)
     .insert({ ...newVal })
-    .select()
+
+  if (selectAfter) {
+    // @ts-ignore
+    query = query.select()
+  }
+
+  const { error, data } = await query
 
   console.debug(`insertRecord`, tableName, data, error)
 
@@ -213,9 +219,9 @@ export const insertRecord = async <TFields, TReturnVal>(
     )
   }
 
-  // TODO: Do we need to get this? It will mean running SELECT but that could clash with security policies
-  // @ts-ignore
-  return minimal ? null : (data[0] as TReturnVal)
+  if (data) {
+    return data[0]
+  }
 }
 
 export const deleteRecord = async (
