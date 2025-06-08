@@ -34,6 +34,11 @@ enum ErrorCode {
   Unknown = 'Unknown',
 }
 
+// TODO: Move to module
+enum FunctionNames {
+  GetVrchatAvatarDetails = 'getVrchatAvatarDetails',
+}
+
 const GetVrchatAvatarDetails = ({
   onDone,
 }: {
@@ -72,7 +77,7 @@ const GetVrchatAvatarDetails = ({
       } = await callFunction<
         { avatarId: string },
         { avatar: VrchatAvatarDetails; errorCode?: ErrorCode }
-      >('getVrchatAvatarDetails', {
+      >(FunctionNames.GetVrchatAvatarDetails, {
         avatarId: avatarIdFromUserInput,
       })
 

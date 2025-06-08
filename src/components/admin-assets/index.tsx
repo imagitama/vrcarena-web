@@ -25,6 +25,7 @@ import {
   FullAsset,
   CollectionNames as AssetsCollectionNames,
   AssetCategory,
+  ViewNames,
 } from '../../modules/assets'
 import AssetResultsItem from '../../components/asset-results-item'
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
@@ -443,7 +444,7 @@ const AdminAssets = () => {
 
   return (
     <PaginatedView<FullAsset>
-      viewName="getFullAssets"
+      viewName={ViewNames.GetFullAssets}
       getQuery={getQuery}
       // cannot re-use other paginated views because "publishedat" field does not exist for them
       sortKey="view-admin-assets"

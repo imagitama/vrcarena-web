@@ -6,14 +6,14 @@ import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
-import { Asset } from '../../modules/assets'
+import { Asset, ViewNames } from '../../modules/assets'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 const CollectionForUser = ({ userId }: { userId: string }) => {
   const getQuery = useCallback(
     (supabase: SupabaseClient) =>
       supabase
-        .from('getCollectionAssetResults'.toLowerCase())
+        .from(ViewNames.GetCollectionAssetResults)
         .select('*')
         .eq('userid', userId),
     [userId]

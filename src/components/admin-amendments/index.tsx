@@ -9,7 +9,7 @@ import Button from '../button'
 import PaginatedView from '../paginated-view'
 import AmendmentResults from '../amendment-results'
 import TextInput from '../text-input'
-import { FullAmendment } from '../../modules/amendments'
+import { FullAmendment, ViewNames } from '../../modules/amendments'
 import NoResultsMessage from '../no-results-message'
 import { ApprovalStatus } from '../../modules/common'
 
@@ -80,7 +80,7 @@ export default () => {
 
   return (
     <PaginatedView<FullAmendment>
-      viewName="getFullAmendments"
+      viewName={ViewNames.GetFullAmendments}
       getQuery={getQuery}
       sortKey="view-amendments"
       sortOptions={[

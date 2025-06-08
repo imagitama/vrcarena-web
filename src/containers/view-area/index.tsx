@@ -13,7 +13,7 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
 import { areasByCategory } from '../../areas'
 import { Link } from 'react-router-dom'
-import { AssetCategory, PublicAsset } from '../../modules/assets'
+import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   return getCategoryMeta(categoryName).name
@@ -78,7 +78,7 @@ const ViewAreaView = () => {
         />
         <TagChips tags={getTags(categoryName, areaName)} />
         <PaginatedView<PublicAsset>
-          viewName="getPublicAssets"
+          viewName={ViewNames.GetPublicAssets}
           getQuery={getQuery}
           sortKey="view-area"
           sortOptions={[

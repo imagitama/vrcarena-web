@@ -7,14 +7,14 @@ import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
 import useUserId from '../../hooks/useUserId'
-import { Asset } from '../../modules/assets'
+import { Asset, ViewNames } from '../../modules/assets'
 
 export default () => {
   const userId = useUserId()
   const getQuery = useCallback(
     (supabase) =>
       supabase
-        .from('getCollectionAssetResults'.toLowerCase())
+        .from(ViewNames.GetCollectionAssetResults)
         .select('*')
         .eq('userid', userId),
     [userId]

@@ -74,6 +74,7 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullUsers = 'getfullusers',
+  GetStaffUsers = 'getstaffusers',
 }
 
 export const getIsFullUser = (user: User | FullUser): user is FullUser =>

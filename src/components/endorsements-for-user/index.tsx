@@ -6,13 +6,13 @@ import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
-import { Asset } from '../../modules/assets'
+import { Asset, ViewNames } from '../../modules/assets'
 
 export default ({ userId }: { userId: string }) => {
   const getQuery = useCallback(
     (supabase) =>
       supabase
-        .from('getEndorsementAssetResults'.toLowerCase())
+        .from(ViewNames.GetEndorsementAssetResults)
         .select('*')
         .eq('userid', userId),
     [userId]

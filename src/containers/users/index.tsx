@@ -12,7 +12,7 @@ import PaginatedView from '../../components/paginated-view'
 import Button from '../../components/button'
 import { trackAction } from '../../analytics'
 import { changeSearchTableName } from '../../modules/app'
-import { User, CollectionNames } from '../../modules/users'
+import { User, CollectionNames, ViewNames } from '../../modules/users'
 
 const sortKey = 'view-users'
 const analyticsCategory = 'view-users'
@@ -62,7 +62,9 @@ export default () => {
       </Helmet>
       <Heading variant="h1">Users</Heading>
       <PaginatedView<User>
-        viewName={selectedSubView === subViews.STAFF ? 'getStaffUsers' : ''}
+        viewName={
+          selectedSubView === subViews.STAFF ? ViewNames.GetStaffUsers : ''
+        }
         collectionName={CollectionNames.Users}
         select={`id, username, avatarurl`}
         getQuery={getQuery}

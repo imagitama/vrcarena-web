@@ -4,7 +4,7 @@ import CheckroomIcon from '@mui/icons-material/Checkroom'
 
 import useDataStore from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { Asset, AssetCategory } from '../../modules/assets'
+import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 import * as routes from '../../routes'
 
 import AssetResults from '../asset-results'
@@ -30,8 +30,8 @@ const LinkedAccessories = ({
   const getQuery = useCallback(
     (supabase: SupabaseClient) => {
       let query = supabase
-        .from('getPublicAssets'.toLowerCase())
-        .select<any, Asset>('*', {
+        .from(ViewNames.GetPublicAssets)
+        .select<any, PublicAsset>('*', {
           count: 'estimated',
         })
         .eq('category', AssetCategory.Accessory)
@@ -49,10 +49,8 @@ const LinkedAccessories = ({
     },
     [assetId, isAdultContentEnabled]
   )
-  const [isLoading, lastErrorCode, results, totalCount] = useDataStore<Asset>(
-    getQuery,
-    'linked-accessories'
-  )
+  const [isLoading, lastErrorCode, results, totalCount] =
+    useDataStore<PublicAsset>(getQuery, 'linked-accessories')
   const classes = useStyles()
 
   if (isLoading || !results) {

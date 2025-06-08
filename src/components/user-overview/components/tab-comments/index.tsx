@@ -8,7 +8,7 @@ import NoResultsMessage from '../../../no-results-message'
 import SocialPostItem from '../../../social-post'
 import useUserOverview from '../../useUserOverview'
 import { CollectionNames } from '../../../../modules/user'
-import { FullSocialPost } from '../../../../modules/social'
+import { PublicSocialPost, ViewNames } from '../../../../modules/social'
 
 const SocialPosts = ({ userId }: { userId: string }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -23,7 +23,7 @@ const SocialPosts = ({ userId }: { userId: string }) => {
     [isAdultContentEnabled]
   )
   const [isLoading, isError, result, , hydrate] =
-    useSupabaseView<FullSocialPost>('getpublicsocialposts', getQuery)
+    useSupabaseView<PublicSocialPost>(ViewNames.GetPublicSocialPosts, getQuery)
 
   return (
     <>

@@ -16,7 +16,10 @@ import Button from '../../components/button'
 import TagChips from '../../components/tag-chips'
 import AssetResults from '../../components/asset-results'
 import { useParams } from 'react-router'
-import { FullAuthor } from '../../modules/authors'
+import {
+  FullAuthor,
+  ViewNames as AuthorsViewNames,
+} from '../../modules/authors'
 import AuthorResultsItem from '../../components/author-results-item'
 import SaleInfo from '../../components/sale-info'
 import {
@@ -213,7 +216,7 @@ const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
   const getQuery = useCallback(
     (supabase: SupabaseClient) => {
       let query = supabase
-        .from('getPublicAuthors'.toLowerCase())
+        .from(AuthorsViewNames.GetPublicAuthors)
         .select<string, FullAuthor>('*')
         .eq('salereason', eventId)
 

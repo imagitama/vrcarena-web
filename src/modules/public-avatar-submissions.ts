@@ -19,6 +19,10 @@ export interface FullPublicAvatarSubmission extends PublicAvatarSubmission {
   avatar?: VrchatAvatar
 }
 
-export const CollectionNames = {
-  PublicAvatarSubmissions: 'publicavatarsubmissions',
+export enum CollectionNames {
+  PublicAvatarSubmissions = 'publicavatarsubmissions',
+}
+
+export enum ViewNames {
+  GetFullPublicAvatarSubmissions = 'getfullpublicavatarsubmissions',
 }

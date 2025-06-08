@@ -7,7 +7,6 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
 import useUserId from '../../hooks/useUserId'
-import { options } from '../../hooks/useDatabaseQuery'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
@@ -15,7 +14,6 @@ import ErrorMessage from '../error-message'
 import Paper from '../paper'
 import Heading from '../heading'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import Message from '../message'
 import { UserMeta } from '../../modules/users'
 import WarningMessage from '../warning-message'
 import NoResultsMessage from '../no-results-message'
@@ -34,13 +32,18 @@ interface GetPatreonUserInfoResult {
   rewardIds: string[]
 }
 
+// TODO: Move to module
+enum FunctionNames {
+  GetPatreonUserInfo = 'getpatreonuserinfo',
+}
+
 const getPatreonUserInfoWithCode = async (
   oauthCode: string
 ): Promise<GetPatreonUserInfoResult> => {
   const { data } = await callFunction<
     GetPatreonUserPayload,
     GetPatreonUserInfoResult
-  >('getPatreonUserInfo', {
+  >(FunctionNames.GetPatreonUserInfo, {
     code: oauthCode,
   })
   return data

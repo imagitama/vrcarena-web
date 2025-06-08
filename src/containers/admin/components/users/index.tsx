@@ -11,7 +11,11 @@ import ClearIcon from '@material-ui/icons/Clear'
 import Paper from '../../../../components/paper'
 import TextInput from '../../../../components/text-input'
 import useDataStore from '../../../../hooks/useDataStore'
-import { CollectionNames, FullComment } from '../../../../modules/comments'
+import {
+  CollectionNames,
+  FullComment,
+  ViewNames,
+} from '../../../../modules/comments'
 import LoadingIndicator from '../../../../components/loading-indicator'
 import Markdown from '../../../../components/markdown'
 import Button from '../../../../components/button'
@@ -115,7 +119,7 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
   const getQuery = useCallback(
     (supabase: SupabaseClient) =>
       supabase
-        .from('getfullcomments'.toLowerCase())
+        .from(ViewNames.GetFullComments)
         .select('*', {
           count: 'estimated',
         })

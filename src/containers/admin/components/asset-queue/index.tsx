@@ -9,7 +9,7 @@ import {
   AssetSyncQueueItem,
   AssetSyncStatus,
   ViewNames,
-} from '../../../../modules/assets'
+} from '../../../../modules/assetsyncqueue'
 import AssetSyncQueue from '../../../../components/asset-sync-queue'
 import PaginatedView, {
   RendererProps,

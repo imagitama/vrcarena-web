@@ -6,7 +6,7 @@ import FormattedDate from '../../components/formatted-date'
 import * as routes from '../../routes'
 import Paper from '../../components/paper'
 import PaginatedView from '../../components/paginated-view'
-import { FullActivityEntry } from '../../modules/activity'
+import { FullActivityEntry, ViewNames } from '../../modules/activity'
 import ActivityItemLabel from '../../components/activity-item-label'
 import { FullHistoryEntry } from '../../modules/history'
 
@@ -70,7 +70,7 @@ export default () => {
       </Helmet>
       Updated every 15 minutes
       <PaginatedView<FullHistoryEntry>
-        viewName="fullActivity"
+        viewName={ViewNames.FullActivity}
         sortKey="history"
         defaultFieldName="createdat"
         urlWithPageNumberVar={routes.activityWithPageNumberVar}>

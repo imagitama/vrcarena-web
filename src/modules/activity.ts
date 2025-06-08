@@ -13,3 +13,7 @@ export interface FullActivityEntry extends ActivityEntry {
   moredata: { [collectionName: string]: any }
   createdbyusername: string
 }
+
+export enum ViewNames {
+  FullActivity = 'fullactivity', // TODO: Rename with "get"
+}

@@ -20,7 +20,11 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useIsEditor from '../../hooks/useIsEditor'
 import useDataStore from '../../hooks/useDataStore'
 
-import { AssetCategory, PublicAsset } from '../../modules/assets'
+import {
+  AssetCategory,
+  PublicAsset,
+  ViewNames as AssetsViewNames,
+} from '../../modules/assets'
 import {
   CollectionNames,
   FullSpecies,
@@ -31,7 +35,6 @@ import {
 import * as routes from '../../routes'
 import { prepareValueForQuery } from '../../queries'
 import { trackAction } from '../../analytics'
-import useSupabaseView from '../../hooks/useSupabaseView'
 import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 import { handleError } from '../../error-handling'
 import { GetQuery } from '../../data-store'
@@ -75,7 +78,7 @@ const AssetsForSpecies = ({
 
   return (
     <PaginatedView<PublicAsset>
-      viewName="getPublicAssets"
+      viewName={AssetsViewNames.GetPublicAssets}
       getQuery={getQuery}
       sortKey="view-category"
       sortOptions={[

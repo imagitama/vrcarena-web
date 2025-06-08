@@ -64,6 +64,11 @@ const getIsPcCompatible = (unityPackages: UnityPackage[]): boolean =>
   unityPackages.find(({ platform }) => platform === 'standalonewindows') !==
   undefined
 
+// TODO: Move to module
+enum FunctionNames {
+  GetVrchatAvatarDetails = 'getVrchatAvatarDetails',
+}
+
 export default ({
   avatarId,
   avatarData,
@@ -112,7 +117,7 @@ export default ({
       } = await callFunction<
         { avatarId: string },
         { avatar: VrchatAvatar; thumbnailUrl: string }
-      >('getVrchatAvatarDetails', {
+      >(FunctionNames.GetVrchatAvatarDetails, {
         avatarId,
       })
 

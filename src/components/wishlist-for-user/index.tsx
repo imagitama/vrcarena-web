@@ -6,13 +6,13 @@ import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
 import useDataStore from '../../hooks/useDataStore'
-import { FullAsset } from '../../modules/assets'
+import { FullAsset, ViewNames } from '../../modules/assets'
 
-export default ({ userId }: {userId: string }) => {
+export default ({ userId }: { userId: string }) => {
   const getQuery = useCallback(
     (supabase) =>
       supabase
-        .from('getWishlistAssetResults'.toLowerCase())
+        .from(ViewNames.GetWishlistAssetResults)
         .select('*')
         .eq('userid', userId),
     [userId]

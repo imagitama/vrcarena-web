@@ -29,6 +29,7 @@ import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import {
   CollectionNames,
   FullPublicAvatarSubmission,
+  ViewNames,
 } from '../../modules/public-avatar-submissions'
 import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
@@ -276,7 +277,7 @@ const ApplyAvatarsForm = ({
 const Avatars = () => {
   const [isLoading, isErrored, results, hydrate] =
     useDatabaseQuery<FullPublicAvatarSubmission>(
-      'getFullPublicAvatarSubmissions'.toLowerCase(),
+      ViewNames.GetFullPublicAvatarSubmissions,
       [['isdeleted', Operators.EQUALS, false]]
     )
 

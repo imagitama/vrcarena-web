@@ -67,15 +67,6 @@ export default () => {
           </Link>{' '}
           and click the Patreon tab for instructions.
         </p>
-        {/* broken as of 19 feb 2024! probably permissions issue as patreon info is stored in secure table */}
-        {/* <Heading variant="h2">Patrons on VRCArena</Heading>
-        <PaginatedView
-          viewName={`getPatreonUsers`}
-          sortKey={sortKey}
-          defaultFieldName={'createdat'}>
-          <Renderer />
-        </PaginatedView>
-        <p>List of Patreon users is updated daily</p> */}
       </Container>
     </>
   )

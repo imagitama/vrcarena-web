@@ -10,7 +10,7 @@ import Heading from '../../components/heading'
 import SocialPost from '../../components/social-post'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useSupabaseView from '../../hooks/useSupabaseView'
-import { FullSocialPost } from '../../modules/social'
+import { PublicSocialPost, ViewNames } from '../../modules/social'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import Center from '../../components/center'
 import NoResultsMessage from '../../components/no-results-message'
@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 export const SocialFeed = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const getQuery = useCallback(
-    (query: GetQuery<FullSocialPost>) => {
+    (query: GetQuery<PublicSocialPost>) => {
       query = query.is('parent', null)
       if (!isAdultContentEnabled) {
         query = query.eq('isadult', false)
@@ -44,7 +44,7 @@ export const SocialFeed = () => {
     [isAdultContentEnabled]
   )
   const [isLoading, isError, result, , hydrate] =
-    useSupabaseView<FullSocialPost>('getpublicsocialposts', getQuery)
+    useSupabaseView<PublicSocialPost>(ViewNames.GetPublicSocialPosts, getQuery)
   const classes = useStyles()
   const isLoggedIn = useIsLoggedIn()
 

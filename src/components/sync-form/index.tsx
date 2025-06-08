@@ -90,11 +90,6 @@ const getFieldsToSave = (
   currentFields: object,
   excludedFieldNames: string[]
 ): object =>
-  // @ts-ignore
-  !console.debug('getFieldsToSave', {
-    currentFields,
-    excludedFieldNames,
-  }) &&
   Object.entries(currentFields).reduce(
     (newFields, [fieldName, fieldValue]) =>
       (excludedFieldNames.includes(fieldName)
@@ -112,11 +107,6 @@ const getFieldsToRenderWith = (
   currentFields: object,
   disabledFieldNames: string[]
 ): object =>
-  // @ts-ignore
-  !console.debug('getFieldsToRenderWith', {
-    currentFields,
-    disabledFieldNames,
-  }) &&
   Object.entries(currentFields).reduce(
     (newFields, [fieldName, fieldValue]) =>
       (disabledFieldNames.includes(fieldName)

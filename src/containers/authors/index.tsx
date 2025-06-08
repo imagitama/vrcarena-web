@@ -8,7 +8,7 @@ import AuthorResults from '../../components/author-results'
 
 import * as routes from '../../routes'
 import PaginatedView from '../../components/paginated-view'
-import { Author } from '../../modules/authors'
+import { Author, ViewNames } from '../../modules/authors'
 
 const subViews = {
   DELETED: 1,
@@ -43,8 +43,8 @@ const AuthorsView = () => {
       </Heading>
       <BodyText>A list of all authors who have assets on the site.</BodyText>
       <PaginatedView<Author>
-        viewName="getPublicAuthors"
-        editorViewName="getFullAuthors"
+        viewName={ViewNames.GetFullAuthors}
+        editorViewName={ViewNames.GetFullAuthors}
         getQuery={getQuery}
         sortKey="authors"
         sortOptions={[

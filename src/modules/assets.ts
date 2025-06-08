@@ -235,49 +235,27 @@ export interface SmallAsset extends Asset, AssetMeta {
   publishedbyusername: string
 }
 
-export enum AssetSyncStatus {
-  Waiting = 'waiting',
-  Processing = 'processing',
-  Failed = 'failed',
-  Success = 'success',
-}
-
-export interface AssetSyncQueueItemFields extends Record<string, unknown> {
-  sourceurl: string
-}
-
-export interface AssetSyncQueueItem extends AssetSyncQueueItemFields {
-  id: string
-  status: AssetSyncStatus
-  failedreason: string
-  syncedfields: string[] | null
-  createdassetid: string
-  lastmodifiedby: string
-  lastmodifiedat: string
-  createdby: string
-  createdat: string
-}
-
-export interface FullAssetSyncQueueItem extends AssetSyncQueueItem {
-  createdbyusername: string
-  lastmodifiedbyusername: string
+export interface RelatedAssetsResult extends Record<string, unknown> {
+  results: Asset[]
 }
 
 export enum CollectionNames {
   Assets = 'assets',
   AssetsMeta = 'assetmeta',
   TagStats = 'tagstats',
-  AssetSyncQueue = 'assetsyncqueue',
 }
 
 export enum ViewNames {
-  GetFullAssets = 'getfullassets',
-  GetPublicAssets = 'getpublicassets',
-  RelatedAssets = 'relatedassets',
-  GetNewPublicAssets = 'getnewpublicassets',
-  GetMyAssetSyncQueuedItems = 'getmyassetsyncqueueditems',
-  GetFullMyAssetSyncQueuedItems = 'getfullassetsyncqueueditems',
+  GetFullAssets = 'getfullassets', // FullAsset[]
+  GetPublicAssets = 'getpublicassets', // PublicAsset[]
+  RelatedAssets = 'relatedassets', // RelatedAssetsResult[]
+  GetNewPublicAssets = 'getnewpublicassets', // PublicAsset[]-like
   GetRandomPublicAvatars = 'getrandompublicavatars',
+  GetAssetTimeline = 'getassettimeline',
+  GetCollectionAssetResults = 'getcollectionassetresults',
+  GetEndorsementAssetResults = 'getendorsementassetresults',
+  GetWishlistAssetResults = 'getwishlistassetresults',
+  GetDraftAssets = 'getdraftassets',
 }
 
 export enum FunctionNames {

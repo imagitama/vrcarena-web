@@ -4,7 +4,7 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useDataStore from '../../hooks/useDataStore'
-import { FullTag } from '../../modules/tags'
+import { FullTag, ViewNames } from '../../modules/tags'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 export default () => {
@@ -13,7 +13,7 @@ export default () => {
   const getQuery = useCallback(
     (supabase: SupabaseClient) => {
       let query = supabase
-        .from('getFullTags'.toLowerCase())
+        .from(ViewNames.GetFullTags)
         .select('*')
         .order('count', { ascending: false })
 

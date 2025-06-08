@@ -6,7 +6,12 @@ import LoadingIndicator from '../../components/loading-indicator'
 
 import useUserRecord from '../../hooks/useUserRecord'
 import { readRecord } from '../../data-store'
-import { Asset, CollectionNames, FullAsset } from '../../modules/assets'
+import {
+  Asset,
+  CollectionNames,
+  FullAsset,
+  ViewNames,
+} from '../../modules/assets'
 import { handleError } from '../../error-handling'
 
 import AssetEditor, {
@@ -81,7 +86,7 @@ const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
     try {
       const rawAssetFields = await readRecord<FullAsset>(
         supabase,
-        'getFullAssets',
+        ViewNames.GetFullAssets,
         assetId
       )
 

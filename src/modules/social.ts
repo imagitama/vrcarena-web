@@ -43,6 +43,8 @@ export interface FullSocialPost extends SocialPost, SocialPostMeta {
   replycount: number
 }
 
+export type PublicSocialPost = FullSocialPost
+
 export interface SocialReactionUpdateFields {
   emoji: string
 }
@@ -64,8 +66,12 @@ export interface ReactionSummary {
   usernames: string[]
 }
 
-export const CollectionNames = {
-  SocialPosts: 'socialposts',
-  SocialPostMeta: 'socialpostmeta',
-  SocialReactions: 'socialreactions',
+export enum CollectionNames {
+  SocialPosts = 'socialposts',
+  SocialPostMeta = 'socialpostmeta',
+  SocialReactions = 'socialreactions',
+}
+
+export enum ViewNames {
+  GetPublicSocialPosts = 'getpublicsocialposts',
 }

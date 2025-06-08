@@ -37,9 +37,9 @@ import {
   AssetSyncQueueItemFields,
   CollectionNames,
   AssetSyncStatus,
-  Asset,
   FullAssetSyncQueueItem,
-} from '../../modules/assets'
+} from '../../modules/assetsyncqueue'
+import { Asset } from '../../modules/assets'
 import FormControls from '../form-controls'
 import useDataStoreCreateBulk from '../../hooks/useDataStoreCreateBulk'
 import { DataStoreErrorCode, updateRecord } from '../../data-store'

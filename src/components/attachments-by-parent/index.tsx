@@ -6,7 +6,11 @@ import useDatabaseQuery, {
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 import ImageGallery from '../image-gallery'
-import { AttachmentReason, FullAttachment } from '../../modules/attachments'
+import {
+  AttachmentReason,
+  FullAttachment,
+  ViewNames,
+} from '../../modules/attachments'
 import Attachments from '../attachments'
 
 const LoadingGallery = () => {
@@ -31,7 +35,7 @@ const AttachmentsByParent = ({
   includeParents?: boolean
 }) => {
   const [isLoading, isError, attachments] = useDatabaseQuery<FullAttachment>(
-    'getPublicAttachments',
+    ViewNames.GetPublicAttachments,
     // @ts-ignore
     [['reason', Operators.EQUALS, reason]].concat(
       createdBy

@@ -51,6 +51,7 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullAttachments = 'getfullattachments',
+  GetPublicAttachments = 'getpublicattachments',
 }
 
 export const isFullAttachment = (thing: any): thing is FullAttachment =>

@@ -29,7 +29,7 @@ import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { FullAuthor } from '../../modules/authors'
 import SaleInfo from '../../components/sale-info'
-import { PublicAsset } from '../../modules/assets'
+import { PublicAsset, ViewNames } from '../../modules/assets'
 import { AccessStatus } from '../../modules/common'
 import useDatabaseQuery, {
   Operators,
@@ -49,7 +49,7 @@ function AssetsByAuthor({ author }: { author: FullAuthor }) {
 
   return (
     <AssetsPaginatedView
-      viewName={'getPublicAssets'}
+      viewName={ViewNames.GetPublicAssets}
       getQuery={getQuery}
       getQueryString={() => `author:"${author.name}"`}
       defaultFieldName={'createdat'}

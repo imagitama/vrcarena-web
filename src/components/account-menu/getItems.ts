@@ -6,7 +6,10 @@ import { retrieveFromLocalStorage } from '../../storage'
 import { getUserId } from '../../supabase'
 import * as routes from '../../routes'
 import { getLabelForNotification, getLinkUrl } from '../../notifications'
-import { CollectionNames as NotificationsCollectionNames } from '../../modules/notifications'
+import {
+  CollectionNames as NotificationsCollectionNames,
+  ViewNames,
+} from '../../modules/notifications'
 
 import { MenuItemData } from '../menu'
 import { SupabaseClient } from '@supabase/supabase-js'
@@ -97,7 +100,7 @@ export const notifications = async (
 
     // TODO: Use hook/abstraction
     const { data, error } = await supabase
-      .from('getFullNotification'.toLowerCase())
+      .from(ViewNames.GetFullNotification)
       .select<string, FullNotification>(`*`)
       .eq('recipient', userId)
       .limit(25)

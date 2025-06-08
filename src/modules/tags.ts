@@ -90,3 +90,7 @@ export const editableFields: EditableField<Tag>[] = [
     hint: 'Another tag (that does not have to exist) that is the "opposite" of this tag. eg. "rigged" has opposite "unrigged"',
   },
 ]
+
+export enum ViewNames {
+  GetFullTags = 'getfulltags',
+}

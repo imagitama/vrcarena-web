@@ -10,7 +10,7 @@ import TableRow from '@material-ui/core/TableRow'
 
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
-import { FullReport, ResolutionStatus } from '../../modules/reports'
+import { FullReport, ResolutionStatus, ViewNames } from '../../modules/reports'
 
 import Button from '../button'
 import PaginatedView from '../paginated-view'
@@ -163,7 +163,7 @@ export default () => {
 
   return (
     <PaginatedView<FullReport>
-      viewName="getFullReports"
+      viewName={ViewNames.GetFullReports}
       getQuery={getQuery}
       sortKey="view-reports"
       sortOptions={[

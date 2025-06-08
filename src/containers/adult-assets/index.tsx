@@ -16,7 +16,7 @@ import useStorage from '../../hooks/useStorage'
 import { trackAction } from '../../analytics'
 import { getCategoryMeta } from '../../category-meta'
 import useUserPreferences from '../../hooks/useUserPreferences'
-import { AssetCategory, PublicAsset } from '../../modules/assets'
+import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => {
   const assetsByCategory = items
@@ -51,7 +51,7 @@ const Assets = () => {
   const getQuery = useCallback((query) => query.is('isadult', true), [])
   return (
     <PaginatedView<PublicAsset>
-      viewName={`getPublicAssets`}
+      viewName={ViewNames.GetPublicAssets}
       getQuery={getQuery}
       sortKey="view-adult-assets"
       sortOptions={[

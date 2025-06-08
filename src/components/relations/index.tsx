@@ -5,6 +5,7 @@ import {
   PublicAsset,
   Relation,
   RelationType,
+  ViewNames,
 } from '../../modules/assets'
 import AssetResultsItem from '../asset-results-item'
 import Markdown from '../markdown'
@@ -98,7 +99,7 @@ const Relations = ({ relations }: { relations: Relation[] }) => {
     (supabase: SupabaseClient) =>
       hasRelations
         ? supabase
-            .from('getpublicassets')
+            .from(ViewNames.GetPublicAssets)
             .select('*')
             .or(relations.map(({ asset }) => `id.eq.${asset}`).join(','))
         : null,

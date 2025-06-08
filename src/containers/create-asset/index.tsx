@@ -15,14 +15,8 @@ import NoPermissionMessage from '../../components/no-permission-message'
 import Link from '../../components/link'
 import FormControls from '../../components/form-controls'
 import { handleError } from '../../error-handling'
-import {
-  AssetSyncQueueItem,
-  CollectionNames,
-  ViewNames,
-  Asset,
-  FullAsset,
-} from '../../modules/assets'
-import useDataStoreCreateBulk from '../../hooks/useDataStoreCreateBulk'
+import { CollectionNames, Asset, FullAsset } from '../../modules/assets'
+import { AssetSyncQueueItem, ViewNames } from '../../modules/assetsyncqueue'
 import useDatabaseQuery, {
   Operators,
   OrderDirections,

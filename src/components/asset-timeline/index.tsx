@@ -17,6 +17,7 @@ import {
   Asset,
   AssetMeta,
   CollectionNames as AssetsCollectionNames,
+  ViewNames,
 } from '../../modules/assets'
 import {
   CollectionNames as AmendmentsCollectionNames,
@@ -552,7 +553,7 @@ const assignPositivity = (event: TimelineEvent<any>): TimelineEvent<any> => ({
 
 const AssetTimeline = ({ assetId }: { assetId: string }) => {
   const [isLoading, lastErrorCode, timelineData] =
-    useDataStoreItem<TimelineData>('getassettimeline', assetId)
+    useDataStoreItem<TimelineData>(ViewNames.GetAssetTimeline, assetId)
   const [isForceExpanded, setIsForceExpanded] = useState(false)
 
   if (isLoading || !timelineData) {

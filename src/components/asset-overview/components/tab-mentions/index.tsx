@@ -54,13 +54,18 @@ const Renderer = ({ items }: { items?: Asset[] }) => {
   )
 }
 
+enum FunctionNames {
+  // TODO: only public assets
+  GetMentions = 'getmentions',
+}
+
 export default () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const { assetId } = useContext(TabContext)
   const [isLoading, lastErrorCode, assets, callFunction] = useDataStoreFunction<
     { assetid: string; include_adult: boolean },
     Asset
-  >('getmentions') // TODO: only public assets
+  >(FunctionNames.GetMentions)
 
   useEffect(() => {
     callFunction({
