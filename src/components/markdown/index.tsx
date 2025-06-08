@@ -259,7 +259,7 @@ const Markdown = ({
               onClick={
                 onClickLineWithContent
                   ? () => onClickLineWithContent(props.message)
-                  : null
+                  : undefined
               }
               className={onClickLineWithContent ? 'clickable' : ''}>
               <WarningIcon /> {props.message}
@@ -270,7 +270,7 @@ const Markdown = ({
               onClick={
                 onClickLineWithContent
                   ? () => onClickLineWithContent(props.message)
-                  : null
+                  : undefined
               }
               className={onClickLineWithContent ? 'clickable' : ''}>
               <InfoIcon /> {props.message}

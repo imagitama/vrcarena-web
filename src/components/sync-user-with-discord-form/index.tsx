@@ -15,11 +15,7 @@ import InfoMessage from '../info-message'
 import FormControls from '../form-controls'
 import { CollectionNames } from '../../modules/user'
 import { DataStoreErrorCode } from '../../data-store'
-
-interface DiscordUser {
-  id: string
-  avatar: string
-}
+import { DiscordUser } from '../../discord'
 
 interface SyncUserWithDiscordPayload {
   userId: string

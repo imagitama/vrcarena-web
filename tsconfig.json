@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "types": ["node", "jest", "webpack-env"],
+    "types": ["node", "jest", "webpack-env", "react"],
     "target": "es2015",
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"    ],
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -17,7 +18,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "typeRoots": [
+      "./@types", "./node_modules/@types"
+    ]
   },
   "include": [
     "src"

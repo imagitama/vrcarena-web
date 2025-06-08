@@ -5,7 +5,7 @@ import { UserPreferences } from './modules/user'
 import { AssetCategory } from './modules/assets'
 import { FullUser, UserRoles } from './modules/users'
 
-interface MenuItem {
+export interface MenuItem {
   id: string
   label: string
   url?: string

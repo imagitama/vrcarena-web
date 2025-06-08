@@ -3,20 +3,14 @@ import { Helmet } from 'react-helmet'
 import { useLocation, useParams } from 'react-router'
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
-import PaginatedView from '../../components/paginated-view'
-import AssetResults from '../../components/asset-results'
 import Button from '../../components/button'
 
 import { getCategoryMeta } from '../../category-meta'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import * as routes from '../../routes'
 
-import AvatarTutorialSection from './components/avatar-tutorial-section'
-import AssetsByArea from '../../components/assets-by-area'
 import AreaNavigation from '../../components/area-navigation'
 import Link from '../../components/link'
 import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
@@ -66,7 +60,6 @@ const ViewCategoryView = () => {
         <Link to={pathname}>{getDisplayNameByCategoryName(categoryName)}</Link>
       </Heading>
       <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
-      {categoryName === AssetCategory.Tutorial && <AvatarTutorialSection />}
       <AreaNavigation categoryName={categoryName} />
       <AssetsPaginatedView
         viewName={ViewNames.GetPublicAssets}

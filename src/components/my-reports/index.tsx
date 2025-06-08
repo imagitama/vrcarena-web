@@ -7,11 +7,11 @@ import ErrorMessage from '../error-message'
 import ReportResults from '../report-results'
 import useUserId from '../../hooks/useUserId'
 import NoResultsMessage from '../no-results-message'
-import { ViewNames, Report } from '../../modules/reports'
+import { ViewNames, FullReport } from '../../modules/reports'
 
 export default () => {
   const myUserId = useUserId()
-  const [isLoading, isErrored, results] = useDatabaseQuery<Report>(
+  const [isLoading, isErrored, results] = useDatabaseQuery<FullReport>(
     ViewNames.GetFullReports,
     [['createdby', Operators.EQUALS, myUserId]]
   )

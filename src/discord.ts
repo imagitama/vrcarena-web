@@ -1,16 +1,6 @@
 export const getAvatarImageUrl = (userId: string, avatarHash: string): string =>
   `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png`
 
-// good: https://discord.com/channels/734993431507763289/736972936581349506/1338845707876044851
-// bad: https://discord.gg/T5x8gQwK
-// export const getIsDiscordUrlButNotDiscordServerMessageUrl = (url: string): boolean => {
-//   const discordUrlPattern =
-//     /^(https?:\/\/)?(www\.)?(discord\.com|discord\.gg|discordapp\.com)/i
-//   const messageUrlPattern = /discord\.(com|gg)\/channels\/\d+\/\d+\/\d+/
-
-//   return discordUrlPattern.test(url) && !messageUrlPattern.test(url)
-// }
-
 // https://discord.com/channels/734993431507763289/736972936581349506/133884570
 // https://discord.gg/T5x8gQwK
 export const getIsDiscordUrl = (url: string): boolean => {
@@ -45,4 +35,10 @@ export const getIsDiscordMessageUrl = (url: string): boolean => {
   } catch {
     return false
   }
+}
+
+export interface DiscordUser {
+  id: string
+  avatar: string
+  email: string
 }

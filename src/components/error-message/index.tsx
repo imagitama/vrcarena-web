@@ -11,6 +11,14 @@ import Button from '../button'
 const getErrorCodeForError = (error: Error): string =>
   base64EncodeString(error.message)
 
+  export interface ErrorMessageProps extends MessageProps {
+    children: React.ReactNode
+    error?: Error
+    hintText?: false | string | React.ReactElement
+    onRetry?: () => void
+    onOkay?: () => void
+  }
+
 const ErrorMessage = ({
   title,
   children,
@@ -19,13 +27,7 @@ const ErrorMessage = ({
   onRetry,
   onOkay,
   ...messageProps
-}: {
-  children: React.ReactNode
-  error?: Error
-  hintText?: false | string
-  onRetry?: () => void
-  onOkay?: () => void
-} & MessageProps) => (
+}: ErrorMessageProps) => (
   <Message
     icon={<ErrorIcon />}
     color="#1c0002"

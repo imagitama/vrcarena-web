@@ -354,7 +354,7 @@ const GenericEditor = ({
     return (
       <Field
         key={name.toString()}
-        label={type !== fieldTypes.checkbox ? label : null}>
+        label={type !== fieldTypes.checkbox ? label! : '(no label)'}>
         <Input
           name={name.toString()}
           // @ts-ignore

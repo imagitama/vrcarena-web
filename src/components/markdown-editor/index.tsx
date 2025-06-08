@@ -4,8 +4,9 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import Paper from '../paper'
 import Markdown from '../markdown'
-import ImageUploader from '../firebase-image-uploader'
+import ImageUploader from '../image-uploader'
 import Button from '../button'
+import { bucketNames } from '../../file-uploading'
 
 const useStyles = makeStyles({
   input: {
@@ -47,9 +48,9 @@ export default ({
     onChange(newContent)
   }
 
-  const onImageUploadedWithUrl = (url: string) => {
+  const onImageUploadedWithUrl = (urls: string[]) => {
     addToMarkdown(
-      `:::image{url="${url}"}
+      `:::image{url="${urls[0]}"}
 This is a caption
 :::`
     )
@@ -148,7 +149,10 @@ This is a caption
             <br />
             <br />
             <ImageUploader
-              onUploadedWithUrl={onImageUploadedWithUrl}
+            // TODO: Better bucket
+              bucketName={bucketNames.attachments}
+              onDone={onImageUploadedWithUrl}
+              // TODO: Better path
               directoryPath="pages"
             />
           </>

@@ -91,6 +91,7 @@ export interface MessageProps {
   noMargin?: boolean
   noTopMargin?: boolean
   paperClassName?: string
+  className?: string
 }
 
 export default ({
@@ -103,6 +104,7 @@ export default ({
   noMargin = false,
   noTopMargin = false,
   paperClassName = undefined,
+  className,
 }: MessageProps) => {
   const classes = useStyles()
 
@@ -110,7 +112,7 @@ export default ({
     <div
       className={`${classes.root} ${leftAlign ? classes.leftAlign : ''} ${
         noMargin ? classes.noMargin : ''
-      } ${noTopMargin ? classes.noTopMargin : ''}`}>
+      } ${noTopMargin ? classes.noTopMargin : ''} ${className}`}>
       <Paper
         className={`${classes.paper} ${paperClassName}`}
         style={{ backgroundColor: color }}>

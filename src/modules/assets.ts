@@ -105,6 +105,7 @@ export interface AssetFields extends CoreAssetFields, Record<string, unknown> {
   attachmentids: string[]
   extrasources: SourceInfo[]
   vccurl?: string
+  sketchfabembedurl: string
 }
 
 export interface Asset extends AssetFields, Record<string, unknown> {

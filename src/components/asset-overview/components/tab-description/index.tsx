@@ -32,10 +32,10 @@ export default () => {
   return (
     <Expander isLoaded={asset !== null} message="Click to expand description">
       <div>
-        {asset && asset.sketchfabEmbedUrl ? (
+        {asset && asset.sketchfabembedurl ? (
           <div className={classes.sketchfabWrapper}>
             <SketchfabEmbed
-              url={asset.sketchfabEmbedUrl}
+              url={asset.sketchfabembedurl}
               className={classes.sketchfab}
             />
           </div>

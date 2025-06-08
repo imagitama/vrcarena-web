@@ -148,19 +148,9 @@ const ViewTag = lazy(() =>
     () => import(/* webpackChunkName: "view-tag" */ './containers/view-tag')
   )
 )
-const Search = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "search" */ './containers/search')
-  )
-)
 const ViewUser = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "view-user" */ './containers/view-user')
-  )
-)
-const Stats = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "stats" */ './containers/stats')
   )
 )
 const Users = lazy(() =>
@@ -609,7 +599,6 @@ const MainContent = () => {
           path={routes.viewCategoryWithPageNumberVar}
           component={ViewCategory}
         />
-        <Route exact path={routes.searchWithVar} component={Search} />
         <Route
           exact
           path={[routes.createSpecies, routes.editSpeciesWithVar]}
@@ -641,7 +630,6 @@ const MainContent = () => {
           path={[routes.viewUserWithVar, routes.viewUserWithVarAndTabVar]}
           component={ViewUser}
         />
-        <Route exact path={routes.stats} component={Stats} />
         <Route exact path={routes.users} component={Users} />
         <Route exact path={routes.activity} component={Activity} />
         <Route
