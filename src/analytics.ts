@@ -35,9 +35,9 @@ export const trackInternalAction = async (
       {
         category: category,
         action: action,
-        parentTable: parentTable,
+        parenttable: parentTable,
         parent: parentId,
-        extraData: extraData,
+        extradata: extraData,
       }
     )
   } catch (err) {

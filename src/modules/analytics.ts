@@ -1,9 +1,9 @@
 export interface AnalyticsEntry {
   category: string
   action: string
-  parentTable: string
+  parenttable: string
   parent: string
-  extraData: any
+  extradata: any
 }
 
 export enum CollectionNames {
