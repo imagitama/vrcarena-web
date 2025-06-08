@@ -775,7 +775,10 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     .concat(asset.extrasources || []) // TODO: Ensure data is always empty array
                     .map((sourceInfo) => (
                       <Control key={sourceInfo.url}>
-                        <VisitSourceButton sourceInfo={sourceInfo} />
+                        <VisitSourceButton
+                          sourceInfo={sourceInfo}
+                          analyticsCategoryName={analyticsCategoryName}
+                        />
                       </Control>
                     ))
                 ) : (
