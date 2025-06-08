@@ -279,13 +279,7 @@ const ParentControlGroup = () => {
 
 const ControlGroup = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
-  return (
-    <div className={classes.controlGroup}>
-      <Suspense fallback={<LoadingIndicator message="Loading controls..." />}>
-        {children}
-      </Suspense>
-    </div>
-  )
+  return <div className={classes.controlGroup}>{children}</div>
 }
 
 const NsfwIcon = () => {
@@ -565,7 +559,10 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
           </Helmet>
         )}
         {asset && getIsAssetWaitingForApproval(asset) ? (
-          <QueuedAssetInfo asset={asset} hydrate={hydrate} />
+          <Suspense
+            fallback={<LoadingIndicator message="Loading component..." />}>
+            <QueuedAssetInfo asset={asset} hydrate={hydrate} />
+          </Suspense>
         ) : null}
         <Messages />
         <ImageGallery
@@ -1007,17 +1004,26 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             </ControlGroup>
             {isLoggedIn && (
               <ControlGroup>
-                <LoggedInControls />
+                <Suspense
+                  fallback={<LoadingIndicator message="Loading controls..." />}>
+                  <LoggedInControls />
+                </Suspense>
               </ControlGroup>
             )}
             {isAllowedToEditAsset || isEditor ? (
               <ControlGroup>
-                <CreatorControls />
+                <Suspense
+                  fallback={<LoadingIndicator message="Loading controls..." />}>
+                  <CreatorControls />
+                </Suspense>
               </ControlGroup>
             ) : null}
             {isEditor && (
               <ControlGroup>
-                <EditorControls />
+                <Suspense
+                  fallback={<LoadingIndicator message="Loading controls..." />}>
+                  <EditorControls />
+                </Suspense>
               </ControlGroup>
             )}
             <ControlGroup>
