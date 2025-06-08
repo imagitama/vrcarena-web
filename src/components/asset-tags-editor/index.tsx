@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import SaveIcon from '@material-ui/icons/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -6,6 +7,15 @@ import { trackAction } from '../../analytics'
 
 import TagInput from '../tag-input'
 import { Asset, CollectionNames } from '../../modules/assets'
+import Columns from '../columns'
+import Column from '../column'
+import FeaturesSubEditor from '../features-sub-editor'
+import LoadingIndicator from '../loading-indicator'
+import SuccessMessage from '../success-message'
+import ErrorMessage from '../error-message'
+import FormControls from '../form-controls'
+import Button from '../button'
+import Heading from '../heading'
 
 const AssetTagsEditor = ({
   assetId,
@@ -22,12 +32,13 @@ const AssetTagsEditor = ({
   actionCategory?: string
   asset?: Asset
 }) => {
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
+  const [newTags, setNewTags] = useState(tags || [])
+  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
     assetId ? CollectionNames.Assets : false,
     assetId
   )
 
-  const onSaveBtnClick = async (newTags: string[]) => {
+  const onSaveBtnClick = async () => {
     try {
       if (overrideSave) {
         overrideSave(newTags)
@@ -57,18 +68,46 @@ const AssetTagsEditor = ({
 
   return (
     <>
-      <TagInput
-        currentTags={tags || []}
-        onDone={(newTags) => onSaveBtnClick(newTags)}
-        asset={asset}
-      />
-      {isSaving
-        ? 'Saving...'
-        : isSaveSuccess
-        ? 'Success!'
-        : isSaveError
-        ? 'Error'
-        : null}
+      <FormControls>
+        <Button onClick={onSaveBtnClick} size="large" icon={<SaveIcon />}>
+          Save
+        </Button>
+      </FormControls>
+      {isSaving ? (
+        <LoadingIndicator message="Saving tags..." />
+      ) : isSaveSuccess ? (
+        <SuccessMessage>Tags saved successfully</SuccessMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+      ) : null}
+      <Columns>
+        <Column padding>
+          <TagInput
+            currentTags={newTags}
+            onChange={(tags) => setNewTags(tags)}
+            asset={asset}
+          />
+        </Column>
+        <Column padding>
+          <Heading variant="h3">Features:</Heading>
+          <FeaturesSubEditor
+            currentTags={newTags}
+            onChange={(tags) => setNewTags(tags)}
+          />
+        </Column>
+      </Columns>
+      {isSaving ? (
+        <LoadingIndicator message="Saving tags..." />
+      ) : isSaveSuccess ? (
+        <SuccessMessage>Tags saved successfully</SuccessMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+      ) : null}
+      <FormControls>
+        <Button onClick={onSaveBtnClick} size="large" icon={<SaveIcon />}>
+          Save
+        </Button>
+      </FormControls>
     </>
   )
 }

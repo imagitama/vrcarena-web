@@ -14,14 +14,28 @@ const useStyles = makeStyles((theme) => ({
     margin: '2rem 0 1.5rem',
   },
   items: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    marginBottom: '0.5rem',
+    marginBottom: '1rem',
   },
   feature: {
+    marginBottom: '0.25rem',
+    opacity: 0.8,
+    transition: '100ms all',
+    '&:hover': {
+      opacity: 1,
+    },
+    '& a': {
+      color: 'inherit',
+      display: 'flex',
+      alignItems: 'center',
+    },
+  },
+  featureIcon: {
     width: '2.5rem',
     height: '2.5rem',
-    margin: '0rem 0.25rem 0.25rem 0',
+    marginRight: '0.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     border: '1px solid rgba(255, 255, 255, 0.5)',
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
@@ -46,13 +60,14 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& svg': {
-      width: '100%',
-      height: '100%',
+      width: '75%',
+      height: '75%',
       fill: '#FFF',
     },
   },
   loading: {
-    border: 'none',
+    width: '100%',
+    height: '2.5rem',
   },
   good: {
     // borderColor: 'rgba(100, 255, 100, 0.5)',
@@ -107,16 +122,14 @@ const Feature = ({
       : () => <span>{tag.substring(0, 3)}</span>
 
   return (
-    <div
-      // TODO: Show it is bad
-      className={`${classes.feature}`}>
-      <Tooltip
-        title={`${data.label || getLabelForTag(tag)} - ${data.description}`}>
-        <div>
-          <Link to={routes.queryWithVar.replace(':query', tag)}>
+    <div className={classes.feature}>
+      <Tooltip title={data.description}>
+        <Link to={routes.queryWithVar.replace(':query', tag)}>
+          <span className={classes.featureIcon}>
             <Icon />
-          </Link>
-        </div>
+          </span>{' '}
+          {data.label || getLabelForTag(tag)}
+        </Link>
       </Tooltip>
     </div>
   )

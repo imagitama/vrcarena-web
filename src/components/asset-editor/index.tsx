@@ -66,7 +66,6 @@ import AssetShortDescriptionEditor from '../asset-short-description-editor'
 import RelationsEditor from '../relations-editor'
 import Relations from '../relations'
 import LicenseEditor from '../license-editor'
-import FeaturesEditor from '../features-editor'
 import VrcFurySettings from '../vrcfury-settings'
 import VrcFurySettingsEditor from '../vrcfury-settings-editor'
 import PublishAssetButton from '../publish-asset-button'
@@ -104,6 +103,9 @@ import VrcFuryToggle from '../vrcfury-ready-toggle'
 import Link from '../link'
 import Paper from '../paper'
 import useIsPatron from '../../hooks/useIsPatron'
+import Columns from '../columns'
+import Column from '../column'
+import FeatureList from '../feature-list'
 
 interface EditorInfo {
   assetId: string | null
@@ -574,10 +576,26 @@ const BannerDisplay = ({ value }: { value: string }) => {
   )
 }
 
-const TagsDisplay = ({ value }: { value: string[] }) => (
+const TagsDisplay = ({
+  value,
+  fields,
+}: {
+  value: string[]
+  fields: FullAsset
+}) => (
   <>
     {value && value.length ? (
-      <TagChips tags={value} />
+      <Columns>
+        <Column>
+          <TagChips tags={value} />
+        </Column>
+        <Column>
+          <Heading variant="h4" noTopMargin>
+            Features:
+          </Heading>
+          <FeatureList tags={value} existingTagsData={fields.tagsdata} />
+        </Column>
+      </Columns>
     ) : (
       <NoValueMessage>No tags set</NoValueMessage>
     )}
@@ -683,13 +701,6 @@ const ShortDescriptionDisplay = ({ value }: { value: string }) =>
   ) : (
     <NoValueMessage>No short description set</NoValueMessage>
   )
-
-const FeaturesDisplay = ({ fields }: { fields?: FullAsset }) => {
-  if (!fields) {
-    return null
-  }
-  return <FeaturesEditor currentTags={fields.tags || []} isEditing={false} />
-}
 
 const AttachmentsEditor = ({
   assetId,
@@ -1048,28 +1059,6 @@ const Editor = () => {
                     />
                   }
                   icon={() => <AttachFileIcon />}
-                />
-              </>
-            ),
-          },
-          {
-            name: 'features',
-            label: 'Features',
-            contents: (
-              <>
-                <FormEditorArea
-                  title="Features"
-                  description="A feature is a special tag that helps people find the right asset for them."
-                  display={FeaturesDisplay}
-                  editor={
-                    <FeaturesEditor
-                      assetId={asset.id}
-                      currentTags={(asset && asset.tags) || []}
-                      onDone={hydrate}
-                      isEditing={true}
-                    />
-                  }
-                  icon={() => <ListStarsIcon />}
                 />
               </>
             ),

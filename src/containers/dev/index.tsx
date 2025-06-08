@@ -29,7 +29,6 @@ import survey from '../../surveys/creating-asset'
 import { Asset, CollectionNames, FullAsset } from '../../modules/assets'
 import PerformanceEditor from '../../components/performance-editor'
 import SpeciesSelector from '../../components/species-selector'
-import FeaturesEditor from '../../components/features-editor'
 import DefaultAvatar from '../../components/default-avatar'
 import AssetResultsItem from '../../components/asset-results-item'
 import AssetResults from '../../components/asset-results'
@@ -211,8 +210,6 @@ export default () => {
         </div>
         <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} />
-        <h2>Features Editor</h2>
-        <FeaturesEditor currentTags={[]} assetId="123" onDone={() => {}} />
         <h2>Species Selector</h2>
         <SpeciesSelector selectedSpeciesIds={['IpItSWT1QpwLB16IPz2e']} />
         <h2>Performance Editor</h2>

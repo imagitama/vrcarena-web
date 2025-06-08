@@ -11,23 +11,19 @@ const useStyles = makeStyles({
   column: {},
 })
 
-const Column = ({
+const Columns = ({
   children,
-  width = 50,
   padding = false,
 }: {
   children: React.ReactNode
-  width?: number
   padding?: boolean
 }) => {
   const classes = useStyles()
   return (
-    <div
-      className={`${classes.column} ${padding ? classes.withPadding : ''}`}
-      style={{ width: `${width}%` }}>
+    <div className={`${classes.columns} ${padding ? classes.withPadding : ''}`}>
       {children}
     </div>
   )
 }
 
-export default Column
+export default Columns
