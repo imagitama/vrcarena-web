@@ -239,6 +239,13 @@ export interface RelatedAssetsResult extends Record<string, unknown> {
   results: Asset[]
 }
 
+export interface GetFullAssetCacheItem {
+  id: string
+  slug: string
+  data: FullAsset
+  updatedat: string // time
+}
+
 export enum CollectionNames {
   Assets = 'assets',
   AssetsMeta = 'assetmeta',
@@ -247,6 +254,7 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullAssets = 'getfullassets', // FullAsset[]
+  GetFullAssetsCache = 'getfullassetscache',
   GetPublicAssets = 'getpublicassets', // PublicAsset[]
   RelatedAssets = 'relatedassets', // RelatedAssetsResult[]
   GetNewPublicAssets = 'getnewpublicassets', // PublicAsset[]-like
@@ -260,4 +268,5 @@ export enum ViewNames {
 
 export enum FunctionNames {
   SearchAssets = 'searchassets',
+  GetOrHydrateGetFullAssets = 'get_or_hydrate_getfullassets',
 }

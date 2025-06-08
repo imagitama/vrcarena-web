@@ -12,7 +12,6 @@ import LinkIcon from '@material-ui/icons/Link'
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
 import WarningIcon from '@material-ui/icons/Warning'
 
-import useDataStore from '../../hooks/useDataStore'
 import useBanner from '../../hooks/useBanner'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useIsEditor from '../../hooks/useIsEditor'
@@ -22,6 +21,7 @@ import {
   getOpenGraphUrlForRouteUrl,
   getIsGitHubUrl,
   getIsUrlRisky,
+  getIsUuid,
 } from '../../utils'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
@@ -36,6 +36,8 @@ import { getCategoryMeta } from '../../category-meta'
 import {
   AssetCategory,
   FullAsset,
+  FunctionNames,
+  GetFullAssetCacheItem,
   RelationType,
   SourceInfo,
   ViewNames,
@@ -99,6 +101,8 @@ import { SupabaseClient } from '@supabase/supabase-js'
 import RequiresVerificationNotice from '../requires-verification-notice'
 import HintText from '../hint-text'
 import { getVrchatWorldLaunchUrlForId } from '../../vrchat'
+import useDataStoreFunction from '../../hooks/useDataStoreFunction'
+import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -358,25 +362,56 @@ const Area = ({
 const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) =>
-      supabase
-        .from(ViewNames.GetFullAssets)
-        .select('*')
-        // TODO: type safety field names
-        .or(`id.eq.${rawAssetId},slug.eq.${rawAssetId}`)
-        .limit(1),
-    // need to sub to logged in as view does NOT remount forcing a query reload (we have to do it ourselves)
-    [rawAssetId, isLoggedIn]
+  const isSlug = getIsUuid(rawAssetId) === false
+
+  const [
+    isLoadingCachedAsset,
+    lastErrorCodeCached,
+    cacheResults,
+    hydrateCachedAsset,
+  ] = useDataStoreFunction<{ slug_to_search: string }, GetFullAssetCacheItem>(
+    isSlug ? FunctionNames.GetOrHydrateGetFullAssets : false,
+    true,
+    {
+      slug_to_search: rawAssetId,
+    }
   )
-  const [isLoadingAsset, lastErrorCode, results, , hydrate] =
-    useDataStore<FullAsset>(getQuery, 'asset-overview')
-  const asset = results && results.length ? results[0] : null
+  const [
+    isLoadingNonCachedAsset,
+    lastErrorCodeNonCached,
+    nonCachedResults,
+    hydrateNonCachedAsset,
+  ] = useDataStoreItem<FullAsset>(
+    ViewNames.GetFullAssets,
+    isSlug ? false : rawAssetId,
+    'asset-overview'
+  )
+
+  const hydrate = isSlug ? hydrateCachedAsset : hydrateNonCachedAsset
+
+  const cachedRecord =
+    isSlug && Array.isArray(cacheResults) ? cacheResults[0] : null
+  const asset: FullAsset | null = cachedRecord
+    ? cachedRecord.data
+    : isSlug
+    ? null
+    : nonCachedResults
+    ? nonCachedResults
+    : null
   const assetId = asset ? asset.id : rawAssetId
+
+  console.debug('asset-overview.render', {
+    rawAssetId,
+    isSlug,
+    cachedRecord,
+    cacheResults,
+    nonCachedResults,
+    asset,
+  })
+
   const classes = useStyles()
   const [, , user] = useUserRecord()
   useBanner(asset && asset.bannerurl ? asset.bannerurl : null)
-  const [isPedestalExpanded, setIsPedestalExpanded] = useState(false)
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [bypassAdultFilterOnce, setBypassAdultFilterOnce] = useState(false)
   const [, setIsAlreadyOver18] = useStorage(alreadyOver18Key)
@@ -404,8 +439,8 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   )
 
   if (
-    lastErrorCode !== null ||
-    (results && results.length === 0) ||
+    lastErrorCodeCached !== null ||
+    lastErrorCodeNonCached !== null ||
     (asset &&
       ((asset.category as string) === 'world' ||
         (asset.category as string) === 'article'))
@@ -419,7 +454,10 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     )
   }
 
-  const isLoading = isLoadingAsset || !asset
+  const isLoading =
+    (isSlug && isLoadingCachedAsset) ||
+    (!isSlug && isLoadingNonCachedAsset) ||
+    !asset
 
   if (hideBecauseAdult) {
     return (
@@ -1028,6 +1066,11 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     <FormattedDate date={asset.lastsyncedwithgumroadat} />
                   </div>
                 ) : null}
+                {cachedRecord && (
+                  <>
+                    Cached <FormattedDate date={cachedRecord.updatedat} />
+                  </>
+                )}
               </ControlGroup>
             )}
           </div>

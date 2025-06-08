@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import { client as supabase } from '../supabase'
 import useSupabaseClient from './useSupabaseClient'
 import { handleError } from '../error-handling'
 
@@ -8,14 +7,14 @@ enum ErrorCode {
 }
 
 const useDataStoreFunction = <TPayload extends object, TRecord>(
-  name: string,
+  name: string | false,
   autoCall: boolean = false,
   autoCallPayload?: TPayload
 ): [
   boolean,
   null | ErrorCode,
   null | TRecord[],
-  (payload: TPayload) => Promise<null | TRecord[]>
+  (payload?: TPayload) => Promise<null | TRecord[]>
 ] => {
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
@@ -23,7 +22,11 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
   const supabase = useSupabaseClient()
 
   const callFunction = useCallback(
-    async (payload: TPayload) => {
+    async (payload?: TPayload) => {
+      if (name === false) {
+        return null
+      }
+
       setIsLoading(true)
       setLastErrorCode(null)
 

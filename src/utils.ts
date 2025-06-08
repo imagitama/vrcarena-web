@@ -1,6 +1,6 @@
 // TODO: Move to utils/index.ts
 
-import { validate as validateUuid } from 'uuid'
+import { validate as validateUuid, version as uuidVersion } from 'uuid'
 import { FullUser, PatreonStatus, UserRoles } from './modules/users'
 
 export function scrollToTop(isSmooth: boolean = true): void {
@@ -374,7 +374,17 @@ export function getIsStringADate(string: string): boolean {
 
 export const getDateFromString = (string: string): Date => new Date(string)
 
-export const getIsUuid = (string: string): boolean => validateUuid(string)
+export const getIsUuid = (str: string): boolean => {
+  try {
+    return validateUuid(str)
+  } catch (err) {
+    // TODO: Probably update to latest version which might not throw this error?
+    if ((err as Error).message === 'Invalid UUID') {
+      return false
+    }
+    throw err
+  }
+}
 
 export const findItemAndParents = <
   TItem extends { id: string; parent: string }
