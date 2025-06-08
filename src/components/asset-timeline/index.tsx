@@ -433,6 +433,8 @@ const PrettyExpandedData = ({ data }: { data: PrettyField[] }) => {
   )
 }
 
+const DEFAULT_USERNAME = 'System'
+
 const AssetTimelineItem = ({
   event,
   isForceExpanded,
@@ -481,7 +483,7 @@ const AssetTimelineItem = ({
             <span
               onClick={() => setIsExpanded((currentVal) => !currentVal)}
               className={classes.expander}>
-              {event.username || '(no name)'}{' '}
+              {event.username || DEFAULT_USERNAME}{' '}
               <LabelForEntry entry={event.originalrecord} />{' '}
               {isActuallyExpanded ? (
                 <KeyboardArrowUpIcon />
