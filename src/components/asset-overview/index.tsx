@@ -777,7 +777,9 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                       <Control key={sourceInfo.url}>
                         <VisitSourceButton
                           sourceInfo={sourceInfo}
+                          // analytics
                           analyticsCategoryName={analyticsCategoryName}
+                          assetId={assetId}
                         />
                       </Control>
                     ))
