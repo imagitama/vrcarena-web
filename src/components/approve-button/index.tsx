@@ -119,6 +119,7 @@ const ApproveButton = ({
         approvedat:
           newApprovalStatus === ApprovalStatus.Approved ? new Date() : null,
         ...extraFields,
+        approvedby: userId,
       })
 
       if (onDone) {

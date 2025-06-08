@@ -33,4 +33,5 @@ export interface MetaRecord extends Record<string, unknown> {
   publishstatus: PublishStatus
   // todo: add to non-assets
   approvedat: Date | null
+  approvedby: string
 }
