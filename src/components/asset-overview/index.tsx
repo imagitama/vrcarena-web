@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { Suspense, useCallback, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Helmet } from 'react-helmet'
 import Card from '@material-ui/core/Card'
@@ -103,6 +103,7 @@ import HintText from '../hint-text'
 import { getVrchatWorldLaunchUrlForId } from '../../vrchat'
 import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
+import LoadingIndicator from '../loading-indicator'
 
 // controls
 const LoggedInControls = React.lazy(
@@ -278,7 +279,13 @@ const ParentControlGroup = () => {
 
 const ControlGroup = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
-  return <div className={classes.controlGroup}>{children}</div>
+  return (
+    <div className={classes.controlGroup}>
+      <Suspense fallback={<LoadingIndicator message="Loading controls..." />}>
+        {children}
+      </Suspense>
+    </div>
+  )
 }
 
 const NsfwIcon = () => {
@@ -348,14 +355,16 @@ const Area = ({
   const { assetId, asset } = useAssetOverview()
 
   return (
-    <Block
-      url={routes.viewAssetWithVarAndTabVar
-        .replace(':assetId', asset && asset.slug ? asset.slug : assetId)
-        .replace(':tabName', name)}
-      title={label}
-      icon={<LinkIcon />}>
-      {children}
-    </Block>
+    <Suspense fallback={<LoadingIndicator message="Loading area..." />}>
+      <Block
+        url={routes.viewAssetWithVarAndTabVar
+          .replace(':assetId', asset && asset.slug ? asset.slug : assetId)
+          .replace(':tabName', name)}
+        title={label}
+        icon={<LinkIcon />}>
+        {children}
+      </Block>
+    </Suspense>
   )
 }
 
