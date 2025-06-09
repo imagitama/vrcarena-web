@@ -60,7 +60,7 @@ dotenv.config()
 
       await new Promise(() => {})
     } else {
-      await context.rebuild()
+      const result = await context.rebuild()
 
       console.log('Build success', result)
     }
