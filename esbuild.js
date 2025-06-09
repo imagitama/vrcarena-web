@@ -22,7 +22,6 @@ dotenv.config()
     sourcemap: true,
     minify: false,
     target: ['esnext'],
-    define: { 'process.env.NODE_ENV': '"development"' },
     plugins: [
       svgrPlugin({
         exportType: 'named',
