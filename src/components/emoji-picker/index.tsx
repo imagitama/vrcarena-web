@@ -1,3 +1,4 @@
+import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import EmojiPickerReact, { EmojiStyle } from 'emoji-picker-react'
 import { useCallback, useRef, useState } from 'react'

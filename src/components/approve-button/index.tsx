@@ -42,13 +42,13 @@ const ApproveButton = ({
   beforeApprove?: () => boolean | Promise<boolean> // false to cancel approval
 }) => {
   const userId = useUserId()
-  const [isLoading, isErroredLoading, metaRecord] =
+  const [isLoading, lastErrorCodeLoading, metaRecord] =
     useDataStoreItem<MetaRecord>(
       metaCollectionName,
       existingApprovalStatus ? false : id,
       'approve-button'
     )
-  const [isSaving, , isSaveError, save] = useDatabaseSave<MetaRecord>(
+  const [isSaving, , lastErrorCodeSaving, save] = useDatabaseSave<MetaRecord>(
     metaCollectionName,
     id
   )
@@ -64,16 +64,16 @@ const ApproveButton = ({
     return <>Saving...</>
   }
 
-  if (isErroredLoading) {
-    return <>Failed to load approve button</>
+  if (lastErrorCodeLoading !== null) {
+    return <>Failed to load (code {lastErrorCodeLoading})</>
   }
 
   if (!existingApprovalStatus && !metaRecord) {
     return <>No existing approval status and no meta record</>
   }
 
-  if (isSaveError) {
-    return <>Failed to save</>
+  if (lastErrorCodeSaving !== null) {
+    return <>Failed to save (code {lastErrorCodeSaving})</>
   }
 
   const approvalStatus = existingApprovalStatus
@@ -114,13 +114,22 @@ const ApproveButton = ({
           } as AssetMeta)
         : {}
 
-      await save({
+      console.debug('Saving...')
+
+      const updatedDocs = await save({
         approvalstatus: newApprovalStatus,
         approvedat:
           newApprovalStatus === ApprovalStatus.Approved ? new Date() : null,
         ...extraFields,
         approvedby: userId,
       })
+
+      if (!updatedDocs.length) {
+        console.warn('Save was unsuccessful')
+        return
+      }
+
+      console.debug('Save success')
 
       if (onDone) {
         onDone()

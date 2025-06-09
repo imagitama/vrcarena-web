@@ -1,3 +1,4 @@
+import React from 'react'
 import MaterialTooltip, { TooltipProps } from '@material-ui/core/Tooltip'
 
 const Tooltip = (props: TooltipProps) => (

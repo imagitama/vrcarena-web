@@ -15,12 +15,8 @@ const AmendmentEditorRecordManager = ({
   amendment: FullAmendment
   onDone: () => void
 }) => {
-  const [
-    isSavingParent,
-    isSavingParentSuccess,
-    isSavingParentError,
-    saveParent,
-  ] = useDatabaseSave(amendment.parenttable, amendment.parent)
+  const [isSavingParent, isSavingParentSuccess, lastErrorCode, saveParent] =
+    useDatabaseSave(amendment.parenttable, amendment.parent)
 
   const beforeApprove = async (): Promise<boolean> => {
     try {
@@ -42,8 +38,10 @@ const AmendmentEditorRecordManager = ({
     <>
       {isSavingParent ? (
         <LoadingIndicator message="Applying..." />
-      ) : isSavingParentError ? (
-        <ErrorMessage>Failed to apply to parent!</ErrorMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage>
+          Failed to apply to parent (code {lastErrorCode}
+        </ErrorMessage>
       ) : isSavingParentSuccess ? (
         <SuccessMessage>Parent has been updated successfully</SuccessMessage>
       ) : null}
