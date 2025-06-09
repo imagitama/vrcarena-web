@@ -35,6 +35,7 @@ dotenv.config()
       '.png': 'file',
     },
     define,
+    publicPath: '/', // fix webp etc
   }
 
   try {

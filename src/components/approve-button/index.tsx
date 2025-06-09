@@ -18,6 +18,7 @@ import {
 } from '../../modules/assets'
 import { declinedReasonMeta } from '../../utils/assets'
 import { getAreArraysSame } from '../../utils'
+import ErrorMessage from '../error-message'
 
 const ApproveButton = ({
   id,
@@ -65,7 +66,9 @@ const ApproveButton = ({
   }
 
   if (lastErrorCodeLoading !== null) {
-    return <>Failed to load (code {lastErrorCodeLoading})</>
+    return (
+      <ErrorMessage>Failed to load (code {lastErrorCodeLoading})</ErrorMessage>
+    )
   }
 
   if (!existingApprovalStatus && !metaRecord) {
@@ -73,7 +76,11 @@ const ApproveButton = ({
   }
 
   if (lastErrorCodeSaving !== null) {
-    return <>Failed to save (code {lastErrorCodeSaving})</>
+    return (
+      <ErrorMessage>
+        Failed to save meta record (code {lastErrorCodeSaving})
+      </ErrorMessage>
+    )
   }
 
   const approvalStatus = existingApprovalStatus
