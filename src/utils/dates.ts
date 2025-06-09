@@ -24,3 +24,6 @@ export const getFriendlyDate = (
   isRelative
     ? moment(date).fromNow()
     : moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
+
+export const getFormattedDate = (date: Date | string, format: string): string =>
+  moment(date).format(format)

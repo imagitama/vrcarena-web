@@ -1,6 +1,5 @@
-/// <reference types="webpack-env" />
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
 import firebase from 'firebase/app'
@@ -27,35 +26,29 @@ history.listen(() => {
   store.dispatch(changeSearchTerm())
 })
 
-const target = document.querySelector('#root')
-
 const rrfProps = {
   firebase,
   config: {},
   dispatch: store.dispatch,
 }
 
-const render = (Component: React.FunctionComponent) =>
-  ReactDOM.render(
-    <SupabaseClientContext.Provider value={supabaseClient}>
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <ReactReduxFirebaseProvider {...rrfProps}>
-            <Component />
-          </ReactReduxFirebaseProvider>
-        </ConnectedRouter>
-      </Provider>
-    </SupabaseClientContext.Provider>,
-    target
+const domNode = document.getElementById('root')
+const root = createRoot(domNode!)
+
+root.render(
+  <SupabaseClientContext.Provider value={supabaseClient}>
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <App />
+        </ReactReduxFirebaseProvider>
+      </ConnectedRouter>
+    </Provider>
+  </SupabaseClientContext.Provider>
+)
+
+if (process.env.NODE_ENV === 'development') {
+  new EventSource('/esbuild').addEventListener('change', () =>
+    location.reload()
   )
-
-render(App)
-
-// @ts-ignore
-if (module.hot) {
-  // @ts-ignore
-  module.hot.accept('./App', () => {
-    const NextApp = require('./App').default
-    render(NextApp)
-  })
 }

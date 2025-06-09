@@ -1,26 +1,80 @@
 import React from 'react'
-import { DiscordMessage as ReactDiscordMessage } from '@danktuary/react-discord-message'
+import { makeStyles } from '@material-ui/core/styles'
+import Avatar from '@material-ui/core/Avatar'
+import Typography from '@material-ui/core/Typography'
+import Box from '@material-ui/core/Box'
+
 import { CachedDiscordMessage } from '../../modules/discordmessagecache'
 import { getAvatarImageUrl } from '../../discord'
+import Paper from '../paper'
+import { getFormattedDate } from '../../utils/dates'
+
+const useStyles = makeStyles((theme) => ({
+  messageContainer: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    padding: theme.spacing(1),
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    backgroundColor: '#36393f',
+    color: 'white',
+  },
+  avatar: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    marginRight: theme.spacing(2),
+  },
+  contentBox: {
+    flex: 1,
+  },
+  username: {
+    fontWeight: 500,
+    color: '#ffffff',
+    marginRight: theme.spacing(1),
+  },
+  timestamp: {
+    fontSize: '0.75rem',
+    color: '#72767d',
+  },
+  content: {
+    color: '#dcddde',
+    marginTop: theme.spacing(0.5),
+    whiteSpace: 'pre-wrap',
+  },
+}))
 
 const DiscordMessageResult = ({
   message,
 }: {
   message: CachedDiscordMessage
-}) => (
-  <ReactDiscordMessage
-    author={message.rawdata.author.username}
-    avatar={
-      message.rawdata.author.avatar
-        ? getAvatarImageUrl(
-            message.rawdata.author.id,
-            message.rawdata.author.avatar
-          )
-        : undefined
-    }
-    timestamp={message.sentat}>
-    {message.content}
-  </ReactDiscordMessage>
-)
+}) => {
+  const classes = useStyles()
+
+  return (
+    <Paper className={classes.messageContainer}>
+      <Avatar
+        src={
+          message.rawdata.author.avatar
+            ? getAvatarImageUrl(
+                message.rawdata.author.id,
+                message.rawdata.author.avatar
+              )
+            : undefined
+        }
+        className={classes.avatar}
+      />
+      <Box className={classes.contentBox}>
+        <Box display="flex" alignItems="center">
+          <Typography className={classes.username}>
+            {message.rawdata.author.username}
+          </Typography>
+          <Typography className={classes.timestamp}>
+            {getFormattedDate(message.sentat, 'MMM d, yyyy h:mm a')}
+          </Typography>
+        </Box>
+        <Typography className={classes.content}>{message.content}</Typography>
+      </Box>
+    </Paper>
+  )
+}
 
 export default DiscordMessageResult

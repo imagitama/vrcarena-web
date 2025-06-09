@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { colors } from '../../brand'
 import Markdown from '../../components/markdown'
-import logoSvgUrl from './assets/logo-v1/logo-v1.svg'
+import { ReactComponent as Logo } from './assets/logo-v1/logo-v1.svg'
 import avatarUrl from './assets/logo-v1/avatar.png'
 
 const rules = `# VRCArena Brand Guide
@@ -29,13 +29,11 @@ The website is called "VRCArena" (without a space). Not "VRC Arena" or "Vrc Aren
 
 ## Logo
 
-<img src="${logoSvgUrl}" width="100px" height="100px" />
-
 The logo is completely white (#FFF) for dark backgrounds.
 
 It has the letters "VRC ARENA". The space is not part of our name and is just there to help read the logo.
 
-You can download the vector (SVG) from [here](${logoSvgUrl}).
+You can download the vector (SVG) by right-clicking the above image and saving the SVG.
 
 ## Fonts
 
@@ -82,6 +80,9 @@ export default () => (
         content="Read about what the VRCArena brand is including our colors, logo, fonts and more."
       />
     </Helmet>
+    <div style={{ width: '300px' }}>
+      <Logo style={{ width: '100%' }} />
+    </div>
     <Markdown source={rules} enableHtml />
   </>
 )
