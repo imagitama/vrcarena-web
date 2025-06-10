@@ -1,6 +1,7 @@
 const esbuild = require('esbuild')
 const svgrPlugin = require('esbuild-plugin-svgr')
 const fs = require('fs/promises')
+const fsSync = require('fs')
 const dotenv = require('dotenv')
 
 dotenv.config()
@@ -39,7 +40,9 @@ dotenv.config()
   }
 
   try {
-    await fs.rm('./build', { recursive: true })
+    if (fsSync.existsSync('./build')) {
+      await fs.rm('./build', { recursive: true })
+    }
 
     await fs.cp('./public', './build', { recursive: true })
 
