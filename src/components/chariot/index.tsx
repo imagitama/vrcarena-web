@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@mui/styles'
 import { ReactComponent as ChariotImage } from '../../assets/images/chariot.svg'
 import { ReactComponent as ChristmasHat } from '../../assets/images/christmas-hat.svg'
 import { getIsChristmasTime } from '../../utils'

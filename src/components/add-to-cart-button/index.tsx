@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart'
-import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart'
-import DoneAllIcon from '@material-ui/icons/DoneAll'
-import Tooltip from '@material-ui/core/Tooltip'
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
+import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart'
+import DoneAllIcon from '@mui/icons-material/DoneAll'
+import Tooltip from '@mui/material/Tooltip'
 import useCart from '../../hooks/useCart'
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@mui/styles'
 import Button from '../button'
 import useTimer from '../../hooks/useTimer'
 
@@ -67,7 +67,7 @@ export default ({
     return (
       <Button
         onClick={onClick}
-        color="default"
+        color="secondary"
         isLoading={isLoading}
         icon={isInCart ? <RemoveShoppingCartIcon /> : <AddShoppingCartIcon />}
         isDisabled={!assetId}

@@ -5,11 +5,11 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
-import useDataStore from '../../hooks/useDataStore'
+import useDataStore, { GetQueryFn } from '../../hooks/useDataStore'
 import { Asset, ViewNames } from '../../modules/assets'
 
 export default ({ userId }: { userId: string }) => {
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<Asset>>(
     (supabase) =>
       supabase
         .from(ViewNames.GetEndorsementAssetResults)
@@ -27,7 +27,11 @@ export default ({ userId }: { userId: string }) => {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to find the endorsements</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to find the endorsements (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!assetsEndorsed || !assetsEndorsed.length) {

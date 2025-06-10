@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import CheckIcon from '@material-ui/icons/Check'
-import { makeStyles } from '@material-ui/core/styles'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import CheckIcon from '@mui/icons-material/Check'
+import { makeStyles } from '@mui/styles'
 
 import Button, { ButtonProps } from '../../components/button'
 

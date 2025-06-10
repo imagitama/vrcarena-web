@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import useDataStore from '../../hooks/useDataStore'
+import useDataStore, { GetQueryFn } from '../../hooks/useDataStore'
 import useUserId from '../../hooks/useUserId'
 
 import LoadingIndicator from '../loading-indicator'
@@ -10,12 +10,9 @@ import { FullAsset, ViewNames } from '../../modules/assets'
 
 export default () => {
   const userId = useUserId()
-  const getQuery = useCallback(
-    (supabase) =>
-      supabase
-        .from(ViewNames.GetFullAssets)
-        .select('*')
-        .eq('featuredby', userId),
+  const getQuery = useCallback<GetQueryFn<FullAsset>>(
+    (client) =>
+      client.from(ViewNames.GetFullAssets).select('*').eq('featuredby', userId),
     [userId]
   )
   const [isLoading, lastErrorCode, results] = useDataStore<FullAsset>(
@@ -28,7 +25,11 @@ export default () => {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to load featured assets</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to load featured assets (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!results || !results.length) {

@@ -1,9 +1,9 @@
 import React from 'react'
-import Tooltip from '@material-ui/core/Tooltip'
-import { makeStyles } from '@material-ui/core/styles'
+import Tooltip from '@mui/material/Tooltip'
+import { makeStyles } from '@mui/styles'
 import Button from '../button'
 import { VRChat as VRChatIcon } from '../../icons'
-import { isGitRepoUrl, isJsonUrl } from '../../utils'
+import { isJsonUrl } from '../../utils'
 
 const useStyles = makeStyles({
   vrchatIcon: {
@@ -13,13 +13,7 @@ const useStyles = makeStyles({
   },
 })
 
-const AddToVccButton = ({
-  vccUrl,
-  assetId,
-}: {
-  vccUrl: string
-  assetId?: string
-}) => {
+const AddToVccButton = ({ vccUrl }: { vccUrl: string }) => {
   const classes = useStyles()
   return (
     <Tooltip
@@ -30,7 +24,7 @@ const AddToVccButton = ({
         url={`vcc://vpm/${
           isJsonUrl(vccUrl) ? 'addPackage' : 'addRepo'
         }?url=${vccUrl}`}
-        color="default"
+        color="secondary"
         icon={<VRChatIcon className={classes.vrchatIcon} />}
         switchIconSide>
         Add {isJsonUrl(vccUrl) ? 'Package' : 'Repo'} To VCC

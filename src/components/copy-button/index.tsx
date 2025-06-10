@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import FileCopyIcon from '@material-ui/icons/FileCopy'
+import FileCopyIcon from '@mui/icons-material/FileCopy'
 import Button from '../button'
 import { copyTextToClipboard } from '../../utils'
 import useTimer from '../../hooks/useTimer'
@@ -11,7 +11,7 @@ const CopyButton = ({ text }: { text: string }) => {
   return (
     <Button
       icon={<FileCopyIcon />}
-      color="default"
+      color="secondary"
       onClick={() => {
         copyTextToClipboard(text)
         setHasCopied(true)

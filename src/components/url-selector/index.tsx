@@ -76,7 +76,7 @@ export default ({
         )}
         <FormControls>
           <Button onClick={() => finish()}>This Is Correct</Button>{' '}
-          <Button color="default" onClick={() => cancel()}>
+          <Button color="secondary" onClick={() => cancel()}>
             Try Again
           </Button>
         </FormControls>

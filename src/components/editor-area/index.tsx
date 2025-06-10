@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
-import ArrowRightIcon from '@material-ui/icons/ArrowRight'
+import { makeStyles } from '@mui/styles'
+import EditIcon from '@mui/icons-material/Edit'
+import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 
 import { trackAction } from '../../analytics'
 import { colorPalette } from '../../config'
@@ -102,7 +102,7 @@ const EditorArea = ({
   fieldName?: string
   title: string
   description?: string
-  icon: () => React.ReactElement
+  icon: React.ReactElement
   display?: () => React.ReactElement
   editor?: React.ReactNode
   displayAndEditor?: React.ReactNode
@@ -139,11 +139,7 @@ const EditorArea = ({
     <div className={`${classes.root} ${className}`}>
       {title && (
         <div className={classes.title}>
-          {Icon && (
-            <span className={classes.icon}>
-              <Icon />
-            </span>
-          )}
+          {Icon && <span className={classes.icon}>{Icon}</span>}
           {title}&nbsp;
           {isRequired ? (
             <span className={classes.requiredLabel}>(Required)</span>

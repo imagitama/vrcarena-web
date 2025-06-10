@@ -1,17 +1,17 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import './skeleton-loading-styles.css'
 
 const useStyles = makeStyles({
   root: {
     width: '100%',
-    height: '100%'
-  }
+    height: '100%',
+  },
 })
 
 export default ({
   width,
-  height
+  height,
 }: {
   width?: number | string
   height?: number | string

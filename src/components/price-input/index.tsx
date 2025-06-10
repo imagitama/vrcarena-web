@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import MenuItem from '@material-ui/core/MenuItem'
+import { makeStyles } from '@mui/styles'
+import MenuItem from '@mui/material/MenuItem'
 
 import TextInput from '../text-input'
 import Button from '../button'
@@ -63,7 +63,7 @@ const PriceInput = ({
             onChange(newPrice > 0 ? newPrice : null, priceCurrency)
           }}
         />
-        <Button onClick={() => onChange(null, priceCurrency)} color="default">
+        <Button onClick={() => onChange(null, priceCurrency)} color="secondary">
           Clear Price
         </Button>
       </div>

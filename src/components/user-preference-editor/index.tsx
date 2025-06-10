@@ -1,8 +1,8 @@
 import React, { SyntheticEvent, useState } from 'react'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControl from '@material-ui/core/FormControl'
-import { makeStyles } from '@material-ui/core/styles'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import FormControl from '@mui/material/FormControl'
+import { makeStyles } from '@mui/styles'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -14,6 +14,7 @@ import ErrorMessage from '../error-message'
 import { trackAction } from '../../analytics'
 import useTimer from '../../hooks/useTimer'
 import { formHideDelay } from '../../config'
+import CheckboxInput from '../checkbox-input'
 
 const useStyles = makeStyles({
   savingState: {
@@ -37,7 +38,7 @@ const UserPreferenceEditor = ({
 }) => {
   const classes = useStyles()
   const [tempNewValue, setTempNewValue] = useState<boolean | null>(null)
-  const [isLoadingUser, isErroredUser, userPreferences, hydrate] =
+  const [isLoadingUser, lastErrorcodeLoadingUser, userPreferences, hydrate] =
     useUserPreferences(true)
   const [isSaving, isSaveSuccess, isSaveError, save, clear] =
     useDatabaseSave<UserPreferences>(
@@ -46,33 +47,35 @@ const UserPreferenceEditor = ({
     )
   const startTimer = useTimer(clear, formHideDelay)
 
-  if (isErroredUser) {
-    return <ErrorMessage>Failed to load user account</ErrorMessage>
+  if (lastErrorcodeLoadingUser !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load user account (code {lastErrorcodeLoadingUser})
+      </ErrorMessage>
+    )
   }
 
   const currentValue = userPreferences
     ? (userPreferences[name] as boolean)
     : false
 
-  const onCheckboxChange = async (event: SyntheticEvent) => {
-    const newValue = (event.target as HTMLInputElement).checked
-
+  const onCheckboxChange = async (newVal: boolean) => {
     try {
       if (onClick) {
-        onClick(newValue)
+        onClick(newVal)
       }
 
       if (analyticsCategoryName) {
         trackAction(analyticsCategoryName, 'Clicked preference checkbox', {
           name,
-          newValue,
+          newVal,
         })
       }
 
-      setTempNewValue(newValue)
+      setTempNewValue(newVal)
 
       await save({
-        [name]: newValue,
+        [name]: newVal,
       })
 
       hydrate()
@@ -85,15 +88,11 @@ const UserPreferenceEditor = ({
   }
 
   return (
-    <FormControl>
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={tempNewValue !== null ? tempNewValue : currentValue}
-            onChange={onCheckboxChange}
-            disabled={isLoadingUser || isSaving}
-          />
-        }
+    <div>
+      <CheckboxInput
+        value={tempNewValue !== null ? tempNewValue : currentValue}
+        onChange={onCheckboxChange}
+        isDisabled={isLoadingUser || isSaving}
         label={label}
       />
       <span className={classes.savingState}>
@@ -105,7 +104,7 @@ const UserPreferenceEditor = ({
           ? 'Failed to save'
           : ''}
       </span>
-    </FormControl>
+    </div>
   )
 }
 

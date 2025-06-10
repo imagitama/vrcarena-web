@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { Helmet } from 'react-helmet'
 
 import BigSearchInput from '../../components/big-search-input'
@@ -12,7 +12,7 @@ import {
 } from '../../utils'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import AssetResults from '../../components/asset-results'
-import PaginatedView from '../../components/paginated-view'
+import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
 import {
   CollectionNames,
   FullAsset,
@@ -30,8 +30,9 @@ import Message from '../../components/message'
 import useDataStore from '../../hooks/useDataStore'
 import { SupabaseClient } from '@supabase/supabase-js'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     position: 'relative',
   },
@@ -588,8 +589,9 @@ export default () => {
     })()
   }, [userInputToUse])
 
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
     (query) => {
+      // @ts-ignore
       query = extendQueryFromUserInput(query, operations)
 
       if (isAdultContentEnabled !== true) {

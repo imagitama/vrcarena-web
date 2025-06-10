@@ -1,6 +1,6 @@
 import React from 'react'
-import InfoIcon from '@material-ui/icons/Info'
-import CheckIcon from '@material-ui/icons/Check'
+import InfoIcon from '@mui/icons-material/Info'
+import CheckIcon from '@mui/icons-material/Check'
 
 import Message from '../message'
 import Button from '../button'
@@ -19,7 +19,7 @@ export default ({
     title={title || children}
     controls={
       onOkay ? (
-        <Button onClick={onOkay} icon={<CheckIcon />} color="default">
+        <Button onClick={onOkay} icon={<CheckIcon />} color="secondary">
           Okay
         </Button>
       ) : undefined

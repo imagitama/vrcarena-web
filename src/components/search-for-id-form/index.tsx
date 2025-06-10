@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import useSearching from '../../hooks/useSearching'
 import TextInput from '../text-input'
@@ -160,7 +160,7 @@ function SearchForm({
             <Button
               key={result.id}
               onClick={() => onClickWithIdAndDetails(result.id, result)}
-              color="default"
+              color="secondary"
               className={classes.button}>
               {fieldAsLabel ? result[fieldAsLabel] : '(no label)'}
             </Button>

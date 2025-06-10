@@ -1,13 +1,8 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import InputBase, { InputBaseProps } from '@material-ui/core/InputBase'
-import ThemeProvider from '@material-ui/styles/ThemeProvider'
-import ClearIcon from '@material-ui/icons/Clear'
-
-import { lightTheme } from '../../themes'
-
-import LoadingIndicator from '../loading-indicator'
+import { makeStyles } from '@mui/styles'
+import Paper from '@mui/material/Paper'
+import InputBase, { InputBaseProps } from '@mui/material/InputBase'
+import ClearIcon from '@mui/icons-material/Clear'
 
 const sidePadding = '1rem'
 
@@ -15,14 +10,15 @@ const useStyles = makeStyles({
   root: {
     position: 'relative',
   },
-  inputWrapper: {
+  paper: {
     padding: `2px 2px 2px ${sidePadding}`,
-    borderRadius: '3rem',
+    borderRadius: '3rem !important',
     display: 'flex',
     alignItems: 'center',
     '@media (min-width: 960px)': {
       margin: '0 auto',
     },
+    backgroundColor: '#FFF !important',
   },
   input: {
     width: 'calc(100% - 50px)',
@@ -30,6 +26,7 @@ const useStyles = makeStyles({
     padding: '0.25rem',
     marginLeft: 8,
     flex: 1,
+    color: '#222 !important',
   },
   clearButton: {
     position: 'absolute',
@@ -65,20 +62,18 @@ const BigSearchInput = ({
 
   return (
     <div className={classes.root}>
-      <ThemeProvider theme={lightTheme}>
-        <Paper className={classes.inputWrapper}>
-          <InputBase
-            {...inputProps}
-            className={`${classes.input} ${inputProps.className || ''}`}
-          />
-        </Paper>
-        {isSearching ? (
-          <div className={classes.searchingIcon}>Searching...</div>
-        ) : null}
-        <div className={classes.clearButton} onClick={onClear}>
-          <ClearIcon />
-        </div>
-      </ThemeProvider>
+      <Paper classes={{ root: classes.paper }}>
+        <InputBase
+          {...inputProps}
+          className={`${classes.input} ${inputProps.className || ''}`}
+        />
+      </Paper>
+      {isSearching ? (
+        <div className={classes.searchingIcon}>Searching...</div>
+      ) : null}
+      <div className={classes.clearButton} onClick={onClear}>
+        <ClearIcon />
+      </div>
     </div>
   )
 }

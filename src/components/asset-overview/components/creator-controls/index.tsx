@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import EditIcon from '@material-ui/icons/Edit'
+import EditIcon from '@mui/icons-material/Edit'
 
 import * as routes from '../../../../routes'
 
@@ -19,7 +19,7 @@ export default () => {
       <Control>
         <Button
           url={routes.editAssetWithVar.replace(':assetId', assetId)}
-          color="default"
+          color="secondary"
           icon={<EditIcon />}>
           Edit Asset
         </Button>

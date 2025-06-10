@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -37,9 +37,6 @@ const useStyles = makeStyles({
     '& > div': {
       width: '100%',
     },
-    '& input': {
-      paddingTop: '12px',
-    },
   },
   hint: {
     fontSize: '75%',
@@ -73,12 +70,11 @@ const Field = ({ children }: { children: React.ReactNode }) => {
 
 export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
   const userId = useUserId()
-  const [isLoadingProfile, isErroredLoadingProfile, profile] =
-    useDataStoreItem<User>(
-      CollectionNames.Users,
-      userId || false,
-      'social-media-usernames-editor'
-    )
+  const [, , profile] = useDataStoreItem<User>(
+    CollectionNames.Users,
+    userId || false,
+    'social-media-usernames-editor'
+  )
   const [isSaving, isSaveSuccess, lastErrorCode, save] = useDatabaseSave(
     CollectionNames.Users,
     userId

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import Paper from '../paper'
 import LoadingIndicator from '../loading-indicator'
@@ -41,7 +41,7 @@ export default ({
 }) => {
   const [textFieldVal, setTextFieldVal] = useState(existingUrl || '')
   const [embedUrl, setEmbedUrl] = useState('')
-  const [isSaving, , isSaveError, save] = useDatabaseSave<Asset>(
+  const [isSaving, , lastErrorCode, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -74,8 +74,10 @@ export default ({
     return <LoadingIndicator message="Saving asset..." />
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save asset</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (
@@ -97,7 +99,7 @@ export default ({
         onChange={(e) => setTextFieldVal(e.target.value)}
         className={classes.textInput}
       />{' '}
-      <Button onClick={onApplyBtnClick} color="default">
+      <Button onClick={onApplyBtnClick} color="secondary">
         Apply
       </Button>
       <br />

@@ -37,11 +37,6 @@ const View = () => {
             newId || attachmentId
           )
         }
-        // cancelUrl={
-        //   isCreating
-        //     ? routes.attachments
-        //     : routes.viewAttachmentWithVar.replace(':attachmentId', attachmentId)
-        // }
       />
     </>
   )

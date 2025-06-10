@@ -23,9 +23,11 @@ const UnapprovedAssetsMessage = () => {
     return null
   }
 
-  if (lastErrorCode) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to get admin queue: {lastErrorCode}</ErrorMessage>
+      <ErrorMessage>
+        Failed to get admin queue (code {lastErrorCode})
+      </ErrorMessage>
     )
   }
 

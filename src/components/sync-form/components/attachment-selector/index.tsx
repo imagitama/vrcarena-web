@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import AttachFileIcon from '@material-ui/icons/AttachFile'
+import { makeStyles } from '@mui/styles'
+import AttachFileIcon from '@mui/icons-material/AttachFile'
 
 import { SyncAttachment, SyncAttachmentType } from '../../../../syncing'
 import ErrorMessage from '../../../error-message'
@@ -279,7 +279,7 @@ const AttachmentsSelector = ({
             </SuccessMessage>
             <Button
               onClick={() => resetEverything()}
-              color="default"
+              color="secondary"
               isDisabled={isFieldDisabled}>
               Reset Attachments
             </Button>

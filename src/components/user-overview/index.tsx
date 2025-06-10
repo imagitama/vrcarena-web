@@ -1,9 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
-import { makeStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
-import CommentIcon from '@material-ui/icons/Comment'
+import { makeStyles } from '@mui/styles'
+import EditIcon from '@mui/icons-material/Edit'
+import CommentIcon from '@mui/icons-material/Comment'
 
 import useUserRecord from '../../hooks/useUserRecord'
 
@@ -105,7 +105,7 @@ const UserControls = ({ children }: { children: React.ReactChild[] }) => {
 
 export default ({ userId }: { userId: string }) => {
   const [, , currentUser] = useUserRecord()
-  const [isLoadingUser, isErroredLoadingUser, user] =
+  const [isLoadingUser, lastErrorCodeLoadingUser, user] =
     useDataStoreItem<FullUser>(ViewNames.GetFullUsers, userId, 'user-overview')
   const classes = useStyles()
   const isEditor = useIsEditor()
@@ -114,8 +114,18 @@ export default ({ userId }: { userId: string }) => {
     return <LoadingIndicator message="Loading user profile..." />
   }
 
-  if (isErroredLoadingUser || !user) {
-    return <ErrorMessage>Failed to load their account</ErrorMessage>
+  if (lastErrorCodeLoadingUser !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load their account (code {lastErrorCodeLoadingUser})
+      </ErrorMessage>
+    )
+  }
+
+  if (!user) {
+    return (
+      <ErrorMessage>Failed to load their account (invalid user)</ErrorMessage>
+    )
   }
 
   const {

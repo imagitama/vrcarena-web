@@ -1,7 +1,6 @@
 import React from 'react'
 import { FullAttachment } from '../../modules/attachments'
 import ResultsItems from '../results-items'
-// import AttachmentResultsItem from '../attachment-results-item'
 import * as routes from '../../routes'
 
 const AttachmentResults = ({

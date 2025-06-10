@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import useSupabaseView from '../../../../hooks/useSupabaseView'
 import { FullUser, ViewNames } from '../../../../modules/users'
 import Avatar, { sizes } from '../../../../components/avatar'
@@ -28,12 +28,13 @@ const useStyles = makeStyles({
 })
 
 const EditorTeam = () => {
-  const [isLoading, isError, users] = useSupabaseView<FullUser>(
+  const [isLoading, lastErrorCode, users] = useSupabaseView<FullUser>(
     ViewNames.GetStaffUsers
   )
   const classes = useStyles()
 
-  const isPlaceholder = isLoading || isError || !Array.isArray(users)
+  const isPlaceholder =
+    isLoading || lastErrorCode !== null || !Array.isArray(users)
 
   return (
     <div className={classes.items}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import LaunchIcon from '@material-ui/icons/Launch'
+import LaunchIcon from '@mui/icons-material/Launch'
 import { AttachmentType, AttachmentFields } from '../../modules/attachments'
 import { getIsUrlAYoutubeVideo } from '../../utils'
 import VideoPlayer from '../video-player'
@@ -37,7 +37,7 @@ const Attachment = ({
               url={url}
               size="large"
               icon={<LaunchIcon />}
-              color="tertiary">
+              color="secondary">
               Visit Link
             </Button>
           </>

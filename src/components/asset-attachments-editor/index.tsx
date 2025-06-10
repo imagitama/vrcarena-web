@@ -1,9 +1,11 @@
 import React from 'react'
+
 import { Attachment, AttachmentReason } from '../../modules/attachments'
 import { Asset, CollectionNames } from '../../modules/assets'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { trackAction } from '../../analytics'
 import { handleError } from '../../error-handling'
+
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'

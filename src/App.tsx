@@ -6,13 +6,10 @@ import {
   useHistory,
   Redirect,
 } from 'react-router-dom'
-import ThemeProvider from '@material-ui/styles/ThemeProvider'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import { makeStyles } from '@material-ui/core/styles'
-import { useMediaQuery } from 'react-responsive'
+import { makeStyles } from '@mui/styles'
+import CssBaseline from '@mui/material/CssBaseline'
 
 import * as routes from './routes'
-import { darkTheme } from './themes'
 
 // Do not lazy load these routes as they are very popular so they should load fast
 import Home from './containers/home'
@@ -419,14 +416,6 @@ const Social = lazy(() =>
     () => import(/* webpackChunkName: "social" */ './containers/social')
   )
 )
-const WorldBuilder = lazy(() =>
-  catchChunkDeaths(
-    () =>
-      import(
-        /* webpackChunkName: "world-builder" */ './containers/world-builder'
-      )
-  )
-)
 const Promos = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "promos" */ './containers/promos')
@@ -508,13 +497,16 @@ const MainContent = () => {
         <Route exact path={routes.home} component={Home} />
         <Route exact path={routes.searchWithVar} component={Search} />
         <Route exact path={routes.cart} component={Cart} />
-        <Route exact path={routes.worldBuilder} component={WorldBuilder} />
         <Route exact path={routes.social} component={Social} />
         <Route exact path={routes.login} component={Login} />
         <Route exact path={routes.signUp} component={SignUp} />
         <Route exact path={routes.logout} component={Logout} />
         <Route exact path={routes.createAsset} component={CreateAsset} />
-        <Route exact path={routes.oldEditAssetWithVar} component={EditAsset} />
+        <Route
+          exact
+          path={routes.editAssetWithVarAndTabNameVar}
+          component={EditAsset}
+        />
         <Route exact path={routes.editAssetWithVar} component={EditAsset} />
         <Route
           exact
@@ -797,32 +789,29 @@ const MainContent = () => {
 
 export default () => {
   const classes = useStyles()
-  const location = useLocation()
 
   return (
     <ErrorBoundary>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <Banner />
-        <PageHeader />
-        <main className="main">
-          <div className={classes.mainContainer}>
-            <BannedNotice />
-            <Notices />
-            <FuralityBanner />
-            <UnapprovedAssetsMessage />
-            <DraftAssetsMessage />
-            <ErrorBoundary>
-              <MainContent />
-            </ErrorBoundary>
-          </div>
-        </main>
-        {/* <ErrorMessage hintText="">
+      <CssBaseline />
+      <Banner />
+      <PageHeader />
+      <main className="main">
+        <div className={classes.mainContainer}>
+          <BannedNotice />
+          <Notices />
+          <FuralityBanner />
+          <UnapprovedAssetsMessage />
+          <DraftAssetsMessage />
+          <ErrorBoundary>
+            <MainContent />
+          </ErrorBoundary>
+        </div>
+      </main>
+      {/* <ErrorMessage hintText="">
           Website will be unavailable for a couple of hours (since 6:00 UTC) as
           I upgrade the database -PB
         </ErrorMessage> */}
-        <PageFooter />
-      </ThemeProvider>
+      <PageFooter />
     </ErrorBoundary>
   )
 }

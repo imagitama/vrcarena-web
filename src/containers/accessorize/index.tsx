@@ -10,7 +10,7 @@ import { FullAsset, ViewNames } from '../../modules/assets'
 
 const View = () => {
   const { assetId } = useParams<{ assetId: string }>()
-  const [isLoading, isErrored, baseAsset] = useDataStoreItem<FullAsset>(
+  const [isLoading, lastErrorCode, baseAsset] = useDataStoreItem<FullAsset>(
     ViewNames.GetFullAssets,
     assetId,
     'accessorize'
@@ -20,8 +20,10 @@ const View = () => {
     return <LoadingIndicator message="Loading asset..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load asset</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

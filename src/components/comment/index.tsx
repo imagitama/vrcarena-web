@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import Link from '../../components/link'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import useUserRecord from '../../hooks/useUserRecord'
 
-import { canEditComments } from '../../permissions'
 import * as routes from '../../routes'
 import { getIsRoleAStaffMember } from '../../utils/users'
 import { scrollToElement } from '../../utils'
@@ -199,7 +198,7 @@ export default ({
             <div className={classes.content}>
               <MentionsOutput
                 text={shorten ? shortenComment(commentText!) : commentText!}
-                mentions={mentions!}
+                mentions={mentions || []}
               />
             </div>
           )}

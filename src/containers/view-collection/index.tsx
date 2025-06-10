@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
-import EditIcon from '@material-ui/icons/Edit'
+import EditIcon from '@mui/icons-material/Edit'
 
 import Link from '../../components/link'
 import * as routes from '../../routes'
@@ -25,7 +25,7 @@ const analyticsCategory = 'ViewCollection'
 
 const View = () => {
   const { collectionId } = useParams<{ collectionId: string }>()
-  const [isLoading, isErrored, result] = useDataStoreItem<FullCollection>(
+  const [isLoading, lastErrorCode, result] = useDataStoreItem<FullCollection>(
     ViewNames.GetFullCollections,
     collectionId,
     'view-collection'
@@ -37,8 +37,12 @@ const View = () => {
     return <LoadingIndicator message="Loading collectiion..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load collection</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load collection (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!result) {
@@ -95,7 +99,7 @@ const View = () => {
       <PageControls>
         <Button
           url={routes.viewCollections}
-          color="default"
+          color="secondary"
           onClick={() =>
             trackAction(analyticsCategory, 'Click view all collections button')
           }>
@@ -107,7 +111,7 @@ const View = () => {
               ':collectionId',
               collectionId
             )}
-            color="default"
+            color="secondary"
             icon={<EditIcon />}>
             Edit
           </Button>

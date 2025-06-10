@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
+import { makeStyles } from '@mui/styles'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 
 import useUserRecord from '../../hooks/useUserRecord'
 
@@ -88,7 +88,6 @@ function Dropdown({
       </span>
       <Menu
         anchorEl={labelRef.current}
-        getContentAnchorEl={null}
         open={isOpen}
         anchorOrigin={{
           vertical: 'bottom',
@@ -102,7 +101,9 @@ function Dropdown({
         {!Array.isArray(items)
           ? React.createElement(items, { onClose })
           : items.map(({ label, url }) => (
-              <MenuItem key={url} onClick={url ? () => onClickItem(url) : undefined}>
+              <MenuItem
+                key={url}
+                onClick={url ? () => onClickItem(url) : undefined}>
                 {label}
               </MenuItem>
             ))}

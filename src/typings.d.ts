@@ -4,10 +4,12 @@ declare module '*.svg' {
   export const ReactComponent: React.FunctionComponent<
     React.SVGProps<SVGSVGElement> & { title?: string }
   >
-
-  //   export default ReactComponent
 }
 
 declare module '*.png' {
+  export default String()
+}
+
+declare module '*.webp' {
   export default String()
 }

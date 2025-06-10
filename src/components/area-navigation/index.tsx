@@ -1,33 +1,33 @@
 import React from 'react'
-import Link from '../../components/link'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import { standardAreaNames, areasByCategory } from '../../areas'
 import * as routes from '../../routes'
 import Heading from '../heading'
+import Link from '../link'
 
 const useStyles = makeStyles({
   root: {
     marginTop: '1rem',
-    display: 'flex'
+    display: 'flex',
   },
   items: {
     display: 'flex',
     marginLeft: '-0.5rem',
     alignItems: 'baseline',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   item: {
     '& a': {
       padding: '0.5rem',
-      fontSize: '125%'
-    }
-  }
+      fontSize: '125%',
+    },
+  },
 })
 
 export default ({
   categoryName,
-  selectedAreaName = undefined
+  selectedAreaName = undefined,
 }: {
   categoryName: string
   selectedAreaName?: string

@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
 
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 
 import Button from '../button'
-import PaginatedView from '../paginated-view'
+import PaginatedView, { GetQueryFn } from '../paginated-view'
 import AmendmentResults from '../amendment-results'
 import TextInput from '../text-input'
 import { FullAmendment, ViewNames } from '../../modules/amendments'
@@ -46,7 +46,7 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
 export default () => {
   const [selectedSubView, setSelectedSubView] = useState(subViews.WAITING)
   const [userIdToFilter, setUserIdToFilter] = useState('')
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<FullAmendment>>(
     (query) => {
       if (userIdToFilter) {
         query = query.eq('createdby', userIdToFilter)
@@ -110,7 +110,7 @@ export default () => {
               'Click on view waiting amendments'
             )
           }}
-          color="default">
+          color="secondary">
           Waiting
         </Button>,
         <Button
@@ -128,7 +128,7 @@ export default () => {
               'Click on view approved amendments'
             )
           }}
-          color="default">
+          color="secondary">
           Approved
         </Button>,
         <Button
@@ -146,7 +146,7 @@ export default () => {
               'Click on view rejected amendments'
             )
           }}
-          color="default">
+          color="secondary">
           Rejected
         </Button>,
         <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,

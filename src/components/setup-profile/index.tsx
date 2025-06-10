@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useLocation } from 'react-router'
-import { makeStyles } from '@material-ui/core/styles'
-import FlagIcon from '@material-ui/icons/Flag'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import { makeStyles } from '@mui/styles'
+import FlagIcon from '@mui/icons-material/Flag'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'

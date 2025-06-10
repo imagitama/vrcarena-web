@@ -39,6 +39,8 @@ dotenv.config()
   }
 
   try {
+    await fs.rm('./build', { recursive: true })
+
     await fs.cp('./public', './build', { recursive: true })
 
     const context = await esbuild.context(config)

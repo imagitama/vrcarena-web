@@ -1,6 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import WarningIcon from '@material-ui/icons/Warning'
+import { makeStyles } from '@mui/styles'
+import WarningIcon from '@mui/icons-material/Warning'
 
 import { trackAction } from '../../analytics'
 import { DiscordServerData } from '../../modules/assets'
@@ -74,7 +74,7 @@ const DiscordServerMustJoinNotice = ({
             <div>You must accept this invite: </div>
             <Button
               size="small"
-              color="default"
+              color="secondary"
               url={discordServerData.inviteurl}
               onClick={
                 analyticsCategoryName

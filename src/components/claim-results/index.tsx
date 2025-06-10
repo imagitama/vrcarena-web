@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { FullClaim } from '../../modules/claims'
 import {
   Author,
@@ -8,6 +8,8 @@ import {
 import AuthorResultsItem from '../author-results-item'
 import Heading from '../heading'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
+import FormattedDate from '../formatted-date'
+import Paper from '../paper'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -51,7 +53,10 @@ const ClaimResults = ({ claims }: { claims: FullClaim[] }) => {
     <div className={classes.root}>
       {claims.map((claim) => (
         <div key={claim.id} className={classes.item}>
-          <Heading variant="h3">{getTitleForClaim(claim)}</Heading>
+          <Heading variant="h3">
+            {getTitleForClaim(claim)} (<FormattedDate date={claim.createdat} />)
+          </Heading>
+          <Paper>{claim.comments || '(no comment added)'}</Paper>
           {claim.parentdata ? (
             <Renderer
               parentTable={claim.parenttable}

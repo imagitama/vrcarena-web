@@ -1,6 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import { makeStyles } from '@mui/styles'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import moment from 'moment'
 
 import { getCategoryMeta } from '../../category-meta'
@@ -269,14 +269,19 @@ function TagOutput({ fields }: { fields: Asset }) {
 }
 
 const AuthorOutputItem = ({ id }: { id: string }) => {
-  const [isLoading, isError, author] = useDataStoreItem<Author>(
+  const [isLoading, lastErrorCode, author] = useDataStoreItem<Author>(
     AuthorsCollectionNames.Authors,
     id ? id : false,
     'short-asset-diff-author'
   )
 
   if (isLoading || !author) return <>Loading...</>
-  if (isError) return <>Failed to load author ${id}</>
+  if (lastErrorCode !== null)
+    return (
+      <>
+        Failed to load author {id} (code {lastErrorCode})
+      </>
+    )
 
   return <AuthorResultsItem author={author} />
 }
@@ -294,14 +299,19 @@ function AuthorOutput({ fields }: { fields: Asset }) {
 }
 
 const SpeciesOutputItem = ({ id, idx }: { id: string; idx: number }) => {
-  const [isLoading, isError, species] = useDataStoreItem<Species>(
+  const [isLoading, lastErrorCode, species] = useDataStoreItem<Species>(
     SpeciesCollectionNames.Species,
     id ? id : false,
     'short-asset-diff-species'
   )
 
   if (isLoading || !species) return <>Loading...</>
-  if (isError) return <>Failed to load species {id}</>
+  if (lastErrorCode !== null)
+    return (
+      <>
+        Failed to load species {id} (code {lastErrorCode})
+      </>
+    )
 
   return (
     <>
@@ -373,7 +383,7 @@ function AttachmentsOutput({ fields }: { fields: Asset }) {
     throw new Error('IDs is not even an array')
   }
 
-  const [isLoading, isError, attachments] = useDataStoreItems<Attachment>(
+  const [isLoading, lastErrorCode, attachments] = useDataStoreItems<Attachment>(
     AttachmentsCollectionNames.Attachments,
     fields.attachmentids.length ? fields.attachmentids : false,
     { queryName: 'get-attachments-output' }
@@ -387,8 +397,12 @@ function AttachmentsOutput({ fields }: { fields: Asset }) {
     return <LoadingIndicator message="Loading attachments..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load attachments</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load attachments (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (attachments === null) {

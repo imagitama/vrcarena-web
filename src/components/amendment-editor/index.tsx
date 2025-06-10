@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import CheckIcon from '@material-ui/icons/Check'
+import { makeStyles } from '@mui/styles'
+import CheckIcon from '@mui/icons-material/Check'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -27,7 +27,6 @@ import {
 } from '../../modules/assets'
 import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
 import {
-  Amendment,
   AmendmentFields,
   CollectionNames as AmendmentsCollectionNames,
 } from '../../modules/amendments'
@@ -146,13 +145,13 @@ const AmendmentEditor = ({
   returnUrl?: string
 }) => {
   const classes = useStyles()
-  const [isLoadingParent, isErroredLoadingParent, parent] =
+  const [isLoadingParent, lastErrorCodeLoadingParent, parent] =
     useDataStoreItem<any>(
       parentTable ? getViewNameForParentTable(parentTable) : '',
       parentId || false,
       'amendment-editor-parent'
     )
-  const [isSaving, isSuccess, isErroredSaving, saveOrCreate] =
+  const [isSaving, isSuccess, lastErrorCodeSaving, saveOrCreate] =
     useDatabaseSave<AmendmentFields>(
       AmendmentsCollectionNames.Amendments,
       amendmentId
@@ -192,18 +191,20 @@ const AmendmentEditor = ({
     )
   }
 
-  if (isErroredSaving) {
+  if (lastErrorCodeSaving !== null) {
     return (
       <ErrorMessage>
-        Failed to {amendmentId ? 'save' : 'create'} amendment
+        Failed to {amendmentId ? 'save' : 'create'} amendment (code{' '}
+        {lastErrorCodeSaving})
       </ErrorMessage>
     )
   }
 
-  if (isErroredLoadingParent) {
+  if (lastErrorCodeLoadingParent !== null) {
     return (
       <ErrorMessage>
-        Failed to load parent - are you sure it exists?
+        Failed to load parent - are you sure it exists? (code{' '}
+        {lastErrorCodeLoadingParent})
       </ErrorMessage>
     )
   }
@@ -308,7 +309,7 @@ const AmendmentEditor = ({
           <Button
             onClick={() => setIsPreviewVisible(false)}
             size="large"
-            color="default">
+            color="secondary">
             Back to Editor
           </Button>
         </FormControls>

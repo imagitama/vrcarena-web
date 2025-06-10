@@ -6,9 +6,9 @@ import React, {
   Suspense,
 } from 'react'
 import { useMediaQuery } from 'react-responsive'
-import MaterialTabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import { makeStyles } from '@material-ui/core/styles'
+import MaterialTabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import { makeStyles } from '@mui/styles'
 import LazyLoad from 'react-lazyload'
 import { useParams } from 'react-router'
 
@@ -18,6 +18,9 @@ import {
   queryForTabletsOrBelow,
 } from '../../media-queries'
 import LoadingIndicator from '../loading-indicator'
+import ErrorBoundary from '../error-boundary'
+import { colorBrandLight } from '../../themes'
+import { alpha } from '@mui/material'
 
 const useStyles = makeStyles({
   tabsContainer: {
@@ -45,6 +48,10 @@ const useStyles = makeStyles({
     display: 'flex',
   },
   horizontal: {},
+  selected: {
+    backgroundColor: `${alpha(colorBrandLight, 0.1)} !important`,
+    color: '#FFF !important',
+  },
 })
 
 interface TabContext {
@@ -165,7 +172,11 @@ const Tabs = ({
               }}
               className={classes.tabs}>
               {enabledItems.map(({ name, label }, index) => (
-                <Tab key={name} label={label} />
+                <Tab
+                  key={name}
+                  label={label}
+                  classes={{ selected: classes.selected }}
+                />
               ))}
             </MaterialTabs>
           </div>
@@ -176,7 +187,9 @@ const Tabs = ({
                 activeTabIdx={activeTabIdx}
                 index={index}
                 item={item}>
-                <Suspense fallback={null}>{item.contents}</Suspense>
+                <Suspense fallback={null}>
+                  <ErrorBoundary>{item.contents}</ErrorBoundary>
+                </Suspense>
               </TabPanel>
             ))}
           </div>

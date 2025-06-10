@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import DeleteIcon from '@material-ui/icons/Delete'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 
@@ -32,13 +32,13 @@ const DeleteButton = ({
   onClick?: ({ newValue }: { newValue: AccessStatus }) => void
   onDone?: () => void
 }) => {
-  const [isLoading, isErroredLoading, metaRecord] =
+  const [isLoading, lastErrorCodeLoading, metaRecord] =
     useDataStoreItem<MetaRecord>(
       metaCollectionName,
       existingAccessStatus !== undefined ? false : id,
       'delete-button'
     )
-  const [isSaving, , isErroredSaving, save] = useDatabaseSave<MetaRecord>(
+  const [isSaving, , lastErrorCodeSaving, save] = useDatabaseSave<MetaRecord>(
     metaCollectionName,
     id
   )
@@ -60,12 +60,16 @@ const DeleteButton = ({
   const accessStatus =
     existingAccessStatus || (metaRecord ? metaRecord.accessstatus : undefined)
 
-  if (isErroredLoading || !accessStatus) {
-    return <>Failed to load record!</>
+  if (lastErrorCodeLoading !== null) {
+    return <>Failed to load record (code {lastErrorCodeLoading})</>
   }
 
-  if (isErroredSaving) {
-    return <>Failed to save record!</>
+  if (!accessStatus) {
+    return <>Failed to load record (invalid access status)</>
+  }
+
+  if (lastErrorCodeSaving !== null) {
+    return <>Failed to save record (code {lastErrorCodeSaving})</>
   }
 
   const toggle = async () => {
@@ -125,7 +129,7 @@ const DeleteButton = ({
     <>
       {isAsset && (
         <ButtonDropdown
-          color="default"
+          color="secondary"
           options={deletionReasonMeta
             .map((meta) => ({
               id: meta.reason as string,

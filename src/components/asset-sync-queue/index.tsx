@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
-import ClearIcon from '@material-ui/icons/Clear'
-import DeleteIcon from '@material-ui/icons/Delete'
-import AddIcon from '@material-ui/icons/Add'
-import LaunchIcon from '@material-ui/icons/Launch'
-import EditIcon from '@material-ui/icons/Edit'
-import InfoIcon from '@material-ui/icons/Info'
-import CheckIcon from '@material-ui/icons/Check'
+import ClearIcon from '@mui/icons-material/Clear'
+import DeleteIcon from '@mui/icons-material/Delete'
+import AddIcon from '@mui/icons-material/Add'
+import LaunchIcon from '@mui/icons-material/Launch'
+import EditIcon from '@mui/icons-material/Edit'
+import InfoIcon from '@mui/icons-material/Info'
+import CheckIcon from '@mui/icons-material/Check'
 
-import Paper from '@material-ui/core/Paper'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 
 import TextInput from '../text-input'
 import Tooltip from '../tooltip'
@@ -47,10 +47,10 @@ import { handleError } from '../../error-handling'
 import WarningMessage from '../warning-message'
 import UsernameLink from '../username-link'
 import FormattedDate from '../formatted-date'
-import { callFunction } from '../../firebase'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   queuedStatus: {
     fontWeight: 'bold',
   },
@@ -172,7 +172,7 @@ const DeleteButton = ({
   return (
     <>
       <Button
-        color="default"
+        color="secondary"
         icon={<DeleteIcon className="test" />}
         iconOnly
         onClick={onClickDelete}
@@ -320,7 +320,7 @@ const QueuedItemRow = ({
                 queuedItem.createdassetid
               )}
               size="small"
-              color="default">
+              color="secondary">
               View Asset
             </Button>
           </>
@@ -556,7 +556,7 @@ const AssetSyncQueue = ({
                           url={routes.createAsset}
                           icon={<EditIcon />}
                           size="small"
-                          color="default">
+                          color="secondary">
                           Create Manually
                         </Button>
                       </>
@@ -564,7 +564,7 @@ const AssetSyncQueue = ({
                   </TableCell>
                   <TableCell>
                     <Button
-                      color="default"
+                      color="secondary"
                       icon={<DeleteIcon />}
                       iconOnly
                       onClick={() => removeSourceUrl(i)}
@@ -583,7 +583,7 @@ const AssetSyncQueue = ({
                   onClick={addEmptySource}
                   icon={<AddIcon />}
                   isDisabled={isBusy}
-                  color="default"
+                  color="secondary"
                   switchIconSide>
                   Add Another
                 </Button>

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
 
 // TODO: Re-use
 interface Option {
@@ -8,7 +8,11 @@ interface Option {
   label: string
 }
 
-export default ({ onChange, value = null, options }: {
+export default ({
+  onChange,
+  value = null,
+  options,
+}: {
   value: string | null
   onChange: (newVal: string | null) => void
   options: Option[]

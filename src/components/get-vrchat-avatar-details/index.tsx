@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@mui/styles'
 
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
@@ -134,7 +134,7 @@ const GetVrchatAvatarDetails = ({
               Done
             </Button>
           ) : null}{' '}
-          <Button onClick={retry} color="default">
+          <Button onClick={retry} color="secondary">
             Retry
           </Button>
         </FormControls>

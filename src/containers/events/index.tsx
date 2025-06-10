@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
-import { makeStyles } from '@material-ui/core/styles'
-import AddIcon from '@material-ui/icons/Add'
+import { makeStyles } from '@mui/styles'
+import AddIcon from '@mui/icons-material/Add'
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'

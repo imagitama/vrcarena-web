@@ -37,7 +37,7 @@ const Compare = () => {
   const [allAssetIds, setAllAssetIds] = useState(initialAllAssetIds)
   const [otherAssetIds, setOtherAssetIds] = useState(initialOtherAssetIds)
 
-  const [isLoading, isError, assets] = useDataStoreItems<Asset>(
+  const [isLoading, lastErrorCode, assets] = useDataStoreItems<Asset>(
     ViewNames.GetFullAssets,
     allAssetIds.length ? allAssetIds : false,
     {
@@ -53,8 +53,12 @@ const Compare = () => {
     return <LoadingIndicator message="Loading assets to compare..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load assets to compare</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load assets to compare (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const storeOtherIds = (ids: string[]) => {

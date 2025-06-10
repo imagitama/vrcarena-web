@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import ResultsItem from '../results-item'
 
@@ -68,9 +68,6 @@ const ResultsItems = <TItem extends Object>({
                         onClickWithEventAndAsset(e, item)
                     : undefined
                 }
-                // toggleEditMode={
-                //   hydrate ? () => toggleEditMode(item.id) : undefined
-                // }
               />
             </div>
           ))

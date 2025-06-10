@@ -36,11 +36,12 @@ const View = () => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
 
-  const [isLoading, isError, report, hydrate] = useDataStoreItem<FullReport>(
-    ViewNames.GetFullReports,
-    isLoggedIn ? reportId : false,
-    'view-report'
-  )
+  const [isLoading, lastErrorCode, report, hydrate] =
+    useDataStoreItem<FullReport>(
+      ViewNames.GetFullReports,
+      isLoggedIn ? reportId : false,
+      'view-report'
+    )
 
   if (!isLoggedIn) {
     return <NoPermissionMessage />
@@ -50,12 +51,14 @@ const View = () => {
     return <LoadingIndicator message="Loading report..." />
   }
 
-  if (!report) {
-    return <NoResultsMessage>Report not found</NoResultsMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load report (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load report</ErrorMessage>
+  if (!report) {
+    return <NoResultsMessage>Report not found</NoResultsMessage>
   }
 
   const {

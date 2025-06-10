@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import NoPermissionMessage from '../../components/no-permission-message'
-import ErrorMessage from '../../components/error-message'
-import LoadingIndicator from '../../components/loading-indicator'
-
+import useSupabaseClient from '../../hooks/useSupabaseClient'
 import useUserRecord from '../../hooks/useUserRecord'
 import { readRecord } from '../../data-store'
 import {
@@ -14,14 +11,13 @@ import {
 } from '../../modules/assets'
 import { handleError } from '../../error-handling'
 
-import AssetEditor, {
-  EditorContext,
-  useEditor,
-} from '../../components/asset-editor'
-import Heading from '../../components/heading'
-import SyncForm from '../../components/sync-form'
+import NoPermissionMessage from '../no-permission-message'
+import ErrorMessage from '../error-message'
+import LoadingIndicator from '../loading-indicator'
+import AssetEditor, { EditorContext, useEditor } from '../asset-editor'
+import Heading from '../heading'
+import SyncForm from '../sync-form'
 import ExperimentalArea from '../experimental-area'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
 
 const SyncFormWrapper = () => {
   const {
@@ -66,6 +62,7 @@ const SyncFormWrapper = () => {
 
 const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
   const [, , user] = useUserRecord()
+  // TODO: Store last error code
   const [isError, setIsError] = useState(false)
   const [isHydrating, setIsHydrating] = useState(false)
   const [assetRecord, setAssetRecord] = useState<FullAsset | null>(null)

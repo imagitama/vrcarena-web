@@ -1,6 +1,6 @@
 import React from 'react'
-import Select, { SelectProps } from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
+import Select, { SelectProps } from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 export { MenuItem }
 

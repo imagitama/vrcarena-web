@@ -1,11 +1,12 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import HelpIcon from '@material-ui/icons/Help'
+import { makeStyles } from '@mui/styles'
+import HelpIcon from '@mui/icons-material/Help'
 import { defaultCurrency, formatPrice, popularCurrencies } from '../../currency'
 import * as routes from '../../routes'
 import Link from '../link'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   tag: {
     display: 'inline-block',
     width: 'auto',
@@ -87,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
       top: '11px',
     },
 
-    '& $price': {
+    '& .price': {
       fontSize: '100%',
     },
   },
@@ -139,7 +140,7 @@ const Price = ({
         } ${className}`}
         title="This price may be different on the official website.">
         <span className={`${isLoading ? classes.loading : ''}`}>
-          <span className={classes.price}>
+          <span className={`${classes.price} price`}>
             {price === 0 || price === null
               ? 'FREE'
               : formatPrice(price, priceCurrency, false)}

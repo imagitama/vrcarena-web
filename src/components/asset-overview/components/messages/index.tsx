@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import BusinessCenterIcon from '@material-ui/icons/BusinessCenter'
-import CancelIcon from '@material-ui/icons/Cancel'
-import DeleteIcon from '@material-ui/icons/Delete'
-import CreateIcon from '@material-ui/icons/Create'
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
+import CancelIcon from '@mui/icons-material/Cancel'
+import DeleteIcon from '@mui/icons-material/Delete'
+import CreateIcon from '@mui/icons-material/Create'
 
 import Message from '../../../message'
 import PublicEditorNotes from '../../../public-editor-notes'

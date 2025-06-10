@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import GetAppIcon from '@material-ui/icons/GetApp'
-import OpenInNewIcon from '@material-ui/icons/OpenInNew'
+import { makeStyles } from '@mui/styles'
+import GetAppIcon from '@mui/icons-material/GetApp'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { handleError } from '../../error-handling'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
@@ -10,7 +10,7 @@ import { trackAction } from '../../analytics'
 
 const useStyles = makeStyles({
   root: {
-    marginBottom: '10px'
+    marginBottom: '10px',
   },
   details: {
     '& a': {
@@ -20,16 +20,16 @@ const useStyles = makeStyles({
       background: 'rgba(255, 255, 255, 0.1)',
       color: 'inherit',
       '&:hover': {
-        background: 'rgba(255, 255, 255, 0.15)'
-      }
-    }
+        background: 'rgba(255, 255, 255, 0.15)',
+      },
+    },
   },
   button: {
-    marginTop: '10px'
+    marginTop: '10px',
   },
   icon: {
-    fontSize: 'inherit'
-  }
+    fontSize: 'inherit',
+  },
 })
 
 // source: https://www.seancdavis.com/posts/extract-github-repo-name-from-url-using-javascript/
@@ -53,7 +53,7 @@ interface GitHubAsset {
 }
 
 const ReleaseAsset = ({
-  asset: { name, browser_download_url }
+  asset: { name, browser_download_url },
 }: {
   asset: GitHubAsset
 }) => {
@@ -78,7 +78,7 @@ const mimeTypesSortedByBest = [
   'application/zip',
   'application/x-rar-compressed',
   'application/octet-stream', // dll and some .exe
-  'application/x-msdownload' // exe
+  'application/x-msdownload', // exe
 ]
 
 const getBestAsset = (assets: GitHubAsset[]): GitHubAsset | null => {
@@ -114,13 +114,15 @@ interface GitHubRelease {
 
 export default ({
   gitHubUrl,
-  showErrorOnNotFound = true
+  showErrorOnNotFound = true,
 }: {
   gitHubUrl: string
   showErrorOnNotFound: boolean
 }) => {
   const [results, setResults] = useState<GitHubRelease[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+
+  // TODO: Store last error code
   const [isErrored, setIsErrored] = useState(false)
   const classes = useStyles()
 
@@ -145,8 +147,8 @@ export default ({
           {
             method: 'GET',
             headers: new Headers({
-              Accept: 'application/vnd.github.v3+json'
-            })
+              Accept: 'application/vnd.github.v3+json',
+            }),
           }
         )
 
@@ -196,7 +198,7 @@ export default ({
   }
 
   const latestNonBetaRelease = results.find(
-    result => result.prerelease !== true
+    (result) => result.prerelease !== true
   )
 
   if (!latestNonBetaRelease) {

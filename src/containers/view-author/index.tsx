@@ -1,8 +1,8 @@
 import React, { Fragment, useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link, useParams } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
+import { makeStyles } from '@mui/styles'
+import EditIcon from '@mui/icons-material/Edit'
 
 import * as routes from '../../routes'
 import categoryMeta from '../../category-meta'
@@ -39,13 +39,14 @@ import AssetsPaginatedView from '../../components/assets-paginated-view'
 import ClaimButton from '../../components/claim-button'
 import UserList from '../../components/user-list'
 import LazyLoad from 'react-lazyload'
-import { GetQuery } from '../../data-store'
 import { FullUser } from '../../modules/users'
+import { GetQueryFn } from '../../components/paginated-view'
 
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
-  const getQuery = useCallback<
-    (query: GetQuery<PublicAsset>) => GetQuery<PublicAsset>
-  >((query) => query.eq('author', author.id), [author.id])
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
+    (query) => query.eq('author', author.id),
+    [author.id]
+  )
 
   return (
     <AssetsPaginatedView
@@ -107,7 +108,9 @@ const Claims = ({ authorId }: { authorId: string }) => {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to load claims</ErrorMessage>
+    return (
+      <ErrorMessage>Failed to load claims (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (
@@ -132,19 +135,18 @@ const analyticsCategory = 'ViewAuthor'
 const View = () => {
   const { authorId } = useParams<{ authorId: string }>()
   const [, , user] = useUserRecord()
-  const [isLoading, isErrored, author, hydrate] = useDataStoreItem<FullAuthor>(
-    'getfullauthors',
-    authorId,
-    'view-author'
-  )
+  const [isLoading, lastErrorCode, author, hydrate] =
+    useDataStoreItem<FullAuthor>('getfullauthors', authorId, 'view-author')
   const classes = useStyles()
 
   if (isLoading) {
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to get author</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to get author (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!author) {
@@ -350,7 +352,7 @@ const View = () => {
             url={routes.createAmendmentWithVar
               .replace(':parentTable', CollectionNames.Authors)
               .replace(':parentId', authorId)}
-            color="default"
+            color="secondary"
             icon={<EditIcon />}>
             Suggest Edit
           </Button>{' '}

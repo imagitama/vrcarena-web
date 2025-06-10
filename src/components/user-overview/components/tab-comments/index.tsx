@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled'
-import useSupabaseView from '../../../../hooks/useSupabaseView'
+import useSupabaseView, { GetQueryFn } from '../../../../hooks/useSupabaseView'
 import CommentList from '../../../comment-list'
 import ErrorMessage from '../../../error-message'
 import Heading from '../../../heading'
@@ -12,7 +12,7 @@ import { PublicSocialPost, ViewNames } from '../../../../modules/social'
 
 const SocialPosts = ({ userId }: { userId: string }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<PublicSocialPost>>(
     (query) => {
       query = query.eq('createdby', userId)
       if (!isAdultContentEnabled) {
@@ -22,13 +22,15 @@ const SocialPosts = ({ userId }: { userId: string }) => {
     },
     [isAdultContentEnabled]
   )
-  const [isLoading, isError, result, , hydrate] =
+  const [isLoading, lastErrorCode, result, , hydrate] =
     useSupabaseView<PublicSocialPost>(ViewNames.GetPublicSocialPosts, getQuery)
 
   return (
     <>
       <Heading variant="h2">Social</Heading>
-      {isError && <ErrorMessage>Failed to load posts</ErrorMessage>}
+      {lastErrorCode !== null ? (
+        <ErrorMessage>Failed to load posts (code {lastErrorCode})</ErrorMessage>
+      ) : null}
       <div>
         {result && result.length ? (
           result.map((socialPost) => (

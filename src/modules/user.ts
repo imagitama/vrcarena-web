@@ -9,6 +9,7 @@ export const USER_UNLOADED = 'user/USER_UNLOADED'
 
 export interface UserState {
   isLoading: boolean
+  // TODO: Use lastErrorCode
   isErrored: boolean
   user: null | FullUser
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react'
 import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import * as routes from '../../routes'
 
@@ -9,7 +9,7 @@ import AssetResults from '../../components/asset-results'
 import Heading from '../../components/heading'
 import Paper from '../../components/paper'
 import Button from '../../components/button'
-import PaginatedView from '../../components/paginated-view'
+import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
 
 import { alreadyOver18Key } from '../../config'
 import useStorage from '../../hooks/useStorage'
@@ -48,7 +48,10 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => {
 }
 
 const Assets = () => {
-  const getQuery = useCallback((query) => query.is('isadult', true), [])
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
+    (query) => query.is('isadult', true),
+    []
+  )
   return (
     <PaginatedView<PublicAsset>
       viewName={ViewNames.GetPublicAssets}

@@ -1,7 +1,7 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
+import { makeStyles } from '@mui/styles'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
 
 import useStorage from '../../../../hooks/useStorage'
 import { trackAction } from '../../../../analytics'
@@ -50,7 +50,11 @@ const allFilters = [
   },
 ]
 
-function Filter({ label, isEnabled, onClick }: {
+function Filter({
+  label,
+  isEnabled,
+  onClick,
+}: {
   label: string
   isEnabled: boolean
   onClick: () => void

@@ -1,20 +1,20 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { ReactComponent as AwtterLineart } from '../../assets/images/lineart/groupsonly/awtter.svg'
 import { ReactComponent as TaidumLineart } from '../../assets/images/lineart/groupsonly/taidum.svg'
 import { ReactComponent as RexouiumLineart } from '../../assets/images/lineart/groupsonly/rexouium.svg'
+import { VRCArenaTheme } from '../../themes'
 // import { ReactComponent as AwtterLineartPattern } from '../../assets/images/awtter-lineart-pattern.svg'
 
 /**
  * The plan is to create lineart of all the popular avatars and make a christmas wrapping effect.
  */
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     width: '100%',
     height: '100%',
     padding: '20%',
-    // background: '#626262',
     background: '#540d16',
     overflow: 'hidden',
     '& svg': {

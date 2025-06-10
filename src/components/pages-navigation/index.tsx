@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import Button from '../button'
 import TextInput from '../text-input'
 
@@ -49,7 +49,7 @@ const PagesNavigation = ({
           <div className={classes.control}>{pageCount} pages</div>
           <div className={classes.control}>
             <Button
-              color={'default'}
+              color="secondary"
               onClick={() => onClickWithPageNumber(currentPageNumber)}
               size="small"
               className={classes.button}>
@@ -81,7 +81,7 @@ const PagesNavigation = ({
               }`}
               key={idx}>
               <Button
-                color={isSelected ? 'default' : 'primary'}
+                color={isSelected ? 'secondary' : 'primary'}
                 onClick={() => onClickWithPageNumber(pageNumber)}
                 size="small"
                 className={classes.button}>

@@ -1,5 +1,8 @@
 import React, { useCallback } from 'react'
-import PaginatedView, { PaginatedViewProps } from '../paginated-view'
+import PaginatedView, {
+  GetQueryFn,
+  PaginatedViewProps,
+} from '../paginated-view'
 import { PublicAsset, ViewNames } from '../../modules/assets'
 import AssetResults from '../asset-results'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
@@ -45,14 +48,14 @@ const AssetsPaginatedView = ({
 }: ExtraRendererProps & PaginatedViewProps<PublicAsset>) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
     (query, selectedSubView) => {
       // always check for "true" to prevent accidental inclusion
       query =
         isAdultContentEnabled === true ? query : query.is('isadult', false)
 
       if (props.getQuery) {
-        query = props.getQuery(query, selectedSubView)
+        return props.getQuery(query, selectedSubView)
       }
 
       return query

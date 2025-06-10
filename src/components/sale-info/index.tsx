@@ -1,7 +1,7 @@
 import React from 'react'
 import Markdown from '../markdown'
-import { makeStyles } from '@material-ui/core/styles'
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn'
+import { makeStyles } from '@mui/styles'
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 import moment from 'moment'
 
 import Button from '../button'

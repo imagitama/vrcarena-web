@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import { CollectionNames } from '../../modules/likes'
@@ -17,13 +17,13 @@ export default ({
   collectionName: string
   parentId: string
 }) => {
-  const [, isError, results] = useDatabaseQuery(CollectionNames.Likes, [
+  const [, lastErrorCode, results] = useDatabaseQuery(CollectionNames.Likes, [
     ['parent', Operators.EQUALS, parentId],
   ])
   const classes = useStyles()
 
-  if (isError) {
-    return 'Error loading likes'
+  if (lastErrorCode !== null) {
+    return <>Error loading likes (code {lastErrorCode})</>
   }
 
   if (!results || !results.length) {

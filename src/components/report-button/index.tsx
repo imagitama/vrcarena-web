@@ -1,5 +1,5 @@
 import React from 'react'
-import ReportIcon from '@material-ui/icons/Report'
+import ReportIcon from '@mui/icons-material/Report'
 import { trackAction } from '../../analytics'
 import Button from '../button'
 import * as routes from '../../routes'
@@ -8,7 +8,7 @@ export default ({
   type,
   id,
   small = false,
-  analyticsCategoryName
+  analyticsCategoryName,
 }: {
   type: string
   id: string
@@ -19,14 +19,14 @@ export default ({
     if (analyticsCategoryName) {
       trackAction(analyticsCategoryName, 'Click report button', {
         type,
-        id
+        id,
       })
     }
   }
 
   return (
     <Button
-      color="default"
+      color="secondary"
       icon={<ReportIcon />}
       onClick={onBtnClick}
       url={routes.createReportWithVar

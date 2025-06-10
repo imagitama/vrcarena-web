@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { useParams } from 'react-router'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import TocIcon from '@material-ui/icons/Toc'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import TocIcon from '@mui/icons-material/Toc'
 import { Helmet } from 'react-helmet'
-import InfoIcon from '@material-ui/icons/Info'
-import EditIcon from '@material-ui/icons/Edit'
-import HistoryIcon from '@material-ui/icons/History'
+import InfoIcon from '@mui/icons-material/Info'
+import EditIcon from '@mui/icons-material/Edit'
+import HistoryIcon from '@mui/icons-material/History'
 
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
@@ -148,7 +148,7 @@ const PageControls = () => {
           onClick={toggleHelpMode}
           icon={<InfoIcon style={{ marginRight: '-5px' }} />}
           size="small"
-          color="default">
+          color="secondary">
           Help
         </Button>{' '}
         {nextPageName && (
@@ -258,7 +258,7 @@ const HelpModeInfo = () => {
 }
 
 const PageHistoryOutput = ({ pageName }: { pageName: string }) => {
-  const [isLoading, isError, entries] = useDatabaseQuery<HistoryEntry>(
+  const [isLoading, lastErrorCode, entries] = useDatabaseQuery<HistoryEntry>(
     HistoryCollectionNames.History,
     [
       ['parenttable', Operators.EQUALS, CollectionNames.Pages],
@@ -272,8 +272,10 @@ const PageHistoryOutput = ({ pageName }: { pageName: string }) => {
     return <LoadingIndicator message="Loading history..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load history</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load history (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!entries || !entries.length) {
@@ -293,7 +295,7 @@ const PageHistory = ({ pageName }: { pageName: string }) => {
         <Button
           icon={<HistoryIcon />}
           onClick={() => setIsExpanded(!isExpanded)}
-          color="default">
+          color="secondary">
           View Revision History
         </Button>
       </FormControls>
@@ -362,12 +364,13 @@ const Pages = () => {
     parentName: string
     pageName: string
   }>()
-  const [isLoading, isError, parent] = useDataStoreItem<Page>(
-    CollectionNames.PageParents,
-    parentName,
-    'parent-overview'
-  )
-  const [isLoadingPages, isErrorLoadingPages, pagesInParent] =
+  const [isLoading, lastErrorCodeLoadingParent, parent] =
+    useDataStoreItem<Page>(
+      CollectionNames.PageParents,
+      parentName,
+      'parent-overview'
+    )
+  const [isLoadingPages, lastErrorCodeLoadingPages, pagesInParent] =
     useDatabaseQuery<Page>(
       CollectionNames.Pages,
       [['parent', Operators.EQUALS, parentName]],
@@ -390,8 +393,20 @@ const Pages = () => {
     return <LoadingIndicator message="Loading page..." />
   }
 
-  if (isError || isErrorLoadingPages) {
-    return <ErrorMessage>Failed to load page</ErrorMessage>
+  if (lastErrorCodeLoadingParent !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load page parents (code {lastErrorCodeLoadingParent})
+      </ErrorMessage>
+    )
+  }
+
+  if (lastErrorCodeLoadingPages !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load pages (code {lastErrorCodeLoadingPages})
+      </ErrorMessage>
+    )
   }
 
   const { title, description } = parent

@@ -24,7 +24,7 @@ const QuestionForm = ({
     question: '',
     isoriginalcreator: false,
   })
-  const [isCreating, isSuccess, isErrored, create] =
+  const [isCreating, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<QuestionFields>(CollectionNames.Questions)
 
   const onSubmitBtnClick = async () => {
@@ -53,35 +53,35 @@ const QuestionForm = ({
         <LoadingIndicator />
       ) : isSuccess ? (
         <SuccessMessage>Your question has been submitted</SuccessMessage>
-      ) : isErrored ? (
-        <ErrorMessage>Failed to submit your question</ErrorMessage>
-      ) : (
-        <>
-          <InfoMessage>
-            Only use this form to ask important or frequently asked questions.
-            Minor questions should be in a comment.
-          </InfoMessage>
-
-          <TextInput
-            label="Question"
-            value={questionFields.question}
-            fullWidth
-            multiline
-            minRows={2}
-            onChange={(e) => onFieldChange('question', e.target.value)}
-          />
-          <CheckboxInput
-            value={questionFields.isoriginalcreator}
-            onChange={(newVal) => onFieldChange('isoriginalcreator', newVal)}
-            label="I am the original creator of this asset (will be shown)"
-          />
-          <FormControls>
-            <Button onClick={onSubmitBtnClick} size="large">
-              Submit Question
-            </Button>
-          </FormControls>
-        </>
-      )}
+      ) : lastErrorCode ? (
+        <ErrorMessage>
+          Failed to submit your question (code {lastErrorCode})
+        </ErrorMessage>
+      ) : null}
+      <InfoMessage>
+        Only use this form to ask important or frequently asked questions. Minor
+        questions should be in a comment.
+      </InfoMessage>
+      <TextInput
+        label="Question"
+        value={questionFields.question}
+        fullWidth
+        multiline
+        minRows={2}
+        onChange={(e) => onFieldChange('question', e.target.value)}
+        isDisabled={isCreating}
+      />
+      <CheckboxInput
+        value={questionFields.isoriginalcreator}
+        onChange={(newVal) => onFieldChange('isoriginalcreator', newVal)}
+        label="I am the original creator of this asset (will be shown)"
+        isDisabled={isCreating}
+      />
+      <FormControls>
+        <Button onClick={onSubmitBtnClick} size="large" isDisabled={isCreating}>
+          Submit Question
+        </Button>
+      </FormControls>
     </>
   )
 }

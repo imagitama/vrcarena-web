@@ -1,26 +1,24 @@
 import React, { createContext, useContext } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
-import PhotoIcon from '@material-ui/icons/Photo'
-import ClearIcon from '@material-ui/icons/Clear'
-import CheckIcon from '@material-ui/icons/Check'
-import GavelIcon from '@material-ui/icons/Gavel'
-import SyncIcon from '@material-ui/icons/Sync'
-import AttachFileIcon from '@material-ui/icons/AttachFile'
-import LinkIcon from '@material-ui/icons/Link'
-import LocalOfferIcon from '@material-ui/icons/LocalOffer'
-import TextFormatIcon from '@material-ui/icons/TextFormat'
-import PetsIcon from '@material-ui/icons/Pets'
-import CategoryIcon from '@material-ui/icons/Category'
-import PanoramaIcon from '@material-ui/icons/Panorama'
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
-import PersonIcon from '@material-ui/icons/Person'
-import LoyaltyIcon from '@material-ui/icons/Loyalty'
-import ControlCameraIcon from '@material-ui/icons/ControlCamera'
-import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered'
+import PhotoIcon from '@mui/icons-material/Photo'
+import ClearIcon from '@mui/icons-material/Clear'
+import CheckIcon from '@mui/icons-material/Check'
+import GavelIcon from '@mui/icons-material/Gavel'
+import SyncIcon from '@mui/icons-material/Sync'
+import AttachFileIcon from '@mui/icons-material/AttachFile'
+import LinkIcon from '@mui/icons-material/Link'
+import LocalOfferIcon from '@mui/icons-material/LocalOffer'
+import TextFormatIcon from '@mui/icons-material/TextFormat'
+import PetsIcon from '@mui/icons-material/Pets'
+import CategoryIcon from '@mui/icons-material/Category'
+import PanoramaIcon from '@mui/icons-material/Panorama'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import PersonIcon from '@mui/icons-material/Person'
+import LoyaltyIcon from '@mui/icons-material/Loyalty'
+import ControlCameraIcon from '@mui/icons-material/ControlCamera'
 import { Tachometer as TachometerIcon } from '@emotion-icons/boxicons-regular/Tachometer'
-import { ListStars as ListStarsIcon } from '@emotion-icons/bootstrap/ListStars'
-import OpenInNewIcon from '@material-ui/icons/OpenInNew'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
 import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord.svg'
 import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon.svg'
@@ -28,7 +26,7 @@ import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.s
 
 import * as routes from '../../routes'
 import { getCategoryMeta } from '../../category-meta'
-import { adultSearchTerms, nsfwRules, WEBSITE_FULL_URL } from '../../config'
+import { adultSearchTerms, nsfwRules } from '../../config'
 import { getDoesAssetNeedPublishing } from '../../utils/assets'
 import useUserRecord from '../../hooks/useUserRecord'
 
@@ -80,7 +78,7 @@ import {
 } from '../../modules/assets'
 import TagChip from '../tag-chip'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import { defaultBorderRadius } from '../../themes'
+import { VRCArenaTheme } from '../../themes'
 import PerformanceEditor from '../performance-editor'
 import Tabs from '../tabs'
 import WarningMessage from '../warning-message'
@@ -132,7 +130,7 @@ interface EditorInfo {
 export const EditorContext = createContext<EditorInfo>({} as any)
 export const useEditor = () => useContext(EditorContext)
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   // global
   content: {
     position: 'relative',
@@ -180,7 +178,7 @@ const useStyles = makeStyles((theme) => ({
     borderTop: '1px solid rgba(255, 255, 255, 0.1)',
     padding: '0.5rem',
     marginBottom: '1rem',
-    borderRadius: defaultBorderRadius,
+    borderRadius: theme.shape.borderRadius,
     [mediaQueryForTabletsOrBelow]: {
       width: '100%',
     },
@@ -226,7 +224,7 @@ const useStyles = makeStyles((theme) => ({
   assetPreview: {
     marginTop: '1rem',
     padding: '1rem',
-    borderRadius: defaultBorderRadius,
+    borderRadius: theme.shape.borderRadius,
     border: '3px dashed rgba(255, 255, 255, 0.5)',
   },
 
@@ -281,7 +279,9 @@ const FormEditorArea = <TRecord,>(props: {
   title: string
   description?: string
   icon: React.ReactNode
-  display?: React.ReactNode
+  display?:
+    | React.ReactNode
+    | React.ComponentType<{ value: any; fields: FullAsset }>
   editor?: React.ReactNode
   analyticsAction?: string
   analyticsCategoryName?: string
@@ -774,11 +774,10 @@ const vrcFuryInfoNoticeId = 'asset-editor-vrcfury-info'
 const Editor = () => {
   const { asset, assetId, onFieldChanged, hydrate, originalAssetId } =
     useEditor()
-  const [, , user] = useUserRecord()
   const [hiddenNotices, hideNotice] = useNotices()
   const isPatron = useIsPatron()
 
-  if (!asset) {
+  if (!asset || !assetId) {
     return null
   }
 
@@ -786,6 +785,10 @@ const Editor = () => {
     <>
       <MainControls />
       <Tabs
+        urlWithTabNameVar={routes.editAssetWithVarAndTabNameVar.replace(
+          ':assetId',
+          assetId
+        )}
         items={[
           {
             name: 'category',
@@ -797,7 +800,7 @@ const Editor = () => {
                   isRequired
                   title="Category"
                   description="Which category the asset falls into."
-                  icon={() => <CategoryIcon />}
+                  icon={<CategoryIcon />}
                   display={CategoryDisplay}
                   editor={
                     <ChangeCategoryForm
@@ -811,7 +814,7 @@ const Editor = () => {
                     fieldName="relations"
                     title="Parent"
                     description="Accessories usually have a parent that is required for it to function. Set it here (if needed)."
-                    icon={() => <LinkIcon />}
+                    icon={<LinkIcon />}
                     display={RelationsDisplay}
                     editor={
                       <RelationsEditor
@@ -843,7 +846,7 @@ const Editor = () => {
                   description={
                     'The recommended place to purchase or download this asset. Some URLs can be used to "sync" data like Gumroad, Booth, Itch.io and Jinxxy.'
                   }
-                  icon={() => <PhotoIcon />}
+                  icon={<PhotoIcon />}
                   display={SourceDisplay}
                   editor={
                     <AssetSourceEditor
@@ -863,7 +866,7 @@ const Editor = () => {
                 <FormEditorArea
                   title="Price"
                   description="The price when visiting the primary source. Extra sources can have their own prices."
-                  icon={() => <AttachMoneyIcon />}
+                  icon={<AttachMoneyIcon />}
                   display={() => (
                     <PriceDisplay value={asset.price} fields={asset} />
                   )}
@@ -887,7 +890,7 @@ const Editor = () => {
                   fieldName="extrasources"
                   title="Extra Sources"
                   description="Any other places people can get this asset."
-                  icon={() => <PhotoIcon />}
+                  icon={<PhotoIcon />}
                   display={ExtraSourcesDisplay}
                   editor={
                     <ExtraSourcesEditor
@@ -916,7 +919,7 @@ const Editor = () => {
                   isRequired
                   title="Thumbnail"
                   description="A square image used in search results."
-                  icon={() => <PhotoIcon />}
+                  icon={<PhotoIcon />}
                   display={ThumbnailDisplay}
                   editor={
                     <AssetThumbnailUploader
@@ -935,7 +938,7 @@ const Editor = () => {
                   isRequired
                   title="Title"
                   description="A short but descriptive name for your asset. Keep it short and sweet."
-                  icon={() => <TextFormatIcon />}
+                  icon={<TextFormatIcon />}
                   display={TitleDisplay}
                   editor={
                     <AssetTitleEditor assetId={assetId} title={asset.title} />
@@ -946,7 +949,7 @@ const Editor = () => {
                   isRequired
                   title="Description"
                   description="Explain what the asset is for. Supports Markdown."
-                  icon={() => <TextFormatIcon />}
+                  icon={<TextFormatIcon />}
                   display={DescriptionDisplay}
                   editor={
                     <DescriptionEditor
@@ -960,7 +963,7 @@ const Editor = () => {
                   isRequired
                   title="Author"
                   description="The original creator of the asset."
-                  icon={() => <PersonIcon />}
+                  icon={<PersonIcon />}
                   display={AuthorDisplay}
                   editor={
                     <ChangeAuthorForm
@@ -974,7 +977,7 @@ const Editor = () => {
                   isRequired
                   title="Toggle Adult"
                   description="Adult content is not visible to the public by default."
-                  icon={() => <LoyaltyIcon />}
+                  icon={<LoyaltyIcon />}
                   display={({ value }: { value: any }) => (
                     <>
                       {asset ? <ShouldBeAdultWarning asset={asset} /> : null}
@@ -1002,7 +1005,7 @@ const Editor = () => {
                     fieldName="species"
                     title="Species"
                     description="Help people find your asset by grouping it into its species (if applicable)."
-                    icon={() => <PetsIcon />}
+                    icon={<PetsIcon />}
                     display={SpeciesDisplay}
                     editor={
                       <ChangeSpeciesEditor
@@ -1016,7 +1019,7 @@ const Editor = () => {
                   fieldName="bannerurl"
                   title="Banner"
                   description="A wide and short image displayed behind the header to make your asset look pretty."
-                  icon={() => <PanoramaIcon />}
+                  icon={<PanoramaIcon />}
                   display={BannerDisplay}
                   editor={
                     <AssetBannerEditor
@@ -1058,7 +1061,7 @@ const Editor = () => {
                       }
                     />
                   }
-                  icon={() => <AttachFileIcon />}
+                  icon={<AttachFileIcon />}
                 />
               </>
             ),
@@ -1073,7 +1076,7 @@ const Editor = () => {
                   isRequired
                   title="Tags"
                   description="Correct tags are very helpful for finding the right asset."
-                  icon={() => <LocalOfferIcon />}
+                  icon={<LocalOfferIcon />}
                   display={TagsDisplay}
                   editor={
                     <AssetTagsEditor
@@ -1097,7 +1100,7 @@ const Editor = () => {
                   fieldName="relations"
                   title="Relations"
                   description={`To help people find an asset your one depends on or is related to, you can "link" it here.`}
-                  icon={() => <LinkIcon />}
+                  icon={<LinkIcon />}
                   display={RelationsDisplay}
                   editor={
                     <RelationsEditor
@@ -1158,7 +1161,7 @@ const Editor = () => {
                 )}
                 <FormEditorArea
                   title="VRCFury Ready"
-                  icon={() => <VrcFuryIcon />}
+                  icon={<VrcFuryIcon />}
                   display={() =>
                     asset.tags.includes(tagVrcFuryReady) ? (
                       <VrcFurySettings isVrcFuryReady />
@@ -1183,7 +1186,7 @@ const Editor = () => {
                 <FormEditorArea
                   title="VRCFury Prefabs"
                   description={`Link third-party prefabs people have created for this avatar or accessory.`}
-                  icon={() => <VrcFuryIcon />}
+                  icon={<VrcFuryIcon />}
                   display={() =>
                     asset.extradata &&
                     asset.extradata.vrcfury &&
@@ -1223,7 +1226,7 @@ const Editor = () => {
                 <FormEditorArea
                   title="Performance"
                   description="Help people find avatars that match their performance requirements."
-                  icon={() => <TachometerIcon />}
+                  icon={<TachometerIcon />}
                   doWeRender={asset.category === AssetCategory.Avatar}
                   display={() => (
                     <PerformanceEditor
@@ -1243,7 +1246,7 @@ const Editor = () => {
                   fieldName="vrchatclonableavatarids"
                   title="VRChat Avatars"
                   description="If users can clone an avatar in VRChat to test the asset you can set that here. Note: We only grab its info once."
-                  icon={() => <VRChatIcon />}
+                  icon={<VRChatIcon />}
                   display={VrchatAvatarsDisplay}
                   editor={
                     <VrchatAvatarIdsForm
@@ -1271,7 +1274,7 @@ const Editor = () => {
                   fieldName="shortdescription"
                   title="Featured Asset Description"
                   description="This description is used instead of the normal one whenever the asset is featured on the homepage."
-                  icon={() => <TextFormatIcon />}
+                  icon={<TextFormatIcon />}
                   display={ShortDescriptionDisplay}
                   editor={
                     isPatron ? (
@@ -1285,11 +1288,6 @@ const Editor = () => {
                     )
                   }
                 />
-                <WarningMessage>
-                  As of March 2025 we have disabled "pedestals" and "custom
-                  slugs" as they are old, hardly used features that are extra
-                  work to maintain.
-                </WarningMessage>
               </>
             ),
           },
@@ -1301,7 +1299,7 @@ const Editor = () => {
                 <FormEditorArea
                   title="Price"
                   description="The price of the asset."
-                  icon={() => <AttachMoneyIcon />}
+                  icon={<AttachMoneyIcon />}
                   display={() => (
                     <PriceDisplay value={asset.price} fields={asset} />
                   )}
@@ -1326,7 +1324,7 @@ const Editor = () => {
                   fieldName="discordserver"
                   title="Discord Server"
                   description="If you need to join a Discord server to download this asset you can set that here."
-                  icon={() => <DiscordIcon />}
+                  icon={<DiscordIcon />}
                   display={DiscordServerDisplay}
                   editor={
                     <ChangeDiscordServerForm
@@ -1343,7 +1341,7 @@ const Editor = () => {
                   fieldName="sketchfabembedurl"
                   title="Sketchfab"
                   description="We can embed a 3D preview from the Sketchfab website here."
-                  icon={() => <ControlCameraIcon />}
+                  icon={<ControlCameraIcon />}
                   display={SketchfabDisplay}
                   // @ts-ignore
                   editor={<SketchfabEmbedEditor assetId={assetId} />}
@@ -1352,7 +1350,7 @@ const Editor = () => {
                   fieldName="tags"
                   title="License"
                   description="What is the license for this asset?"
-                  icon={() => <GavelIcon />}
+                  icon={<GavelIcon />}
                   display={LicenseDisplay}
                   editor={
                     <LicenseEditor
@@ -1368,7 +1366,7 @@ const Editor = () => {
                   fieldName="vccurl"
                   title="VCC"
                   description="Display a button to add to the VRChat Creator Companion."
-                  icon={() => <VRChatIcon />}
+                  icon={<VRChatIcon />}
                   display={({ value }: { value: Asset['vccurl'] }) =>
                     value ? (
                       <AddToVccButton vccUrl={value} />
@@ -1404,7 +1402,7 @@ const AssetEditor = () => {
         <div className={classes.extraControls}>
           {assetId && (
             <Button
-              color="default"
+              color="secondary"
               url={routes.viewAssetWithVar.replace(
                 ':assetId',
                 asset && asset.slug ? asset.slug : assetId

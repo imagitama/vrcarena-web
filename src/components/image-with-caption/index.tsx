@@ -1,5 +1,5 @@
 import React, { ImgHTMLAttributes, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import LazyLoad from 'react-lazyload'
 import Lightbox from 'react-image-lightbox-custom'
 
@@ -10,17 +10,20 @@ const useStyles = makeStyles({
       maxWidth: '100%',
       maxHeight: '400px',
       boxShadow: '2px 2px 5px #000',
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
   caption: {
     fontStyle: 'italic',
     fontSize: '75%',
-    textAlign: 'right'
-  }
+    textAlign: 'right',
+  },
 })
 
-export default ({ caption, ...props }: {
+export default ({
+  caption,
+  ...props
+}: {
   caption: string
 } & ImgHTMLAttributes<HTMLImageElement>) => {
   const classes = useStyles()
@@ -29,14 +32,14 @@ export default ({ caption, ...props }: {
   return (
     <div className={classes.root}>
       <LazyLoad>
-        <img
-          {...props}
-          onClick={() => setIsOpen(true)}
-        />
+        <img {...props} onClick={() => setIsOpen(true)} />
       </LazyLoad>
       <div className={classes.caption}>{caption || props.alt}</div>
       {isOpen ? (
-        <Lightbox mainSrc={props.src!} onCloseRequest={() => setIsOpen(false)} />
+        <Lightbox
+          mainSrc={props.src!}
+          onCloseRequest={() => setIsOpen(false)}
+        />
       ) : null}
     </div>
   )

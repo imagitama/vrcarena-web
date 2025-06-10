@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
-import CheckIcon from '@material-ui/icons/Check'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
+import CheckIcon from '@mui/icons-material/Check'
 
 import { handleError } from '../../error-handling'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -101,7 +101,7 @@ const RelationEditorForm = ({
               (assetData) => assetData.id === newRelation.asset
             )}
           />
-          <Button onClick={() => setField('asset', null)} color="default">
+          <Button onClick={() => setField('asset', null)} color="secondary">
             Clear
           </Button>
         </>
@@ -171,18 +171,24 @@ const Editor = ({
 )
 
 const Renderer = ({ item }: { item: Item<Relation> }) => {
-  const [isLoadingAsset, isErrorLoadingAsset, asset] = useDataStoreItem<Asset>(
-    CollectionNames.Assets,
-    item.asset || false
-  )
+  const [isLoadingAsset, lastErrorCodeLoadingAsset, asset] =
+    useDataStoreItem<Asset>(CollectionNames.Assets, item.asset || false)
   const classes = useStyles()
 
   if (isLoadingAsset) {
     return <LoadingIndicator message="Loading asset..." />
   }
 
-  if (isErrorLoadingAsset || !asset) {
-    return <ErrorMessage>Failed to load asset</ErrorMessage>
+  if (lastErrorCodeLoadingAsset !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load asset (code {lastErrorCodeLoadingAsset})
+      </ErrorMessage>
+    )
+  }
+
+  if (!asset) {
+    return <ErrorMessage>Failed to load asset (none found)</ErrorMessage>
   }
 
   return <RelationItem asset={asset} relation={item} />
@@ -218,7 +224,7 @@ const RelationsEditor = ({
   onCancel?: () => void
   overrideSave?: (newRelations: Relation[]) => void
 }) => {
-  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -280,8 +286,12 @@ const RelationsEditor = ({
     return <SuccessMessage>Relations saved</SuccessMessage>
   }
 
-  if (isFailed) {
-    return <ErrorMessage>Failed to save relations</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to save relations (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   return (
@@ -318,7 +328,7 @@ const RelationsEditor = ({
           Save
         </Button>{' '}
         {onCancel ? (
-          <Button onClick={onCancel} color="default">
+          <Button onClick={onCancel} color="secondary">
             Cancel
           </Button>
         ) : null}

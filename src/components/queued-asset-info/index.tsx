@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import EditIcon from '@material-ui/icons/Edit'
-import { makeStyles } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableRow from '@material-ui/core/TableRow'
-import CheckIcon from '@material-ui/icons/Check'
-import CloseIcon from '@material-ui/icons/Close'
+import EditIcon from '@mui/icons-material/Edit'
+import { makeStyles } from '@mui/styles'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableRow from '@mui/material/TableRow'
+import CheckIcon from '@mui/icons-material/Check'
+import CloseIcon from '@mui/icons-material/Close'
 
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
 import { AssetCategory, CollectionNames, FullAsset } from '../../modules/assets'
@@ -191,7 +191,7 @@ const QueuedAssetInfo = ({
           <br />
           <Button
             onClick={() => setIsEditing(true)}
-            color="default"
+            color="secondary"
             icon={<EditIcon />}>
             Inline Edit
           </Button>

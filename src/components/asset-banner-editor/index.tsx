@@ -1,15 +1,15 @@
 import React from 'react'
 
+import useDatabaseSave from '../../hooks/useDatabaseSave'
+import { handleError } from '../../error-handling'
+import { trackAction } from '../../analytics'
+import { Asset, CollectionNames } from '../../modules/assets'
+
 import BannerUploader from '../banner-uploader'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import ErrorMessage from '../error-message'
 import Button from '../button'
-
-import useDatabaseSave from '../../hooks/useDatabaseSave'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import { Asset, CollectionNames } from '../../modules/assets'
 
 const AssetBannerEditor = ({
   assetId = undefined,

@@ -8,7 +8,7 @@ import LoadingIndicator from '../loading-indicator'
 import NoticeRenderer from '../notice'
 
 export default () => {
-  const [isLoading, isError, notices] = useDataStoreItems<Notice>(
+  const [isLoading, lastErrorCode, notices] = useDataStoreItems<Notice>(
     CollectionNames.Notices,
     undefined
   )
@@ -18,8 +18,10 @@ export default () => {
     return <LoadingIndicator message="Loading notices..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load notices</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load notices (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

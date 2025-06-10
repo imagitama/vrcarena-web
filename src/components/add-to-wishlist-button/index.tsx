@@ -1,7 +1,7 @@
 import React from 'react'
-import CheckIcon from '@material-ui/icons/Check'
-import AddToQueueIcon from '@material-ui/icons/AddToQueue'
-import RemoveFromQueueIcon from '@material-ui/icons/RemoveFromQueue'
+import CheckIcon from '@mui/icons-material/Check'
+import AddToQueueIcon from '@mui/icons-material/AddToQueue'
+import RemoveFromQueueIcon from '@mui/icons-material/RemoveFromQueue'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
@@ -151,7 +151,7 @@ export default ({
 
   return (
     <Button
-      color="default"
+      color="secondary"
       icon={getIcon(
         isLoggedIn,
         isLoadingWishlist,

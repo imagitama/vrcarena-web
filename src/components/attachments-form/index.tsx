@@ -1,19 +1,12 @@
 import React, { createContext, useContext, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import ItemsEditor from '../items-editor'
-import {
-  Attachment,
-  AttachmentFields,
-  AttachmentReason,
-  AttachmentType,
-  CollectionNames,
-} from '../../modules/attachments'
+import { Attachment, AttachmentReason } from '../../modules/attachments'
 import AttachmentEditor from '../attachment-editor'
 import AttachmentOutput from '../attachment'
 import { trackAction } from '../../analytics'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 import AttachmentMeta from '../attachment-meta'
 import FormControls from '../form-controls'
@@ -33,8 +26,9 @@ const useStyles = makeStyles({
 interface AttachmentFormContextValue {
   storeAttachmentsData: (attachmentData: Attachment) => void
 }
-// @ts-ignore
-const AttachmentFormContext = createContext<AttachmentFormContextValue>()
+const AttachmentFormContext = createContext<AttachmentFormContextValue>(
+  undefined as any
+)
 const useAttachmentForm = () => useContext(AttachmentFormContext)
 
 const Editor = ({

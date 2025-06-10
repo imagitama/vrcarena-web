@@ -1,15 +1,15 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useHistory, useParams } from 'react-router'
-import EditIcon from '@material-ui/icons/Edit'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import { makeStyles } from '@material-ui/core/styles'
+import EditIcon from '@mui/icons-material/Edit'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { makeStyles } from '@mui/styles'
 
 import Link from '../../components/link'
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
-import PaginatedView from '../../components/paginated-view'
+import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
 import AssetResults from '../../components/asset-results'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
@@ -18,7 +18,9 @@ import Button from '../../components/button'
 
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import useIsEditor from '../../hooks/useIsEditor'
-import useDataStore from '../../hooks/useDataStore'
+import useDataStore, {
+  GetQueryFn as GetQueryFnDataStore,
+} from '../../hooks/useDataStore'
 
 import {
   AssetCategory,
@@ -63,14 +65,16 @@ const AssetsForSpecies = ({
       : []),
   ]
 
-  const getQuery = useCallback(
-    (query: GetQuery<PublicAsset>): GetQuery<PublicAsset> => {
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
+    (query) => {
       query = query
         .overlaps('species', speciesIdsToSearchFor)
         .eq('category', AssetCategory.Avatar)
+
       if (!isAdultContentEnabled) {
         query = query.eq('isadult', false)
       }
+
       return query
     },
     [speciesIdsToSearchFor.join(','), isAdultContentEnabled]
@@ -112,7 +116,7 @@ const AssetsForSpecies = ({
               'Click on toggle include children'
             )
           }}
-          color="default">
+          color="secondary">
           Child Species
         </Button>,
       ]}>
@@ -151,9 +155,9 @@ const View = () => {
     categoryName: string
   }>()
   const isEditor = useIsEditor()
-  const getSpeciesQuery = useCallback(
-    (supabase: SupabaseClient) =>
-      supabase
+  const getSpeciesQuery = useCallback<GetQueryFnDataStore<FullSpecies>>(
+    (client) =>
+      client
         .from(ViewNames.GetFullSpecies)
         .select<string, FullSpecies>('*')
         // TODO: Type safe this
@@ -230,7 +234,12 @@ const View = () => {
     lastErrorCodeLoadingSpecies !== null ||
     lastErrorCodeLoadingChildren !== null
   ) {
-    return <ErrorMessage>Failed to load species</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to load species (code{' '}
+        {lastErrorCodeLoadingSpecies || lastErrorCodeLoadingChildren})
+      </ErrorMessage>
+    )
   }
 
   if (species.redirectto) {
@@ -267,7 +276,7 @@ const View = () => {
                 handleError(err)
               }
             }}
-            color="default"
+            color="secondary"
             isDisabled={isUpdatingThumbnail}>
             Regenerate Thumbnail
             {lastErrorCode !== null ? ` failed: ${lastErrorCode}` : ''}

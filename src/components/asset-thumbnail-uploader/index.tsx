@@ -35,7 +35,7 @@ export default ({
   // for amendments to work
   assetIdForBucket?: string
 }) => {
-  const [isSaving, isSuccess, isErrored, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -53,8 +53,12 @@ export default ({
     return <LoadingIndicator message="Saving..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to save thumbnail</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to save thumbnail (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (isSuccess) {

@@ -13,9 +13,8 @@ const CreateCollectionForm = ({
   onCancel: () => void
 }) => {
   const [title, setTitle] = useState('')
-  const [isCreating, isSuccess, isError, create] = useDatabaseSave<Collection>(
-    CollectionNames.Collections
-  )
+  const [isCreating, isSuccess, lastErrorCode, create] =
+    useDatabaseSave<Collection>(CollectionNames.Collections)
 
   const onClickCreate = async () => {
     try {
@@ -43,8 +42,8 @@ const CreateCollectionForm = ({
     return <>Creating collection...</>
   }
 
-  if (isError) {
-    return <>Failed to create collection!</>
+  if (lastErrorCode !== null) {
+    return <>Failed to create collection (code {lastErrorCode})</>
   }
 
   if (isSuccess) {

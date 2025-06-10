@@ -1,6 +1,6 @@
 import React from 'react'
-import MaterialDialog, { DialogProps } from '@material-ui/core/Dialog'
-import { makeStyles } from '@material-ui/core/styles'
+import MaterialDialog, { DialogProps } from '@mui/material/Dialog'
+import { makeStyles } from '@mui/styles'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 
 const useStyles = makeStyles({

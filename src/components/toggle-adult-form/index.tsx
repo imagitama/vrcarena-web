@@ -1,5 +1,5 @@
 import React from 'react'
-import LoyaltyIcon from '@material-ui/icons/Loyalty'
+import LoyaltyIcon from '@mui/icons-material/Loyalty'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'

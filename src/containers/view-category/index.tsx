@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useLocation, useParams } from 'react-router'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
@@ -16,6 +16,7 @@ import Link from '../../components/link'
 import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 import AssetsPaginatedView from '../../components/assets-paginated-view'
 import { GetQuery } from '../../data-store'
+import ErrorBoundary from '../../components/error-boundary'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   const category = getCategoryMeta(categoryName)

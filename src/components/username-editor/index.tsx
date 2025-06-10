@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import TextField from '@material-ui/core/TextField'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import TextField from '@mui/material/TextField'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserRecord from '../../hooks/useUserRecord'
@@ -97,11 +97,7 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
         fullWidth
         label="Enter a username"
       />{' '}
-      <Button
-        color="primary"
-        onClick={onSaveBtnClick}
-        size="large"
-        icon={<SaveIcon />}>
+      <Button onClick={onSaveBtnClick} size="large" icon={<SaveIcon />}>
         Save
       </Button>{' '}
       {isSaving

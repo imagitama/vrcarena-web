@@ -8,7 +8,7 @@ export default () => (
   <ErrorMessage>
     You need to be logged in to view this area
     <FormControls>
-      <Button url={routes.login} color="default">
+      <Button url={routes.login} color="secondary">
         Log In Now
       </Button>
     </FormControls>

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import useSupabaseView from '../../../../hooks/useSupabaseView'
+import useSupabaseView, { GetQueryFn } from '../../../../hooks/useSupabaseView'
 import ReviewResults from '../../../review-results'
 import LoadingIndicator from '../../../loading-indicator'
 import ErrorMessage from '../../../error-message'
@@ -8,17 +8,19 @@ import useUserOverview from '../../useUserOverview'
 import { PublicReview, ViewNames } from '../../../../modules/reviews'
 
 const ReviewsForUser = ({ userId }: { userId: string }) => {
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<PublicReview>>(
     (query) => query.eq('createdby', userId),
     [userId]
   )
-  const [isLoading, isError, reviews] = useSupabaseView<PublicReview>(
+  const [isLoading, lastErrorCode, reviews] = useSupabaseView<PublicReview>(
     ViewNames.GetPublicReviewsForPublicAssets,
     getQuery
   )
 
-  if (isError) {
-    return <ErrorMessage>Failed to load reviews</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load reviews (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (isLoading || !reviews) {

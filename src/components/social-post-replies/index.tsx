@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import useSupabaseView from '../../hooks/useSupabaseView'
+import useSupabaseView, { GetQueryFn } from '../../hooks/useSupabaseView'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { PublicSocialPost, ViewNames } from '../../modules/social'
 import LoadingIndicator from '../loading-indicator'
@@ -9,7 +9,7 @@ import { GetQuery } from '../../data-store'
 
 const SocialPostReplies = ({ postId }: { postId: string }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<PublicSocialPost>>(
     (query: GetQuery<PublicSocialPost>) => {
       query = query.eq('parent', postId)
       if (!isAdultContentEnabled) {
@@ -19,15 +19,17 @@ const SocialPostReplies = ({ postId }: { postId: string }) => {
     },
     [isAdultContentEnabled]
   )
-  const [isLoading, isError, result, , hydrate] =
+  const [isLoading, lastErrorCode, result, , hydrate] =
     useSupabaseView<PublicSocialPost>(ViewNames.GetPublicSocialPosts, getQuery)
 
   if (isLoading || !result) {
     return <LoadingIndicator message="Loading replies..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load replies</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load replies (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
@@ -30,6 +28,7 @@ import {
   NotificationPreferencesEvents,
   UserPreferences,
 } from '../../modules/user'
+import CheckboxInput from '../checkbox-input'
 
 const useStyles = makeStyles({
   root: {
@@ -149,6 +148,8 @@ const useAnonymousSave = (
 ] => {
   const [isSaving, setIsSaving] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+
+  // TODO: Store last error code
   const [isError, setIsError] = useState(false)
 
   const save = async (
@@ -202,9 +203,12 @@ const NotificationSettings = ({
   anonymousDetails?: AnonymousDetails
 }) => {
   const myUserId = useUserId()
-  const [isLoadingPreferences, isErrorLoadingPreferences, userPreferences] =
-    useUserPreferences()
-  const [isSaving, isSaveSuccess, isSaveError, save] =
+  const [
+    isLoadingPreferences,
+    lastErrorCodeLoadingPreferences,
+    userPreferences,
+  ] = useUserPreferences()
+  const [isSaving, isSaveSuccess, lastErrorCodeSaving, save] =
     useDatabaseSave<UserPreferences>(CollectionNames.UserPreferences, myUserId)
   const [newPrefs, setNewPrefs] = useState(defaultNotificationPrefs)
   const [notificationEmail, setNotificationEmail] = useState('')
@@ -236,36 +240,36 @@ const NotificationSettings = ({
     )
   }
 
-  if (isErrorLoadingPreferences) {
-    return <ErrorMessage>Failed to load your profile</ErrorMessage>
-  }
-
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save your changes</ErrorMessage>
+  if (lastErrorCodeLoadingPreferences !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load your profile (code {lastErrorCodeLoadingPreferences})
+      </ErrorMessage>
+    )
   }
 
   const onChangeEvent = (
-    e: React.SyntheticEvent<HTMLInputElement>,
+    newVal: boolean,
     eventName: keyof typeof NotificationEvents
   ) => {
     setNewPrefs((currentVal) => ({
       ...currentVal,
       events: {
         ...currentVal.events,
-        [eventName]: (e.target as HTMLInputElement).checked,
+        [eventName]: newVal,
       },
     }))
   }
 
   const onChangeMethod = (
-    e: React.SyntheticEvent<HTMLInputElement>,
+    newVal: boolean,
     methodName: keyof typeof NotificationMethods
   ) => {
     setNewPrefs((currentVal) => ({
       ...currentVal,
       methods: {
         ...currentVal.methods,
-        [methodName]: (e.target as HTMLInputElement).checked,
+        [methodName]: newVal,
       },
     }))
   }
@@ -319,7 +323,9 @@ const NotificationSettings = ({
     <div className={classes.root}>
       {anonymousDetails ? (
         <>
-          <Button onClick={() => saveAnonymously(newPrefs, true)}>
+          <Button
+            onClick={() => saveAnonymously(newPrefs, true)}
+            isDisabled={isSaving}>
             Unsubscribe From Everything
           </Button>
           <br />
@@ -328,47 +334,39 @@ const NotificationSettings = ({
       <Heading variant="h4">Events</Heading>
       <p>Choose what kind of events you want to subscribe to.</p>
       {Object.keys(NotificationEvents).map((eventName) => (
-        <div key={eventName}>
-          <FormControlLabel
-            key={eventName}
-            control={
-              <Checkbox
-                checked={newPrefs.events[eventName] !== false}
-                onChange={(e) =>
-                  onChangeEvent(e, eventName as keyof typeof NotificationEvents)
-                }
-              />
-            }
-            label={getLabelForEventName(
-              eventName as keyof typeof NotificationEvents
-            )}
-          />
-        </div>
+        <CheckboxInput
+          key={eventName}
+          value={newPrefs.events[eventName] !== false}
+          onChange={(newVal) =>
+            onChangeEvent(newVal, eventName as keyof typeof NotificationEvents)
+          }
+          label={getLabelForEventName(
+            eventName as keyof typeof NotificationEvents
+          )}
+          fullWidth
+          isDisabled={isSaving}
+        />
       ))}
       <Heading variant="h4">Methods</Heading>
       <p>Choose how you want to receive your notifications.</p>
       {Object.keys(NotificationMethods)
         .filter((methodName) => methodName !== NotificationMethods.DISCORD)
         .map((methodName) => (
-          <div key={methodName}>
-            <FormControlLabel
-              key={methodName}
-              control={
-                <Checkbox
-                  checked={newPrefs.methods[methodName] !== false}
-                  onChange={(e) =>
-                    onChangeMethod(
-                      e,
-                      methodName as keyof typeof NotificationMethods
-                    )
-                  }
-                />
-              }
-              label={getLabelForMethodName(
+          <CheckboxInput
+            key={methodName}
+            value={newPrefs.events[methodName] !== false}
+            onChange={(newVal) =>
+              onChangeMethod(
+                newVal,
                 methodName as keyof typeof NotificationMethods
-              )}
-            />
-          </div>
+              )
+            }
+            label={getLabelForMethodName(
+              methodName as keyof typeof NotificationMethods
+            )}
+            fullWidth
+            isDisabled={isSaving}
+          />
         ))}
       {!anonymousDetails ? (
         <>
@@ -385,18 +383,16 @@ const NotificationSettings = ({
           />
         </>
       ) : null}
-      <br />
-      <br />
+      {lastErrorCodeSaving !== null ? (
+        <ErrorMessage>Failed to save. Please try again</ErrorMessage>
+      ) : isSaveSuccess ? (
+        <SuccessMessage>Saved successfully</SuccessMessage>
+      ) : null}
       <FormControls>
         <Button onClick={onSaveClick} isDisabled={isSaving} icon={<SaveIcon />}>
           Save
         </Button>
       </FormControls>
-      {isSaveError ? (
-        <ErrorMessage>Failed to save. Please try again</ErrorMessage>
-      ) : isSaveSuccess ? (
-        <SuccessMessage>Saved successfully</SuccessMessage>
-      ) : null}
     </div>
   )
 }

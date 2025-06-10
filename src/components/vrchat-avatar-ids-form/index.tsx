@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
@@ -67,7 +67,7 @@ export default ({
   overrideSave?: (newIds: string[]) => void
 }) => {
   const userId = useUserId()
-  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -86,8 +86,10 @@ export default ({
     return <SuccessMessage>Asset saved successfully</SuccessMessage>
   }
 
-  if (isFailed) {
-    return <ErrorMessage>Error saving asset</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Error saving asset (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   const onSaveBtnClick = async () => {
@@ -143,7 +145,7 @@ export default ({
               {avatarId}{' '}
               <Button
                 onClick={() => removeAvatarId(avatarId)}
-                color="default"
+                color="secondary"
                 size="small">
                 Remove
               </Button>

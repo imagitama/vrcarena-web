@@ -5,22 +5,23 @@ import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 import MyCollection from '../my-collection'
 import Heading from '../heading'
-import Notice from '../notice'
 import useMyCollections from '../../hooks/useMyCollections'
 import ResultsItems from '../results-items'
 import CollectionResultsItem from '../collection-results-item'
 import InfoMessage from '../info-message'
 
 const MyCollections = () => {
-  const [isLoading, isErrored, myCollections] = useMyCollections()
+  const [isLoading, lastErrorCode, myCollections] = useMyCollections()
 
   if (isLoading) {
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load your owned assets collections</ErrorMessage>
+      <ErrorMessage>
+        Failed to load your owned assets collections (code {lastErrorCode})
+      </ErrorMessage>
     )
   }
 
@@ -36,8 +37,6 @@ const MyCollections = () => {
     </ResultsItems>
   )
 }
-
-const noticeId = 'creating-a-collection'
 
 export default () => {
   return (

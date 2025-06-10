@@ -25,4 +25,5 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullHistory = 'getfullhistory',
+  GetAllHistory = 'getallhistory',
 }

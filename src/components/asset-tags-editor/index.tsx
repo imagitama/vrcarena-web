@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
+import { Asset, CollectionNames } from '../../modules/assets'
 
 import TagInput from '../tag-input'
-import { Asset, CollectionNames } from '../../modules/assets'
 import Columns from '../columns'
 import Column from '../column'
 import FeaturesSubEditor from '../features-sub-editor'

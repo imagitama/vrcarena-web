@@ -1,14 +1,15 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
+import { VRCArenaTheme } from '../../themes'
 
 interface BoxProps {
-  children: React.ReactNode
+  children?: React.ReactNode
   color?: string
   icon?: React.ReactElement
   className?: string
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     outline: (props: BoxProps) =>
       `1px solid ${props.color || theme.palette.background.paper}`,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import PublishIcon from '@material-ui/icons/Publish'
+import PublishIcon from '@mui/icons-material/Publish'
 
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
@@ -235,7 +235,7 @@ export default ({
   if (lastErrorCode) {
     return (
       <ErrorMessage>
-        Failed to publish: ${getErrorMessageForCode(lastErrorCode)}
+        Failed to publish: {getErrorMessageForCode(lastErrorCode)}
       </ErrorMessage>
     )
   }
@@ -289,7 +289,7 @@ export default ({
         <>
           <WarningMessage
             controls={
-              <Button onClick={() => setIgnoreWarnings(true)} color="default">
+              <Button onClick={() => setIgnoreWarnings(true)} color="secondary">
                 Ignore
               </Button>
             }>

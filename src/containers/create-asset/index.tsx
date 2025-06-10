@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
-import CheckIcon from '@material-ui/icons/Check'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckIcon from '@mui/icons-material/Check'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
 
 import * as routes from '../../routes'
 
@@ -32,7 +32,7 @@ import { insertRecord } from '../../data-store'
 import AssetResults from '../../components/asset-results'
 import AssetSyncQueue from '../../components/asset-sync-queue'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   heading: {
     textAlign: 'center',
     padding: '2rem 0',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     padding: '2rem 0',
   },
-}))
+})
 
 const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
   const classes = useStyles()
@@ -66,9 +66,11 @@ const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
 
 const ManualCreateView = () => {
   const [isCreating, setIsCreating] = useState(false)
+
+  // TODO: Store last error code
   const [isError, setIsError] = useState(false)
   const classes = useStyles()
-  const [isLoadingDrafts, isErrorLoadingDrafts, drafts] = useMyDrafts()
+  const [isLoadingDrafts, lastErrorCodeLoadingDrafts, drafts] = useMyDrafts()
   const [showRules, setShowRules] = useState(false)
   const { push } = useHistory()
   const supabase = useSupabaseClient()
@@ -121,8 +123,12 @@ const ManualCreateView = () => {
     return <LoadingIndicator message="Checking for existing drafts..." />
   }
 
-  if (isErrorLoadingDrafts) {
-    return <ErrorMessage>Failed to load existing drafts</ErrorMessage>
+  if (lastErrorCodeLoadingDrafts !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load existing drafts (code {lastErrorCodeLoadingDrafts})
+      </ErrorMessage>
+    )
   }
 
   if (drafts && drafts.length && !showRules) {
@@ -214,7 +220,7 @@ const View = () => {
       <Button
         onClick={() => setIsOldItemsShown((currentVal) => !currentVal)}
         size="small"
-        color="default"
+        color="secondary"
         icon={
           isOldItemsShown ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
         }>
@@ -260,7 +266,7 @@ export default () => {
             <br />
             <Button
               onClick={() => setIsCreatingManually(true)}
-              color="default"
+              color="secondary"
               size="small">
               Create Asset Manually (old way)
             </Button>

@@ -1,10 +1,10 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles({
   root: {
-    marginBottom: '0.5rem'
-  }
+    marginBottom: '0.5rem',
+  },
 })
 
 export default ({ children }: { children: React.ReactNode }) => {

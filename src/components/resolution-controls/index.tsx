@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import CheckIcon from '@material-ui/icons/Check'
-import ClearIcon from '@material-ui/icons/Clear'
+import CheckIcon from '@mui/icons-material/Check'
+import ClearIcon from '@mui/icons-material/Clear'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 
@@ -30,13 +30,13 @@ export default ({
   onClick?: (newValue: string) => void
   onDone?: () => void
 }) => {
-  const [isLoading, isErroredLoading, metaRecord] =
+  const [isLoading, lastErrorCodeLoading, metaRecord] =
     useDataStoreItem<ReportMeta>(
       CollectionNames.ReportsMeta,
       existingResolutionStatus ? false : id,
       'resolve-button'
     )
-  const [isSaving, , isErroredSaving, save] = useDatabaseSave(
+  const [isSaving, , lastErrorCodeSaving, save] = useDatabaseSave(
     CollectionNames.ReportsMeta,
     id
   )
@@ -62,12 +62,16 @@ export default ({
       ? metaRecord.resolutionstatus
       : null)
 
-  if (isErroredLoading || !resolutionStatus) {
-    return <>Failed to load record!</>
+  if (lastErrorCodeLoading !== null) {
+    return <>Failed to load record (code {lastErrorCodeLoading})</>
   }
 
-  if (isErroredSaving) {
-    return <>Failed to save record!</>
+  if (!resolutionStatus) {
+    return <>Failed to load record (invalid resolution status)</>
+  }
+
+  if (lastErrorCodeSaving !== null) {
+    return <>Failed to save record (code {lastErrorCodeSaving})</>
   }
 
   const toggle = async () => {
@@ -108,7 +112,7 @@ export default ({
   return (
     <>
       <Button
-        color="default"
+        color="secondary"
         onClick={toggle}
         icon={
           resolutionStatus === ResolutionStatus.Pending ? (

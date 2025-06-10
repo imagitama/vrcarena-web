@@ -1,13 +1,13 @@
 import React, { useState, useCallback } from 'react'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
 
 import useUserId from '../../hooks/useUserId'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
 
 import Button from '../button'
-import PaginatedView from '../paginated-view'
+import PaginatedView, { GetQueryFn } from '../paginated-view'
 import AssetResults from '../asset-results'
 import { Asset, ViewNames } from '../../modules/assets'
 import {
@@ -31,7 +31,7 @@ const analyticsCategoryName = 'MyAccount'
 const MyUploads = () => {
   const userId = useUserId()
   const [selectedSubView, setSelectedSubView] = useState<SubView | null>(null)
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<Asset>>(
     (query) => {
       query = query.eq('createdby', userId)
 
@@ -103,7 +103,7 @@ approvalstatus.eq.${ApprovalStatus.Declined}`)
 
             trackAction(analyticsCategoryName, 'Click on view my public assets')
           }}
-          color="default">
+          color="secondary">
           All
         </Button>,
         <Button
@@ -119,7 +119,7 @@ approvalstatus.eq.${ApprovalStatus.Declined}`)
 
             trackAction(analyticsCategoryName, 'Click on view my public assets')
           }}
-          color="default">
+          color="secondary">
           Visible To Everyone
         </Button>,
         <Button
@@ -135,7 +135,7 @@ approvalstatus.eq.${ApprovalStatus.Declined}`)
 
             trackAction(analyticsCategoryName, 'Click on view my draft assets')
           }}
-          color="default">
+          color="secondary">
           Drafts
         </Button>,
         <Button
@@ -154,7 +154,7 @@ approvalstatus.eq.${ApprovalStatus.Declined}`)
               'Click on view my deleted assets'
             )
           }}
-          color="default">
+          color="secondary">
           Deleted/Archived
         </Button>,
       ]}>

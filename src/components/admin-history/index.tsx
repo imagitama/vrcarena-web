@@ -1,17 +1,16 @@
 import React from 'react'
 
+import useDatabaseQuery, {
+  OrderDirections,
+  Operators,
+} from '../../hooks/useDatabaseQuery'
+import { HistoryEntry, ViewNames } from '../../modules/history'
+
+import HistoryResults from '../history-results'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import NoResultsMessage from '../no-results-message'
 import Heading from '../heading'
-
-import useDatabaseQuery, {
-  OrderDirections,
-  Operators,
-  options,
-} from '../../hooks/useDatabaseQuery'
-import { HistoryEntry } from '../../modules/history'
-import HistoryResults from '../history-results'
 
 const History = ({
   id,
@@ -22,8 +21,8 @@ const History = ({
   type?: string
   limit: number
 }) => {
-  const [isLoading, isErrored, results] = useDatabaseQuery<HistoryEntry>(
-    'getAllHistory',
+  const [isLoading, lastErrorCode, results] = useDatabaseQuery<HistoryEntry>(
+    ViewNames.GetAllHistory,
     id && type
       ? [
           ['parent', Operators.EQUALS, id],
@@ -41,8 +40,10 @@ const History = ({
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to retrieve history</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load history (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!results.length) {
@@ -61,8 +62,8 @@ const MetaHistory = ({
   type?: string
   limit?: number
 }) => {
-  const [isLoading, isErrored, results] = useDatabaseQuery<HistoryEntry>(
-    'getAllHistory',
+  const [isLoading, lastErrorCode, results] = useDatabaseQuery<HistoryEntry>(
+    ViewNames.GetAllHistory,
     id && type
       ? [
           ['parent', Operators.EQUALS, id],
@@ -80,8 +81,10 @@ const MetaHistory = ({
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to retrieve history</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load history (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!results.length) {
@@ -101,15 +104,13 @@ const AdminHistory = ({
   type?: string
   metaType?: string
   limit?: number
-}) => {
-  return (
-    <>
-      <Heading variant="h3">Basic Details</Heading>
-      <History id={id} type={type} limit={limit} />
-      <Heading variant="h3">Meta</Heading>
-      <MetaHistory id={id} type={metaType} limit={limit} />
-    </>
-  )
-}
+}) => (
+  <>
+    <Heading variant="h3">Basic Details</Heading>
+    <History id={id} type={type} limit={limit} />
+    <Heading variant="h3">Meta</Heading>
+    <MetaHistory id={id} type={metaType} limit={limit} />
+  </>
+)
 
 export default AdminHistory

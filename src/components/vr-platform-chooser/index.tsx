@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Typography from '@material-ui/core/Typography'
-import Checkbox from '@material-ui/core/Checkbox'
-import OpenInNewIcon from '@material-ui/icons/OpenInNew'
-import TextField from '@material-ui/core/TextField'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import Card from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import Checkbox from '@mui/material/Checkbox'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import TextField from '@mui/material/TextField'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -29,6 +29,7 @@ import vrchatImageUrl from './assets/images/vrchat.webp'
 import { CollectionNames } from '../../modules/user'
 import { User } from '../../modules/users'
 import SuccessMessage from '../success-message'
+import CheckboxInput from '../checkbox-input'
 
 const useStyles = makeStyles({
   intro: {
@@ -264,7 +265,9 @@ export default ({
               className={classes.actionArea}
               onClick={() => toggleSelectPlatform(platform.name)}>
               <div className={classes.checkbox}>
-                <Checkbox checked={selectedFields[platform.name].isSelected} />
+                <CheckboxInput
+                  value={selectedFields[platform.name].isSelected}
+                />
               </div>
               <div className={classes.image}>
                 <img src={platform.imageUrl} />
@@ -281,7 +284,7 @@ export default ({
             <CardActions className={classes.controls}>
               <Button
                 size="small"
-                color="default"
+                color="secondary"
                 url={platform.websiteUrl}
                 icon={<OpenInNewIcon />}
                 onClick={() => {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import { makeStyles } from '@material-ui/core/styles'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import { makeStyles } from '@mui/styles'
 import Link from '../../components/link'
 
 import ErrorMessage from '../../components/error-message'
@@ -49,14 +49,10 @@ const View = () => {
     parentTable: string
     parentId: string
   }>()
-  const [isLoadingParent, isErrorLoadingParent, parent] = useDataStoreItem(
-    parentTable,
-    parentId,
-    'create-report'
-  )
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Report>(
-    CollectionNames.Reports
-  )
+  const [isLoadingParent, lastErrorCodeLoadingParent, parent] =
+    useDataStoreItem(parentTable, parentId, 'create-report')
+  const [isSaving, isSaveSuccess, lastErrorCodeCreating, save] =
+    useDatabaseSave<Report>(CollectionNames.Reports)
   const [fieldData, setFieldData] = useState<{
     reason: string
     comments: string
@@ -79,16 +75,21 @@ const View = () => {
     return <LoadingIndicator message="Loading parent..." />
   }
 
-  if (isErrorLoadingParent) {
+  if (lastErrorCodeLoadingParent !== null) {
     return (
       <ErrorMessage>
         Failed to load whatever you want to report - are you sure it exists?
+        (code {lastErrorCodeLoadingParent})
       </ErrorMessage>
     )
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to create the report</ErrorMessage>
+  if (lastErrorCodeCreating !== null) {
+    return (
+      <ErrorMessage>
+        Failed to create the report (code {lastErrorCodeCreating})
+      </ErrorMessage>
+    )
   }
 
   if (isSaveSuccess) {

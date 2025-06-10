@@ -1,10 +1,10 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 import Heading from '../../components/heading'
 import { CachedPatreonMember } from '../../modules/patreonmembercache'
 import LoadingIndicator from '../../components/loading-indicator'
@@ -12,18 +12,30 @@ import ErrorMessage from '../../components/error-message'
 import Message from '../../components/message'
 import useSupabaseView from '../../hooks/useSupabaseView'
 import { costs, patreonTax, totalCostPerMonth } from '../../costs'
+import { ViewNames } from '../../modules/patreonpledgecache'
 
 const PatreonStatus = () => {
-  const [isLoading, isError, members] = useSupabaseView<CachedPatreonMember>(
-    'getAnonymousPatreonMembers'
-  )
+  const [isLoading, lastErrorCode, members] =
+    useSupabaseView<CachedPatreonMember>(ViewNames.GetAnonymousPatreonMembers)
 
   if (isLoading) {
     return <LoadingIndicator message="Loading Patreon supporters..." />
   }
 
-  if (isError || !Array.isArray(members)) {
-    return <ErrorMessage>Failed to load Patreon supporters</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load Patreon supporters (code {lastErrorCode})
+      </ErrorMessage>
+    )
+  }
+
+  if (!Array.isArray(members)) {
+    return (
+      <ErrorMessage>
+        Failed to load Patreon supporters (invalid members)
+      </ErrorMessage>
+    )
   }
 
   const incomeCents = members.reduce(

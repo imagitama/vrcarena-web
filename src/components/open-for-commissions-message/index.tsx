@@ -1,8 +1,8 @@
 import React from 'react'
 import Markdown from '../markdown'
-import Paper from '@material-ui/core/Paper'
-import { makeStyles } from '@material-ui/core/styles'
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn'
+import Paper from '@mui/material/Paper'
+import { makeStyles } from '@mui/styles'
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 
 import Button from '../button'
 import * as routes from '../../routes'

@@ -14,7 +14,7 @@ import { FullAmendment, ViewNames } from '../../modules/amendments'
 
 export default () => {
   const userId = useUserId()
-  const [isLoading, isErrored, results] = useDatabaseQuery<FullAmendment>(
+  const [isLoading, lastErrorCode, results] = useDatabaseQuery<FullAmendment>(
     ViewNames.GetFullAmendments,
     [['createdby', Operators.EQUALS, userId]],
     {
@@ -26,8 +26,12 @@ export default () => {
     return <LoadingIndicator message="Loading amendments..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load amendments</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage>
+        Failed to load amendments (code {lastErrorCode}
+      </ErrorMessage>
+    )
   }
 
   return <AmendmentResults results={results} />

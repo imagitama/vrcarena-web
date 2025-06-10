@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 
 import Heading from '../../components/heading'
-import PaginatedView from '../../components/paginated-view'
+import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
 import ReviewResults from '../../components/review-results'
 import WarningMessage from '../../components/warning-message'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
@@ -14,7 +14,7 @@ const Renderer = ({ items }: { items?: PublicReview[] }) => (
 
 const ReviewsView = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<PublicReview>>(
     (query) => {
       if (!isAdultContentEnabled) {
         query = query.eq('isadult', false)

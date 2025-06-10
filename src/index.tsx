@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
+import { ThemeProvider } from '@mui/material/styles'
 // @ts-ignore
 import ReactReduxFirebaseProvider from 'react-redux-firebase/lib/ReactReduxFirebaseProvider'
 import { store, history } from './store'
@@ -14,6 +15,7 @@ import './firebase'
 import './global.css'
 import SupabaseClientContext from './contexts/SupabaseClient'
 import { client as supabaseClient } from './supabase'
+import { darkTheme } from './themes'
 
 if (!inDevelopment()) {
   Sentry.init({
@@ -40,7 +42,9 @@ root.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <ReactReduxFirebaseProvider {...rrfProps}>
-          <App />
+          <ThemeProvider theme={darkTheme}>
+            <App />
+          </ThemeProvider>
         </ReactReduxFirebaseProvider>
       </ConnectedRouter>
     </Provider>

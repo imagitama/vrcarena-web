@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import Link from '../../components/link'
-import TableCell from '@material-ui/core/TableCell'
-import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@mui/material/TableCell'
+import TableRow from '@mui/material/TableRow'
 
 import * as routes from '../../routes'
 import WarningMessage from '../../components/warning-message'
@@ -14,6 +14,7 @@ import {
 import GenericOutputItem from '../generic-output-item'
 import ResolutionStatus from '../resolution-status'
 import { CollectionNames } from '../../modules/assets'
+import Button from '../button'
 
 export default ({
   report,
@@ -48,9 +49,11 @@ export default ({
     <Fragment key={reportId}>
       <TableRow key={reportId} title={reportId}>
         <TableCell>
-          <Link to={routes.viewReportWithVar.replace(':reportId', reportId)}>
+          <Button
+            url={routes.viewReportWithVar.replace(':reportId', reportId)}
+            color="secondary">
             View Report
-          </Link>
+          </Button>
         </TableCell>
         {showParentDetails && (
           <TableCell>

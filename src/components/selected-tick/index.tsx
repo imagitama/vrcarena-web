@@ -1,6 +1,6 @@
 import React from 'react'
-import CheckIcon from '@material-ui/icons/Check'
-import { makeStyles } from '@material-ui/core/styles'
+import CheckIcon from '@mui/icons-material/Check'
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles({
   root: {
@@ -16,8 +16,8 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 100
-  }
+    zIndex: 100,
+  },
 })
 
 const SelectedTick = ({ className }: { className?: string }) => {

@@ -1,6 +1,6 @@
 import React from 'react'
-import BubbleChartIcon from '@material-ui/icons/BubbleChart'
-import { makeStyles } from '@material-ui/core/styles'
+import BubbleChartIcon from '@mui/icons-material/BubbleChart'
+import { makeStyles } from '@mui/styles'
 import Message, { MessageProps } from '../message'
 
 const useStyles = makeStyles({
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default (messageProps: MessageProps) => {
+const ExperimentalMessage = (messageProps: MessageProps) => {
   const classes = useStyles()
   return (
     <Message
@@ -32,3 +32,5 @@ export default (messageProps: MessageProps) => {
     </Message>
   )
 }
+
+export default ExperimentalMessage

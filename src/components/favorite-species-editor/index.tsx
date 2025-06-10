@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import MenuItem from '@material-ui/core/MenuItem'
-import SaveIcon from '@material-ui/icons/Save'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormControl from '@material-ui/core/FormControl'
+import { makeStyles } from '@mui/styles'
+import MenuItem from '@mui/material/MenuItem'
+import SaveIcon from '@mui/icons-material/Save'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
 
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -27,8 +27,9 @@ import {
   CollectionNames as UsersCollectionNames,
 } from '../../modules/users'
 import SuccessMessage from '../success-message'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   formControl: {
     margin: theme.spacing(1),
   },
@@ -45,8 +46,8 @@ export default ({
 }) => {
   const classes = useStyles()
   const userId = useUserId()
-  const [isLoadingUser, isErroredLoadingUser, user] = useUserRecord()
-  const [isLoadingSpecies, isErroredLoadingSpecies, species] =
+  const [isLoadingUser, isErrorLoadingUser, user] = useUserRecord()
+  const [isLoadingSpecies, lastErrorCodeLoadingSpecies, species] =
     useDataStoreItems<Species>(SpeciesCollectionNames.Species, undefined, {
       queryName: 'favorite-species-editor-species',
       orderBy: 'pluralname',
@@ -100,12 +101,16 @@ export default ({
     return <LoadingIndicator message="Loading species..." />
   }
 
-  if (isErroredLoadingUser) {
+  if (isErrorLoadingUser) {
     return <ErrorMessage>Failed to lookup your profile</ErrorMessage>
   }
 
-  if (isErroredLoadingSpecies) {
-    return <ErrorMessage>Failed to load species</ErrorMessage>
+  if (lastErrorCodeLoadingSpecies !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load species (code {lastErrorCodeLoadingSpecies})
+      </ErrorMessage>
+    )
   }
 
   return (

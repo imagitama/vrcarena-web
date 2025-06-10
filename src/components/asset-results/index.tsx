@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AssetResultsItem from '../asset-results-item'
 import { Asset, PublicAsset } from '../../modules/assets'
 import InlineAssetEditor from '../inline-asset-editor'
+import ErrorBoundary from '../error-boundary'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -50,8 +51,8 @@ const AssetResults = ({
   return (
     <div className={classes.root}>
       {shimmer
-        ? new Array(shimmerCount).fill(undefined).map(() => (
-            <div className={classes.item}>
+        ? new Array(shimmerCount).fill(undefined).map((item, i) => (
+            <div key={i} className={classes.item}>
               <AssetResultsItem />
             </div>
           ))

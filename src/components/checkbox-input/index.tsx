@@ -1,26 +1,48 @@
 import React from 'react'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import { makeStyles } from '@mui/styles'
 
-export default ({
+const useStyles = makeStyles({
+  root: {
+    fontSize: '1.5rem',
+  },
+  fullWidth: {
+    width: '100%',
+  },
+})
+
+const CheckboxInput = ({
   onChange,
   label,
   value,
-  isDisabled = false
+  isDisabled = false,
+  fullWidth = false,
+  onClick,
 }: {
-  onChange: (newVal: boolean) => void | Promise<void>
-  label: string
+  onChange?: (newVal: boolean) => void | Promise<void>
+  label?: string
   value: boolean
   isDisabled?: boolean
-}) => (
-  <FormControlLabel
-    label={label}
-    control={
-      <Checkbox
-        onChange={() => onChange(!value)}
-        checked={value}
-        disabled={isDisabled}
-      />
-    }
-  />
-)
+  fullWidth?: boolean
+  onClick?: () => void
+}) => {
+  const classes = useStyles()
+  return (
+    <FormControlLabel
+      label={label}
+      className={`${classes.root} ${fullWidth ? classes.fullWidth : ''}`}
+      control={
+        <Checkbox
+          onChange={onChange ? () => onChange(!value) : undefined}
+          checked={value}
+          disabled={isDisabled}
+          size="large"
+        />
+      }
+      onClick={onClick}
+    />
+  )
+}
+
+export default CheckboxInput

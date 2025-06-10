@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
-import CheckIcon from '@material-ui/icons/Check'
+import SaveIcon from '@mui/icons-material/Save'
+import CheckIcon from '@mui/icons-material/Check'
 
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
@@ -123,10 +123,8 @@ export default ({
   onDone?: () => void
   overrideSave?: (newExtraData: ExtraData) => void
 }) => {
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDataStoreEdit<Asset>(
-    CollectionNames.Assets,
-    assetId || false
-  )
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
   const [newExtraData, setNewExtraData] = useState<ExtraData>(
     currentExtraData || {
       vrcfury: {
@@ -165,8 +163,10 @@ export default ({
     return <LoadingIndicator message="Saving asset..." />
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save asset</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (isSaveSuccess) {

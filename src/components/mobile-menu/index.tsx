@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Link from '../../components/link'
-import { makeStyles } from '@material-ui/core/styles'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
-import Drawer from '@material-ui/core/Drawer'
-import MenuList from '@material-ui/core/MenuList'
-import MenuItem from '@material-ui/core/MenuItem'
-import Divider from '@material-ui/core/Divider'
-import Typography from '@material-ui/core/Typography'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
+import { makeStyles } from '@mui/styles'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import Drawer from '@mui/material/Drawer'
+import MenuList from '@mui/material/MenuList'
+import MenuItem from '@mui/material/MenuItem'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
+import ListItemIcon from '@mui/material/ListItemIcon'
 
 import useUserRecord from '../../hooks/useUserRecord'
 import { closeMenu } from '../../modules/app'
@@ -134,7 +134,7 @@ export default () => {
             )
             .map(({ id, label, url, children }) => (
               <div key={id}>
-                <MenuItem button>
+                <MenuItem>
                   {children ? (
                     <Typography
                       component="div"
@@ -170,7 +170,6 @@ export default () => {
                         .map((child) => (
                           <MenuItem
                             key={child.id}
-                            button
                             className={classes.subMenuItem}>
                             {child.url ? (
                               <MenuItemWithUrl

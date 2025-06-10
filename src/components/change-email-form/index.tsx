@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
+import SaveIcon from '@mui/icons-material/Save'
 
 import Button from '../button'
 import TextInput from '../text-input'
@@ -23,6 +23,8 @@ const ChangeEmailForm = () => {
   )
   const [isChanging, setIsChanging] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+
+  // TODO: Store last error code
   const [isFailed, setIsFailed] = useState(false)
 
   if (!loggedInUser) {

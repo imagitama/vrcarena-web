@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import Paper from '@material-ui/core/Paper'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import SaveIcon from '@material-ui/icons/Save'
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import { updateRecords } from '../../data-store'
@@ -275,7 +275,7 @@ const ApplyAvatarsForm = ({
 }
 
 const Avatars = () => {
-  const [isLoading, isErrored, results, hydrate] =
+  const [isLoading, lastErrorCode, results, hydrate] =
     useDatabaseQuery<FullPublicAvatarSubmission>(
       ViewNames.GetFullPublicAvatarSubmissions,
       [['isdeleted', Operators.EQUALS, false]]
@@ -285,8 +285,10 @@ const Avatars = () => {
     return <LoadingIndicator message="Loading avatars..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load avatars</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load avatars (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!results.length) {

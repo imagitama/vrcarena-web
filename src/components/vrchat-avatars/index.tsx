@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
+import { makeStyles } from '@mui/styles'
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd'
 
 import useDataStore from '../../hooks/useDataStore'
 import LoadingIndicator from '../loading-indicator'
@@ -49,7 +49,9 @@ export default ({
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to get avatars</ErrorMessage>
+    return (
+      <ErrorMessage>Failed to get avatars (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { handleError } from '../../error-handling'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'

@@ -28,7 +28,11 @@ const CollectionForUser = ({ userId }: { userId: string }) => {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to find the collection</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to find the collection (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!assetsInCollection || !assetsInCollection.length) {

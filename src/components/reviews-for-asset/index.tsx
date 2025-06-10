@@ -38,7 +38,9 @@ export default ({
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to load reviews</ErrorMessage>
+    return (
+      <ErrorMessage>Failed to load reviews (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!reviews || !reviews.length) {

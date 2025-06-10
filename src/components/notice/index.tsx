@@ -1,12 +1,13 @@
 import React from 'react'
-import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import CloseIcon from '@material-ui/icons/Close'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import { makeStyles } from '@mui/styles'
+import CloseIcon from '@mui/icons-material/Close'
 import Markdown from '../markdown'
 import Chariot from '../chariot'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     padding: theme.spacing(2, 2),
     position: 'relative',

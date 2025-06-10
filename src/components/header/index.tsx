@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react'
 import Link from '../../components/link'
 import { useDispatch } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
+import { makeStyles } from '@mui/styles'
+import Button from '@mui/material/Button'
 import { useMediaQuery } from 'react-responsive'
-import MenuIcon from '@material-ui/icons/Menu'
+import MenuIcon from '@mui/icons-material/Menu'
 
 import * as routes from '../../routes'
 import { openMenu } from '../../modules/app'
@@ -71,12 +71,12 @@ const useStyles = makeStyles({
   withBanner: {
     opacity: 0.15,
     transition: '500ms all',
-    '& $background': {
+    '& .background': {
       opacity: 0,
     },
     '&:hover': {
       opacity: 1,
-      '& $background': {
+      '& .background': {
         opacity: 1,
       },
     },
@@ -137,14 +137,14 @@ const useStyles = makeStyles({
         opacity: 1,
       },
     },
-    '& $twitterIconLink': {
+    '& .twitterIconLink': {
       paddingRight: '0.25rem',
     },
     '& svg': {
       width: 'auto', // fix patreon icon
       height: '2em',
     },
-    '& $twitterIcon': {
+    '& .twitterIcon': {
       height: '1.5em',
     },
     '& path': {
@@ -172,9 +172,19 @@ const useStyles = makeStyles({
     },
   },
   menuToggleButton: {
+    width: '3rem',
+    height: '3rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '2rem',
+    cursor: 'pointer',
     position: 'absolute',
     top: 0,
     right: 0,
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    },
 
     [mediaQueryForDesktopsOnly]: {
       display: 'none',
@@ -276,12 +286,12 @@ export default () => {
       <div>
         {!isMobile && <AccountMenu />}
         {isMobile && (
-          <Button
+          <div
             className={classes.menuToggleButton}
             onClick={onToggleMobileMenuClick}>
             <MenuIcon className={classes.menuToggleIcon} />
             <span hidden>Menu</span>
-          </Button>
+          </div>
         )}
       </div>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
+import { makeStyles } from '@mui/styles'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
 
 import useFilters, { StoredFilter } from '../../hooks/useFilters'
 import Button from '../button'
@@ -50,7 +50,7 @@ const UserIdInput = ({
             setUserIdText(userId)
             onChange(userId)
           }}
-          color="default"
+          color="secondary"
           size="small">
           Use Mine
         </Button>
@@ -152,7 +152,7 @@ const MultichoiceInput = ({
   return (
     <ButtonDropdown
       label="Status"
-      color="default"
+      color="secondary"
       options={filter.options.map((enumKey) => ({
         id: enumKey,
         label: enumKey,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import ErrorMessage from '../../components/error-message'
 import Link from '../../components/link'
@@ -94,7 +94,7 @@ const AuthorPromo = ({
 }
 
 const PromosContainer = () => {
-  const [isLoading, isError, results] =
+  const [isLoading, lastErrorCode, results] =
     useSupabaseView<GetPublicAuthorsWithVrchatAvatarsResult>(
       'getAuthorsForVrchatWorld'
     )
@@ -104,8 +104,10 @@ const PromosContainer = () => {
     return <LoadingIndicator message="Loading authors..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load authors</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load authors (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

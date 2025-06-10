@@ -1,8 +1,8 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import ActivityItemLabel from '../../components/activity-item-label'
 import FormattedDate from '../../components/formatted-date'
-import { ActivityEntry, FullActivityEntry } from '../../modules/activity'
+import { FullActivityEntry } from '../../modules/activity'
 
 const useStyles = makeStyles({
   items: {},
@@ -30,7 +30,6 @@ const ActivityResults = ({
           parent,
           parenttable: parentTable,
           createdat: createdAt,
-          parentdata: parentData,
           moredata: moreData,
           createdby: createdBy,
           createdbyusername: createdByUsername,
@@ -40,7 +39,6 @@ const ActivityResults = ({
               message={message}
               parent={parent}
               parentTable={parentTable}
-              parentData={parentData}
               extraData={moreData}
               createdBy={createdBy}
               createdByUsername={createdByUsername}

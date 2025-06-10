@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import CreateIcon from '@material-ui/icons/Create'
+import CreateIcon from '@mui/icons-material/Create'
 
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 import useUserId from '../../hooks/useUserId'
@@ -13,7 +13,7 @@ import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 import Button from '../button'
 
-export default ({
+const AddCommentForm = ({
   collectionName,
   parentId,
   onAddClick = undefined,
@@ -35,7 +35,7 @@ export default ({
 
   const [textFieldValue, setTextFieldValue] = useState('')
   const userId = useUserId()
-  const [isSaving, isSuccess, isErrored, create, clear] =
+  const [isSaving, isSuccess, lastErrorCode, create, clear] =
     useDataStoreCreate<Comment>(CollectionNames.Comments)
   const timeoutRef = useRef<NodeJS.Timeout | undefined>()
 
@@ -66,13 +66,10 @@ export default ({
     return <SuccessMessage>Added your comment successfully</SuccessMessage>
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Error adding your comment
-        <br />
-        <br />
-        <Button onClick={() => clear()}>Try Again</Button>
+      <ErrorMessage onRetry={clear}>
+        Error adding your comment (code {lastErrorCode})
       </ErrorMessage>
     )
   }
@@ -123,3 +120,5 @@ export default ({
     </div>
   )
 }
+
+export default AddCommentForm

@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 
 import ErrorMessage from '../../components/error-message'
 import Paper from '../../components/paper'
@@ -29,16 +29,19 @@ const baseUrl = ''
 
 const AssetThumbnailAtlasses = () => {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [, isError, results, , hydrate] = useDataStoreItems<ImageAtlasCell>(
-    'authorpromoatlas',
-    undefined,
-    { queryName: 'get-atlasses' }
-  )
+  const [, lastErrorCode, results, , hydrate] =
+    useDataStoreItems<ImageAtlasCell>('authorpromoatlas', undefined, {
+      queryName: 'get-atlasses',
+    })
 
   useInterval(hydrate, 2000)
 
-  if (isError) {
-    return <ErrorMessage>Failed to load atlasses</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load atlasses (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const resultsByIndexInArray = Array.isArray(results)
@@ -108,7 +111,7 @@ interface ImageAtlasQueuedItem {
 
 const ImageAtlasQueue = () => {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [, isError, results, , hydrate] =
+  const [, lastErrorCode, results, , hydrate] =
     useDataStoreItems<ImageAtlasQueuedItem>('imageatlasqueue', undefined, {
       queryName: 'get-queue',
       orderBy: 'queuedat',
@@ -116,8 +119,12 @@ const ImageAtlasQueue = () => {
 
   useInterval(hydrate, 2000)
 
-  if (isError) {
-    return <ErrorMessage>Failed to load image atlas queue</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load image atlas queue (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   return (

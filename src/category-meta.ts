@@ -1,6 +1,6 @@
-import AccessibilityIcon from '@material-ui/icons/Accessibility'
-import SchoolIcon from '@material-ui/icons/School'
-import DirectionsRunIcon from '@material-ui/icons/DirectionsRun'
+import AccessibilityIcon from '@mui/icons-material/Accessibility'
+import SchoolIcon from '@mui/icons-material/School'
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun'
 
 import CheckroomIcon from '@mui/icons-material/Checkroom'
 import ConstructionIcon from '@mui/icons-material/Construction'

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
+import SaveIcon from '@mui/icons-material/Save'
 
 import Button from '../button'
 import FormControls from '../form-controls'
@@ -54,15 +54,13 @@ export default ({
   overrideSave?: (newSpeciesIds: string[]) => void
 }) => {
   const userId = useUserId()
-  const [isLoading, isError, asset] = useDataStoreItem<Asset>(
+  const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
     CollectionNames.Assets,
     activeSpeciesIds ? false : assetId ? assetId : false,
     'change-species-editor'
   )
-  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave<Asset>(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [isSaving, isSuccess, lastErrorCodeSaving, save] =
+    useDatabaseSave<Asset>(CollectionNames.Assets, assetId)
   const [newSpeciesIds, setNewSpeciesIds] = useState<string[]>(
     activeSpeciesIds || []
   )
@@ -83,8 +81,12 @@ export default ({
     return <>Loading asset...</>
   }
 
-  if (isError || (!activeSpeciesIds && !asset)) {
-    return <>Error loading resource</>
+  if (lastErrorCode !== null) {
+    return <>Error loading resource (code {lastErrorCode})</>
+  }
+
+  if (!activeSpeciesIds && !asset) {
+    return <>Error loading resource (invalid data)</>
   }
 
   if (isSaving) {
@@ -95,8 +97,8 @@ export default ({
     return <>Species has been changed</>
   }
 
-  if (isFailed) {
-    return <>Error saving new species</>
+  if (lastErrorCodeSaving !== null) {
+    return <>Error saving new species (code {lastErrorCodeSaving})</>
   }
 
   const onClickSpecies = (speciesId: string) =>
@@ -159,7 +161,7 @@ export default ({
           Save
         </Button>{' '}
         {onCancel && (
-          <Button onClick={() => onCancel()} color="default">
+          <Button onClick={() => onCancel()} color="secondary">
             Cancel
           </Button>
         )}

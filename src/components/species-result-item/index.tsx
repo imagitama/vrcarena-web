@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { FullSpecies, Species } from '../../modules/species'
 import Link from '../../components/link'
 import * as routes from '../../routes'
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   title: {
     display: 'flex',
     alignItems: 'center',
-    '& img, & $thumbnailPlaceholder': {
+    '& img, & .thumbnailPlaceholder': {
       width: '100px',
       height: '100px',
       marginRight: '0.5rem',

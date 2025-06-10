@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import { formHideDelay } from '../../config'
 import { handleError } from '../../error-handling'
@@ -48,7 +48,7 @@ const Form = ({ assetId }: { assetId: string }) => {
     throw new Error('Asset ID not provided')
   }
 
-  const [isCreating, isSuccess, isFailed, create] =
+  const [isCreating, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<PublicAvatarCreateFields>(
       CollectionNames.PublicAvatarSubmissions
     )
@@ -107,10 +107,10 @@ const Form = ({ assetId }: { assetId: string }) => {
         <SuccessMessage>
           The avatar has been sent to our team! Would you like to add another?
         </SuccessMessage>
-      ) : isFailed ? (
+      ) : lastErrorCode !== null ? (
         <ErrorMessage>
           Failed to send. This shouldn't happen. Please come back tomorrow to
-          try again.
+          try again. Code {lastErrorCode}
         </ErrorMessage>
       ) : null}
 

@@ -1,20 +1,19 @@
 import React, { useState } from 'react'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import { makeStyles } from '@material-ui/core/styles'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
-import AddIcon from '@material-ui/icons/Add'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { makeStyles } from '@mui/styles'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import AddIcon from '@mui/icons-material/Add'
 import FlipMove from 'react-flip-move'
 
-import CardButton from '../card-button'
 import { moveItemToLeft, moveItemToRight } from '../../utils'
-import { defaultBorderRadius } from '../../themes'
+import { VRCArenaTheme } from '../../themes'
 import Button from '../button'
 
 export type Item<T> = {} & T
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
@@ -41,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   emptyItem: {
-    borderRadius: defaultBorderRadius,
+    borderRadius: theme.shape.borderRadius,
     border: '0.1rem dashed rgba(255, 255, 255, 0.5)',
   },
   sideControl: {
@@ -297,7 +296,7 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
               <div className={classes.noItemsMessage}>
                 No {nameSingular}s defined yet
               </div>
-              <Button color="default" onClick={onAddClick} icon={<AddIcon />}>
+              <Button color="secondary" onClick={onAddClick} icon={<AddIcon />}>
                 Add {nameSingular}
               </Button>
             </div>

@@ -1,10 +1,10 @@
 import React from 'react'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 
 import useDatabaseQuery from '../../hooks/useDatabaseQuery'
 
@@ -16,7 +16,7 @@ import * as routes from '../../routes'
 import { CollectionNames, User } from '../../modules/users'
 
 const AdminUserManagement = () => {
-  const [isLoading, isErrored, users] = useDatabaseQuery<User>(
+  const [isLoading, lastErrorCode, users] = useDatabaseQuery<User>(
     CollectionNames.Users,
     []
   )
@@ -25,8 +25,10 @@ const AdminUserManagement = () => {
     return <LoadingIndicator message="Loading users..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load users. Please try again</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load users (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!users.length) {

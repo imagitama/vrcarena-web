@@ -1,16 +1,18 @@
 import React from 'react'
+
 import useDatabaseQuery, {
   Operators,
   options,
 } from '../../hooks/useDatabaseQuery'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
-import ImageGallery from '../image-gallery'
 import {
   AttachmentReason,
   FullAttachment,
   ViewNames,
 } from '../../modules/attachments'
+
+import ErrorMessage from '../error-message'
+import NoResultsMessage from '../no-results-message'
+import ImageGallery from '../image-gallery'
 import Attachments from '../attachments'
 
 const LoadingGallery = () => {
@@ -34,31 +36,42 @@ const AttachmentsByParent = ({
   includeMeta?: boolean
   includeParents?: boolean
 }) => {
-  const [isLoading, isError, attachments] = useDatabaseQuery<FullAttachment>(
-    ViewNames.GetPublicAttachments,
-    // @ts-ignore
-    [['reason', Operators.EQUALS, reason]].concat(
-      createdBy
-        ? [['createdby', Operators.EQUALS, createdBy!]]
-        : parentTable && parentId
-        ? [
-            ['parenttable', Operators.EQUALS, parentTable],
-            ['parentid', Operators.EQUALS, parentId],
-          ]
-        : []
-    ),
-    {
-      [options.queryName]: 'attachments',
-      [options.subscribe]: true,
-    }
-  )
+  const [isLoading, lastErrorCode, attachments] =
+    useDatabaseQuery<FullAttachment>(
+      ViewNames.GetPublicAttachments,
+      // @ts-ignore
+      [['reason', Operators.EQUALS, reason]].concat(
+        createdBy
+          ? [['createdby', Operators.EQUALS, createdBy!]]
+          : parentTable && parentId
+          ? [
+              ['parenttable', Operators.EQUALS, parentTable],
+              ['parentid', Operators.EQUALS, parentId],
+            ]
+          : []
+      ),
+      {
+        [options.queryName]: 'attachments',
+        [options.subscribe]: true,
+      }
+    )
 
   if (isLoading) {
     return <LoadingGallery />
   }
 
-  if (isError || !Array.isArray(attachments)) {
-    return <ErrorMessage>Failed to load attachments</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load attachments (code {lastErrorCode})
+      </ErrorMessage>
+    )
+  }
+
+  if (!Array.isArray(attachments)) {
+    return (
+      <ErrorMessage>Failed to load attachments (invalid items)</ErrorMessage>
+    )
   }
 
   if (!attachments.length) {

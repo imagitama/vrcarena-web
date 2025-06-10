@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import CheckIcon from '@material-ui/icons/Check'
+import { makeStyles } from '@mui/styles'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import CheckIcon from '@mui/icons-material/Check'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useSearching from '../../hooks/useSearching'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
+import { getIsDiscordMessageUrl, getIsDiscordUrl } from '../../discord'
+import { Asset, CollectionNames } from '../../modules/assets'
+import { cleanupSourceUrl } from '../../utils/assets'
 
 import AssetResults from '../asset-results'
 import Button from '../button'
 import FormControls from '../form-controls'
 import LoadingIndicator from '../loading-indicator'
 import WarningMessage from '../warning-message'
-import { Asset, CollectionNames } from '../../modules/assets'
 import TextInput from '../text-input'
-import { cleanupSourceUrl } from '../../utils/assets'
 import VisitSourceButton from '../visit-source-button'
-import { getIsDiscordMessageUrl, getIsDiscordUrl } from '../../discord'
 
 const useStyles = makeStyles({
   textInput: {

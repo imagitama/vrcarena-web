@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { CollectionNames, Species } from '../../modules/species'
 import ErrorMessage from '../error-message'
@@ -108,7 +108,7 @@ const SpeciesSelector = ({
   selectedSpeciesIds?: string[]
   onSpeciesClickWithId?: (id: string) => void
 }) => {
-  const [isLoading, isError, allSpecies] = useDataStoreItems<Species>(
+  const [isLoading, lastErrorCode, allSpecies] = useDataStoreItems<Species>(
     CollectionNames.Species,
     undefined,
     { queryName: 'species-selector', orderBy: 'pluralname' }
@@ -120,8 +120,10 @@ const SpeciesSelector = ({
     return <LoadingIndicator message="Loading species..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load species</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load species (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   const filteredSpecies =

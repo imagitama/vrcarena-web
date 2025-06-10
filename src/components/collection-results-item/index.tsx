@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import * as routes from '../../routes'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
@@ -23,11 +23,11 @@ const useStyles = makeStyles({
   tiny: {
     width: '100%',
     fontSize: '75%',
-    '& $cardMedia': {
+    '& .cardMedia': {
       width: '100px',
       height: '100px',
     },
-    '& $cardContent': {
+    '& .cardContent': {
       padding: '5px',
     },
     '& a': {

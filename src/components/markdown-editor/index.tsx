@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import TextField from '@material-ui/core/TextField'
-import { makeStyles } from '@material-ui/core/styles'
+import TextField from '@mui/material/TextField'
+import { makeStyles } from '@mui/styles'
 
 import Paper from '../paper'
 import Markdown from '../markdown'
@@ -118,29 +118,32 @@ This is a caption
           />
           <Button
             size="small"
-            color="default"
+            color="secondary"
             onClick={onClickAddButtonWithUrl}>
             Button (URL)
           </Button>{' '}
           <Button
             size="small"
-            color="default"
+            color="secondary"
             onClick={onClickAddButtonWithAsset}>
             Button (asset)
           </Button>{' '}
-          <Button size="small" color="default" onClick={onClickAddInfo}>
+          <Button size="small" color="secondary" onClick={onClickAddInfo}>
             Info
           </Button>{' '}
-          <Button size="small" color="default" onClick={onClickAddWarning}>
+          <Button size="small" color="secondary" onClick={onClickAddWarning}>
             Warning
           </Button>{' '}
-          <Button size="small" color="default" onClick={onClickAddImage}>
+          <Button size="small" color="secondary" onClick={onClickAddImage}>
             Image
           </Button>{' '}
-          <Button size="small" color="default" onClick={onClickAddTab}>
+          <Button size="small" color="secondary" onClick={onClickAddTab}>
             Tab
           </Button>{' '}
-          <Button size="small" color="default" onClick={onClickAddTabContents}>
+          <Button
+            size="small"
+            color="secondary"
+            onClick={onClickAddTabContents}>
             Tab contents
           </Button>{' '}
         </Paper>
@@ -149,7 +152,7 @@ This is a caption
             <br />
             <br />
             <ImageUploader
-            // TODO: Better bucket
+              // TODO: Better bucket
               bucketName={bucketNames.attachments}
               onDone={onImageUploadedWithUrl}
               // TODO: Better path

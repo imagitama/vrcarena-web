@@ -6,11 +6,11 @@ import React, {
   useState,
 } from 'react'
 import FlipMove from 'react-flip-move'
-import { makeStyles } from '@material-ui/core/styles'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import AddIcon from '@material-ui/icons/Add'
-import DeleteIcon from '@material-ui/icons/Delete'
+import { makeStyles } from '@mui/styles'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import AddIcon from '@mui/icons-material/Add'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 import { popularCurrencies } from '../../currency'
 import SpeciesResultItem from '../species-result-item'
@@ -23,10 +23,10 @@ import Price from '../price'
 import AssetSearch from '../asset-search'
 import useCart from '../../hooks/useCart'
 import TagChip from '../tag-chip'
-import { colorFree } from '../../themes'
+import { VRCArenaTheme, colorFree } from '../../themes'
 import ErrorMessage from '../error-message'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   items: {
     width: '100%',
     display: 'flex',
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '0.5rem',
     '&:last-child': {
       height: 'auto !important',
-      '& $rendererIdsItem': {
+      '& .rendererIdsItem': {
         maxHeight: 'inherit !important',
       },
     },
@@ -329,14 +329,14 @@ const Labels = <TItem,>() => {
         <div>
           <Button
             size="small"
-            color="default"
+            color="secondary"
             isDisabled={otherItems.length === 0}
             onClick={() => replaceOtherIds([])}>
             Reset
           </Button>{' '}
           <Button
             size="small"
-            color="default"
+            color="secondary"
             isDisabled={otherItems.length > 0 || cartIds.length === 0}
             onClick={() => replaceOtherIds(cartIds)}
             title="Ensure no other items first">
@@ -344,7 +344,7 @@ const Labels = <TItem,>() => {
           </Button>
         </div>
       </div>
-      {(Object.keys(mainItem) as (keyof TItem)[])
+      {(Object.keys(mainItem as any) as (keyof TItem)[])
         .filter((fieldName) => fieldName in fields)
         .sort((fieldNameA, fieldNameB) => {
           const indexA = Object.keys(fields).indexOf(fieldNameA as string)

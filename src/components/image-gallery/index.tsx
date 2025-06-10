@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/styles'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import { makeStyles } from '@mui/styles'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import VideoPlayer from '../video-player'
 import { getImageUrlFromYouTubeUrl, getIsUrlAYoutubeVideo } from '../../utils'
 import Button from '../button'
@@ -36,20 +36,20 @@ const useStyles = makeStyles({
       objectFit: 'contain', // (default: fill) required to fix stretched images on Edge
     },
   },
-  '& $image': {
+  '& .image': {
     transform: 'scale(1.05)',
   },
   expanded: {
     height: 'auto',
-    '& $image': {
+    '& .image': {
       maxWidth: '100%',
       maxHeight: '100vh',
     },
-    '& $image img': {
+    '& .image img': {
       width: 'auto',
       maxHeight: 'inherit',
     },
-    '& $image:hover': {
+    '& .image:hover': {
       transform: false,
     },
     [mediaQueryForMobiles]: {
@@ -126,7 +126,7 @@ const Image = ({
     <div
       className={`${classes.image} ${
         isExpanded && isYoutube ? classes.youtube : ''
-      } ${isExpanded && !isSelected ? classes.hidden : ''}`}>
+      } ${isExpanded && !isSelected ? classes.hidden : ''} image`}>
       {isExpanded && isYoutube ? (
         <>
           <VideoPlayer url={image.url} autoplay width="100%" height="500px" />
@@ -160,7 +160,9 @@ const LoadingPlaceholders = ({ count }: { count: number }) => {
 
   for (let i = 0; i < count; i++) {
     shimmers.push(
-      <div key={i} className={`${classes.image} ${classes.placeholder}`}></div>
+      <div
+        key={i}
+        className={`${classes.image} ${classes.placeholder} image`}></div>
     )
   }
 

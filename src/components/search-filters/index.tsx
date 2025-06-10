@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
-import CheckIcon from '@material-ui/icons/Check'
-import CloseIcon from '@material-ui/icons/Close'
+import { makeStyles } from '@mui/styles'
+import CheckIcon from '@mui/icons-material/Check'
+import CloseIcon from '@mui/icons-material/Close'
 
 import Button from '../button'
 import { trackAction } from '../../analytics'
@@ -42,7 +42,10 @@ const availableFilters = [
 interface SearchFilter {}
 
 const SearchFilters = () => {
-  const { searchFilters } = useSelector<RootState, { searchFilters: SearchFilter[] }>(({ app: { searchFilters } }) => ({
+  const { searchFilters } = useSelector<
+    RootState,
+    { searchFilters: SearchFilter[] }
+  >(({ app: { searchFilters } }) => ({
     searchFilters,
   }))
   const dispatch = useDispatch()
@@ -73,7 +76,7 @@ const SearchFilters = () => {
             }}
             className={classes.availableFilter}
             icon={isSelected ? <CheckIcon /> : undefined}
-            color="default">
+            color="secondary">
             {label}
           </Button>
         )

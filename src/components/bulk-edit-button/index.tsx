@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import { makeStyles } from '@material-ui/styles'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import { makeStyles } from '@mui/styles'
 
 import useIsEditor from '../../hooks/useIsEditor'
 import {
@@ -327,7 +327,7 @@ const Render = () => {
 
   return (
     <>
-      <Button color="default" onClick={() => reset()}>
+      <Button color="secondary" onClick={() => reset()}>
         Cancel Bulk Edit
       </Button>{' '}
       {selectedBulkAction === null ? (

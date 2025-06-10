@@ -1,7 +1,7 @@
 import React from 'react'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import { makeStyles } from '@material-ui/core/styles'
+import Card from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
+import { makeStyles } from '@mui/styles'
 import Link from '../link'
 
 const useStyles = makeStyles({
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const FindMoreAssetsButton = ({
   icon: Icon,
   label,
   onClick = undefined,
@@ -56,3 +56,5 @@ export default ({
     </Card>
   )
 }
+
+export default FindMoreAssetsButton

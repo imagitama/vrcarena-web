@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { totalCostPerMonth } from '../../../../costs'
 import { colorPalette } from '../../../../config'
 
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
   },
   negative: {
     color: colorPalette.negative,
-    animation: '500ms $pulseNegativeCost infinite alternate',
+    animation: '500ms pulseNegativeCost infinite alternate',
   },
   '@keyframes pulseNegativeCost': {
     from: {

@@ -1,10 +1,10 @@
 import React from 'react'
-import Radio from '@material-ui/core/Radio'
-import RadioGroup from '@material-ui/core/RadioGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormLabel from '@material-ui/core/FormLabel'
-import FormControl from '@material-ui/core/FormControl'
-import { makeStyles } from '@material-ui/core/styles'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormLabel from '@mui/material/FormLabel'
+import FormControl from '@mui/material/FormControl'
+import { makeStyles } from '@mui/styles'
 
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { CollectionNames, Tag } from '../../modules/tags'
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
     '& > *': {
       width: '50%',
-      marginBottom: '0.5rem',
+      marginBottom: '1rem !important',
       '&:last-child': {
         marginBottom: 0,
       },
@@ -36,6 +36,7 @@ const useStyles = makeStyles({
     '& svg': {
       marginRight: '0.5rem',
     },
+    margin: '0 0.5rem 0.5rem 0',
   },
 })
 
@@ -90,15 +91,19 @@ const FeaturesSubEditor = ({
   currentTags: string[]
   onChange: (currentTags: string[]) => void
 }) => {
-  const [isLoadingFeatures, isErrorLoadingFeatures, tags] = useTags()
+  const [isLoadingFeatures, lastErrorCodeLoadingFeatures, tags] = useTags()
   const classes = useStyles()
 
   if (isLoadingFeatures || !tags) {
     return <LoadingIndicator message="Loading features..." />
   }
 
-  if (isErrorLoadingFeatures) {
-    return <ErrorMessage>Failed to load features</ErrorMessage>
+  if (lastErrorCodeLoadingFeatures !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load features (code {lastErrorCodeLoadingFeatures})
+      </ErrorMessage>
+    )
   }
 
   const tagDataByCategory = tags.reduce<{ [categoryName: string]: Tag[] }>(

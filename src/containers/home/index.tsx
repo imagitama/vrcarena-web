@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { makeStyles } from '@material-ui/core/styles'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import { makeStyles } from '@mui/styles'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 import useSearchTerm from '../../hooks/useSearchTerm'
 import { mediaQueryForMobiles } from '../../media-queries'
@@ -46,12 +46,12 @@ const useStyles = makeStyles({
       maxWidth: contentMaxWidth,
       margin: '0 auto',
     },
-    '& $controls': {
+    '& .controls': {
       marginTop: '2rem',
     },
     [mediaQueryForMobiles]: {
       padding: '1rem',
-      '& $controls': {
+      '& .controls': {
         marginTop: '1rem',
       },
     },
@@ -106,7 +106,7 @@ const ContentBlock = ({
       <div>
         {children}
         <div className={classes.controls}>
-          <Button url={buttonUrl} icon={<ChevronRightIcon />} color="default">
+          <Button url={buttonUrl} icon={<ChevronRightIcon />} color="secondary">
             {buttonLabel}
           </Button>
         </div>
@@ -136,7 +136,7 @@ const Tile = ({
             <Button
               url={url}
               icon={<ChevronRightIcon />}
-              color="default"
+              color="secondary"
               size="small">
               {buttonLabel}
             </Button>
@@ -165,12 +165,16 @@ interface HomepageContent {
 
 const Tiles = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const [isLoading, isError, results] = useSupabaseView<HomepageContent>(
+  const [isLoading, lastErrorCode, results] = useSupabaseView<HomepageContent>(
     `${isAdultContentEnabled ? '' : 'non'}adulthomepagecontent`
   )
 
-  if (isError) {
-    return <ErrorMessage>Failed to load homepage content</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load homepage content (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const showShimmer = isLoading || !Array.isArray(results) || !results.length

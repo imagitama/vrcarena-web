@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
-import CheckCircleIcon from '@material-ui/icons/CheckCircle'
-import CancelIcon from '@material-ui/icons/Cancel'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import CancelIcon from '@mui/icons-material/Cancel'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
-
-import Button from '../button'
-
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import ButtonDropdown from '../button-dropdown'
 import { ApprovalStatus, MetaRecord, PublishStatus } from '../../modules/common'
 import {
   AssetMeta,
@@ -18,7 +14,10 @@ import {
 } from '../../modules/assets'
 import { declinedReasonMeta } from '../../utils/assets'
 import { getAreArraysSame } from '../../utils'
+
+import Button from '../button'
 import ErrorMessage from '../error-message'
+import ButtonDropdown from '../button-dropdown'
 
 const ApproveButton = ({
   id,
@@ -178,7 +177,7 @@ const ApproveButton = ({
       <div style={{ marginTop: '0.25rem' }} />
       {isAsset && (
         <ButtonDropdown
-          color="default"
+          color="secondary"
           options={declinedReasonMeta.map((meta) => ({
             id: meta.reason,
             label: meta.label,

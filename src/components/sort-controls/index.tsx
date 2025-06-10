@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import FilterListIcon from '@material-ui/icons/FilterList'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import FilterListIcon from '@mui/icons-material/FilterList'
 
 import useSorting, { SortingConfig } from '../../hooks/useSorting'
 import { OrderDirections } from '../../hooks/useDatabaseQuery'
@@ -95,7 +95,7 @@ const SortControls = <TRecord,>({
         <Button
           onClick={() => setIsDropdownOpen((currentVal) => !currentVal)}
           icon={<FilterListIcon />}
-          color="default"
+          color="secondary"
           size="small"
           switchIconSide>
           {getLabelForSelectedSortOption(sorting, optionsWithDirections)}

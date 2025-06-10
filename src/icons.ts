@@ -2,21 +2,21 @@ import React from 'react'
 
 /** WARNING: The named exports of this file correspond to the "icon" column in tags table */
 
-export const AttachMoney = React.lazy(() => import('@material-ui/icons/AttachMoney')) // paid
-export const MoneyOff = React.lazy(() => import('@material-ui/icons/MoneyOff')) // free
-export const Accessibility = React.lazy(() => import('@material-ui/icons/Accessibility')) // T-posing FBT
-export const Brush = React.lazy(() => import('@material-ui/icons/Brush')) // textures
-export const Loyalty = React.lazy(() => import('@material-ui/icons/Loyalty')) // NSFW
-export const Visibility = React.lazy(() => import('@material-ui/icons/Visibility')) // eye textures / tracking / etc
-export const Link = React.lazy(() => import('@material-ui/icons/Link')) // requires linked asset
-export const Tune = React.lazy(() => import('@material-ui/icons/Tune')) // body sliders
+export const AttachMoney = React.lazy(() => import('@mui/icons-material/AttachMoney')) // paid
+export const MoneyOff = React.lazy(() => import('@mui/icons-material/MoneyOff')) // free
+export const Accessibility = React.lazy(() => import('@mui/icons-material/Accessibility')) // T-posing FBT
+export const Brush = React.lazy(() => import('@mui/icons-material/Brush')) // textures
+export const Loyalty = React.lazy(() => import('@mui/icons-material/Loyalty')) // NSFW
+export const Visibility = React.lazy(() => import('@mui/icons-material/Visibility')) // eye textures / tracking / etc
+export const Link = React.lazy(() => import('@mui/icons-material/Link')) // requires linked asset
+export const Tune = React.lazy(() => import('@mui/icons-material/Tune')) // body sliders
 
 // social list
-export const Email = React.lazy(() => import('@material-ui/icons/Email'))
-export const YouTube = React.lazy(() => import('@material-ui/icons/YouTube'))
-export const Telegram = React.lazy(() => import('@material-ui/icons/Telegram'))
-export const Twitter = React.lazy(() => import('@material-ui/icons/Twitter'))
-export const Website = React.lazy(() => import('@material-ui/icons/Language'))
+export const Email = React.lazy(() => import('@mui/icons-material/Email'))
+export const YouTube = React.lazy(() => import('@mui/icons-material/YouTube'))
+export const Telegram = React.lazy(() => import('@mui/icons-material/Telegram'))
+export const Twitter = React.lazy(() => import('@mui/icons-material/Twitter'))
+export const Website = React.lazy(() => import('@mui/icons-material/Language'))
 
 export const Copy = React.lazy(() => import('@emotion-icons/entypo/Copy').then(result => ({ default: result.Copy }))) // prefabs
 export const HappyFace = React.lazy(() => import('@emotion-icons/material/TagFaces').then(result => ({ default: result.TagFaces }))) // custom gestures

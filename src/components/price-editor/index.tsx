@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -12,6 +12,9 @@ import { PopularCurrency } from '../../currency'
 import WarningMessage from '../warning-message'
 import PriceInput from '../price-input'
 import { Asset, CollectionNames } from '../../modules/assets'
+import LoadingIndicator from '../loading-indicator'
+import SuccessMessage from '../success-message'
+import ErrorMessage from '../error-message'
 
 const useStyles = makeStyles({
   inputWrapper: {
@@ -56,11 +59,10 @@ const PriceEditor = ({
   const [newPriceCurrency, setNewPriceCurrency] = useState<PopularCurrency>(
     currentPriceCurrency || 'USD'
   )
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
     assetId ? CollectionNames.Assets : false,
     assetId
   )
-  const classes = useStyles()
 
   const onSaveBtnClick = async () => {
     try {
@@ -107,23 +109,29 @@ const PriceEditor = ({
         }}
       />
       {isSaving ? (
-        'Saving...'
+        <LoadingIndicator message="Saving..." />
       ) : isSaveSuccess ? (
-        'Success!'
-      ) : isSaveError ? (
-        'Error'
-      ) : (
-        <FormControls>
-          <Button onClick={onSaveBtnClick} icon={<SaveIcon />}>
-            Save
-          </Button>{' '}
-          {onCancel ? (
-            <Button onClick={() => onCancel()} color="default">
-              Cancel
-            </Button>
-          ) : null}
-        </FormControls>
-      )}
+        <SuccessMessage>Price saved successfully</SuccessMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage>Failed to save price (code {lastErrorCode})</ErrorMessage>
+      ) : null}
+
+      <FormControls>
+        <Button
+          onClick={onSaveBtnClick}
+          icon={<SaveIcon />}
+          isDisabled={isSaving}>
+          Save
+        </Button>{' '}
+        {onCancel ? (
+          <Button
+            onClick={() => onCancel()}
+            color="secondary"
+            isDisabled={isSaving}>
+            Cancel
+          </Button>
+        ) : null}
+      </FormControls>
     </>
   )
 }

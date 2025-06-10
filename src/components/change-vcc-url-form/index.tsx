@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useUserId from '../../hooks/useUserId'
@@ -28,7 +28,7 @@ const ChangeVccUrlForm = ({
   overrideSave?: (newVccUrl: string) => void
 }) => {
   const userId = useUserId()
-  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -46,8 +46,8 @@ const ChangeVccUrlForm = ({
     return <>VCC URL has been changed</>
   }
 
-  if (isFailed) {
-    return <>Error saving asset</>
+  if (lastErrorCode !== null) {
+    return <>Error saving asset (code {lastErrorCode})</>
   }
 
   const onSaveBtnClick = async () => {
@@ -106,7 +106,7 @@ const ChangeVccUrlForm = ({
           Save
         </Button>{' '}
         {onCancel && (
-          <Button onClick={() => onCancel()} color="default">
+          <Button onClick={() => onCancel()} color="secondary">
             Cancel
           </Button>
         )}

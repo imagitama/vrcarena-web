@@ -1,7 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import LazyLoad from 'react-lazyload'
-import LoadingIndicator from '../loading-indicator'
 import Link from '../link'
 import { getIsUrlAbsolute } from '../../utils'
 import {
@@ -9,8 +8,9 @@ import {
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
 import ErrorBoundary from '../error-boundary'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     border: `1px solid ${theme.palette.background.paper}`,
     borderRadius: theme.shape.borderRadius,

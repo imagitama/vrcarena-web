@@ -1,13 +1,14 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/styles'
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { makeStyles } from '@mui/styles'
+
+import { AssetFields } from '../../modules/assets'
+
 import AssetThumbnail from '../asset-thumbnail'
 import Button from '../button'
 import Heading from '../heading'
 import Paper from '../paper'
 import TagInput from '../tag-input'
 import TextInput from '../text-input'
-import { AssetFields } from '../../modules/assets'
 
 const useStyles = makeStyles({
   cols: {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
-import AddIcon from '@material-ui/icons/Add'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
+import AddIcon from '@mui/icons-material/Add'
 
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -172,15 +172,13 @@ const GenericEditor = ({
 
   const fieldsToUse = fields || editableFields[collectionName]
 
-  const [isLoading, isErrored, result] = useDataStoreItem<Record>(
+  const [isLoading, lastErrorCode, result] = useDataStoreItem<Record>(
     viewName || collectionName,
     id || false,
     `generic-editor-${viewName || collectionName}`
   )
-  const [isSaving, isSuccess, isFailed, save] = useDatabaseSave<Record>(
-    collectionName,
-    id
-  )
+  const [isSaving, isSuccess, lastErrorCodeSaving, save] =
+    useDatabaseSave<Record>(collectionName, id)
   const [formFields, setFormFields] = useState<null | Record>(
     overrideFields
       ? overrideFields
@@ -286,12 +284,18 @@ const GenericEditor = ({
     )
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load item to edit</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load item to edit (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
-  if (isFailed) {
-    return <ErrorMessage>Failed to save</ErrorMessage>
+  if (lastErrorCodeSaving !== null) {
+    return (
+      <ErrorMessage>Failed to save (code {lastErrorCodeSaving})</ErrorMessage>
+    )
   }
 
   if (isSuccess) {
@@ -404,7 +408,7 @@ const GenericEditor = ({
         <div className={classes.saveBtn}>
           <Button
             url={cancelUrl}
-            color="default"
+            color="secondary"
             onClick={() => trackAction(analyticsCategory, cancelBtnAction, id)}>
             Cancel
           </Button>{' '}

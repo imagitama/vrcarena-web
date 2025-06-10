@@ -24,7 +24,7 @@ const QuestionAnswerForm = ({
       sourceurl: '',
       isoriginalcreator: false,
     })
-  const [isCreating, isSuccess, isErrored, create] =
+  const [isCreating, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<QuestionAnswerFields>(CollectionNames.QuestionAnswers)
 
   const onSubmitBtnClick = async () => {
@@ -53,38 +53,38 @@ const QuestionAnswerForm = ({
         <LoadingIndicator />
       ) : isSuccess ? (
         <SuccessMessage>Your answer has been submitted</SuccessMessage>
-      ) : isErrored ? (
+      ) : lastErrorCode !== null ? (
         <ErrorMessage>Failed to submit your answer</ErrorMessage>
-      ) : (
-        <>
-          <TextInput
-            label="Answer"
-            fullWidth
-            value={questionAnswerFields.answer}
-            onChange={(e) => onFieldChange('answer', e.target.value)}
-            multiline
-            minRows={2}
-          />
-          <br />
-          <br />
-          <TextInput
-            fullWidth
-            label="Source URL"
-            value={questionAnswerFields.sourceurl}
-            onChange={(e) => onFieldChange('sourceurl', e.target.value)}
-          />
-          <CheckboxInput
-            value={questionAnswerFields.isoriginalcreator}
-            onChange={(newVal) => onFieldChange('isoriginalcreator', newVal)}
-            label="I am the original creator of this asset (will be shown)"
-          />
-          <FormControls>
-            <Button onClick={onSubmitBtnClick} size="large">
-              Submit Answer
-            </Button>
-          </FormControls>
-        </>
-      )}
+      ) : null}
+      <TextInput
+        label="Answer"
+        fullWidth
+        value={questionAnswerFields.answer}
+        onChange={(e) => onFieldChange('answer', e.target.value)}
+        multiline
+        minRows={2}
+        isDisabled={isCreating}
+      />
+      <br />
+      <br />
+      <TextInput
+        fullWidth
+        label="Source URL"
+        value={questionAnswerFields.sourceurl}
+        onChange={(e) => onFieldChange('sourceurl', e.target.value)}
+        isDisabled={isCreating}
+      />
+      <CheckboxInput
+        value={questionAnswerFields.isoriginalcreator}
+        onChange={(newVal) => onFieldChange('isoriginalcreator', newVal)}
+        label="I am the original creator of this asset (will be shown)"
+        isDisabled={isCreating}
+      />
+      <FormControls>
+        <Button onClick={onSubmitBtnClick} size="large" isDisabled={isCreating}>
+          Submit Answer
+        </Button>
+      </FormControls>
     </>
   )
 }

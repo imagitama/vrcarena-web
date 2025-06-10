@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
-import PublishIcon from '@material-ui/icons/Publish'
+import PublishIcon from '@mui/icons-material/Publish'
 
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
+import { PublishErrorCode, getErrorMessageForCode } from '../../utils/assets'
+import { PublishStatus } from '../../modules/common'
+import { AssetMeta, CollectionNames } from '../../modules/assets'
+import useDatabaseSave from '../../hooks/useDatabaseSave'
 
 import Button from '../button'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
-import { PublishErrorCode, getErrorMessageForCode } from '../../utils/assets'
-import { PublishStatus } from '../../modules/common'
-import { AssetMeta, CollectionNames } from '../../modules/assets'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
 
 const AdminPublishButton = ({
   assetId,

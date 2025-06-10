@@ -1,6 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Tooltip from '@material-ui/core/Tooltip'
+import { makeStyles } from '@mui/styles'
+import Tooltip from '@mui/material/Tooltip'
 import { getLabelForTag } from '../../utils/tags'
 import LoadingShimmer from '../loading-shimmer'
 import * as routes from '../../routes'
@@ -8,8 +8,9 @@ import Link from '../link'
 import { CollectionNames, Tag } from '../../modules/tags'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import * as icons from '../../icons'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     margin: '2rem 0 1.5rem',
   },
@@ -69,9 +70,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '2.5rem',
   },
-  good: {
-    // borderColor: 'rgba(100, 255, 100, 0.5)',
-  },
+  good: {},
   bad: {
     borderColor: 'rgba(255, 100, 100, 0.5)',
   },
@@ -104,8 +103,7 @@ const useStyles = makeStyles((theme) => ({
 const Feature = ({
   tag,
   data,
-}: // hasTag,
-{
+}: {
   tag: string
   data?: Tag
   hasTag?: boolean

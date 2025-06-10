@@ -58,6 +58,8 @@ const FunctionCaller = ({
 }) => {
   const [isExecuting, setIsExecuting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+
+  // TODO: Store error code
   const [isError, setIsError] = useState(false)
 
   const onExecute = async () => {

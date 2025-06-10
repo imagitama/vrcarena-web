@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import Paper from '@material-ui/core/Paper'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
@@ -22,13 +22,7 @@ import Link from '../link'
 import UsernameLink from '../username-link'
 import { GetQuery } from '../../data-store'
 
-function ReportsTable({
-  reports,
-  hydrate,
-}: {
-  reports?: FullReport[]
-  hydrate?: () => void
-}) {
+function ReportsTable({ reports }: { reports?: FullReport[] }) {
   return (
     <Paper>
       <Table>
@@ -99,13 +93,9 @@ function ReportsTable({
   )
 }
 
-const Renderer = ({
-  items,
-  hydrate,
-}: {
-  items?: FullReport[]
-  hydrate?: () => void
-}) => <ReportsTable reports={items} hydrate={hydrate} />
+const Renderer = ({ items }: { items?: FullReport[] }) => (
+  <ReportsTable reports={items} />
+)
 
 const subViews = {
   PENDING: 0,
@@ -194,7 +184,7 @@ export default () => {
             setSelectedSubView(subViews.PENDING)
             trackAction(analyticsCategoryName, 'Click on view waiting reports')
           }}
-          color="default">
+          color="secondary">
           Pending
         </Button>,
         <Button
@@ -209,7 +199,7 @@ export default () => {
             toggleSubView(subViews.RESOLVED)
             trackAction(analyticsCategoryName, 'Click on view resolved reports')
           }}
-          color="default">
+          color="secondary">
           Resolved
         </Button>,
         <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,

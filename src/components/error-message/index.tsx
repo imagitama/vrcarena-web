@@ -1,7 +1,7 @@
 import React from 'react'
-import ErrorIcon from '@material-ui/icons/Error'
-import ReplayIcon from '@material-ui/icons/Replay'
-import CheckIcon from '@material-ui/icons/Check'
+import ErrorIcon from '@mui/icons-material/Error'
+import ReplayIcon from '@mui/icons-material/Replay'
+import CheckIcon from '@mui/icons-material/Check'
 
 import { DISCORD_URL, EMAIL } from '../../config'
 import { base64EncodeString } from '../../utils'
@@ -11,13 +11,13 @@ import Button from '../button'
 const getErrorCodeForError = (error: Error): string =>
   base64EncodeString(error.message)
 
-  export interface ErrorMessageProps extends MessageProps {
-    children: React.ReactNode
-    error?: Error
-    hintText?: false | string | React.ReactElement
-    onRetry?: () => void
-    onOkay?: () => void
-  }
+export interface ErrorMessageProps extends MessageProps {
+  children: React.ReactNode
+  error?: Error
+  hintText?: false | string | React.ReactElement
+  onRetry?: () => void
+  onOkay?: () => void
+}
 
 const ErrorMessage = ({
   title,

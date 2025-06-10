@@ -11,7 +11,7 @@ import { ViewNames, FullReport } from '../../modules/reports'
 
 export default () => {
   const myUserId = useUserId()
-  const [isLoading, isErrored, results] = useDatabaseQuery<FullReport>(
+  const [isLoading, lastErrorCode, results] = useDatabaseQuery<FullReport>(
     ViewNames.GetFullReports,
     [['createdby', Operators.EQUALS, myUserId]]
   )
@@ -20,8 +20,12 @@ export default () => {
     return <LoadingIndicator message="Loading your reports..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load your reports</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage>
+        Failed to load your reports (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!results.length) {

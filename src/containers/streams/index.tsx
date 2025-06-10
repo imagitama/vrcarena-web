@@ -11,7 +11,7 @@ import useDatabaseQuery, {
 } from '../../hooks/useDatabaseQuery'
 import { User } from '../../modules/users'
 import Button from '../../components/button'
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@mui/styles'
 import { CollectionNames } from '../../modules/user'
 
 const useStyles = makeStyles({
@@ -28,7 +28,7 @@ const getTwitchUsernameFromUrl = (usernameOrUrl: string): string =>
 
 function Streams() {
   const classes = useStyles()
-  const [isLoading, isError, users] = useDatabaseQuery<User>(
+  const [isLoading, lastErrorCode, users] = useDatabaseQuery<User>(
     CollectionNames.Users,
     [['twitchusername', Operators.GREATER_THAN, '']],
     {
@@ -40,8 +40,10 @@ function Streams() {
     return <LoadingIndicator message="Loading streams..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load steams</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load streams (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

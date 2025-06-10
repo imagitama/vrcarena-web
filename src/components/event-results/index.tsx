@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import EventResultsItem from '../event-results-item'
 import { Event } from '../../modules/events'
 
@@ -7,7 +7,7 @@ const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
 })
 
-export default ({ events }: { events: Event[] }) => {
+const EventResults = ({ events }: { events: Event[] }) => {
   const classes = useStyles()
 
   return (
@@ -18,3 +18,5 @@ export default ({ events }: { events: Event[] }) => {
     </div>
   )
 }
+
+export default EventResults

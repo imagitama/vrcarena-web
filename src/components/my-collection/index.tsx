@@ -5,15 +5,15 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
-import useDataStore from '../../hooks/useDataStore'
+import useDataStore, { GetQueryFn } from '../../hooks/useDataStore'
 import useUserId from '../../hooks/useUserId'
 import { Asset, ViewNames } from '../../modules/assets'
 
 export default () => {
   const userId = useUserId()
-  const getQuery = useCallback(
-    (supabase) =>
-      supabase
+  const getQuery = useCallback<GetQueryFn<Asset>>(
+    (client) =>
+      client
         .from(ViewNames.GetCollectionAssetResults)
         .select('*')
         .eq('userid', userId),
@@ -29,7 +29,11 @@ export default () => {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to find your collection</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to find your collection (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!myCollection || !myCollection.length) {

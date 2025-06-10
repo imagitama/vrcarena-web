@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import TextField from '@material-ui/core/TextField'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
-import Checkbox from '@material-ui/core/Checkbox'
+import TextField from '@mui/material/TextField'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
+import Checkbox from '@mui/material/Checkbox'
 
 import Paper from '../paper'
 import Button from '../button'
@@ -11,7 +11,6 @@ import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 import Markdown from '../markdown'
 
-import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
@@ -21,6 +20,7 @@ import {
 } from '../../utils/formatting'
 import FormControls from '../form-controls'
 import { Asset, CollectionNames } from '../../modules/assets'
+import CheckboxInput from '../checkbox-input'
 
 const useStyles = makeStyles({
   input: {
@@ -117,8 +117,8 @@ const DescriptionEditor = ({
           minRows={15}
           className={classes.input}
         />
-        <Checkbox
-          checked={isUsingQuotes}
+        <CheckboxInput
+          value={isUsingQuotes}
           onClick={() => {
             setNewDescriptionValue((currentVal) => {
               const newDescription = isUsingQuotes
@@ -133,15 +133,14 @@ const DescriptionEditor = ({
 
             setIsUsingQuotes(!isUsingQuotes)
           }}
+          label="Add quote symbols to description (use if you copy the description from a third party like Gumroad)"
         />{' '}
-        Add quote symbols to description (use if you copy the description from a
-        third party like Gumroad)
         <FormControls>
           <Button onClick={() => onSaveBtnClick()} icon={<SaveIcon />}>
             Save
           </Button>{' '}
           {onCancel && (
-            <Button onClick={() => onCancel()} color="default">
+            <Button onClick={() => onCancel()} color="secondary">
               Cancel
             </Button>
           )}

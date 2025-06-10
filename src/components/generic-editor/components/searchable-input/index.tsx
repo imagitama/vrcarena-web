@@ -12,7 +12,7 @@ export default ({
   name,
   onChange,
   value,
-  searchableProperties
+  searchableProperties,
 }: {
   name: string
   onChange: (id: string | null) => void
@@ -31,11 +31,7 @@ export default ({
 
   const [isFormVisible, setIsFormVisible] = useState(false)
   const [valueData, setValueData] = useState<null | { id: string }>(null)
-  const [
-    isLoadingExisting,
-    isErroredLoadingExisting,
-    existingItem
-  ] = useDataStoreItem<SearchResult>(
+  const [, , existingItem] = useDataStoreItem<SearchResult>(
     searchableProperties.collectionName,
     value || false
   )
@@ -51,7 +47,7 @@ export default ({
       style={{
         padding: '1rem',
         margin: '1rem 0',
-        background: 'rgba(0,0,0,0.2)'
+        background: 'rgba(0,0,0,0.2)',
       }}>
       {value || existingItem ? (
         <>
@@ -68,7 +64,7 @@ export default ({
           {!isFormVisible && (
             <div>
               <Button onClick={() => setIsFormVisible(true)}>Change</Button>{' '}
-              <Button color="default" onClick={() => clear()}>
+              <Button color="secondary" onClick={() => clear()}>
                 Clear
               </Button>
             </div>

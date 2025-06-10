@@ -1,12 +1,9 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
-import Link from '../../components/link'
-import AddIcon from '@material-ui/icons/Add'
+import AddIcon from '@mui/icons-material/Add'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
-import Heading from '../../components/heading'
-import BodyText from '../../components/body-text'
 import Button from '../../components/button'
 
 import { trackAction } from '../../analytics'
@@ -116,9 +113,11 @@ interface SpeciesContainerSettings {
   groupChildren: boolean
 }
 
+const storageKey = 'speciescontainer'
+
 const View = () => {
   const isEditor = useIsEditor()
-  const [isLoading, isError, speciesItems] = useDatabaseQuery<Species>(
+  const [isLoading, lastErrorCode, speciesItems] = useDatabaseQuery<Species>(
     ViewNames.GetFullSpecies,
     isEditor ? [] : [['redirectto', Operators.IS, null]],
     {
@@ -128,7 +127,7 @@ const View = () => {
   const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()
   const [speciesContainerSettings, setContainerSettings] =
-    useStorage<SpeciesContainerSettings>('speciescontainer', {
+    useStorage<SpeciesContainerSettings>(storageKey, {
       grid: true,
       groupChildren: true,
     })
@@ -183,7 +182,7 @@ const View = () => {
         <div className={classes.controlsRight}>
           <div className={classes.controlGroup}>
             <Button
-              color="default"
+              color="secondary"
               onClick={() => toggleSetting('grid')}
               checked={speciesContainerSettings?.grid}
               size="small">
@@ -191,7 +190,7 @@ const View = () => {
             </Button>
             &nbsp;
             <Button
-              color="default"
+              color="secondary"
               onClick={() => toggleSetting('groupChildren')}
               checked={speciesContainerSettings?.groupChildren}
               size="small">
@@ -249,8 +248,10 @@ const View = () => {
       </div>
       {isLoading || !Array.isArray(speciesItems) ? (
         <LoadingIndicator message="Loading species..." />
-      ) : isError ? (
-        <ErrorMessage>Failed to load species</ErrorMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage>
+          Failed to load species (code {lastErrorCode})
+        </ErrorMessage>
       ) : (
         <>
           {speciesContainerSettings?.grid ? (
@@ -267,14 +268,12 @@ const View = () => {
   )
 }
 
-export default () => {
-  return (
-    <>
-      <Helmet>
-        <title>View all species | VRCArena</title>
-        <meta name="description" content={description} />
-      </Helmet>
-      <View />
-    </>
-  )
-}
+export default () => (
+  <>
+    <Helmet>
+      <title>View all species | VRCArena</title>
+      <meta name="description" content={description} />
+    </Helmet>
+    <View />
+  </>
+)

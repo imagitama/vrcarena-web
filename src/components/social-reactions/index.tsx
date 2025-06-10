@@ -1,9 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Chip from '@material-ui/core/Chip'
+import { makeStyles } from '@mui/styles'
+import Chip from '@mui/material/Chip'
 import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react'
-import AddIcon from '@material-ui/icons/Add'
-import Tooltip from '@material-ui/core/Tooltip'
+import AddIcon from '@mui/icons-material/Add'
+import Tooltip from '@mui/material/Tooltip'
 
 import {
   CollectionNames,
@@ -107,6 +107,8 @@ const SocialReactions = ({
   const isLoggedIn = useIsLoggedIn()
   const [wantsToReact, setWantsToReact] = useState(false)
   const [isWorking, setIsWorking] = useState(false)
+
+  // TODO: Store last error code
   const [isFailed, setIsFailed] = useState(false)
   const myUserId = useUserId()
   const rootRef = useRef<HTMLDivElement>(null)

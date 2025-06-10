@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
-import RefreshIcon from '@material-ui/icons/Refresh'
-import { makeStyles } from '@material-ui/core/styles'
+import RefreshIcon from '@mui/icons-material/Refresh'
+import { makeStyles } from '@mui/styles'
 
 import Button from '../../components/button'
 import CreateSocialPostForm from '../../components/create-social-post-form'
@@ -9,17 +9,16 @@ import ErrorMessage from '../../components/error-message'
 import Heading from '../../components/heading'
 import SocialPost from '../../components/social-post'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import useSupabaseView from '../../hooks/useSupabaseView'
+import useSupabaseView, { GetQueryFn } from '../../hooks/useSupabaseView'
 import { PublicSocialPost, ViewNames } from '../../modules/social'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import Center from '../../components/center'
 import NoResultsMessage from '../../components/no-results-message'
 import useTimer from '../../hooks/useTimer'
-import { GetQuery } from '../../data-store'
 
 const useStyles = makeStyles({
   spinning: {
-    animation: '$spinWheel 1s linear infinite',
+    animation: 'spinWheel 1s linear infinite',
   },
   '@keyframes spinWheel': {
     '0%': {
@@ -33,8 +32,8 @@ const useStyles = makeStyles({
 
 export const SocialFeed = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
-    (query: GetQuery<PublicSocialPost>) => {
+  const getQuery = useCallback<GetQueryFn<PublicSocialPost>>(
+    (query) => {
       query = query.is('parent', null)
       if (!isAdultContentEnabled) {
         query = query.eq('isadult', false)
@@ -43,7 +42,7 @@ export const SocialFeed = () => {
     },
     [isAdultContentEnabled]
   )
-  const [isLoading, isError, result, , hydrate] =
+  const [isLoading, lastErrorCode, result, , hydrate] =
     useSupabaseView<PublicSocialPost>(ViewNames.GetPublicSocialPosts, getQuery)
   const classes = useStyles()
   const isLoggedIn = useIsLoggedIn()
@@ -66,7 +65,9 @@ export const SocialFeed = () => {
           className={isLoading ? classes.spinning : ''}
         />
       </Heading>
-      {isError && <ErrorMessage>Failed to load posts</ErrorMessage>}
+      {lastErrorCode !== null ? (
+        <ErrorMessage>Failed to load posts (code {lastErrorCode})</ErrorMessage>
+      ) : null}
       <div>
         {result && result.length ? (
           result.map((socialPost) => (

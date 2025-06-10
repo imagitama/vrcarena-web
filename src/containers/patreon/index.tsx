@@ -1,20 +1,16 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
-import { makeStyles } from '@material-ui/core/styles'
-import { Container } from '@material-ui/core'
+import { makeStyles } from '@mui/styles'
+import Container from '@mui/material/Container'
 
 import * as routes from '../../routes'
 
-import UserList from '../../components/user-list'
 import Heading from '../../components/heading'
 import Button from '../../components/button'
 import { trackAction } from '../../analytics'
 import { PATREON_BECOME_PATRON_URL } from '../../config'
 import patreonLogoUrl from '../../assets/images/patreon-logo.png'
-import { User } from '../../modules/users'
-
-const sortKey = 'patreon'
 
 const useStyles = makeStyles({
   logo: {
@@ -24,8 +20,6 @@ const useStyles = makeStyles({
     },
   },
 })
-
-// const Renderer = ({ items }: { items?: User[] }) => <UserList users={items} />
 
 export default () => {
   const classes = useStyles()

@@ -9,12 +9,12 @@ import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 
 import { CollectionNames, Endorsement } from '../../modules/endorsements'
 
-export default ({ assetId }: { assetId: string }) => {
+const EndorsementList = ({ assetId }: { assetId: string }) => {
   if (!assetId) {
     throw new Error('Cannot render endorsement list: no asset ID')
   }
 
-  const [isLoading, isErrored, results] = useDatabaseQuery<Endorsement>(
+  const [isLoading, lastErrorCode, results] = useDatabaseQuery<Endorsement>(
     CollectionNames.Endorsements,
     [['asset', Operators.EQUALS, assetId]]
   )
@@ -23,8 +23,12 @@ export default ({ assetId }: { assetId: string }) => {
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load endorsements</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage>
+        Failed to load endorsements (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!results || !results.length) {
@@ -39,3 +43,5 @@ export default ({ assetId }: { assetId: string }) => {
     </>
   )
 }
+
+export default EndorsementList

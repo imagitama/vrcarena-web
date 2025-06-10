@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import SearchIcon from '@material-ui/icons/Search'
+import SearchIcon from '@mui/icons-material/Search'
 import Button from '../button'
 import TextInput from '../text-input'
 
@@ -35,7 +35,7 @@ export default ({
       {onClear ? (
         <>
           {' '}
-          <Button color="default" onClick={() => onClear()}>
+          <Button color="secondary" onClick={() => onClear()}>
             Clear
           </Button>
         </>

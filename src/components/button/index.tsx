@@ -1,10 +1,11 @@
 import React, { SyntheticEvent, forwardRef } from 'react'
 import Link from '../../components/link'
-import MaterialButton from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core/styles'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import MaterialButton from '@mui/material/Button'
+import { makeStyles } from '@mui/styles'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Tooltip from '../tooltip'
+import { VRCArenaTheme } from '../../themes'
 
 export interface ButtonProps {
   children?: React.ReactNode
@@ -18,19 +19,13 @@ export interface ButtonProps {
   isLoading?: boolean
   size?: 'small' | 'medium' | 'large'
   // tertiary does not exist
-  color?:
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'default'
-    | undefined
-    | 'tertiary'
+  color?: 'inherit' | 'primary' | 'secondary' | undefined | 'tertiary'
   title?: string
   iconOnly?: boolean
   checked?: boolean
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     whiteSpace: 'nowrap',
     minWidth: 0,
@@ -41,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     '& svg': {
       fontSize: '150%',
       fill: (props: ButtonProps) =>
-        props.color === 'default'
+        props.color === 'secondary'
           ? theme.palette.common.black
           : theme.palette.common.white,
       width: '1em',
@@ -91,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Button = forwardRef(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
@@ -125,7 +120,6 @@ const Button = forwardRef(
       <MaterialButton
         ref={ref}
         variant="contained"
-        // @ts-ignore
         color="primary"
         onClick={onClick}
         disabled={isDisabled}
@@ -134,6 +128,7 @@ const Button = forwardRef(
           props.color === 'tertiary' ? classes.tertiary : ''
         }`}
         {...props}>
+        {/* > */}
         <span
           className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
           {!switchIconSide && children ? <>{children} </> : null}

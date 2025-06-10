@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import {
   CommentMeta,
   CollectionNames as CommentsCollectionNames,
@@ -103,7 +103,6 @@ const useStyles = makeStyles({
   text: {},
   date: {
     fontSize: '50%',
-    // textAlign: 'right',
     marginTop: '0.25rem',
   },
 })

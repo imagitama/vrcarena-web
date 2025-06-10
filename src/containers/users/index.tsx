@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router'
 
 import * as routes from '../../routes'
 import UserList from '../../components/user-list'
 import Heading from '../../components/heading'
-import PaginatedView from '../../components/paginated-view'
+import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
 import Button from '../../components/button'
 import { trackAction } from '../../analytics'
 import { changeSearchTableName } from '../../modules/app'
@@ -19,16 +19,16 @@ const analyticsCategory = 'view-users'
 
 const Renderer = ({ items }: { items?: User[] }) => <UserList users={items!} />
 
-const subViews = {
-  ALL: 'all',
-  STAFF: 'staff',
-  BANNED: 'banned',
+enum SubView {
+  ALL = 'all',
+  STAFF = 'staff',
+  BANNED = 'banned',
 }
 
 export default () => {
   const location = useLocation()
   const [selectedSubView, setSelectedSubView] = useState(
-    location.pathname.includes('staff') ? subViews.STAFF : subViews.ALL
+    location.pathname.includes('staff') ? SubView.STAFF : SubView.ALL
   )
   const dispatch = useDispatch()
 
@@ -36,15 +36,15 @@ export default () => {
     dispatch(changeSearchTableName(CollectionNames.Users))
   }, [])
 
-  const toggleSubView = (subView: string): void =>
+  const toggleSubView = (subView: SubView): void =>
     setSelectedSubView((currentVal) => {
       if (currentVal === subView) {
-        return subViews.ALL
+        return SubView.ALL
       }
       return subView
     })
 
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<User>>(
     (query) => query.gt('username', ''),
     [selectedSubView]
   )
@@ -63,7 +63,7 @@ export default () => {
       <Heading variant="h1">Users</Heading>
       <PaginatedView<User>
         viewName={
-          selectedSubView === subViews.STAFF ? ViewNames.GetStaffUsers : ''
+          selectedSubView === SubView.STAFF ? ViewNames.GetStaffUsers : ''
         }
         collectionName={CollectionNames.Users}
         select={`id, username, avatarurl`}
@@ -83,21 +83,21 @@ export default () => {
         extraControls={[
           <Button
             icon={
-              selectedSubView === subViews.STAFF ? (
+              selectedSubView === SubView.STAFF ? (
                 <CheckBoxIcon />
               ) : (
                 <CheckBoxOutlineBlankIcon />
               )
             }
             onClick={() => {
-              toggleSubView(subViews.STAFF)
+              toggleSubView(SubView.STAFF)
 
               trackAction(
                 analyticsCategory,
                 'Click on only show staff users button'
               )
             }}
-            color="default">
+            color="secondary">
             Staff
           </Button>,
         ]}

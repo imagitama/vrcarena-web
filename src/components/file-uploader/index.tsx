@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import CloudUploadIcon from '@material-ui/icons/CloudUpload'
+import { makeStyles } from '@mui/styles'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 import useFileUpload from '../../hooks/useFileUpload'
 import Button from '../button'
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const FileUploader = ({
   onDone,
   bucketName,
   directoryPath,
@@ -111,10 +111,12 @@ export default ({
         Upload
       </Button>{' '}
       {onCancel && (
-        <Button onClick={onCancel} color="default">
+        <Button onClick={onCancel} color="secondary">
           Cancel
         </Button>
       )}
     </>
   )
 }
+
+export default FileUploader

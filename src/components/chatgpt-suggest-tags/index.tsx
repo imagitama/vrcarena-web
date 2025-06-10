@@ -1,6 +1,6 @@
 import React from 'react'
-import AddIcon from '@material-ui/icons/Add'
-import BubbleChartIcon from '@material-ui/icons/BubbleChart'
+import AddIcon from '@mui/icons-material/Add'
+import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 
 import useFirebaseFunction from '../../hooks/useFirebaseFunction'
 import { Asset } from '../../modules/assets'
@@ -104,7 +104,7 @@ const ChatGptSuggestTags = ({
       <FormControls>
         <Button
           size="large"
-          color="default"
+          color="secondary"
           isDisabled={isLoading}
           icon={<BubbleChartIcon />}
           onClick={() => {

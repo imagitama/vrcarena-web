@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import CheckroomIcon from '@mui/icons-material/Checkroom'
 
 import useDataStore from '../../hooks/useDataStore'

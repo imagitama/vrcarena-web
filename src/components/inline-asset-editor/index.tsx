@@ -1,8 +1,8 @@
 import React from 'react'
-import Dialog from '@material-ui/core/Dialog'
-import SaveIcon from '@material-ui/icons/Save'
-import LoopIcon from '@material-ui/icons/Loop'
-import { makeStyles } from '@material-ui/core/styles'
+import Dialog from '@mui/material/Dialog'
+import SaveIcon from '@mui/icons-material/Save'
+import LoopIcon from '@mui/icons-material/Loop'
+import { makeStyles } from '@mui/styles'
 
 import TextInput from '../text-input'
 import { useEffect, useState } from 'react'
@@ -135,7 +135,10 @@ const InlineAssetEditor = ({
                 isDisabled={isSaving}>
                 Save
               </Button>
-              <Button onClick={onCancel} isDisabled={isSaving} color="default">
+              <Button
+                onClick={onCancel}
+                isDisabled={isSaving}
+                color="secondary">
                 Cancel
               </Button>
             </FormControls>

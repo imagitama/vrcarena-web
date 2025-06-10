@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
-import AddIcon from '@material-ui/icons/Add'
-import CheckIcon from '@material-ui/icons/Check'
-import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@mui/icons-material/Save'
+import AddIcon from '@mui/icons-material/Add'
+import CheckIcon from '@mui/icons-material/Check'
+import { makeStyles } from '@mui/styles'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
@@ -27,8 +27,9 @@ import DiscordServerResultsItem from '../discord-server-results-item'
 import Button from '../button'
 import FormControls from '../form-controls'
 import WarningMessage from '../warning-message'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     outline: `3px dashed ${theme.palette.background.paper}`,
     borderRadius: theme.shape.borderRadius,
@@ -70,7 +71,7 @@ const CreateForm = ({
   const [name, setName] = useState('')
   const [inviteUrl, setInviteUrl] = useState('')
   const [widgetId, setWidgetId] = useState('')
-  const [isSaving, isSuccess, isErrored, create, clear] =
+  const [isSaving, isSuccess, lastErrorCode, create, clear] =
     useDataStoreCreate<DiscordServer>(CollectionNames.DiscordServers)
   const [createdDocument, setCreatedDocument] = useState<DiscordServer | null>(
     null
@@ -126,15 +127,10 @@ const CreateForm = ({
     )
   }
 
-  if (isErrored) {
+  if (lastErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to create the Discord Server - it is probably something internal
-        <br />
-        <br />
-        <Button onClick={() => restart()} color="default">
-          Start Again
-        </Button>
+      <ErrorMessage onOkay={restart}>
+        Failed to create the Discord Server (code {lastErrorCode})
       </ErrorMessage>
     )
   }
@@ -180,7 +176,7 @@ const AllDiscordServers = ({
   onClickWithIdAndDetails: (id: string, details: DiscordServer) => void
   onCancel: () => void
 }) => {
-  const [isLoading, isErrored, results] = useDataStoreItems<DiscordServer>(
+  const [isLoading, lastErrorCode, results] = useDataStoreItems<DiscordServer>(
     ViewNames.GetPublicDiscordServers,
     undefined,
     { queryName: 'get-discord-servers-for-form' }
@@ -190,13 +186,10 @@ const AllDiscordServers = ({
     return <LoadingIndicator message="Finding Discord Servers..." />
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to find Discord Servers - probably an internal error
-        <br />
-        <br />
-        <Button onClick={() => onCancel()}>Start Again</Button>
+      <ErrorMessage onOkay={onCancel}>
+        Failed to find Discord Servers (code {lastErrorCode})
       </ErrorMessage>
     )
   }
@@ -212,7 +205,7 @@ const AllDiscordServers = ({
         }}
       />
       <FormControls>
-        <Button onClick={() => onCancel()} color="default">
+        <Button onClick={() => onCancel()} color="secondary">
           Cancel
         </Button>
       </FormControls>
@@ -245,7 +238,7 @@ const Form = ({
   const [selectedDiscordServerData, setSelectedDiscordServerData] = useState<
     DiscordServerData | undefined
   >(existingDiscordServerData)
-  const [isSaving, isSuccess, isErrored, save, clear] =
+  const [isSaving, isSuccess, lastErrorCode, save, clear] =
     useDatabaseSave<AssetFields>(collectionName || false, id)
   const [isCreating, setIsCreating] = useState(false)
   const [isBrowsingAll, setIsBrowsingAll] = useState(false)
@@ -311,26 +304,16 @@ const Form = ({
 
   if (isSuccess) {
     return (
-      <SuccessMessage>
+      <SuccessMessage onOkay={restart}>
         Resource has been updated with Discord Server notice
-        <br />
-        <br />
-        <Button onClick={() => restart()} color="default">
-          Okay
-        </Button>
       </SuccessMessage>
     )
   }
 
-  if (isErrored) {
+  if (lastErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to save the resource - do you have permission?
-        <br />
-        <br />
-        <Button onClick={() => restart()} color="default">
-          Start Again
-        </Button>
+      <ErrorMessage onOkay={restart}>
+        Failed to save the resource (code {lastErrorCode})
       </ErrorMessage>
     )
   }
@@ -371,10 +354,10 @@ const Form = ({
             <Button onClick={() => onSave()} icon={<SaveIcon />}>
               Save
             </Button>{' '}
-            <Button onClick={() => restart()} color="default">
+            <Button onClick={() => restart()} color="secondary">
               Try Again
             </Button>{' '}
-            <Button onClick={() => onClear()} color="default">
+            <Button onClick={() => onClear()} color="secondary">
               Clear
             </Button>
           </FormControls>
@@ -399,10 +382,10 @@ const Form = ({
         onClickWithIdAndDetails={onIdAndDetails}
       />
       <br />
-      <Button onClick={() => create()} icon={<AddIcon />} color="default">
+      <Button onClick={() => create()} icon={<AddIcon />} color="secondary">
         Add Server
       </Button>{' '}
-      <Button onClick={() => browseAll()} color="default">
+      <Button onClick={() => browseAll()} color="secondary">
         List All Servers
       </Button>
     </>

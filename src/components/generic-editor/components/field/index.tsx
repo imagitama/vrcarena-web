@@ -1,9 +1,13 @@
 import React from 'react'
-import FormControl from '@material-ui/core/FormControl'
-import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
 import Heading from '../../../heading'
 
-export default ({ label, children, hint = '' }: {
+export default ({
+  label,
+  children,
+  hint = '',
+}: {
   label: string
   children: React.ReactNode
   hint?: string

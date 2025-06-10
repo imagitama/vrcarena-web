@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import Timeline from '@material-ui/lab/Timeline'
-import TimelineItem from '@material-ui/lab/TimelineItem'
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator'
-import TimelineConnector from '@material-ui/lab/TimelineConnector'
-import TimelineContent from '@material-ui/lab/TimelineContent'
-import TimelineDot from '@material-ui/lab/TimelineDot'
-import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
+import Timeline from '@mui/lab/Timeline'
+import TimelineItem from '@mui/lab/TimelineItem'
+import TimelineSeparator from '@mui/lab/TimelineSeparator'
+import TimelineConnector from '@mui/lab/TimelineConnector'
+import TimelineContent from '@mui/lab/TimelineContent'
+import TimelineDot from '@mui/lab/TimelineDot'
+import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent'
+import Typography from '@mui/material/Typography'
+import { makeStyles } from '@mui/styles'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
 import { CollectionNames as CommentsCollectionNames } from '../../modules/comments'
 import { createMessage, editMessage, HistoryEntry } from '../../modules/history'
@@ -21,13 +21,11 @@ import {
 } from '../../modules/assets'
 import {
   CollectionNames as AmendmentsCollectionNames,
-  FullAmendment,
   AmendmentMeta,
 } from '../../modules/amendments'
 import { CollectionNames as UsersCollectionNames } from '../../modules/users'
 import {
   FullReport,
-  Report,
   CollectionNames as ReportsCollectionNames,
   ResolutionStatus,
 } from '../../modules/reports'
@@ -51,7 +49,6 @@ import { fieldTypes } from '../../generic-forms'
 import TagChips from '../tag-chips'
 import { EditableField } from '../../editable-fields'
 import Markdown from '../markdown'
-import { CommonMetaRecordFields } from '../../data-store'
 
 enum Positivity {
   Positive = 'positive',

@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { getIsUrlAYoutubeVideo } from '../../utils'
 import YouTubePlayer from '../youtube-player'
 

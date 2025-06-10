@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { mediaQueryForMobiles } from '../../media-queries'
 
 const useStyles = makeStyles({
@@ -10,12 +10,12 @@ const useStyles = makeStyles({
     display: 'flex',
     [mediaQueryForMobiles]: {
       position: 'relative',
-      margin: '0.5rem 0'
+      margin: '0.5rem 0',
     },
     '& > *': {
-      marginLeft: '0.25rem'
-    }
-  }
+      marginLeft: '0.25rem',
+    },
+  },
 })
 
 export default ({ children }: { children: React.ReactNode }) => {

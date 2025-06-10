@@ -1,16 +1,16 @@
-import React, { Suspense, useCallback, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import React, { Suspense, useState } from 'react'
+import { makeStyles } from '@mui/styles'
 import { Helmet } from 'react-helmet'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
+import Card from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
 
 // icons
-import BuildIcon from '@material-ui/icons/Build'
-import LoyaltyIcon from '@material-ui/icons/Loyalty'
-import CompareArrowsIcon from '@material-ui/icons/CompareArrows'
-import LinkIcon from '@material-ui/icons/Link'
-import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
-import WarningIcon from '@material-ui/icons/Warning'
+import BuildIcon from '@mui/icons-material/Build'
+import LoyaltyIcon from '@mui/icons-material/Loyalty'
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
+import LinkIcon from '@mui/icons-material/Link'
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew'
+import WarningIcon from '@mui/icons-material/Warning'
 
 import useBanner from '../../hooks/useBanner'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
@@ -91,13 +91,8 @@ import WarningMessage from '../warning-message'
 import { alreadyOver18Key } from '../../config'
 import useStorage from '../../hooks/useStorage'
 import AddToVccButton from '../add-to-vcc-button'
-import {
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-} from '../../modules/common'
+import { AccessStatus } from '../../modules/common'
 import { tagVrcFuryReady } from '../../vrcfury'
-import { SupabaseClient } from '@supabase/supabase-js'
 import RequiresVerificationNotice from '../requires-verification-notice'
 import HintText from '../hint-text'
 import { getVrchatWorldLaunchUrlForId } from '../../vrchat'
@@ -131,7 +126,7 @@ const QueuedAssetInfo = React.lazy(
     )
 )
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   // columns
   cols: {
     maxWidth: '100vw',
@@ -243,7 +238,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '150%',
     marginBottom: '0.25rem',
   },
-}))
+})
 
 const ParentControlGroup = () => {
   const { asset } = useAssetOverview()
@@ -468,11 +463,11 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
         title="Adult Content Warning"
         controls={[
           <Button
-            color="default"
+            color="secondary"
             onClick={() => setBypassAdultFilterOnce(true)}>
             I am over 18 - Allow Once
           </Button>,
-          <Button color="default" onClick={() => setIsAlreadyOver18(true)}>
+          <Button color="secondary" onClick={() => setIsAlreadyOver18(true)}>
             I am over 18 - Allow In Browser
           </Button>,
         ]}>
@@ -767,7 +762,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             {asset && asset.vccurl ? (
               <ControlGroup>
                 <Control>
-                  <AddToVccButton vccUrl={asset.vccurl} assetId={asset.id} />
+                  <AddToVccButton vccUrl={asset.vccurl} />
                 </Control>
               </ControlGroup>
             ) : null}
@@ -868,7 +863,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                   <Control>
                     <Button
                       url={routes.avatarTutorial}
-                      color="default"
+                      color="secondary"
                       icon={<BuildIcon />}
                       isLoading={isLoading}>
                       Avatar Tutorial
@@ -880,7 +875,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                         ':assetId',
                         assetId
                       )}
-                      color="default"
+                      color="secondary"
                       icon={<AccessibilityNewIcon />}
                       isLoading={isLoading}>
                       Find Accessories
@@ -929,7 +924,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                           <VRChatIcon />
                         </span>
                       }
-                      color="default">
+                      color="secondary">
                       Launch VRChat
                     </Button>
                   </Control>
@@ -997,7 +992,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                 <Button
                   url={routes.compareWithVar.replace(':assetId', assetId)}
                   icon={<CompareArrowsIcon />}
-                  color="default">
+                  color="secondary">
                   Compare
                 </Button>
               </Control>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord.svg'
 import Button, { ButtonProps } from '../button'
 
@@ -9,14 +9,14 @@ const discordColorDark = '#445282'
 const useStyles = makeStyles({
   loginWithDiscordWrapper: {
     textAlign: 'center',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   loginWithDiscordBtn: {
     backgroundColor: discordColor,
     '&:hover': {
-      backgroundColor: discordColorDark
-    }
-  }
+      backgroundColor: discordColorDark,
+    },
+  },
 })
 
 export default (props: ButtonProps) => {

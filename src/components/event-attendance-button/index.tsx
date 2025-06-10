@@ -1,5 +1,5 @@
 import React from 'react'
-import CheckIcon from '@material-ui/icons/Check'
+import CheckIcon from '@mui/icons-material/Check'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -13,7 +13,7 @@ import ErrorMessage from '../error-message'
 import Button from '../button'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 
-const DeleteButton = ({
+const EventAttendenceButton = ({
   eventId,
   myAttendance = undefined,
   onDone = undefined,
@@ -23,7 +23,7 @@ const DeleteButton = ({
   onDone?: () => void
 }) => {
   const isLoggedIn = useIsLoggedIn()
-  const [isSaving, , isErroredSaving, saveOrCreate] =
+  const [isSaving, , lastErrorCode, saveOrCreate] =
     useDatabaseSave<EventAttendance>(
       CollectionNames.EventAttendance,
       myAttendance ? myAttendance.id : null
@@ -31,8 +31,12 @@ const DeleteButton = ({
 
   const currentStatus = myAttendance ? myAttendance.status : undefined
 
-  if (isErroredSaving) {
-    return <ErrorMessage>Failed to save your attendance</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to save your attendance (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const onClickStatus = async (statusClickedOn: AttendanceStatus) => {
@@ -59,7 +63,7 @@ const DeleteButton = ({
   return (
     <>
       <Button
-        color="default"
+        color="secondary"
         onClick={() => onClickStatus(AttendanceStatus.Accepted)}
         icon={
           currentStatus === AttendanceStatus.Accepted ? (
@@ -70,7 +74,7 @@ const DeleteButton = ({
         Attend
       </Button>{' '}
       <Button
-        color="default"
+        color="secondary"
         onClick={() => onClickStatus(AttendanceStatus.Maybe)}
         icon={
           currentStatus === AttendanceStatus.Maybe ? <CheckIcon /> : undefined
@@ -79,7 +83,7 @@ const DeleteButton = ({
         Maybe
       </Button>{' '}
       <Button
-        color="default"
+        color="secondary"
         onClick={() => onClickStatus(AttendanceStatus.Declined)}
         icon={
           currentStatus === AttendanceStatus.Declined ? (
@@ -93,4 +97,4 @@ const DeleteButton = ({
   )
 }
 
-export default DeleteButton
+export default EventAttendenceButton

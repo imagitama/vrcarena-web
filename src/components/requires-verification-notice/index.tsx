@@ -1,14 +1,10 @@
 import React, { Fragment } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import WarningIcon from '@material-ui/icons/Warning'
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser'
+import { makeStyles } from '@mui/styles'
+import WarningIcon from '@mui/icons-material/Warning'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 
-import { trackAction } from '../../analytics'
-import { Asset, DiscordServerData, Relation } from '../../modules/assets'
+import { Asset, Relation } from '../../modules/assets'
 import Box from '../box'
-import { Discord as DiscordIcon } from '../../icons'
-import { discordPurple } from '../../config'
-import Button from '../button'
 import AssetResultsItem from '../asset-results-item'
 
 const useStyles = makeStyles({

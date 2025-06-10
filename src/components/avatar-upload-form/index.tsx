@@ -10,21 +10,23 @@ import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
-import DefaultAvatar from '../default-avatar'
 import {
   AVATAR_HEIGHT,
   AVATAR_WIDTH,
   NONATTACHMENT_MAX_SIZE_BYTES,
 } from '../../config'
 import { bucketNames } from '../../file-uploading'
-import WarningMessage from '../warning-message'
 import { CollectionNames, User } from '../../modules/users'
 import Avatar, { sizes } from '../avatar'
 
-export default ({ onClick = undefined }: { onClick?: () => void }) => {
+const AvatarUploadForm = ({
+  onClick = undefined,
+}: {
+  onClick?: () => void
+}) => {
   const userId = useUserId()
   const [, , user, hydrate] = useUserRecord()
-  const [isSaving, , isErrored, save] = useDatabaseSave<User>(
+  const [isSaving, , lastErrorCode, save] = useDatabaseSave<User>(
     CollectionNames.Users,
     userId
   )
@@ -56,8 +58,12 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
     return <LoadingIndicator message="Saving..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to upload your avatar</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to upload your avatar (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   return (
@@ -76,3 +82,5 @@ export default ({ onClick = undefined }: { onClick?: () => void }) => {
     </>
   )
 }
+
+export default AvatarUploadForm

@@ -1,7 +1,7 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import LaunchIcon from '@material-ui/icons/Launch'
-import HelpIcon from '@material-ui/icons/Help'
+import { makeStyles } from '@mui/styles'
+import LaunchIcon from '@mui/icons-material/Launch'
+import HelpIcon from '@mui/icons-material/Help'
 
 import { handleError } from '../../error-handling'
 import { trackAction, trackInternalAction } from '../../analytics'
@@ -168,7 +168,7 @@ const VisitSourceButton = ({
   return (
     <div className={classes.root}>
       <Button
-        color={!isExtraSource ? 'primary' : 'default'}
+        color={!isExtraSource ? 'primary' : 'secondary'}
         url={sourceInfo ? addReferrerToUrl(sourceInfo.url) : undefined}
         icon={<LaunchIcon />}
         onClick={onBtnClick}

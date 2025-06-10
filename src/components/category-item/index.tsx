@@ -1,42 +1,42 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardContent from '@material-ui/core/CardContent'
-import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@mui/styles'
+import Card from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
 
 const useStyles = makeStyles({
   item: {
     width: '50%',
     padding: '0.5rem',
-    position: 'relative'
+    position: 'relative',
   },
   contentsWrapper: {
-    display: 'flex'
+    display: 'flex',
   },
   media: {
     width: '200px',
     height: '200px',
-    flexShrink: 0
+    flexShrink: 0,
   },
   thumbnail: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   content: {
-    flex: 1
+    flex: 1,
   },
   // TODO: Invert theme and share components with species selector
   isSelected: {
     backgroundColor: 'grey',
-    boxShadow: '0px 0px 10px #FFF'
-  }
+    boxShadow: '0px 0px 10px #FFF',
+  },
 })
 
 export default ({
   category: { name, nameSingular, optimizedImageUrl, shortDescription },
   onClick,
-  isSelected = false
+  isSelected = false,
 }: {
   category: any
   onClick?: () => void

@@ -2,7 +2,7 @@ import React from 'react'
 import ErrorMessage, { ErrorMessageProps } from '../error-message'
 import { DISCORD_URL, EMAIL } from '../../config'
 
-export default (props: Omit<ErrorMessageProps, 'children'>) => (
+const ErrorBoundaryMessage = (props: Omit<ErrorMessageProps, 'children'>) => (
   <ErrorMessage
     hintText={
       <>
@@ -16,3 +16,5 @@ export default (props: Omit<ErrorMessageProps, 'children'>) => (
     Whoops. Something went wrong.
   </ErrorMessage>
 )
+
+export default ErrorBoundaryMessage

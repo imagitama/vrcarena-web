@@ -7,12 +7,12 @@ import BodyText from '../../components/body-text'
 import AuthorResults from '../../components/author-results'
 
 import * as routes from '../../routes'
-import PaginatedView from '../../components/paginated-view'
+import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
 import { Author, ViewNames } from '../../modules/authors'
 
-const subViews = {
-  DELETED: 1,
-  OPEN_FOR_COMMISSION: 2,
+enum SubView {
+  DELETED = 'deleted',
+  OPEN_FOR_COMMISSION = 'open-for-commission',
 }
 
 const Renderer = ({ items }: { items?: Author[] }) => (
@@ -20,9 +20,9 @@ const Renderer = ({ items }: { items?: Author[] }) => (
 )
 
 const AuthorsView = () => {
-  const getQuery = useCallback((query, selectedSubView) => {
+  const getQuery = useCallback<GetQueryFn<Author>>((query, selectedSubView) => {
     switch (selectedSubView) {
-      case subViews.OPEN_FOR_COMMISSION:
+      case SubView.OPEN_FOR_COMMISSION:
         return query.is('isopenforcommission', true)
       default:
         return query
@@ -60,7 +60,7 @@ const AuthorsView = () => {
         subViews={[
           {
             label: 'Open For Commission',
-            id: subViews.OPEN_FOR_COMMISSION,
+            id: SubView.OPEN_FOR_COMMISSION,
           },
         ]}
         defaultFieldName={'name'}

@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import CheckIcon from '@material-ui/icons/Check'
-import ClearIcon from '@material-ui/icons/Clear'
+import { makeStyles } from '@mui/styles'
+import CheckIcon from '@mui/icons-material/Check'
+import ClearIcon from '@mui/icons-material/Clear'
 import { AttendanceStatus, FullEventAttendance } from '../../modules/events'
 import Avatar, { sizes } from '../avatar'
 import UsernameLink from '../username-link'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     marginTop: '0.5rem',
     display: 'flex',

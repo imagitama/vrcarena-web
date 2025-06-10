@@ -4,19 +4,20 @@ import remarkDirective from 'remark-directive'
 import { visit } from 'unist-util-visit'
 import rehypeRaw from 'rehype-raw'
 import gfm from 'remark-gfm'
-import OpenInNewIcon from '@material-ui/icons/OpenInNew'
-import WarningIcon from '@material-ui/icons/Warning'
-import InfoIcon from '@material-ui/icons/Info'
-import LaunchIcon from '@material-ui/icons/Launch'
-import { ChevronRight } from '@material-ui/icons'
-import Table from '@material-ui/core/Table'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import TableBody from '@material-ui/core/TableBody'
-import MaterialTab from '@material-ui/core/Tab'
-import { makeStyles } from '@material-ui/core/styles'
-import ImageIcon from '@material-ui/icons/Image'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import WarningIcon from '@mui/icons-material/Warning'
+import InfoIcon from '@mui/icons-material/Info'
+import LaunchIcon from '@mui/icons-material/Launch'
+import ChevronRight from '@mui/icons-material/ChevronRight'
+import Table from '@mui/material/Table'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import TableBody from '@mui/material/TableBody'
+import MaterialTab from '@mui/material/Tab'
+import { makeStyles } from '@mui/styles'
+import ImageIcon from '@mui/icons-material/Image'
+import CheckIcon from '@mui/icons-material/Check'
 
 import { trackAction } from '../../analytics'
 import * as routes from '../../routes'
@@ -184,7 +185,7 @@ const Tab = ({
     <MaterialTab
       label={label}
       onClick={() => setSelectedIdx(idx)}
-      selected={selectedIdx === idx}
+      icon={selectedIdx === idx ? <CheckIcon /> : undefined}
     />
   )
 }

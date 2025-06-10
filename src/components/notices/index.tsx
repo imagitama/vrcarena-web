@@ -3,7 +3,7 @@ import useDatabaseQuery, {
   OrderDirections,
   Operators,
 } from '../../hooks/useDatabaseQuery'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { ViewNames, FullNotice } from '../../modules/notices'
 import Notice from '../notice'
 import ErrorMessage from '../error-message'
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 })
 
 const Notices = () => {
-  const [isLoading, isErrored, results] = useDatabaseQuery<FullNotice>(
+  const [isLoading, lastErrorCode, results] = useDatabaseQuery<FullNotice>(
     ViewNames.GetFullNotices,
     [['isvisible', Operators.EQUALS, true]],
     100,
@@ -29,8 +29,10 @@ const Notices = () => {
   const classes = useStyles()
   const [hiddenNotices, hideNoticeById] = useNotices()
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load notices</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load notices (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (isLoading || !results || !results.length) {

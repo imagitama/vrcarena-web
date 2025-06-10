@@ -11,13 +11,11 @@ import {
   CollectionNames as UserCollectionNames,
 } from '../../modules/users'
 import * as routes from '../../routes'
-import ErrorMessage from '../error-message'
 
 const ActivityItemLabel = ({
   message,
   parent,
   parentTable,
-  parentData,
   extraData,
   createdBy,
   createdByUsername,
@@ -25,7 +23,6 @@ const ActivityItemLabel = ({
   message: string
   parent: string
   parentTable: string
-  parentData: any
   extraData: { [collectionName: string]: any }
   createdBy: string
   createdByUsername: string

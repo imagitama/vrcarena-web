@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useLocation, useParams } from 'react-router'
 
-import PaginatedView from '../../components/paginated-view'
+import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
 import AssetResults from '../../components/asset-results'
 import TagChips from '../../components/tag-chips'
 import AreaNavigation from '../../components/area-navigation'
@@ -37,7 +37,7 @@ const ViewAreaView = () => {
     areaName: string
   }>()
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
     (query) => {
       query = query
         .eq('category', categoryName)

@@ -1,7 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import LoyaltyIcon from '@material-ui/icons/Loyalty'
-import EditIcon from '@material-ui/icons/Edit'
+import { makeStyles } from '@mui/styles'
+import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import { Helmet } from 'react-helmet'
 
 import useDataStoreItem from '../../hooks/useDataStoreItem'
@@ -26,7 +25,6 @@ import TagChips from '../tag-chips'
 import { CollectionNames as AssetCollectionNames } from '../../modules/assets'
 import Paper from '../paper'
 import FormattedDate from '../formatted-date'
-import Button from '../button'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import AdultContentGate from '../adult-content-gate'
 import useAdultContentGate from '../../hooks/useAdultContentGate'
@@ -74,7 +72,7 @@ const getParentLabel = (parentTable: string, parentId: string): string => {
 }
 
 const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
-  const [isLoading, isError, attachment, hydrate] =
+  const [isLoading, lastErrorCode, attachment, hydrate] =
     useDataStoreItem<FullAttachment>(ViewNames.GetFullAttachments, attachmentId)
   const isEditor = useIsEditor()
   const classes = useStyles()
@@ -85,8 +83,12 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
     return <LoadingIndicator message="Loading attachment..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load attachment</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load attachment (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!attachment) {

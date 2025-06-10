@@ -9,7 +9,7 @@ import ErrorMessage from '../../components/error-message'
 import NoResultsMessage from '../../components/no-results-message'
 
 export default () => {
-  const { ids, remove } = useCart()
+  const { ids } = useCart()
   const isCartEmpty = ids.length === 0
   const [isLoading, lastErrorCode, assets] = useDataStoreItems<PublicAsset>(
     ViewNames.GetPublicAssets,
@@ -26,7 +26,7 @@ export default () => {
         />
       </Helmet>
       {lastErrorCode !== null ? (
-        <ErrorMessage>Failed to load cart</ErrorMessage>
+        <ErrorMessage>Failed to load cart (code {lastErrorCode})</ErrorMessage>
       ) : isCartEmpty ? (
         <NoResultsMessage>Cart empty</NoResultsMessage>
       ) : isLoading ? (

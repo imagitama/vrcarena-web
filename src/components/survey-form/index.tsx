@@ -89,7 +89,7 @@ const SurveyForm = ({
   const [questionResponses, setQuestionResponses] = useState<
     SurveyQuestionResponse[]
   >([])
-  const [isCreating, isSuccess, isErrored, create] = useDataStoreCreate(
+  const [isCreating, isSuccess, lastErrorCode, create] = useDataStoreCreate(
     CollectionNames.SurveyResponses
   )
 
@@ -129,12 +129,14 @@ const SurveyForm = ({
         <SuccessMessage>
           Your survey response has been sent! Thank you!
         </SuccessMessage>
-      ) : isErrored ? (
+      ) : lastErrorCode !== null ? (
         <ErrorMessage>
           Something screwed up on our end. If you like, you can submit your
           response in our Discord server in the #feedback section by pasting
           this in there:
           <textarea>{JSON.stringify(questionResponses, null, '  ')}</textarea>
+          <br />
+          (code {lastErrorCode})
         </ErrorMessage>
       ) : (
         <>

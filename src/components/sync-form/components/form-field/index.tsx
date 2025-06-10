@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { SyncFieldBase } from '../../../../syncing'
 import useSync from '../../hooks/useSync'
 import Paper from '../../../paper'
@@ -35,7 +35,7 @@ const FormField = <TRecord extends object>({
   }
 
   if (!(fieldMeta.ourName in fields)) {
-    return <div>Waiting for value ({fieldMeta.ourName})</div>
+    return <div>Waiting for value ({fieldMeta.ourName.toString()})</div>
   }
 
   // @ts-ignore

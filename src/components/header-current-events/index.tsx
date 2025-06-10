@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import Link from '../../components/link'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import * as routes from '../../routes'
 import useDataStore from '../../hooks/useDataStore'

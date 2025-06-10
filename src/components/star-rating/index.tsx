@@ -1,7 +1,7 @@
 import React from 'react'
-import StarIcon from '@material-ui/icons/Star'
-import StarOutlineIcon from '@material-ui/icons/StarOutline'
-import { makeStyles } from '@material-ui/core/styles'
+import StarIcon from '@mui/icons-material/Star'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles({
   root: {

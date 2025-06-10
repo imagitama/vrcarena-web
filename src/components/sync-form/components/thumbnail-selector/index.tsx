@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import useSync from '../../hooks/useSync'
 import Button from '../../../button'
@@ -9,8 +9,7 @@ import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../../../../config'
 import NoResultsMessage from '../../../no-results-message'
 import WarningMessage from '../../../warning-message'
 
-const useStyles = makeStyles((theme) => ({
-  root: {},
+const useStyles = makeStyles({
   thumbnailsToSelect: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
     },
   },
-}))
+})
 
 const ThumbnailSelector = ({
   overrideUrl,
@@ -51,7 +50,7 @@ const ThumbnailSelector = ({
             setSelectedUrl('')
             onDone('')
           }}
-          color="default">
+          color="secondary">
           Retry
         </Button>
       </>
@@ -73,7 +72,7 @@ const ThumbnailSelector = ({
   }
 
   return (
-    <div className={classes.root}>
+    <div>
       <WarningMessage leftAlign>Select an image to crop:</WarningMessage>
       <div className={classes.thumbnailsToSelect}>
         {imageUrls.map((url) => {

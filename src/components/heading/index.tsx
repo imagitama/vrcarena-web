@@ -1,7 +1,8 @@
 import React, { forwardRef } from 'react'
-import Typography, { TypographyProps } from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
+import Typography, { TypographyProps } from '@mui/material/Typography'
+import { makeStyles } from '@mui/styles'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
+import { VRCArenaTheme } from '../../themes'
 
 function getFontSizeForVariant(variant?: string) {
   switch (variant) {
@@ -16,26 +17,26 @@ function getFontSizeForVariant(variant?: string) {
   }
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   heading: ({ variant }: { variant?: string }) => ({
     fontSize: getFontSizeForVariant(variant),
     margin: '2rem 0 1rem',
     [mediaQueryForTabletsOrBelow]: {
-      marginTop: '1rem'
-    }
+      marginTop: '1rem',
+    },
   }),
   noTopMargin: {
-    marginTop: '0 !important'
+    marginTop: '0 !important',
   },
   noMargin: {
-    margin: '0 !important'
+    margin: '0 !important',
   },
   fakeLink: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
   },
   inline: {
-    display: 'inline'
-  }
+    display: 'inline',
+  },
 }))
 
 interface Props extends TypographyProps {
@@ -59,7 +60,7 @@ export default forwardRef<{}, Props>(
       id,
       fakeLink,
       style = {},
-      inline
+      inline,
     },
     ref
   ) => {

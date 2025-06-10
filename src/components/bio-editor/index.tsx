@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import Markdown from '../markdown'
-import { makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import TextField from '@mui/material/TextField'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Button from '../button'
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { User } from '../../modules/users'
 import { CollectionNames } from '../../modules/user'
+
 import SuccessMessage from '../success-message'
+import LoadingIndicator from '../loading-indicator'
+import ErrorMessage from '../error-message'
+import Button from '../button'
 
 const useStyles = makeStyles({
   bioTextField: {
@@ -32,13 +33,13 @@ const BioEditor = ({
 }) => {
   const classes = useStyles()
   const userId = useUserId()
-  const [isLoadingProfile, isErroredLoadingProfile, profile] =
+  const [isLoadingProfile, lastErrorCodeLoadingProfile, profile] =
     useDataStoreItem<User>(
       CollectionNames.Users,
       userId ? userId : false,
       'bio-editor'
     )
-  const [isSaving, isSuccess, isErrored, save] = useDatabaseSave(
+  const [isSaving, isSuccess, lastErrorCodeSaving, save] = useDatabaseSave(
     CollectionNames.Users,
     userId
   )
@@ -73,8 +74,12 @@ const BioEditor = ({
     return <LoadingIndicator />
   }
 
-  if (isErroredLoadingProfile) {
-    return <ErrorMessage>Failed to lookup your user profile</ErrorMessage>
+  if (lastErrorCodeLoadingProfile !== null) {
+    return (
+      <ErrorMessage>
+        Failed to lookup your user profile (code {lastErrorCodeLoadingProfile})
+      </ErrorMessage>
+    )
   }
 
   return (
@@ -100,14 +105,14 @@ const BioEditor = ({
       {isSaving && <LoadingIndicator message="Saving..." />}
       {isSuccess ? (
         <SuccessMessage>Your bio has been saved</SuccessMessage>
-      ) : isErrored ? (
-        'Failed to save. Maybe try again?'
+      ) : lastErrorCodeSaving !== null ? (
+        <>Failed to save (code {lastErrorCodeSaving})</>
       ) : null}
       {showPreview === true && <Markdown source={bioValue} />}
       <div className={classes.controls}>
         {showPreview === false && (
           <>
-            <Button onClick={() => setShowPreview(true)} color="default">
+            <Button onClick={() => setShowPreview(true)} color="secondary">
               Show Preview
             </Button>{' '}
           </>

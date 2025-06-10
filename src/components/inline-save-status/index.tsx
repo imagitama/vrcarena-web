@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import MiniLoadingIndicator from '../mini-loading-indicator'
 import { DataStoreErrorCode } from '../../data-store'
@@ -75,15 +75,15 @@ const InlineSaveStatus = <TErrorCode,>({
   return (
     <span
       className={`${classes.root} ${isSavingSuccess ? classes.success : ''} ${
-        lastErrorCode ? classes.hasErrorCode : ''
+        lastErrorCode !== null ? classes.hasErrorCode : ''
       }`}>
       {' '}
       {isSaving ? (
         <MiniLoadingIndicator>Saving...</MiniLoadingIndicator>
       ) : isSavingSuccess ? (
         <>Saved{count !== null ? '.'.repeat(count) : ''}!</>
-      ) : lastErrorCode ? (
-        <>Failed to save</>
+      ) : lastErrorCode !== null ? (
+        <>Failed to save (code {lastErrorCode})</>
       ) : null}
     </span>
   )

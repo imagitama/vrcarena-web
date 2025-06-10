@@ -38,7 +38,7 @@ import { CollectionNames as CommentsCollectionNames } from '../../modules/commen
 import { ApprovalStatus } from '../../modules/common'
 
 const AssetOutput = ({ assetId }: { assetId: string }) => {
-  const [isLoading, isError, asset] = useDataStoreItem<Asset>(
+  const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
     AssetsCollectionNames.Assets,
     assetId,
     'view-amendment-asset'
@@ -48,15 +48,21 @@ const AssetOutput = ({ assetId }: { assetId: string }) => {
     return <LoadingIndicator message="Loading asset..." />
   }
 
-  if (isError || !asset) {
-    return <ErrorMessage>Failed to load asset</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
+  if (!asset) {
+    return <ErrorMessage>Failed to load asset: does not exist</ErrorMessage>
   }
 
   return <AssetResultsItem asset={asset} />
 }
 
 const AuthorOutput = ({ authorId }: { authorId: string }) => {
-  const [isLoading, isError, author] = useDataStoreItem<Author>(
+  const [isLoading, lastErrorCode, author] = useDataStoreItem<Author>(
     AuthorsCollectionNames.Authors,
     authorId,
     'view-amendment-author'
@@ -66,8 +72,14 @@ const AuthorOutput = ({ authorId }: { authorId: string }) => {
     return <LoadingIndicator message="Loading author..." />
   }
 
-  if (isError || !author) {
-    return <ErrorMessage>Failed to load author</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load author (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
+  if (!author) {
+    return <ErrorMessage>Failed to load author: does not exist</ErrorMessage>
   }
 
   return <AuthorResultsItem author={author} />
@@ -93,7 +105,7 @@ const Changes = ({
   parentId: string
   fields: any
 }) => {
-  const [isLoading, isError, parent] = useDataStoreItem(
+  const [isLoading, lastErrorCode, parent] = useDataStoreItem(
     getViewNameForParentTable(parentTable),
     parentId,
     'view-amendment-changes'
@@ -103,8 +115,14 @@ const Changes = ({
     return <LoadingIndicator message="Loading parent..." />
   }
 
-  if (isError || !parent) {
-    return <ErrorMessage>Failed to load parent</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load parent (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
+  if (!parent) {
+    return <ErrorMessage>Failed to load parent: does not exist</ErrorMessage>
   }
 
   if (Object.keys(fields).length === 0) {
@@ -135,7 +153,7 @@ const Parent = ({ table, id }: { table: string; id: string }) => {
 const View = () => {
   const { amendmentId } = useParams<{ amendmentId: string }>()
   const userId = useUserId()
-  const [isLoadingAmendment, isErroredLoadingAmendment, amendment, hydrate] =
+  const [isLoadingAmendment, lastErrorCode, amendment, hydrate] =
     useDataStoreItem<FullAmendment>(
       AmendmentsViewNames.GetFullAmendments,
       userId ? amendmentId : false,
@@ -155,8 +173,16 @@ const View = () => {
     return <LoadingIndicator message="Loading amendment..." />
   }
 
-  if (isErroredLoadingAmendment || amendment === false) {
-    return <ErrorMessage>Failed to load amendment</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load amendment (code {lastErrorCode})
+      </ErrorMessage>
+    )
+  }
+
+  if (!amendment) {
+    return <ErrorMessage>Failed to load amendment: does not exist</ErrorMessage>
   }
 
   const {

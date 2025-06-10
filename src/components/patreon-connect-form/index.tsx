@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import CheckIcon from '@material-ui/icons/Check'
-import CloseIcon from '@material-ui/icons/Close'
-import { makeStyles } from '@material-ui/core/styles'
-import RefreshIcon from '@material-ui/icons/Refresh'
+import CheckIcon from '@mui/icons-material/Check'
+import CloseIcon from '@mui/icons-material/Close'
+import { makeStyles } from '@mui/styles'
+import RefreshIcon from '@mui/icons-material/Refresh'
 
 import { handleError } from '../../error-handling'
 import { callFunction } from '../../firebase'
@@ -88,7 +88,7 @@ const rewardMetaById: { [key: number]: RewardMeta } = {
 
 export default () => {
   const userId = useUserId()
-  const [isLoadingMeta, isErrorLoadingMeta, metaResult, hydrate] =
+  const [isLoadingMeta, lastErrorCodeLoadingMeta, metaResult, hydrate] =
     useDataStoreItem<UserMeta>(
       CollectionNames.UsersMeta,
       userId || false,
@@ -96,6 +96,8 @@ export default () => {
     )
   const [isComplete, setIsComplete] = useState<boolean | null>(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  // TODO: Store last error code
   const [isErrored, setIsErrored] = useState(false)
   const classes = useStyles()
   const isPatron = useIsPatron()
@@ -168,7 +170,7 @@ export default () => {
     return <LoadingIndicator message="Loading data..." />
   }
 
-  if (isErrored || isErrorLoadingMeta) {
+  if (isErrored || lastErrorCodeLoadingMeta !== null) {
     return (
       <ErrorMessage>
         Failed to talk to Patreon <br />
@@ -193,15 +195,11 @@ export default () => {
               url={patreonOAuthUrl}
               openInNewTab={false}
               icon={<RefreshIcon />}
-              color="default">
+              color="secondary">
               Refresh with Patreon
             </Button>
           </p>
           <Heading variant="h3">Rewards</Heading>
-          <WarningMessage>
-            As of March 2025 we have disabled "pedestals" and "custom slugs" as
-            they are old, hardly used features that are extra work to maintain.
-          </WarningMessage>
           {metaResult && metaResult.patreonrewardids.length ? (
             metaResult.patreonrewardids
               .filter((rewardId) => rewardId in rewardMetaById)

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import CheckIcon from '@material-ui/icons/Check'
+import CheckIcon from '@mui/icons-material/Check'
 import useFirebaseFunction from '../../hooks/useFirebaseFunction'
 import useUserRecord from '../../hooks/useUserRecord'
 import Button from '../button'

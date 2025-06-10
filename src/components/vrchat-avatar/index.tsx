@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import LazyLoad from 'react-lazyload'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import OpenInNewIcon from '@material-ui/icons/OpenInNew'
-import Chip from '@material-ui/core/Chip'
+import Card from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
+import Typography from '@mui/material/Typography'
+import { makeStyles } from '@mui/styles'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import Chip from '@mui/material/Chip'
 
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import FormattedDate from '../formatted-date'
@@ -17,10 +17,11 @@ import { callFunction } from '../../firebase'
 import Button from '../button'
 import { viewVrchatAvatarUrlWithVar } from '../../config'
 import { UnityPackage, VrchatAvatar } from '../../vrchat'
+import { VRCArenaTheme } from '../../themes'
 
 const chipMargin = '0.25rem'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     width: '200px',
     margin: '0.5rem',

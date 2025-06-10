@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { makeStyles } from '@material-ui/styles'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import Badge from '@material-ui/core/Badge'
-import NotificationsIcon from '@material-ui/icons/Notifications'
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
-import AddBoxIcon from '@material-ui/icons/AddBox'
+import { makeStyles } from '@mui/styles'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import Badge from '@mui/material/Badge'
+import NotificationsIcon from '@mui/icons-material/Notifications'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import AddBoxIcon from '@mui/icons-material/AddBox'
 
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import { trackAction } from '../../analytics'
@@ -290,7 +289,7 @@ export default ({
             }`}
             onClick={closeAllDropdowns}
             icon={<AddBoxIcon />}
-            color="default">
+            color="secondary">
             Submit
           </Button>
         </div>

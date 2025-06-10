@@ -1,6 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import LaunchIcon from '@material-ui/icons/Launch'
+import { makeStyles } from '@mui/styles'
+import LaunchIcon from '@mui/icons-material/Launch'
 import FormattedDate from '../formatted-date'
 import {
   Attachment,

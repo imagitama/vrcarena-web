@@ -13,6 +13,8 @@ export default () => {
   const [emailValue, setEmailValue] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [hasSent, setHasSent] = useState(false)
+
+  // TODO: Store last error code
   const [isErrored, setIsErrored] = useState(false)
 
   const onClickSend = async () => {
@@ -70,7 +72,7 @@ export default () => {
       Enter your email address:
       <TextInput
         value={emailValue}
-        onChange={e => setEmailValue(e.target.value)}
+        onChange={(e) => setEmailValue(e.target.value)}
       />
       <Button onClick={onClickSend}>Send Reset Email</Button>
     </>

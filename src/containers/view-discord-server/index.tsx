@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
-import LaunchIcon from '@material-ui/icons/Launch'
-import SyncIcon from '@material-ui/icons/Sync'
-import EditIcon from '@material-ui/icons/Edit'
+import LaunchIcon from '@mui/icons-material/Launch'
+import SyncIcon from '@mui/icons-material/Sync'
+import EditIcon from '@mui/icons-material/Edit'
 
 import * as routes from '../../routes'
 import Markdown from '../../components/markdown'
@@ -57,6 +57,7 @@ function SyncDiscordServerButton({
       setIsLoading(false)
       setIsSuccess(true)
     } catch (err) {
+      // TODO: Re-render with error code
       handleError(err)
       setIsSuccess(false)
     }
@@ -78,7 +79,7 @@ function SyncDiscordServerButton({
 const View = () => {
   const { discordServerId } = useParams<{ discordServerId: string }>()
   const [, , user] = useUserRecord()
-  const [isLoading, isErrored, result, hydrate] =
+  const [isLoading, lastErrorCode, result, hydrate] =
     useDataStoreItem<FullDiscordServer>(
       ViewNames.GetFullDiscordServers,
       discordServerId
@@ -86,12 +87,17 @@ const View = () => {
   const isEditor = useIsEditor()
 
   if (isLoading) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message="Loading Discord server..." />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to get Discord server</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to get Discord server (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
+
   if (!result) {
     return <ErrorMessage>The Discord server does not exist</ErrorMessage>
   }
@@ -214,7 +220,7 @@ const View = () => {
       <PageControls>
         <Button
           url={routes.discordServers}
-          color="default"
+          color="secondary"
           onClick={() =>
             trackAction(analyticsCategory, 'Click all Discord servers button')
           }>

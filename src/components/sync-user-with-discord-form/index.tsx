@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import SyncIcon from '@material-ui/icons/Sync'
+import SyncIcon from '@mui/icons-material/Sync'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { callFunction } from '../../firebase'
@@ -35,6 +35,7 @@ const SyncUserWithDiscordForm = ({
 }) => {
   const userId = useUserId()
   const [, , , hydrateUser] = useUserRecord()
+  // TODO: Store last error code
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, isSuccess, lastErrorCode, save, clear] =

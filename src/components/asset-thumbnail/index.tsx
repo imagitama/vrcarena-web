@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '../../config'
 import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'

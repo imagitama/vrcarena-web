@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import * as routes from '../../routes'
 import { scrollToTop } from '../../utils'
@@ -51,7 +51,7 @@ function ScrollToTopBtn() {
           scrollToTop()
           trackAction('Footer', 'Click scroll to top button')
         }}
-        color="default">
+        color="secondary">
         Scroll To Top
       </Button>
     </div>

@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
-import LaunchIcon from '@material-ui/icons/Launch'
-import { makeStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import LaunchIcon from '@mui/icons-material/Launch'
+import { makeStyles } from '@mui/styles'
+import EditIcon from '@mui/icons-material/Edit'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 import * as routes from '../../routes'
-import useDataStore from '../../hooks/useDataStore'
+import useDataStore, { GetQueryFn } from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import Link from '../../components/link'
 import ErrorMessage from '../../components/error-message'
@@ -128,13 +128,13 @@ const useStyles = makeStyles({
 
 const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) => {
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
+    (client) => {
       if (!tagsToSearch.length) {
         return null
       }
 
-      let query = supabase
+      let query = client
         .from(AssetsViewNames.GetPublicAssets)
         .select<string, PublicAsset>('*')
         .contains('tags', tagsToSearch)
@@ -213,15 +213,12 @@ const AuthorResults = ({ authors }: { authors: FullAuthor[] }) => {
 }
 
 const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) => {
-      let query = supabase
+  const getQuery = useCallback<GetQueryFn<FullAuthor>>(
+    (client) =>
+      client
         .from(AuthorsViewNames.GetPublicAuthors)
         .select<string, FullAuthor>('*')
-        .eq('salereason', eventId)
-
-      return query
-    },
+        .eq('salereason', eventId),
     [eventId]
   )
   const [isLoading, lastErrorCode, authors] = useDataStore<FullAuthor>(
@@ -234,7 +231,11 @@ const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to get authors with sales</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to get authors with sales (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!Array.isArray(authors) || !authors.length) {
@@ -257,15 +258,15 @@ const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
 
 const View = () => {
   const { eventId: eventIdOrSlug } = useParams<{ eventId: string }>()
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) =>
-      supabase
+  const getQuery = useCallback<GetQueryFn<FullEvent>>(
+    (client) =>
+      client
         .from(ViewNames.GetFullEvents)
         .select<string, FullEvent>('*')
         .or(`id.eq.${eventIdOrSlug},slug.eq.${eventIdOrSlug}`),
     [eventIdOrSlug]
   )
-  const [isLoading, isError, events, , hydrate] = useDataStore<FullEvent>(
+  const [isLoading, lastErrorCode, events, , hydrate] = useDataStore<FullEvent>(
     getQuery,
     { queryName: 'view-event', quietHydrate: true }
   )
@@ -277,12 +278,14 @@ const View = () => {
     return <LoadingIndicator message="Loading event..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load event</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load event (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!events.length) {
-    return <NoResultsMessage />
+    return <NoResultsMessage>No events found</NoResultsMessage>
   }
 
   const event = events[0]
@@ -390,7 +393,7 @@ const View = () => {
                 <Button
                   url={routes.editEventWithVar.replace(':eventId', id)}
                   icon={<EditIcon />}
-                  color="default">
+                  color="secondary">
                   Edit Event
                 </Button>
               </div>

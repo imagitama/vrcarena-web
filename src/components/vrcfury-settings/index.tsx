@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
-import { makeStyles } from '@material-ui/core/styles'
-import HelpIcon from '@material-ui/icons/Help'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import { makeStyles } from '@mui/styles'
+import HelpIcon from '@mui/icons-material/Help'
 
 import { VRCFury as VrcFuryIcon } from '../../icons'
 import { VrcFuryPrefabInfo } from '../../modules/assets'
@@ -148,7 +148,7 @@ const VrcFurySettings = ({
                       <Button
                         url={prefabInfo.url}
                         icon={<VrcFuryIcon />}
-                        color="default"
+                        color="secondary"
                         onClick={
                           analyticsCategory
                             ? () => {

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import AttachFileIcon from '@material-ui/icons/AttachFile'
+import AttachFileIcon from '@mui/icons-material/AttachFile'
 import useIsLoggedIn from '../../../../hooks/useIsLoggedIn'
 import ImageGallery from '../../../image-gallery'
 import Button from '../../../button'

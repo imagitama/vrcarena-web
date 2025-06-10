@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import { allowedRatings } from '../../ratings'
 import Paper from '../paper'
@@ -11,8 +11,9 @@ import AssetResultsItem from '../asset-results-item'
 import LoadingShimmer from '../loading-shimmer'
 import Expander from '../expander'
 import { FullReview } from '../../modules/reviews'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {},
   asset: {
     marginBottom: '1rem',
@@ -40,13 +41,13 @@ const useStyles = makeStyles({
     width: '49%',
     margin: '0.5%',
     padding: '0.5rem',
-    borderRadius: '4px', // todo: get from theme
+    borderRadius: theme.shape.borderRadius,
     border: '1px solid rgba(255, 255, 255, 0.1)',
   },
   content: {
     width: '100%',
   },
-})
+}))
 
 export default ({
   review,

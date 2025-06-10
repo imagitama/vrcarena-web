@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import CheckIcon from '@material-ui/icons/Check'
+import CheckIcon from '@mui/icons-material/Check'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 
@@ -21,8 +21,9 @@ import {
 } from '../../modules/assets'
 
 export default ({ assetId }: { assetId: string }) => {
-  const [isSaving, isSuccess, isErroredSaving, createAmendment] =
-    useDatabaseSave(CollectionNames.Amendments)
+  const [isSaving, isSuccess, lastErrorCode, createAmendment] = useDatabaseSave(
+    CollectionNames.Amendments
+  )
   const [newAvatarId, setNewAvatarId] = useState('')
   const [newAvatarData, setNewAvatarData] = useState<VrchatAvatar | undefined>()
   const [comments, setComments] = useState('')
@@ -47,8 +48,12 @@ export default ({ assetId }: { assetId: string }) => {
     )
   }
 
-  if (isErroredSaving) {
-    return <ErrorMessage>Failed to create amendment</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to create amendment (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const onCreate = async () => {
@@ -82,7 +87,7 @@ export default ({ assetId }: { assetId: string }) => {
               setNewAvatarId('')
               setNewAvatarData(undefined)
             }}
-            color="default">
+            color="secondary">
             Try Again
           </Button>
         </>

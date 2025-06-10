@@ -13,6 +13,8 @@ export default <TPayload, TResult>(
 ] => {
   const [result, setResult] = useState<TResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  // TODO: Use "lastErrorCode"
   const [isErrored, setIsErrored] = useState(false)
 
   const performCall = async (payload: TPayload): Promise<TResult> => {

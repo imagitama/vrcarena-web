@@ -1,15 +1,16 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Avatar from '@material-ui/core/Avatar'
-import Typography from '@material-ui/core/Typography'
-import Box from '@material-ui/core/Box'
+import { makeStyles } from '@mui/styles'
+import Avatar from '@mui/material/Avatar'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 
 import { CachedDiscordMessage } from '../../modules/discordmessagecache'
 import { getAvatarImageUrl } from '../../discord'
 import Paper from '../paper'
 import { getFormattedDate } from '../../utils/dates'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   messageContainer: {
     display: 'flex',
     alignItems: 'flex-start',

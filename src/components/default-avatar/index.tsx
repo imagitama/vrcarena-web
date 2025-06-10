@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { ReactComponent as AwtterLineart } from '../../assets/images/lineart/awtter.svg'
 import { ReactComponent as TaidumLineart } from '../../assets/images/lineart/taidum.svg'
 import { ReactComponent as RexouiumLineart } from '../../assets/images/lineart/rexouium.svg'
@@ -16,7 +16,7 @@ const options = [
   WickerbeastLineart,
 ]
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
     width: '100%',
     height: '100%',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
       transform: 'scale(0.9)',
     },
   },
-}))
+})
 
 async function generateRandomIndex(
   inputString: string,

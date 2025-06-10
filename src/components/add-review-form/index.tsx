@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import StarIcon from '@material-ui/icons/Star'
-import StarOutlineIcon from '@material-ui/icons/StarOutline'
+import { makeStyles } from '@mui/styles'
+import StarIcon from '@mui/icons-material/Star'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
@@ -209,7 +209,7 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
           </>
         )}{' '}
         {isActive && (
-          <Button onClick={() => remove(ratingMeta.name)} color="default">
+          <Button onClick={() => remove(ratingMeta.name)} color="secondary">
             Clear Rating
           </Button>
         )}
@@ -242,7 +242,7 @@ export default ({
   const [newRatings, setNewRatings] = useState<Rating[]>([])
   const userId = useUserId()
 
-  const [isLoadingMyReview, isErrorLoadingMyReview, myReview] =
+  const [isLoadingMyReview, lastErrorCodeLoadingMyReview, myReview] =
     useDatabaseQuery<Review>(CollectionNames.Reviews, [
       ['asset', Operators.EQUALS, assetId],
       ['createdby', Operators.EQUALS, userId],
@@ -252,10 +252,11 @@ export default ({
     myReview !== null && Array.isArray(myReview) ? myReview[0] : null
   const inEditMode = !!reviewToEdit
 
-  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave<Review>(
-    CollectionNames.Reviews,
-    reviewToEdit ? reviewToEdit.id : null
-  )
+  const [isSaving, isSuccess, lastErrorCodeSaving, save, clear] =
+    useDatabaseSave<Review>(
+      CollectionNames.Reviews,
+      reviewToEdit ? reviewToEdit.id : null
+    )
 
   const classes = useStyles()
 
@@ -285,8 +286,12 @@ export default ({
     return <LoadingIndicator message="Checking your reviews..." />
   }
 
-  if (isErrorLoadingMyReview) {
-    return <ErrorMessage>Failed to check your reviews</ErrorMessage>
+  if (lastErrorCodeLoadingMyReview !== null) {
+    return (
+      <ErrorMessage>
+        Failed to check your reviews (code {lastErrorCodeLoadingMyReview})
+      </ErrorMessage>
+    )
   }
 
   if (isSaving) {
@@ -303,13 +308,10 @@ export default ({
     )
   }
 
-  if (isErrored) {
+  if (lastErrorCodeSaving !== null) {
     return (
-      <ErrorMessage>
-        Error adding or editing your review
-        <br />
-        <br />
-        <Button onClick={() => clear()}>Try Again</Button>
+      <ErrorMessage onRetry={clear}>
+        Error adding or editing your review (code {lastErrorCodeSaving})
       </ErrorMessage>
     )
   }

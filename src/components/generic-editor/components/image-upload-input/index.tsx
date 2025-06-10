@@ -1,5 +1,5 @@
 import React from 'react'
-import FormHelperText from '@material-ui/core/FormHelperText'
+import FormHelperText from '@mui/material/FormHelperText'
 import ImageUploader from '../../../image-uploader'
 import { fixAccessingImagesUsingToken } from '../../../../utils'
 import Button from '../../../button'
@@ -25,7 +25,7 @@ export default ({
             height={height}
           />
           <br />
-          <Button color="default" onClick={() => onChange(null)}>
+          <Button color="secondary" onClick={() => onChange(null)}>
             Clear
           </Button>
         </div>

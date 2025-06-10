@@ -1,8 +1,10 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
+import Typography from '@mui/material/Typography'
 
-export default ({ children }: { children: React.ReactNode }) => (
+const BodyText = ({ children }: { children: React.ReactNode }) => (
   <Typography component="p" variant="body1">
     {children}
   </Typography>
 )
+
+export default BodyText

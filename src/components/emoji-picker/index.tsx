@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@mui/styles'
 import EmojiPickerReact, { EmojiStyle } from 'emoji-picker-react'
 import { useCallback, useRef, useState } from 'react'
 import useClickAway from '../../hooks/useClickAway'

@@ -1,6 +1,6 @@
 import React from 'react'
-import ThumbUpIcon from '@material-ui/icons/ThumbUp'
-import { makeStyles } from '@material-ui/core/styles'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+import { makeStyles } from '@mui/styles'
 
 import useUserId from '../../hooks/useUserId'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -33,7 +33,7 @@ export default ({
   parentId: string
 }) => {
   const userId = useUserId()
-  const [, isErrorLoadingLikes, result] = useDatabaseQuery<Like>(
+  const [, lastErrorCodeLoadingLikes, result] = useDatabaseQuery<Like>(
     CollectionNames.Likes,
     userId
       ? [
@@ -63,8 +63,8 @@ export default ({
     }
   }
 
-  if (isErrorLoadingLikes) {
-    return 'Error loading if you like or not'
+  if (lastErrorCodeLoadingLikes) {
+    return <>Error loading like (code {lastErrorCodeLoadingLikes})</>
   }
 
   if (!userId) {

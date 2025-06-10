@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import DeleteIcon from '@material-ui/icons/Delete'
-import ImageIcon from '@material-ui/icons/Image'
+import { makeStyles } from '@mui/styles'
+import DeleteIcon from '@mui/icons-material/Delete'
+import ImageIcon from '@mui/icons-material/Image'
 
 import { handleError } from '../../error-handling'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
@@ -122,7 +122,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
           <br />
           <br />
           <Button
-            color="default"
+            color="secondary"
             url={routes.socialWithPostVar.replace(
               ':postId',
               createdId || '<none>'
@@ -158,7 +158,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
           </div>
           <Button
             size="small"
-            color="default"
+            color="secondary"
             onClick={triggerOpen}
             icon={<ImageIcon />}>
             Attach

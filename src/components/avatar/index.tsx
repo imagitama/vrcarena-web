@@ -1,10 +1,11 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import LazyLoad from 'react-lazyload'
 import LoadingIndicator from '../loading-indicator'
 import DefaultAvatar from '../default-avatar'
 import { ReactComponent as ChristmasHat } from '../../assets/images/christmas-hat.svg'
 import { fixAccessingImagesUsingToken, getIsChristmasTime } from '../../utils'
+import { VRCArenaTheme } from '../../themes'
 
 export const sizes = {
   EXTRATINY: 'extratiny', // timeline
@@ -13,10 +14,10 @@ export const sizes = {
   MEDIUM: 'medium',
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     position: 'relative',
-    '&:hover $hat': {
+    '&:hover .hat': {
       top: '-5%',
     },
   },

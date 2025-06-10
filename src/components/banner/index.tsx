@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@mui/styles'
 import { useSelector } from 'react-redux'
 import { mediaQueryForWideDesktops } from '../../media-queries'
 import { fixAccessingImagesUsingToken } from '../../utils'
@@ -38,7 +38,9 @@ const useStyles = makeStyles({
 export default () => {
   const classes = useStyles()
   const imageRef = useRef<HTMLImageElement>(null)
-  const [lastKnownBannerUrl, setLastKnownBannerUrl] = useState<{ url: string } | null>(null)
+  const [lastKnownBannerUrl, setLastKnownBannerUrl] = useState<{
+    url: string
+  } | null>(null)
   const { bannerUrl } = useSelector<RootState, { bannerUrl: string }>(
     ({ app: { bannerUrl } }) => ({
       bannerUrl,
@@ -82,9 +84,7 @@ export default () => {
 
   return (
     <div
-      className={`${classes.root} ${
-        isLoaded ? undefined : classes.unloaded
-      }`}>
+      className={`${classes.root} ${isLoaded ? undefined : classes.unloaded}`}>
       <img
         src={fixAccessingImagesUsingToken(url)}
         alt={'Banner for the page'}

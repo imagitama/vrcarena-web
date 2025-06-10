@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import UsernameLink from '../username-link'
 import Avatar from '../avatar'
@@ -10,15 +10,15 @@ const useStyles = makeStyles({
     '& > a': {
       padding: '0.5rem',
       display: 'flex',
-      alignItems: 'center'
-    }
-  }
+      alignItems: 'center',
+    },
+  },
 })
 
 const UserBadge = ({
   username,
   id,
-  avatarUrl
+  avatarUrl,
 }: {
   username: string
   id: string

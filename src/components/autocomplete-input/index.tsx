@@ -1,9 +1,9 @@
 import React, { ChangeEventHandler } from 'react'
-import TextField, { TextFieldProps } from '@material-ui/core/TextField'
-import Autocomplete, {
-  AutocompleteRenderInputParams,
-} from '@material-ui/lab/Autocomplete'
-import { makeStyles } from '@material-ui/core/styles'
+import TextField, { TextFieldProps } from '@mui/material/TextField'
+import Autocomplete from '@mui/lab/Autocomplete'
+import { AutocompleteChangeReason } from '@mui/material/useAutocomplete'
+import { makeStyles } from '@mui/styles'
+import type { AutocompleteRenderInputParams } from '@mui/material'
 
 export interface AutocompleteOption<T> {
   label: string
@@ -12,7 +12,7 @@ export interface AutocompleteOption<T> {
 }
 
 // @ts-ignore
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   divInput: {
     wordWrap: 'anywhere',
     userSelect: 'element',
@@ -55,7 +55,6 @@ const MyTextField = ({
         <div
           // @ts-ignore
           ref={params.inputProps.ref}
-          placeholder={textFieldProps.placeholder}
           // @ts-ignore
           className={`${classes.divInput} ${params.inputProps.className} ${textFieldProps.className}`}
           contentEditable
@@ -69,16 +68,14 @@ const MyTextField = ({
             // @ts-ignore
             target.value = event.target.innerText.trim()
 
-            // @ts-ignore
-            params.inputProps.onChange(
-              {
-                target,
-              },
-              'input'
-            )
+            params.inputProps.onChange!({
+              // @ts-ignore
+              target,
+            })
           }}
         />
       ) : (
+        // @ts-ignore
         <TextField
           {...textFieldProps}
           {...params.inputProps}
@@ -132,8 +129,8 @@ const AutocompleteInput = <TOption,>({
     <Autocomplete
       options={options}
       getOptionDisabled={(option) => option.isDisabled === true}
-      getOptionLabel={(option: AutocompleteOption<TOption>) =>
-        option.label || ''
+      getOptionLabel={(option: string | AutocompleteOption<TOption>) =>
+        typeof option === 'string' ? `Option: ${option}` : option.label
       }
       renderInput={(params) => (
         <MyTextField
@@ -148,7 +145,6 @@ const AutocompleteInput = <TOption,>({
           : // Passing undefined should ignore filtering but it doesnt
             (options) => options
       }
-      // @ts-ignore
       onChange={(e: any, value, reason) => {
         switch (reason) {
           case 'clear':
@@ -157,13 +153,13 @@ const AutocompleteInput = <TOption,>({
               onClear()
             }
             break
-          case 'select-option':
+          case 'selectOption':
             console.debug(`Autocomplete.select-option`, value)
             if (onSelectedOption && value) {
               onSelectedOption(value as AutocompleteOption<any>)
             }
             break
-          case 'create-option':
+          case 'createOption':
             console.debug(`Autocomplete.create-option`, value)
             if (onSelectedOption && value) {
               onSelectedOption({

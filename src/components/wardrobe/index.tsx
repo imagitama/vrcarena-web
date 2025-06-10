@@ -1,15 +1,15 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Chip, { ChipProps } from '@material-ui/core/Chip'
+import { makeStyles } from '@mui/styles'
+import Chip, { ChipProps } from '@mui/material/Chip'
 
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import DeleteIcon from '@material-ui/icons/Delete'
-import WarningIcon from '@material-ui/icons/Warning'
-import Tooltip from '@material-ui/core/Tooltip'
-import AddIcon from '@material-ui/icons/Add'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import DeleteIcon from '@mui/icons-material/Delete'
+import WarningIcon from '@mui/icons-material/Warning'
+import Tooltip from '@mui/material/Tooltip'
+import AddIcon from '@mui/icons-material/Add'
 
 import Link from '../../components/link'
 
@@ -53,6 +53,8 @@ import {
   ApprovalStatus,
   PublishStatus,
 } from '../../modules/common'
+import LazyLoad from 'react-lazyload'
+import LoadingIndicator from '../loading-indicator'
 
 const useStyles = makeStyles({
   output: {
@@ -164,11 +166,11 @@ const useStyles = makeStyles({
     width: '150px',
     height: '150px',
     marginRight: '0.25rem',
-    '& $icon': {
+    '& .icon': {
       padding: '0.5rem',
       fontSize: '100%',
     },
-    '& $incompatibleWarning': {
+    '& .incompatibleWarning': {
       padding: '0.5rem',
     },
   },
@@ -523,7 +525,10 @@ const Area = ({
                       </div>
                     </Link>
                   </div>
-                  <img src={asset.thumbnailurl} />
+                  <LazyLoad
+                    placeholder={<LoadingIndicator message="Scroll down..." />}>
+                    <img src={asset.thumbnailurl} />
+                  </LazyLoad>
                 </div>
               )
             })}
@@ -639,7 +644,12 @@ const SelectedAssets = ({
                           </div>
                         </Link>
                       </div>
-                      <img src={asset.thumbnailurl} />
+                      <LazyLoad
+                        placeholder={
+                          <LoadingIndicator message="Scroll down..." />
+                        }>
+                        <img src={asset.thumbnailurl} />
+                      </LazyLoad>
                     </div>
                   )
                 })
@@ -720,6 +730,8 @@ const Wardrobe = ({
   const queryParams = useQueryParams()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [isIntroMessageHidden] = useStorage(storageKeyIsIntroMessageHidden)
+
+  // TODO: Store last error code
   const [isError, setIsError] = useState(false)
 
   const showIntroMessage = !isIntroMessageHidden
@@ -820,7 +832,10 @@ const Wardrobe = ({
         <div className={classes.details}>
           {showThumbnail ? (
             <div className={classes.avatarThumbnailWrapper}>
-              <img src={baseAsset.thumbnailurl} />
+              <LazyLoad
+                placeholder={<LoadingIndicator message="Scroll down..." />}>
+                <img src={baseAsset.thumbnailurl} />
+              </LazyLoad>
             </div>
           ) : null}
           <SelectedAssets

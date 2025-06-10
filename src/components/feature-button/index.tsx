@@ -1,5 +1,5 @@
 import React from 'react'
-import StarIcon from '@material-ui/icons/Star'
+import StarIcon from '@mui/icons-material/Star'
 import Button from '../button'
 import { handleError } from '../../error-handling'
 import { FeaturedStatus, MetaRecord } from '../../modules/common'
@@ -24,7 +24,7 @@ interface FeatureAssetResult {
   errorCode?: FeatureAssetErrorCodes
 }
 
-export default ({
+const FeatureButton = ({
   id,
   existingFeaturedStatus = undefined,
   onClick = undefined,
@@ -65,7 +65,7 @@ export default ({
     <>
       {isErrored ? <ErrorMessage>Failed to toggle feature</ErrorMessage> : null}
       <Button
-        color="default"
+        color="secondary"
         onClick={() => toggleFeatured()}
         icon={<StarIcon />}
         isDisabled={isLoading}>
@@ -78,3 +78,5 @@ export default ({
     </>
   )
 }
+
+export default FeatureButton

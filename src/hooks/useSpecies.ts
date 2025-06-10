@@ -9,6 +9,8 @@ let knownSpecies: Species[] = []
 
 export default (): [Species[], boolean, boolean, () => void] => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  // TODO: Store last error code
   const [isErrored, setIsErrored] = useState<boolean>(false)
   const [results, setResults] = useState<Species[]>(knownSpecies)
   const supabase = useSupabaseClient()

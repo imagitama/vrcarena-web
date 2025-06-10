@@ -4,9 +4,9 @@ import { bucketNames } from '../../file-uploading'
 import ErrorMessage from '../error-message'
 import ImageUploader from '../image-uploader'
 
-export default ({
+const BannerUploader = ({
   assetId,
-  onDone
+  onDone,
 }: {
   assetId: string
   onDone: (urls: string[]) => void
@@ -22,3 +22,5 @@ export default ({
   ) : (
     <ErrorMessage>Need an asset ID to upload banners</ErrorMessage>
   )
+
+export default BannerUploader

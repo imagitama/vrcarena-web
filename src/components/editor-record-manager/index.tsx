@@ -1,6 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
+import { makeStyles } from '@mui/styles'
+import EditIcon from '@mui/icons-material/Edit'
 
 import ApproveButton from '../approve-button'
 import DeleteButton from '../delete-button'
@@ -118,86 +118,97 @@ const EditorRecordManager = ({
         </>
       ) : null}
       <div className={classes.rows}>
-        <div className={classes.row}>
-          {showStatuses && showPublishButtons && (
-            <div className={classes.cell}>
-              <MetaStatus status={existingPublishStatus} type={PublishStatus} />
-            </div>
-          )}
-          {showPublishButtons && (
-            <div className={classes.cell}>
-              <AdminPublishButton
-                assetId={id}
-                existingPublishStatus={existingPublishStatus}
-                onDone={onDone}
-              />
-            </div>
-          )}
-        </div>
-        <div className={classes.row}>
-          {showStatuses && (
-            <div className={classes.cell}>
-              <MetaStatus
-                status={existingApprovalStatus}
-                type={ApprovalStatus}
-              />
-            </div>
-          )}
-          {showApprovalButtons && (
-            <div className={classes.cell}>
-              <ApproveButton
-                id={id}
-                metaCollectionName={metaCollectionName}
-                existingApprovalStatus={existingApprovalStatus}
-                existingDeclinedReasons={existingDeclinedReasons}
-                onDone={onDone}
-                beforeApprove={beforeApprove}
-              />
-            </div>
-          )}
-        </div>
-        <div className={classes.row}>
-          {showStatuses && (
-            <div className={classes.cell}>
-              <MetaStatus status={existingAccessStatus} type={AccessStatus} />
-            </div>
-          )}
-          {showAccessButtons && (
-            <div className={classes.cell}>
-              <DeleteButton
-                id={id}
-                metaCollectionName={metaCollectionName}
-                existingAccessStatus={existingAccessStatus}
-                existingDeletionReason={existingDeletionReason}
-                onDone={onDone}
-              />
-              {showArchiveButton ? (
-                <>
-                  <div style={{ marginTop: '0.25rem' }} />
-                  <ArchiveButton
-                    id={id}
-                    metaCollectionName={metaCollectionName}
-                    existingAccessStatus={existingAccessStatus}
-                    existingArchivedReason={existingArchivedReason}
-                    onDone={onDone}
-                  />
-                </>
-              ) : null}
-            </div>
-          )}
-        </div>
-        <div className={classes.row}>
-          {showStatuses && <div className={classes.cell}></div>}
-          {showFeatureButtons && (
-            <div className={classes.cell}>
-              <FeatureButton
-                id={id}
-                existingFeaturedStatus={existingFeaturedStatus}
-                onDone={onDone}
-              />
-            </div>
-          )}
-        </div>
+        {showStatuses || showPublishButtons ? (
+          <div className={classes.row}>
+            {showStatuses && showPublishButtons && (
+              <div className={classes.cell}>
+                <MetaStatus
+                  status={existingPublishStatus}
+                  type={PublishStatus}
+                />
+              </div>
+            )}
+            {showPublishButtons && (
+              <div className={classes.cell}>
+                <AdminPublishButton
+                  assetId={id}
+                  existingPublishStatus={existingPublishStatus}
+                  onDone={onDone}
+                />
+              </div>
+            )}
+          </div>
+        ) : null}
+        {showStatuses || showApprovalButtons ? (
+          <div className={classes.row}>
+            {showStatuses && (
+              <div className={classes.cell}>
+                <MetaStatus
+                  status={existingApprovalStatus}
+                  type={ApprovalStatus}
+                />
+              </div>
+            )}
+            {showApprovalButtons && (
+              <div className={classes.cell}>
+                <ApproveButton
+                  id={id}
+                  metaCollectionName={metaCollectionName}
+                  existingApprovalStatus={existingApprovalStatus}
+                  existingDeclinedReasons={existingDeclinedReasons}
+                  onDone={onDone}
+                  beforeApprove={beforeApprove}
+                />
+              </div>
+            )}
+          </div>
+        ) : null}
+        {showStatuses || showAccessButtons ? (
+          <div className={classes.row}>
+            {showStatuses && (
+              <div className={classes.cell}>
+                <MetaStatus status={existingAccessStatus} type={AccessStatus} />
+              </div>
+            )}
+            {showAccessButtons && (
+              <div className={classes.cell}>
+                <DeleteButton
+                  id={id}
+                  metaCollectionName={metaCollectionName}
+                  existingAccessStatus={existingAccessStatus}
+                  existingDeletionReason={existingDeletionReason}
+                  onDone={onDone}
+                />
+                {showArchiveButton ? (
+                  <>
+                    <div style={{ marginTop: '0.25rem' }} />
+                    <ArchiveButton
+                      id={id}
+                      metaCollectionName={metaCollectionName}
+                      existingAccessStatus={existingAccessStatus}
+                      existingArchivedReason={existingArchivedReason}
+                      onDone={onDone}
+                    />
+                  </>
+                ) : null}
+              </div>
+            )}
+          </div>
+        ) : null}
+        {showStatuses || showFeatureButtons ? (
+          <div className={classes.row}>
+            {showStatuses && <div className={classes.cell}></div>}
+            {showFeatureButtons && (
+              <div className={classes.cell}>
+                <FeatureButton
+                  id={id}
+                  existingFeaturedStatus={existingFeaturedStatus}
+                  onDone={onDone}
+                />
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
       {showEditorNotes ? (
         <div className={classes.item}>

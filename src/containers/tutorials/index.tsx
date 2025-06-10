@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
-import AddIcon from '@material-ui/icons/Add'
+import AddIcon from '@mui/icons-material/Add'
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
@@ -74,7 +74,9 @@ export default () => {
       {isLoading ? (
         <LoadingIndicator message="Loading tutorials..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to load tutorials</ErrorMessage>
+        <ErrorMessage>
+          Failed to load tutorials (code {lastErrorCode})
+        </ErrorMessage>
       ) : attachments ? (
         attachments.length ? (
           <AttachmentResults attachments={attachments} />

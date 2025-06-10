@@ -1,6 +1,6 @@
 import React from 'react'
 import YouTubePlayer from 'react-player/youtube'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import {
   getIsUrlAYoutubeVideo,

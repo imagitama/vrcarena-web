@@ -1,5 +1,5 @@
 import React from 'react'
-import CheckIcon from '@material-ui/icons/Check'
+import CheckIcon from '@mui/icons-material/Check'
 import Message, { MessageProps } from '../message'
 import Button from '../button'
 
@@ -12,7 +12,7 @@ export default ({
     color="#003602"
     controls={
       onOkay ? (
-        <Button onClick={onOkay} icon={<CheckIcon />} color="default">
+        <Button onClick={onOkay} icon={<CheckIcon />} color="secondary">
           Okay
         </Button>
       ) : undefined

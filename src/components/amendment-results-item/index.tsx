@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import TableCell from '@material-ui/core/TableCell'
-import TableRow from '@material-ui/core/TableRow'
-import { makeStyles } from '@material-ui/core/styles'
+import TableCell from '@mui/material/TableCell'
+import TableRow from '@mui/material/TableRow'
+import { makeStyles } from '@mui/styles'
 
 import * as routes from '../../routes'
 import Link from '../../components/link'
+import useIsEditor from '../../hooks/useIsEditor'
+import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
+import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
 
 import FormattedDate from '../formatted-date'
 import Button from '../button'
@@ -12,11 +15,8 @@ import ShortDiff from '../short-diff'
 import { FullAmendment } from '../../modules/amendments'
 import SuccessMessage from '../success-message'
 import AmendmentEditorRecordManager from '../amendment-editor-record-manager'
-import useIsEditor from '../../hooks/useIsEditor'
 import AssetResultsItem from '../asset-results-item'
 import AuthorResultsItem from '../author-results-item'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
 
 const useStyles = makeStyles({
   mainCell: {
@@ -79,11 +79,13 @@ export default ({
             '(no comments)'
           )}
           <br />
+          <br />
           <Button
             url={routes.viewAmendmentWithVar.replace(
               ':amendmentId',
               amendmentId
-            )}>
+            )}
+            color="secondary">
             View Amendment
           </Button>
         </TableCell>

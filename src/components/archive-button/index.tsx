@@ -1,21 +1,20 @@
 import React, { useState } from 'react'
-import BusinessCenterIcon from '@material-ui/icons/BusinessCenter'
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
-
-import Button from '../button'
-import LoadingIndicator from '../loading-indicator'
-
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { AccessStatus, MetaRecord } from '../../modules/common'
-import ButtonDropdown from '../button-dropdown'
 import { archivedReasonMeta } from '../../utils/assets'
 import {
   ArchivedReason,
   CollectionNames as AssetCollectionNames,
   AssetMeta,
 } from '../../modules/assets'
+
+import ButtonDropdown from '../button-dropdown'
+import LoadingIndicator from '../loading-indicator'
+import Button from '../button'
 
 const ArchiveButton = ({
   id,
@@ -32,13 +31,13 @@ const ArchiveButton = ({
   onClick?: ({ newValue }: { newValue: AccessStatus }) => void
   onDone?: () => void
 }) => {
-  const [isLoading, isErroredLoading, metaRecord] =
+  const [isLoading, lastErrorCodeLoading, metaRecord] =
     useDataStoreItem<MetaRecord>(
       metaCollectionName,
       existingAccessStatus !== undefined ? false : id,
       'delete-button'
     )
-  const [isSaving, , isErroredSaving, save] = useDatabaseSave<MetaRecord>(
+  const [isSaving, , lastErrorCodeSaving, save] = useDatabaseSave<MetaRecord>(
     metaCollectionName,
     id
   )
@@ -60,12 +59,16 @@ const ArchiveButton = ({
   const accessStatus =
     existingAccessStatus || (metaRecord ? metaRecord.accessstatus : undefined)
 
-  if (isErroredLoading || !accessStatus) {
-    return <>Failed to load record!</>
+  if (lastErrorCodeLoading !== null) {
+    return <>Failed to load record (code {lastErrorCodeLoading})</>
   }
 
-  if (isErroredSaving) {
-    return <>Failed to save record!</>
+  if (!accessStatus) {
+    return <>Failed to load record (invalid access status)</>
+  }
+
+  if (lastErrorCodeSaving !== null) {
+    return <>Failed to save record (code {lastErrorCodeSaving})</>
   }
 
   const isAsset = metaCollectionName === AssetCollectionNames.AssetsMeta
@@ -125,7 +128,7 @@ const ArchiveButton = ({
     <>
       {isAsset && (
         <ButtonDropdown
-          color="default"
+          color="secondary"
           options={archivedReasonMeta
             .map((meta) => ({
               id: meta.reason as string,

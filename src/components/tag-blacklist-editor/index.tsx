@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useUserPreferences from '../../hooks/useUserPreferences'
@@ -19,8 +19,9 @@ import WarningMessage from '../warning-message'
 const TagBlacklistEditor = () => {
   const isLoggedIn = useIsLoggedIn()
   const userId = useUserId()
-  const [isLoading, lastErrorCode, preferences, hydrate] = useUserPreferences()
-  const [isSaving, isSaveSuccess, isSaveError, save] =
+  const [isLoading, lastErrorCodeLoading, preferences, hydrate] =
+    useUserPreferences()
+  const [isSaving, isSaveSuccess, lastErrorCodeSaving, save] =
     useDatabaseSave<UserPreferences>(
       CollectionNames.UserPreferences,
       isLoggedIn && userId ? userId : null
@@ -42,14 +43,22 @@ const TagBlacklistEditor = () => {
     return <LoadingIndicator message="Loading preferences..." />
   }
 
+  if (lastErrorCodeLoading !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load blacklist (code {lastErrorCodeLoading})
+      </ErrorMessage>
+    )
+  }
+
   if (isSaving) {
     return <LoadingIndicator message="Saving blacklist..." />
   }
 
-  if (lastErrorCode) {
+  if (lastErrorCodeSaving !== null) {
     return (
       <ErrorMessage>
-        Failed to save blacklist (code {lastErrorCode})
+        Failed to save blacklist (code {lastErrorCodeSaving})
       </ErrorMessage>
     )
   }
@@ -86,11 +95,15 @@ const TagBlacklistEditor = () => {
         multiline
         minRows={2}
         label=""
+        isDisabled={isLoading || isSaving}
       />
       <p>
         <TagChips tags={newTagBlacklist} />
       </p>{' '}
-      <Button onClick={onClickSave} icon={<SaveIcon />}>
+      <Button
+        onClick={onClickSave}
+        icon={<SaveIcon />}
+        isDisabled={isLoading || isSaving}>
         Save
       </Button>
       {isSaveSuccess && <SuccessMessage>Save successful</SuccessMessage>}

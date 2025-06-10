@@ -1,11 +1,11 @@
 import React, { useCallback, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from '../../components/link'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import { makeStyles } from '@material-ui/core/styles'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { makeStyles } from '@mui/styles'
 
-import useSearching from '../../hooks/useSearching'
+import useSearching, { GetQueryFn } from '../../hooks/useSearching'
 import useAssetSearch, { ErrorCode } from '../../hooks/useAssetSearch'
 import { searchIndexNameLabels, changeSearchTableName } from '../../modules/app'
 import * as routes from '../../routes'
@@ -37,10 +37,6 @@ import { DataStoreErrorCode } from '../../data-store'
 import HidableMessage from '../hidable-message'
 import LoadingIndicator from '../loading-indicator'
 
-import {
-  ViewNames as DiscordServersViewNames,
-  CollectionNames as DiscordServersCollectionNames,
-} from '../../modules/discordservers'
 import {
   ViewNames as UsersViewNames,
   CollectionNames as UsersCollectionNames,
@@ -156,7 +152,7 @@ function Results({
           <AssetResults assets={hits} />
           <PoweredByAlgoliaLogo />
           <Button
-            color="default"
+            color="secondary"
             url={getPathForQueryString(
               hits.map((hit) => `id:${hit.id}`).join(' ')
             )}>
@@ -492,7 +488,7 @@ const NonAssetSearch = () => {
     useAppSearch()
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<any>>(
     (query) => {
       if (searchTableName !== AssetsCollectionNames.Assets) {
         return query

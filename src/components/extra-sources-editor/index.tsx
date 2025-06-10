@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
+import SaveIcon from '@mui/icons-material/Save'
 
 import Button from '../button'
 import TextInput from '../text-input'
@@ -144,7 +144,7 @@ const ExtraSourcesEditor = ({
     return <SuccessMessage>Extra sources saved successfully</SuccessMessage>
   }
 
-  if (lastErrorCode) {
+  if (lastErrorCode !== null) {
     return (
       <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
     )

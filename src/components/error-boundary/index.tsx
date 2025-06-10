@@ -2,10 +2,12 @@ import React, { Component, ErrorInfo } from 'react'
 import * as Sentry from '@sentry/browser'
 import ErrorBoundaryMessage from '../error-boundary-message'
 
-interface ErrorBoundaryProps {}
+interface ErrorBoundaryProps {
+  children: React.ReactNode | React.ReactNode[]
+}
 
-class ErrorBoundary extends Component {
-  state: { hasError: boolean, error: Error | null }
+class ErrorBoundary extends Component<ErrorBoundaryProps> {
+  state: { hasError: boolean; error: Error | null }
   lastError: Error | null = null
 
   constructor(props: ErrorBoundaryProps) {
@@ -43,9 +45,7 @@ class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
-      return (
-        <ErrorBoundaryMessage onOkay={this.onOkay} />
-      )
+      return <ErrorBoundaryMessage onOkay={this.onOkay} />
     }
 
     return this.props.children

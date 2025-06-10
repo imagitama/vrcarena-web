@@ -1,10 +1,10 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import AddIcon from '@material-ui/icons/Add'
-import RemoveIcon from '@material-ui/icons/Remove'
+import { makeStyles } from '@mui/styles'
+import AddIcon from '@mui/icons-material/Add'
+import RemoveIcon from '@mui/icons-material/Remove'
 import TagChip from '../tag-chip'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   chip: {
     '&:hover': {
       backgroundColor: 'inherit',
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   added: {
     backgroundColor: 'rgb(50, 100, 50)',
   },
-}))
+})
 
 const TagDiffChips = ({
   oldTags,

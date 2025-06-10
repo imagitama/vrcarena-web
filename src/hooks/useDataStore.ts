@@ -31,12 +31,12 @@ const getOptions = (
         quietHydrate: false,
       }
 
+export type GetQueryFn<TRecord> = (
+  client: SupabaseClient
+) => GetQuery<TRecord> | Promise<GetQuery<TRecord>> | null
+
 export default <TRecord>(
-  getQuery:
-    | null
-    | ((
-        client: SupabaseClient
-      ) => GetQuery<TRecord> | Promise<GetQuery<TRecord>> | null),
+  getQuery: null | GetQueryFn<TRecord>,
   queryNameOrOptions?: string | UseDataStoreOptions
 ): [
   boolean,

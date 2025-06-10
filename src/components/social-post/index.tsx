@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SecurityIcon from '@material-ui/icons/Security'
+import { makeStyles } from '@mui/styles'
+import SecurityIcon from '@mui/icons-material/Security'
 
 import Avatar, { sizes } from '../avatar'
 import {
@@ -81,11 +81,11 @@ const useStyles = makeStyles({
   small: {
     marginTop: '0.5rem',
     padding: '0.5rem',
-    '& $text': {
+    '& .text': {
       margin: '0.5rem 0 0.25rem',
       wordBreak: 'break-all', // fix homepage width fuckery
     },
-    '& $avatar': {
+    '& .avatar': {
       marginRight: '0.5rem',
     },
   },
@@ -186,7 +186,7 @@ const SocialPost = ({
           {isEditor && (
             <>
               <Button
-                color="default"
+                color="secondary"
                 onClick={() =>
                   setIsEditorControlsVisible((currentVal) => !currentVal)
                 }
@@ -220,7 +220,7 @@ const SocialPost = ({
             <>
               <br />
               <Button
-                color="default"
+                color="secondary"
                 onClick={() => setIsExpanded((currentVal) => !currentVal)}>
                 Expand
               </Button>

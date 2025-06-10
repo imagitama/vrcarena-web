@@ -1,12 +1,11 @@
 import React, { useCallback, useState } from 'react'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Checkbox from '@material-ui/core/Checkbox'
-import DeleteIcon from '@material-ui/icons/Delete'
-import ClearIcon from '@material-ui/icons/Clear'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import DeleteIcon from '@mui/icons-material/Delete'
+import ClearIcon from '@mui/icons-material/Clear'
 
 import Paper from '../../../../components/paper'
 import TextInput from '../../../../components/text-input'
@@ -32,6 +31,7 @@ import { handleError } from '../../../../error-handling'
 import useSupabaseClient from '../../../../hooks/useSupabaseClient'
 import { SupabaseClient } from '@supabase/supabase-js'
 import { AccessStatus } from '../../../../modules/common'
+import CheckboxInput from '../../../../components/checkbox-input'
 
 const BulkControls = ({
   ids,
@@ -44,6 +44,8 @@ const BulkControls = ({
 }) => {
   const [wantsToDelete, setWantsToDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+
+  // TODO: Store last error code
   const [isError, setIsError] = useState(false)
   const supabase = useSupabaseClient()
 
@@ -97,7 +99,7 @@ const BulkControls = ({
         <Button onClick={performBulkDelete} icon={<DeleteIcon />}>
           Yes I am sure
         </Button>{' '}
-        <Button color="default" onClick={() => cancel()} icon={<ClearIcon />}>
+        <Button color="secondary" onClick={() => cancel()} icon={<ClearIcon />}>
           Cancel
         </Button>
       </Message>
@@ -181,8 +183,8 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
               <TableCell>Meta</TableCell>
               <TableCell />
               <TableCell>
-                <Checkbox
-                  checked={isSelectingAll}
+                <CheckboxInput
+                  value={isSelectingAll}
                   onChange={() => toggleSelectAll()}
                 />
               </TableCell>
@@ -227,10 +229,9 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  <Checkbox
-                    checked={selectedCommentIds.includes(comment.id)}
+                  <CheckboxInput
+                    value={selectedCommentIds.includes(comment.id)}
                     onChange={() => toggleIsSelected(comment.id)}
-                    color="default"
                   />
                 </TableCell>
               </TableRow>

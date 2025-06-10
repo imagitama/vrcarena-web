@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
-import AddIcon from '@material-ui/icons/Add'
+import SaveIcon from '@mui/icons-material/Save'
+import AddIcon from '@mui/icons-material/Add'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -18,13 +18,10 @@ import InfoMessage from '../info-message'
 import Paper from '../paper'
 import Heading from '../heading'
 import CheckboxInput from '../checkbox-input'
-import ImageUploader from '../image-uploader'
 import { AVATAR_HEIGHT, AVATAR_WIDTH } from '../../config'
 import { bucketNames } from '../../file-uploading'
 
-import authorEditableFields, {
-  SectionNames,
-} from '../../editable-fields/authors'
+import authorEditableFields from '../../editable-fields/authors'
 import { EditableField } from '../../editable-fields'
 import { fieldTypes } from '../../generic-forms'
 import {
@@ -358,10 +355,8 @@ const ChangeAuthorForm = ({
   onDone?: () => void
   actionCategory?: string
 }) => {
-  const [isSaving, isSuccess, isErrored, save, clear] = useDatabaseSave<Asset>(
-    collectionName,
-    id ? id : null
-  )
+  const [isSaving, isSuccess, lastErrorCode, save, clear] =
+    useDatabaseSave<Asset>(collectionName, id ? id : null)
   const [isCreating, setIsCreating] = useState(false)
 
   const restart = () => {
@@ -415,9 +410,11 @@ const ChangeAuthorForm = ({
     )
   }
 
-  if (isErrored) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage onOkay={restart}>Failed to save the resource</ErrorMessage>
+      <ErrorMessage onOkay={restart}>
+        Failed to save the resource (code {lastErrorCode})
+      </ErrorMessage>
     )
   }
 
@@ -438,7 +435,7 @@ const ChangeAuthorForm = ({
           Create Author
         </Button>
         {onDone ? (
-          <Button onClick={() => onDone()} color="default">
+          <Button onClick={() => onDone()} color="secondary">
             Cancel
           </Button>
         ) : null}

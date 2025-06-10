@@ -1,6 +1,6 @@
 import React from 'react'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import type { GenericInputProps } from '../../'
 import Button from '../../../button'
 
@@ -15,7 +15,7 @@ export default ({ onChange, label, value, allowEmpty }: GenericInputProps) => (
         'Value is empty (inherits)'
       ) : (
         <div>
-          <Button onClick={() => onChange(null)} color="default" size="small">
+          <Button onClick={() => onChange(null)} color="secondary" size="small">
             Clear
           </Button>
         </div>

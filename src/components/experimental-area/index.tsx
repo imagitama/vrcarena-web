@@ -1,6 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import BubbleChartIcon from '@material-ui/icons/BubbleChart'
+import { makeStyles } from '@mui/styles'
+import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 
 const useStyles = makeStyles({
   root: {

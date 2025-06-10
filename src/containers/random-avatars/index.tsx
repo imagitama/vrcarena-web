@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react'
-import ShuffleIcon from '@material-ui/icons/Shuffle'
+import ShuffleIcon from '@mui/icons-material/Shuffle'
 
 import * as routes from '../../routes'
 import { Asset, ViewNames } from '../../modules/assets'
 
-import useDataStore from '../../hooks/useDataStore'
+import useDataStore, { GetQueryFn } from '../../hooks/useDataStore'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 
 import Heading from '../../components/heading'
@@ -12,13 +12,12 @@ import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import AssetResults from '../../components/asset-results'
 import Button from '../../components/button'
-import { SupabaseClient } from '@supabase/supabase-js'
 
 const View = ({ count }: { count: number }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) => {
-      let query = supabase
+  const getQuery = useCallback<GetQueryFn<Asset>>(
+    (client) => {
+      let query = client
         .from(ViewNames.GetRandomPublicAvatars)
         .select('*')
         .limit(5)
@@ -56,7 +55,7 @@ export default () => {
       <Button onClick={regenerate} icon={<ShuffleIcon />}>
         Regenerate
       </Button>{' '}
-      <Button url={routes.viewAvatars} color="default">
+      <Button url={routes.viewAvatars} color="secondary">
         View All
       </Button>
       <View count={count} />

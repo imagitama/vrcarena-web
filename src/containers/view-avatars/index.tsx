@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import PetsIcon from '@material-ui/icons/Pets'
-import ShuffleIcon from '@material-ui/icons/Shuffle'
+import PetsIcon from '@mui/icons-material/Pets'
+import ShuffleIcon from '@mui/icons-material/Shuffle'
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
@@ -9,12 +9,7 @@ import Button from '../../components/button'
 
 import { getCategoryMeta } from '../../category-meta'
 import * as routes from '../../routes'
-import {
-  Asset,
-  AssetCategory,
-  PublicAsset,
-  ViewNames,
-} from '../../modules/assets'
+import { AssetCategory, PublicAsset } from '../../modules/assets'
 import AssetsPaginatedView from '../../components/assets-paginated-view'
 import { GetQuery } from '../../data-store'
 
@@ -64,13 +59,13 @@ const ViewAvatarsView = () => {
             <Button
               url={routes.viewAllSpecies}
               icon={<PetsIcon />}
-              color="default">
+              color="secondary">
               Browse All Species
             </Button>,
             <Button
               url={routes.randomAvatars}
               icon={<ShuffleIcon />}
-              color="default">
+              color="secondary">
               Random
             </Button>,
           ]}

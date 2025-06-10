@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import FormattedDate from '../../components/formatted-date'
 import * as routes from '../../routes'
@@ -29,7 +29,6 @@ const Results = ({ results }: { results: FullActivityEntry[] }) => {
           parent,
           parenttable: parentTable,
           createdat: createdAt,
-          parentdata: parentData,
           moredata: moreData,
           createdby: createdBy,
           createdbyusername: createdByUsername,
@@ -39,7 +38,6 @@ const Results = ({ results }: { results: FullActivityEntry[] }) => {
               message={message}
               parent={parent}
               parentTable={parentTable}
-              parentData={parentData}
               extraData={moreData}
               createdBy={createdBy}
               createdByUsername={createdByUsername}

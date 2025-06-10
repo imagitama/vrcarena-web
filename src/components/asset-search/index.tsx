@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import MenuItem from '@material-ui/core/MenuItem'
+import { makeStyles } from '@mui/styles'
+import MenuItem from '@mui/material/MenuItem'
 
 import useAssetSearch from '../../hooks/useAssetSearch'
 import { Asset, AssetCategory, PublicAsset } from '../../modules/assets'
 import categoryMeta from '../../category-meta'
+
 import AssetResults from '../asset-results'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
@@ -39,7 +40,7 @@ const AssetSearch = ({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     AssetCategory.Avatar
   )
-  const [isSearching, isError, results] = useAssetSearch(
+  const [isSearching, lastErrorCode, results] = useAssetSearch(
     userInput,
     selectedCategory ? { category: [selectedCategory] } : {},
     limit
@@ -50,8 +51,8 @@ const AssetSearch = ({
     <>
       {isSearching ? (
         <LoadingIndicator message="Searching..." />
-      ) : isError ? (
-        <ErrorMessage>Failed to search</ErrorMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage>Failed to search (code {lastErrorCode})</ErrorMessage>
       ) : null}
       {results || selectedAsset ? (
         <AssetResults

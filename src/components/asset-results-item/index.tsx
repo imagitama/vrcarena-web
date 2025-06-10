@@ -1,14 +1,14 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
+import { makeStyles } from '@mui/styles'
+import Card from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
 import LazyLoad from 'react-lazyload'
-import LoyaltyIcon from '@material-ui/icons/Loyalty'
-import LinkIcon from '@material-ui/icons/Link'
-import EditIcon from '@material-ui/icons/Edit'
-import Chip from '@material-ui/core/Chip'
+import LoyaltyIcon from '@mui/icons-material/Loyalty'
+import LinkIcon from '@mui/icons-material/Link'
+import EditIcon from '@mui/icons-material/Edit'
+import Chip from '@mui/material/Chip'
 
 import * as routes from '../../routes'
 import {
@@ -18,22 +18,22 @@ import {
   Relation,
   getIsAssetADraft,
   getIsAssetDeclined,
-  getIsAssetDeleted,
   getIsAssetVisibleToEveryone,
   getIsAssetWaitingForApproval,
   getIsFullAsset,
   getIsPublicAsset,
 } from '../../modules/assets'
-import Link from '../link'
 import useUserPreferences from '../../hooks/useUserPreferences'
 import { getCategoryMeta } from '../../category-meta'
-import Price from '../price'
-import LoadingShimmer from '../loading-shimmer'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import AddToCartButton from '../add-to-cart-button'
-import DefaultThumbnail from '../default-thumbnail'
 import { AssetSearchResult } from '../../hooks/useAlgoliaSearch'
 import { AccessStatus } from '../../modules/common'
+
+import Link from '../link'
+import AddToCartButton from '../add-to-cart-button'
+import DefaultThumbnail from '../default-thumbnail'
+import Price from '../price'
+import LoadingShimmer from '../loading-shimmer'
 
 const useStyles = makeStyles({
   root: {
@@ -52,11 +52,11 @@ const useStyles = makeStyles({
   tiny: {
     width: '100%',
     fontSize: '75%',
-    '& $cardMedia': {
+    '& .cardMedia': {
       width: '100px',
       height: '100px',
     },
-    '& $cardContent': {
+    '& .cardContent': {
       padding: '5px',
     },
     '& a': {
@@ -75,10 +75,6 @@ const useStyles = makeStyles({
   // overrides
   cardContent: {
     overflow: 'hidden', // for tiny clipping
-    padding: '12px',
-    '&:last-child': {
-      paddingBottom: '12px',
-    },
   },
   cardMedia: {
     transition: 'all 500ms',

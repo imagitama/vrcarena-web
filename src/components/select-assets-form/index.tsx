@@ -1,5 +1,5 @@
 import React, { SyntheticEvent, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import useAssetSearch from '../../hooks/useAssetSearch'
 
@@ -15,21 +15,28 @@ const useStyles = makeStyles({
     marginTop: '1rem',
     border: '1px solid rgba(255, 255, 255, 0.2)',
     borderRadius: '3px',
-    padding: '1rem'
+    padding: '1rem',
   },
-  input: { width: '100%' }
+  input: { width: '100%' },
 })
 
-export default ({ selectedIds, onSelectAssetId, onDeselectAssetId }: {
+export default ({
+  selectedIds,
+  onSelectAssetId,
+  onDeselectAssetId,
+}: {
   selectedIds: string[]
   onSelectAssetId: (assetId: string) => void
   onDeselectAssetId: (assetId: string) => void
 }) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [isSearching, isSearchFailed, hits] = useAssetSearch(searchTerm, {}, 5)
+  const [isSearching, lastErrorCode, hits] = useAssetSearch(searchTerm, {}, 5)
   const classes = useStyles()
 
-  const onClickWithAsset = (event: SyntheticEvent<HTMLElement, Event>, asset: Asset | PublicAsset) => {
+  const onClickWithAsset = (
+    event: SyntheticEvent<HTMLElement, Event>,
+    asset: Asset | PublicAsset
+  ) => {
     event.preventDefault()
 
     if (selectedIds.includes(asset.id)) {
@@ -47,14 +54,16 @@ export default ({ selectedIds, onSelectAssetId, onDeselectAssetId }: {
       <strong>Search for assets:</strong>
       <br />
       <TextInput
-        onChange={e => setSearchTerm(e.target.value)}
+        onChange={(e) => setSearchTerm(e.target.value)}
         className={classes.input}
       />
       <br />
       {isSearching ? (
         <LoadingIndicator message="Searching..." />
-      ) : isSearchFailed ? (
-        <ErrorMessage>Failed to perform search</ErrorMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage>
+          Failed to perform search (code {lastErrorCode})
+        </ErrorMessage>
       ) : hits && hits.length ? (
         <AssetResults
           // @ts-ignore create base type for both

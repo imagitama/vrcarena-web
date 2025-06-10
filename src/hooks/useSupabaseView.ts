@@ -4,9 +4,13 @@ import { DataStoreErrorCode, GetQuery } from '../data-store'
 import { SupabaseClient } from '@supabase/supabase-js'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 
+export type GetQueryFn<TRecord> = (
+  query: GetQuery<TRecord>
+) => GetQuery<TRecord>
+
 export default <TRecord>(
   viewName: string,
-  getQuery?: null | ((query: GetQuery<TRecord>) => GetQuery<TRecord>),
+  getQuery?: GetQueryFn<TRecord> | null,
   queryName?: string
 ): [
   boolean,

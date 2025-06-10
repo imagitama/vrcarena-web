@@ -1,18 +1,18 @@
 import React, { useState, useCallback } from 'react'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import Paper from '@material-ui/core/Paper'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import { makeStyles } from '@material-ui/styles'
-import CheckIcon from '@material-ui/icons/Check'
-import EditIcon from '@material-ui/icons/Edit'
-import FilterListIcon from '@material-ui/icons/FilterList'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { makeStyles } from '@mui/styles'
+import CheckIcon from '@mui/icons-material/Check'
+import EditIcon from '@mui/icons-material/Edit'
+import FilterListIcon from '@mui/icons-material/FilterList'
 
 import {
   PublishStatus,
@@ -312,7 +312,7 @@ const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
       <Button
         onClick={() => onChange(val)}
         icon={<FilterListIcon />}
-        color="default"
+        color="secondary"
         size="small"
       />
     </>
@@ -359,7 +359,7 @@ const Queue = ({
           {assetIds.map((assetId, index) => (
             <Button
               key={assetId}
-              color={'default'}
+              color="secondary"
               onClick={() => setCurrentAssetId(assetId)}
               icon={assetIdToDisplay === assetId ? <CheckIcon /> : undefined}
               size="small">
@@ -482,7 +482,7 @@ const AdminAssets = () => {
             )
             trackAction(analyticsCategoryName, 'Click toggle view')
           }}
-          color="default"
+          color="secondary"
           size="small">
           Queue Mode
         </Button>,
@@ -500,7 +500,7 @@ const AdminAssets = () => {
             setSelectedSubView(SubView.Pending)
             trackAction(analyticsCategoryName, 'Click on view pending assets')
           }}
-          color="default"
+          color="secondary"
           size="small">
           Pending
         </Button>,
@@ -516,7 +516,7 @@ const AdminAssets = () => {
             setSelectedSubView(SubView.Approved)
             trackAction(analyticsCategoryName, 'Click on view approved assets')
           }}
-          color="default"
+          color="secondary"
           size="small">
           Approved
         </Button>,
@@ -532,7 +532,7 @@ const AdminAssets = () => {
             setSelectedSubView(SubView.Declined)
             trackAction(analyticsCategoryName, 'Click on view declined assets')
           }}
-          color="default"
+          color="secondary"
           size="small">
           Declined
         </Button>,
@@ -548,7 +548,7 @@ const AdminAssets = () => {
             toggleSubView(SubView.Deleted)
             trackAction(analyticsCategoryName, 'Click on view deleted assets')
           }}
-          color="default"
+          color="secondary"
           size="small">
           Deleted
         </Button>,
@@ -564,7 +564,7 @@ const AdminAssets = () => {
             toggleSubView(SubView.Archived)
             trackAction(analyticsCategoryName, 'Click on view archived assets')
           }}
-          color="default"
+          color="secondary"
           size="small">
           Archived
         </Button>,

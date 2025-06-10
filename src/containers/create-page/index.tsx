@@ -2,7 +2,6 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
-import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 import NoPermissionMessage from '../../components/no-permission-message'
 
@@ -17,9 +16,8 @@ import Button from '../../components/button'
 
 const CreateButton = () => {
   const isEditor = useIsEditor()
-  const [isCreating, isSuccess, isError, createPage] = useDataStoreCreate<Page>(
-    CollectionNames.Pages
-  )
+  const [isCreating, isSuccess, lastErrorCode, createPage] =
+    useDataStoreCreate<Page>(CollectionNames.Pages)
   const { parentName, pageName } = useParams<{
     parentName: string
     pageName: string
@@ -49,8 +47,10 @@ const CreateButton = () => {
     )
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to create</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to create page (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   const onClickCreate = () => {
@@ -67,11 +67,7 @@ const CreateButton = () => {
     )
   }
 
-  return (
-    <>
-      <Button onClick={onClickCreate}>Create This Page</Button>
-    </>
-  )
+  return <Button onClick={onClickCreate}>Create This Page</Button>
 }
 
 const View = () => {

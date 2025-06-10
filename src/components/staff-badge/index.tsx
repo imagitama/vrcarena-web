@@ -1,5 +1,5 @@
 import React from 'react'
-import Chip from '@material-ui/core/Chip'
+import Chip from '@mui/material/Chip'
 
 export default ({ isSmall }: { isSmall?: boolean }) => (
   <span title="This user is a staff member. They can approve assets and resolve issues with assets and users.">

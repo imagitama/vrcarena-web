@@ -1,10 +1,10 @@
-import MenuItem from '@material-ui/core/MenuItem'
-import { styled } from '@material-ui/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import MenuItem from '@mui/material/MenuItem'
+import { styled } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 import React, { useState } from 'react'
-import OpenInNewIcon from '@material-ui/icons/OpenInNew'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 import { trackAction } from '../../analytics'
 import {
@@ -121,11 +121,6 @@ const PerformanceRankSelector = ({
       fullWidth
       placeholder="Select a rank"
       value={currentRank === null ? '' : currentRank}
-      // onChange={event =>
-      //   onChange(
-      //     typeof event.target.value === 'number' ? event.target.value : null
-      //   )
-      // }
       displayEmpty
       renderValue={(value) => (
         <>
@@ -245,8 +240,6 @@ const PerformanceEditor = ({
     oldRank: PerformanceRank | null,
     newRank: PerformanceRank | null
   ) => {
-    console.log('ONCHANGE', platform, oldRank, newRank)
-
     setNewTags((tags) => {
       let tagsToStore = [...tags]
 
@@ -265,9 +258,6 @@ const PerformanceEditor = ({
 
       return tagsToStore
     })
-
-    // if (null)
-    //   const newTag = getTagForPerformanceRank(platform, rank)
   }
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import PanToolIcon from '@material-ui/icons/PanTool'
+import PanToolIcon from '@mui/icons-material/PanTool'
 import Button from '../button'
 import Heading from '../heading'
 import Dialog from '../dialog'

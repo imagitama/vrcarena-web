@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { useDropzone } from 'react-dropzone'
 import ReactCrop, { Crop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
-import CheckIcon from '@material-ui/icons/Check'
-import PhotoIcon from '@material-ui/icons/Photo'
+import CheckIcon from '@mui/icons-material/Check'
+import PhotoIcon from '@mui/icons-material/Photo'
 
 import useImageUpload from '../../hooks/useImageUpload'
 import { handleError } from '../../error-handling'
@@ -19,7 +19,6 @@ import FormControls from '../form-controls'
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
-import InfoMessage from '../info-message'
 
 const useStyles = makeStyles({
   root: {},
@@ -257,7 +256,7 @@ const Cropper = ({
           icon={<CheckIcon />}>
           Done
         </Button>{' '}
-        <Button onClick={onCancel} color="default">
+        <Button onClick={onCancel} color="secondary">
           Cancel
         </Button>
       </FormControls>
@@ -533,7 +532,7 @@ const ImageUploader = ({
       </div>
       {onCancel && (
         <FormControls>
-          <Button color="default" onClick={onCancel}>
+          <Button color="secondary" onClick={onCancel}>
             Cancel
           </Button>
         </FormControls>

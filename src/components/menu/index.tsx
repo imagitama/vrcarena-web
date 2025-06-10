@@ -1,15 +1,15 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import ClearIcon from '@material-ui/icons/Clear'
+import { makeStyles } from '@mui/styles'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import ClearIcon from '@mui/icons-material/Clear'
 
 import Link from '../link'
 import FormattedDate from '../formatted-date'
 
 const useStyles = makeStyles({
   noPadding: {
-    padding: 0,
+    padding: '0 !important',
   },
   withPadding: {
     padding: '0.25rem 1rem',
@@ -76,7 +76,6 @@ export default ({
   return (
     <Menu
       anchorEl={buttonRef}
-      getContentAnchorEl={null}
       open={isOpen}
       anchorOrigin={{
         vertical: 'bottom',

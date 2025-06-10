@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { handleError } from '../../error-handling'
@@ -26,6 +26,7 @@ import AttachmentOutput from '../attachment'
 import InfoMessage from '../info-message'
 import { getYouTubeVideoIdFromUrl, getIsUrlAYoutubeVideo } from '../../utils'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../../config'
+import { VRCArenaTheme } from '../../themes'
 
 const attachmentTypesMeta: { [key: string]: { name: string } } = {
   [AttachmentType.Image]: {
@@ -36,7 +37,7 @@ const attachmentTypesMeta: { [key: string]: { name: string } } = {
   },
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   content: {
     margin: '2rem 0',
   },
@@ -278,7 +279,7 @@ const AttachmentEditor = ({
             </InfoMessage>
             <FormControls>
               <Button onClick={() => setField('url', newUrl)}>Done</Button>
-              <Button onClick={clearType} color="default">
+              <Button onClick={clearType} color="secondary">
                 Cancel
               </Button>
             </FormControls>
@@ -294,11 +295,11 @@ const AttachmentEditor = ({
       <Button onClick={() => onSaveClick()} icon={<SaveIcon />}>
         {attachmentId ? 'Save' : 'Create'} Attachment
       </Button>
-      <Button onClick={reset} color="default">
+      <Button onClick={reset} color="secondary">
         Start Again
       </Button>
       {onCancel && (
-        <Button onClick={() => onCancel()} color="default">
+        <Button onClick={() => onCancel()} color="secondary">
           Cancel
         </Button>
       )}
@@ -326,7 +327,7 @@ const AttachmentEditor = ({
                   <img src={fields.thumbnailurl} alt="Thumbnail" />
                   <br />
                   <Button
-                    color="default"
+                    color="secondary"
                     onClick={() => setField('thumbnailurl', null)}>
                     Clear
                   </Button>

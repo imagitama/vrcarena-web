@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import CheckIcon from '@material-ui/icons/Check'
+import { makeStyles } from '@mui/styles'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import CheckIcon from '@mui/icons-material/Check'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import useSearching from '../../hooks/useSearching'
@@ -15,8 +15,9 @@ import Heading from '../heading'
 import { Asset, CollectionNames } from '../../modules/assets'
 import { ASSET_TITLE_MAX_LENGTH } from '../../config'
 import WarningMessage from '../warning-message'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   title: {
     color: theme.palette.primary.light,
     '&:focus': {

@@ -1,10 +1,10 @@
 import React from 'react'
-import Table from '@material-ui/core/Table'
-import TableHead from '@material-ui/core/TableHead'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
+import Table from '@mui/material/Table'
+import TableHead from '@mui/material/TableHead'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 import ReportResultsItem from '../report-results-item'
 import ErrorMessage from '../error-message'
 import { FullReport } from '../../modules/reports'
@@ -13,9 +13,9 @@ export default ({
   reports,
   showParentDetails = true,
   showControls = false,
-  analyticsCategoryName = ''
+  analyticsCategoryName = '',
 }: {
-  reports: FullReport[],
+  reports: FullReport[]
   showParentDetails?: boolean
   showControls?: boolean
   analyticsCategoryName?: string
@@ -32,7 +32,7 @@ export default ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {reports.map(report => (
+          {reports.map((report) => (
             <ReportResultsItem
               key={report.id}
               report={report}

@@ -1,5 +1,5 @@
 import React from 'react'
-import MenuItem from '@material-ui/core/MenuItem'
+import MenuItem from '@mui/material/MenuItem'
 import Select from '../../../select'
 import { ItemProperties } from '../../../../editable-fields'
 import useDataStoreItems from '../../../../hooks/useDataStoreItems'
@@ -22,7 +22,7 @@ export default ({
   value: string | null
   itemProperties: ItemProperties
 }) => {
-  const [isLoading, isError, items] = useDataStoreItems<any>(
+  const [isLoading, lastErrorCode, items] = useDataStoreItems<any>(
     itemProperties.collectionName,
     undefined,
     { queryName: 'item-input' }
@@ -32,8 +32,10 @@ export default ({
     return <LoadingIndicator message="Loading items..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load items</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load items (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!items || !items.length) {

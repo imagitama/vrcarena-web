@@ -1,5 +1,5 @@
 import React from 'react'
-import MenuItem from '@material-ui/core/MenuItem'
+import MenuItem from '@mui/material/MenuItem'
 
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import { CollectionNames, Species } from '../../modules/species'
@@ -18,7 +18,7 @@ const SpeciesSelector = ({
   selectedSpeciesIds: string[]
   onSpeciesClickWithId: (id: string) => void
 }) => {
-  const [isLoading, isError, newSpecies] = useDataStoreItems<Species>(
+  const [isLoading, lastErrorCode, newSpecies] = useDataStoreItems<Species>(
     lastKnownAllSpecies ? '' : CollectionNames.Species,
     undefined,
     { queryName: 'species-dropdown', orderBy: 'pluralname' }
@@ -34,8 +34,10 @@ const SpeciesSelector = ({
     return <LoadingIndicator message="Loading species..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load species</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage>Failed to load species (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

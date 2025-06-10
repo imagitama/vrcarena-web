@@ -12,7 +12,7 @@ import Paper from '../paper'
 import SuccessMessage from '../success-message'
 import TextInput from '../text-input'
 
-export default ({
+const EditNoticeForm = ({
   id = undefined,
   notice,
 }: {
@@ -26,10 +26,8 @@ export default ({
     orderby: 0,
     isvisible: false,
   })
-  const [isSaving, isSuccess, isError, createOrEdit] = useDatabaseSave<Notice>(
-    CollectionNames.Notices,
-    id
-  )
+  const [isSaving, isSuccess, lastErrorCode, createOrEdit] =
+    useDatabaseSave<Notice>(CollectionNames.Notices, id)
 
   useEffect(() => {
     if (!id || !notice) {
@@ -64,9 +62,11 @@ export default ({
     )
   }
 
-  if (isError) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to {id ? 'edit' : 'create'} notice</ErrorMessage>
+      <ErrorMessage>
+        Failed to {id ? 'edit' : 'create'} notice (code {lastErrorCode})
+      </ErrorMessage>
     )
   }
 
@@ -137,3 +137,5 @@ export default ({
     </Paper>
   )
 }
+
+export default EditNoticeForm

@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
-import { makeStyles } from '@material-ui/core'
-import Link from '../../components/link'
+import { makeStyles } from '@mui/styles'
 
 import {
   areasByCategory,
@@ -9,10 +8,11 @@ import {
   standardAreas,
 } from '../../areas'
 import * as routes from '../../routes'
+import { AssetCategory, PublicAsset } from '../../modules/assets'
+import Link from '../../components/link'
 
 import AssetResults from '../asset-results'
 import Heading from '../heading'
-import { Asset, AssetCategory, PublicAsset } from '../../modules/assets'
 
 const useStyles = makeStyles({
   tags: {

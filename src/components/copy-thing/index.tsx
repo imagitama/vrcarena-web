@@ -9,7 +9,7 @@ const CopyThing = ({
   title,
 }: {
   text: string
-  children: React.ReactChild
+  children: React.ReactNode
   title?: string | React.ReactElement
 }) => {
   const [hasCopied, setHasCopied] = useState(false)

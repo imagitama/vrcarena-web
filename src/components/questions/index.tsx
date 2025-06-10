@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import {
-  CollectionNames,
   FullQuestion,
   FullQuestionAnswer,
-  QuestionAnswer,
   ViewNames,
 } from '../../modules/questions'
 import LoadingIndicator from '../loading-indicator'
@@ -17,6 +15,7 @@ import Paper from '../paper'
 import FormControls from '../form-controls'
 import UsernameLink from '../username-link'
 import FormattedDate from '../formatted-date'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 
 const Question = ({
   question,
@@ -86,18 +85,23 @@ const Answer = ({ answer }: { answer: FullQuestionAnswer }) => {
 }
 
 const Questions = ({ assetId }: { assetId: string }) => {
-  const [isLoading, isError, questions, hydrate] =
+  const [isLoading, lastErrorCode, questions, hydrate] =
     useDatabaseQuery<FullQuestion>(ViewNames.GetPublicQuestions, [
       ['asset', Operators.EQUALS, assetId],
     ])
   const [isFormVisible, setIsFormVisible] = useState(false)
+  const isLoggedIn = useIsLoggedIn()
 
   if (isLoading || !Array.isArray(questions)) {
     return <LoadingIndicator message="Loading questions..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load questions</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage>
+        Failed to load questions (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const onClickAsk = () => setIsFormVisible((currentVal) => !currentVal)
@@ -111,7 +115,6 @@ const Questions = ({ assetId }: { assetId: string }) => {
       ) : (
         <NoResultsMessage>No questions yet</NoResultsMessage>
       )}
-
       {isFormVisible ? (
         <QuestionForm
           assetId={assetId}
@@ -122,7 +125,9 @@ const Questions = ({ assetId }: { assetId: string }) => {
         />
       ) : (
         <FormControls>
-          <Button onClick={onClickAsk}>Ask Question</Button>
+          <Button onClick={onClickAsk} isDisabled={!isLoggedIn} size="large">
+            {isLoggedIn ? 'Ask Question' : 'Log In To Ask Question'}
+          </Button>
         </FormControls>
       )}
     </>

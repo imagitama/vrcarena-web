@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
-import RssFeedIcon from '@material-ui/icons/RssFeed'
-import EditIcon from '@material-ui/icons/Edit'
+import RssFeedIcon from '@mui/icons-material/RssFeed'
+import EditIcon from '@mui/icons-material/Edit'
 
 import * as routes from '../../../../routes'
 import useUserRecord from '../../../../hooks/useUserRecord'
@@ -46,7 +46,7 @@ export default () => {
           url={routes.createAmendmentWithVar
             .replace(':parentTable', CollectionNames.Assets)
             .replace(':parentId', assetId)}
-          color="default"
+          color="secondary"
           icon={<EditIcon />}>
           Suggest Edit
         </Button>
@@ -60,7 +60,7 @@ export default () => {
         ) : (
           <Button
             onClick={() => setIsSubscriptionsEditorEnabled(true)}
-            color="default"
+            color="secondary"
             icon={<RssFeedIcon />}>
             Subscribe
           </Button>

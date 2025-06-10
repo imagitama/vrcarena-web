@@ -2,15 +2,20 @@ import { useEffect, useState, useRef } from 'react'
 import { handleError } from '../error-handling'
 import { setIsSearching } from '../modules/app'
 import { useDispatch } from 'react-redux'
-import { DataStoreErrorCode } from '../data-store'
+import { DataStoreErrorCode, GetQuery } from '../data-store'
 import useSupabaseClient from './useSupabaseClient'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+export type GetQueryFn<TRecord> = (
+  query: GetQuery<TRecord>
+) => GetQuery<TRecord>
 
 export default <TRecord>(
   tableName: string,
   searchTerm: string,
   selectStatement: string,
   fieldsToSearch: Extract<keyof TRecord, string>[],
-  getQuery?: (query: any) => any,
+  getQuery?: GetQueryFn<TRecord>,
   limit: number = 50
 ): [boolean, DataStoreErrorCode | null, TRecord[] | null] => {
   const [results, setResults] = useState<TRecord[] | null>(null)
@@ -44,6 +49,7 @@ export default <TRecord>(
         }
 
         if (getQuery) {
+          // @ts-ignore
           query = getQuery(query)
         }
 

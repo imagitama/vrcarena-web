@@ -1,15 +1,16 @@
 import React from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import MenuList from '@material-ui/core/MenuList'
-import MenuItem from '@material-ui/core/MenuItem'
+import { makeStyles } from '@mui/styles'
+import MenuList from '@mui/material/MenuList'
+import MenuItem from '@mui/material/MenuItem'
 
 import useUserMentioning from '../../hooks/useUserMentioning'
 import { AutocompleteOption } from '../autocomplete-input'
 import EmojiPicker from '../emoji-picker'
-import Paper from '@material-ui/core/Paper'
+import Paper from '@mui/material/Paper'
+import { VRCArenaTheme } from '../../themes'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     position: 'relative',
   },

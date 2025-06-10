@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import { makeStyles } from '@material-ui/core/styles'
-import CheckIcon from '@material-ui/icons/Check'
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
-import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import { makeStyles } from '@mui/styles'
+import CheckIcon from '@mui/icons-material/Check'
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd'
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck'
 
 import { DataStoreErrorCode } from '../../data-store'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
@@ -328,13 +328,12 @@ const AddToCollectionButton = ({
       <Button
         icon={<PlaylistAddIcon />}
         onClick={onClickMainButton}
-        color="default"
+        color="secondary"
         isLoading={isAssetLoading}>
         {isLoggedIn ? 'Add To Collection...' : 'Log in to add to collection'}
       </Button>
       <Menu
         anchorEl={rootRef.current}
-        getContentAnchorEl={null}
         open={isMenuOpen}
         anchorOrigin={{
           vertical: 'bottom',

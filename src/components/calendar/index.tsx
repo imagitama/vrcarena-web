@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useState } from 'react'
 import ReactCalendar from 'react-calendar'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { View } from 'react-calendar/dist/cjs/shared/types'
-import Chip from '@material-ui/core/Chip'
+import Chip from '@mui/material/Chip'
 
 import Paper from '../paper'
 import { Event } from '../../modules/events'
 import { isDateInbetweenTwoDates, isDateOnSameDay } from '../../utils/dates'
 import * as routes from '../../routes'
 import Link from '../link'
+import { VRCArenaTheme } from '../../themes'
 
 enum EventStyle {
   StartsToday,
@@ -16,7 +17,7 @@ enum EventStyle {
   EndsToday,
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     '& button': {
       border: `1px solid ${theme.palette.divider}`,

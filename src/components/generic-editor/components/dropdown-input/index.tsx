@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
-import MenuItem from '@material-ui/core/MenuItem'
-import { SelectProps } from '@material-ui/core/Select'
+import MenuItem from '@mui/material/MenuItem'
+import { SelectProps } from '@mui/material/Select'
 import Select from '../../../select'
 import { Option } from '../../../../editable-fields'
 

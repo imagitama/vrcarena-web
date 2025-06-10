@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import SaveIcon from '@material-ui/icons/Save'
+import { makeStyles } from '@mui/styles'
+import SaveIcon from '@mui/icons-material/Save'
 
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { CommonMetaRecordFields, CommonRecordFields } from '../../data-store'
@@ -14,6 +14,7 @@ import LoadingIndicator from '../loading-indicator'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import FormControls from '../form-controls'
 import { MetaRecord } from '../../modules/common'
+import ErrorMessage from '../error-message'
 
 const useStyles = makeStyles({
   label: {
@@ -35,13 +36,13 @@ const PublicEditorNotesForm = ({
   onClick?: (result: { editorNotes: string }) => void
   onDone?: () => void
 }) => {
-  const [isLoadingMeta, isErroredLoadingMeta, metaRecord] =
+  const [isLoadingMeta, lastErrorCodeLoadingMeta, metaRecord] =
     useDataStoreItem<CommonMetaRecordFields>(
       metaCollectionName,
       existingEditorNotes !== undefined ? false : id,
       'editor-notes-form'
     )
-  const [isSaving, , isErroredSavingAsset, saveMetaRecord] =
+  const [isSaving, , lastErrorCodeSavingMeta, saveMetaRecord] =
     useDatabaseSave<MetaRecord>(metaCollectionName, id)
 
   const [newEditorNotes, setNewEditorNotes] = useState(
@@ -69,12 +70,20 @@ const PublicEditorNotesForm = ({
     )
   }
 
-  if (isErroredLoadingMeta) {
-    return <>Failed to load meta!</>
+  if (lastErrorCodeLoadingMeta !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load meta (code {lastErrorCodeLoadingMeta})
+      </ErrorMessage>
+    )
   }
 
-  if (isErroredSavingAsset) {
-    return <>Failed to save meta!</>
+  if (lastErrorCodeSavingMeta !== null) {
+    return (
+      <ErrorMessage>
+        Failed to save meta (code {lastErrorCodeSavingMeta})
+      </ErrorMessage>
+    )
   }
 
   const onSaveBtnClick = async () => {

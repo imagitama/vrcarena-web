@@ -1,11 +1,11 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
+import { makeStyles } from '@mui/styles'
+import Card from '@mui/material/Card'
+import CardActionArea from '@mui/material/CardActionArea'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
 import LazyLoad from 'react-lazyload'
-import LoyaltyIcon from '@material-ui/icons/Loyalty'
+import LoyaltyIcon from '@mui/icons-material/Loyalty'
 
 import Link from '../link'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
@@ -21,18 +21,18 @@ const useStyles = makeStyles({
     '& a': {
       color: 'inherit',
     },
-    '&:hover $relation svg': {
+    '&:hover .relation svg': {
       transform: 'rotate(360deg) !important',
     },
   },
   tiny: {
     width: '100%',
     fontSize: '75%',
-    '& $cardMedia': {
+    '& .cardMedia': {
       width: '100px',
       height: '100px',
     },
-    '& $cardContent': {
+    '& .cardContent': {
       padding: '5px',
     },
     '& a': {

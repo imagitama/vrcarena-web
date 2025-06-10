@@ -1,7 +1,7 @@
 import React from 'react'
-import CheckIcon from '@material-ui/icons/Check'
-import ThumbUpIcon from '@material-ui/icons/ThumbUp'
-import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+import CheckIcon from '@mui/icons-material/Check'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
 import Button from '../button'
 
@@ -105,7 +105,7 @@ interface Endorsement {
   createdby: string
 }
 
-export default ({
+const EndorseAssetButton = ({
   isAssetLoading,
   assetId,
   endorsementCount = '???',
@@ -211,7 +211,7 @@ export default ({
 
   return (
     <Button
-      color="default"
+      color="secondary"
       icon={getIcon(
         isLoggedIn,
         isLoadingEndorsements,
@@ -234,3 +234,5 @@ export default ({
     </Button>
   )
 }
+
+export default EndorseAssetButton

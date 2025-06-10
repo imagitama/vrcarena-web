@@ -5,13 +5,13 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
-import useDataStore from '../../hooks/useDataStore'
+import useDataStore, { GetQueryFn } from '../../hooks/useDataStore'
 import { FullAsset, ViewNames } from '../../modules/assets'
 
 export default ({ userId }: { userId: string }) => {
-  const getQuery = useCallback(
-    (supabase) =>
-      supabase
+  const getQuery = useCallback<GetQueryFn<FullAsset>>(
+    (client) =>
+      client
         .from(ViewNames.GetWishlistAssetResults)
         .select('*')
         .eq('userid', userId),
@@ -27,7 +27,11 @@ export default ({ userId }: { userId: string }) => {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to find the wishlist</ErrorMessage>
+    return (
+      <ErrorMessage>
+        Failed to find the wishlist (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!assetsInWishlist || !assetsInWishlist.length) {
