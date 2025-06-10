@@ -777,18 +777,21 @@ const Editor = () => {
   const [hiddenNotices, hideNotice] = useNotices()
   const isPatron = useIsPatron()
 
-  if (!asset || !assetId) {
-    return null
+  // NOTE: Could be asset and no ID (for amendments)
+
+  if (!asset) {
+    return <>No asset</>
   }
 
   return (
     <>
       <MainControls />
       <Tabs
-        urlWithTabNameVar={routes.editAssetWithVarAndTabNameVar.replace(
-          ':assetId',
+        urlWithTabNameVar={
           assetId
-        )}
+            ? routes.editAssetWithVarAndTabNameVar.replace(':assetId', assetId)
+            : undefined
+        }
         items={[
           {
             name: 'category',
