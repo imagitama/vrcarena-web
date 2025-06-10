@@ -1,3 +1,4 @@
+import React from 'react'
 import Dialog from '@material-ui/core/Dialog'
 import SaveIcon from '@material-ui/icons/Save'
 import LoopIcon from '@material-ui/icons/Loop'
@@ -5,13 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import TextInput from '../text-input'
 import { useEffect, useState } from 'react'
-import {
-  Asset,
-  AssetCategory,
-  CollectionNames,
-  CoreAssetFields,
-} from '../../modules/assets'
-import DropdownInput from '../generic-editor/components/dropdown-input'
+import { CollectionNames, CoreAssetFields } from '../../modules/assets'
 import TagInput from '../tag-input'
 import FormControls from '../form-controls'
 import Button from '../button'

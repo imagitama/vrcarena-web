@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import ReactCalendar from 'react-calendar'
 import { makeStyles } from '@material-ui/core/styles'
 import { View } from 'react-calendar/dist/cjs/shared/types'
@@ -13,13 +13,13 @@ import Link from '../link'
 enum EventStyle {
   StartsToday,
   InbetweenStartAndEnd,
-  EndsToday
+  EndsToday,
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     '& button': {
-      border: `1px solid ${theme.palette.divider}`
+      border: `1px solid ${theme.palette.divider}`,
     },
     '& button, & abbr': {
       appearance: 'none',
@@ -28,24 +28,24 @@ const useStyles = makeStyles(theme => ({
       padding: '1rem',
       background: 'none',
       color: 'inherit',
-      textDecoration: 'none'
+      textDecoration: 'none',
     },
     '& .react-calendar__navigation': {
       '& button:hover': {
         cursor: 'pointer',
-        background: theme.palette.background.default
-      }
-    }
+        background: theme.palette.background.default,
+      },
+    },
   },
   tile: {
-    textAlign: 'left'
+    textAlign: 'left',
   },
   chip: {
-    margin: '0.5rem 0.5rem 0 0'
+    margin: '0.5rem 0.5rem 0 0',
   },
   today: {
-    outline: '1px solid #FFF !important'
-  }
+    outline: '1px solid #FFF !important',
+  },
 }))
 
 type ValuePiece = Date | null
@@ -81,14 +81,14 @@ const Tile = ({ date }: { activeStartDate: Date; date: Date; view: View }) => {
           ...currentValue,
           [EventStyle.StartsToday]: currentValue[EventStyle.StartsToday].concat(
             [event]
-          )
+          ),
         }
       } else if (isDateOnSameDay(new Date(event.endsat), date)) {
         return {
           ...currentValue,
           [EventStyle.EndsToday]: currentValue[EventStyle.EndsToday].concat([
-            event
-          ])
+            event,
+          ]),
         }
       } else if (
         isDateInbetweenTwoDates(
@@ -101,7 +101,7 @@ const Tile = ({ date }: { activeStartDate: Date; date: Date; view: View }) => {
           ...currentValue,
           [EventStyle.InbetweenStartAndEnd]: currentValue[
             EventStyle.InbetweenStartAndEnd
-          ].concat([event])
+          ].concat([event]),
         }
       } else {
         return currentValue
@@ -110,23 +110,23 @@ const Tile = ({ date }: { activeStartDate: Date; date: Date; view: View }) => {
     {
       [EventStyle.StartsToday]: [],
       [EventStyle.InbetweenStartAndEnd]: [],
-      [EventStyle.EndsToday]: []
+      [EventStyle.EndsToday]: [],
     }
   )
 
   return (
     <div className={classes.tile}>
-      {groupedEvents[EventStyle.StartsToday].map(event => (
+      {groupedEvents[EventStyle.StartsToday].map((event) => (
         <EventItem
           key={event.id}
           event={event}
           style={EventStyle.StartsToday}
         />
       ))}
-      {groupedEvents[EventStyle.EndsToday].map(event => (
+      {groupedEvents[EventStyle.EndsToday].map((event) => (
         <EventItem key={event.id} event={event} style={EventStyle.EndsToday} />
       ))}
-      {groupedEvents[EventStyle.InbetweenStartAndEnd].map(event => (
+      {groupedEvents[EventStyle.InbetweenStartAndEnd].map((event) => (
         <EventItem
           key={event.id}
           event={event}
@@ -138,7 +138,7 @@ const Tile = ({ date }: { activeStartDate: Date; date: Date; view: View }) => {
 }
 
 const EventsContext = createContext<{ events: Event[] }>({
-  events: []
+  events: [],
 })
 
 const Calendar = ({ events }: { events: Event[] }) => {

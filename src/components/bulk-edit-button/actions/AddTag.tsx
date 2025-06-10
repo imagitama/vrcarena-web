@@ -1,3 +1,4 @@
+import React from 'react'
 import { updateRecord } from '../../../data-store'
 import { useBulkEdit } from '../context'
 import { Asset, CollectionNames, FullAsset } from '../../../modules/assets'
