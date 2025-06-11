@@ -60,7 +60,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     borderRadius: `0 0 0 ${theme.shape.borderRadius * 2}px`,
     zIndex: -5,
     position: 'relative',
-    border: '2px solid rgba(150, 150, 150)',
+    border: '2px solid rgba(100, 100, 100)',
     borderTop: 'none',
     borderRight: 'none',
   },
@@ -79,7 +79,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
   line: {
     width: '2px',
-    backgroundColor: 'rgba(150, 150, 150)',
+    backgroundColor: 'rgba(100, 100, 100)',
     height: '50px',
     position: 'absolute',
     left: '30px',
