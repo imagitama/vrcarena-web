@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     position: 'relative',
   },
   contentsWrapper: {
-    display: 'flex',
+    display: 'flex !important',
   },
   media: {
     width: '200px',
@@ -28,8 +28,8 @@ const useStyles = makeStyles({
   },
   // TODO: Invert theme and share components with species selector
   isSelected: {
-    backgroundColor: 'grey',
-    boxShadow: '0px 0px 10px #FFF',
+    backgroundColor: 'grey !important',
+    boxShadow: '0px 0px 10px #FFF !important',
   },
 })
 
