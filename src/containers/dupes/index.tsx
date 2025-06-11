@@ -165,6 +165,9 @@ const PlanMode = ({
 }
 
 const useStyles = makeStyles({
+  cell: {
+    padding: '2px !important',
+  },
   mainCell: {
     backgroundColor: `${alpha(colorBrandLight, 0.1)} !important`,
   },
@@ -188,8 +191,8 @@ const DupeRow = ({
   const classes = useStyles()
 
   return (
-    <TableRow key={authorWithAssets.id}>
-      <TableCell className={head ? classes.mainCell : ''}>
+    <TableRow key={authorWithAssets.id} style={{ overflowX: 'scroll' }}>
+      <TableCell className={`${classes.cell} ${head ? classes.mainCell : ''}`}>
         <a
           href={routes.viewAuthorWithVar.replace(
             ':authorId',
@@ -209,7 +212,7 @@ const DupeRow = ({
           </li>
         ))}
       </TableCell>
-      <TableCell className={head ? classes.mainCell : ''}>
+      <TableCell className={`${classes.cell} ${head ? classes.mainCell : ''}`}>
         <FormattedDate
           date={new Date(authorWithAssets.meta.createdat)}
           isRelative={false}
@@ -225,12 +228,13 @@ const DupeRow = ({
       </TableCell>
       {Object.entries(authorWithAssets.fields).map(
         ([fieldName, fieldValue]) => (
-          <TableCell key={fieldName} className={head ? classes.mainCell : ''}>
+          <TableCell
+            key={fieldName}
+            className={`${classes.cell} ${head ? classes.mainCell : ''}`}>
             {Array.isArray(fieldValue)
-              ? fieldValue.length
+              ? fieldValue.join(', ')
               : (fieldValue as string)}
-            {!Array.isArray(fieldValue) &&
-            getIsSavableFieldName(fieldName) &&
+            {getIsSavableFieldName(fieldName) &&
             fieldValue &&
             selectedFields &&
             toggleSelectedField ? (
@@ -247,7 +251,7 @@ const DupeRow = ({
           </TableCell>
         )
       )}
-      <TableCell className={head ? classes.mainCell : ''}>
+      <TableCell className={`${classes.cell} ${head ? classes.mainCell : ''}`}>
         {head
           ? 'Used For All Assets'
           : selectedFields &&
