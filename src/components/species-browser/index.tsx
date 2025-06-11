@@ -165,9 +165,10 @@ const SpeciesBrowser = () => {
           speciesItem={speciesItem}
           className={classes.speciesItem}>
           {speciesContainerSettings?.groupChildren && speciesItem.children
-            ? speciesItem.children.map((speciesChild) => (
+            ? speciesItem.children.map((speciesChild, index) => (
                 <SpeciesResultItem
                   key={speciesChild.id}
+                  index={index}
                   speciesItem={speciesChild}
                   indent={1}
                 />

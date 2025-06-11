@@ -9,6 +9,7 @@ import { VRCArenaTheme } from '../../themes'
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     width: '100%',
+    position: 'relative',
     '& a': {
       color: 'inherit',
       display: 'flex',
@@ -56,7 +57,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     width: '50px', // half thumb
     height: '50px',
     margin: '-50px -10px 0 0', // hide border radius
-    borderRadius: theme.shape.borderRadius * 2,
+    borderRadius: `0 0 0 ${theme.shape.borderRadius * 2}px`,
     zIndex: -5,
     position: 'relative',
     border: '2px solid rgba(150, 150, 150)',
@@ -76,17 +77,27 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     alignItems: 'center',
     flexWrap: 'wrap',
   },
+  line: {
+    width: '2px',
+    backgroundColor: 'rgba(150, 150, 150)',
+    height: '50px',
+    position: 'absolute',
+    left: '30px',
+    top: '-50px',
+  },
 }))
 
 const isFull = (thing: Species | FullSpecies): thing is FullSpecies =>
   'avatarcount' in thing
 
 const SpeciesResultItem = ({
+  index,
   speciesItem,
   indent = 0,
   children,
   className,
 }: {
+  index?: number
   speciesItem: FullSpecies | Species
   indent?: number
   children?: React.ReactNode
@@ -100,6 +111,7 @@ const SpeciesResultItem = ({
           ':speciesIdOrSlug',
           speciesItem.slug || speciesItem.id
         )}>
+        {index !== undefined && index > 0 && <div className={classes.line} />}
         {indent > 0 && (
           <div
             className={classes.connector}
