@@ -82,8 +82,6 @@ export default ({
 
       const speciesIdToUse = overrideSpeciesId || newFavoriteSpeciesId || false
 
-      console.debug(`save fav species id ${speciesIdToUse}`)
-
       await save({
         favoritespecies: speciesIdToUse ? speciesIdToUse : null,
       })
@@ -139,11 +137,15 @@ export default ({
               onSaveBtnClick(newSpeciesId)
             }
           }}>
-          {species.map((speciesDoc) => (
-            <MenuItem key={speciesDoc.id} value={speciesDoc.id}>
-              {speciesDoc.singularname}
-            </MenuItem>
-          ))}
+          {species
+            .filter(
+              (speciesDoc) => !speciesDoc.singularname.includes('DO NOT USE')
+            )
+            .map((speciesDoc) => (
+              <MenuItem key={speciesDoc.id} value={speciesDoc.id}>
+                {speciesDoc.singularname}
+              </MenuItem>
+            ))}
         </Select>
         {isSaving && <LoadingIndicator message="Saving..." />}
         {isSaveSuccess ? (
