@@ -806,7 +806,7 @@ export default () => {
         <div className={classes.mainContainer}>
           <BannedNotice />
           <Notices />
-          <FuralityBanner />
+          {/* <FuralityBanner /> */}
           <UnapprovedAssetsMessage />
           <DraftAssetsMessage />
           <ErrorBoundary>
