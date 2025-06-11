@@ -24,6 +24,7 @@ import PatreonCosts from './components/patreon-costs'
 import SpeciesResultItem from '../../components/species-result-item'
 import { FullSpecies } from '../../modules/species'
 import LoadingIndicator from '../../components/loading-indicator'
+import SpeciesBrowser from '../../components/species-browser'
 
 const contentMaxWidth = '900px'
 
@@ -315,7 +316,8 @@ export default () => {
           <strong>volunteers</strong> since May 2020!
         </p>
       </ContentBlock>
-      <Tiles />
+      <br />
+      <SpeciesBrowser />
     </>
   )
 }

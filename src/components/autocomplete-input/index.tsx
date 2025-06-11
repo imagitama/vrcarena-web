@@ -1,9 +1,9 @@
 import React, { ChangeEventHandler } from 'react'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 import Autocomplete from '@mui/lab/Autocomplete'
-import { AutocompleteChangeReason } from '@mui/material/useAutocomplete'
 import { makeStyles } from '@mui/styles'
 import type { AutocompleteRenderInputParams } from '@mui/material'
+import { VRCArenaTheme } from '../../themes'
 
 export interface AutocompleteOption<T> {
   label: string
@@ -11,10 +11,9 @@ export interface AutocompleteOption<T> {
   isDisabled?: boolean
 }
 
-// @ts-ignore
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   divInput: {
-    wordWrap: 'anywhere',
+    // wordWrap: 'anywhere',
     userSelect: 'element',
     background: '#FFF',
     color: '#000',
@@ -29,6 +28,11 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       pointerEvents: 'none',
       display: 'block',
       opacity: 0.42,
+    },
+  },
+  textFieldWrapper: {
+    '& label': {
+      paddingTop: '8px !important',
     },
   },
 }))
@@ -50,7 +54,7 @@ const MyTextField = ({
   }
 
   return (
-    <div ref={params.InputProps.ref}>
+    <div ref={params.InputProps.ref} className={classes.textFieldWrapper}>
       {useDiv ? (
         <div
           // @ts-ignore
@@ -125,6 +129,7 @@ const AutocompleteInput = <TOption,>({
   textFieldProps?: TextFieldProps
   fullWidth?: boolean
 }) => {
+  const classes = useStyles()
   return (
     <Autocomplete
       options={options}
@@ -193,6 +198,9 @@ const AutocompleteInput = <TOption,>({
       // openOnFocus
       multiple={multiple}
       className={className}
+      classes={{
+        groupLabel: 'test',
+      }}
       {...autocompleteProps}
     />
   )
