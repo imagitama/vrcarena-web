@@ -71,6 +71,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     borderRight: 'none',
   },
   children: {
+    width: '100%',
     '& > *': {
       marginTop: '0.25rem',
     },
