@@ -45,7 +45,7 @@ const useStyles = makeStyles({
     },
   },
   speciesItem: {
-    width: '100%',
+    margin: '0 0.5rem 0.5rem 0',
   },
   // copies from paginated view
   controls: {
@@ -166,7 +166,11 @@ const SpeciesBrowser = () => {
           className={classes.speciesItem}>
           {speciesContainerSettings?.groupChildren && speciesItem.children
             ? speciesItem.children.map((speciesChild) => (
-                <SpeciesResultItem speciesItem={speciesChild} indent={1} />
+                <SpeciesResultItem
+                  key={speciesChild.id}
+                  speciesItem={speciesChild}
+                  indent={1}
+                />
               ))
             : null}
         </SpeciesResultItem>

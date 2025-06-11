@@ -150,6 +150,12 @@ const AutocompleteInput = <TOption,>({
           : // Passing undefined should ignore filtering but it doesnt
             (options) => options
       }
+      autoHighlight
+      // onKeyDown={e => {
+      //   if (e.key === 'Enter') {
+
+      //   }
+      // }}
       onChange={(e: any, value, reason) => {
         switch (reason) {
           case 'clear':
