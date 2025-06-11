@@ -360,7 +360,7 @@ const Area = ({
 const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
-  const isSlug = getIsUuid(rawAssetId) === false
+  const isSlug = getIsUuid(rawAssetId) === false && rawAssetId.includes('-')
 
   const [
     isLoadingCachedAsset,

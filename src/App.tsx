@@ -458,6 +458,11 @@ const Tutorials = lazy(() =>
     () => import(/* webpackChunkName: "tutorials" */ './containers/tutorials')
   )
 )
+const Dupes = lazy(() =>
+  catchChunkDeaths(
+    () => import(/* webpackChunkName: "dupes" */ './containers/dupes')
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -762,6 +767,8 @@ const MainContent = () => {
           path={[routes.compareWithVars, routes.compareWithVar]}
           component={Compare}
         />
+        <Route exact path="/dupes" component={Dupes} />
+        {/* these must always be at the end as catch all */}
         <Route
           exact
           path={routes.createPageWithParentAndPageVar}

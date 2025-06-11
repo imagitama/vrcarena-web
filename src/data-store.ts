@@ -120,7 +120,7 @@ export const updateRecord = async <TFields>(
   supabase: SupabaseClient,
   tableName: string,
   id: string,
-  newVal: TFields
+  newVal: Partial<TFields>
 ): Promise<true> => {
   const { error, data } = await supabase
     .from(tableName)

@@ -13,7 +13,6 @@ export interface AuthorFields extends Record<string, unknown> {
   discordserverinviteurl: string
   patreonusername: string
   categories: string[]
-  // ownedby: string
   discordserverid: string
   isopenforcommission: boolean
   commissioninfo: string
@@ -23,29 +22,29 @@ export interface AuthorFields extends Record<string, unknown> {
   boothusername: string
   salereason: string
   saledescription: string
-  saleexpiresat: Date | undefined
+  saleexpiresat: string | undefined
   promourl: string
 }
 
 export interface Author extends AuthorFields {
   id: string
-  lastmodifiedat: Date
+  lastmodifiedat: string // date
   lastmodifiedby: string
-  createdat: Date
+  createdat: string // date
   createdby: string
 }
 
 export interface AuthorMeta extends Record<string, unknown> {
   id: string
   approvalstatus: ApprovalStatus
-  approvedat: Date
+  approvedat: string // date
   accessstatus: AccessStatus
   publishstatus: PublishStatus
   publishedby: string
   editornotes: string
-  lastmodifiedat: Date
+  lastmodifiedat: string // date
   lastmodifiedby: string
-  createdat: Date
+  createdat: string // date
   createdby: string
 }
 
@@ -58,7 +57,7 @@ export interface FullAuthor extends AuthorMeta, Author {
 
 export enum CollectionNames {
   Authors = 'authors',
-  AuthorsMeta = 'authormeta', // TODO: Rename collection
+  AuthorsMeta = 'authorsmeta',
 }
 
 export enum ViewNames {

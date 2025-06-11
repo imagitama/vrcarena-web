@@ -50,4 +50,5 @@ export const Under18 = React.lazy(() => import('./assets/images/icons/under18.sv
 export const VRChat = React.lazy(() => import('./assets/images/icons/vrchat.svg').then(result => ({ default: result.ReactComponent })))
 export const VRCFury = React.lazy(() => import('./assets/images/icons/vrcfury.svg').then(result => ({ default: result.ReactComponent })))
 
-
+// internal ones
+export const OpenExternalLink = React.lazy(() => import('@mui/icons-material/Launch'))
