@@ -8,12 +8,18 @@ import { VRCArenaTheme } from '../../themes'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
-    width: '100%',
+    width: 'calc(100% - 0.25rem)',
     position: 'relative',
+    paddingRight: '0.25rem',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
     '& a': {
+      flex: 1,
       color: 'inherit',
       display: 'flex',
       alignItems: 'center',
+      borderRadius: theme.shape.borderRadius,
       '&:hover': {
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
       },
@@ -54,9 +60,9 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
   connector: {
     flexShrink: 0,
-    width: '50px', // half thumb
+    width: '30px', // half thumb
     height: '50px',
-    margin: '-50px -10px 0 0', // hide border radius
+    margin: '-40px -10px 0 0', // hide border radius
     borderRadius: `0 0 0 ${theme.shape.borderRadius * 2}px`,
     zIndex: -5,
     position: 'relative',
@@ -65,7 +71,9 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     borderRight: 'none',
   },
   children: {
-    marginTop: '0.25rem',
+    '& > *': {
+      marginTop: '0.25rem',
+    },
   },
   count: {
     fontSize: '75%',
@@ -82,7 +90,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     backgroundColor: 'rgba(100, 100, 100)',
     height: '50px',
     position: 'absolute',
-    left: '30px',
+    left: '20px',
     top: '-50px',
   },
 }))
@@ -105,18 +113,18 @@ const SpeciesResultItem = ({
 }) => {
   const classes = useStyles()
   return (
-    <div className={`${classes.root} ${className}`}>
+    <div className={`${classes.root} ${className || ''}`}>
+      {index !== undefined && index > 0 && <div className={classes.line} />}
+      {indent > 0 && (
+        <div
+          className={classes.connector}
+          style={{ marginLeft: `calc(20px * ${indent})` }}></div>
+      )}
       <Link
         to={routes.viewSpeciesWithVar.replace(
           ':speciesIdOrSlug',
           speciesItem.slug || speciesItem.id
         )}>
-        {index !== undefined && index > 0 && <div className={classes.line} />}
-        {indent > 0 && (
-          <div
-            className={classes.connector}
-            style={{ marginLeft: `calc(30px * ${indent})` }}></div>
-        )}
         {speciesItem.thumbnailurl ? (
           <LazyLoad placeholder={<div />} className={classes.thumbnail}>
             <img src={speciesItem.thumbnailurl} />
