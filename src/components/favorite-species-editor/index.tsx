@@ -139,11 +139,18 @@ export default ({
           }}>
           {species
             .filter(
-              (speciesDoc) => !speciesDoc.singularname.includes('DO NOT USE')
+              (speciesItem) => !speciesItem.singularname.includes('DO NOT USE')
             )
-            .map((speciesDoc) => (
-              <MenuItem key={speciesDoc.id} value={speciesDoc.id}>
-                {speciesDoc.singularname}
+            .map((speciesItem) => (
+              <MenuItem key={speciesItem.id} value={speciesItem.id}>
+                {speciesItem.pluralname}
+                {speciesItem.singularname !== speciesItem.pluralname
+                  ? `/${speciesItem.singularname}`
+                  : ''}
+
+                {speciesItem.tags.length
+                  ? ` (${speciesItem.tags.join(', ')})`
+                  : ''}
               </MenuItem>
             ))}
         </Select>
