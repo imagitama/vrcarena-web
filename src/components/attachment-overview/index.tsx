@@ -29,6 +29,12 @@ import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import AdultContentGate from '../adult-content-gate'
 import useAdultContentGate from '../../hooks/useAdultContentGate'
 import Markdown from '../markdown'
+import InfoMessage from '../info-message'
+import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
+import {
+  ImageConvertQueueItem,
+  CollectionNames as ImageConvertQueueCollectionNames,
+} from '../../modules/imageconvertqueue'
 
 const useStyles = makeStyles({
   output: {
@@ -78,6 +84,15 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
   const classes = useStyles()
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [allowContent] = useAdultContentGate(`attachment_${attachmentId}`)
+  const [, , imageConvertQueueItems] = useDatabaseQuery<ImageConvertQueueItem>(
+    ImageConvertQueueCollectionNames.ImageConvertQueue,
+    isEditor
+      ? [
+          ['parenttable', Operators.EQUALS, CollectionNames.Attachments],
+          ['parent', Operators.EQUALS, attachmentId],
+        ]
+      : false
+  )
 
   if (isLoading) {
     return <LoadingIndicator message="Loading attachment..." />
@@ -111,11 +126,6 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
           content={attachment.description || 'View this tutorial.'}
         />
       </Helmet>
-      {/* {attachment.approvalstatus !== ApprovalStatus.Approved ? (
-        <WarningMessage>
-          This attachment has not been approved by staff yet
-        </WarningMessage>
-      ) : null} */}
       {attachment.editornotes && (
         <PublicEditorNotes notes={attachment.editornotes} />
       )}
@@ -186,6 +196,11 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
             onDone={hydrate}
             comments="Note: Attachments waiting for approval are still public"
           />
+          {imageConvertQueueItems ? (
+            <InfoMessage>
+              Image convert queue: {imageConvertQueueItems[0].status}
+            </InfoMessage>
+          ) : null}
         </>
       )}
     </>
