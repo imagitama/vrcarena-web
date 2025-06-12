@@ -1,12 +1,6 @@
 import React, { Fragment } from 'react'
-import Checkbox from '@mui/material/Checkbox'
-import FormControlLabel from '@mui/material/FormControlLabel'
-
-// TODO: Re-use
-interface Option {
-  value: string
-  label: string
-}
+import CheckboxInput from '../../../checkbox-input'
+import { Option } from '../../../../editable-fields'
 
 export default ({
   onChange,
@@ -21,17 +15,12 @@ export default ({
     {options.map(({ value: optionValue, label }) => {
       const isChecked = value === optionValue
       return (
-        <Fragment key={optionValue}>
-          <FormControlLabel
-            label={label}
-            control={
-              <Checkbox
-                onChange={() => onChange(optionValue)}
-                checked={isChecked}
-              />
-            }
-          />
-        </Fragment>
+        <CheckboxInput
+          key={optionValue}
+          label={label}
+          onChange={() => onChange(optionValue)}
+          value={isChecked}
+        />
       )
     })}
   </>

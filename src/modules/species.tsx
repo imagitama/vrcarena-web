@@ -4,6 +4,7 @@ import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../config'
 import { EditableField } from '../editable-fields'
 import { bucketNames } from '../file-uploading'
 import { fieldTypes } from '../generic-forms'
+import { AccessStatus } from './common'
 
 export interface SpeciesFields extends Record<string, any> {
   parent: string
@@ -113,5 +114,14 @@ export const editableFields: EditableField<Species>[] = [
         <SpeciesResultItem speciesItem={item} />
       ),
     },
+  },
+  {
+    name: 'accessstatus',
+    label: 'Access',
+    type: fieldTypes.singlechoice,
+    options: [AccessStatus.Public, AccessStatus.Deleted].map((item) => ({
+      label: item,
+      value: item,
+    })),
   },
 ]
