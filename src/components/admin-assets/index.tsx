@@ -12,7 +12,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
-import FilterListIcon from '@mui/icons-material/FilterList'
 
 import {
   PublishStatus,
@@ -32,14 +31,14 @@ import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
 import { colorPalette } from '../../config'
 
 import Button from '../button'
-import PaginatedView from '../paginated-view'
+import PaginatedView, { GetQueryFn } from '../paginated-view'
 import EditorRecordManager from '../editor-record-manager'
-import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
 import AssetOverview from '../asset-overview'
 import useStorage from '../../hooks/useStorage'
 import AssetEditorWithSync from '../asset-editor-with-sync'
-import { GetQuery } from '../../data-store'
+import { EqualActiveFilter, FilterSubType, FilterType } from '../../filters'
+import UsernameLink from '../username-link'
 
 const useStyles = makeStyles({
   pass: {
@@ -119,7 +118,7 @@ function AssetsTable({
   hydrate?: () => void
 }) {
   return (
-    <Paper>
+    <>
       <Table>
         <TableHead>
           <TableRow>
@@ -148,11 +147,13 @@ function AssetsTable({
                 speciesnames,
                 publishedat,
                 sourceurl,
+                createdby,
+                createdbyusername,
               } = asset
               return (
                 <TableRow key={id}>
                   <TableCell>
-                    <AssetResultsItem asset={asset} />
+                    <AssetResultsItem asset={asset} showState />
                     {publishedat ? (
                       <>
                         Published <FormattedDate date={publishedat} />
@@ -160,6 +161,8 @@ function AssetsTable({
                     ) : null}
                   </TableCell>
                   <TableCell>
+                    Submitted by{' '}
+                    <UsernameLink username={createdbyusername} id={createdby} />
                     <ul>
                       <AssetApprovalChecklistItem
                         label="Source"
@@ -255,7 +258,7 @@ function AssetsTable({
           )}
         </TableBody>
       </Table>
-    </Paper>
+    </>
   )
 }
 
@@ -277,18 +280,14 @@ const Renderer = ({
     return <Queue assets={items} hydrate={hydrate!} />
   }
 
-  return (
-    <>
-      <AssetsTable assets={items} hydrate={hydrate} />
-    </>
-  )
+  return <AssetsTable assets={items} hydrate={hydrate} />
 }
 
 enum SubView {
   Pending = 'pending',
   Deleted = 'deleted',
   Declined = 'declined',
-  Approved = 'approved',
+  Visible = 'visible',
   Archived = 'archived',
 }
 
@@ -298,26 +297,6 @@ enum StorageKeys {
 }
 
 const analyticsCategoryName = 'AdminAssets'
-
-const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
-  const [val, setVal] = useState('')
-  return (
-    <>
-      <TextInput
-        onChange={(e) => setVal(e.target.value)}
-        value={val}
-        placeholder="Filter by user ID"
-        size="small"
-      />
-      <Button
-        onClick={() => onChange(val)}
-        icon={<FilterListIcon />}
-        color="secondary"
-        size="small"
-      />
-    </>
-  )
-}
 
 const Queue = ({
   assets,
@@ -388,20 +367,28 @@ const Queue = ({
   )
 }
 
+const filters = [
+  {
+    fieldName: 'createdby',
+    type: FilterType.Equal,
+    subType: FilterSubType.UserId,
+    label: 'User',
+  },
+]
+
 const AdminAssets = () => {
   const [selectedView, setSelectedView] = useStorage(
     StorageKeys.View,
     View.List
   )
-  const [selectedSubView, setSelectedSubView] = useStorage(
-    StorageKeys.SubView,
-    SubView.Pending
-  )
-  const [userIdToFilter, setUserIdToFilter] = useState('')
-  const getQuery = useCallback(
-    (query: GetQuery<FullAsset>): GetQuery<FullAsset> => {
-      if (userIdToFilter) {
-        query = query.eq('createdby', userIdToFilter)
+  const getQuery = useCallback<GetQueryFn<FullAsset, SubView, typeof filters>>(
+    (query, selectedSubView, activeFilters) => {
+      const userIdFilter = activeFilters.find(
+        (filter) => filter.fieldName === 'createdby'
+      ) as EqualActiveFilter<FullAsset>
+
+      if (userIdFilter && userIdFilter.value) {
+        query = query.eq('createdby', userIdFilter.value)
       }
 
       switch (selectedSubView) {
@@ -420,7 +407,7 @@ const AdminAssets = () => {
           query = query.eq('accessstatus', AccessStatus.Archived)
           break
 
-        case SubView.Approved:
+        case SubView.Visible:
           query = query
             .eq('publishstatus', PublishStatus.Published)
             .eq('approvalstatus', ApprovalStatus.Approved)
@@ -436,18 +423,15 @@ const AdminAssets = () => {
 
       return query
     },
-    [userIdToFilter, selectedSubView, selectedView] // subscribe to selectedView as queue does not hydrate anything
+    [selectedView]
   )
-
-  const toggleSubView = (subView: SubView) =>
-    setSelectedSubView(selectedSubView === subView ? SubView.Pending : subView)
 
   return (
     <PaginatedView<FullAsset>
+      // cannot re-use other paginated views because "publishedat" field does not exist for them
+      name="view-admin-assets"
       viewName={ViewNames.GetFullAssets}
       getQuery={getQuery}
-      // cannot re-use other paginated views because "publishedat" field does not exist for them
-      sortKey="view-admin-assets"
       sortOptions={[
         {
           label: 'Publish date',
@@ -467,6 +451,30 @@ const AdminAssets = () => {
         ':tabName',
         'assets'
       )}
+      subViews={[
+        {
+          id: SubView.Pending,
+          label: 'Pending',
+          defaultActive: true,
+        },
+        {
+          id: SubView.Deleted,
+          label: 'Deleted',
+        },
+        {
+          id: SubView.Declined,
+          label: 'Declined',
+        },
+        {
+          id: SubView.Visible,
+          label: 'Visible',
+        },
+        {
+          id: SubView.Archived,
+          label: 'Archived',
+        },
+      ]}
+      filters={filters}
       extraControlsLeft={[
         <Button
           icon={
@@ -486,89 +494,6 @@ const AdminAssets = () => {
           size="small">
           Queue Mode
         </Button>,
-      ]}
-      extraControls={[
-        <Button
-          icon={
-            selectedSubView === SubView.Pending ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            setSelectedSubView(SubView.Pending)
-            trackAction(analyticsCategoryName, 'Click on view pending assets')
-          }}
-          color="secondary"
-          size="small">
-          Pending
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === SubView.Approved ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            setSelectedSubView(SubView.Approved)
-            trackAction(analyticsCategoryName, 'Click on view approved assets')
-          }}
-          color="secondary"
-          size="small">
-          Approved
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === SubView.Declined ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            setSelectedSubView(SubView.Declined)
-            trackAction(analyticsCategoryName, 'Click on view declined assets')
-          }}
-          color="secondary"
-          size="small">
-          Declined
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === SubView.Deleted ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            toggleSubView(SubView.Deleted)
-            trackAction(analyticsCategoryName, 'Click on view deleted assets')
-          }}
-          color="secondary"
-          size="small">
-          Deleted
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === SubView.Archived ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            toggleSubView(SubView.Archived)
-            trackAction(analyticsCategoryName, 'Click on view archived assets')
-          }}
-          color="secondary"
-          size="small">
-          Archived
-        </Button>,
-        <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,
       ]}>
       <Renderer selectedView={selectedView} />
     </PaginatedView>

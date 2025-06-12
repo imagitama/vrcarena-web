@@ -4,6 +4,7 @@ import React, {
   createContext,
   useCallback,
   useState,
+  useEffect,
 } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@mui/styles'
@@ -40,6 +41,16 @@ import {
   PublishStatus,
 } from '../../modules/common'
 import ErrorBoundary from '../error-boundary'
+import {
+  ActiveFilter,
+  EqualActiveFilter,
+  Filter,
+  FilterType,
+  MultichoiceActiveFilter,
+} from '../../filters'
+import useFilters from '../../hooks/useFilters'
+import Filters from '../filters'
+import useStorage from '../../hooks/useStorage'
 
 const useStyles = makeStyles({
   root: {
@@ -51,6 +62,7 @@ const useStyles = makeStyles({
   },
   controlsLeft: {
     display: 'flex',
+    marginRight: 'auto',
     '& > *:first-child': {
       marginLeft: 'auto',
     },
@@ -60,7 +72,6 @@ const useStyles = makeStyles({
     },
   },
   controlsRight: {
-    width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'end',
@@ -79,23 +90,27 @@ const useStyles = makeStyles({
   control: {
     marginLeft: '0.5rem',
   },
+  rendererWrapper: {
+    marginTop: '0.5rem',
+  },
 })
 
 const limitPerPage = 50
 
-type Filters = { [fieldName: string]: string | null }
-
-export type GetQueryFn<TRecord> = (
+export type GetQueryFn<TRecord, SubViewEnum = any, TFilters = Filter<any>[]> = (
   currentQuery: GetQuery<TRecord>,
-  selectedSubView: string | null
+  selectedSubView: SubViewEnum | null,
+  activeFilters: ActiveFilter<any>[]
 ) => GetQuery<TRecord> | Promise<GetQuery<TRecord>>
 
 interface SubViewConfig {
-  id: string | number | null
+  id: string
   label: string
+  defaultActive?: boolean
 }
 
 interface PaginatedViewData<TRecord> {
+  name?: string
   viewName?: string
   editorViewName?: string
   collectionName?: string
@@ -107,8 +122,8 @@ interface PaginatedViewData<TRecord> {
   renderer: React.ReactElement
   urlWithPageNumberVar: string
   selectedSubView: string | null
-  filters: Filters
-  setFilters: (newFilters: Filters) => void
+  filtersKey: string
+  // filters: Filters
   internalPageNumber: number | null
   setInternalPageNumber: (newPageNumber: number) => void
   subViews?: SubViewConfig[]
@@ -125,34 +140,38 @@ export const usePaginatedView = (): PaginatedViewData<any> =>
 export interface RendererProps<T> {
   items: T[]
   hydrate: () => void
+  selectedSubView: string | null
+  activeFilters: ActiveFilter<any>[]
 }
 
 const Page = () => {
+  const classes = useStyles()
   const { push } = useHistory()
   const { pageNumber = '1' } = useParams<{ pageNumber: string }>()
   const isEditor = useIsEditor()
   const {
+    name,
     viewName,
     editorViewName,
     collectionName,
     select,
     getQuery,
-    sortKey,
     sortOptions,
     defaultFieldName,
     defaultDirection,
     renderer,
     urlWithPageNumberVar,
     selectedSubView,
-    filters,
     internalPageNumber,
     setInternalPageNumber,
     getQueryString,
     whereClauses,
   } = usePaginatedView()
+  const keyPrefix = name || viewName || collectionName
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
+  const [activeFilters] = useFilters(`${keyPrefix}_filters`)
   const [sorting] = useSorting(
-    sortKey,
+    `${keyPrefix}_sorting`,
     defaultFieldName as string,
     defaultDirection
   )
@@ -183,6 +202,13 @@ const Page = () => {
         count: 'exact' | 'planned' | 'estimated' | null | undefined
       } = { count: 'exact' }
 
+      console.debug(`PaginatedView.getQuery`, {
+        collectionName,
+        viewName,
+        selectedSubView,
+        activeFilters,
+      })
+
       if (whereClauses) {
         return
       }
@@ -205,19 +231,41 @@ const Page = () => {
       } else if (collectionName) {
         query = supabase.from(collectionName)
         query = query.select(select, selectOptions)
-      } else {
-        throw new Error(
-          'Cannot render PaginatedView: need view or collection name'
-        )
       }
 
       if (getQuery) {
-        query = getQuery(query, selectedSubView)
+        query = getQuery(query, selectedSubView, activeFilters)
       }
 
-      for (const [fieldName, fieldValue] of Object.entries(filters)) {
-        if (fieldValue) {
-          query = query.eq(fieldName, fieldValue)
+      for (const activeFilter of activeFilters) {
+        switch (activeFilter.type) {
+          case FilterType.Equal:
+            if ((activeFilter as EqualActiveFilter<any>).value) {
+              query = query.eq(
+                activeFilter.fieldName,
+                (activeFilter as EqualActiveFilter<any>).value
+              )
+              console.debug(
+                `filter eq`,
+                activeFilter.fieldName,
+                (activeFilter as EqualActiveFilter<any>).value
+              )
+            }
+            break
+
+          case FilterType.Multichoice:
+            if ((activeFilter as MultichoiceActiveFilter<any, any>).value) {
+              query = query.in(
+                activeFilter.fieldName,
+                (activeFilter as MultichoiceActiveFilter<any, any>).value
+              )
+              console.debug(
+                `filter in`,
+                activeFilter.fieldName,
+                (activeFilter as MultichoiceActiveFilter<any, any>).value
+              )
+            }
+            break
         }
       }
 
@@ -237,6 +285,8 @@ const Page = () => {
         })
       }
 
+      console.debug('return query', query)
+
       return query
     },
     [
@@ -245,7 +295,14 @@ const Page = () => {
       currentPageNumber,
       sorting ? `${sorting.fieldName}.${sorting.direction}` : null,
       selectedSubView,
-      Object.values(filters).join('+'),
+      Object.values(activeFilters)
+        .map(
+          (filter) =>
+            `${filter.fieldName}_${(
+              filter as EqualActiveFilter<any>
+            ).value.toString()}_${filter.direction}`
+        )
+        .join('+'),
       isEditor,
     ]
   )
@@ -317,10 +374,14 @@ const Page = () => {
           invalid and has been reset
         </WarningMessage>
       )}
-      {React.cloneElement(renderer, {
-        items,
-        hydrate,
-      })}
+      <div className={classes.rendererWrapper}>
+        {React.cloneElement<RendererProps<any>>(renderer, {
+          items,
+          hydrate,
+          selectedSubView,
+          activeFilters,
+        })}
+      </div>
       {totalCount ? (
         <PagesNavigation
           currentPageNumber={currentPageNumber}
@@ -359,7 +420,7 @@ const Control = ({ children }: { children: React.ReactNode }) => {
   return <div className={classes.control}>{children}</div>
 }
 
-const clearId = 'clear'
+const clearId = '__clear'
 
 const CommonMetaControl = ({
   label,
@@ -370,17 +431,21 @@ const CommonMetaControl = ({
   fieldName: string
   fieldMap: { [key: string]: string }
 }) => {
-  const { filters, setFilters } = usePaginatedView()
+  const { filtersKey } = usePaginatedView()
+  const [activeFilters, setActiveFilters] = useFilters(filtersKey)
 
-  const onSelect = (newVal: string) =>
-    setFilters({
-      [fieldName]: newVal === clearId ? null : newVal,
-    })
+  const onSelect = (newVal: string) => {}
+  // setFilters({
+  //   [fieldName]: newVal === clearId ? null : newVal,
+  // })
+
+  const activeFilter = activeFilters.find(
+    (filter) => filter.fieldName === fieldName
+  )
 
   return (
     <ButtonDropdown
-      // @ts-ignore
-      selectedId={filters[fieldName] ? filters[fieldName] : clearId}
+      selectedId={activeFilter ? activeFilter.fieldName : clearId}
       options={Object.entries(fieldMap)
         .map(([key, val]) => ({ id: val, label: key }))
         .concat([{ id: clearId, label: 'Default' }])}
@@ -395,19 +460,19 @@ const CommonMetaControl = ({
 const subViewConfigAll: SubViewConfig[] = [
   {
     label: 'All',
-    id: null,
+    id: 'all',
   },
 ]
 
 export interface PaginatedViewProps<TRecord> {
+  name?: string
   viewName?: string
   editorViewName?: string
   collectionName?: string
   select?: string
   getQuery?: GetQueryFn<TRecord>
-  sortKey?: string
   sortOptions?: SortOption<TRecord>[]
-  defaultFieldName?: keyof TRecord
+  defaultFieldName?: Extract<keyof TRecord, string>
   defaultDirection?: OrderDirections
   children?: React.ReactElement
   extraControls?: React.ReactElement[]
@@ -419,15 +484,16 @@ export interface PaginatedViewProps<TRecord> {
   getQueryString?: () => string
   limit?: number
   whereClauses?: WhereClause<TRecord>[]
+  filters?: Filter<TRecord>[]
 }
 
 const PaginatedView = <TRecord,>({
+  name, // for sort/filter keys
   viewName,
   editorViewName,
   collectionName,
   select = '*',
   getQuery = undefined,
-  sortKey = undefined,
   sortOptions = [],
   defaultFieldName = undefined,
   defaultDirection,
@@ -437,6 +503,7 @@ const PaginatedView = <TRecord,>({
   urlWithPageNumberVar = '',
   createUrl,
   subViews,
+  filters,
   showCommonMetaControls = false,
   getQueryString = undefined,
   limit = undefined,
@@ -446,10 +513,16 @@ const PaginatedView = <TRecord,>({
     throw new Error('Cannot render cached view without a renderer!')
   }
 
-  const [selectedSubView, setSelectedSubView] = useState<
-    string | number | null
-  >(null)
-  const [filters, setFilters] = useState({})
+  const keyPrefix = name || viewName || collectionName
+
+  const defaultSubView =
+    subViews && subViews.find((subViewConfig) => subViewConfig.defaultActive)
+
+  const [selectedSubView, setSelectedSubView] = useStorage<string | null>(
+    `${keyPrefix}_subview`,
+    defaultSubView ? defaultSubView.id : null
+  )
+
   const classes = useStyles()
   const isEditor = useIsEditor()
   const { pageNumber = '1' } = useParams<{ pageNumber: string }>()
@@ -466,12 +539,12 @@ const PaginatedView = <TRecord,>({
     <ErrorBoundary>
       <PaginatedViewContext.Provider
         value={{
+          name,
           viewName,
           editorViewName,
           collectionName,
           select,
           getQuery,
-          sortKey,
           defaultFieldName,
           defaultDirection,
           renderer: children,
@@ -480,7 +553,6 @@ const PaginatedView = <TRecord,>({
           subViews,
           selectedSubView,
           filters,
-          setFilters,
           internalPageNumber,
           setInternalPageNumber,
           getQueryString,
@@ -488,8 +560,32 @@ const PaginatedView = <TRecord,>({
         }}>
         <div className={classes.root}>
           <div className={classes.controls}>
-            {extraControlsLeft ? (
+            {extraControlsLeft || subViews ? (
               <div className={classes.controlsLeft}>
+                {subViews ? (
+                  <ControlGroup>
+                    {subViewConfigAll
+                      .concat(subViews)
+                      .map(({ label, id }, idx) => (
+                        <Fragment key={id}>
+                          {idx !== 0 ? <>&nbsp;</> : ''}
+                          <Button
+                            onClick={() => setSelectedSubView(id)}
+                            color="secondary"
+                            size="small"
+                            icon={
+                              selectedSubView === id ? (
+                                <CheckBoxIcon />
+                              ) : (
+                                <CheckBoxOutlineBlankIcon />
+                              )
+                            }>
+                            {label}
+                          </Button>
+                        </Fragment>
+                      ))}
+                  </ControlGroup>
+                ) : null}
                 <ControlGroup>{extraControlsLeft}</ControlGroup>
               </div>
             ) : null}
@@ -515,30 +611,6 @@ const PaginatedView = <TRecord,>({
                   />
                 </ControlGroup>
               ) : null}
-              {subViews ? (
-                <ControlGroup>
-                  {subViewConfigAll
-                    .concat(subViews)
-                    .map(({ label, id }, idx) => (
-                      <Fragment key={id}>
-                        {idx !== 0 ? <>&nbsp;</> : ''}
-                        <Button
-                          onClick={() => setSelectedSubView(id)}
-                          color="secondary"
-                          size="small"
-                          icon={
-                            selectedSubView === id ? (
-                              <CheckBoxIcon />
-                            ) : (
-                              <CheckBoxOutlineBlankIcon />
-                            )
-                          }>
-                          {label}
-                        </Button>
-                      </Fragment>
-                    ))}
-                </ControlGroup>
-              ) : null}
               {extraControls ? (
                 <ControlGroup>
                   {extraControls.map((extraControl, idx) => (
@@ -551,14 +623,18 @@ const PaginatedView = <TRecord,>({
                   ))}
                 </ControlGroup>
               ) : null}
+              {filters ? (
+                <Filters
+                  filters={filters}
+                  storageKey={`${keyPrefix}_filters`}
+                />
+              ) : null}
               {sortOptions.length ? (
                 <ControlGroup>
                   <Control>
                     <SortControls
                       options={sortOptions}
-                      // @ts-ignore
-                      sortKey={sortKey}
-                      // @ts-ignore
+                      sortKey={`${keyPrefix}_sorting`}
                       defaultFieldName={defaultFieldName}
                     />
                   </Control>

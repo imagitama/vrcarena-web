@@ -1,12 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useLocation, useParams } from 'react-router'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
-import Button from '../../components/button'
 
 import { getCategoryMeta } from '../../category-meta'
 import * as routes from '../../routes'
@@ -16,7 +13,6 @@ import Link from '../../components/link'
 import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 import AssetsPaginatedView from '../../components/assets-paginated-view'
 import { GetQuery } from '../../data-store'
-import ErrorBoundary from '../../components/error-boundary'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   const category = getCategoryMeta(categoryName)
@@ -40,10 +36,6 @@ const ViewCategoryView = () => {
     },
     [categoryName]
   )
-  const [groupByAreaEnabled, setGroupByAreaEnabled] = useState(true)
-
-  const toggleGroupByArea = () =>
-    setGroupByAreaEnabled((currentVal) => !currentVal)
 
   return (
     <>
@@ -63,9 +55,9 @@ const ViewCategoryView = () => {
       <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
       <AreaNavigation categoryName={categoryName} />
       <AssetsPaginatedView
+        name="view-category"
         viewName={ViewNames.GetPublicAssets}
         getQuery={getQuery}
-        sortKey="view-category"
         sortOptions={[
           {
             label: 'Submission date',
@@ -81,22 +73,9 @@ const ViewCategoryView = () => {
           ':categoryName',
           categoryName
         )}
-        extraControls={[
-          <Button
-            onClick={() => toggleGroupByArea()}
-            icon={
-              groupByAreaEnabled ? (
-                <CheckBoxIcon />
-              ) : (
-                <CheckBoxOutlineBlankIcon />
-              )
-            }>
-            Group By Area
-          </Button>,
-        ]}
         getQueryString={() => `category:${categoryName}`}
         categoryName={categoryName}
-        groupByAreaEnabled={groupByAreaEnabled}
+        defaultGroupByArea
       />
     </>
   )

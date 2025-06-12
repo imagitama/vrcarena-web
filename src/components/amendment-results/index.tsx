@@ -4,12 +4,11 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
 
 import AmendmentResultsItem from '../amendment-results-item'
-import ErrorMessage from '../error-message'
 import useIsEditor from '../../hooks/useIsEditor'
 import { FullAmendment } from '../../modules/amendments'
+import NoResultsMessage from '../no-results-message'
 
 export default ({
   results,
@@ -20,28 +19,26 @@ export default ({
 }) => {
   const isEditor = useIsEditor()
   return results.length ? (
-    <Paper>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {showParentDetails && <TableCell>Parent</TableCell>}
-            <TableCell />
-            <TableCell>Meta</TableCell>
-            {isEditor ? <TableCell>Status</TableCell> : null}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {results.map((result) => (
-            <AmendmentResultsItem
-              key={result.id}
-              result={result}
-              showParentDetails={showParentDetails}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </Paper>
+    <Table>
+      <TableHead>
+        <TableRow>
+          {showParentDetails && <TableCell>Parent</TableCell>}
+          <TableCell />
+          <TableCell>Meta</TableCell>
+          {isEditor ? <TableCell>Status</TableCell> : null}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {results.map((result) => (
+          <AmendmentResultsItem
+            key={result.id}
+            result={result}
+            showParentDetails={showParentDetails}
+          />
+        ))}
+      </TableBody>
+    </Table>
   ) : (
-    <ErrorMessage>No results</ErrorMessage>
+    <NoResultsMessage>No amendments to display</NoResultsMessage>
   )
 }

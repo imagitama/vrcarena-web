@@ -46,7 +46,7 @@ const AuthorsView = () => {
         viewName={ViewNames.GetFullAuthors}
         editorViewName={ViewNames.GetFullAuthors}
         getQuery={getQuery}
-        sortKey="authors"
+        name="authors"
         sortOptions={[
           {
             label: 'Name',

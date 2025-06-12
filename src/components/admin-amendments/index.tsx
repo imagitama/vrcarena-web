@@ -1,17 +1,12 @@
-import React, { useState, useCallback } from 'react'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import React, { useCallback } from 'react'
 
 import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
-
-import Button from '../button'
 import PaginatedView, { GetQueryFn } from '../paginated-view'
 import AmendmentResults from '../amendment-results'
-import TextInput from '../text-input'
 import { FullAmendment, ViewNames } from '../../modules/amendments'
 import NoResultsMessage from '../no-results-message'
 import { ApprovalStatus } from '../../modules/common'
+import { EqualActiveFilter } from '../../filters'
 
 const Renderer = ({ items }: { items?: FullAmendment[] }) =>
   items ? (
@@ -20,69 +15,47 @@ const Renderer = ({ items }: { items?: FullAmendment[] }) =>
     <NoResultsMessage>No amendments found</NoResultsMessage>
   )
 
-const subViews = {
-  WAITING: 0,
-  APPROVED: 1,
-  REJECTED: 2,
-}
-
-const analyticsCategoryName = 'AdminAmendments'
-
-const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
-  const [val, setVal] = useState('')
-  return (
-    <>
-      <TextInput
-        onChange={(e) => setVal(e.target.value)}
-        value={val}
-        placeholder="User ID"
-        size="small"
-      />
-      <Button onClick={() => onChange(val)}>Apply</Button>
-    </>
-  )
+enum SubView {
+  Pending = 'pending',
+  Approved = 'approved',
+  Declined = 'declined',
 }
 
 export default () => {
-  const [selectedSubView, setSelectedSubView] = useState(subViews.WAITING)
-  const [userIdToFilter, setUserIdToFilter] = useState('')
-  const getQuery = useCallback<GetQueryFn<FullAmendment>>(
-    (query) => {
-      if (userIdToFilter) {
-        query = query.eq('createdby', userIdToFilter)
+  const getQuery = useCallback<GetQueryFn<FullAmendment, SubView>>(
+    (query, selectedSubView, activeFilters) => {
+      const userIdFilter = activeFilters.find(
+        (filter) => filter.fieldName === 'createdby'
+      ) as EqualActiveFilter<FullAmendment>
+
+      if (userIdFilter && userIdFilter.value) {
+        query = query.eq('createdby', userIdFilter.value)
       }
 
       switch (selectedSubView) {
-        case subViews.WAITING:
-          query = query.eq('approvalstatus', ApprovalStatus.Waiting)
-          break
-
-        case subViews.APPROVED:
+        case SubView.Approved:
           query = query.eq('approvalstatus', ApprovalStatus.Approved)
           break
 
-        case subViews.REJECTED:
+        case SubView.Declined:
           query = query.eq('approvalstatus', ApprovalStatus.Declined)
+
+        case SubView.Pending:
+        default:
+          query = query.eq('approvalstatus', ApprovalStatus.Waiting)
+          break
       }
 
       return query
     },
-    [userIdToFilter, selectedSubView]
+    []
   )
-
-  const toggleSubView = (subView: number) =>
-    setSelectedSubView((currentVal) => {
-      if (currentVal === subView) {
-        return subViews.WAITING
-      }
-      return subView
-    })
 
   return (
     <PaginatedView<FullAmendment>
+      name="admin-amendments"
       viewName={ViewNames.GetFullAmendments}
       getQuery={getQuery}
-      sortKey="view-amendments"
       sortOptions={[
         {
           label: 'Submission date',
@@ -94,62 +67,20 @@ export default () => {
         ':tabName',
         'amendments'
       )}
-      extraControls={[
-        <Button
-          icon={
-            selectedSubView === subViews.WAITING ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            setSelectedSubView(subViews.WAITING)
-            trackAction(
-              analyticsCategoryName,
-              'Click on view waiting amendments'
-            )
-          }}
-          color="secondary">
-          Waiting
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === subViews.APPROVED ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            toggleSubView(subViews.APPROVED)
-            trackAction(
-              analyticsCategoryName,
-              'Click on view approved amendments'
-            )
-          }}
-          color="secondary">
-          Approved
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === subViews.REJECTED ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            toggleSubView(subViews.REJECTED)
-            trackAction(
-              analyticsCategoryName,
-              'Click on view rejected amendments'
-            )
-          }}
-          color="secondary">
-          Rejected
-        </Button>,
-        <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,
+      subViews={[
+        {
+          id: SubView.Pending,
+          label: 'Pending',
+          defaultActive: true,
+        },
+        {
+          id: SubView.Approved,
+          label: 'Approved',
+        },
+        {
+          id: SubView.Declined,
+          label: 'Declined',
+        },
       ]}>
       <Renderer />
     </PaginatedView>

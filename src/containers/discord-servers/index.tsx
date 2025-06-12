@@ -31,7 +31,7 @@ const DiscordServersView = () => {
       <PaginatedView<DiscordServer>
         viewName={ViewNames.GetPublicDiscordServers}
         editorViewName={ViewNames.GetFullDiscordServers}
-        sortKey="discord-servers"
+        name="discord-servers"
         defaultFieldName="name"
         urlWithPageNumberVar={routes.viewDiscordServersWithPageNumberVar}
         createUrl={routes.createDiscordServer}

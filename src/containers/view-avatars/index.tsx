@@ -46,33 +46,30 @@ const ViewAvatarsView = () => {
           content={getDescriptionByCategoryName(categoryName)}
         />
       </Helmet>
-
-      <div>
-        <Heading variant="h1">
-          {getDisplayNameByCategoryName(categoryName)}
-        </Heading>
-        <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
-        <AssetsPaginatedView
-          getQuery={getQuery}
-          sortKey="view-avatars"
-          extraControls={[
-            <Button
-              url={routes.viewAllSpecies}
-              icon={<PetsIcon />}
-              color="secondary">
-              Browse All Species
-            </Button>,
-            <Button
-              url={routes.randomAvatars}
-              icon={<ShuffleIcon />}
-              color="secondary">
-              Random
-            </Button>,
-          ]}
-          urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
-          getQueryString={() => `category:${AssetCategory.Avatar}`}
-        />
-      </div>
+      <Heading variant="h1">
+        {getDisplayNameByCategoryName(categoryName)}
+      </Heading>
+      <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
+      <AssetsPaginatedView
+        getQuery={getQuery}
+        name="view-avatars"
+        extraControls={[
+          <Button
+            url={routes.viewAllSpecies}
+            icon={<PetsIcon />}
+            color="secondary">
+            Browse All Species
+          </Button>,
+          <Button
+            url={routes.randomAvatars}
+            icon={<ShuffleIcon />}
+            color="secondary">
+            Random
+          </Button>,
+        ]}
+        urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
+        getQueryString={() => `category:${AssetCategory.Avatar}`}
+      />
     </>
   )
 }

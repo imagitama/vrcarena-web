@@ -48,7 +48,7 @@ const TabAssets = () => {
       <PaginatedView<PublicAsset>
         viewName={ViewNames.GetFullAssets}
         getQuery={getQuery}
-        sortKey="view-user-assets"
+        name="view-user-assets"
         sortOptions={[
           {
             label: 'Submission date',

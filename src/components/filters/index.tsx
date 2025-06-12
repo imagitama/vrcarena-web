@@ -1,14 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 
-import useFilters, { StoredFilter } from '../../hooks/useFilters'
+import useFilters from '../../hooks/useFilters'
 import Button from '../button'
 import TextInput from '../text-input'
 import Select, { MenuItem } from '../select'
 import useUserId from '../../hooks/useUserId'
 import ButtonDropdown from '../button-dropdown'
+import {
+  ActiveFilter,
+  EqualFilter,
+  Filter,
+  FilterSubType,
+  FilterType,
+  MultichoiceFilter,
+} from '../../filters'
+import { Filter as FilterIcon } from '../../icons'
 
 const useStyles = makeStyles({
   root: {
@@ -21,6 +30,7 @@ const useStyles = makeStyles({
   },
   filter: {
     padding: '0.25rem',
+    display: 'flex',
   },
 })
 
@@ -31,7 +41,7 @@ const UserIdInput = ({
   onChange: (value: null | string) => void
   value: any
 }) => {
-  const userId = useUserId()
+  const myUserId = useUserId()
   const [userIdText, setUserIdText] = useState(value)
 
   return (
@@ -43,12 +53,13 @@ const UserIdInput = ({
           setUserIdText(e.target.value)
           onChange(e.target.value)
         }}
+        size="small"
       />
-      {userId ? (
+      {myUserId ? (
         <Button
           onClick={() => {
-            setUserIdText(userId)
-            onChange(userId)
+            setUserIdText(myUserId)
+            onChange(myUserId)
           }}
           color="secondary"
           size="small">
@@ -68,27 +79,24 @@ const EqualInput = ({
   onChange: (value: null | string) => void
   value: any
 }) => {
-  const [text, setText] = useState(value)
+  if (filter.subType === FilterSubType.UserId) {
+    return <UserIdInput value={value} onChange={(newId) => onChange(newId)} />
+  }
 
   return (
     <>
       <TextInput
-        label="Filter"
-        value={text}
+        label={filter.label || 'Equals'}
+        value={value}
         onChange={(e) => {
-          setText(e.target.value)
           onChange(e.target.value)
         }}
+        size="small"
       />
       {filter.suggestions ? (
-        <Select label="Suggestions">
+        <Select label="Suggestions" size="small">
           {filter.suggestions.map((suggestion) => (
-            <MenuItem
-              key={suggestion}
-              onClick={() => {
-                setText(suggestion)
-                onChange(suggestion)
-              }}>
+            <MenuItem key={suggestion} onClick={() => onChange(suggestion)}>
               {suggestion}
             </MenuItem>
           ))}
@@ -116,8 +124,6 @@ const FilterRenderer = ({
           onChange={onChange}
         />
       )
-    case FilterType.UserId:
-      return <UserIdInput value={value} onChange={onChange} />
     case FilterType.Multichoice:
       return (
         <MultichoiceInput
@@ -151,7 +157,7 @@ const MultichoiceInput = ({
 
   return (
     <ButtonDropdown
-      label="Status"
+      label={filter.label || 'Select an option'}
       color="secondary"
       options={filter.options.map((enumKey) => ({
         id: enumKey,
@@ -160,6 +166,7 @@ const MultichoiceInput = ({
       selectedIds={actualValue}
       onSelect={onSelect}
       closeOnSelect={false}
+      size="small"
     />
   )
 }
@@ -193,34 +200,6 @@ function FilterControl({
   )
 }
 
-export enum FilterType {
-  Equal,
-  UserId,
-  Multichoice,
-}
-
-interface BaseFilter<TRecord> {
-  fieldName: Extract<keyof TRecord, string>
-  type: FilterType
-  label: string
-}
-
-interface EqualFilter<TRecord> extends BaseFilter<TRecord> {
-  type: FilterType.Equal
-  suggestions?: string[]
-}
-
-interface MultichoiceFilter<TRecord, TEnum> extends BaseFilter<TRecord> {
-  type: FilterType.Multichoice
-  options: TEnum[]
-  default: TEnum[]
-}
-
-export type Filter<TRecord, TEnum = undefined> =
-  | MultichoiceFilter<TRecord, TEnum>
-  | EqualFilter<TRecord>
-  | BaseFilter<TRecord>
-
 const Filters = <T,>({
   filters,
   storageKey,
@@ -230,7 +209,7 @@ const Filters = <T,>({
 }) => {
   const [activeFilters, setActiveFilters] = useFilters<T>(storageKey)
   const [unappliedFilters, setUnappliedFilters] =
-    useState<StoredFilter<T>[]>(activeFilters)
+    useState<ActiveFilter<T>[]>(activeFilters)
   const classes = useStyles()
 
   const toggleFilter = (filter: Filter<T>) => {
@@ -243,12 +222,10 @@ const Filters = <T,>({
           )
         : unappliedFilters.concat([
             {
-              fieldName: filter.fieldName,
+              ...filter,
               value: null,
             },
           ])
-
-    console.debug(`toggleFilter`, filter.fieldName, { newFilters })
 
     setUnappliedFilters(newFilters)
   }
@@ -263,13 +240,16 @@ const Filters = <T,>({
         : unappliedFilter
     )
 
-    console.debug(`changeFilter`, filter.fieldName, newVal)
-
     setUnappliedFilters(newFilters)
   }
 
-  const onApply = () =>
-    setActiveFilters(unappliedFilters.filter((filter) => filter.value !== null))
+  const onApply = () => {
+    const newActiveFilters = unappliedFilters.filter(
+      (filter) => filter.value !== null
+    )
+
+    setActiveFilters(newActiveFilters)
+  }
 
   return (
     <div className={classes.root}>
@@ -297,7 +277,9 @@ const Filters = <T,>({
           />
         ))}
       </div>
-      <Button onClick={onApply}>Apply</Button>
+      <Button onClick={onApply} size="small" icon={<FilterIcon />}>
+        Apply Filters
+      </Button>
     </div>
   )
 }

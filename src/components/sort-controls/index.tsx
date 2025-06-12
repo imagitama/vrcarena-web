@@ -2,11 +2,11 @@ import React, { useRef, useState } from 'react'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import FilterListIcon from '@mui/icons-material/FilterList'
 
 import useSorting, { SortingConfig } from '../../hooks/useSorting'
 import { OrderDirections } from '../../hooks/useDatabaseQuery'
 import Button from '../button'
+import { Sort as SortIcon } from '../../icons'
 
 const getLabelForSelectedSortOption = (
   sorting: SortingConfig | null,
@@ -94,7 +94,7 @@ const SortControls = <TRecord,>({
       <span ref={buttonRef}>
         <Button
           onClick={() => setIsDropdownOpen((currentVal) => !currentVal)}
-          icon={<FilterListIcon />}
+          icon={<SortIcon />}
           color="secondary"
           size="small"
           switchIconSide>

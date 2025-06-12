@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -34,6 +33,7 @@ import {
 import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 import NoResultsMessage from '../no-results-message'
+import Paper from '../paper'
 
 interface SyncMissingAvatarSubmissionsResult {
   success: boolean
@@ -77,7 +77,7 @@ const SyncForm = ({ onDone }: { onDone: () => void }) => {
   }
 
   return (
-    <Paper style={{ padding: '1rem ' }}>
+    <Paper>
       <em>VRChat avatars are automatically synced every 30 minutes</em>
       {lastErrorMessage ? (
         <ErrorMessage>{lastErrorMessage}</ErrorMessage>
@@ -317,35 +317,33 @@ const Avatars = () => {
     <>
       <SyncForm onDone={onSynced} />
       <br />
-      <Paper>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Asset</TableCell>
-              <TableCell>Avatars</TableCell>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Asset</TableCell>
+            <TableCell>Avatars</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Object.entries(resultsByAssetId).map(([assetId, submissions]) => (
+            <TableRow key={assetId}>
+              <TableCell>
+                {/* @ts-ignore */}
+                <AssetResultsItem asset={submissions[0]} />
+              </TableCell>
+              <TableCell>
+                <ApplyAvatarsForm
+                  assetId={assetId}
+                  existingAvatarIds={submissions[0].existingavatarids}
+                  existingAvatarData={submissions[0].existingavatardata}
+                  submissions={submissions}
+                  onDone={hydrate}
+                />
+              </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.entries(resultsByAssetId).map(([assetId, submissions]) => (
-              <TableRow key={assetId}>
-                <TableCell>
-                  {/* @ts-ignore */}
-                  <AssetResultsItem asset={submissions[0]} />
-                </TableCell>
-                <TableCell>
-                  <ApplyAvatarsForm
-                    assetId={assetId}
-                    existingAvatarIds={submissions[0].existingavatarids}
-                    existingAvatarData={submissions[0].existingavatardata}
-                    submissions={submissions}
-                    onDone={hydrate}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+          ))}
+        </TableBody>
+      </Table>
     </>
   )
 }

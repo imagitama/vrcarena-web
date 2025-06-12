@@ -143,17 +143,17 @@ const useStyles = makeStyles({
   },
   // chips
   visibleToEveryone: {
-    backgroundColor: 'rgb(0, 100, 0)',
+    backgroundColor: 'rgb(0, 100, 0) !important',
   },
   waitingForApproval: {
-    backgroundColor: 'rgb(100, 100, 0)',
+    backgroundColor: 'rgb(100, 100, 0) !important',
   },
   draft: {},
   deleted: {
-    backgroundColor: 'rgb(100, 0, 0)',
+    backgroundColor: 'rgb(100, 0, 0) !important',
   },
   declined: {
-    backgroundColor: 'rgb(100, 0, 0)',
+    backgroundColor: 'rgb(100, 0, 0) !important',
   },
 })
 

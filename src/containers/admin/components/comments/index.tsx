@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -7,9 +7,6 @@ import TableRow from '@mui/material/TableRow'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ClearIcon from '@mui/icons-material/Clear'
 
-import Paper from '../../../../components/paper'
-import TextInput from '../../../../components/text-input'
-import useDataStore from '../../../../hooks/useDataStore'
 import {
   CollectionNames,
   FullComment,
@@ -24,14 +21,17 @@ import FormattedDate from '../../../../components/formatted-date'
 import UsernameLink from '../../../../components/username-link'
 import Avatar, { sizes } from '../../../../components/avatar'
 import EditorRecordManager from '../../../../components/editor-record-manager'
-import useQueryParam from '../../../../hooks/useQueryParam'
 import GenericOutputItem from '../../../../components/generic-output-item'
 import Message from '../../../../components/message'
 import { handleError } from '../../../../error-handling'
 import useSupabaseClient from '../../../../hooks/useSupabaseClient'
-import { SupabaseClient } from '@supabase/supabase-js'
 import { AccessStatus } from '../../../../modules/common'
 import CheckboxInput from '../../../../components/checkbox-input'
+import { routes } from '../../../../routes'
+import PaginatedView, {
+  RendererProps,
+} from '../../../../components/paginated-view'
+import { FilterSubType, FilterType } from '../../../../filters'
 
 const BulkControls = ({
   ids,
@@ -117,29 +117,14 @@ const BulkControls = ({
   )
 }
 
-const CommentsByUser = ({ userId }: { userId: string }) => {
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) =>
-      supabase
-        .from(ViewNames.GetFullComments)
-        .select('*', {
-          count: 'estimated',
-        })
-        .eq('createdby', userId)
-        .order('createdat', { ascending: false }),
-    [userId]
-  )
-  const [isLoadingComments, lastErrorCodeLoadingComments, comments, , hydrate] =
-    useDataStore<FullComment>(getQuery, 'user-comments')
+const CommentsByUser = ({
+  comments,
+  hydrate,
+}: {
+  comments: FullComment[]
+  hydrate: () => void
+}) => {
   const [selectedCommentIds, setSelectedCommentIds] = useState<string[]>([])
-
-  if (isLoadingComments || !comments) {
-    return <LoadingIndicator />
-  }
-
-  if (lastErrorCodeLoadingComments !== null) {
-    return <ErrorMessage>Failed to load comments</ErrorMessage>
-  }
 
   if (!comments.length) {
     return <NoResultsMessage>The user has made no comments</NoResultsMessage>
@@ -173,72 +158,70 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
         cancel={clearSelectedCommentIds}
         onDone={onBulkDelete}
       />
-      <Paper margin={selectedCommentIds.length > 0}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>User</TableCell>
-              <TableCell>Parent</TableCell>
-              <TableCell>Comment</TableCell>
-              <TableCell>Meta</TableCell>
-              <TableCell />
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>User</TableCell>
+            <TableCell>Parent</TableCell>
+            <TableCell>Comment</TableCell>
+            <TableCell>Meta</TableCell>
+            <TableCell />
+            <TableCell>
+              <CheckboxInput
+                value={isSelectingAll}
+                onChange={() => toggleSelectAll()}
+              />
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {comments.map((comment) => (
+            <TableRow
+              key={comment.id}
+              selected={selectedCommentIds.includes(comment.id)}>
+              <TableCell>
+                <Avatar url={comment.createdbyavatarurl} size={sizes.TINY} />
+                <UsernameLink
+                  username={comment.createdbyusername}
+                  id={comment.createdby}
+                />
+              </TableCell>
+              <TableCell>
+                <GenericOutputItem
+                  type={comment.parenttable}
+                  id={comment.parent}
+                />
+              </TableCell>
+              <TableCell>
+                <Markdown source={comment.comment} />
+              </TableCell>
+              <TableCell>
+                <FormattedDate date={comment.createdat} />
+              </TableCell>
+              <TableCell>
+                <EditorRecordManager
+                  id={comment.id}
+                  collectionName={CollectionNames.Comments}
+                  metaCollectionName={CollectionNames.CommentsMeta}
+                  existingAccessStatus={comment.accessstatus}
+                  existingEditorNotes={comment.editornotes}
+                  // @ts-ignore
+                  onDone={() => hydrate()}
+                  showApprovalButtons={false}
+                  showEditorNotes={false}
+                  showBox={false}
+                />
+              </TableCell>
               <TableCell>
                 <CheckboxInput
-                  value={isSelectingAll}
-                  onChange={() => toggleSelectAll()}
+                  value={selectedCommentIds.includes(comment.id)}
+                  onChange={() => toggleIsSelected(comment.id)}
                 />
               </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {comments.map((comment) => (
-              <TableRow
-                key={comment.id}
-                selected={selectedCommentIds.includes(comment.id)}>
-                <TableCell>
-                  <Avatar url={comment.createdbyavatarurl} size={sizes.TINY} />
-                  <UsernameLink
-                    username={comment.createdbyusername}
-                    id={comment.createdby}
-                  />
-                </TableCell>
-                <TableCell>
-                  <GenericOutputItem
-                    type={comment.parenttable}
-                    id={comment.parent}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Markdown source={comment.comment} />
-                </TableCell>
-                <TableCell>
-                  <FormattedDate date={comment.createdat} />
-                </TableCell>
-                <TableCell>
-                  <EditorRecordManager
-                    id={comment.id}
-                    collectionName={CollectionNames.Comments}
-                    metaCollectionName={CollectionNames.CommentsMeta}
-                    existingAccessStatus={comment.accessstatus}
-                    existingEditorNotes={comment.editornotes}
-                    // @ts-ignore
-                    onDone={() => hydrate()}
-                    showApprovalButtons={false}
-                    showEditorNotes={false}
-                    showBox={false}
-                  />
-                </TableCell>
-                <TableCell>
-                  <CheckboxInput
-                    value={selectedCommentIds.includes(comment.id)}
-                    onChange={() => toggleIsSelected(comment.id)}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+          ))}
+        </TableBody>
+      </Table>
       <BulkControls
         ids={selectedCommentIds}
         cancel={clearSelectedCommentIds}
@@ -248,26 +231,42 @@ const CommentsByUser = ({ userId }: { userId: string }) => {
   )
 }
 
-export default () => {
-  const userId = useQueryParam('userId') || ''
-  const [textInput, setTextInput] = useState(userId)
-  const [userIdToFilter, setUserIdToFilter] = useState(userId)
+const Renderer = ({ items, hydrate }: RendererProps<FullComment>) => {
+  return <CommentsByUser comments={items!} hydrate={hydrate} />
+}
 
-  const performFilter = () => setUserIdToFilter(textInput)
+const filters = [
+  {
+    fieldName: 'createdby',
+    label: 'User',
+    type: FilterType.Equal,
+    subType: FilterSubType.UserId,
+  },
+]
+
+export default () => {
+  // const userId = useQueryParam('userId') || ''
 
   return (
     <>
-      <Paper>
-        User ID:{' '}
-        <TextInput
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value)}
-          size="small"
-        />{' '}
-        <Button onClick={() => performFilter()}>Filter</Button>
-      </Paper>
-      <br />
-      {userIdToFilter ? <CommentsByUser userId={userIdToFilter} /> : null}
+      <PaginatedView<FullComment>
+        name="admin-comments"
+        viewName={ViewNames.GetFullComments}
+        sortOptions={[
+          {
+            label: 'Creation date',
+            fieldName: 'createdat',
+          },
+        ]}
+        defaultFieldName={'createdat'}
+        urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+          ':tabName',
+          'comments'
+        )}
+        filters={filters}>
+        {/* @ts-ignore */}
+        <Renderer />
+      </PaginatedView>
     </>
   )
 }

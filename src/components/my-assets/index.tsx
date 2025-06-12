@@ -1,12 +1,7 @@
-import React, { useState, useCallback } from 'react'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import React, { useCallback } from 'react'
 
 import useUserId from '../../hooks/useUserId'
 import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
-
-import Button from '../button'
 import PaginatedView, { GetQueryFn } from '../paginated-view'
 import AssetResults from '../asset-results'
 import { Asset, ViewNames } from '../../modules/assets'
@@ -30,9 +25,8 @@ const analyticsCategoryName = 'MyAccount'
 
 const MyUploads = () => {
   const userId = useUserId()
-  const [selectedSubView, setSelectedSubView] = useState<SubView | null>(null)
-  const getQuery = useCallback<GetQueryFn<Asset>>(
-    (query) => {
+  const getQuery = useCallback<GetQueryFn<Asset, SubView>>(
+    (query, selectedSubView) => {
       query = query.eq('createdby', userId)
 
       switch (selectedSubView) {
@@ -44,10 +38,7 @@ const MyUploads = () => {
           break
 
         case SubView.Drafts:
-          query = query.eq('accessstatus', AccessStatus.Public)
-            .or(`publishstatus.eq.${PublishStatus.Draft},\
-approvalstatus.eq.${ApprovalStatus.Waiting},\
-approvalstatus.eq.${ApprovalStatus.Declined}`)
+          query = query.eq('publishstatus', PublishStatus.Draft)
           break
 
         case SubView.Deleted:
@@ -58,22 +49,14 @@ approvalstatus.eq.${ApprovalStatus.Declined}`)
 
       return query
     },
-    [userId, selectedSubView]
+    [userId]
   )
-
-  const toggleSubView = (subView: number): void =>
-    setSelectedSubView((currentVal) => {
-      if (currentVal === subView) {
-        return SubView.Visible
-      }
-      return subView
-    })
 
   return (
     <PaginatedView<Asset>
       viewName={ViewNames.GetFullAssets}
       getQuery={getQuery}
-      sortKey="view-category"
+      name="view-category"
       sortOptions={[
         {
           label: 'Submission date',
@@ -89,74 +72,19 @@ approvalstatus.eq.${ApprovalStatus.Declined}`)
         ':tabName',
         'assets'
       )}
-      extraControls={[
-        <Button
-          icon={
-            selectedSubView === null ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            setSelectedSubView(null)
-
-            trackAction(analyticsCategoryName, 'Click on view my public assets')
-          }}
-          color="secondary">
-          All
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === SubView.Visible ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            setSelectedSubView(SubView.Visible)
-
-            trackAction(analyticsCategoryName, 'Click on view my public assets')
-          }}
-          color="secondary">
-          Visible To Everyone
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === SubView.Drafts ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            toggleSubView(SubView.Drafts)
-
-            trackAction(analyticsCategoryName, 'Click on view my draft assets')
-          }}
-          color="secondary">
-          Drafts
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === SubView.Deleted ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            toggleSubView(SubView.Deleted)
-
-            trackAction(
-              analyticsCategoryName,
-              'Click on view my deleted assets'
-            )
-          }}
-          color="secondary">
-          Deleted/Archived
-        </Button>,
+      subViews={[
+        {
+          id: SubView.Visible,
+          label: 'Visible',
+        },
+        {
+          id: SubView.Drafts,
+          label: 'Drafts',
+        },
+        {
+          id: SubView.Deleted,
+          label: 'Deleted',
+        },
       ]}>
       <Renderer />
     </PaginatedView>

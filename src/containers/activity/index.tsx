@@ -69,7 +69,7 @@ export default () => {
       Updated every 15 minutes
       <PaginatedView<FullHistoryEntry>
         viewName={ViewNames.FullActivity}
-        sortKey="history"
+        name="history"
         defaultFieldName="createdat"
         urlWithPageNumberVar={routes.activityWithPageNumberVar}>
         <Renderer />

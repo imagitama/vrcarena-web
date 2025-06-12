@@ -11,7 +11,7 @@ import AdminAmendments from '../../components/admin-amendments'
 import AdminReports from '../../components/admin-reports'
 import AdminPublicAvatars from '../../components/admin-public-avatars'
 import AdminNotices from '../../components/admin-notices'
-import AdminUsers from './components/users'
+import AdminComments from './components/comments'
 
 import AdminHome from './components/home'
 import History from './components/history'
@@ -169,12 +169,12 @@ const View = () => {
             ),
           },
           {
-            name: 'users',
-            label: 'Users',
+            name: 'comments',
+            label: 'Comments',
             contents: (
               <>
-                <Heading variant="h2">Users</Heading>
-                <AdminUsers />
+                <Heading variant="h2">Comments</Heading>
+                <AdminComments />
               </>
             ),
           },

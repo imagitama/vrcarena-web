@@ -80,7 +80,7 @@ const ViewAreaView = () => {
         <PaginatedView<PublicAsset>
           viewName={ViewNames.GetPublicAssets}
           getQuery={getQuery}
-          sortKey="view-area"
+          name="view-area"
           sortOptions={[
             {
               label: 'Submission date',

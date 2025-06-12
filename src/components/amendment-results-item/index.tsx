@@ -80,13 +80,18 @@ export default ({
           )}
           <br />
           <br />
-          <Button
-            url={routes.viewAmendmentWithVar.replace(
+          <Link
+            to={routes.viewAmendmentWithVar.replace(
               ':amendmentId',
               amendmentId
             )}
             color="secondary">
-            View Amendment
+            Go To Amendment
+          </Link>
+          <br />
+          <br />
+          <Button onClick={() => setIsExpanded((currentVal) => !currentVal)}>
+            Show Fields
           </Button>
         </TableCell>
         <TableCell className={classes.mainCell}>
@@ -106,22 +111,18 @@ export default ({
           </TableCell>
         ) : null}
       </TableRow>
-      <TableRow>
-        <TableCell colSpan={999} style={{ marginBottom: '1rem' }}>
-          {isExpanded ? (
+      {isExpanded ? (
+        <TableRow>
+          <TableCell colSpan={999} style={{ marginBottom: '1rem' }}>
             <ShortDiff
               type={parentTable as any}
               oldFields={parentData}
               newFields={fields}
               onlyNewFields={fields}
             />
-          ) : (
-            <Button onClick={() => setIsExpanded((currentVal) => !currentVal)}>
-              Show Fields
-            </Button>
-          )}
-        </TableCell>
-      </TableRow>
+          </TableCell>
+        </TableRow>
+      ) : null}
     </>
   )
 }

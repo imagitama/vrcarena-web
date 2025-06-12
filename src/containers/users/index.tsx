@@ -68,7 +68,7 @@ export default () => {
         collectionName={CollectionNames.Users}
         select={`id, username, avatarurl`}
         getQuery={getQuery}
-        sortKey={sortKey}
+        name={sortKey}
         sortOptions={[
           {
             label: 'Sign up date',

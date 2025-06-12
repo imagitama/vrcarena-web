@@ -12,7 +12,14 @@ import FeatureButton from '../../../feature-button'
 import TabContext from '../../context'
 import Control from '../control'
 import useIsPatron from '../../../../hooks/useIsPatron'
-import { CollectionNames } from '../../../../modules/assets'
+import {
+  AssetMeta,
+  CollectionNames,
+  getIsAssetADraft,
+  getIsAssetDeleted,
+} from '../../../../modules/assets'
+import useUserId from '../../../../hooks/useUserId'
+import DeleteDraftButton from '../../../delete-draft-button'
 
 export default () => {
   const {
@@ -25,12 +32,14 @@ export default () => {
   } = useContext(TabContext)
   const [isSubscriptionsEditorEnabled, setIsSubscriptionsEditorEnabled] =
     useState(false)
-  const [, , user] = useUserRecord()
+  const myUserId = useUserId()
   const isPatron = useIsPatron()
 
   if (isLoading) {
     return null
   }
+
+  const isCreator = asset?.createdby === myUserId
 
   return (
     <>
@@ -51,6 +60,11 @@ export default () => {
           Suggest Edit
         </Button>
       </Control>
+      {isCreator && getIsAssetADraft(asset) && !getIsAssetDeleted(asset) ? (
+        <Control>
+          <DeleteDraftButton assetId={assetId} onDone={hydrate} />
+        </Control>
+      ) : null}
       <Control>
         {isSubscriptionsEditorEnabled ? (
           <SubscriptionEditor

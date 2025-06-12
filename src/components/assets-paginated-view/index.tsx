@@ -2,28 +2,30 @@ import React, { useCallback } from 'react'
 import PaginatedView, {
   GetQueryFn,
   PaginatedViewProps,
+  RendererProps,
 } from '../paginated-view'
-import { PublicAsset, ViewNames } from '../../modules/assets'
+import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 import AssetResults from '../asset-results'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import AssetsByArea from '../assets-by-area'
 
 interface ExtraRendererProps {
   categoryName?: string
-  groupByAreaEnabled?: boolean
+  defaultGroupByArea?: boolean
+}
+
+enum SubView {
+  GroupByArea = 'group-by-area',
 }
 
 const Renderer = ({
   items,
   hydrate,
+  selectedSubView,
   // extra
   categoryName,
-  groupByAreaEnabled,
-}: {
-  items?: PublicAsset[]
-  hydrate?: () => void
-} & ExtraRendererProps) => {
-  if (groupByAreaEnabled && categoryName) {
+}: RendererProps<PublicAsset> & ExtraRendererProps) => {
+  if (selectedSubView === SubView.GroupByArea && categoryName) {
     return (
       <AssetsByArea
         assets={items}
@@ -43,19 +45,19 @@ const Renderer = ({
  */
 const AssetsPaginatedView = ({
   categoryName,
-  groupByAreaEnabled,
+  defaultGroupByArea = true,
   ...props
 }: ExtraRendererProps & PaginatedViewProps<PublicAsset>) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
   const getQuery = useCallback<GetQueryFn<PublicAsset>>(
-    (query, selectedSubView) => {
+    (query, selectedSubView, activeFilters) => {
       // always check for "true" to prevent accidental inclusion
       query =
         isAdultContentEnabled === true ? query : query.is('isadult', false)
 
       if (props.getQuery) {
-        return props.getQuery(query, selectedSubView)
+        return props.getQuery(query, selectedSubView, activeFilters)
       }
 
       return query
@@ -66,7 +68,7 @@ const AssetsPaginatedView = ({
   return (
     <PaginatedView<PublicAsset>
       viewName={ViewNames.GetPublicAssets}
-      sortKey="view-assets"
+      name="view-assets"
       sortOptions={[
         {
           label: 'Submission date',
@@ -78,13 +80,22 @@ const AssetsPaginatedView = ({
         },
       ]}
       defaultFieldName="createdat"
+      subViews={
+        categoryName !== AssetCategory.Avatar
+          ? [
+              {
+                id: SubView.GroupByArea,
+                label: 'Group By Area',
+                defaultActive: defaultGroupByArea,
+              },
+            ]
+          : undefined
+      }
       {...props}
       // NOTE: Do not override props with this as we do adult check
       getQuery={getQuery}>
-      <Renderer
-        categoryName={categoryName}
-        groupByAreaEnabled={groupByAreaEnabled}
-      />
+      {/* @ts-ignore */}
+      <Renderer categoryName={categoryName} />
     </PaginatedView>
   )
 }

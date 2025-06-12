@@ -9,7 +9,6 @@ import EditIcon from '@mui/icons-material/Edit'
 import InfoIcon from '@mui/icons-material/Info'
 import CheckIcon from '@mui/icons-material/Check'
 
-import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -422,7 +421,7 @@ const AssetSyncQueue = ({
   showMoreInfo?: boolean
 }) => {
   const [newSourceUrls, setSourceUrls] = useState([''])
-  const [isCreating, isCreateSuccess, lastCreateErrorCode, create] =
+  const [isCreating, , lastCreateErrorCode, create] =
     useDataStoreCreateBulk<AssetSyncQueueItem>(CollectionNames.AssetSyncQueue, {
       queryName: 'add-asset-sync-queue-items',
     })
@@ -494,104 +493,102 @@ const AssetSyncQueue = ({
 
   return (
     <>
-      <Paper>
-        <Table>
-          <TableHead>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell width="60%">Source</TableCell>
+            <TableCell width="20%"></TableCell>
+            <TableCell width="20%">Controls</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {isLoading ? (
+            <>
+              <LoadingRow />
+              <LoadingRow />
+              <LoadingRow />
+            </>
+          ) : items ? (
+            items.map((queuedItem) => (
+              <QueuedItemRow
+                key={queuedItem.id}
+                queuedItem={queuedItem}
+                isBusy={isBusy}
+                showMoreInfo={showMoreInfo}
+              />
+            ))
+          ) : (
             <TableRow>
-              <TableCell width="60%">Source</TableCell>
-              <TableCell width="20%"></TableCell>
-              <TableCell width="20%">Controls</TableCell>
+              <TableCell colSpan={999}>You have no assets queued</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <>
-                <LoadingRow />
-                <LoadingRow />
-                <LoadingRow />
-              </>
-            ) : items ? (
-              items.map((queuedItem) => (
-                <QueuedItemRow
-                  key={queuedItem.id}
-                  queuedItem={queuedItem}
-                  isBusy={isBusy}
-                  showMoreInfo={showMoreInfo}
-                />
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={999}>You have no assets queued</TableCell>
+          )}
+          {newSourceUrls.map((newSourceUrl, i) => {
+            return (
+              <TableRow key={i}>
+                <TableCell>
+                  <TextInput
+                    label="Source URL"
+                    value={newSourceUrl}
+                    onChange={(e) => updateSourceUrl(i, e.target.value)}
+                    fullWidth
+                    placeholder="eg. https://rezilloryker.gumroad.com/l/Canis"
+                    isDisabled={isBusy}
+                  />
+                </TableCell>
+                <TableCell>
+                  {getCanSync(newSourceUrl) ? (
+                    <>
+                      <CheckIcon /> Can Be Synced
+                      <br />
+                      {cleanupSourceUrl(newSourceUrl)}
+                    </>
+                  ) : newSourceUrl ? (
+                    <>
+                      <Tooltip title="Only Gumroad, Booth and Itch.io URLs can be synced">
+                        <span>
+                          <ClearIcon /> Cannot Be Synced
+                        </span>
+                      </Tooltip>
+                      <br />
+                      <Button
+                        url={routes.createAsset}
+                        icon={<EditIcon />}
+                        size="small"
+                        color="secondary">
+                        Create Manually
+                      </Button>
+                    </>
+                  ) : null}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    color="secondary"
+                    icon={<DeleteIcon />}
+                    iconOnly
+                    onClick={() => removeSourceUrl(i)}
+                    isDisabled={isBusy}
+                    title="Remove source"
+                  />
+                </TableCell>
               </TableRow>
-            )}
-            {newSourceUrls.map((newSourceUrl, i) => {
-              return (
-                <TableRow key={i}>
-                  <TableCell>
-                    <TextInput
-                      label="Source URL"
-                      value={newSourceUrl}
-                      onChange={(e) => updateSourceUrl(i, e.target.value)}
-                      fullWidth
-                      placeholder="eg. https://rezilloryker.gumroad.com/l/Canis"
-                      isDisabled={isBusy}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {getCanSync(newSourceUrl) ? (
-                      <>
-                        <CheckIcon /> Can Be Synced
-                        <br />
-                        {cleanupSourceUrl(newSourceUrl)}
-                      </>
-                    ) : newSourceUrl ? (
-                      <>
-                        <Tooltip title="Only Gumroad, Booth and Itch.io URLs can be synced">
-                          <span>
-                            <ClearIcon /> Cannot Be Synced
-                          </span>
-                        </Tooltip>
-                        <br />
-                        <Button
-                          url={routes.createAsset}
-                          icon={<EditIcon />}
-                          size="small"
-                          color="secondary">
-                          Create Manually
-                        </Button>
-                      </>
-                    ) : null}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      color="secondary"
-                      icon={<DeleteIcon />}
-                      iconOnly
-                      onClick={() => removeSourceUrl(i)}
-                      isDisabled={isBusy}
-                      title="Remove source"
-                    />
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell>
-                <Button
-                  onClick={addEmptySource}
-                  icon={<AddIcon />}
-                  isDisabled={isBusy}
-                  color="secondary"
-                  switchIconSide>
-                  Add Another
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Paper>
+            )
+          })}
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell>
+              <Button
+                onClick={addEmptySource}
+                icon={<AddIcon />}
+                isDisabled={isBusy}
+                color="secondary"
+                switchIconSide>
+                Add Another
+              </Button>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
       <FormControls>
         <Button
           onClick={processItems}

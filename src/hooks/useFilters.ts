@@ -1,14 +1,11 @@
+import { ActiveFilter } from '../filters'
+// import { OrderDirections } from './useDatabaseQuery'
 import useStorage from './useStorage'
-
-export interface StoredFilter<TRecord> {
-  fieldName: Extract<keyof TRecord, string>
-  value: any
-}
 
 const useFilters = <TRecord>(
   storageKey: string
-): [StoredFilter<TRecord>[], (newFilters: StoredFilter<TRecord>[]) => void] => {
-  const [storedFilters, storeFilters] = useStorage<StoredFilter<TRecord>[]>(
+): [ActiveFilter<TRecord>[], (newFilters: ActiveFilter<TRecord>[]) => void] => {
+  const [storedFilters, storeFilters] = useStorage<ActiveFilter<TRecord>[]>(
     storageKey,
     []
   )

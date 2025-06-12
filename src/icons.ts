@@ -52,3 +52,5 @@ export const VRCFury = React.lazy(() => import('./assets/images/icons/vrcfury.sv
 
 // internal ones
 export const OpenExternalLink = React.lazy(() => import('@mui/icons-material/Launch'))
+export const Sort = React.lazy(() => import('@mui/icons-material/ImportExport'))
+export const Filter = React.lazy(() => import('@mui/icons-material/FilterList'))

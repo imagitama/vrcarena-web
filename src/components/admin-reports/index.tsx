@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -24,72 +23,73 @@ import { GetQuery } from '../../data-store'
 
 function ReportsTable({ reports }: { reports?: FullReport[] }) {
   return (
-    <Paper>
-      <Table>
-        <TableHead>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell />
+          <TableCell>Parent</TableCell>
+          <TableCell>Metadata</TableCell>
+          <TableCell>Status</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {reports ? (
+          reports.map((report) => {
+            const {
+              id,
+              parenttable,
+              parent,
+              reason,
+              createdat: createdAt,
+              createdby: createdBy,
+              // meta
+              resolutionstatus: resolutionStatus,
+              resolvedat: resolvedAt,
+              resolvedby: resolvedBy,
+              // view
+              parentdata,
+              createdbyusername: createdByUsername,
+              resolvedbyusername: resolvedByUsername,
+            } = report
+            return (
+              <TableRow key={id}>
+                <TableCell>
+                  <Link to={routes.viewReportWithVar.replace(':reportId', id)}>
+                    View Report
+                  </Link>
+                  <br />
+                  <br />
+                  Reason: {reason}
+                </TableCell>
+                <TableCell>
+                  <GenericOutputItem
+                    type={parenttable}
+                    id={parent}
+                    data={parentdata}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormattedDate date={createdAt} /> by{' '}
+                  <UsernameLink id={createdBy} username={createdByUsername} />
+                </TableCell>
+                <TableCell>
+                  <ResolutionStatusOutput
+                    resolutionStatus={resolutionStatus}
+                    resolvedAt={resolvedAt}
+                    resolvedBy={resolvedBy}
+                    resolvedByUsername={resolvedByUsername}
+                  />
+                </TableCell>
+              </TableRow>
+            )
+          })
+        ) : (
           <TableRow>
-            <TableCell />
-            <TableCell>Parent</TableCell>
-            <TableCell>Metadata</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell>Loading...</TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {reports ? (
-            reports.map((asset) => {
-              const {
-                id,
-                parenttable,
-                parent,
-                createdat: createdAt,
-                createdby: createdBy,
-                // meta
-                resolutionstatus: resolutionStatus,
-                resolvedat: resolvedAt,
-                resolvedby: resolvedBy,
-                // view
-                parentdata,
-                createdbyusername: createdByUsername,
-                resolvedbyusername: resolvedByUsername,
-              } = asset
-              return (
-                <TableRow key={id}>
-                  <TableCell>
-                    <Link
-                      to={routes.viewReportWithVar.replace(':reportId', id)}>
-                      View Report
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <GenericOutputItem
-                      type={parenttable}
-                      id={parent}
-                      data={parentdata}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <FormattedDate date={createdAt} /> by{' '}
-                    <UsernameLink id={createdBy} username={createdByUsername} />
-                  </TableCell>
-                  <TableCell>
-                    <ResolutionStatusOutput
-                      resolutionStatus={resolutionStatus}
-                      resolvedAt={resolvedAt}
-                      resolvedBy={resolvedBy}
-                      resolvedByUsername={resolvedByUsername}
-                    />
-                  </TableCell>
-                </TableRow>
-              )
-            })
-          ) : (
-            <TableRow>
-              <TableCell>Loading...</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </Paper>
+        )}
+      </TableBody>
+    </Table>
   )
 }
 
@@ -155,7 +155,7 @@ export default () => {
     <PaginatedView<FullReport>
       viewName={ViewNames.GetFullReports}
       getQuery={getQuery}
-      sortKey="view-reports"
+      name="view-reports"
       sortOptions={[
         {
           label: 'Resolved at',

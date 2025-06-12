@@ -34,7 +34,7 @@ export default () => {
       </Heading>
       <BodyText>{description}</BodyText>
       <PaginatedView<Collection>
-        sortKey="view-all-collections"
+        name="view-all-collections"
         viewName={ViewNames.GetPublicCollections}
         defaultFieldName="createdat"
         defaultDirection={OrderDirections.ASC}
