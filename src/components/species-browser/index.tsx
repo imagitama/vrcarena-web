@@ -324,7 +324,6 @@ const SpeciesBrowser = ({
           onClear={() => setFilterId(null)}
           textFieldProps={{
             fullWidth: true,
-            autoFocus: true,
             disabled: isLoading,
           }}
         />
