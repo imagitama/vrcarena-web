@@ -5,6 +5,7 @@ import Link from '../../components/link'
 import * as routes from '../../routes'
 import LazyLoad from 'react-lazyload'
 import { VRCArenaTheme } from '../../themes'
+import Tooltip from '../tooltip'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
@@ -14,16 +15,25 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'center',
-    '& a': {
-      flex: 1,
-      color: 'inherit',
-      display: 'flex',
-      alignItems: 'center',
-      borderRadius: theme.shape.borderRadius,
-      '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      },
+    userSelect: 'none',
+  },
+  clicker: {
+    cursor: 'pointer',
+    flex: 1,
+    color: 'inherit',
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: theme.shape.borderRadius,
+    '&:hover': {
+      backgroundColor: 'rgba(50, 50, 50)',
     },
+  },
+  selected: {
+    backgroundColor: 'rgb(50, 50, 0) !important',
+    boxShadow: '0 0 0 2px rgb(100, 100, 0)',
+  },
+  selectedByParent: {
+    backgroundColor: 'rgb(50, 50, 0) !important',
   },
   item: {
     padding: '0.25rem',
@@ -46,6 +56,12 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       display: 'block',
     },
   },
+  text: {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
   name: {
     fontSize: '125%',
     fontWeight: 400,
@@ -57,6 +73,8 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     fontSize: '75%',
     fontStyle: 'italic',
     color: 'rgb(150, 150, 150)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   connector: {
     flexShrink: 0,
@@ -80,12 +98,6 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     fontSize: '75%',
     marginLeft: '0.5rem',
   },
-  text: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
   line: {
     width: '2px',
     backgroundColor: 'rgba(100, 100, 100)',
@@ -105,14 +117,53 @@ const SpeciesResultItem = ({
   indent = 0,
   children,
   className,
+  isSelectable,
+  isSelected,
+  onClick,
+  isSelectedByParent,
 }: {
   index?: number
   speciesItem: FullSpecies | Species
   indent?: number
   children?: React.ReactNode
   className?: string
+  // change species form
+  isSelectable?: boolean
+  isSelected?: boolean
+  onClick?: (id: string) => void
+  isSelectedByParent?: boolean
 }) => {
   const classes = useStyles()
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
+    <Tooltip
+      title={
+        isSelectable && onClick
+          ? ''
+          : 'You cannot select this (you may have children or a parent already selected)'
+      }>
+      {onClick ? (
+        <div
+          className={`${classes.clicker} ${
+            isSelected ? classes.selected : ''
+          } ${isSelectedByParent ? classes.selectedByParent : ''}`}
+          onClick={() => onClick(speciesItem.id)}>
+          {children}
+        </div>
+      ) : (
+        <Link
+          to={routes.viewSpeciesWithVar.replace(
+            ':speciesIdOrSlug',
+            speciesItem.slug || speciesItem.id
+          )}
+          className={`${classes.clicker} ${
+            isSelected ? classes.selected : ''
+          } ${isSelectedByParent ? classes.selectedByParent : ''}`}>
+          {children}
+        </Link>
+      )}
+    </Tooltip>
+  )
+
   return (
     <div className={`${classes.root} ${className || ''}`}>
       {index !== undefined && index > 0 && <div className={classes.line} />}
@@ -121,11 +172,7 @@ const SpeciesResultItem = ({
           className={classes.connector}
           style={{ marginLeft: `calc(20px * ${indent})` }}></div>
       )}
-      <Link
-        to={routes.viewSpeciesWithVar.replace(
-          ':speciesIdOrSlug',
-          speciesItem.slug || speciesItem.id
-        )}>
+      <Wrapper>
         {speciesItem.thumbnailurl ? (
           <LazyLoad placeholder={<div />} className={classes.thumbnail}>
             <img src={speciesItem.thumbnailurl} />
@@ -142,7 +189,7 @@ const SpeciesResultItem = ({
             {speciesItem.shortdescription}
           </div>
         </div>
-      </Link>
+      </Wrapper>
       <div className={classes.children}>{children}</div>
     </div>
   )

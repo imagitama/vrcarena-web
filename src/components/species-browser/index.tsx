@@ -112,7 +112,15 @@ interface SpeciesContainerSettings {
 
 const storageKey = 'speciescontainer'
 
-const SpeciesBrowser = () => {
+const SpeciesBrowser = ({
+  selectedSpeciesIds,
+  onClickSpecies,
+  showControls = true,
+}: {
+  selectedSpeciesIds?: string[]
+  onClickSpecies?: (id: string) => void
+  showControls?: boolean
+}) => {
   const isEditor = useIsEditor()
   const [isLoading, lastErrorCode, speciesItems] = useDatabaseQuery<Species>(
     ViewNames.GetFullSpecies,
@@ -163,7 +171,41 @@ const SpeciesBrowser = () => {
         <SpeciesResultItem
           key={speciesItem.id}
           speciesItem={speciesItem}
-          className={classes.speciesItem}>
+          className={classes.speciesItem}
+          onClick={
+            onClickSpecies
+              ? (id) => {
+                  if (
+                    selectedSpeciesIds &&
+                    speciesItem.children &&
+                    speciesItem.children.length
+                  ) {
+                    if (
+                      !speciesItem.children.find((speciesChild) =>
+                        selectedSpeciesIds.includes(speciesChild.id)
+                      )
+                    ) {
+                      onClickSpecies(id)
+                    }
+                  } else {
+                    onClickSpecies(id)
+                  }
+                }
+              : undefined
+          }
+          isSelectable={
+            onClickSpecies &&
+            selectedSpeciesIds &&
+            (speciesItem.children?.find((speciesChild) =>
+              selectedSpeciesIds.includes(speciesChild.id)
+            ) === undefined ||
+              !speciesItem.children?.length)
+              ? true
+              : false
+          }
+          isSelected={
+            selectedSpeciesIds && selectedSpeciesIds.includes(speciesItem.id)
+          }>
           {speciesContainerSettings?.groupChildren && speciesItem.children
             ? speciesItem.children.map((speciesChild, index) => (
                 <SpeciesResultItem
@@ -171,6 +213,34 @@ const SpeciesBrowser = () => {
                   index={index}
                   speciesItem={speciesChild}
                   indent={1}
+                  onClick={
+                    onClickSpecies
+                      ? (id) => {
+                          if (selectedSpeciesIds) {
+                            if (!selectedSpeciesIds.includes(speciesItem.id)) {
+                              onClickSpecies(id)
+                            }
+                          } else {
+                            onClickSpecies(id)
+                          }
+                        }
+                      : undefined
+                  }
+                  isSelectable={
+                    onClickSpecies &&
+                    selectedSpeciesIds &&
+                    !selectedSpeciesIds.includes(speciesItem.id)
+                      ? true
+                      : false
+                  }
+                  isSelected={
+                    selectedSpeciesIds &&
+                    selectedSpeciesIds.includes(speciesChild.id)
+                  }
+                  isSelectedByParent={
+                    selectedSpeciesIds &&
+                    selectedSpeciesIds.includes(speciesItem.id)
+                  }
                 />
               ))
             : null}
@@ -180,44 +250,46 @@ const SpeciesBrowser = () => {
 
   return (
     <>
-      <div className={classes.controls}>
-        <div className={classes.controlsRight}>
-          <div className={classes.controlGroup}>
-            <Button
-              color="secondary"
-              onClick={() => toggleSetting('grid')}
-              checked={speciesContainerSettings?.grid}
-              size="small">
-              Grid
-            </Button>
-            &nbsp;
-            <Button
-              color="secondary"
-              onClick={() => toggleSetting('groupChildren')}
-              checked={speciesContainerSettings?.groupChildren}
-              size="small">
-              Group Children
-            </Button>
-            {isEditor && (
-              <>
-                &nbsp;
-                <Button
-                  url={routes.createSpecies}
-                  icon={<AddIcon />}
-                  onClick={() =>
-                    trackAction(
-                      analyticsCategory,
-                      'Click create species button'
-                    )
-                  }
-                  size="small">
-                  Create
-                </Button>
-              </>
-            )}
+      {showControls ? (
+        <div className={classes.controls}>
+          <div className={classes.controlsRight}>
+            <div className={classes.controlGroup}>
+              <Button
+                color="secondary"
+                onClick={() => toggleSetting('grid')}
+                checked={speciesContainerSettings?.grid}
+                size="small">
+                Grid
+              </Button>
+              &nbsp;
+              <Button
+                color="secondary"
+                onClick={() => toggleSetting('groupChildren')}
+                checked={speciesContainerSettings?.groupChildren}
+                size="small">
+                Group Children
+              </Button>
+              {isEditor && (
+                <>
+                  &nbsp;
+                  <Button
+                    url={routes.createSpecies}
+                    icon={<AddIcon />}
+                    onClick={() =>
+                      trackAction(
+                        analyticsCategory,
+                        'Click create species button'
+                      )
+                    }
+                    size="small">
+                    Create
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
       <div className={classes.autocompleteWrapper}>
         <AutocompleteInput
           label="Filter species"

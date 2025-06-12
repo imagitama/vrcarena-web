@@ -10,31 +10,16 @@ import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import SpeciesSelector from '../species-selector'
 import { Asset, CollectionNames } from '../../modules/assets'
 import Heading from '../heading'
 import Message from '../message'
+import SpeciesBrowser from '../species-browser'
 
 function isSpeciesIdActive(
   speciesId: string,
   activeSpeciesIds: string[]
 ): boolean {
   return activeSpeciesIds.includes(speciesId)
-}
-
-function SpeciesButtons({
-  activeSpeciesIds,
-  onClickSpecies,
-}: {
-  activeSpeciesIds: string[]
-  onClickSpecies: (id: string) => void
-}): React.ReactElement {
-  return (
-    <SpeciesSelector
-      selectedSpeciesIds={activeSpeciesIds}
-      onSpeciesClickWithId={(id: string) => onClickSpecies(id)}
-    />
-  )
 }
 
 // TODO: Save one query by providing the existing species to this component
@@ -152,9 +137,10 @@ export default ({
           </li>
         </ul>
       </Message>
-      <SpeciesButtons
-        activeSpeciesIds={newSpeciesIds}
+      <SpeciesBrowser
+        selectedSpeciesIds={newSpeciesIds}
         onClickSpecies={onClickSpecies}
+        showControls={false}
       />
       <FormControls>
         <Button onClick={onSaveBtnClick} icon={<SaveIcon />}>
