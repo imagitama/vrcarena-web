@@ -311,7 +311,7 @@ const View = () => {
             ) : null}
             {species.pluralname}
           </Link>{' '}
-          ({species.avatarcount})
+          {species.avatarcount ? `(${species.avatarcount})` : ''}
         </Heading>
       </div>
       <BodyText>{species.description || species.shortdescription}</BodyText>

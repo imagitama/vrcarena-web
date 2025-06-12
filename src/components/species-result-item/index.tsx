@@ -96,7 +96,8 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
   count: {
     fontSize: '75%',
-    marginLeft: '0.5rem',
+    marginLeft: '0.25rem',
+    color: 'rgb(150, 150, 150)',
   },
   line: {
     width: '2px',

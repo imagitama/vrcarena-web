@@ -14,6 +14,7 @@ import NoResultsMessage from '../no-results-message'
 import AddCommentForm from '../add-comment-form'
 import WarningMessage from '../warning-message'
 import { SupabaseClient } from '@supabase/supabase-js'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 
 export default ({
   collectionName,
@@ -47,6 +48,7 @@ export default ({
             .order('createdat', { ascending: false }),
     [collectionName, parentId, shimmer, isEditor, getPrivate]
   )
+  const isLoggedIn = useIsLoggedIn()
 
   const [isLoading, lastErrorCode, results, , hydrate] =
     useDataStore<FullComment>(shimmer ? null : getQuery, 'get-comments')
@@ -90,7 +92,7 @@ export default ({
           </NoResultsMessage>
         )}
       </div>
-      {collectionName === CollectionNames.Assets ? (
+      {collectionName === CollectionNames.Assets && isLoggedIn ? (
         <WarningMessage>
           If information about this asset is incorrect (eg. the source is
           broken) please create a report instead of commenting here. Staff do
