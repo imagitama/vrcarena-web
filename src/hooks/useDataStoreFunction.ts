@@ -56,7 +56,7 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
     }
 
     callFunction(autoCallPayload!)
-  }, [autoCall])
+  }, [autoCall, JSON.stringify(autoCallPayload)])
 
   return [isLoading, lastErrorCode, lastResult, callFunction]
 }

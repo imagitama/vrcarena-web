@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import { Helmet } from 'react-helmet'
 import Card from '@mui/material/Card'
@@ -22,6 +22,7 @@ import {
   getIsGitHubUrl,
   getIsUrlRisky,
   getIsUuid,
+  scrollToTop,
 } from '../../utils'
 import * as routes from '../../routes'
 import { trackAction } from '../../analytics'
@@ -384,6 +385,10 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     isSlug ? false : rawAssetId,
     'asset-overview'
   )
+
+  useEffect(() => {
+    scrollToTop()
+  }, [rawAssetId])
 
   const hydrate = isSlug ? hydrateCachedAsset : hydrateNonCachedAsset
 
