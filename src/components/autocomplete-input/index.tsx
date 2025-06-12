@@ -1,6 +1,7 @@
 import React, { ChangeEventHandler } from 'react'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 import Autocomplete from '@mui/lab/Autocomplete'
+import ClearIcon from '@mui/icons-material/Clear'
 import { makeStyles } from '@mui/styles'
 import type { AutocompleteRenderInputParams } from '@mui/material'
 import { VRCArenaTheme } from '../../themes'
@@ -150,12 +151,9 @@ const AutocompleteInput = <TOption,>({
           : // Passing undefined should ignore filtering but it doesnt
             (options) => options
       }
+      clearOnEscape
       autoHighlight
-      // onKeyDown={e => {
-      //   if (e.key === 'Enter') {
-
-      //   }
-      // }}
+      clearIcon={<ClearIcon />}
       onChange={(e: any, value, reason) => {
         switch (reason) {
           case 'clear':

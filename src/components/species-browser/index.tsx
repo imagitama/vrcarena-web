@@ -303,7 +303,11 @@ const SpeciesBrowser = ({
               ? speciesItems.map((speciesItem) => ({
                   label: `${speciesItem.pluralname}${
                     speciesItem.singularname !== speciesItem.pluralname
-                      ? ` (${speciesItem.singularname})`
+                      ? `/${speciesItem.singularname}`
+                      : ''
+                  }${
+                    speciesItem.tags.length
+                      ? ` (${speciesItem.tags.join(', ')})`
                       : ''
                   }`,
                   data: speciesItem.id,

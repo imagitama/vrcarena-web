@@ -19,6 +19,7 @@ export interface SpeciesFields extends Record<string, any> {
   ispopular: boolean
   slug: string
   redirectto: string // ID
+  tags: string[] // for easier filtering
 }
 
 export interface Species extends SpeciesFields {
@@ -70,6 +71,12 @@ export const editableFields: EditableField<Species>[] = [
     type: fieldTypes.text,
     isRequired: true,
     hint: 'Multiple of them - "Dogs" (not "Dog")',
+  },
+  {
+    name: 'tags',
+    label: 'Tags',
+    type: fieldTypes.tags,
+    hint: 'Used when filtering or searching species to help people find their species',
   },
   {
     name: 'shortdescription',

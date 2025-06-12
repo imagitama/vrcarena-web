@@ -225,6 +225,7 @@ const TagInput = ({
   asset = undefined,
   isDisabled = false,
   fullWidth = false,
+  autoComplete = true,
 }: {
   currentTags?: string[]
   onChange?: (newTags: string[]) => void
@@ -234,6 +235,7 @@ const TagInput = ({
   asset?: Asset
   isDisabled?: boolean
   fullWidth?: boolean
+  autoComplete?: boolean
 }) => {
   const [textInput, setTextInput] = useState('')
   const [newTags, setNewTags] = useState(currentTags || [])
@@ -243,7 +245,7 @@ const TagInput = ({
 
   const getQuery = useDelimit(
     (supabase: SupabaseClient) => {
-      if (textInput.length < 2) {
+      if (textInput.length < 2 || !autoComplete) {
         return null
       }
 
@@ -256,7 +258,7 @@ const TagInput = ({
 
       return query
     },
-    [textInput, isAdultContentEnabled]
+    [textInput, isAdultContentEnabled, autoComplete]
   )
 
   const [isLoading, , searchResults] = useDataStore<FullTag>(getQuery)
@@ -293,37 +295,39 @@ const TagInput = ({
     }
   }
 
-  const autoCompleteOptions = ([] as AutocompleteOption<any>[])
-    .concat(
-      searchResults
-        ? searchResults
-            .filter((tagInfo) => !newTags.includes(tagInfo.id))
-            .map((tagInfo) => ({
-              data: tagInfo.id,
-              label: `${tagInfo.id} (${tagInfo.count || 0})`,
-            }))
-        : []
-    )
-    .concat(
-      textInput.length > 1
-        ? (
-            [
-              {
-                data: '',
-                label: 'Category or area:',
-                isDisabled: true,
-              },
-            ] as AutocompleteOption<any>[]
-          ).concat(
-            filterSuggestions(suggestions, textInput)
-              .slice(0, 4)
-              .map((suggestion) => ({
-                data: suggestion.id,
-                label: suggestion.text,
-              }))
-          )
-        : []
-    )
+  const autoCompleteOptions = autoComplete
+    ? ([] as AutocompleteOption<any>[])
+        .concat(
+          searchResults
+            ? searchResults
+                .filter((tagInfo) => !newTags.includes(tagInfo.id))
+                .map((tagInfo) => ({
+                  data: tagInfo.id,
+                  label: `${tagInfo.id} (${tagInfo.count || 0})`,
+                }))
+            : []
+        )
+        .concat(
+          textInput.length > 1
+            ? (
+                [
+                  {
+                    data: '',
+                    label: 'Category or area:',
+                    isDisabled: true,
+                  },
+                ] as AutocompleteOption<any>[]
+              ).concat(
+                filterSuggestions(suggestions, textInput)
+                  .slice(0, 4)
+                  .map((suggestion) => ({
+                    data: suggestion.id,
+                    label: suggestion.text,
+                  }))
+              )
+            : []
+        )
+    : []
 
   return (
     <div className={`${fullWidth ? classes.fullWidth : ''}`}>
