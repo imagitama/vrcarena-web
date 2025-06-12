@@ -183,7 +183,12 @@ const SpeciesBrowser = ({
                     if (
                       !speciesItem.children.find((speciesChild) =>
                         selectedSpeciesIds.includes(speciesChild.id)
-                      )
+                      ) ||
+                      // allow repairing assets that have both parent and child
+                      (selectedSpeciesIds.includes(speciesItem.id) &&
+                        speciesItem.children.find((speciesChild) =>
+                          selectedSpeciesIds.includes(speciesChild.id)
+                        ))
                     ) {
                       onClickSpecies(id)
                     }
