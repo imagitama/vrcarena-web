@@ -123,7 +123,7 @@ const SpeciesBrowser = ({
 }) => {
   const isEditor = useIsEditor()
   const [isLoading, lastErrorCode, speciesItems] = useDatabaseQuery<Species>(
-    ViewNames.GetFullSpecies,
+    ViewNames.GetPublicSpeciesCache,
     isEditor ? [] : [['redirectto', Operators.IS, null]],
     {
       [options.orderBy]: ['singularname', OrderDirections.ASC],

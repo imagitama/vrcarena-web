@@ -33,12 +33,13 @@ export interface FullSpecies extends Species {
   avatarcount: number
 }
 
-export const CollectionNames = {
-  Species: 'species',
+export enum CollectionNames {
+  Species = 'species',
 }
 
-export const ViewNames = {
-  GetFullSpecies: 'getfullspecies',
+export enum ViewNames {
+  GetFullSpecies = 'getfullspecies',
+  GetPublicSpeciesCache = 'getpublicspeciescache',
 }
 
 export const editableFields: EditableField<Species>[] = [
