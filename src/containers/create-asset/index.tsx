@@ -254,21 +254,15 @@ export default () => {
           <ExperimentalMessage title="Asset Queue">
             This is the new way of syncing assets with Gumroad, Itch.io, Jinxxy
             and Booth. It now happens <em>in the background</em>, you can add
-            multiple at a time and syncs more fields.
-            <br />
-            <br />
-            Please DM me on Discord: @nutterbuddha with any feedback about the
-            new system.
-            <br />
-            <br />
-            <strong>NSFW assets on sites like Jinxxy are not supported</strong>
+            multiple at a time and syncs more fields. NSFW assets on Jinxxy are
+            not supported (they require logging in to view).
             <br />
             <br />
             <Button
               onClick={() => setIsCreatingManually(true)}
               color="secondary"
               size="small">
-              Create Asset Manually (old way)
+              Create Asset Manually
             </Button>
           </ExperimentalMessage>
           <View />

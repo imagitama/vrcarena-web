@@ -4,6 +4,11 @@ import { makeStyles } from '@mui/styles'
 import Message, { MessageProps } from '../message'
 
 const useStyles = makeStyles({
+  message: {
+    '& > *': {
+      backgroundColor: '#313c2a !important',
+    },
+  },
   fancyEffect: {
     position: 'absolute',
     top: 0,
@@ -26,7 +31,8 @@ const ExperimentalMessage = (messageProps: MessageProps) => {
     <Message
       icon={<BubbleChartIcon />}
       {...messageProps}
-      title={`New Feature: ${messageProps.title}`}>
+      title={`New Feature: ${messageProps.title}`}
+      className={classes.message}>
       {messageProps.children}
       <div className={classes.fancyEffect} />
     </Message>

@@ -51,6 +51,7 @@ export const VRChat = React.lazy(() => import('./assets/images/icons/vrchat.svg'
 export const VRCFury = React.lazy(() => import('./assets/images/icons/vrcfury.svg').then(result => ({ default: result.ReactComponent })))
 
 // internal ones
-export const OpenExternalLink = React.lazy(() => import('@mui/icons-material/Launch'))
-export const Sort = React.lazy(() => import('@mui/icons-material/ImportExport'))
-export const Filter = React.lazy(() => import('@mui/icons-material/FilterList'))
+export const OpenExternalLink = React.lazy(() => import('@mui/icons-material/Launch').then(result => result.default))
+export const Sort = React.lazy(() => import('@mui/icons-material/ImportExport').then(result => result.default))
+export const Filter = React.lazy(() => import('@mui/icons-material/FilterList').then(result => result.default))
+export const Warning = React.lazy(() => import('@mui/icons-material/Warning').then(result => result.default))

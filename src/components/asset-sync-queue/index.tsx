@@ -48,6 +48,7 @@ import UsernameLink from '../username-link'
 import FormattedDate from '../formatted-date'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 import { VRCArenaTheme } from '../../themes'
+import { Warning as WarningIcon } from '../../icons'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   queuedStatus: {
@@ -64,10 +65,8 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
   waiting: {},
   failedFieldsRoot: {
-    border: `1px solid ${colorPalette.warning}`,
     color: colorPalette.warning,
-    padding: '0.25rem',
-    margin: '0.25rem 0',
+    margin: '0.5rem 0 0.25rem',
     fontSize: '75%',
     borderRadius: theme.shape.borderRadius,
   },
@@ -245,7 +244,7 @@ const MissingFields = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
 
   return (
     <div className={classes.failedFieldsRoot}>
-      These fields require your manual attention:
+      <WarningIcon /> These fields require your manual attention:
       <ul>
         {importantFields
           .filter(

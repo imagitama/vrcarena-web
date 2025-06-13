@@ -10,7 +10,7 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 import LinkIcon from '@mui/icons-material/Link'
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew'
-import WarningIcon from '@mui/icons-material/Warning'
+import { Warning as WarningIcon } from '../../icons'
 
 import useBanner from '../../hooks/useBanner'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
@@ -101,7 +101,6 @@ import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import LoadingIndicator from '../loading-indicator'
 
-// controls
 const LoggedInControls = React.lazy(
   () =>
     import(

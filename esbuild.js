@@ -37,11 +37,13 @@ dotenv.config()
     },
     define,
     publicPath: '/', // fix webp etc
+    splitting: true,
+    format: 'esm',
   }
 
   try {
     if (fsSync.existsSync('./build')) {
-      await fs.rm('./build', { recursive: true })
+      await fs.rm('./build', { recursive: true, force: true })
     }
 
     await fs.cp('./public', './build', { recursive: true })
