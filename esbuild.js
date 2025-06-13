@@ -16,6 +16,8 @@ dotenv.config()
     }
   }
 
+  const isProd = process.env.NODE_ENV === 'production'
+
   const config = {
     entryPoints: ['./src/index.tsx'],
     bundle: true,
@@ -39,6 +41,7 @@ dotenv.config()
     publicPath: '/', // fix webp etc
     splitting: true,
     format: 'esm',
+    minify: isProd,
   }
 
   try {
