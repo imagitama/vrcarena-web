@@ -53,6 +53,7 @@ const ViewAvatarsView = () => {
       <AssetsPaginatedView
         getQuery={getQuery}
         name="view-avatars"
+        categoryName={AssetCategory.Avatar}
         extraControls={[
           <Button
             url={routes.viewAllSpecies}
