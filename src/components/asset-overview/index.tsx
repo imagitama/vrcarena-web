@@ -101,29 +101,25 @@ import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import LoadingIndicator from '../loading-indicator'
 
-const LoggedInControls = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "asset-overview-logged-in-controls" */ './components/logged-in-controls'
-    )
+const LoggedInControls = React.lazy(() =>
+  import(
+    /* webpackChunkName: "asset-overview-logged-in-controls" */ './components/logged-in-controls'
+  ).then((result) => result.default)
 )
-const EditorControls = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "asset-overview-editor-controls" */ './components/editor-controls'
-    )
+const EditorControls = React.lazy(() =>
+  import(
+    /* webpackChunkName: "asset-overview-editor-controls" */ './components/editor-controls'
+  ).then((result) => result.default)
 )
-const CreatorControls = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "asset-overview-creator-controls" */ './components/creator-controls'
-    )
+const CreatorControls = React.lazy(() =>
+  import(
+    /* webpackChunkName: "asset-overview-creator-controls" */ './components/creator-controls'
+  ).then((result) => result.default)
 )
-const QueuedAssetInfo = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "asset-overview-queued-asset-info" */ '../queued-asset-info'
-    )
+const QueuedAssetInfo = React.lazy(() =>
+  import(
+    /* webpackChunkName: "asset-overview-queued-asset-info" */ '../queued-asset-info'
+  ).then((result) => result.default)
 )
 
 const useStyles = makeStyles({

@@ -23,7 +23,6 @@ dotenv.config()
     bundle: true,
     outdir: './build',
     sourcemap: true,
-    minify: false,
     target: ['esnext'],
     plugins: [
       svgrPlugin({
