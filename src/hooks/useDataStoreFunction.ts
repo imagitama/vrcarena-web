@@ -27,6 +27,10 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
         return null
       }
 
+      if (!payload && autoCallPayload) {
+        payload = autoCallPayload
+      }
+
       setIsLoading(true)
       setLastErrorCode(null)
 
@@ -55,7 +59,7 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
       return
     }
 
-    callFunction(autoCallPayload!)
+    callFunction(autoCallPayload)
   }, [autoCall, JSON.stringify(autoCallPayload)])
 
   return [isLoading, lastErrorCode, lastResult, callFunction]
