@@ -2,14 +2,14 @@ import React from 'react'
 
 /** WARNING: The named exports of this file correspond to the "icon" column in tags table */
 
-export const AttachMoney = React.lazy(() => import('@mui/icons-material/AttachMoney').then(result => result.default))) // paid
-export const MoneyOff = React.lazy(() => import('@mui/icons-material/MoneyOff').then(result => result.default))) // free
-export const Accessibility = React.lazy(() => import('@mui/icons-material/Accessibility').then(result => result.default))) // T-posing FBT
-export const Brush = React.lazy(() => import('@mui/icons-material/Brush').then(result => result.default))) // textures
-export const Loyalty = React.lazy(() => import('@mui/icons-material/Loyalty').then(result => result.default))) // NSFW
-export const Visibility = React.lazy(() => import('@mui/icons-material/Visibility').then(result => result.default))) // eye textures / tracking / etc
-export const Link = React.lazy(() => import('@mui/icons-material/Link').then(result => result.default))) // requires linked asset
-export const Tune = React.lazy(() => import('@mui/icons-material/Tune').then(result => result.default))) // body sliders
+export const AttachMoney = React.lazy(() => import('@mui/icons-material/AttachMoney').then(result => result.default)) // paid
+export const MoneyOff = React.lazy(() => import('@mui/icons-material/MoneyOff').then(result => result.default)) // free
+export const Accessibility = React.lazy(() => import('@mui/icons-material/Accessibility').then(result => result.default)) // T-posing FBT
+export const Brush = React.lazy(() => import('@mui/icons-material/Brush').then(result => result.default)) // textures
+export const Loyalty = React.lazy(() => import('@mui/icons-material/Loyalty').then(result => result.default)) // NSFW
+export const Visibility = React.lazy(() => import('@mui/icons-material/Visibility').then(result => result.default)) // eye textures / tracking / etc
+export const Link = React.lazy(() => import('@mui/icons-material/Link').then(result => result.default)) // requires linked asset
+export const Tune = React.lazy(() => import('@mui/icons-material/Tune').then(result => result.default)) // body sliders
 
 // social list
 export const Email = React.lazy(() => import('@mui/icons-material/Email'))
