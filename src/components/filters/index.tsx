@@ -106,6 +106,46 @@ const EqualInput = ({
   )
 }
 
+const NotEqualInput = ({
+  filter,
+  onChange,
+  value,
+}: {
+  filter: EqualFilter<any>
+  onChange: (value: null | string) => void
+  value: any
+}) => {
+  if (filter.subType === FilterSubType.UserId) {
+    return <UserIdInput value={value} onChange={(newId) => onChange(newId)} />
+  }
+
+  if (filter.subType === FilterSubType.Null) {
+    return null
+  }
+
+  return (
+    <>
+      <TextInput
+        label={filter.label || 'Equals'}
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value)
+        }}
+        size="small"
+      />
+      {filter.suggestions ? (
+        <Select label="Suggestions" size="small">
+          {filter.suggestions.map((suggestion) => (
+            <MenuItem key={suggestion} onClick={() => onChange(suggestion)}>
+              {suggestion}
+            </MenuItem>
+          ))}
+        </Select>
+      ) : null}
+    </>
+  )
+}
+
 const FilterRenderer = ({
   filter,
   onChange,
@@ -119,6 +159,14 @@ const FilterRenderer = ({
     case FilterType.Equal:
       return (
         <EqualInput
+          filter={filter as EqualFilter<any>}
+          value={value}
+          onChange={onChange}
+        />
+      )
+    case FilterType.NotEqual:
+      return (
+        <NotEqualInput
           filter={filter as EqualFilter<any>}
           value={value}
           onChange={onChange}
@@ -207,7 +255,7 @@ const Filters = <T,>({
   filters: Filter<T>[]
   storageKey: string
 }) => {
-  const [activeFilters, setActiveFilters] = useFilters<T>(storageKey)
+  const [activeFilters, setActiveFilters] = useFilters<T>(storageKey, filters)
   const [unappliedFilters, setUnappliedFilters] =
     useState<ActiveFilter<T>[]>(activeFilters)
   const classes = useStyles()
@@ -223,7 +271,8 @@ const Filters = <T,>({
         : unappliedFilters.concat([
             {
               ...filter,
-              value: null,
+              // for subtype null any value which is null is considered "off"
+              value: filter.subType === FilterSubType.Null ? true : null,
             },
           ])
 

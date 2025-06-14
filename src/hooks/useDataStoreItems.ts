@@ -14,7 +14,7 @@ interface QueryOptions<TItem> {
 
 export default <TItem>(
   collectionName: string,
-  ids: string[] | undefined | false,
+  ids?: string[] | undefined | false,
   options: QueryOptions<TItem> = {
     queryName: '',
   }

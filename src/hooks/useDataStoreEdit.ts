@@ -46,6 +46,8 @@ const useDataStoreEdit = <TRecord>(
         return
       }
 
+      console.debug(`useDataStoreEdit saving ${collectionName} ${id}...`)
+
       setIsSuccess(false)
       setLastErrorCode(null)
       setIsEditing(true)

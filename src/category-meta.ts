@@ -99,7 +99,6 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
 
 export const getCategoryMeta = (categoryName: AssetCategory): CategoryMeta => {
   if (!(categoryName in categoryMetas)) {
-    console.warn(`Category ${categoryName} not found in category meta`)
     // TODO: Probably refactor to return null and everything do a null check
     return {} as CategoryMeta
   }

@@ -36,9 +36,9 @@ const isDollars = (currency: PopularCurrency): boolean => {
 
 export const formatPrice = (
   price: number,
-  currency: PopularCurrency,
+  currency: PopularCurrency | null,
   withCurrency: boolean = true
 ) =>
-  `${isDollars(currency) ? '$' : ''}${price.toFixed(2)}${
-    withCurrency ? ` ${currency}` : ''
+  `${currency && isDollars(currency) ? '$' : ''}${price.toFixed(2)}${
+    withCurrency && currency ? ` ${currency}` : ''
   }`

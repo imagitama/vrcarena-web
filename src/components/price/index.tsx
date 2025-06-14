@@ -121,7 +121,7 @@ const Price = ({
   className,
 }: {
   price: number
-  priceCurrency: keyof typeof popularCurrencies
+  priceCurrency: keyof typeof popularCurrencies | null
   isLoading?: boolean
   small?: boolean
   showPriceWarning?: boolean
@@ -141,9 +141,11 @@ const Price = ({
         title="This price may be different on the official website.">
         <span className={`${isLoading ? classes.loading : ''}`}>
           <span className={`${classes.price} price`}>
-            {price === 0 || price === null
+            {price === 0
               ? 'FREE'
-              : formatPrice(price, priceCurrency, false)}
+              : price
+              ? formatPrice(price, priceCurrency, false)
+              : '(none)'}
             *
           </span>{' '}
           {price === 0 ? null : (

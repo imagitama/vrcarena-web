@@ -55,3 +55,4 @@ export const OpenExternalLink = React.lazy(() => import('@mui/icons-material/Lau
 export const Sort = React.lazy(() => import('@mui/icons-material/ImportExport').then(result => result.default))
 export const Filter = React.lazy(() => import('@mui/icons-material/FilterList').then(result => result.default))
 export const Warning = React.lazy(() => import('@mui/icons-material/Warning').then(result => result.default))
+export const Refresh = React.lazy(() => import('@mui/icons-material/Refresh').then(result => result.default))

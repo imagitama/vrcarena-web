@@ -4,13 +4,16 @@ import React, {
   createContext,
   useCallback,
   useState,
-  useEffect,
 } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@mui/styles'
 import AddIcon from '@mui/icons-material/Add'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import {
+  PostgrestQueryBuilder,
+  PostgrestFilterBuilder,
+} from '@supabase/postgrest-js'
 
 import SortControls, { SortOption } from '../sort-controls'
 import PagesNavigation from '../pages-navigation'
@@ -45,12 +48,15 @@ import {
   ActiveFilter,
   EqualActiveFilter,
   Filter,
+  FilterSubType,
   FilterType,
   MultichoiceActiveFilter,
+  NotEqualActiveFilter,
 } from '../../filters'
 import useFilters from '../../hooks/useFilters'
 import Filters from '../filters'
 import useStorage from '../../hooks/useStorage'
+import { Refresh as RefreshIcon } from '../../icons'
 
 const useStyles = makeStyles({
   root: {
@@ -93,6 +99,26 @@ const useStyles = makeStyles({
   rendererWrapper: {
     marginTop: '0.5rem',
   },
+  hydrateIcon: {
+    cursor: 'pointer',
+    padding: '0.5rem',
+    fontSize: '2rem !important',
+    transition: '100ms all',
+    '&:hover': {
+      transform: 'scale(1.1)',
+    },
+  },
+  // isHydrating: {
+  //   animation: '$spinRefreshIcon 250ms linear infinite',
+  // },
+  // '@keyframes spinRefreshIcon': {
+  //   '0%': {
+  //     transform: 'rotate(0deg)',
+  //   },
+  //   '100%': {
+  //     transform: 'rotate(360deg)',
+  //   },
+  // },
 })
 
 const limitPerPage = 50
@@ -123,7 +149,7 @@ interface PaginatedViewData<TRecord> {
   urlWithPageNumberVar: string
   selectedSubView: string | null
   filtersKey: string
-  // filters: Filters
+  filters: Filter<TRecord>[]
   internalPageNumber: number | null
   setInternalPageNumber: (newPageNumber: number) => void
   subViews?: SubViewConfig[]
@@ -160,6 +186,7 @@ const Page = () => {
     defaultFieldName,
     defaultDirection,
     renderer,
+    filters,
     urlWithPageNumberVar,
     selectedSubView,
     internalPageNumber,
@@ -169,7 +196,7 @@ const Page = () => {
   } = usePaginatedView()
   const keyPrefix = name || viewName || collectionName
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
-  const [activeFilters] = useFilters(`${keyPrefix}_filters`)
+  const [activeFilters] = useFilters(`${keyPrefix}_filters`, filters)
   const [sorting] = useSorting(
     `${keyPrefix}_sorting`,
     defaultFieldName as string,
@@ -194,6 +221,7 @@ const Page = () => {
           ? sorting.direction === OrderDirections.ASC
           : false
 
+      // TODO: Fix type safety
       let query: any
 
       // "exact" gives us correct count at a cost of performance
@@ -253,6 +281,31 @@ const Page = () => {
             }
             break
 
+          case FilterType.NotEqual:
+            if ((activeFilter as NotEqualActiveFilter<any>).value) {
+              if (activeFilter.subType === FilterSubType.Null) {
+                query = query.not(activeFilter.fieldName, 'is', null)
+
+                console.debug(
+                  `filter not is`,
+                  activeFilter.fieldName,
+                  (activeFilter as NotEqualActiveFilter<any>).value
+                )
+              } else {
+                query = query.neq(
+                  activeFilter.fieldName,
+                  (activeFilter as NotEqualActiveFilter<any>).value
+                )
+
+                console.debug(
+                  `filter neq`,
+                  activeFilter.fieldName,
+                  (activeFilter as NotEqualActiveFilter<any>).value
+                )
+              }
+            }
+            break
+
           case FilterType.Multichoice:
             if ((activeFilter as MultichoiceActiveFilter<any, any>).value) {
               query = query.in(
@@ -266,6 +319,11 @@ const Page = () => {
               )
             }
             break
+
+          default:
+            throw new Error(
+              `Unknown filter type: ${(activeFilter as any).type}`
+            )
         }
       }
 
@@ -401,6 +459,7 @@ const Page = () => {
           }}
         />
       ) : null}
+      <RefreshIcon className={classes.hydrateIcon} onClick={hydrate} />
       {getQueryString ? (
         <Button url={getPathForQueryString(getQueryString())} color="secondary">
           Generate Query
@@ -431,8 +490,8 @@ const CommonMetaControl = ({
   fieldName: string
   fieldMap: { [key: string]: string }
 }) => {
-  const { filtersKey } = usePaginatedView()
-  const [activeFilters, setActiveFilters] = useFilters(filtersKey)
+  const { filtersKey, filters } = usePaginatedView()
+  const [activeFilters, setActiveFilters] = useFilters(filtersKey, filters)
 
   const onSelect = (newVal: string) => {}
   // setFilters({
@@ -560,35 +619,33 @@ const PaginatedView = <TRecord,>({
         }}>
         <div className={classes.root}>
           <div className={classes.controls}>
-            {extraControlsLeft || subViews ? (
-              <div className={classes.controlsLeft}>
-                {subViews ? (
-                  <ControlGroup>
-                    {subViewConfigAll
-                      .concat(subViews)
-                      .map(({ label, id }, idx) => (
-                        <Fragment key={id}>
-                          {idx !== 0 ? <>&nbsp;</> : ''}
-                          <Button
-                            onClick={() => setSelectedSubView(id)}
-                            color="secondary"
-                            size="small"
-                            icon={
-                              selectedSubView === id ? (
-                                <CheckBoxIcon />
-                              ) : (
-                                <CheckBoxOutlineBlankIcon />
-                              )
-                            }>
-                            {label}
-                          </Button>
-                        </Fragment>
-                      ))}
-                  </ControlGroup>
-                ) : null}
-                <ControlGroup>{extraControlsLeft}</ControlGroup>
-              </div>
-            ) : null}
+            <div className={classes.controlsLeft}>
+              {subViews ? (
+                <ControlGroup>
+                  {subViewConfigAll
+                    .concat(subViews)
+                    .map(({ label, id }, idx) => (
+                      <Fragment key={id}>
+                        {idx !== 0 ? <>&nbsp;</> : ''}
+                        <Button
+                          onClick={() => setSelectedSubView(id)}
+                          color="secondary"
+                          size="small"
+                          icon={
+                            selectedSubView === id ? (
+                              <CheckBoxIcon />
+                            ) : (
+                              <CheckBoxOutlineBlankIcon />
+                            )
+                          }>
+                          {label}
+                        </Button>
+                      </Fragment>
+                    ))}
+                </ControlGroup>
+              ) : null}
+              <ControlGroup>{extraControlsLeft}</ControlGroup>
+            </div>
             <div className={classes.controlsRight}>
               {isEditor && showCommonMetaControls ? (
                 <ControlGroup>

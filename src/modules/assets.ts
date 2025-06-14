@@ -246,6 +246,25 @@ export interface GetFullAssetCacheItem {
   updatedat: string // time
 }
 
+export enum AuditResultResult {
+  Success,
+  Unavailable,
+  Missing,
+  Failed, // some issue trying to audit
+}
+
+export interface AuditResult {
+  sourceurl: string
+  result: AuditResultResult
+  price: number | null
+  pricecurrency: PopularCurrency | null
+}
+
+export interface FullAssetWithAudit extends FullAsset {
+  lastauditedat: Date
+  auditresults: AuditResult[]
+}
+
 export enum CollectionNames {
   Assets = 'assets',
   AssetsMeta = 'assetmeta',
@@ -264,6 +283,7 @@ export enum ViewNames {
   GetEndorsementAssetResults = 'getendorsementassetresults',
   GetWishlistAssetResults = 'getwishlistassetresults',
   GetDraftAssets = 'getdraftassets',
+  GetFullAssetsWithAudit = 'getfullassetswithaudit',
 }
 
 export enum FunctionNames {
