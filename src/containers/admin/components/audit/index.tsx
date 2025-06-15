@@ -28,6 +28,7 @@ import { getFriendlyDate } from '../../../../utils/dates'
 import Link from '../../../../components/link'
 import InfoMessage from '../../../../components/info-message'
 import Price from '../../../../components/price'
+import HintText from '../../../../components/hint-text'
 
 const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
@@ -102,6 +103,13 @@ const ArchiveButtons = ({ assetId }: { assetId: string }) => {
         color="tertiary">
         Discontinued or Unavailable
       </Button>
+      <br />
+      <br />
+      <HintText>
+        *please verify the source is still the same in case someone manually
+        <br />
+        repaired the source (eg. if the author moved from Gumroad to Jinxxy)
+      </HintText>
     </>
   )
 }
