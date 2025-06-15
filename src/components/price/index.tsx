@@ -130,7 +130,7 @@ const Price = ({
 }) => {
   const classes = useStyles()
 
-  const currency = priceCurrency || defaultCurrency
+  // note do not fallback to default currency as sometimes scrape fails and only price is returned from booth etc.
 
   return (
     <div>
@@ -148,8 +148,8 @@ const Price = ({
               : '(none)'}
             *
           </span>{' '}
-          {price === 0 ? null : (
-            <span className={classes.currency}>{currency}</span>
+          {price === 0 || priceCurrency === null ? null : (
+            <span className={classes.currency}>{priceCurrency}</span>
           )}
         </span>
       </div>
