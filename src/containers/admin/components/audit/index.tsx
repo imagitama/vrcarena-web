@@ -148,11 +148,20 @@ const Renderer = ({ items }: { items?: FullAssetWithAudit[] }) => {
                             {getFriendlyDate(asset.lastauditedat)})
                           </StatusText>
                           {auditResult.price ? (
-                            <Price
-                              price={auditResult.price}
-                              priceCurrency={auditResult.pricecurrency}
-                              small
-                            />
+                            <>
+                              <Price
+                                price={auditResult.price}
+                                priceCurrency={auditResult.pricecurrency}
+                                small
+                              />
+                              {auditResult.pricecurrency ? (
+                                ''
+                              ) : (
+                                <StatusText positivity={-1}>
+                                  (no currency detected)
+                                </StatusText>
+                              )}
+                            </>
                           ) : (
                             '(no price found)'
                           )}
