@@ -9,6 +9,9 @@ export interface NoticeFields {
 export interface Notice extends NoticeFields {
   id: string
   createdby: string
+  createdat: string
+  lastmodifiedby: string
+  lastmodifiedat: string
 }
 
 export interface FullNotice extends Notice {}

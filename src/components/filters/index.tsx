@@ -194,7 +194,7 @@ const MultichoiceInput = ({
   value: any[]
   onChange: (newVal: any[]) => void
 }) => {
-  const actualValue = value || filter.default
+  const actualValue = value || filter.defaultValue
 
   const onSelect = (id: string) =>
     onChange(

@@ -293,6 +293,52 @@ const QueuedItemRow = ({
     return <LoadingRow />
   }
 
+  const onRetry = async () => {
+    try {
+      console.log('Retrying...')
+
+      if (queuedItem.status === AssetSyncStatus.Waiting) {
+        console.debug(
+          'Status already "waiting" so forcing it by failing it then resetting back'
+        )
+
+        console.debug(
+          'Result:',
+          await updateRecord(
+            client,
+            CollectionNames.AssetSyncQueue,
+            queuedItem.id,
+            {
+              status: AssetSyncStatus.Failed,
+            }
+          )
+        )
+
+        console.debug('Waiting a moment')
+
+        await new Promise((resolve) => setTimeout(resolve, 500))
+      }
+
+      console.debug(
+        'Setting it to "waiting" triggers the special "try it again" function ;)'
+      )
+
+      console.debug(
+        'Result:',
+        await updateRecord(
+          client,
+          CollectionNames.AssetSyncQueue,
+          queuedItem.id,
+          {
+            status: AssetSyncStatus.Waiting,
+          }
+        )
+      )
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return (
     <TableRow className={`${isDeleted ? classes.deletedRow : ''}`}>
       <TableCell>
@@ -349,54 +395,12 @@ const QueuedItemRow = ({
           onDelete={onDelete}
         />
         {showMoreInfo && (
-          <Button
-            onClick={async () => {
-              try {
-                console.log('Retrying...')
-
-                if (queuedItem.status === AssetSyncStatus.Waiting) {
-                  console.debug(
-                    'Status already "waiting" so forcing it by failing it then resetting back'
-                  )
-
-                  console.debug(
-                    'Result:',
-                    await updateRecord(
-                      client,
-                      CollectionNames.AssetSyncQueue,
-                      queuedItem.id,
-                      {
-                        status: AssetSyncStatus.Failed,
-                      }
-                    )
-                  )
-
-                  console.debug('Waiting a moment')
-
-                  await new Promise((resolve) => setTimeout(resolve, 500))
-                }
-
-                console.debug(
-                  'Setting it to "waiting" triggers the special "try it again" function ;)'
-                )
-
-                console.debug(
-                  'Result:',
-                  await updateRecord(
-                    client,
-                    CollectionNames.AssetSyncQueue,
-                    queuedItem.id,
-                    {
-                      status: AssetSyncStatus.Waiting,
-                    }
-                  )
-                )
-              } catch (err) {
-                console.error(err)
-              }
-            }}>
-            (Admin Only) Retry
-          </Button>
+          <>
+            {' '}
+            <Button onClick={onRetry} color="tertiary">
+              (Admin Only) Retry
+            </Button>
+          </>
         )}
       </TableCell>
     </TableRow>

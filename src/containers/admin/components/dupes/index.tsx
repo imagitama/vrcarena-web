@@ -422,7 +422,7 @@ const DupeOutput = ({ dupeInfo }: { dupeInfo: GetAuthorDupesResult }) => {
   )
 }
 
-const View = () => {
+const AdminDupes = () => {
   const [isLoading, lastErrorCode, dupes] =
     useSupabaseView<GetAuthorDupesResult>('getAuthorDupes')
 
@@ -441,22 +441,6 @@ const View = () => {
   }
 
   return dupes.map((dupeInfo) => <DupeOutput dupeInfo={dupeInfo} />)
-}
-
-const AdminDupes = () => {
-  return (
-    <>
-      <InfoMessage title="How It Works">
-        An interface for deleting duplicate authors while copying their data and
-        switching the assets to the "main" author.
-        <br />
-        <br />
-        Note you get a chance to "plan" what the site will do but any change you
-        do is somewhat permanent.
-      </InfoMessage>
-      <View />
-    </>
-  )
 }
 
 export default AdminDupes

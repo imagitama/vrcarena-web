@@ -8,7 +8,6 @@ import useDatabaseSave from '../../hooks/useDatabaseSave'
 import {
   Asset,
   CollectionNames,
-  FullAsset,
   PublicAsset,
   Relation,
   RelationType,
@@ -23,12 +22,11 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import SuccessMessage from '../success-message'
-import Markdown from '../markdown'
-import { RelationItem, RelationsItems, getLabelForType } from '../relations'
+import { RelationItem } from '../relations'
 import useTimer from '../../hooks/useTimer'
 import { formHideDelay } from '../../config'
 import RadioInputs from '../radio-inputs'
-import HidableMessage from '../hidable-message'
+import Message from '../message'
 import Paper from '../paper'
 import Heading from '../heading'
 import CheckboxInput from '../checkbox-input'
@@ -296,7 +294,7 @@ const RelationsEditor = ({
 
   return (
     <div>
-      <HidableMessage noticeId="relations-editor-info">
+      <Message hideId="relations-editor-info">
         We encourage everyone to "link" different assets together to help
         people:
         <ul>
@@ -304,7 +302,7 @@ const RelationsEditor = ({
           <li>find other similar assets</li>
         </ul>
         Please link other assets using this form.
-      </HidableMessage>
+      </Message>
       {isAddFormVisible ? <RelationEditorForm onDone={onAddRelation} /> : null}
       <ItemsEditor<Relation, { assetsData: Asset[] | undefined }>
         nameSingular="relation"

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import SaveIcon from '@mui/icons-material/Save'
 import { handleError } from '../../error-handling'
 import useDatabaseSave from '../../hooks/useDatabaseSave'
 import { CollectionNames, Notice, NoticeFields } from '../../modules/notices'
@@ -6,18 +7,20 @@ import Button from '../button'
 import CheckboxInput from '../checkbox-input'
 import ErrorMessage from '../error-message'
 import FormControls from '../form-controls'
-import Heading from '../heading'
 import LoadingIndicator from '../loading-indicator'
-import Paper from '../paper'
 import SuccessMessage from '../success-message'
 import TextInput from '../text-input'
 
 const EditNoticeForm = ({
   id = undefined,
   notice,
+  onDone,
+  onSave,
 }: {
   id?: string
   notice?: Notice
+  onSave: () => void
+  onDone: () => void
 }) => {
   const [fields, setFields] = useState<NoticeFields>({
     title: '',
@@ -40,7 +43,7 @@ const EditNoticeForm = ({
       orderby: notice.orderby,
       isvisible: notice.isvisible,
     })
-  }, [id, notice !== undefined])
+  }, [id, JSON.stringify(notice)])
 
   const onClickEditOrCreate = async () => {
     try {
@@ -50,6 +53,8 @@ const EditNoticeForm = ({
       }
 
       await createOrEdit(fields)
+
+      onSave()
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -72,7 +77,7 @@ const EditNoticeForm = ({
 
   if (isSuccess) {
     return (
-      <SuccessMessage>
+      <SuccessMessage onOkay={onDone}>
         Notice {id ? 'edited' : 'created'}. You need to reload the page to see
         it
       </SuccessMessage>
@@ -86,10 +91,7 @@ const EditNoticeForm = ({
     }))
 
   return (
-    <Paper>
-      <Heading variant="h3" noTopMargin>
-        {id ? 'Edit Notice' : 'Create Notice'}
-      </Heading>
+    <>
       <TextInput
         value={fields.hideid}
         onChange={(e) => setField('hideid', e.target.value)}
@@ -130,11 +132,11 @@ const EditNoticeForm = ({
         helperText="The index to display to the user. 0 means first. 999 would be last."
       />
       <FormControls>
-        <Button onClick={onClickEditOrCreate} size="small">
-          {id ? 'Edit' : 'Create'}
+        <Button onClick={onClickEditOrCreate} icon={<SaveIcon />}>
+          {id ? 'Save' : 'Create'}
         </Button>
       </FormControls>
-    </Paper>
+    </>
   )
 }
 

@@ -5,6 +5,7 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import SaveIcon from '@mui/icons-material/Save'
+import RefreshIcon from '@mui/icons-material/Refresh'
 
 import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import { updateRecords } from '../../data-store'
@@ -34,6 +35,7 @@ import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 import NoResultsMessage from '../no-results-message'
 import Paper from '../paper'
+import InfoMessage from '../info-message'
 
 interface SyncMissingAvatarSubmissionsResult {
   success: boolean
@@ -77,8 +79,9 @@ const SyncForm = ({ onDone }: { onDone: () => void }) => {
   }
 
   return (
-    <Paper>
+    <InfoMessage>
       <em>VRChat avatars are automatically synced every 30 minutes</em>
+      <br />
       {lastErrorMessage ? (
         <ErrorMessage>{lastErrorMessage}</ErrorMessage>
       ) : null}
@@ -88,10 +91,15 @@ const SyncForm = ({ onDone }: { onDone: () => void }) => {
           Synced {syncedIds.length} VRChat avatars
         </SuccessMessage>
       ) : null}
-      <Button onClick={sync} isDisabled={isLoading}>
+      <Button
+        onClick={sync}
+        isDisabled={isLoading}
+        icon={<RefreshIcon />}
+        size="large"
+        color="secondary">
         Manually Sync VRChat Avatars
       </Button>
-    </Paper>
+    </InfoMessage>
   )
 }
 

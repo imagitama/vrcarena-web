@@ -1,6 +1,4 @@
-import React, { useState, useCallback } from 'react'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import React from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -8,18 +6,15 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
 import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
 import { FullReport, ResolutionStatus, ViewNames } from '../../modules/reports'
 
-import Button from '../button'
 import PaginatedView from '../paginated-view'
-import TextInput from '../text-input'
 import FormattedDate from '../formatted-date'
 import GenericOutputItem from '../generic-output-item'
 import ResolutionStatusOutput from '../resolution-status'
 import Link from '../link'
 import UsernameLink from '../username-link'
-import { GetQuery } from '../../data-store'
+import { FilterSubType, FilterType, MultichoiceFilter } from '../../filters'
 
 function ReportsTable({ reports }: { reports?: FullReport[] }) {
   return (
@@ -97,64 +92,10 @@ const Renderer = ({ items }: { items?: FullReport[] }) => (
   <ReportsTable reports={items} />
 )
 
-const subViews = {
-  PENDING: 0,
-  RESOLVED: 1,
-}
-
-const analyticsCategoryName = 'AdminReports'
-
-const UserIdFilter = ({ onChange }: { onChange: (userId: string) => void }) => {
-  const [val, setVal] = useState('')
-  return (
-    <>
-      <TextInput
-        onChange={(e) => setVal(e.target.value)}
-        value={val}
-        placeholder="User ID"
-        size="small"
-      />
-      <Button onClick={() => onChange(val)}>Apply</Button>
-    </>
-  )
-}
-
 export default () => {
-  const [selectedSubView, setSelectedSubView] = useState(subViews.PENDING)
-  const [userIdToFilter, setUserIdToFilter] = useState('')
-  const getQuery = useCallback(
-    (query: GetQuery<FullReport>): GetQuery<FullReport> => {
-      if (userIdToFilter) {
-        query = query.eq('createdby', userIdToFilter)
-      }
-
-      switch (selectedSubView) {
-        case subViews.PENDING:
-          query = query.eq('resolutionstatus', ResolutionStatus.Pending)
-          break
-
-        case subViews.RESOLVED:
-          query = query.eq('resolutionstatus', ResolutionStatus.Resolved)
-          break
-      }
-
-      return query
-    },
-    [userIdToFilter, selectedSubView]
-  )
-
-  const toggleSubView = (subView: number) =>
-    setSelectedSubView((currentVal) => {
-      if (currentVal === subView) {
-        return subViews.PENDING
-      }
-      return subView
-    })
-
   return (
     <PaginatedView<FullReport>
       viewName={ViewNames.GetFullReports}
-      getQuery={getQuery}
       name="view-reports"
       sortOptions={[
         {
@@ -171,38 +112,21 @@ export default () => {
         ':tabName',
         'reports'
       )}
-      extraControls={[
-        <Button
-          icon={
-            selectedSubView === subViews.PENDING ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            setSelectedSubView(subViews.PENDING)
-            trackAction(analyticsCategoryName, 'Click on view waiting reports')
-          }}
-          color="secondary">
-          Pending
-        </Button>,
-        <Button
-          icon={
-            selectedSubView === subViews.RESOLVED ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            toggleSubView(subViews.RESOLVED)
-            trackAction(analyticsCategoryName, 'Click on view resolved reports')
-          }}
-          color="secondary">
-          Resolved
-        </Button>,
-        <UserIdFilter onChange={(newVal) => setUserIdToFilter(newVal)} />,
+      filters={[
+        {
+          fieldName: 'resolutionstatus',
+          type: FilterType.Multichoice,
+          options: [ResolutionStatus.Pending, ResolutionStatus.Resolved],
+          label: 'Status',
+          defaultActive: true,
+          defaultValue: [ResolutionStatus.Pending],
+        } as MultichoiceFilter<FullReport, ResolutionStatus>,
+        {
+          fieldName: 'createdby',
+          label: 'Reporter',
+          type: FilterType.Equal,
+          subType: FilterSubType.UserId,
+        },
       ]}>
       <Renderer />
     </PaginatedView>

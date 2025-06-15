@@ -125,6 +125,9 @@ type PossibleWhereClauses<TRecord> =
   | (WhereClause<TRecord> | WhereOperators.OR)[]
   | false
 
+type ClearFn = () => void
+type HydrateFn = () => void
+
 export default <TRecord>(
   collectionName: string,
   whereClauses: PossibleWhereClauses<TRecord>,
@@ -136,8 +139,9 @@ export default <TRecord>(
   boolean,
   null | DataStoreErrorCode,
   TRecord[] | null,
-  () => void,
-  number | null
+  HydrateFn,
+  number | null,
+  ClearFn
 ] => {
   const [records, setRecords] = useState<TRecord[] | null>(null)
   const [count, setCount] = useState<null | number>(null)
@@ -338,5 +342,12 @@ export default <TRecord>(
     doIt(false)
   }
 
-  return [isLoading, lastErrorCode, records, hydrate, count]
+  const clear = () => {
+    setIsLoading(false)
+    setRecords(null)
+    setCount(null)
+    setLastErrorCode(null)
+  }
+
+  return [isLoading, lastErrorCode, records, hydrate, count, clear]
 }

@@ -1,7 +1,9 @@
 import React from 'react'
 import Paper from '@mui/material/Paper'
+import CloseIcon from '@mui/icons-material/Close'
 import { makeStyles } from '@mui/styles'
 import Chariot from '../chariot'
+import useNotice from '../../hooks/useNotice'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -79,6 +81,16 @@ const useStyles = makeStyles(() => ({
   noTopMargin: {
     marginTop: 0,
   },
+  hideBtn: {
+    position: 'absolute',
+    padding: '0.5rem',
+    top: 0,
+    right: 0,
+    zIndex: 50,
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
 }))
 
 export interface MessageProps {
@@ -92,6 +104,7 @@ export interface MessageProps {
   noTopMargin?: boolean
   paperClassName?: string
   className?: string
+  hideId?: string
 }
 
 export default ({
@@ -105,8 +118,14 @@ export default ({
   noTopMargin = false,
   paperClassName = undefined,
   className,
+  hideId,
 }: MessageProps) => {
+  const [isHidden, hideMessage] = useNotice(hideId)
   const classes = useStyles()
+
+  if (isHidden) {
+    return null
+  }
 
   return (
     <div
@@ -132,6 +151,11 @@ export default ({
           )}
           {controls && <div className={classes.controls}>{controls}</div>}
         </div>
+        {hideId ? (
+          <div className={classes.hideBtn} onClick={hideMessage}>
+            <CloseIcon />
+          </div>
+        ) : null}
       </Paper>
     </div>
   )

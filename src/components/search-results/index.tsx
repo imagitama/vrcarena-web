@@ -34,7 +34,6 @@ import SearchFilters from '../search-filters'
 import WarningMessage from '../warning-message'
 import { AssetCategory } from '../../modules/assets'
 import { DataStoreErrorCode } from '../../data-store'
-import HidableMessage from '../hidable-message'
 import LoadingIndicator from '../loading-indicator'
 
 import {
@@ -466,10 +465,10 @@ const AssetSearch = () => {
   return (
     <>
       {usingSimpleSearch ? (
-        <HidableMessage noticeId="using-simple-search">
+        <WarningMessage hideId="using-simple-search">
           Our search provider Algolia is currently unavailable. Falling back to
           a worse search. The search results you see might not be as good.
-        </HidableMessage>
+        </WarningMessage>
       ) : null}
       <CategoryAndSpeciesSearchHint searchTerm={searchTerm} />
       <TagSearchHint searchTerm={searchTerm} />

@@ -2,19 +2,19 @@ import React from 'react'
 import InfoIcon from '@mui/icons-material/Info'
 import CheckIcon from '@mui/icons-material/Check'
 
-import Message from '../message'
+import Message, { MessageProps } from '../message'
 import Button from '../button'
 
 export default ({
   title,
   children,
   onOkay,
+  ...messageProps
 }: {
-  title?: React.ReactNode
-  children: React.ReactNode
   onOkay?: () => void
-}) => (
+} & MessageProps) => (
   <Message
+    {...messageProps}
     icon={<InfoIcon />}
     title={title || children}
     controls={

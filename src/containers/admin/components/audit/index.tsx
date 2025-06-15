@@ -169,37 +169,28 @@ const Renderer = ({ items }: { items?: FullAssetWithAudit[] }) => {
   )
 }
 
-const AdminAudit = () => {
-  return (
-    <>
-      <InfoMessage title="How It Works">
-        Auditing is using the auto-sync functionality to check if the source for
-        an asset is still available. It happens every 5 minutes for 1 asset that
-        either has never been audited or is the oldest.
-      </InfoMessage>
-      <PaginatedView<FullAssetWithAudit>
-        viewName={ViewNames.GetFullAssetsWithAudit}
-        sortOptions={[
-          {
-            fieldName: 'lastauditedat',
-            label: 'Audited At',
-          },
-        ]}
-        defaultFieldName="lastauditedat"
-        defaultDirection={OrderDirections.ASC}
-        filters={[
-          {
-            fieldName: 'lastauditedat',
-            type: FilterType.NotEqual,
-            subType: FilterSubType.Null,
-            label: 'Only audited',
-            defaultActive: true,
-          },
-        ]}>
-        <Renderer />
-      </PaginatedView>
-    </>
-  )
-}
+const AdminAudit = () => (
+  <PaginatedView<FullAssetWithAudit>
+    viewName={ViewNames.GetFullAssetsWithAudit}
+    sortOptions={[
+      {
+        fieldName: 'lastauditedat',
+        label: 'Audited At',
+      },
+    ]}
+    defaultFieldName="lastauditedat"
+    defaultDirection={OrderDirections.ASC}
+    filters={[
+      {
+        fieldName: 'lastauditedat',
+        type: FilterType.NotEqual,
+        subType: FilterSubType.Null,
+        label: 'Only audited',
+        defaultActive: true,
+      },
+    ]}>
+    <Renderer />
+  </PaginatedView>
+)
 
 export default AdminAudit

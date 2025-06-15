@@ -235,38 +235,32 @@ const Renderer = ({ items, hydrate }: RendererProps<FullComment>) => {
   return <CommentsByUser comments={items!} hydrate={hydrate} />
 }
 
-const filters = [
-  {
-    fieldName: 'createdby',
-    label: 'User',
-    type: FilterType.Equal,
-    subType: FilterSubType.UserId,
-  },
-]
-
-export default () => {
-  // const userId = useQueryParam('userId') || ''
-
-  return (
-    <>
-      <PaginatedView<FullComment>
-        name="admin-comments"
-        viewName={ViewNames.GetFullComments}
-        sortOptions={[
-          {
-            label: 'Creation date',
-            fieldName: 'createdat',
-          },
-        ]}
-        defaultFieldName={'createdat'}
-        urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
-          ':tabName',
-          'comments'
-        )}
-        filters={filters}>
-        {/* @ts-ignore */}
-        <Renderer />
-      </PaginatedView>
-    </>
-  )
-}
+export default () => (
+  <>
+    <PaginatedView<FullComment>
+      name="admin-comments"
+      viewName={ViewNames.GetFullComments}
+      sortOptions={[
+        {
+          label: 'Creation date',
+          fieldName: 'createdat',
+        },
+      ]}
+      defaultFieldName={'createdat'}
+      urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+        ':tabName',
+        'comments'
+      )}
+      filters={[
+        {
+          fieldName: 'createdby',
+          label: 'User',
+          type: FilterType.Equal,
+          subType: FilterSubType.UserId,
+        },
+      ]}>
+      {/* @ts-ignore */}
+      <Renderer />
+    </PaginatedView>
+  </>
+)
