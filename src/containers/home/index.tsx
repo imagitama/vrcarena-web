@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { makeStyles } from '@mui/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -7,23 +7,6 @@ import useSearchTerm from '../../hooks/useSearchTerm'
 import { mediaQueryForMobiles } from '../../media-queries'
 import * as routes from '../../routes'
 import Button from '../../components/button'
-import useSupabaseView from '../../hooks/useSupabaseView'
-import ErrorMessage from '../../components/error-message'
-import { AssetCategory, FullAsset, PublicAsset } from '../../modules/assets'
-import { User } from '../../modules/users'
-import { FullActivityEntry } from '../../modules/activity'
-import { CachedDiscordMessage } from '../../modules/discordmessagecache'
-import AssetResults from '../../components/asset-results'
-import ActivityResults from '../../components/activity-results'
-import UserList from '../../components/user-list'
-import DiscordMessageResult from '../../components/discord-message-result'
-import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '../../config'
-import Block from '../../components/block'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import PatreonCosts from './components/patreon-costs'
-import SpeciesResultItem from '../../components/species-result-item'
-import { FullSpecies } from '../../modules/species'
-import LoadingIndicator from '../../components/loading-indicator'
 import SpeciesBrowser from '../../components/species-browser'
 
 const contentMaxWidth = '900px'
@@ -57,38 +40,11 @@ const useStyles = makeStyles({
       },
     },
   },
-  tile: {
-    margin: '1rem 0',
-  },
-  tileCols: {
-    margin: '1rem 0',
-    padding: '0 0.5rem',
-    display: 'flex',
-    '& > *': {
-      padding: '0 0.5rem',
-    },
-    '& > *:first-child': {
-      width: '100%',
-    },
-    '& > *:last-child': {
-      // width: '25%'
-    },
-    [mediaQueryForMobiles]: {
-      flexDirection: 'column',
-      padding: '0 0.25rem',
-      '& > *': {
-        padding: '0',
-      },
-    },
-  },
   controls: {
     width: '100%',
     marginTop: '1rem',
     display: 'flex',
     justifyContent: 'right',
-  },
-  block: {
-    marginBottom: 0,
   },
 })
 
@@ -116,177 +72,7 @@ const ContentBlock = ({
   )
 }
 
-const Tile = ({
-  title,
-  url,
-  buttonLabel,
-  children,
-}: {
-  title: string
-  url: string
-  buttonLabel?: string
-  children: React.ReactNode
-}) => {
-  const classes = useStyles()
-  return (
-    <div className={classes.tile}>
-      <Block url={url} title={title} className={classes.block}>
-        {children}
-        {buttonLabel ? (
-          <div className={classes.controls}>
-            <Button
-              url={url}
-              icon={<ChevronRightIcon />}
-              color="secondary"
-              size="small">
-              {buttonLabel}
-            </Button>
-          </div>
-        ) : null}
-      </Block>
-    </div>
-  )
-}
-
-const TileCols = ({ children }: { children: React.ReactNode }) => {
-  const classes = useStyles()
-  return <div className={classes.tileCols}>{children}</div>
-}
-
-interface HomepageContent {
-  recentavatars: PublicAsset[]
-  recentaccessories: PublicAsset[]
-  recentusers: User[]
-  recentactivity: FullActivityEntry[]
-  recentdiscordannouncements: CachedDiscordMessage[]
-  featuredasset: FullAsset
-  featuredspecies: FullSpecies
-  patreonincome: number
-}
-
-const Tiles = () => {
-  const isAdultContentEnabled = useIsAdultContentEnabled()
-  const [isLoading, lastErrorCode, results] = useSupabaseView<HomepageContent>(
-    `${isAdultContentEnabled ? '' : 'non'}adulthomepagecontent`
-  )
-
-  if (lastErrorCode !== null) {
-    return (
-      <ErrorMessage>
-        Failed to load homepage content (code {lastErrorCode})
-      </ErrorMessage>
-    )
-  }
-
-  const showShimmer = isLoading || !Array.isArray(results) || !results.length
-
-  const result = showShimmer ? null : results[0]
-
-  return (
-    <TileCols>
-      <div>
-        <Tile
-          title="Recent Avatars"
-          url={routes.viewCategoryWithVar.replace(
-            ':categoryName',
-            AssetCategory.Avatar
-          )}
-          buttonLabel="Browse Avatars">
-          <AssetResults
-            assets={result?.recentavatars}
-            shimmer={showShimmer}
-            shimmerCount={10}
-          />
-        </Tile>
-        <Tile
-          title="Recent Accessories"
-          url={routes.viewCategoryWithVar.replace(
-            ':categoryName',
-            AssetCategory.Accessory
-          )}
-          buttonLabel="Browse Accessories">
-          <AssetResults
-            assets={result?.recentaccessories}
-            shimmer={showShimmer}
-            shimmerCount={10}
-          />
-        </Tile>
-        <Tile
-          title="Recent Sign-ups"
-          url={routes.users}
-          buttonLabel="Browse Users">
-          <UserList users={result?.recentusers} />
-        </Tile>
-        <Tile
-          title="Discord Announcement"
-          url={DISCORD_URL}
-          buttonLabel="Join Discord">
-          {result ? (
-            result.recentdiscordannouncements.length ? (
-              <DiscordMessageResult
-                message={result.recentdiscordannouncements[0]}
-              />
-            ) : (
-              <ErrorMessage>No Discord messages found</ErrorMessage>
-            )
-          ) : (
-            <LoadingIndicator message="Loading..." />
-          )}
-        </Tile>
-        <Tile
-          title="Recent Activity"
-          url={routes.activity}
-          buttonLabel="View Activity">
-          {result ? (
-            <ActivityResults activityEntries={result.recentactivity} />
-          ) : (
-            <LoadingIndicator message="Loading..." />
-          )}
-        </Tile>
-      </div>
-      <div>
-        <Tile
-          title="Species Of The Day"
-          url={routes.viewAllSpecies}
-          buttonLabel="Browse Species">
-          {result ? (
-            <SpeciesResultItem speciesItem={result?.featuredspecies} />
-          ) : (
-            <LoadingIndicator message="Loading..." />
-          )}
-        </Tile>
-        <Tile
-          title="Featured Asset"
-          url={
-            result?.featuredasset
-              ? routes.viewAssetWithVar.replace(
-                  ':assetId',
-                  result.featuredasset.id
-                )
-              : ''
-          }>
-          <AssetResults
-            assets={result?.featuredasset ? [result.featuredasset] : undefined}
-            shimmer={showShimmer}
-            shimmerCount={1}
-          />
-        </Tile>
-        <Tile
-          title="Patreon"
-          url={PATREON_BECOME_PATRON_URL}
-          buttonLabel="Become Patron">
-          <PatreonCosts
-            isLoading={!result}
-            incomeCentsAfterTaxes={result?.patreonincome}
-          />
-        </Tile>
-      </div>
-    </TileCols>
-  )
-}
-
 export default () => {
-  const classes = useStyles()
   const searchTerm = useSearchTerm()
 
   if (searchTerm) {

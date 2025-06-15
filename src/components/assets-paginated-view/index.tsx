@@ -25,6 +25,10 @@ const Renderer = ({
   // extra
   categoryName,
 }: RendererProps<PublicAsset> & ExtraRendererProps) => {
+  if (!items) {
+    return <AssetResults shimmer shimmerCount={20} />
+  }
+
   if (selectedSubView === SubView.GroupByArea && categoryName) {
     return (
       <AssetsByArea
@@ -93,7 +97,8 @@ const AssetsPaginatedView = ({
       }
       {...props}
       // NOTE: Do not override props with this as we do adult check
-      getQuery={getQuery}>
+      getQuery={getQuery}
+      isRendererForLoading>
       {/* @ts-ignore */}
       <Renderer categoryName={categoryName} />
     </PaginatedView>

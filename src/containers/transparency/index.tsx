@@ -72,7 +72,7 @@ export default () => (
       have voluntarily made to keep you informed.
     </p>
     <p>
-      <strong>Last updated 6 April 2023.</strong>
+      <strong>Last updated 15 June 2025.</strong>
     </p>
     <Heading variant="h2">Running Costs</Heading>
     <p>

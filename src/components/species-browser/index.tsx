@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { makeStyles } from '@mui/styles'
@@ -13,7 +13,6 @@ import useDatabaseQuery, {
   OrderDirections,
 } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
-import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
 import { FullSpecies, Species, ViewNames } from '../../modules/species'
 import AutocompleteInput from '../../components/autocomplete-input'
@@ -21,7 +20,7 @@ import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
-import { findItemAndParents } from '../../utils'
+import { findItemAndParents, getRandomInt } from '../../utils'
 import SpeciesResultItem from '../../components/species-result-item'
 import useStorage from '../../hooks/useStorage'
 
@@ -112,6 +111,28 @@ interface SpeciesContainerSettings {
 
 const storageKey = 'speciescontainer'
 
+const CreateButton = () => {
+  const isEditor = useIsEditor()
+
+  if (!isEditor) {
+    return null
+  }
+  return (
+    <>
+      &nbsp;
+      <Button
+        url={routes.createSpecies}
+        icon={<AddIcon />}
+        onClick={() =>
+          trackAction(analyticsCategory, 'Click create species button')
+        }
+        size="small">
+        Create
+      </Button>
+    </>
+  )
+}
+
 const SpeciesBrowser = ({
   selectedSpeciesIds,
   onClickSpecies,
@@ -121,10 +142,9 @@ const SpeciesBrowser = ({
   onClickSpecies?: (id: string) => void
   showControls?: boolean
 }) => {
-  const isEditor = useIsEditor()
   const [isLoading, lastErrorCode, speciesItems] = useDatabaseQuery<Species>(
     ViewNames.GetPublicSpeciesCache,
-    isEditor ? [] : [['redirectto', Operators.IS, null]],
+    [['redirectto', Operators.IS, null]],
     {
       [options.orderBy]: ['singularname', OrderDirections.ASC],
     }
@@ -136,6 +156,17 @@ const SpeciesBrowser = ({
       grid: true,
       groupChildren: true,
     })
+  const loadingChildren = useMemo(
+    () =>
+      Array.from({ length: 6 }).map((_, i) => (
+        <SpeciesResultItem shimmer key={i} className={classes.speciesItem}>
+          {getRandomInt(0, 10) < 4 ? (
+            <SpeciesResultItem shimmer index={0} indent={1} />
+          ) : null}
+        </SpeciesResultItem>
+      )),
+    []
+  )
 
   const filteredSpecies = speciesItems
     ? filterId !== null
@@ -253,6 +284,12 @@ const SpeciesBrowser = ({
       ))
     : null
 
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load species (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
   return (
     <>
       {showControls ? (
@@ -274,23 +311,7 @@ const SpeciesBrowser = ({
                 size="small">
                 Group Children
               </Button>
-              {isEditor && (
-                <>
-                  &nbsp;
-                  <Button
-                    url={routes.createSpecies}
-                    icon={<AddIcon />}
-                    onClick={() =>
-                      trackAction(
-                        analyticsCategory,
-                        'Click create species button'
-                      )
-                    }
-                    size="small">
-                    Create
-                  </Button>
-                </>
-              )}
+              <CreateButton />
             </div>
           </div>
         </div>
@@ -328,23 +349,14 @@ const SpeciesBrowser = ({
           }}
         />
       </div>
-      {isLoading || !Array.isArray(speciesItems) ? (
-        <LoadingIndicator message="Loading species..." />
-      ) : lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to load species (code {lastErrorCode})
-        </ErrorMessage>
+      {speciesContainerSettings?.grid ? (
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
+          <Masonry>{isLoading ? loadingChildren : children}</Masonry>
+        </ResponsiveMasonry>
       ) : (
-        <>
-          {speciesContainerSettings?.grid ? (
-            <ResponsiveMasonry
-              columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-              <Masonry>{children}</Masonry>
-            </ResponsiveMasonry>
-          ) : (
-            <div className={classes.speciesResults}>{children}</div>
-          )}
-        </>
+        <div className={classes.speciesResults}>
+          {isLoading ? loadingChildren : children}
+        </div>
       )}
     </>
   )

@@ -214,8 +214,7 @@ const SpeciesOutput = ({
   if (!asset) {
     return (
       <>
-        {divider} <LoadingShimmer width="30px" height="10px" />,{' '}
-        <LoadingShimmer width="45px" height="10px" />
+        {divider} <LoadingShimmer width="40px" height="10px" />
       </>
     )
   }
@@ -304,7 +303,7 @@ const AssetResultsItem = ({
                   {asset.isadult ? <LoyaltyIcon /> : null}
                 </>
               ) : (
-                <LoadingShimmer width="100%" height="40px" />
+                <LoadingShimmer width="100%" height="23px" />
               )}
             </div>
             <div className={classes.author}>
@@ -313,7 +312,7 @@ const AssetResultsItem = ({
                   `by ${asset.authorname}`
                 ) : null
               ) : (
-                <LoadingShimmer width="80px" height="15px" />
+                <LoadingShimmer width="80px" height="12px" marginTop={'2px'} />
               )}
             </div>
             <div className={classes.microText}>
@@ -321,7 +320,7 @@ const AssetResultsItem = ({
                 {asset ? (
                   getCategoryMeta(asset.category).nameSingular
                 ) : (
-                  <LoadingShimmer width="80px" height="15px" />
+                  <LoadingShimmer width="80px" height="12px" />
                 )}
               </strong>{' '}
               <SpeciesOutput asset={asset} relation={relation} />

@@ -39,7 +39,6 @@ import { prepareValueForQuery } from '../../queries'
 import { trackAction } from '../../analytics'
 import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 import { handleError } from '../../error-handling'
-import { GetQuery } from '../../data-store'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (

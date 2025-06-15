@@ -156,6 +156,7 @@ interface PaginatedViewData<TRecord> {
   sortOptions?: SortOption<TRecord>[]
   getQueryString?: () => string
   whereClauses?: WhereClause<TRecord>[]
+  isRendererForLoading?: boolean
 }
 
 // @ts-ignore
@@ -164,7 +165,7 @@ export const usePaginatedView = (): PaginatedViewData<any> =>
   useContext(PaginatedViewContext)
 
 export interface RendererProps<T> {
-  items: T[]
+  items: T[] | null
   hydrate: () => void
   selectedSubView: string | null
   activeFilters: ActiveFilter<any>[]
@@ -193,6 +194,7 @@ const Page = () => {
     setInternalPageNumber,
     getQueryString,
     whereClauses,
+    isRendererForLoading,
   } = usePaginatedView()
   const keyPrefix = name || viewName || collectionName
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
@@ -417,6 +419,14 @@ const Page = () => {
   }
 
   if (isLoading || !items) {
+    if (isRendererForLoading) {
+      return React.cloneElement<RendererProps<any>>(renderer, {
+        items: null,
+        hydrate,
+        selectedSubView,
+        activeFilters,
+      })
+    }
     return <LoadingIndicator message={`Loading page ${currentPageNumber}...`} />
   }
 
@@ -544,6 +554,7 @@ export interface PaginatedViewProps<TRecord> {
   limit?: number
   whereClauses?: WhereClause<TRecord>[]
   filters?: Filter<TRecord>[]
+  isRendererForLoading?: boolean // items will be null
 }
 
 const PaginatedView = <TRecord,>({
@@ -567,6 +578,7 @@ const PaginatedView = <TRecord,>({
   getQueryString = undefined,
   limit = undefined,
   whereClauses,
+  isRendererForLoading,
 }: PaginatedViewProps<TRecord>) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
@@ -616,6 +628,7 @@ const PaginatedView = <TRecord,>({
           setInternalPageNumber,
           getQueryString,
           whereClauses,
+          isRendererForLoading,
         }}>
         <div className={classes.root}>
           <div className={classes.controls}>

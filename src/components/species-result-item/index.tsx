@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import { FullSpecies, Species } from '../../modules/species'
 import Link from '../../components/link'
@@ -6,6 +6,8 @@ import * as routes from '../../routes'
 import LazyLoad from 'react-lazyload'
 import { VRCArenaTheme } from '../../themes'
 import Tooltip from '../tooltip'
+import LoadingShimmer from '../loading-shimmer'
+import { getRandomInt } from '../../utils'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
@@ -47,7 +49,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     width: '80px',
     height: '80px',
     marginRight: '0.5rem',
-    backgroundColor: 'rgba(150, 150, 150)',
+    backgroundColor: 'rgba(100, 100, 100)',
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
     '& img': {
@@ -57,6 +59,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     },
   },
   text: {
+    width: '100%',
     height: '100%',
     display: 'flex',
     alignItems: 'center',
@@ -113,6 +116,7 @@ const isFull = (thing: Species | FullSpecies): thing is FullSpecies =>
   'avatarcount' in thing
 
 const SpeciesResultItem = ({
+  shimmer,
   index,
   speciesItem,
   indent = 0,
@@ -123,8 +127,9 @@ const SpeciesResultItem = ({
   onClick,
   isSelectedByParent,
 }: {
+  shimmer?: boolean
   index?: number
-  speciesItem: FullSpecies | Species
+  speciesItem?: FullSpecies | Species
   indent?: number
   children?: React.ReactNode
   className?: string
@@ -134,6 +139,13 @@ const SpeciesResultItem = ({
   onClick?: (id: string) => void
   isSelectedByParent?: boolean
 }) => {
+  useEffect(() => {
+    console.log('mount')
+    return () => {
+      console.log('UMMOUNT')
+    }
+  }, [])
+
   const classes = useStyles()
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <Tooltip
@@ -142,7 +154,7 @@ const SpeciesResultItem = ({
           ? ''
           : 'You cannot select this (you may have children or a parent already selected)'
       }>
-      {onClick ? (
+      {onClick && speciesItem ? (
         <div
           className={`${classes.clicker} ${
             isSelected ? classes.selected : ''
@@ -154,7 +166,7 @@ const SpeciesResultItem = ({
         <Link
           to={routes.viewSpeciesWithVar.replace(
             ':speciesIdOrSlug',
-            speciesItem.slug || speciesItem.id
+            speciesItem ? speciesItem.slug || speciesItem.id : ''
           )}
           className={`${classes.clicker} ${
             isSelected ? classes.selected : ''
@@ -174,20 +186,36 @@ const SpeciesResultItem = ({
           style={{ marginLeft: `calc(20px * ${indent})` }}></div>
       )}
       <Wrapper>
-        {speciesItem.thumbnailurl ? (
-          <LazyLoad placeholder={<div />} className={classes.thumbnail}>
+        <LazyLoad placeholder={<div />} className={classes.thumbnail}>
+          {speciesItem?.thumbnailurl ? (
             <img src={speciesItem.thumbnailurl} />
-          </LazyLoad>
-        ) : null}
+          ) : null}
+        </LazyLoad>
         <div className={classes.text}>
           <div className={classes.name}>
-            {speciesItem.pluralname}
-            {isFull(speciesItem) ? (
+            {speciesItem ? (
+              speciesItem.pluralname
+            ) : (
+              <LoadingShimmer
+                width={`${getRandomInt(25, 100)}%`}
+                height="30px"
+              />
+            )}
+            {speciesItem && isFull(speciesItem) ? (
               <span className={classes.count}>({speciesItem.avatarcount})</span>
             ) : null}
           </div>
           <div className={classes.description}>
-            {speciesItem.shortdescription}
+            {speciesItem
+              ? speciesItem.shortdescription
+              : [
+                  <LoadingShimmer width="100%" height="10px" key={0} />,
+                  <LoadingShimmer
+                    width={`${getRandomInt(25, 100)}%`}
+                    height="10px"
+                    key={1}
+                  />,
+                ]}
           </div>
         </div>
       </Wrapper>

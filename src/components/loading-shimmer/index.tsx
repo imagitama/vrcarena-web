@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles({
@@ -30,13 +30,19 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
-  width,
-  height,
-}: {
-  width?: number | string
-  height?: number | string
-}) => {
-  const classes = useStyles()
-  return <div className={classes.root} style={{ width, height }} />
-}
+// never respond to width/height changes as we use randomness for them and small re-renders means jumping
+export default memo(
+  ({
+    width,
+    height,
+    marginTop,
+  }: {
+    width?: number | string
+    height?: number | string
+    marginTop?: number | string
+  }) => {
+    const classes = useStyles()
+    return <div className={classes.root} style={{ width, height, marginTop }} />
+  },
+  () => true
+)

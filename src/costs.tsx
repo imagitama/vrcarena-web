@@ -25,7 +25,7 @@ export const costs: Cost[] = [
         <br />
         Jul 2023 - $12.31
       </>
-    )
+    ),
   },
   {
     id: 'netlify',
@@ -36,7 +36,7 @@ export const costs: Cost[] = [
         Netlify
       </>
     ),
-    monthlyCost: 19
+    monthlyCost: 19,
   },
   {
     id: 'supabase',
@@ -47,7 +47,7 @@ export const costs: Cost[] = [
         Supabase
       </>
     ),
-    monthlyCost: 30
+    monthlyCost: 60,
   },
   {
     id: 'domain',
@@ -58,8 +58,8 @@ export const costs: Cost[] = [
         Namecheap
       </>
     ),
-    yearlyCost: 36
-  }
+    yearlyCost: 36,
+  },
 ]
 
 export const totalCostPerMonth = costs.reduce(
