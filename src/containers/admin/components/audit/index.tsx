@@ -11,10 +11,13 @@ import {
   CollectionNames,
   ArchivedReason,
   AssetMeta,
+  AuditResult,
 } from '../../../../modules/assets'
 import AssetResultsItem from '../../../../components/asset-results-item'
 import Button from '../../../../components/button'
-import PaginatedView from '../../../../components/paginated-view'
+import PaginatedView, {
+  RendererProps,
+} from '../../../../components/paginated-view'
 import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
 import { FilterSubType, FilterType } from '../../../../filters'
 import StatusText from '../../../../components/status-text'
@@ -26,9 +29,11 @@ import ErrorMessage from '../../../../components/error-message'
 import Heading from '../../../../components/heading'
 import { getFriendlyDate } from '../../../../utils/dates'
 import Link from '../../../../components/link'
-import InfoMessage from '../../../../components/info-message'
 import Price from '../../../../components/price'
 import HintText from '../../../../components/hint-text'
+import useFirebaseFunction from '../../../../hooks/useFirebaseFunction'
+import useTimer from '../../../../hooks/useTimer'
+import LoadingIndicator from '../../../../components/loading-indicator'
 
 const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
@@ -60,7 +65,13 @@ const getLabelForResult = (result: AuditResultResult) => {
   }
 }
 
-const ArchiveButtons = ({ assetId }: { assetId: string }) => {
+const ArchiveButtons = ({
+  assetId,
+  onDone,
+}: {
+  assetId: string
+  onDone: () => void
+}) => {
   const [isSaving, isSaveSuccess, lastErrorCode, save] =
     useDataStoreEdit<AssetMeta>(CollectionNames.AssetsMeta, assetId)
 
@@ -69,10 +80,13 @@ const ArchiveButtons = ({ assetId }: { assetId: string }) => {
       console.debug(
         `setting asset ${assetId} to "${AccessStatus.Archived}" reason "${reason}"...`
       )
+
       await save({
         accessstatus: AccessStatus.Archived,
         archivedreason: reason,
       })
+
+      onDone()
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -114,7 +128,54 @@ const ArchiveButtons = ({ assetId }: { assetId: string }) => {
   )
 }
 
-const Renderer = ({ items }: { items?: FullAssetWithAudit[] }) => {
+const RetryButton = ({
+  assetId,
+  onDone,
+}: {
+  assetId: string
+  onDone: () => void
+}) => {
+  const [isCalling, lastErrorCode, result, call] = useFirebaseFunction<
+    { assetId: string },
+    { result: AuditResult[] }
+  >('auditAsset')
+  const onDoneAfterDelay = useTimer(onDone)
+
+  const onClick = async () => {
+    try {
+      console.debug('retrying audit...')
+
+      await call({
+        assetId,
+      })
+
+      onDoneAfterDelay()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  return (
+    <>
+      {lastErrorCode !== null ? (
+        <ErrorMessage>Failed to retry (code {lastErrorCode})</ErrorMessage>
+      ) : null}
+      {result && Array.isArray(result.result) ? (
+        <SuccessMessage>Retry successful, refreshing view...</SuccessMessage>
+      ) : null}
+      <Button
+        onClick={onClick}
+        isDisabled={isCalling}
+        color="secondary"
+        size="small">
+        Retry Audit
+      </Button>
+      {isCalling ? ' Retrying...' : ''}
+    </>
+  )
+}
+
+const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
   return (
     <Table>
       <TableHead>
@@ -125,62 +186,123 @@ const Renderer = ({ items }: { items?: FullAssetWithAudit[] }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {items!.map((asset) => (
-          <TableRow key={asset.id}>
-            <TableCell>
-              <AssetResultsItem asset={asset} showState />
-            </TableCell>
-            <TableCell>
-              {asset.auditresults ? (
-                <Table>
-                  <TableBody>
-                    {asset.auditresults.map((auditResult) => (
-                      <TableRow key={auditResult.sourceurl}>
-                        <TableCell>
-                          <Link to={auditResult.sourceurl} inNewTab>
-                            {auditResult.sourceurl}
-                          </Link>{' '}
-                          <StatusText
-                            positivity={getPositivityForResult(
-                              auditResult.result
-                            )}>
-                            {getLabelForResult(auditResult.result)} (
-                            {getFriendlyDate(asset.lastauditedat)})
-                          </StatusText>
-                          {auditResult.price ? (
-                            <>
-                              <Price
-                                price={auditResult.price}
-                                priceCurrency={auditResult.pricecurrency}
-                                small
-                              />
-                              {auditResult.pricecurrency ? (
-                                ''
-                              ) : (
-                                <StatusText positivity={-1}>
-                                  (no currency detected)
-                                </StatusText>
-                              )}
-                            </>
-                          ) : (
-                            '(no price found)'
-                          )}
-                        </TableCell>
+        {items ? (
+          items.map((asset) => {
+            const allSourceUrls = Array.from(
+              new Set([
+                asset.sourceurl,
+                ...(asset.extrasources || []).map((s) => s.url),
+                ...(asset.auditresults || []).map((a) => a.sourceurl),
+              ])
+            )
+
+            return (
+              <TableRow key={asset.id}>
+                <TableCell>
+                  <AssetResultsItem asset={asset} showState />
+                </TableCell>
+                <TableCell>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>URL</TableCell>
+                        <TableCell>Original Price</TableCell>
+                        <TableCell>Audit Result</TableCell>
+                        <TableCell>Latest Price</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ) : asset.lastauditedat ? (
-                '(audit performed but no data recorded)'
-              ) : (
-                '(no audit performed yet)'
-              )}
-            </TableCell>
-            <TableCell>
-              <ArchiveButtons assetId={asset.id} />
+                    </TableHead>
+                    <TableBody>
+                      {allSourceUrls.map((sourceUrl) => {
+                        const sourceInfo =
+                          sourceUrl === asset.sourceurl
+                            ? {
+                                price: asset.price,
+                                pricecurrency: asset.pricecurrency,
+                              }
+                            : asset.extrasources?.find(
+                                (s) => s.url === sourceUrl
+                              ) || {}
+
+                        const auditResult = asset.auditresults?.find(
+                          (a) => a.sourceurl === sourceUrl
+                        )
+
+                        return (
+                          <TableRow key={sourceUrl}>
+                            <TableCell>
+                              <Link to={sourceUrl} inNewTab>
+                                {sourceUrl}
+                              </Link>
+                            </TableCell>
+                            <TableCell>
+                              {sourceInfo.price !== null &&
+                              sourceInfo.price !== undefined ? (
+                                <Price
+                                  price={sourceInfo.price}
+                                  priceCurrency={sourceInfo.pricecurrency}
+                                  small
+                                />
+                              ) : (
+                                ''
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {auditResult ? (
+                                <StatusText
+                                  positivity={getPositivityForResult(
+                                    auditResult.result
+                                  )}>
+                                  {getLabelForResult(auditResult.result)} (
+                                  {getFriendlyDate(asset.lastauditedat)})
+                                </StatusText>
+                              ) : asset.lastauditedat ? (
+                                '(audit performed but no data recorded)'
+                              ) : (
+                                '(no audit performed yet)'
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {auditResult && auditResult.price !== null ? (
+                                <>
+                                  <Price
+                                    price={auditResult.price}
+                                    priceCurrency={auditResult.pricecurrency}
+                                    small
+                                  />
+                                  {auditResult.pricecurrency ? (
+                                    ''
+                                  ) : (
+                                    <StatusText positivity={-1}>
+                                      (no currency detected)
+                                    </StatusText>
+                                  )}
+                                </>
+                              ) : (
+                                ''
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableCell>
+                <TableCell>
+                  <ArchiveButtons assetId={asset.id} onDone={hydrate} />
+                  <br />
+                  <br />
+                  <RetryButton assetId={asset.id} onDone={hydrate} />
+                </TableCell>
+              </TableRow>
+            )
+          })
+        ) : (
+          <TableRow>
+            <TableCell colSpan={999}>
+              <LoadingIndicator message="Loading audits..." />
             </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   )
@@ -205,7 +327,14 @@ const AdminAudit = () => (
         label: 'Only audited',
         defaultActive: true,
       },
-    ]}>
+      {
+        fieldName: 'id',
+        type: FilterType.Equal,
+        subType: FilterSubType.Id,
+        label: 'Asset ID',
+      },
+    ]}
+    isRendererForLoading>
     <Renderer />
   </PaginatedView>
 )

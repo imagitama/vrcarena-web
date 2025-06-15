@@ -51,12 +51,21 @@ const getMessageForErrorCode = (
 }
 
 const Form = () => {
-  const [isLinking, isErrorLinking, linkResult, performLink, clearLinkResult] =
-    useFirebaseFunction<LinkPayload, LinkResult>('linkWithVrchatAccount')
-  const [isGeneratingCode, isErrorGeneratingCode, codeResult, generateCode] =
-    useFirebaseFunction<GenerateCodePayload, GenerateCodeResult>(
-      'generateVrchatLinkCode'
-    )
+  const [
+    isLinking,
+    lastErrorCodeLinking,
+    linkResult,
+    performLink,
+    clearLinkResult,
+  ] = useFirebaseFunction<LinkPayload, LinkResult>('linkWithVrchatAccount')
+  const [
+    isGeneratingCode,
+    lastErrorCodeGeneratingCode,
+    codeResult,
+    generateCode,
+  ] = useFirebaseFunction<GenerateCodePayload, GenerateCodeResult>(
+    'generateVrchatLinkCode'
+  )
   const [, , user, hydrateUser] = useUserRecord()
 
   useEffect(() => {
@@ -81,7 +90,7 @@ const Form = () => {
     return <LoadingIndicator message="Linking..." />
   }
 
-  if (isErrorLinking || (linkResult && linkResult.errorCode)) {
+  if (lastErrorCodeLinking !== null || (linkResult && linkResult.errorCode)) {
     return (
       <ErrorMessage onOkay={clearLinkResult}>
         Failed to link:{' '}
@@ -96,8 +105,12 @@ const Form = () => {
     return <LoadingIndicator message="Generating link code..." />
   }
 
-  if (isErrorGeneratingCode) {
-    return <ErrorMessage>Failed to generate link code</ErrorMessage>
+  if (lastErrorCodeGeneratingCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to generate link code (code {lastErrorCodeGeneratingCode})
+      </ErrorMessage>
+    )
   }
 
   const onClickPerformLink = () => {

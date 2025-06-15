@@ -36,7 +36,7 @@ const FeatureButton = ({
   onDone?: () => void
 }) => {
   const isPatron = useIsPatron()
-  const [isLoading, isErrored, result, performCall] = useFirebaseFunction<
+  const [isLoading, lastErrorCode, result, performCall] = useFirebaseFunction<
     FeatureAssetPayload,
     FeatureAssetResult
   >('featureAsset')
@@ -63,7 +63,11 @@ const FeatureButton = ({
 
   return (
     <>
-      {isErrored ? <ErrorMessage>Failed to toggle feature</ErrorMessage> : null}
+      {lastErrorCode !== null ? (
+        <ErrorMessage>
+          Failed to toggle feature (code {lastErrorCode})
+        </ErrorMessage>
+      ) : null}
       <Button
         color="secondary"
         onClick={() => toggleFeatured()}

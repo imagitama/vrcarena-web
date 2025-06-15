@@ -10,6 +10,7 @@ export enum FilterType {
 export enum FilterSubType {
   UserId,
   Null,
+  Id, // eg. asset
 }
 
 export interface BaseFilter<TRecord> {

@@ -421,12 +421,13 @@ const Page = () => {
   if (isLoading || !items) {
     if (isRendererForLoading) {
       return React.cloneElement<RendererProps<any>>(renderer, {
-        items: null,
+        items,
         hydrate,
         selectedSubView,
         activeFilters,
       })
     }
+
     return <LoadingIndicator message={`Loading page ${currentPageNumber}...`} />
   }
 

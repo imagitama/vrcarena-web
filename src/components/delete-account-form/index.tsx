@@ -36,7 +36,7 @@ const DeleteAccountForm = () => {
   const classes = useStyles()
   const userId = useUserId()
   const [, , user] = useUserRecord()
-  const [isDeleting, didFailToDelete, deleteResult, callFunction] =
+  const [isDeleting, lastErrorCode, deleteResult, callFunction] =
     useFirebaseFunction<
       { username: string; userId: string },
       { success: boolean }
@@ -122,10 +122,10 @@ const DeleteAccountForm = () => {
           to delete for you)
         </li>
       </ul>
-      {didFailToDelete ? (
+      {lastErrorCode !== null ? (
         <ErrorMessage>
           Failed to delete your account - please contact us directly to have
-          this fixed and/or manually delete your account
+          this fixed and/or manually delete your account (code {lastErrorCode})
         </ErrorMessage>
       ) : isDeleting ? (
         <LoadingIndicator message="Deleting your account..." />

@@ -186,10 +186,11 @@ const SyncForm = <TRecord extends object>({
 
   const [disabledFieldNames, setDisabledFieldNames] = useState<string[]>([])
   const [fieldsToSave, setFieldsToSave] = useState<TRecord>({} as TRecord)
-  const [isLoading, isError, lastResult, performSync] = useFirebaseFunction<
-    { urlToSync: string; platformName: string },
-    SyncResult
-  >('syncWithPlatform')
+  const [isLoading, lastErrorCode, lastResult, performSync] =
+    useFirebaseFunction<
+      { urlToSync: string; platformName: string },
+      SyncResult
+    >('syncWithPlatform')
   const [isNoticeHidden, hideNotice] = useNotice('experimental-sync')
   const [lastValidationIssues, setLastValidationIssues] = useState<
     ValidationIssue[]
@@ -331,12 +332,12 @@ const SyncForm = <TRecord extends object>({
     )
   }
 
-  if (isError || (lastResult && lastResult.errorCode !== null)) {
+  if (lastErrorCode !== null || (lastResult && lastResult.errorCode !== null)) {
     return (
       <ErrorMessage onRetry={sync} onOkay={onDone}>
         Failed to sync:{' '}
-        {isError
-          ? 'internal error'
+        {lastErrorCode !== null
+          ? `error code ${lastErrorCode}`
           : getOutputForErrorCode(
               ErrorCode[lastResult!.errorCode! as keyof typeof ErrorCode]
             )}

@@ -39,7 +39,7 @@ const ChatGptSuggestTags = ({
   onDone: (tags: string[]) => void
 }) => {
   const [finalTags, setFinalTags] = useState<string[] | null>(null)
-  const [isLoading, isErrored, result, performCall, clear] =
+  const [isLoading, lastErrorCode, result, performCall, clear] =
     useFirebaseFunction<Payload, Result>('suggestTags')
 
   useEffect(() => {
@@ -97,8 +97,10 @@ const ChatGptSuggestTags = ({
         </>
       ) : null}
       {isLoading ? <LoadingIndicator message="Getting tags..." /> : null}
-      {isErrored ? (
-        <ErrorMessage>Failed to ask for tags (maybe it's down?)</ErrorMessage>
+      {lastErrorCode !== null ? (
+        <ErrorMessage>
+          Failed to ask for tags (code {lastErrorCode})
+        </ErrorMessage>
       ) : null}
       <br />
       <FormControls>
