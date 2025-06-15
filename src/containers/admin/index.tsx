@@ -22,6 +22,8 @@ import * as routes from '../../routes'
 import { UserRoles } from '../../modules/users'
 import Link from '../../components/link'
 import AdminAssetSyncQueue from './components/asset-queue'
+import AdminAudit from './components/audit'
+import AdminDupes from './components/dupes'
 
 const View = () => {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -182,6 +184,16 @@ const View = () => {
             name: 'asset-sync-queue',
             label: 'Asset Sync Queue',
             contents: <AdminAssetSyncQueue />,
+          },
+          {
+            name: 'audit',
+            label: 'Audit',
+            contents: <AdminAudit />,
+          },
+          {
+            name: 'dupes',
+            label: 'Dupes',
+            contents: <AdminDupes />,
           },
         ]}
       />

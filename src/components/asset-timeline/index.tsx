@@ -49,6 +49,7 @@ import { fieldTypes } from '../../generic-forms'
 import TagChips from '../tag-chips'
 import { EditableField } from '../../editable-fields'
 import Markdown from '../markdown'
+import { getLabelForAssetField } from '../../utils/assets'
 
 enum Positivity {
   Positive = 'positive',
@@ -181,20 +182,6 @@ const getLabelForResolutionStatus = (
     default:
       throw new Error(`Unknown publish status: ${resolutionStatus}`)
   }
-}
-
-const getLabelForAssetField = (
-  fieldName: Extract<keyof Asset, string>
-): string => {
-  const editableField = assetEditableFields.find(
-    (editableField) => editableField.name === fieldName
-  )
-
-  if (editableField) {
-    return editableField.label!
-  }
-
-  return fieldName
 }
 
 const LabelForEntry = ({

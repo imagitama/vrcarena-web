@@ -2,6 +2,7 @@
 
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 import { FullUser, PatreonStatus, UserRoles } from './modules/users'
+import { EditableField } from './editable-fields'
 
 export function scrollToTop(isSmooth: boolean = true): void {
   console.debug(`Scrolling to top...`)
@@ -496,4 +497,19 @@ export const getIsUrlRisky = (url: string): boolean => {
   }
 
   return false
+}
+
+export const getLabelFromEditableFields = <TRecord>(
+  fieldName: Extract<keyof TRecord, string>,
+  editableFields: EditableField<TRecord>[]
+): string => {
+  const editableField = editableFields.find(
+    (editableField) => editableField.name === fieldName
+  )
+
+  if (editableField) {
+    return editableField.label!
+  }
+
+  return fieldName
 }

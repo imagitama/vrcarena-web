@@ -29,6 +29,7 @@ import { getIsBoothProductUrl } from '../booth'
 import { getIsJinxxyProductUrl } from '../jinxxy'
 import { getIsItchProductUrl } from '../itch'
 import { cleanupSourceUrl as cleanupSyncSourceUrl } from '../syncing'
+import assetEditableFields from '../editable-fields/assets'
 
 export const getDoesAssetNeedPublishing = (assetMeta: AssetMeta): boolean =>
   assetMeta.publishstatus === PublishStatus.Draft
@@ -314,4 +315,18 @@ export const cleanupSourceUrl = (url: string): string => {
   }
 
   return url.trim()
+}
+
+export const getLabelForAssetField = (
+  fieldName: Extract<keyof Asset, string>
+): string => {
+  const editableField = assetEditableFields.find(
+    (editableField) => editableField.name === fieldName
+  )
+
+  if (editableField) {
+    return editableField.label!
+  }
+
+  return fieldName
 }

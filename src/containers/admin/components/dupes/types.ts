@@ -1,4 +1,4 @@
-import { Author, AuthorMeta } from '../../modules/authors'
+import { Author, AuthorMeta } from '../../../../modules/authors'
 
 export type AssetInfo = { id: string; title: string }
 

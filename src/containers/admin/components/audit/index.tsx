@@ -4,8 +4,6 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import { Helmet } from 'react-helmet'
-
 import {
   ViewNames,
   FullAssetWithAudit,
@@ -13,25 +11,23 @@ import {
   CollectionNames,
   ArchivedReason,
   AssetMeta,
-} from '../../modules/assets'
-import AssetResultsItem from '../../components/asset-results-item'
-import Button from '../../components/button'
-import PaginatedView from '../../components/paginated-view'
-import { OrderDirections } from '../../hooks/useDatabaseQuery'
-import { FilterSubType, FilterType } from '../../filters'
-import StatusText from '../../components/status-text'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { AccessStatus } from '../../modules/common'
-import SuccessMessage from '../../components/success-message'
-import ErrorMessage from '../../components/error-message'
-import useIsEditor from '../../hooks/useIsEditor'
-import NoPermissionMessage from '../../components/no-permission-message'
-import Heading from '../../components/heading'
-import { getFriendlyDate } from '../../utils/dates'
-import Link from '../../components/link'
-import InfoMessage from '../../components/info-message'
-import Price from '../../components/price'
+} from '../../../../modules/assets'
+import AssetResultsItem from '../../../../components/asset-results-item'
+import Button from '../../../../components/button'
+import PaginatedView from '../../../../components/paginated-view'
+import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
+import { FilterSubType, FilterType } from '../../../../filters'
+import StatusText from '../../../../components/status-text'
+import useDataStoreEdit from '../../../../hooks/useDataStoreEdit'
+import { handleError } from '../../../../error-handling'
+import { AccessStatus } from '../../../../modules/common'
+import SuccessMessage from '../../../../components/success-message'
+import ErrorMessage from '../../../../components/error-message'
+import Heading from '../../../../components/heading'
+import { getFriendlyDate } from '../../../../utils/dates'
+import Link from '../../../../components/link'
+import InfoMessage from '../../../../components/info-message'
+import Price from '../../../../components/price'
 
 const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
@@ -173,22 +169,9 @@ const Renderer = ({ items }: { items?: FullAssetWithAudit[] }) => {
   )
 }
 
-const AuditContainer = () => {
-  const isEditor = useIsEditor()
-
-  if (!isEditor) {
-    return <NoPermissionMessage />
-  }
-
+const AdminAudit = () => {
   return (
     <>
-      <Helmet>
-        <title>Audit | VRCArena</title>
-        <meta
-          name="description"
-          content="A list of assets and their audit statuses."
-        />
-      </Helmet>
       <InfoMessage title="How It Works">
         Auditing is using the auto-sync functionality to check if the source for
         an asset is still available. It happens every 5 minutes for 1 asset that
@@ -219,4 +202,4 @@ const AuditContainer = () => {
   )
 }
 
-export default AuditContainer
+export default AdminAudit

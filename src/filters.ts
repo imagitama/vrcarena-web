@@ -34,8 +34,7 @@ export interface NotEqualFilter<TRecord> extends BaseFilter<TRecord> {
 
 export interface MultichoiceFilter<TRecord, TEnum> extends BaseFilter<TRecord> {
   type: FilterType.Multichoice
-  options: TEnum[]
-  default: TEnum[]
+  options: TEnum[] // TODO: specify label
 }
 
 export type Filter<TRecord, TEnum = undefined> =
