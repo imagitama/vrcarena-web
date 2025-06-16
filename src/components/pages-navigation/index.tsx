@@ -15,10 +15,12 @@ const useStyles = makeStyles({
     margin: '0 0.25rem 0.25rem 0',
   },
   button: {
-    minWidth: '40px',
+    minWidth: '40px !important',
   },
   selected: {
-    fontWeight: 'bold',
+    '& > *': {
+      fontWeight: 'bold !important',
+    },
   },
 })
 
@@ -81,7 +83,7 @@ const PagesNavigation = ({
               }`}
               key={idx}>
               <Button
-                color={isSelected ? 'secondary' : 'primary'}
+                color={isSelected ? 'primary' : 'secondary'}
                 onClick={() => onClickWithPageNumber(pageNumber)}
                 size="small"
                 className={classes.button}>

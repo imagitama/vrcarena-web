@@ -385,10 +385,6 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     'asset-overview'
   )
 
-  useEffect(() => {
-    scrollToTop()
-  }, [rawAssetId])
-
   const hydrate = isSlug ? hydrateCachedAsset : hydrateNonCachedAsset
 
   const cachedRecord =
@@ -440,6 +436,16 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     asset && asset.slug ? asset.slug : assetId
   )
 
+  const isLoading =
+    (isSlug && isLoadingCachedAsset) ||
+    (!isSlug && isLoadingNonCachedAsset) ||
+    !asset
+
+  useEffect(() => {
+    console.debug('asset loaded, scrolling to top...')
+    scrollToTop()
+  }, [asset ? asset.id : undefined])
+
   if (
     lastErrorCodeCached !== null ||
     lastErrorCodeNonCached !== null ||
@@ -455,11 +461,6 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
       </ErrorMessage>
     )
   }
-
-  const isLoading =
-    (isSlug && isLoadingCachedAsset) ||
-    (!isSlug && isLoadingNonCachedAsset) ||
-    !asset
 
   if (hideBecauseAdult) {
     return (

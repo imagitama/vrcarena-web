@@ -20,15 +20,16 @@ const useStyles = makeStyles({
     },
   },
   image: {
-    backgroundColor: '#1e1e1e',
     minHeight: '224px', // 3x 16/9 scaled down
     maxWidth: '33.3%',
     margin: '0.5rem',
     padding: 0,
     cursor: 'pointer',
     transition: 'all 100ms',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     '& img': {
-      backgroundColor: '#1e1e1e',
       display: 'block',
       maxWidth: '100%',
       maxHeight: '400px',

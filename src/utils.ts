@@ -38,8 +38,8 @@ export function scrollToSide(
   console.debug(`Scrolling to ${x},${y}...`)
   try {
     window.scrollTo({
-      top: x,
-      left: y,
+      top: y,
+      left: x,
       behavior: isSmooth ? 'smooth' : 'auto',
     })
   } catch (err) {

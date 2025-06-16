@@ -484,7 +484,7 @@ const MainContent = () => {
   }
 
   return (
-    <Suspense fallback={<LoadingIndicator message="Loading..." />}>
+    <Suspense fallback={<LoadingIndicator message="Loading view..." />}>
       {firebaseUserId && !supabaseUserId ? (
         <div className={classes.floatingLoadingIndicator}>
           <LoadingIndicator message="Waiting for auth..." />
