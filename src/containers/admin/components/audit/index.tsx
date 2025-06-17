@@ -43,6 +43,7 @@ import FormControls from '../../../../components/form-controls'
 import NoValueLabel from '../../../../components/no-value-label'
 import Tooltip from '../../../../components/tooltip'
 import LoadingMessage from '../../../../components/loading-message'
+import { PopularCurrency } from '../../../../currency'
 
 const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
@@ -164,14 +165,21 @@ const ApplyPricesButton = ({
         pricecurrency: null,
       }
 
-  const newMainPrice = mainAuditResult?.price || null
-  const newMainPriceToSave = sourceUrlsToApply.includes(asset.sourceurl)
-    ? newMainPrice
-    : undefined
-  const newMainPriceCurrency = mainAuditResult?.pricecurrency || null
-  const newMainPriceCurrencyToSave = sourceUrlsToApply.includes(asset.sourceurl)
-    ? newMainPriceCurrency
-    : undefined
+  console.debug('RENDER', {
+    auditresults: asset.auditresults,
+    mainSourceUrl: asset.sourceurl,
+    mainAuditResult,
+  })
+
+  const newMainPrice: number | null | undefined = mainAuditResult?.price
+  const newMainPriceToSave: number | null | undefined =
+    sourceUrlsToApply.includes(asset.sourceurl) ? newMainPrice : undefined
+  const newMainPriceCurrency: PopularCurrency | null | undefined =
+    mainAuditResult?.pricecurrency
+  const newMainPriceCurrencyToSave: PopularCurrency | null | undefined =
+    sourceUrlsToApply.includes(asset.sourceurl)
+      ? newMainPriceCurrency
+      : undefined
 
   const newExtraSourcesToSave =
     asset.extrasources && asset.auditresults
@@ -198,11 +206,19 @@ const ApplyPricesButton = ({
     try {
       console.debug(`saving asset ${asset.id} prices...`)
 
-      await save({
-        price: newMainPriceToSave,
-        pricecurrency: newMainPriceCurrencyToSave,
+      const fieldsToSave: Partial<Asset> = {
         extrasources: newExtraSourcesToSave,
-      })
+      }
+
+      if (newMainPriceToSave !== undefined) {
+        fieldsToSave.price = newMainPriceToSave
+      }
+
+      if (newMainPriceToSave !== undefined) {
+        fieldsToSave.pricecurrency = newMainPriceCurrencyToSave
+      }
+
+      await save(fieldsToSave)
 
       onDoneAfterDelay()
     } catch (err) {
@@ -258,17 +274,11 @@ const ApplyPricesButton = ({
                   )}
                   {' => '}
                   <Tooltip
-                    title={
-                      newMainPrice === undefined
-                        ? 'undefined'
-                        : newMainPrice === null
-                        ? 'null'
-                        : newMainPrice
-                    }>
+                    title={newMainPrice === null ? 'null' : newMainPrice}>
                     <div>
-                      {newMainPrice !== null
-                        ? newMainPrice
-                        : 'No price (cleared)'}
+                      {newMainPrice === null
+                        ? 'No price (cleared)'
+                        : newMainPrice}
                     </div>
                   </Tooltip>
                 </TableCell>
@@ -281,16 +291,14 @@ const ApplyPricesButton = ({
                   {' => '}
                   <Tooltip
                     title={
-                      newMainPriceCurrency === undefined
-                        ? 'undefined'
-                        : newMainPriceCurrency === null
+                      newMainPriceCurrency === null
                         ? 'null'
                         : newMainPriceCurrency
                     }>
                     <div>
-                      {newMainPriceCurrency !== null
-                        ? newMainPriceCurrency
-                        : 'No currency (cleared)'}
+                      {newMainPriceCurrency === null
+                        ? 'No currency (cleared)'
+                        : newMainPriceCurrency}
                     </div>
                   </Tooltip>
                 </TableCell>
@@ -346,11 +354,14 @@ const ApplyPricesButton = ({
                         <NoValueLabel>No price</NoValueLabel>
                       )}
                       {' => '}
-                      <Tooltip title={newMainPrice}>
+                      <Tooltip
+                        title={
+                          auditResult.price === null ? 'null' : newMainPrice
+                        }>
                         <span>
-                          {auditResult.price !== null
-                            ? auditResult.price
-                            : 'No price (cleared)'}
+                          {auditResult.price === null
+                            ? 'No price (cleared)'
+                            : auditResult.price}
                         </span>
                       </Tooltip>
                     </TableCell>
@@ -361,11 +372,16 @@ const ApplyPricesButton = ({
                         <NoValueLabel>No currency</NoValueLabel>
                       )}
                       {' => '}
-                      <Tooltip title={newMainPrice}>
+                      <Tooltip
+                        title={
+                          auditResult.pricecurrency === null
+                            ? 'null'
+                            : auditResult.pricecurrency
+                        }>
                         <span>
-                          {auditResult.pricecurrency !== null
-                            ? auditResult.pricecurrency
-                            : 'No currency (cleared)'}
+                          {auditResult.pricecurrency === null
+                            ? 'No currency (cleared)'
+                            : auditResult.pricecurrency}
                         </span>
                       </Tooltip>
                     </TableCell>
@@ -391,7 +407,9 @@ const ApplyPricesButton = ({
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>{asset.sourceurl} (main source)</TableCell>
+                <TableCell>
+                  {asset.sourceurl} <strong>(main source)</strong>
+                </TableCell>
                 <TableCell>
                   {newMainPriceToSave === null
                     ? 'No price (clear)'
