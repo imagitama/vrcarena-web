@@ -46,8 +46,6 @@ const useDataStoreEdit = <TRecord>(
         return
       }
 
-      console.debug(`useDataStoreEdit saving ${collectionName} ${id}...`)
-
       setIsSuccess(false)
       setLastErrorCode(null)
       setIsEditing(true)
@@ -58,6 +56,11 @@ const useDataStoreEdit = <TRecord>(
       }
 
       const fieldsForUpdate = mapFieldsForDatabase(fields) as TRecord
+
+      console.debug(
+        `useDataStoreEdit saving ${collectionName} ${id}...`,
+        fieldsForUpdate
+      )
 
       const { error } = await supabase
         .from(collectionName)

@@ -79,7 +79,7 @@ export interface CoreAssetFields extends Record<string, unknown> {
   slug: string
   isadult: boolean
   price: number | null
-  pricecurrency: PopularCurrency
+  pricecurrency: PopularCurrency | null
   species: string[]
   tags: string[] // used for "free" check and to group into areas
 }

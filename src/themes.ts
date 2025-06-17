@@ -104,5 +104,12 @@ export const darkTheme: VRCArenaTheme = createTheme({
         },
       },
     },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: 'rgb(50, 50, 50)',
+        },
+      },
+    },
   },
 })

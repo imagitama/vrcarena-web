@@ -3,7 +3,6 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles({
   root: {
-    fontStyle: 'italic',
     color: 'rgba(255, 255, 255, 0.5)',
   },
   small: {
@@ -11,7 +10,7 @@ const useStyles = makeStyles({
   },
 })
 
-const HintText = ({
+const NoValueLabel = ({
   children,
   small,
 }: {
@@ -26,4 +25,4 @@ const HintText = ({
   )
 }
 
-export default HintText
+export default NoValueLabel

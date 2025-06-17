@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import SaveIcon from '@mui/icons-material/Save'
 import {
   ViewNames,
   FullAssetWithAudit,
@@ -12,6 +13,8 @@ import {
   ArchivedReason,
   AssetMeta,
   AuditResult,
+  Asset,
+  SourceInfo,
 } from '../../../../modules/assets'
 import AssetResultsItem from '../../../../components/asset-results-item'
 import Button from '../../../../components/button'
@@ -34,6 +37,12 @@ import HintText from '../../../../components/hint-text'
 import useFirebaseFunction from '../../../../hooks/useFirebaseFunction'
 import useTimer from '../../../../hooks/useTimer'
 import LoadingIndicator from '../../../../components/loading-indicator'
+import Dialog from '../../../../components/dialog'
+import CheckboxInput from '../../../../components/checkbox-input'
+import FormControls from '../../../../components/form-controls'
+import NoValueLabel from '../../../../components/no-value-label'
+import Tooltip from '../../../../components/tooltip'
+import LoadingMessage from '../../../../components/loading-message'
 
 const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
@@ -95,8 +104,9 @@ const ArchiveButtons = ({
 
   return (
     <>
-      <Heading variant="h3">Archive</Heading>
-      {lastErrorCode !== null ? (
+      {isSaving ? (
+        <LoadingMessage>Saving asset...</LoadingMessage>
+      ) : lastErrorCode !== null ? (
         <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
       ) : isSaveSuccess ? (
         <SuccessMessage>Asset archived successfully</SuccessMessage>
@@ -124,6 +134,331 @@ const ArchiveButtons = ({
         <br />
         repaired the source (eg. if the author moved from Gumroad to Jinxxy)
       </HintText>
+    </>
+  )
+}
+
+const ApplyPricesButton = ({
+  asset,
+  onDone,
+}: {
+  asset: FullAssetWithAudit
+  onDone: () => void
+}) => {
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, asset.id)
+  const [isConfirmShown, setIsConfirmShown] = useState(false)
+  const [sourceUrlsToApply, setSourceUrlsToApply] = useState<string[]>(
+    asset.auditresults
+      ? asset.auditresults.map((auditResult) => auditResult.sourceurl)
+      : []
+  )
+  const onDoneAfterDelay = useTimer(onDone)
+
+  const mainAuditResult = asset.auditresults
+    ? asset.auditresults.find(
+        (auditResult) => auditResult.sourceurl === asset.sourceurl
+      )
+    : {
+        price: null,
+        pricecurrency: null,
+      }
+
+  const newMainPrice = mainAuditResult?.price || null
+  const newMainPriceToSave = sourceUrlsToApply.includes(asset.sourceurl)
+    ? newMainPrice
+    : undefined
+  const newMainPriceCurrency = mainAuditResult?.pricecurrency || null
+  const newMainPriceCurrencyToSave = sourceUrlsToApply.includes(asset.sourceurl)
+    ? newMainPriceCurrency
+    : undefined
+
+  const newExtraSourcesToSave =
+    asset.extrasources && asset.auditresults
+      ? asset.extrasources.map((sourceInfo) => {
+          const match = asset.auditresults.find(
+            (auditResult) => auditResult.sourceurl == sourceInfo.url
+          )
+
+          if (!match) {
+            return sourceInfo
+          }
+
+          const { price, pricecurrency } = match
+
+          return {
+            ...sourceInfo,
+            price,
+            pricecurrency,
+          }
+        })
+      : []
+
+  const confirmSave = async () => {
+    try {
+      console.debug(`saving asset ${asset.id} prices...`)
+
+      await save({
+        price: newMainPriceToSave,
+        pricecurrency: newMainPriceCurrencyToSave,
+        extrasources: newExtraSourcesToSave,
+      })
+
+      onDoneAfterDelay()
+    } catch (err) {
+      console.error(err)
+      handleError(err)
+    }
+  }
+
+  const onClickSave = () => setIsConfirmShown(true)
+
+  const toggleSourceUrlToApply = (sourceUrl: string) =>
+    setSourceUrlsToApply((currentUrls) =>
+      currentUrls.includes(sourceUrl)
+        ? currentUrls.filter((url) => url !== sourceUrl)
+        : currentUrls.concat([sourceUrl])
+    )
+
+  const allExtraSourceUrls = Array.from(
+    new Set([
+      ...(asset.extrasources || []).map((sourceInfo) => sourceInfo.url),
+      ...(asset.auditresults || [])
+        .filter((auditResult) => auditResult.sourceurl !== asset.sourceurl)
+        .map((auditResult) => auditResult.sourceurl),
+    ])
+  )
+
+  return (
+    <>
+      {isConfirmShown && asset.auditresults ? (
+        <Dialog>
+          <Heading variant="h3" noTopMargin>
+            New Prices
+          </Heading>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>URL</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Currency</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  {asset.sourceurl} <strong>(main source)</strong>
+                </TableCell>
+                <TableCell>
+                  {asset.price !== null ? (
+                    asset.price
+                  ) : (
+                    <NoValueLabel>No price</NoValueLabel>
+                  )}
+                  {' => '}
+                  <Tooltip
+                    title={
+                      newMainPrice === undefined
+                        ? 'undefined'
+                        : newMainPrice === null
+                        ? 'null'
+                        : newMainPrice
+                    }>
+                    <div>
+                      {newMainPrice !== null
+                        ? newMainPrice
+                        : 'No price (cleared)'}
+                    </div>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  {asset.pricecurrency !== null ? (
+                    asset.pricecurrency
+                  ) : (
+                    <NoValueLabel>No currency</NoValueLabel>
+                  )}
+                  {' => '}
+                  <Tooltip
+                    title={
+                      newMainPriceCurrency === undefined
+                        ? 'undefined'
+                        : newMainPriceCurrency === null
+                        ? 'null'
+                        : newMainPriceCurrency
+                    }>
+                    <div>
+                      {newMainPriceCurrency !== null
+                        ? newMainPriceCurrency
+                        : 'No currency (cleared)'}
+                    </div>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <CheckboxInput
+                    value={sourceUrlsToApply.includes(asset.sourceurl)}
+                    onChange={() => toggleSourceUrlToApply(asset.sourceurl)}
+                  />
+                </TableCell>
+              </TableRow>
+              {allExtraSourceUrls.map((sourceUrl) => {
+                const auditResult = asset.auditresults?.find(
+                  (auditResult) => auditResult.sourceurl === sourceUrl
+                )
+
+                const sourceInfo = asset.extrasources?.find(
+                  (sourceInfo) => sourceInfo.url === sourceUrl
+                )
+
+                if (!auditResult) {
+                  return (
+                    <TableRow key={sourceUrl}>
+                      <TableCell colSpan={999}>
+                        <NoValueLabel>
+                          {sourceUrl} is in the list of sources but not in the
+                          last audit (was it added recently?)
+                        </NoValueLabel>
+                      </TableCell>
+                    </TableRow>
+                  )
+                }
+
+                if (!sourceInfo) {
+                  return (
+                    <TableRow key={sourceUrl}>
+                      <TableCell colSpan={999}>
+                        <NoValueLabel>
+                          {sourceUrl} was in the last audit but it is no longer
+                          in the list of sources (was it removed?)
+                        </NoValueLabel>
+                      </TableCell>
+                    </TableRow>
+                  )
+                }
+
+                return (
+                  <TableRow key={sourceInfo.url}>
+                    <TableCell>{auditResult.sourceurl}</TableCell>
+                    <TableCell>
+                      {sourceInfo.price !== null ? (
+                        sourceInfo.price
+                      ) : (
+                        <NoValueLabel>No price</NoValueLabel>
+                      )}
+                      {' => '}
+                      <Tooltip title={newMainPrice}>
+                        <span>
+                          {auditResult.price !== null
+                            ? auditResult.price
+                            : 'No price (cleared)'}
+                        </span>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      {sourceInfo.pricecurrency !== null ? (
+                        sourceInfo.pricecurrency
+                      ) : (
+                        <NoValueLabel>No currency</NoValueLabel>
+                      )}
+                      {' => '}
+                      <Tooltip title={newMainPrice}>
+                        <span>
+                          {auditResult.pricecurrency !== null
+                            ? auditResult.pricecurrency
+                            : 'No currency (cleared)'}
+                        </span>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <CheckboxInput
+                        value={sourceUrlsToApply.includes(sourceInfo.url)}
+                        onChange={() => toggleSourceUrlToApply(sourceInfo.url)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+          <Heading variant="h3">Result</Heading>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>URL</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Currency</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>{asset.sourceurl} (main source)</TableCell>
+                <TableCell>
+                  {newMainPriceToSave === null
+                    ? 'No price (clear)'
+                    : newMainPriceToSave === undefined
+                    ? 'Price unchanged'
+                    : newMainPriceToSave}
+                </TableCell>
+                <TableCell>
+                  {newMainPriceCurrencyToSave === null
+                    ? 'No currency (clear)'
+                    : newMainPriceCurrencyToSave === undefined
+                    ? 'Currency unchanged'
+                    : newMainPriceCurrencyToSave}
+                </TableCell>
+              </TableRow>
+              {newExtraSourcesToSave.map((sourceInfo) => (
+                <TableRow key={sourceInfo.url}>
+                  <TableCell>{sourceInfo.url}</TableCell>
+                  <TableCell>
+                    {sourceInfo.price !== null
+                      ? sourceInfo.price
+                      : 'No price (clear)'}
+                  </TableCell>
+                  <TableCell>
+                    {sourceInfo.pricecurrency !== null
+                      ? sourceInfo.pricecurrency
+                      : 'No currency (clear)'}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          {isSaving ? (
+            <LoadingMessage>Saving...</LoadingMessage>
+          ) : lastErrorCode !== null ? (
+            <ErrorMessage>
+              Failed to save asset (code {lastErrorCode})
+            </ErrorMessage>
+          ) : isSaveSuccess ? (
+            <SuccessMessage>
+              Asset prices saved successfully, closing and refreshing...
+            </SuccessMessage>
+          ) : null}
+          <FormControls>
+            <Button onClick={confirmSave} icon={<SaveIcon />}>
+              Save
+            </Button>
+            &nbsp;
+            <Button color="secondary" onClick={() => setIsConfirmShown(false)}>
+              Cancel
+            </Button>
+          </FormControls>
+        </Dialog>
+      ) : null}
+      <Button
+        onClick={onClickSave}
+        isDisabled={
+          isSaving ||
+          !asset.auditresults ||
+          !asset.auditresults.find(
+            (auditResult) => auditResult.result === AuditResultResult.Success
+          )
+        }
+        size="small"
+        color="primary">
+        Apply Prices
+      </Button>
     </>
   )
 }
@@ -157,10 +492,11 @@ const RetryButton = ({
 
   return (
     <>
-      {lastErrorCode !== null ? (
+      {isCalling ? (
+        <LoadingMessage>Retrying...</LoadingMessage>
+      ) : lastErrorCode !== null ? (
         <ErrorMessage>Failed to retry (code {lastErrorCode})</ErrorMessage>
-      ) : null}
-      {result && Array.isArray(result.result) ? (
+      ) : result && Array.isArray(result.result) ? (
         <SuccessMessage>Retry successful, refreshing view...</SuccessMessage>
       ) : null}
       <Button
@@ -170,7 +506,6 @@ const RetryButton = ({
         size="small">
         Retry Audit
       </Button>
-      {isCalling ? ' Retrying...' : ''}
     </>
   )
 }
@@ -235,16 +570,15 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                               </Link>
                             </TableCell>
                             <TableCell>
-                              {sourceInfo.price !== null &&
-                              sourceInfo.price !== undefined ? (
+                              {sourceInfo.price === null ? (
+                                <NoValueLabel>No price</NoValueLabel>
+                              ) : sourceInfo.price !== undefined ? (
                                 <Price
                                   price={sourceInfo.price}
                                   priceCurrency={sourceInfo.pricecurrency}
                                   small
                                 />
-                              ) : (
-                                ''
-                              )}
+                              ) : null}
                             </TableCell>
                             <TableCell>
                               {auditResult ? (
@@ -256,7 +590,7 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                                   {getFriendlyDate(asset.lastauditedat)})
                                 </StatusText>
                               ) : asset.lastauditedat ? (
-                                '(audit performed but no data recorded)'
+                                '(asset was audited but no data found for this URL)'
                               ) : (
                                 '(no audit performed yet)'
                               )}
@@ -288,7 +622,11 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                   </Table>
                 </TableCell>
                 <TableCell>
+                  <Heading variant="h3">Archive</Heading>
                   <ArchiveButtons assetId={asset.id} onDone={hydrate} />
+                  <br />
+                  <br />
+                  <ApplyPricesButton asset={asset} onDone={hydrate} />
                   <br />
                   <br />
                   <RetryButton assetId={asset.id} onDone={hydrate} />
@@ -335,6 +673,7 @@ const AdminAudit = () => (
       },
     ]}
     isRendererForLoading>
+    {/* @ts-ignore */}
     <Renderer />
   </PaginatedView>
 )

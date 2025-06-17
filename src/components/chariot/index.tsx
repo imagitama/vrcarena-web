@@ -7,6 +7,7 @@ import { getIsChristmasTime } from '../../utils'
 const useStyles = makeStyles({
   root: {
     position: 'relative',
+    height: '100%',
   },
   hat: {
     position: 'absolute',
@@ -58,7 +59,7 @@ const Chariot = ({
     <div
       className={`${classes.root} ${spin ? classes.spin : ''} ${
         spinOnHover ? classes.spinOnHover : ''
-      } ${className}`}>
+      } ${className || ''}`}>
       {getIsChristmasTime() && <ChristmasHat className={classes.hat} />}
       <ChariotImage className={classes.chariot} />
     </div>

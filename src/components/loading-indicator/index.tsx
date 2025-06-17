@@ -22,14 +22,24 @@ const useStyles = makeStyles(() => ({
     width: '7.5rem',
     height: '7.5rem',
   },
+  fill: {
+    width: 'auto',
+    height: '100%',
+  },
 }))
 
-const LoadingIndicator = ({ message = '' }: { message?: React.ReactNode }) => {
+const LoadingIndicator = ({
+  message = '',
+  fill = false,
+}: {
+  message?: React.ReactNode
+  fill?: boolean
+}) => {
   const classes = useStyles()
   return (
     <>
       <div className={classes.iconWrapper}>
-        <div className={classes.icon}>
+        <div className={`${classes.icon} ${fill ? classes.fill : ''}`}>
           <Chariot spin />
         </div>
       </div>
