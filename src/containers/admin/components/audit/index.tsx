@@ -560,7 +560,7 @@ const getIsAnythingDifferent = (asset: FullAssetWithAudit): boolean => {
       !extraSourceInfo ||
       extraSourceAuditResult.result !== AuditResultResult.Success ||
       extraSourceInfo.price !== extraSourceAuditResult.price ||
-      extraSourceInfo.pricecurrency !== extraSourceAuditResult.sourceurl
+      extraSourceInfo.pricecurrency !== extraSourceAuditResult.pricecurrency
     ) {
       return true
     }
