@@ -34,11 +34,28 @@ const isDollars = (currency: PopularCurrency): boolean => {
   return false
 }
 
-export const formatPrice = (
-  price: number,
-  currency: PopularCurrency | null,
-  withCurrency: boolean = true
-) =>
-  `${currency && isDollars(currency) ? '$' : ''}${price.toFixed(2)}${
-    withCurrency && currency ? ` ${currency}` : ''
-  }`
+const currencySymbols: Record<PopularCurrency, string> = {
+  USD: '$',
+  EUR: '€',
+  JPY: '¥',
+  GBP: '£',
+  AUD: 'A$',
+  CAD: 'C$',
+  CHF: 'CHF',
+  CNY: 'CN¥',
+  SEK: 'SEK',
+  NZD: 'NZ$',
+  SGD: 'S$',
+  HKD: 'HK$',
+  INR: '₹',
+  KRW: '₩',
+  BRL: 'R$',
+  ZAR: 'R',
+}
+
+const getSymbolForCurrency = (currency: PopularCurrency | null): string => {
+  return currency ? currencySymbols[currency] ?? '' : ''
+}
+
+export const formatPrice = (price: number, currency: PopularCurrency | null) =>
+  `${getSymbolForCurrency(currency)}${price.toFixed(2)}`

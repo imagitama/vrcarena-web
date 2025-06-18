@@ -44,6 +44,7 @@ import NoValueLabel from '../../../../components/no-value-label'
 import Tooltip from '../../../../components/tooltip'
 import LoadingMessage from '../../../../components/loading-message'
 import { PopularCurrency } from '../../../../currency'
+import { routes } from '../../../../routes'
 
 const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
@@ -165,12 +166,6 @@ const ApplyPricesButton = ({
         pricecurrency: null,
       }
 
-  console.debug('RENDER', {
-    auditresults: asset.auditresults,
-    mainSourceUrl: asset.sourceurl,
-    mainAuditResult,
-  })
-
   const newMainPrice: number | null | undefined = mainAuditResult?.price
   const newMainPriceToSave: number | null | undefined =
     sourceUrlsToApply.includes(asset.sourceurl) ? newMainPrice : undefined
@@ -185,7 +180,9 @@ const ApplyPricesButton = ({
     asset.extrasources && asset.auditresults
       ? asset.extrasources.map((sourceInfo) => {
           const match = asset.auditresults.find(
-            (auditResult) => auditResult.sourceurl == sourceInfo.url
+            (auditResult) =>
+              auditResult.sourceurl == sourceInfo.url &&
+              sourceUrlsToApply.includes(auditResult.sourceurl)
           )
 
           if (!match) {
@@ -345,7 +342,7 @@ const ApplyPricesButton = ({
                 }
 
                 return (
-                  <TableRow key={sourceInfo.url}>
+                  <TableRow key={auditResult.sourceurl}>
                     <TableCell>{auditResult.sourceurl}</TableCell>
                     <TableCell>
                       {sourceInfo.price !== null ? (
@@ -387,8 +384,12 @@ const ApplyPricesButton = ({
                     </TableCell>
                     <TableCell>
                       <CheckboxInput
-                        value={sourceUrlsToApply.includes(sourceInfo.url)}
-                        onChange={() => toggleSourceUrlToApply(sourceInfo.url)}
+                        value={sourceUrlsToApply.includes(
+                          auditResult.sourceurl
+                        )}
+                        onChange={() =>
+                          toggleSourceUrlToApply(auditResult.sourceurl)
+                        }
                       />
                     </TableCell>
                   </TableRow>
@@ -528,6 +529,46 @@ const RetryButton = ({
   )
 }
 
+const getIsAnythingDifferent = (asset: FullAssetWithAudit): boolean => {
+  if (!asset.lastauditedat || !asset.auditresults) {
+    return true
+  }
+
+  const mainSourceAuditResult = asset.auditresults.find(
+    (auditResult) => auditResult.sourceurl === asset.sourceurl
+  )
+
+  if (
+    !mainSourceAuditResult ||
+    mainSourceAuditResult.result !== AuditResultResult.Success ||
+    asset.price !== mainSourceAuditResult.price ||
+    asset.pricecurrency !== mainSourceAuditResult.pricecurrency
+  ) {
+    return true
+  }
+
+  const extraSourceAuditResults = asset.auditresults.filter(
+    (auditResult) => auditResult.sourceurl !== asset.sourceurl
+  )
+
+  for (const extraSourceAuditResult of extraSourceAuditResults) {
+    const extraSourceInfo = asset.extrasources.find(
+      (sourceInfo) => sourceInfo.url === extraSourceAuditResult.sourceurl
+    )
+
+    if (
+      !extraSourceInfo ||
+      extraSourceAuditResult.result !== AuditResultResult.Success ||
+      extraSourceInfo.price !== extraSourceAuditResult.price ||
+      extraSourceInfo.pricecurrency !== extraSourceAuditResult.sourceurl
+    ) {
+      return true
+    }
+  }
+
+  return false
+}
+
 const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
   return (
     <Table>
@@ -549,8 +590,14 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
               ])
             )
 
+            const isAnythingDifferent = getIsAnythingDifferent(asset)
+
+            console.log('CHECK', isAnythingDifferent, asset.title)
+
             return (
-              <TableRow key={asset.id}>
+              <TableRow
+                key={asset.id}
+                style={{ opacity: isAnythingDifferent ? 1 : 0.5 }}>
                 <TableCell>
                   <AssetResultsItem asset={asset} showState />
                 </TableCell>
@@ -667,6 +714,10 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
 const AdminAudit = () => (
   <PaginatedView<FullAssetWithAudit>
     viewName={ViewNames.GetFullAssetsWithAudit}
+    urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+      ':tabName',
+      'audit'
+    )}
     sortOptions={[
       {
         fieldName: 'lastauditedat',

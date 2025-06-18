@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import HelpIcon from '@mui/icons-material/Help'
-import { defaultCurrency, formatPrice, popularCurrencies } from '../../currency'
+import { formatPrice, popularCurrencies } from '../../currency'
 import * as routes from '../../routes'
 import Link from '../link'
 import { VRCArenaTheme } from '../../themes'
@@ -144,13 +144,10 @@ const Price = ({
             {price === 0
               ? 'FREE'
               : price
-              ? formatPrice(price, priceCurrency, false)
+              ? formatPrice(price, priceCurrency)
               : '(none)'}
             *
           </span>{' '}
-          {price === 0 || priceCurrency === null ? null : (
-            <span className={classes.currency}>{priceCurrency}</span>
-          )}
         </span>
       </div>
       {showPriceWarning ? (
