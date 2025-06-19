@@ -466,7 +466,6 @@ const Page = () => {
             } else {
               setInternalPageNumber(newPageNumber)
             }
-            scrollToTop(true)
           }}
         />
       ) : null}
