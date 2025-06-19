@@ -294,6 +294,15 @@ const TagSearchHint = ({ searchTerm }: { searchTerm: string }) => {
     return null
   }
 
+  if (searchTerm.toLowerCase() === 'free') {
+    return (
+      <Message>
+        Do you want to find all assets tagged{' '}
+        <Link to={routes.viewTagWithVar.replace(':tag', 'free')}>free</Link>?
+      </Message>
+    )
+  }
+
   const matches = []
 
   for (const [categoryName, areas] of Object.entries(areasByCategory)) {

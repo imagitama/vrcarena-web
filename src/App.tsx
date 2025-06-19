@@ -676,6 +676,11 @@ const MainContent = () => {
           path={[routes.createTag, routes.editTagWithVar]}
           component={EditTag}
         />
+        <Route
+          exact
+          path={routes.viewTagWithPageNumberVar}
+          component={ViewTag}
+        />
         <Route exact path={routes.viewTagWithVar} component={ViewTag} />
         <Route exact path={routes.tags} component={Tags} />
         <Route exact path={routes.setupProfile} component={SetupProfile} />

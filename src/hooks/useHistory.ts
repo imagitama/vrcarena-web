@@ -9,12 +9,12 @@ export default () => {
   const pushWithScroll = (url: string, shouldScroll: boolean = true): void => {
     useHistoryResult.push(url)
     if (shouldScroll) {
-      scrollToTop(false)
+      scrollToTop()
     }
   }
 
   return {
     ...useHistoryResult,
-    push: pushWithScroll
+    push: pushWithScroll,
   }
 }

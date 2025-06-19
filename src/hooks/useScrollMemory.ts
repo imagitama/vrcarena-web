@@ -13,6 +13,13 @@ const useScrollMemory = (hasFinishedLoading = false) => {
       return
     }
 
+    console.debug(
+      'CHECK',
+      oldPathnameRef.current,
+      oldPathnameRef.current?.includes('/page'),
+      pathname.includes('/page')
+    )
+
     // ignore page navigations
     if (
       oldPathnameRef.current &&
@@ -21,7 +28,7 @@ const useScrollMemory = (hasFinishedLoading = false) => {
     ) {
       console.debug(`useScrollMemory ignoring page navigation`, {
         old: oldPathnameRef.current,
-        new: pathname
+        new: pathname,
       })
       return
     }
@@ -30,7 +37,7 @@ const useScrollMemory = (hasFinishedLoading = false) => {
 
     if (pathname in scrollAmountsByUrl) {
       console.debug(`useScrollMemory found a scroll amount, scrolling...`, {
-        amount: scrollAmountsByUrl[pathname]
+        amount: scrollAmountsByUrl[pathname],
       })
       scrollTo(scrollAmountsByUrl[pathname], false)
     }

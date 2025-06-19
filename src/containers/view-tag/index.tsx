@@ -24,7 +24,15 @@ const AssetsForTag = ({ tag }: { tag: string }) => {
     (query) => query.contains('tags', `{${tag}}`),
     [tag]
   )
-  return <AssetsPaginatedView getQuery={getQuery} />
+  return (
+    <AssetsPaginatedView
+      getQuery={getQuery}
+      urlWithPageNumberVar={routes.viewTagWithPageNumberVar.replace(
+        ':tag',
+        tag
+      )}
+    />
+  )
 }
 
 export default () => {
