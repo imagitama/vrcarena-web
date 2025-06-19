@@ -13,13 +13,6 @@ const useScrollMemory = (hasFinishedLoading = false) => {
       return
     }
 
-    console.debug(
-      'CHECK',
-      oldPathnameRef.current,
-      oldPathnameRef.current?.includes('/page'),
-      pathname.includes('/page')
-    )
-
     // ignore page navigations
     if (
       oldPathnameRef.current &&

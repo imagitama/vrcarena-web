@@ -9,6 +9,16 @@ export function scrollToTop(isSmooth: boolean = true): void {
   return scrollTo(0, isSmooth)
 }
 
+export function smoothScrollToTop(): void {
+  console.debug(`Smooth scrolling to top...`)
+  return scrollTo(0, true)
+}
+
+export function snapScrollToTop(): void {
+  console.debug(`Snap scrolling to top...`)
+  return scrollTo(0, false)
+}
+
 export function scrollTo(x: number, isSmooth: boolean = true): void {
   console.debug(`Scrolling to ${x}...`)
   try {

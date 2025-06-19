@@ -10,10 +10,6 @@ import { makeStyles } from '@mui/styles'
 import AddIcon from '@mui/icons-material/Add'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import {
-  PostgrestQueryBuilder,
-  PostgrestFilterBuilder,
-} from '@supabase/postgrest-js'
 
 import SortControls, { SortOption } from '../sort-controls'
 import PagesNavigation from '../pages-navigation'
@@ -34,7 +30,7 @@ import useDatabaseQuery, {
 import { DataStoreErrorCode, GetQuery } from '../../data-store'
 import useScrollMemory from '../../hooks/useScrollMemory'
 import { getPathForQueryString } from '../../queries'
-import { scrollToTop } from '../../utils'
+import { smoothScrollToTop } from '../../utils'
 import WarningMessage from '../warning-message'
 import { mediaQueryForMobiles } from '../../media-queries'
 import { SupabaseClient } from '@supabase/supabase-js'
@@ -465,6 +461,7 @@ const Page = () => {
               )
             } else {
               setInternalPageNumber(newPageNumber)
+              smoothScrollToTop()
             }
           }}
         />

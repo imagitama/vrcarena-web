@@ -592,8 +592,6 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
 
             const isAnythingDifferent = getIsAnythingDifferent(asset)
 
-            console.log('CHECK', isAnythingDifferent, asset.title)
-
             return (
               <TableRow
                 key={asset.id}
