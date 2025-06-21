@@ -175,6 +175,8 @@ const View = () => {
     salereason: saleReason,
     saledescription: saleDescription,
     saleexpiresat: saleExpiresAtString,
+    kofiusername: kofiUsername,
+    payhipusername: payhipUsername,
 
     // view
     createdbyusername: createdByUsername,
@@ -218,7 +220,12 @@ const View = () => {
         <div className={classes.col}>
           <div className={classes.title}>
             <div className={classes.avatar}>
-              <Avatar url={avatarUrl} username={name} noHat lazy={false} />
+              <Avatar
+                url={avatarUrl || undefined}
+                username={name || undefined}
+                noHat
+                lazy={false}
+              />
             </div>
             <Heading variant="h1">
               <Link
@@ -261,6 +268,8 @@ const View = () => {
               boothUsername,
               itchUsername,
               jinxxyUsername,
+              kofiUsername,
+              payhipUsername,
             }}
             actionCategory={analyticsCategory}
           />

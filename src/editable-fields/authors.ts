@@ -174,6 +174,22 @@ const fields: EditableField<Author>[] = [
     hint: 'The name in the URL like https://[username].booth.pm',
     section: SectionNames.Social,
   },
+  {
+    name: 'kofiusername',
+    label: 'Ko-Fi Username',
+    type: fieldTypes.text,
+    default: '',
+    hint: 'The name in the URL like https://ko-fi.com/[username]/shop',
+    section: SectionNames.Social,
+  },
+  {
+    name: 'payhip',
+    label: 'PayHip Username',
+    type: fieldTypes.text,
+    default: '',
+    hint: 'The name in the URL like https://payhip.com/[username]',
+    section: SectionNames.Social,
+  },
   // commissions
   {
     name: 'isopenforcommission',

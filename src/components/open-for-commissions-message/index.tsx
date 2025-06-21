@@ -43,7 +43,7 @@ export default ({
   authorId,
   analyticsCategory,
 }: {
-  info: string
+  info: string | null
   showViewAuthorButton?: boolean
   authorId: string
   analyticsCategory?: string

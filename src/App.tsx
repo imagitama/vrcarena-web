@@ -36,20 +36,16 @@ import useSearchTerm from './hooks/useSearchTerm'
 import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
-  queryForMobiles,
   mediaQueryForTabletsOrAbove,
 } from './media-queries'
 import useUserRecord from './hooks/useUserRecord'
 import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
-import useBannerUrl from './hooks/useBannerUrl'
 import DeprecatedRouteView from './containers/deprecated-route'
-import ErrorMessage from './components/error-message'
-import FuralityBanner from './components/furality-banner'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
-    if (err.message.includes('Loading chunk')) {
+    if (err.message.includes('error loading dynamically imported module')) {
       // Warning: this could cause an infinite loop :)
       window.location.reload()
 

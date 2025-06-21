@@ -2,6 +2,8 @@ import { getIsBoothProductUrl } from '../booth'
 import { getIsGumroadProductUrl } from '../gumroad'
 import { getIsItchProductUrl } from '../itch'
 import { getIsJinxxyProductUrl } from '../jinxxy'
+import { getIsKofiProductUrl } from '../kofi'
+import { getIsPayHipProductUrl } from '../payhip'
 
 // shared with backend
 export enum SyncPlatformName {
@@ -9,6 +11,8 @@ export enum SyncPlatformName {
   Booth = 'booth',
   Itch = 'itch',
   Jinxxy = 'jinxxy',
+  Kofi = 'kofi',
+  PayHip = 'payhip',
 }
 
 // shared with backend
@@ -26,6 +30,12 @@ export const getSyncPlatformNameFromUrl = (
   }
   if (getIsJinxxyProductUrl(url)) {
     return SyncPlatformName.Jinxxy
+  }
+  if (getIsKofiProductUrl(url)) {
+    return SyncPlatformName.Kofi
+  }
+  if (getIsPayHipProductUrl(url)) {
+    return SyncPlatformName.PayHip
   }
   return undefined
 }

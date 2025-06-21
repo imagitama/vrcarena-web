@@ -21,6 +21,8 @@ import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 import { getIsDiscordUrl } from '../../discord'
 import { getIsPatreonUrl } from '../../patreon'
 import { getIsVrchatAvatarUrl, getIsVrchatWorldUrl } from '../../vrchat'
+import { getIsKofiProductUrl } from '../../kofi'
+import { getIsPayHipProductUrl } from '../../payhip'
 
 const useStyles = makeStyles({
   root: {
@@ -93,6 +95,14 @@ function getButtonLabel(sourceUrl: string): string {
 
   if (getIsGitHubUrl(sourceUrl)) {
     return `GitHub`
+  }
+
+  if (getIsKofiProductUrl(sourceUrl)) {
+    return `Ko-Fi`
+  }
+
+  if (getIsPayHipProductUrl(sourceUrl)) {
+    return `PayHip`
   }
 
   return 'Source'

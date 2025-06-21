@@ -31,6 +31,8 @@ import { trackAction } from '../../analytics'
 import Paper from '../paper'
 import { getAuthorUrlForItchUsername } from '../../itch'
 import { getAuthorUrlForJinxxyUsername } from '../../jinxxy'
+import { getAuthorUrlForKofiUsername } from '../../kofi'
+import { getAuthorUrlForPayHipUsername } from '../../payhip'
 
 export const socialMediaType = {
   twitter: 'twitter',
@@ -80,8 +82,8 @@ interface SocialMediaItem {
   type: string
   icon: any
   iconClass?: string
-  url?: string
-  label?: string
+  url?: string | null
+  label?: string | null
 }
 
 function SocialMediaListItem({
@@ -145,27 +147,31 @@ const SocialMediaList = ({
     boothUsername,
     itchUsername,
     jinxxyUsername,
+    kofiUsername,
+    payhipUsername,
   },
 }: {
   actionCategory: string
   socialMedia: {
-    websiteUrl?: string
-    email?: string
-    gumroadUsername?: string
-    vrchatUsername?: string
-    vrchatUserId?: string
-    chilloutVrUsername?: string
-    neosVrUsername?: string
-    discordUsername?: string
-    twitterUsername?: string
-    telegramUsername?: string
-    youtubeChannelId?: string
-    twitchUsername?: string
-    patreonUsername?: string
-    discordServerInviteUrl?: string
-    boothUsername?: string
-    itchUsername?: string
-    jinxxyUsername?: string
+    websiteUrl?: string | null
+    email?: string | null
+    gumroadUsername?: string | null
+    vrchatUsername?: string | null
+    vrchatUserId?: string | null
+    chilloutVrUsername?: string | null
+    neosVrUsername?: string | null
+    discordUsername?: string | null
+    twitterUsername?: string | null
+    telegramUsername?: string | null
+    youtubeChannelId?: string | null
+    twitchUsername?: string | null
+    patreonUsername?: string | null
+    discordServerInviteUrl?: string | null
+    boothUsername?: string | null
+    itchUsername?: string | null
+    jinxxyUsername?: string | null
+    kofiUsername?: string | null
+    payhipUsername?: string | null
   }
 }) => {
   const classes = useStyles()
@@ -299,6 +305,24 @@ const SocialMediaList = ({
         ? getAuthorUrlForJinxxyUsername(jinxxyUsername)
         : undefined,
       type: 'jinxxy',
+    },
+    {
+      id: 'kofiUsername',
+      icon: null, // TODO
+      // icon: BoothIcon,
+      label: kofiUsername,
+      url: kofiUsername ? getAuthorUrlForKofiUsername(kofiUsername) : undefined,
+      type: 'kofi',
+    },
+    {
+      id: 'payhipUsername',
+      icon: null, // TODO
+      // icon: BoothIcon,
+      label: payhipUsername,
+      url: payhipUsername
+        ? getAuthorUrlForPayHipUsername(payhipUsername)
+        : undefined,
+      type: 'payhip',
     },
   ]
   return (

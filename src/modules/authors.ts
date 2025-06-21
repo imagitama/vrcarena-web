@@ -1,29 +1,30 @@
 import { AccessStatus, ApprovalStatus, PublishStatus } from './common'
 
 export interface AuthorFields extends Record<string, unknown> {
-  name: string
-  description: string
-  websiteurl: string
-  email: string
-  twitterusername: string
-  gumroadusername: string
-  itchusername: string
-  jinxxyusername: string
-  discordusername: string
+  name: string | null
+  description: string | null
+  websiteurl: string | null
+  email: string | null
+  twitterusername: string | null
+  gumroadusername: string | null
+  itchusername: string | null
+  jinxxyusername: string | null
+  discordusername: string | null
   discordserverinviteurl: string
-  patreonusername: string
+  patreonusername: string | null
   categories: string[]
   discordserverid: string
-  isopenforcommission: boolean
-  commissioninfo: string
+  isopenforcommission: boolean | null
+  commissioninfo: string | null
   showcommissionstatusforassets: boolean
-  avatarurl: string
-  bannerurl: string
-  boothusername: string
-  salereason: string
-  saledescription: string
+  avatarurl: string | null
+  bannerurl: string | null
+  boothusername: string | null
+  kofiusername: string | null
+  payhipusername: string | null
+  salereason: string | null
+  saledescription: string | null
   saleexpiresat: string | undefined
-  promourl: string
 }
 
 export interface Author extends AuthorFields {

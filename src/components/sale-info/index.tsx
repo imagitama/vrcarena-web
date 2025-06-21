@@ -100,7 +100,7 @@ export default ({
 }: {
   authorId: string
   eventId: string
-  description: string
+  description: string | null
   expiresAt: Date | null
   showTitle?: boolean
   showViewAuthorButton?: boolean
