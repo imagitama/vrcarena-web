@@ -542,7 +542,9 @@ const getIsAnythingDifferent = (asset: FullAssetWithAudit): boolean => {
     !mainSourceAuditResult ||
     mainSourceAuditResult.result !== AuditResultResult.Success ||
     asset.price !== mainSourceAuditResult.price ||
-    asset.pricecurrency !== mainSourceAuditResult.pricecurrency
+    asset.pricecurrency !== mainSourceAuditResult.pricecurrency ||
+    (mainSourceAuditResult.actualurl !== null &&
+      mainSourceAuditResult.actualurl !== asset.sourceurl)
   ) {
     return true
   }
@@ -560,7 +562,9 @@ const getIsAnythingDifferent = (asset: FullAssetWithAudit): boolean => {
       !extraSourceInfo ||
       extraSourceAuditResult.result !== AuditResultResult.Success ||
       extraSourceInfo.price !== extraSourceAuditResult.price ||
-      extraSourceInfo.pricecurrency !== extraSourceAuditResult.pricecurrency
+      extraSourceInfo.pricecurrency !== extraSourceAuditResult.pricecurrency ||
+      (extraSourceAuditResult.actualurl !== null &&
+        extraSourceAuditResult.actualurl !== extraSourceInfo.url)
     ) {
       return true
     }
@@ -604,6 +608,7 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                     <TableHead>
                       <TableRow>
                         <TableCell>URL</TableCell>
+                        <TableCell>Actual URL</TableCell>
                         <TableCell>Original Price</TableCell>
                         <TableCell>Audit Result</TableCell>
                         <TableCell>Latest Price</TableCell>
@@ -631,6 +636,15 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                               <Link to={sourceUrl} inNewTab>
                                 {sourceUrl}
                               </Link>
+                            </TableCell>
+                            <TableCell>
+                              {auditResult && auditResult.actualurl ? (
+                                <Link to={auditResult.actualurl} inNewTab>
+                                  {auditResult.actualurl}
+                                </Link>
+                              ) : (
+                                <NoValueLabel>Same</NoValueLabel>
+                              )}
                             </TableCell>
                             <TableCell>
                               {sourceInfo.price === null ? (
