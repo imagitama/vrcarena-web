@@ -209,14 +209,10 @@ const SyncForm = <TRecord extends object>({
       platformName,
     }
 
-    console.debug(`SyncForm.sync`, { payload })
-
     const result = await performSync(payload)
 
-    console.debug(`SyncForm.sync.result`, { result })
-
     if (result.errorCode) {
-      console.debug(`sync failed`, result.errorCode)
+      console.warn(`sync failed`, result.errorCode)
       return
     }
 
@@ -228,8 +224,6 @@ const SyncForm = <TRecord extends object>({
   }
 
   const setField = (name: string, value: any) => {
-    console.debug(`SyncForm.setField`, { name, value })
-
     setFieldsToSave((currentFields) => {
       const newFields = {
         ...currentFields,
@@ -403,7 +397,7 @@ const SyncForm = <TRecord extends object>({
           <ul>
             {lastValidationIssues.map((issue) => (
               <li key={issue.fieldName}>
-                {issue.fieldName} {issue.reason}
+                {issue.fieldName} (code {issue.reason})
               </li>
             ))}
           </ul>

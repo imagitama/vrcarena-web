@@ -454,6 +454,12 @@ const Tutorials = lazy(() =>
     () => import(/* webpackChunkName: "tutorials" */ './containers/tutorials')
   )
 )
+const Attachments = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "attachments" */ './containers/attachments')
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -569,6 +575,11 @@ const MainContent = () => {
           component={DeprecatedRouteView}
         />
         <Route exact path={routes.viewAvatars} component={ViewAvatars} />
+        <Route
+          exact
+          path={[routes.attachments, routes.attachmentsWithPageNumberVar]}
+          component={Attachments}
+        />
         <Route
           exact
           path={routes.editAttachmentWithVar}

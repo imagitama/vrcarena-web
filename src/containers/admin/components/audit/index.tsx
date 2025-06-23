@@ -543,7 +543,8 @@ const getIsAnythingDifferent = (asset: FullAssetWithAudit): boolean => {
     mainSourceAuditResult.result !== AuditResultResult.Success ||
     asset.price !== mainSourceAuditResult.price ||
     asset.pricecurrency !== mainSourceAuditResult.pricecurrency ||
-    (mainSourceAuditResult.actualurl !== null &&
+    (mainSourceAuditResult.actualurl !== undefined &&
+      mainSourceAuditResult.actualurl !== null &&
       mainSourceAuditResult.actualurl !== asset.sourceurl)
   ) {
     return true
@@ -563,7 +564,8 @@ const getIsAnythingDifferent = (asset: FullAssetWithAudit): boolean => {
       extraSourceAuditResult.result !== AuditResultResult.Success ||
       extraSourceInfo.price !== extraSourceAuditResult.price ||
       extraSourceInfo.pricecurrency !== extraSourceAuditResult.pricecurrency ||
-      (extraSourceAuditResult.actualurl !== null &&
+      (extraSourceAuditResult.actualurl !== undefined &&
+        extraSourceAuditResult.actualurl !== null &&
         extraSourceAuditResult.actualurl !== extraSourceInfo.url)
     ) {
       return true

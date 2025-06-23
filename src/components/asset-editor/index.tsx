@@ -422,7 +422,7 @@ const SyncButton = ({
 
 const AssetSource = ({
   sourceInfo,
-  showSyncButton,
+  showSyncButton = true,
 }: {
   sourceInfo: SourceInfo | null
   showSyncButton?: boolean

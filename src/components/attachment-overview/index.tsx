@@ -196,7 +196,7 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
             onDone={hydrate}
             comments="Note: Attachments waiting for approval are still public"
           />
-          {imageConvertQueueItems ? (
+          {imageConvertQueueItems && imageConvertQueueItems.length ? (
             <InfoMessage>
               Image convert queue: {imageConvertQueueItems[0].status}
             </InfoMessage>

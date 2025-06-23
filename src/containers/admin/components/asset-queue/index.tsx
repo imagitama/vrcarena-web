@@ -19,7 +19,7 @@ const AdminAssetSyncQueue = () => (
   <PaginatedView<AssetSyncQueueItem>
     viewName={ViewNames.GetFullMyAssetSyncQueuedItems}
     defaultFieldName="createdat"
-    defaultDirection={OrderDirections.ASC}
+    defaultDirection={OrderDirections.DESC}
     // max limit of realtime connections
     limit={100}
     filters={[
