@@ -255,7 +255,7 @@ export enum AuditResultResult {
 
 export interface AuditResult {
   sourceurl: string
-  actualurl: string | null
+  actualurl: string | undefined
   result: AuditResultResult
   price: number | null
   pricecurrency: PopularCurrency | null

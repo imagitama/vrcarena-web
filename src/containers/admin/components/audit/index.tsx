@@ -140,7 +140,7 @@ const ArchiveButtons = ({
   )
 }
 
-const ApplyPricesButton = ({
+const ApplyAuditButton = ({
   asset,
   onDone,
 }: {
@@ -161,11 +161,17 @@ const ApplyPricesButton = ({
     ? asset.auditresults.find(
         (auditResult) => auditResult.sourceurl === asset.sourceurl
       )
-    : {
+    : ({
         price: null,
         pricecurrency: null,
-      }
+      } as AuditResult)
 
+  const newMainSourceUrl: string | undefined = mainAuditResult?.actualurl
+  const newMainSourceUrlToSave: string | undefined = sourceUrlsToApply.includes(
+    asset.sourceurl
+  )
+    ? newMainSourceUrl
+    : undefined
   const newMainPrice: number | null | undefined = mainAuditResult?.price
   const newMainPriceToSave: number | null | undefined =
     sourceUrlsToApply.includes(asset.sourceurl) ? newMainPrice : undefined
@@ -189,10 +195,11 @@ const ApplyPricesButton = ({
             return sourceInfo
           }
 
-          const { price, pricecurrency } = match
+          const { actualurl, price, pricecurrency } = match
 
           return {
             ...sourceInfo,
+            url: actualurl !== undefined ? actualurl : sourceInfo.url,
             price,
             pricecurrency,
           }
@@ -201,10 +208,14 @@ const ApplyPricesButton = ({
 
   const confirmSave = async () => {
     try {
-      console.debug(`saving asset ${asset.id} prices...`)
+      console.debug(`saving asset ${asset.id}...`)
 
       const fieldsToSave: Partial<Asset> = {
         extrasources: newExtraSourcesToSave,
+      }
+
+      if (newMainSourceUrlToSave !== undefined) {
+        fieldsToSave.sourceurl = newMainSourceUrlToSave
       }
 
       if (newMainPriceToSave !== undefined) {
@@ -247,12 +258,13 @@ const ApplyPricesButton = ({
       {isConfirmShown && asset.auditresults ? (
         <Dialog>
           <Heading variant="h3" noTopMargin>
-            New Prices
+            New Data
           </Heading>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>URL</TableCell>
+                <TableCell>Actual URL</TableCell>
                 <TableCell>Price</TableCell>
                 <TableCell>Currency</TableCell>
                 <TableCell />
@@ -262,6 +274,9 @@ const ApplyPricesButton = ({
               <TableRow>
                 <TableCell>
                   {asset.sourceurl} <strong>(main source)</strong>
+                </TableCell>
+                <TableCell>
+                  {newMainSourceUrl ? newMainSourceUrl : '-'}
                 </TableCell>
                 <TableCell>
                   {asset.price !== null ? (
@@ -345,6 +360,11 @@ const ApplyPricesButton = ({
                   <TableRow key={auditResult.sourceurl}>
                     <TableCell>{auditResult.sourceurl}</TableCell>
                     <TableCell>
+                      {auditResult.actualurl !== undefined
+                        ? auditResult.actualurl
+                        : '-'}
+                    </TableCell>
+                    <TableCell>
                       {sourceInfo.price !== null ? (
                         sourceInfo.price
                       ) : (
@@ -402,6 +422,7 @@ const ApplyPricesButton = ({
             <TableHead>
               <TableRow>
                 <TableCell>URL</TableCell>
+                <TableCell>Actual URL</TableCell>
                 <TableCell>Price</TableCell>
                 <TableCell>Currency</TableCell>
               </TableRow>
@@ -410,6 +431,11 @@ const ApplyPricesButton = ({
               <TableRow>
                 <TableCell>
                   {asset.sourceurl} <strong>(main source)</strong>
+                </TableCell>
+                <TableCell>
+                  {newMainSourceUrlToSave === undefined
+                    ? 'Unchanged'
+                    : newMainSourceUrlToSave}
                 </TableCell>
                 <TableCell>
                   {newMainPriceToSave === null
@@ -451,7 +477,7 @@ const ApplyPricesButton = ({
             </ErrorMessage>
           ) : isSaveSuccess ? (
             <SuccessMessage>
-              Asset prices saved successfully, closing and refreshing...
+              Asset saved successfully, closing and refreshing...
             </SuccessMessage>
           ) : null}
           <FormControls>
@@ -476,7 +502,7 @@ const ApplyPricesButton = ({
         }
         size="small"
         color="primary">
-        Apply Prices
+        Apply Audit...
       </Button>
     </>
   )
@@ -705,7 +731,7 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                   <ArchiveButtons assetId={asset.id} onDone={hydrate} />
                   <br />
                   <br />
-                  <ApplyPricesButton asset={asset} onDone={hydrate} />
+                  <ApplyAuditButton asset={asset} onDone={hydrate} />
                   <br />
                   <br />
                   <RetryButton assetId={asset.id} onDone={hydrate} />
