@@ -166,7 +166,10 @@ const ApplyAuditButton = ({
         pricecurrency: null,
       } as AuditResult)
 
-  const newMainSourceUrl: string | undefined = mainAuditResult?.actualurl
+  const newMainSourceUrl: string | undefined =
+    mainAuditResult && mainAuditResult.actualurl
+      ? mainAuditResult.actualurl
+      : undefined
   const newMainSourceUrlToSave: string | undefined = sourceUrlsToApply.includes(
     asset.sourceurl
   )
@@ -214,7 +217,11 @@ const ApplyAuditButton = ({
         extrasources: newExtraSourcesToSave,
       }
 
-      if (newMainSourceUrlToSave !== undefined) {
+      // null check juuuust in case
+      if (
+        newMainSourceUrlToSave !== undefined &&
+        newMainSourceUrlToSave !== null
+      ) {
         fieldsToSave.sourceurl = newMainSourceUrlToSave
       }
 
