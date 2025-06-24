@@ -15,13 +15,16 @@ export const getAuthorUsernameFromGumroadUrl = (url: string): string | null => {
 // shared with backend
 export const getIsGumroadProductUrl = (url: string): boolean => {
   try {
-    const parsedUrl = new URL(url)
+    const { hostname, pathname } = new URL(url)
 
-    if (!/\.gumroad\.com$/.test(parsedUrl.hostname)) {
-      return false
-    }
+    const isFullStore =
+      /\.gumroad\.com$/.test(hostname) && /^\/l\/[^/]+$/.test(pathname)
+    const isLegacy = hostname === 'gumroad.com' && /^\/l\/[^/]+$/.test(pathname)
+    const isShort = hostname === 'gum.co' && /^\/[^/]+$/.test(pathname)
+    const isApp =
+      hostname === 'app.gumroad.com' && /^\/products\/[^/]+$/.test(pathname)
 
-    return /^\/l\/[^/]+$/.test(parsedUrl.pathname)
+    return isFullStore || isLegacy || isShort || isApp
   } catch {
     return false
   }
