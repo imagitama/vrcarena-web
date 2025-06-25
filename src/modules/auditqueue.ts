@@ -44,10 +44,14 @@ export interface AuditQueueItem extends Record<string, unknown> {
   queuedby: string | null
 }
 
+export interface FullAuditQueueItem extends AuditQueueItem {
+  applystatus: QueueStatus | null
+}
+
 export interface AuditQueueItemsByAsset {
   id: string // asset ID
   asset: Asset
-  items: AuditQueueItem[]
+  items: FullAuditQueueItem[]
   lastmodifiedat: Date | null
 }
 

@@ -37,6 +37,7 @@ import {
   AuditResult,
   AuditResultResult,
   CollectionNames,
+  QueueStatus,
   ViewNames,
 } from '../../../../modules/auditqueue'
 import {
@@ -76,6 +77,34 @@ const getLabelForResult = (result: AuditResultResult) => {
       return 'Success - Available'
     default:
       throw new Error(`Unknown result: ${result}`)
+  }
+}
+
+const getPositivityForQueueStatus = (queueStatus: QueueStatus) => {
+  switch (queueStatus) {
+    case QueueStatus.Failed:
+      return -1
+    case QueueStatus.Processing:
+    case QueueStatus.Queued:
+      return 0
+    case QueueStatus.Processed:
+      return 1
+    default:
+      throw new Error(`Unknown queue status: ${queueStatus}`)
+  }
+}
+
+const getLabelForQueueStatus = (queueStatus: QueueStatus) => {
+  switch (queueStatus) {
+    case QueueStatus.Failed:
+      return 'Failed To Automatically Apply'
+    case QueueStatus.Processing:
+    case QueueStatus.Queued:
+      return 'Automatically applying...'
+    case QueueStatus.Processed:
+      return 'Automatically Applied!'
+    default:
+      throw new Error(`Unknown queue status: ${queueStatus}`)
   }
 }
 
@@ -501,9 +530,9 @@ const Renderer = ({
                     <TableHead>
                       <TableRow>
                         <TableCell>URL</TableCell>
-                        <TableCell>Actual URL</TableCell>
-                        <TableCell>Original Price</TableCell>
+                        <TableCell>Current Price</TableCell>
                         <TableCell>Audit Result</TableCell>
+                        <TableCell>Actual URL</TableCell>
                         <TableCell>Latest Price</TableCell>
                         <TableCell></TableCell>
                       </TableRow>
@@ -548,15 +577,6 @@ const Renderer = ({
                               </Link>
                             </TableCell>
                             <TableCell>
-                              {auditResult && auditResult.actualurl ? (
-                                <Link to={auditResult.actualurl} inNewTab>
-                                  {auditResult.actualurl}
-                                </Link>
-                              ) : (
-                                <NoValueLabel>Same</NoValueLabel>
-                              )}
-                            </TableCell>
-                            <TableCell>
                               {sourceInfo.price === null ? (
                                 <NoValueLabel>No price</NoValueLabel>
                               ) : sourceInfo.price !== undefined ? (
@@ -587,6 +607,15 @@ const Renderer = ({
                               )}
                             </TableCell>
                             <TableCell>
+                              {auditResult && auditResult.actualurl ? (
+                                <Link to={auditResult.actualurl} inNewTab>
+                                  {auditResult.actualurl}
+                                </Link>
+                              ) : (
+                                <NoValueLabel>Same</NoValueLabel>
+                              )}
+                            </TableCell>
+                            <TableCell>
                               {auditResult && auditResult.price !== null ? (
                                 <>
                                   <Price
@@ -612,6 +641,21 @@ const Renderer = ({
                                 queueItem={queueItem}
                                 onDone={hydrate}
                               />
+                              {queueItem.applystatus ? (
+                                <>
+                                  <br />
+                                  <br />
+                                  <StatusText
+                                    positivity={getPositivityForQueueStatus(
+                                      queueItem.applystatus
+                                    )}>
+                                    {getLabelForQueueStatus(
+                                      queueItem.applystatus
+                                    )}
+                                  </StatusText>
+                                  <br />
+                                </>
+                              ) : null}
                               <RetryButton
                                 assetId={asset.id}
                                 sourceUrl={queueItem.url}
