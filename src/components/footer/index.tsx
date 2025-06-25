@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { makeStyles } from '@mui/styles'
 
@@ -16,6 +16,7 @@ import Button from '../button'
 import BulkEditButton from '../bulk-edit-button'
 import useSupabaseUserId from '../../hooks/useSupabaseUserId'
 import useIsEditor from '../../hooks/useIsEditor'
+import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 
 const useStyles = makeStyles({
   footer: {
@@ -90,6 +91,13 @@ function DevelopmentTools() {
   const firebaseUserId = useUserId()
   const supabaseUserId = useSupabaseUserId()
   const isEditor = useIsEditor()
+  const [isCalling, lastErrorCode, result, callFunc] = useDataStoreFunction<
+    {},
+    boolean
+  >('get_is_current_user_editor_or_admin')
+  useEffect(() => {
+    callFunc()
+  }, [firebaseUserId, supabaseUserId])
   return (
     <table>
       <tbody>
@@ -114,6 +122,13 @@ function DevelopmentTools() {
             <Button onClick={() => firebaseAuth.signOut()}>
               Sign out of FB
             </Button>
+            <br />
+            Is backend editor:{' '}
+            {isCalling
+              ? 'Calling...'
+              : lastErrorCode !== null
+              ? `code: ${lastErrorCode}`
+              : JSON.stringify(result)}
           </td>
         </tr>
       </tbody>

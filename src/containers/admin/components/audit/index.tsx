@@ -1,21 +1,10 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import SaveIcon from '@mui/icons-material/Save'
-import {
-  ViewNames,
-  FullAssetWithAudit,
-  AuditResultResult,
-  CollectionNames,
-  ArchivedReason,
-  AssetMeta,
-  AuditResult,
-  Asset,
-  SourceInfo,
-} from '../../../../modules/assets'
 import AssetResultsItem from '../../../../components/asset-results-item'
 import Button from '../../../../components/button'
 import PaginatedView, {
@@ -34,17 +23,31 @@ import { getFriendlyDate } from '../../../../utils/dates'
 import Link from '../../../../components/link'
 import Price from '../../../../components/price'
 import HintText from '../../../../components/hint-text'
-import useFirebaseFunction from '../../../../hooks/useFirebaseFunction'
 import useTimer from '../../../../hooks/useTimer'
 import LoadingIndicator from '../../../../components/loading-indicator'
 import Dialog from '../../../../components/dialog'
-import CheckboxInput from '../../../../components/checkbox-input'
 import FormControls from '../../../../components/form-controls'
 import NoValueLabel from '../../../../components/no-value-label'
 import Tooltip from '../../../../components/tooltip'
 import LoadingMessage from '../../../../components/loading-message'
-import { PopularCurrency } from '../../../../currency'
 import { routes } from '../../../../routes'
+import {
+  AuditQueueItem,
+  AuditQueueItemsByAsset,
+  AuditResult,
+  AuditResultResult,
+  CollectionNames,
+  ViewNames,
+} from '../../../../modules/auditqueue'
+import {
+  ArchivedReason,
+  Asset,
+  AssetMeta,
+  CollectionNames as AssetsCollectionNames,
+  SourceInfo,
+} from '../../../../modules/assets'
+import useDataStoreCreate from '../../../../hooks/useDataStoreCreate'
+import useUserId from '../../../../hooks/useUserId'
 
 const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
@@ -84,7 +87,7 @@ const ArchiveButtons = ({
   onDone: () => void
 }) => {
   const [isSaving, isSaveSuccess, lastErrorCode, save] =
-    useDataStoreEdit<AssetMeta>(CollectionNames.AssetsMeta, assetId)
+    useDataStoreEdit<AssetMeta>(AssetsCollectionNames.AssetsMeta, assetId)
 
   const archive = async (reason: ArchivedReason) => {
     try {
@@ -142,95 +145,59 @@ const ArchiveButtons = ({
 
 const ApplyAuditButton = ({
   asset,
+  queueItem,
   onDone,
 }: {
-  asset: FullAssetWithAudit
+  asset: Asset
+  queueItem: AuditQueueItem
   onDone: () => void
 }) => {
   const [isSaving, isSaveSuccess, lastErrorCode, save] =
-    useDataStoreEdit<Asset>(CollectionNames.Assets, asset.id)
+    useDataStoreEdit<Asset>(AssetsCollectionNames.Assets, asset.id)
   const [isConfirmShown, setIsConfirmShown] = useState(false)
-  const [sourceUrlsToApply, setSourceUrlsToApply] = useState<string[]>(
-    asset.auditresults
-      ? asset.auditresults.map((auditResult) => auditResult.sourceurl)
-      : []
-  )
   const onDoneAfterDelay = useTimer(onDone)
 
-  const mainAuditResult = asset.auditresults
-    ? asset.auditresults.find(
-        (auditResult) => auditResult.sourceurl === asset.sourceurl
+  const isMainSource = asset.sourceurl && queueItem.url === asset.sourceurl
+
+  const auditResult = queueItem.result
+
+  let fieldsToSave: Partial<Asset> | null = null
+
+  if (auditResult) {
+    if (isMainSource) {
+      fieldsToSave = {
+        price: auditResult.price,
+        pricecurrency: auditResult.pricecurrency,
+      }
+
+      if (auditResult.actualurl && auditResult.actualurl !== asset.sourceurl) {
+        fieldsToSave.sourceurl = auditResult.actualurl
+      }
+    } else {
+      const newExtraSources = (asset.extrasources || []).map((extraSource) =>
+        extraSource.url === queueItem.url
+          ? {
+              ...extraSource,
+              url: auditResult.actualurl || extraSource.url,
+              price: auditResult.price,
+              pricecurrency: auditResult.pricecurrency,
+            }
+          : extraSource
       )
-    : ({
-        price: null,
-        pricecurrency: null,
-      } as AuditResult)
 
-  const newMainSourceUrl: string | undefined =
-    mainAuditResult && mainAuditResult.actualurl
-      ? mainAuditResult.actualurl
-      : undefined
-  const newMainSourceUrlToSave: string | undefined = sourceUrlsToApply.includes(
-    asset.sourceurl
-  )
-    ? newMainSourceUrl
-    : undefined
-  const newMainPrice: number | null | undefined = mainAuditResult?.price
-  const newMainPriceToSave: number | null | undefined =
-    sourceUrlsToApply.includes(asset.sourceurl) ? newMainPrice : undefined
-  const newMainPriceCurrency: PopularCurrency | null | undefined =
-    mainAuditResult?.pricecurrency
-  const newMainPriceCurrencyToSave: PopularCurrency | null | undefined =
-    sourceUrlsToApply.includes(asset.sourceurl)
-      ? newMainPriceCurrency
-      : undefined
-
-  const newExtraSourcesToSave =
-    asset.extrasources && asset.auditresults
-      ? asset.extrasources.map((sourceInfo) => {
-          const match = asset.auditresults.find(
-            (auditResult) =>
-              auditResult.sourceurl == sourceInfo.url &&
-              sourceUrlsToApply.includes(auditResult.sourceurl)
-          )
-
-          if (!match) {
-            return sourceInfo
-          }
-
-          const { actualurl, price, pricecurrency } = match
-
-          return {
-            ...sourceInfo,
-            url: actualurl !== undefined ? actualurl : sourceInfo.url,
-            price,
-            pricecurrency,
-          }
-        })
-      : []
+      fieldsToSave = {
+        extrasources: newExtraSources,
+      }
+    }
+  }
 
   const confirmSave = async () => {
     try {
-      console.debug(`saving asset ${asset.id}...`)
+      console.debug(`applying audit for asset ${asset.id}...`)
 
-      const fieldsToSave: Partial<Asset> = {
-        extrasources: newExtraSourcesToSave,
-      }
-
-      // null check juuuust in case
-      if (
-        newMainSourceUrlToSave !== undefined &&
-        newMainSourceUrlToSave !== null
-      ) {
-        fieldsToSave.sourceurl = newMainSourceUrlToSave
-      }
-
-      if (newMainPriceToSave !== undefined) {
-        fieldsToSave.price = newMainPriceToSave
-      }
-
-      if (newMainPriceToSave !== undefined) {
-        fieldsToSave.pricecurrency = newMainPriceCurrencyToSave
+      if (!fieldsToSave) {
+        console.warn('cannot proceed without fields to save')
+        return
       }
 
       await save(fieldsToSave)
@@ -244,25 +211,24 @@ const ApplyAuditButton = ({
 
   const onClickSave = () => setIsConfirmShown(true)
 
-  const toggleSourceUrlToApply = (sourceUrl: string) =>
-    setSourceUrlsToApply((currentUrls) =>
-      currentUrls.includes(sourceUrl)
-        ? currentUrls.filter((url) => url !== sourceUrl)
-        : currentUrls.concat([sourceUrl])
-    )
+  const sourceInfo: SourceInfo | undefined = isMainSource
+    ? {
+        url: asset.sourceurl,
+        price: asset.price,
+        pricecurrency: asset.pricecurrency,
+        comments: '',
+      }
+    : asset.extrasources.find(
+        (extraSource) => extraSource.url === queueItem.url
+      )
 
-  const allExtraSourceUrls = Array.from(
-    new Set([
-      ...(asset.extrasources || []).map((sourceInfo) => sourceInfo.url),
-      ...(asset.auditresults || [])
-        .filter((auditResult) => auditResult.sourceurl !== asset.sourceurl)
-        .map((auditResult) => auditResult.sourceurl),
-    ])
-  )
+  if (!sourceInfo) {
+    return '(no source info)'
+  }
 
   return (
     <>
-      {isConfirmShown && asset.auditresults ? (
+      {isConfirmShown && auditResult ? (
         <Dialog>
           <Heading variant="h3" noTopMargin>
             New Data
@@ -271,157 +237,96 @@ const ApplyAuditButton = ({
             <TableHead>
               <TableRow>
                 <TableCell>URL</TableCell>
-                <TableCell>Actual URL</TableCell>
                 <TableCell>Price</TableCell>
                 <TableCell>Currency</TableCell>
-                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  {asset.sourceurl} <strong>(main source)</strong>
-                </TableCell>
-                <TableCell>
-                  {newMainSourceUrl ? newMainSourceUrl : '-'}
-                </TableCell>
-                <TableCell>
-                  {asset.price !== null ? (
-                    asset.price
-                  ) : (
-                    <NoValueLabel>No price</NoValueLabel>
-                  )}
-                  {' => '}
-                  <Tooltip
-                    title={newMainPrice === null ? 'null' : newMainPrice}>
-                    <div>
-                      {newMainPrice === null
-                        ? 'No price (cleared)'
-                        : newMainPrice}
-                    </div>
-                  </Tooltip>
-                </TableCell>
-                <TableCell>
-                  {asset.pricecurrency !== null ? (
-                    asset.pricecurrency
-                  ) : (
-                    <NoValueLabel>No currency</NoValueLabel>
-                  )}
-                  {' => '}
-                  <Tooltip
-                    title={
-                      newMainPriceCurrency === null
-                        ? 'null'
-                        : newMainPriceCurrency
-                    }>
-                    <div>
-                      {newMainPriceCurrency === null
-                        ? 'No currency (cleared)'
-                        : newMainPriceCurrency}
-                    </div>
-                  </Tooltip>
-                </TableCell>
-                <TableCell>
-                  <CheckboxInput
-                    value={sourceUrlsToApply.includes(asset.sourceurl)}
-                    onChange={() => toggleSourceUrlToApply(asset.sourceurl)}
-                  />
-                </TableCell>
-              </TableRow>
-              {allExtraSourceUrls.map((sourceUrl) => {
-                const auditResult = asset.auditresults?.find(
-                  (auditResult) => auditResult.sourceurl === sourceUrl
-                )
-
-                const sourceInfo = asset.extrasources?.find(
-                  (sourceInfo) => sourceInfo.url === sourceUrl
-                )
-
-                if (!auditResult) {
-                  return (
-                    <TableRow key={sourceUrl}>
-                      <TableCell colSpan={999}>
-                        <NoValueLabel>
-                          {sourceUrl} is in the list of sources but not in the
-                          last audit (was it added recently?)
-                        </NoValueLabel>
-                      </TableCell>
-                    </TableRow>
+              {fieldsToSave && isMainSource ? (
+                <TableRow>
+                  <TableCell>
+                    <strong>Main: </strong> {asset.sourceurl}
+                    {' => '}
+                    {fieldsToSave.sourceurl || '(unchanged)'}
+                  </TableCell>
+                  <TableCell>
+                    {asset.price === null ? (
+                      <NoValueLabel>No Price</NoValueLabel>
+                    ) : (
+                      asset.price
+                    )}
+                    {' => '}
+                    {fieldsToSave.price === null ? (
+                      <NoValueLabel>No Price</NoValueLabel>
+                    ) : (
+                      fieldsToSave.price
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {asset.pricecurrency === null ? (
+                      <NoValueLabel>No Currency</NoValueLabel>
+                    ) : (
+                      asset.pricecurrency
+                    )}
+                    {' => '}
+                    {fieldsToSave.pricecurrency === null ? (
+                      <NoValueLabel>No Currency</NoValueLabel>
+                    ) : (
+                      fieldsToSave.pricecurrency
+                    )}
+                  </TableCell>
+                </TableRow>
+              ) : fieldsToSave ? (
+                fieldsToSave.extrasources?.map((extraSourceToSave) => {
+                  const currentExtraSource = asset.extrasources.find(
+                    (extraSource) => extraSource.url === queueItem.url
                   )
-                }
 
-                if (!sourceInfo) {
+                  if (!currentExtraSource) {
+                    return (
+                      <TableRow key={extraSourceToSave.url}>
+                        <TableCell colSpan={999}>No source found</TableCell>
+                      </TableRow>
+                    )
+                  }
+
                   return (
-                    <TableRow key={sourceUrl}>
-                      <TableCell colSpan={999}>
-                        <NoValueLabel>
-                          {sourceUrl} was in the last audit but it is no longer
-                          in the list of sources (was it removed?)
-                        </NoValueLabel>
-                      </TableCell>
-                    </TableRow>
-                  )
-                }
-
-                return (
-                  <TableRow key={auditResult.sourceurl}>
-                    <TableCell>{auditResult.sourceurl}</TableCell>
-                    <TableCell>
-                      {auditResult.actualurl !== undefined
-                        ? auditResult.actualurl
-                        : '-'}
-                    </TableCell>
-                    <TableCell>
-                      {sourceInfo.price !== null ? (
-                        sourceInfo.price
-                      ) : (
-                        <NoValueLabel>No price</NoValueLabel>
-                      )}
-                      {' => '}
-                      <Tooltip
-                        title={
-                          auditResult.price === null ? 'null' : newMainPrice
-                        }>
-                        <span>
-                          {auditResult.price === null
-                            ? 'No price (cleared)'
-                            : auditResult.price}
-                        </span>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      {sourceInfo.pricecurrency !== null ? (
-                        sourceInfo.pricecurrency
-                      ) : (
-                        <NoValueLabel>No currency</NoValueLabel>
-                      )}
-                      {' => '}
-                      <Tooltip
-                        title={
-                          auditResult.pricecurrency === null
-                            ? 'null'
-                            : auditResult.pricecurrency
-                        }>
-                        <span>
-                          {auditResult.pricecurrency === null
-                            ? 'No currency (cleared)'
-                            : auditResult.pricecurrency}
-                        </span>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      <CheckboxInput
-                        value={sourceUrlsToApply.includes(
-                          auditResult.sourceurl
+                    <TableRow key={extraSourceToSave.url}>
+                      <TableCell>{extraSourceToSave.url}</TableCell>
+                      <TableCell>
+                        {currentExtraSource.price === null ? (
+                          <NoValueLabel>No Price</NoValueLabel>
+                        ) : (
+                          currentExtraSource.price
                         )}
-                        onChange={() =>
-                          toggleSourceUrlToApply(auditResult.sourceurl)
-                        }
-                      />
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
+                        {' => '}
+                        {extraSourceToSave.price === null ? (
+                          <NoValueLabel>No Price</NoValueLabel>
+                        ) : (
+                          extraSourceToSave.price
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {currentExtraSource.pricecurrency === null ? (
+                          <NoValueLabel>No Currency</NoValueLabel>
+                        ) : (
+                          currentExtraSource.pricecurrency
+                        )}
+                        {' => '}
+                        {extraSourceToSave.pricecurrency === null ? (
+                          <NoValueLabel>No Currency</NoValueLabel>
+                        ) : (
+                          extraSourceToSave.pricecurrency
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={999}>(no data)</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
           <Heading variant="h3">Result</Heading>
@@ -429,51 +334,41 @@ const ApplyAuditButton = ({
             <TableHead>
               <TableRow>
                 <TableCell>URL</TableCell>
-                <TableCell>Actual URL</TableCell>
                 <TableCell>Price</TableCell>
                 <TableCell>Currency</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  {asset.sourceurl} <strong>(main source)</strong>
-                </TableCell>
-                <TableCell>
-                  {newMainSourceUrlToSave === undefined
-                    ? 'Unchanged'
-                    : newMainSourceUrlToSave}
-                </TableCell>
-                <TableCell>
-                  {newMainPriceToSave === null
-                    ? 'No price (clear)'
-                    : newMainPriceToSave === undefined
-                    ? 'Price unchanged'
-                    : newMainPriceToSave}
-                </TableCell>
-                <TableCell>
-                  {newMainPriceCurrencyToSave === null
-                    ? 'No currency (clear)'
-                    : newMainPriceCurrencyToSave === undefined
-                    ? 'Currency unchanged'
-                    : newMainPriceCurrencyToSave}
-                </TableCell>
-              </TableRow>
-              {newExtraSourcesToSave.map((sourceInfo) => (
-                <TableRow key={sourceInfo.url}>
-                  <TableCell>{sourceInfo.url}</TableCell>
+              {fieldsToSave && isMainSource ? (
+                <TableRow>
                   <TableCell>
-                    {sourceInfo.price !== null
-                      ? sourceInfo.price
-                      : 'No price (clear)'}
+                    <strong>Main: </strong>{' '}
+                    {fieldsToSave.sourceurl || '(unchanged)'}
                   </TableCell>
-                  <TableCell>
-                    {sourceInfo.pricecurrency !== null
-                      ? sourceInfo.pricecurrency
-                      : 'No currency (clear)'}
-                  </TableCell>
+                  <TableCell>{fieldsToSave.price}</TableCell>
+                  <TableCell>{fieldsToSave.pricecurrency}</TableCell>
                 </TableRow>
-              ))}
+              ) : fieldsToSave ? (
+                fieldsToSave.extrasources?.map((extraSourceToSave) => (
+                  <TableRow key={extraSourceToSave.url}>
+                    <TableCell>{extraSourceToSave.url}</TableCell>
+                    <TableCell>
+                      {extraSourceToSave.price !== null
+                        ? extraSourceToSave.price
+                        : 'No price (clear)'}
+                    </TableCell>
+                    <TableCell>
+                      {extraSourceToSave.pricecurrency !== null
+                        ? extraSourceToSave.pricecurrency
+                        : 'No currency (clear)'}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={999}>(no data)</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
           {isSaving ? (
@@ -488,8 +383,11 @@ const ApplyAuditButton = ({
             </SuccessMessage>
           ) : null}
           <FormControls>
-            <Button onClick={confirmSave} icon={<SaveIcon />}>
-              Save
+            <Button
+              onClick={confirmSave}
+              icon={<SaveIcon />}
+              isDisabled={isSaving}>
+              Save Asset
             </Button>
             &nbsp;
             <Button color="secondary" onClick={() => setIsConfirmShown(false)}>
@@ -500,16 +398,14 @@ const ApplyAuditButton = ({
       ) : null}
       <Button
         onClick={onClickSave}
+        size="small"
+        color="primary"
         isDisabled={
           isSaving ||
-          !asset.auditresults ||
-          !asset.auditresults.find(
-            (auditResult) => auditResult.result === AuditResultResult.Success
-          )
-        }
-        size="small"
-        color="primary">
-        Apply Audit...
+          !auditResult ||
+          auditResult.result !== AuditResultResult.Success
+        }>
+        Apply...
       </Button>
     </>
   )
@@ -517,23 +413,32 @@ const ApplyAuditButton = ({
 
 const RetryButton = ({
   assetId,
+  sourceUrl,
   onDone,
 }: {
   assetId: string
+  sourceUrl: string
   onDone: () => void
 }) => {
-  const [isCalling, lastErrorCode, result, call] = useFirebaseFunction<
-    { assetId: string },
-    { result: AuditResult[] }
-  >('auditAsset')
+  const [isCreating, isSuccess, lastErrorCode, create, clear] =
+    useDataStoreCreate<AuditQueueItem>(CollectionNames.AuditQueue)
   const onDoneAfterDelay = useTimer(onDone)
+  const myUserId = useUserId()
 
   const onClick = async () => {
     try {
-      console.debug('retrying audit...')
+      console.debug('retrying audit by inserting back into queue...')
 
-      await call({
-        assetId,
+      if (!assetId || !sourceUrl) {
+        throw new Error('Missing data')
+      }
+
+      await create({
+        parent: assetId,
+        parenttable: AssetsCollectionNames.Assets,
+        url: sourceUrl,
+        queuedat: new Date(0).toISOString(), // oldest date so it gets done ASAP
+        queuedby: myUserId,
       })
 
       onDoneAfterDelay()
@@ -544,71 +449,32 @@ const RetryButton = ({
 
   return (
     <>
-      {isCalling ? (
-        <LoadingMessage>Retrying...</LoadingMessage>
+      {isCreating ? (
+        <LoadingMessage>Inserting back into queue...</LoadingMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to retry (code {lastErrorCode})</ErrorMessage>
-      ) : result && Array.isArray(result.result) ? (
+        <ErrorMessage onOkay={clear}>
+          Failed to retry (code {lastErrorCode})
+        </ErrorMessage>
+      ) : isSuccess ? (
         <SuccessMessage>Retry successful, refreshing view...</SuccessMessage>
       ) : null}
       <Button
         onClick={onClick}
-        isDisabled={isCalling}
+        isDisabled={isCreating}
         color="secondary"
         size="small">
-        Retry Audit
+        Re-Queue
       </Button>
     </>
   )
 }
 
-const getIsAnythingDifferent = (asset: FullAssetWithAudit): boolean => {
-  if (!asset.lastauditedat || !asset.auditresults) {
-    return true
-  }
+const getIsAnythingDifferent = (asset: any) => true
 
-  const mainSourceAuditResult = asset.auditresults.find(
-    (auditResult) => auditResult.sourceurl === asset.sourceurl
-  )
-
-  if (
-    !mainSourceAuditResult ||
-    mainSourceAuditResult.result !== AuditResultResult.Success ||
-    asset.price !== mainSourceAuditResult.price ||
-    asset.pricecurrency !== mainSourceAuditResult.pricecurrency ||
-    (mainSourceAuditResult.actualurl !== undefined &&
-      mainSourceAuditResult.actualurl !== null &&
-      mainSourceAuditResult.actualurl !== asset.sourceurl)
-  ) {
-    return true
-  }
-
-  const extraSourceAuditResults = asset.auditresults.filter(
-    (auditResult) => auditResult.sourceurl !== asset.sourceurl
-  )
-
-  for (const extraSourceAuditResult of extraSourceAuditResults) {
-    const extraSourceInfo = asset.extrasources.find(
-      (sourceInfo) => sourceInfo.url === extraSourceAuditResult.sourceurl
-    )
-
-    if (
-      !extraSourceInfo ||
-      extraSourceAuditResult.result !== AuditResultResult.Success ||
-      extraSourceInfo.price !== extraSourceAuditResult.price ||
-      extraSourceInfo.pricecurrency !== extraSourceAuditResult.pricecurrency ||
-      (extraSourceAuditResult.actualurl !== undefined &&
-        extraSourceAuditResult.actualurl !== null &&
-        extraSourceAuditResult.actualurl !== extraSourceInfo.url)
-    ) {
-      return true
-    }
-  }
-
-  return false
-}
-
-const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
+const Renderer = ({
+  items,
+  hydrate,
+}: RendererProps<AuditQueueItemsByAsset>) => {
   return (
     <Table>
       <TableHead>
@@ -620,15 +486,7 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
       </TableHead>
       <TableBody>
         {items ? (
-          items.map((asset) => {
-            const allSourceUrls = Array.from(
-              new Set([
-                asset.sourceurl,
-                ...(asset.extrasources || []).map((s) => s.url),
-                ...(asset.auditresults || []).map((a) => a.sourceurl),
-              ])
-            )
-
+          items.map(({ asset, items }) => {
             const isAnythingDifferent = getIsAnythingDifferent(asset)
 
             return (
@@ -647,29 +505,46 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                         <TableCell>Original Price</TableCell>
                         <TableCell>Audit Result</TableCell>
                         <TableCell>Latest Price</TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {allSourceUrls.map((sourceUrl) => {
-                        const sourceInfo =
-                          sourceUrl === asset.sourceurl
-                            ? {
-                                price: asset.price,
-                                pricecurrency: asset.pricecurrency,
-                              }
-                            : asset.extrasources?.find(
-                                (s) => s.url === sourceUrl
-                              ) || {}
+                      {items.map((queueItem) => {
+                        const isMainSource = queueItem.url === asset.sourceurl
 
-                        const auditResult = asset.auditresults?.find(
-                          (a) => a.sourceurl === sourceUrl
-                        )
+                        const sourceInfo: SourceInfo | undefined = isMainSource
+                          ? {
+                              url: asset.sourceurl,
+                              price: asset.price,
+                              pricecurrency: asset.pricecurrency,
+                              comments: '',
+                            }
+                          : asset.extrasources.find(
+                              (extraSource) => extraSource.url === queueItem.url
+                            )
+
+                        const auditResult = queueItem.result
+
+                        if (!sourceInfo) {
+                          return (
+                            <TableRow key={queueItem.id}>
+                              <TableCell colSpan={999}>
+                                <NoValueLabel>
+                                  {queueItem.url} was in the last audit but it
+                                  is no longer in the list of sources (was it
+                                  removed?)
+                                </NoValueLabel>
+                              </TableCell>
+                            </TableRow>
+                          )
+                        }
 
                         return (
-                          <TableRow key={sourceUrl}>
+                          <TableRow key={queueItem.id}>
                             <TableCell>
-                              <Link to={sourceUrl} inNewTab>
-                                {sourceUrl}
+                              {isMainSource ? <strong>Main: </strong> : null}
+                              <Link to={queueItem.url} inNewTab>
+                                {queueItem.url}
                               </Link>
                             </TableCell>
                             <TableCell>
@@ -692,14 +567,18 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                                 />
                               ) : null}
                             </TableCell>
-                            <TableCell>
+                            <TableCell
+                              title={`Queued at ${queueItem.queuedat}, last modified at ${queueItem.lastmodifiedat}`}>
                               {auditResult ? (
                                 <StatusText
                                   positivity={getPositivityForResult(
                                     auditResult.result
                                   )}>
                                   {getLabelForResult(auditResult.result)} (
-                                  {getFriendlyDate(asset.lastauditedat)})
+                                  {queueItem.lastmodifiedat
+                                    ? getFriendlyDate(queueItem.lastmodifiedat)
+                                    : 'not audited yet'}
+                                  )
                                 </StatusText>
                               ) : asset.lastauditedat ? (
                                 '(asset was audited but no data found for this URL)'
@@ -727,6 +606,18 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                                 ''
                               )}
                             </TableCell>
+                            <TableCell>
+                              <ApplyAuditButton
+                                asset={asset}
+                                queueItem={queueItem}
+                                onDone={hydrate}
+                              />
+                              <RetryButton
+                                assetId={asset.id}
+                                sourceUrl={queueItem.url}
+                                onDone={hydrate}
+                              />
+                            </TableCell>
                           </TableRow>
                         )
                       })}
@@ -736,12 +627,6 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
                 <TableCell>
                   <Heading variant="h3">Archive</Heading>
                   <ArchiveButtons assetId={asset.id} onDone={hydrate} />
-                  <br />
-                  <br />
-                  <ApplyAuditButton asset={asset} onDone={hydrate} />
-                  <br />
-                  <br />
-                  <RetryButton assetId={asset.id} onDone={hydrate} />
                 </TableCell>
               </TableRow>
             )
@@ -759,26 +644,26 @@ const Renderer = ({ items, hydrate }: RendererProps<FullAssetWithAudit>) => {
 }
 
 const AdminAudit = () => (
-  <PaginatedView<FullAssetWithAudit>
-    viewName={ViewNames.GetFullAssetsWithAudit}
+  <PaginatedView<AuditQueueItemsByAsset>
+    viewName={ViewNames.GetAuditQueueItemsByAsset}
     urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
       ':tabName',
       'audit'
     )}
     sortOptions={[
       {
-        fieldName: 'lastauditedat',
-        label: 'Audited At',
+        fieldName: 'lastmodifiedat',
+        label: 'Last Updated',
       },
     ]}
-    defaultFieldName="lastauditedat"
-    defaultDirection={OrderDirections.ASC}
+    defaultFieldName="lastmodifiedat"
+    defaultDirection={OrderDirections.DESC}
     filters={[
       {
-        fieldName: 'lastauditedat',
+        fieldName: 'lastmodifiedat',
         type: FilterType.NotEqual,
         subType: FilterSubType.Null,
-        label: 'Only audited',
+        label: 'Only processed',
         defaultActive: true,
       },
       {

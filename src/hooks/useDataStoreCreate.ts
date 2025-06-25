@@ -6,6 +6,8 @@ import {
 } from '../data-store'
 import useSupabaseClient from './useSupabaseClient'
 
+type ClearFn = () => void
+
 export default <TRecord extends Record<string, unknown>>(
   collectionName: string
 ): [
@@ -17,7 +19,7 @@ export default <TRecord extends Record<string, unknown>>(
     returnEntireDocument?: boolean,
     allowId?: boolean
   ) => Promise<string | TRecord>,
-  () => void,
+  ClearFn,
   null | string
 ] => {
   if (!collectionName) {
