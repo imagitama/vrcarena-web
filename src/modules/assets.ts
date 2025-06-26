@@ -174,6 +174,12 @@ export enum DeclinedReason {
   missing_nsfw_flag = 'missing_nsfw_flag',
 }
 
+export enum IndicativeAuditStatus {
+  Available = 'available',
+  Unavailable = 'unavailable',
+  Missing = 'missing',
+}
+
 export interface AssetMeta extends MetaRecord {
   id: string
   publishedby: string
@@ -188,6 +194,7 @@ export interface AssetMeta extends MetaRecord {
   deletionreason: DeletionReason
   archivedreason: ArchivedReason
   declinedreasons: DeclinedReason[]
+  indicativeauditstatus: IndicativeAuditStatus | null
   // specific to assets
   lastsyncedwithgumroadat: Date
 }

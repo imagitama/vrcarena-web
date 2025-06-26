@@ -19,6 +19,7 @@ import {
 } from '../../../../utils/assets'
 import ErrorMessage from '../../../error-message'
 import WarningMessage from '../../../warning-message'
+import { IndicativeAuditStatus } from '../../../../modules/assets'
 
 const AssetOverviewMessages = () => {
   const { asset, isLoading } = useContext(AssetOverviewContext)
@@ -41,6 +42,18 @@ const AssetOverviewMessages = () => {
         {asset.archivedreason
           ? getArchivedReasonLabel(asset.archivedreason)
           : 'no reason specified'}
+      </WarningMessage>
+    )
+  } else if (
+    asset.indicativeauditstatus &&
+    asset.indicativeauditstatus !== IndicativeAuditStatus.Available
+  ) {
+    messages.push(
+      <WarningMessage key="indicativeauditstatus" icon={<BusinessCenterIcon />}>
+        Our automated systems have detected this product's source goes to a
+        missing (404) page or is discontinued or unavailable. Please help us by
+        logging in and amending it with the correct source URL to maintain data
+        integrity on the site.
       </WarningMessage>
     )
   }
