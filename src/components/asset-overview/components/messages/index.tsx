@@ -20,9 +20,12 @@ import {
 import ErrorMessage from '../../../error-message'
 import WarningMessage from '../../../warning-message'
 import { IndicativeAuditStatus } from '../../../../modules/assets'
+import useIsEditor from '../../../../hooks/useIsEditor'
+import ClearIndicativeStatusButton from '../../../clear-indicative-status-button'
 
 const AssetOverviewMessages = () => {
-  const { asset, isLoading } = useContext(AssetOverviewContext)
+  const { asset, isLoading, hydrate } = useContext(AssetOverviewContext)
+  const isEditor = useIsEditor()
 
   if (!asset || isLoading) {
     return null
@@ -49,7 +52,19 @@ const AssetOverviewMessages = () => {
     asset.indicativeauditstatus !== IndicativeAuditStatus.Available
   ) {
     messages.push(
-      <WarningMessage key="indicativeauditstatus" icon={<BusinessCenterIcon />}>
+      <WarningMessage
+        key="indicativeauditstatus"
+        icon={<BusinessCenterIcon />}
+        controls={
+          isEditor
+            ? [
+                <ClearIndicativeStatusButton
+                  assetId={asset.id}
+                  onDone={hydrate}
+                />,
+              ]
+            : null
+        }>
         Our automated systems have detected this product's source goes to a
         missing (404) page or is discontinued or unavailable. Please help us by
         logging in and amending it with the correct source URL to maintain data
