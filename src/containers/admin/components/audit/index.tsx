@@ -556,20 +556,6 @@ const Renderer = ({
 
                         const auditResult = queueItem.result
 
-                        if (!sourceInfo) {
-                          return (
-                            <TableRow key={queueItem.id}>
-                              <TableCell colSpan={999}>
-                                <NoValueLabel>
-                                  {queueItem.url} was in the last audit but it
-                                  is no longer in the list of sources (was it
-                                  removed?)
-                                </NoValueLabel>
-                              </TableCell>
-                            </TableRow>
-                          )
-                        }
-
                         return (
                           <TableRow key={queueItem.id}>
                             <TableCell>
@@ -577,17 +563,28 @@ const Renderer = ({
                               <Link to={queueItem.url} inNewTab>
                                 {queueItem.url}
                               </Link>
+                              {!sourceInfo && (
+                                <NoValueLabel>
+                                  <br />
+                                  Source URL was audited but it is no longer in
+                                  the list of sources (was it removed?)
+                                </NoValueLabel>
+                              )}
                             </TableCell>
                             <TableCell>
-                              {sourceInfo.price === null ? (
-                                <NoValueLabel>No price</NoValueLabel>
-                              ) : sourceInfo.price !== undefined ? (
-                                <Price
-                                  price={sourceInfo.price}
-                                  priceCurrency={sourceInfo.pricecurrency}
-                                  small
-                                />
-                              ) : null}
+                              {sourceInfo ? (
+                                sourceInfo.price === null ? (
+                                  <NoValueLabel>No price</NoValueLabel>
+                                ) : sourceInfo.price !== undefined ? (
+                                  <Price
+                                    price={sourceInfo.price}
+                                    priceCurrency={sourceInfo.pricecurrency}
+                                    small
+                                  />
+                                ) : null
+                              ) : (
+                                '-'
+                              )}
                             </TableCell>
                             <TableCell
                               title={`Queued at ${queueItem.queuedat}, last modified at ${queueItem.lastmodifiedat}`}>
