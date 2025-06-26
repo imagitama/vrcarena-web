@@ -1,5 +1,9 @@
 import { PopularCurrency } from '../currency'
-import { Asset, CollectionNames as AssetsCollectionNames } from './assets'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+  SourceInfo,
+} from './assets'
 
 export enum AuditResultResult {
   Success,
@@ -46,6 +50,8 @@ export interface AuditQueueItem extends Record<string, unknown> {
 
 export interface FullAuditQueueItem extends AuditQueueItem {
   applystatus: QueueStatus | null
+  old: Partial<Asset | SourceInfo> | null
+  new: Partial<Asset | SourceInfo> | null
 }
 
 export interface AuditQueueItemsByAsset {

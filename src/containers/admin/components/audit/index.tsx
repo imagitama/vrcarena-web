@@ -5,6 +5,8 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import SaveIcon from '@mui/icons-material/Save'
+import HelpIcon from '@mui/icons-material/Help'
+
 import AssetResultsItem from '../../../../components/asset-results-item'
 import Button from '../../../../components/button'
 import PaginatedView, {
@@ -652,7 +654,17 @@ const Renderer = ({
                                     {getLabelForQueueStatus(
                                       queueItem.applystatus
                                     )}
-                                  </StatusText>
+                                    {queueItem.applystatus ===
+                                    QueueStatus.Processed ? (
+                                      <Tooltip
+                                        title={JSON.stringify({
+                                          old: queueItem.old,
+                                          new: queueItem.new,
+                                        })}>
+                                        <HelpIcon />
+                                      </Tooltip>
+                                    ) : null}
+                                  </StatusText>{' '}
                                   <br />
                                 </>
                               ) : null}

@@ -187,7 +187,7 @@ const VisitSourceButton = ({
           isExtraSource ? classes.extraSource : ''
         } ${sourceInfo?.price ? classes.buttonWithPrice : ''}`}
         isLoading={isAssetLoading}>
-        {sourceInfo?.price ? (
+        {sourceInfo?.price !== null && sourceInfo?.price !== undefined ? (
           <Price
             price={sourceInfo?.price}
             priceCurrency={sourceInfo?.pricecurrency!}

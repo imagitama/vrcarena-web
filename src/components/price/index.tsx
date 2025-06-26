@@ -141,7 +141,8 @@ const Price = ({
         title="This price may be different on the official website.">
         <span className={`${isLoading ? classes.loading : ''}`}>
           <span className={`${classes.price} price`}>
-            {price === 0
+            {/* have to round here to accomodate 0.000000 in db */}
+            {Number(price) === 0
               ? 'FREE'
               : price
               ? formatPrice(price, priceCurrency)
