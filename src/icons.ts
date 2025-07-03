@@ -12,11 +12,11 @@ export const Link = React.lazy(() => import('@mui/icons-material/Link').then(res
 export const Tune = React.lazy(() => import('@mui/icons-material/Tune').then(result => result.default)) // body sliders
 
 // social list
-export const Email = React.lazy(() => import('@mui/icons-material/Email'))
-export const YouTube = React.lazy(() => import('@mui/icons-material/YouTube'))
-export const Telegram = React.lazy(() => import('@mui/icons-material/Telegram'))
-export const Twitter = React.lazy(() => import('@mui/icons-material/Twitter'))
-export const Website = React.lazy(() => import('@mui/icons-material/Language'))
+export const Email = React.lazy(() => import('@mui/icons-material/Email').then(result => result.default))
+export const YouTube = React.lazy(() => import('@mui/icons-material/YouTube').then(result => result.default))
+export const Telegram = React.lazy(() => import('@mui/icons-material/Telegram').then(result => result.default))
+export const Twitter = React.lazy(() => import('@mui/icons-material/Twitter').then(result => result.default))
+export const Website = React.lazy(() => import('@mui/icons-material/Language').then(result => result.default))
 
 export const Copy = React.lazy(() => import('@emotion-icons/entypo/Copy').then(result => ({ default: result.Copy }))) // prefabs
 export const HappyFace = React.lazy(() => import('@emotion-icons/material/TagFaces').then(result => ({ default: result.TagFaces }))) // custom gestures
