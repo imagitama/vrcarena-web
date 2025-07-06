@@ -99,7 +99,7 @@ export default ({
   analyticsCategory = '',
 }: {
   authorId: string
-  eventId: string
+  eventId: string | null
   description: string | null
   expiresAt: Date | null
   showTitle?: boolean
@@ -152,7 +152,7 @@ export default ({
               View Author
             </Button>
           )}
-          {showViewEventButton && eventId !== 'other' && (
+          {showViewEventButton && eventId !== 'other' && eventId && (
             <Button
               url={routes.viewEventWithVar.replace(':eventId', eventId)}
               onClick={

@@ -20,6 +20,7 @@ import Calendar from '../../components/calendar'
 import { getIsDateInFuture, getIsDateInPast } from '../../utils/dates'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { SupabaseClient } from '@supabase/supabase-js'
+import DeprecationNotice from '../../components/deprecation-notice'
 
 const useStyles = makeStyles({
   root: {
@@ -131,6 +132,10 @@ export default () => {
           content="Browse the events that are being hosted in or about VRChat and other VR social games."
         />
       </Helmet>
+      <DeprecationNotice>
+        The events and calendar system of the site is mostly unused as of July
+        2025 so it will be removed.
+      </DeprecationNotice>
       <div className={classes.root}>
         <Heading variant="h1">
           <Link to={routes.events}>Events</Link>

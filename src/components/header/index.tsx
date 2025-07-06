@@ -24,7 +24,6 @@ import bgImageUrl from '../../assets/images/brushed-metal.webp'
 import MobileMenu from '../mobile-menu'
 import AccountMenu from '../account-menu'
 import { colors } from '../../brand'
-import HeaderCurrentEvents from '../header-current-events'
 import useBannerUrl from '../../hooks/useBannerUrl'
 import Searchbar from '../searchbar'
 import DesktopMenu from '../desktop-menu'
@@ -271,9 +270,6 @@ export default () => {
         <div className={classes.socialMediaRows}>
           <div>
             <SocialMediaIcons />
-          </div>
-          <div>
-            <HeaderCurrentEvents />
           </div>
         </div>
       </div>

@@ -42,6 +42,7 @@ import EventAttendanceResults from '../../components/event-attendance-results'
 import useUserId from '../../hooks/useUserId'
 import { SupabaseClient } from '@supabase/supabase-js'
 import { PublicAsset, ViewNames as AssetsViewNames } from '../../modules/assets'
+import DeprecationNotice from '../../components/deprecation-notice'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
@@ -319,6 +320,10 @@ const View = () => {
         <title>{`${name || '(unnamed)'} | VRCArena`}</title>
         {description ? <meta name="description" content={description} /> : null}
       </Helmet>
+      <DeprecationNotice>
+        The events and calendar system of the site is mostly unused as of July
+        2025 so it will be removed.
+      </DeprecationNotice>
       <div className={classes.root}>
         {editornotes ? <PublicEditorNotes notes={editornotes} /> : null}
         <div className={classes.primaryMetadata}>
