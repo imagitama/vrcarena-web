@@ -1,6 +1,8 @@
 import { createContext } from 'react'
-import { User } from '../../modules/users'
+import { FullUser } from '../../modules/users'
 
-const context = createContext<{ userId: string, user: User }>(undefined as any)
+const context = createContext<{ userId: string; user: FullUser }>(
+  undefined as any
+)
 
 export default context
