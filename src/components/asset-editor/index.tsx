@@ -609,7 +609,7 @@ const PriceDisplay = ({
   value: number | null
   fields: Asset
 }) =>
-  value ? (
+  value !== null ? (
     <Price price={value} priceCurrency={fields.pricecurrency} />
   ) : (
     <NoValueMessage>No price set</NoValueMessage>
