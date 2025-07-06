@@ -32,6 +32,8 @@ import TabHistory from './components/tab-history'
 import Context from './context'
 import useIsEditor from '../../hooks/useIsEditor'
 import { BanStatus, FullUser, ViewNames } from '../../modules/users'
+import { AccessStatus } from '../../modules/common'
+import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles({
   socialMediaItem: {
@@ -65,6 +67,9 @@ const useStyles = makeStyles({
   },
   isBanned: {
     textDecoration: 'line-through',
+  },
+  isDeleted: {
+    opacity: 0.5,
   },
   favoriteSpecies: {
     marginBottom: '1rem',
@@ -125,9 +130,11 @@ const UserOverview = ({
     chilloutvrusername: chilloutVrUsername,
     favoritespeciesdata: favoriteSpeciesData,
     banstatus: banStatus,
+    accessstatus: accessStatus,
   } = user
 
   const isBanned = banStatus === BanStatus.Banned
+  const isDeleted = accessStatus === AccessStatus.Deleted
 
   if (!username) {
     return <ErrorMessage>User does not appear to exist</ErrorMessage>
@@ -136,11 +143,27 @@ const UserOverview = ({
   return (
     <>
       <Context.Provider value={{ userId: user.id, user }}>
+        {isBanned ? (
+          <WarningMessage>User has been banned.</WarningMessage>
+        ) : null}
+        {isDeleted ? (
+          <WarningMessage>User has been deleted.</WarningMessage>
+        ) : null}
         <Avatar username={username} url={avatarurl} lazy={false} noHat />
         <Heading
           variant="h1"
-          className={`${classes.username} ${isBanned ? classes.isBanned : ''}`}>
-          <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
+          className={`${classes.username} ${isBanned ? classes.isBanned : ''} ${
+            isDeleted ? classes.isDeleted : ''
+          }`}>
+          <Link
+            to={routes.viewUserWithVar.replace(':userId', user.id)}
+            title={
+              isBanned
+                ? 'User has been banned.'
+                : isDeleted
+                ? 'User has been deleted.'
+                : ''
+            }>
             {username}
           </Link>{' '}
           {getUserIsStaffMember(user) && (

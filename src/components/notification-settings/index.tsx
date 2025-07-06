@@ -133,7 +133,10 @@ const newPrefsButDisabled = {
   ),
 }
 
-type AnonymousDetails = any
+type AnonymousDetails = {
+  userId: string
+  email: string
+}
 
 enum ErrorCode {
   UserNotFound,
@@ -144,11 +147,15 @@ const mapErrorToErrorCode = (err: Error): ErrorCode => {
   if (err.message.includes('There is no user')) {
     return ErrorCode.UserNotFound
   }
+  // TODO: Pass around error codes
+  if (err.message.includes('Those details are incorrect')) {
+    return ErrorCode.UserNotFound
+  }
   return ErrorCode.Unknown
 }
 
 const useAnonymousSave = (
-  anonymousDetails: AnonymousDetails
+  anonymousDetails?: AnonymousDetails
 ): [
   boolean,
   boolean,
@@ -166,6 +173,10 @@ const useAnonymousSave = (
     newPrefs: NotificationPreferences,
     unsubscribeFromEverything = false
   ) => {
+    if (!anonymousDetails) {
+      return
+    }
+
     try {
       setIsSaving(true)
       setIsSuccess(false)
@@ -185,10 +196,7 @@ const useAnonymousSave = (
       })
 
       if (error) {
-        console.error('Error from saveNotificationPrefs', error)
-        setIsSaving(false)
-        setIsSuccess(false)
-        setLastErrorCode(ErrorCode.Unknown) // TODO: Map this
+        throw new Error(`Failed: ${error}`)
       } else {
         setIsSaving(false)
         setIsSuccess(true)
@@ -375,7 +383,7 @@ const NotificationSettings = ({
         <ErrorMessage>
           Failed to save your preferences
           {lastAnonymouslySaveErrorCode === ErrorCode.UserNotFound
-            ? ': user not found'
+            ? `: your account could not be found with the link you clicked on (${anonymousDetails?.userId}, ${anonymousDetails?.email})`
             : ` (code ${lastAnonymouslySaveErrorCode})`}
         </ErrorMessage>
       ) : lastErrorCodeSaving !== null ? (

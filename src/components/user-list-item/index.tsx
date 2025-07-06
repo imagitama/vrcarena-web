@@ -8,7 +8,8 @@ import { getUserIsStaffMember } from '../../utils/users'
 import Avatar, { sizes } from '../avatar'
 import StaffBadge from '../staff-badge'
 import { mediaQueryForMobiles } from '../../media-queries'
-import { FullUser, User, getIsFullUser } from '../../modules/users'
+import { BanStatus, FullUser, User, getIsFullUser } from '../../modules/users'
+import { AccessStatus } from '../../modules/common'
 
 const useStyles = makeStyles({
   container: {
@@ -50,12 +51,23 @@ const useStyles = makeStyles({
   avatar: {
     margin: '0 auto',
   },
+  isBanned: {
+    textDecoration: 'line-through',
+  },
+  isDeleted: {
+    opacity: 0.5,
+  },
 })
 
 export default ({ user }: { user: FullUser | User }) => {
   const classes = useStyles()
   return (
-    <div className={classes.item}>
+    <div
+      className={`${classes.item} ${
+        user.banstatus === BanStatus.Banned ? classes.isBanned : ''
+      } ${
+        user.accessstatus === AccessStatus.Deleted ? classes.isDeleted : ''
+      }`}>
       <Link
         to={routes.viewUserWithVar.replace(':userId', user.id)}
         title={`View the user profile for user ${user.username}`}

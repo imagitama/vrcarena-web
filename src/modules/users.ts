@@ -1,3 +1,4 @@
+import { AccessStatus } from './common'
 import { Species } from './species'
 
 export interface SocialMediaUsernames extends Record<string, unknown> {
@@ -44,6 +45,7 @@ export interface UserMeta extends Record<string, unknown> {
   discorduserid: number
   banstatus: BanStatus
   banreason: string
+  accessstatus: AccessStatus
 }
 
 export enum BanStatus {
