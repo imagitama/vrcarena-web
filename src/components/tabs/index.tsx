@@ -138,7 +138,7 @@ const Tabs = ({
   const isHorizontal = isMobile || horizontal
 
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<LoadingIndicator message="Loading..." />}>
       <tabsContext.Provider
         value={{
           activeTabIdx,
@@ -187,7 +187,7 @@ const Tabs = ({
                 activeTabIdx={activeTabIdx}
                 index={index}
                 item={item}>
-                <Suspense fallback={null}>
+                <Suspense fallback={<LoadingIndicator message="Loading..." />}>
                   <ErrorBoundary>{item.contents}</ErrorBoundary>
                 </Suspense>
               </TabPanel>

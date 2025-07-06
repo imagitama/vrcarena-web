@@ -25,6 +25,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   imageWrapper: {
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
+    display: 'flex',
   },
   [AvatarSize.ExtraTiny]: {
     width: '25px',

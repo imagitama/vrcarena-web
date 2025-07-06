@@ -113,7 +113,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     },
   },
   badge: {
-    marginLeft: '1rem',
+    marginLeft: '0.5rem',
   },
   socialMediaList: {
     marginTop: '1rem',
