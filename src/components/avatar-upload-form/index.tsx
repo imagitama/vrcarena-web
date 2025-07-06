@@ -17,7 +17,7 @@ import {
 } from '../../config'
 import { bucketNames } from '../../file-uploading'
 import { CollectionNames, User } from '../../modules/users'
-import Avatar, { sizes } from '../avatar'
+import Avatar from '../avatar'
 
 const AvatarUploadForm = ({
   onClick = undefined,
@@ -69,7 +69,7 @@ const AvatarUploadForm = ({
   return (
     <>
       <Heading variant="h3">Current Avatar</Heading>
-      <Avatar url={user.avatarurl} size={sizes.MEDIUM} />
+      <Avatar url={user.avatarurl} />
       <Heading variant="h3">Upload New Avatar</Heading>
       <ImageUploader
         onDone={onUploadedWithUrls}

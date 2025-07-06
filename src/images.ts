@@ -1,5 +1,9 @@
 import { callFunction } from './firebase'
 
+enum FunctionName {
+  DownloadAndOptimizeImage = 'downloadAndOptimizeImage',
+}
+
 export const optimizeImageByUrl = async (
   imageUrl: string,
   bucketName: string,
@@ -10,7 +14,7 @@ export const optimizeImageByUrl = async (
   } = await callFunction<
     { imageUrl: string; bucketName: string; bucketPath?: string },
     { optimizedUrl: string }
-  >('downloadAndOptimizeImage', {
+  >(FunctionName.DownloadAndOptimizeImage, {
     imageUrl,
     bucketName,
     bucketPath: bucketPath || '', // errors if this is not a string

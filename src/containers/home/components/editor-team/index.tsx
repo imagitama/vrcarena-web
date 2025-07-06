@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@mui/styles'
 import useSupabaseView from '../../../../hooks/useSupabaseView'
 import { FullUser, ViewNames } from '../../../../modules/users'
-import Avatar, { sizes } from '../../../../components/avatar'
+import Avatar, { AvatarSize } from '../../../../components/avatar'
 import UsernameLink from '../../../../components/username-link'
 import { shuffle } from '../../../../utils'
 
@@ -43,12 +43,12 @@ const EditorTeam = () => {
             .fill(undefined)
             .map(() => (
               <span>
-                <Avatar size={sizes.TINY} />
+                <Avatar size={AvatarSize.Tiny} />
               </span>
             ))
         : shuffle<FullUser[]>(users).map((user) => (
             <UsernameLink id={user.id} username={user.username}>
-              <Avatar url={user.avatarurl} size={sizes.TINY} />
+              <Avatar url={user.avatarurl} size={AvatarSize.Tiny} />
             </UsernameLink>
           ))}
     </div>

@@ -19,7 +19,7 @@ import ErrorMessage from '../../../../components/error-message'
 import NoResultsMessage from '../../../../components/no-results-message'
 import FormattedDate from '../../../../components/formatted-date'
 import UsernameLink from '../../../../components/username-link'
-import Avatar, { sizes } from '../../../../components/avatar'
+import Avatar, { AvatarSize } from '../../../../components/avatar'
 import EditorRecordManager from '../../../../components/editor-record-manager'
 import GenericOutputItem from '../../../../components/generic-output-item'
 import Message from '../../../../components/message'
@@ -180,7 +180,10 @@ const CommentsByUser = ({
               key={comment.id}
               selected={selectedCommentIds.includes(comment.id)}>
               <TableCell>
-                <Avatar url={comment.createdbyavatarurl} size={sizes.TINY} />
+                <Avatar
+                  url={comment.createdbyavatarurl}
+                  size={AvatarSize.Tiny}
+                />
                 <UsernameLink
                   username={comment.createdbyusername}
                   id={comment.createdby}

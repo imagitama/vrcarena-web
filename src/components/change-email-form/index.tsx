@@ -69,7 +69,7 @@ const ChangeEmailForm = () => {
           isDisabled={!getIsValidEmail(emailInput.trim()) || isChanging}
           onClick={onClickChange}
           icon={<SaveIcon />}>
-          Change Email
+          Save
         </Button>
       </FormControls>
       {isChanging ? (

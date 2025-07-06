@@ -49,7 +49,7 @@ interface Props extends TypographyProps {
   inline?: boolean
 }
 
-export default forwardRef<{}, Props>(
+export default forwardRef<HTMLHeadingElement, Props>(
   (
     {
       children,
@@ -67,7 +67,6 @@ export default forwardRef<{}, Props>(
     const classes = useStyles({ variant })
 
     return (
-      // @ts-ignore
       <Typography
         variant={variant}
         className={`${classes.heading} ${

@@ -38,34 +38,7 @@ import MyClaims from '../../components/my-claims'
 import Discord from './components/discord'
 import InfoMessage from '../../components/info-message'
 import usePermissions from '../../hooks/usePermissions'
-import UserOverview from '../../components/user-overview'
 import MyUserOverview from '../../components/my-user-overview'
-
-function WelcomeMessage() {
-  const [isLoading, isErrored, user] = useUserRecord()
-
-  if (isLoading) {
-    return <LoadingIndicator />
-  }
-
-  if (isErrored) {
-    return <ErrorMessage>Failed to retrieve your account details</ErrorMessage>
-  }
-
-  if (!user) {
-    return <NoPermissionMessage />
-  }
-
-  return (
-    <BodyText>
-      Hi,{' '}
-      <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
-        {user.username}
-      </Link>
-      !
-    </BodyText>
-  )
-}
 
 const analyticsCategoryName = 'MyAccount'
 
@@ -84,8 +57,6 @@ const View = () => {
   return (
     <>
       <Heading variant="h1">Your Account</Heading>
-      <WelcomeMessage />
-
       <Tabs
         urlWithTabNameVar={routes.myAccountWithTabNameVar}
         items={[

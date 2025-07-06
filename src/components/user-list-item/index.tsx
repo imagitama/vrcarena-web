@@ -5,7 +5,7 @@ import Link from '../../components/link'
 import * as routes from '../../routes'
 import { getUserIsStaffMember } from '../../utils/users'
 
-import Avatar, { sizes } from '../avatar'
+import Avatar, { AvatarSize } from '../avatar'
 import StaffBadge from '../staff-badge'
 import { mediaQueryForMobiles } from '../../media-queries'
 import { BanStatus, FullUser, User, getIsFullUser } from '../../modules/users'
@@ -75,7 +75,7 @@ export default ({ user }: { user: FullUser | User }) => {
         <div className={classes.itemContents}>
           <Avatar
             url={user && user.avatarurl ? user.avatarurl : undefined}
-            size={sizes.SMALL}
+            size={AvatarSize.Small}
             className={classes.avatar}
           />
           <span className={classes.name}>

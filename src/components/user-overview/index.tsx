@@ -3,20 +3,20 @@ import Link from '../../components/link'
 import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'
 import CommentIcon from '@mui/icons-material/Comment'
-
-import useUserRecord from '../../hooks/useUserRecord'
-
 import * as routes from '../../routes'
-import { fixAccessingImagesUsingToken } from '../../utils'
+import {
+  fixAccessingImagesUsingToken,
+  getPrefersBritishSpelling,
+} from '../../utils'
 
 import ErrorMessage from '../error-message'
 import Heading from '../heading'
 import SocialMediaList from '../social-media-list'
 import Button from '../button'
-import Avatar from '../avatar'
+import Avatar, { AvatarSize } from '../avatar'
 import Markdown from '../markdown'
 import StaffBadge from '../staff-badge'
-import { getUserIsStaffMember } from '../../utils/users'
+import { getIsUserBanned, getUserIsStaffMember } from '../../utils/users'
 
 import Tabs from '../tabs'
 
@@ -31,78 +31,97 @@ import TabHistory from './components/tab-history'
 
 import Context from './context'
 import useIsEditor from '../../hooks/useIsEditor'
-import { BanStatus, FullUser, ViewNames } from '../../modules/users'
+import { BanStatus, FullUser } from '../../modules/users'
 import { AccessStatus } from '../../modules/common'
-import WarningMessage from '../warning-message'
+import {
+  mediaQueryForMobiles,
+  mediaQueryForTabletsOrBelow,
+} from '../../media-queries'
+import Tooltip from '../tooltip'
+import Image from '../image'
+import { VRCArenaTheme } from '../../themes'
+import ViewControls from '../view-controls'
+import BannedBadge from '../banned-badge'
+import DeletedBadge from '../deleted-badge'
 
-const useStyles = makeStyles({
-  socialMediaItem: {
-    display: 'block',
-    padding: '0.5rem',
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
+  cols: {
+    display: 'flex',
+    flexWrap: 'wrap',
   },
-  notUrl: {
-    cursor: 'default',
+  col: {
+    width: 'calc(50% - 0.5rem)',
+    margin: '0 0.5rem 0 0',
+    '&:last-child': {
+      margin: '0 0 0 0.5rem',
+    },
+    [mediaQueryForTabletsOrBelow]: {
+      width: '100%',
+    },
   },
-  icon: {
-    verticalAlign: 'middle',
-    width: 'auto',
-    height: '1em',
+  title: {
+    textAlign: 'center',
+    '& h1': {
+      marginTop: '1rem !important',
+      [mediaQueryForTabletsOrBelow]: {
+        marginTop: '0.5rem',
+      },
+    },
   },
   avatar: {
-    width: '200px',
-    height: '200px',
-  },
-  img: {
-    width: '100%',
-    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
   },
   username: {
     marginTop: '1rem',
-    display: 'flex',
+    [mediaQueryForTabletsOrBelow]: {
+      marginTop: '0.5rem',
+    },
   },
   bio: {
+    marginTop: '1rem',
+    borderRadius: theme.shape.borderRadius,
+    padding: '1rem',
+    border: '1px solid rgba(255, 255, 255, 0.25)',
+    fontSize: '125%',
     '& img': {
       maxWidth: '100%',
     },
-  },
-  isBanned: {
-    textDecoration: 'line-through',
-  },
-  isDeleted: {
-    opacity: 0.5,
-  },
-  favoriteSpecies: {
-    marginBottom: '1rem',
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: '125%',
-    '& img': {
-      width: '100px',
-      marginRight: '1rem',
+    [mediaQueryForTabletsOrBelow]: {},
+    [mediaQueryForMobiles]: {
+      marginTop: '0.5rem',
+      fontSize: '100%',
     },
   },
-  favoriteSpeciesHeading: {
-    flex: 1,
+  isUnallowed: {
+    textDecoration: 'line-through',
   },
-  awards: {
+  favoriteSpecies: {
+    marginTop: '1rem',
     display: 'flex',
-    marginLeft: '0.5rem',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '150%',
+    '& span': {
+      marginRight: '1rem',
+    },
+    '& img': {
+      width: '100px',
+    },
+    [mediaQueryForTabletsOrBelow]: {
+      marginTop: '0.5rem',
+    },
   },
-  staffBadge: {
+  badge: {
     marginLeft: '1rem',
   },
-  controls: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: '0.5rem',
+  socialMediaList: {
+    marginTop: '1rem',
+    [mediaQueryForTabletsOrBelow]: {
+      marginTop: '0.5rem',
+    },
   },
-})
-
-const UserControls = ({ children }: { children: React.ReactChild[] }) => {
-  const classes = useStyles()
-  return <div className={classes.controls}>{children}</div>
-}
+}))
 
 const UserOverview = ({
   user,
@@ -143,52 +162,145 @@ const UserOverview = ({
   return (
     <>
       <Context.Provider value={{ userId: user.id, user }}>
-        {isBanned ? (
-          <WarningMessage>User has been banned.</WarningMessage>
-        ) : null}
-        {isDeleted ? (
-          <WarningMessage>User has been deleted.</WarningMessage>
-        ) : null}
-        <Avatar username={username} url={avatarurl} lazy={false} noHat />
-        <Heading
-          variant="h1"
-          className={`${classes.username} ${isBanned ? classes.isBanned : ''} ${
-            isDeleted ? classes.isDeleted : ''
-          }`}>
-          <Link
-            to={routes.viewUserWithVar.replace(':userId', user.id)}
-            title={
-              isBanned
-                ? 'User has been banned.'
-                : isDeleted
-                ? 'User has been deleted.'
-                : ''
-            }>
-            {username}
-          </Link>{' '}
-          {getUserIsStaffMember(user) && (
-            <span className={classes.staffBadge}>
-              <StaffBadge />
-            </span>
+        <div className={classes.cols}>
+          <div className={classes.col}>
+            <div className={classes.title}>
+              <div className={classes.avatar}>
+                <Avatar
+                  username={username}
+                  url={avatarurl}
+                  lazy={false}
+                  size={AvatarSize.Large}
+                />
+              </div>
+              <Heading
+                variant="h1"
+                className={`${classes.username} ${
+                  isBanned || isDeleted ? classes.isUnallowed : ''
+                }`}
+                noMargin>
+                <Link
+                  to={routes.viewUserWithVar.replace(':userId', user.id)}
+                  title={
+                    isBanned
+                      ? 'User has been banned.'
+                      : isDeleted
+                      ? 'User has been deleted.'
+                      : ''
+                  }>
+                  {username}
+                </Link>{' '}
+                {getUserIsStaffMember(user) && (
+                  <StaffBadge className={classes.badge} />
+                )}
+                {getIsUserBanned(user) && (
+                  <BannedBadge className={classes.badge} />
+                )}
+                {isDeleted && <DeletedBadge className={classes.badge} />}
+              </Heading>
+            </div>
+            {favoriteSpeciesData && (
+              <div className={classes.favoriteSpecies}>
+                <span>
+                  Favo{getPrefersBritishSpelling() ? 'u' : ''}rite Species:
+                </span>
+                <Tooltip title={favoriteSpeciesData.pluralname}>
+                  <Link
+                    to={routes.viewSpeciesWithVar.replace(
+                      ':speciesIdOrSlug',
+                      favoriteSpeciesData.id
+                    )}>
+                    <Image
+                      src={fixAccessingImagesUsingToken(
+                        favoriteSpeciesData.thumbnailurl
+                      )}
+                      alt={`Image for species ${favoriteSpeciesData.pluralname}`}
+                      title={favoriteSpeciesData.pluralname}
+                    />
+                  </Link>
+                </Tooltip>
+              </div>
+            )}
+            {bio && <Markdown source={bio} className={classes.bio} />}
+            <SocialMediaList
+              socialMedia={{
+                vrchatUsername: vrchatUsername,
+                neosVrUsername: neosVrUsername,
+                chilloutVrUsername: chilloutVrUsername,
+                vrchatUserId: vrchatUserId,
+                discordUsername: discordUsername,
+                twitterUsername: twitterUsername,
+                telegramUsername: telegramUsername,
+                youtubeChannelId: youtubeChannelId,
+                twitchUsername: twitchUsername,
+                patreonUsername: patreonUsername,
+              }}
+              actionCategory="ViewUser"
+              className={classes.socialMediaList}
+            />
+          </div>
+          {!small && (
+            <div className={classes.col}>
+              <Tabs
+                items={[
+                  {
+                    name: 'comments',
+                    label: 'Comments',
+                    contents: <TabComments />,
+                    noLazy: true,
+                  },
+                  {
+                    name: 'assets',
+                    label: 'Assets',
+                    contents: <TabAssets />,
+                  },
+                  {
+                    name: 'collection',
+                    label: 'Collection',
+                    contents: <TabCollection />,
+                  },
+                  {
+                    name: 'wishlist',
+                    label: 'Wishlist',
+                    contents: <TabWishlist />,
+                  },
+                  {
+                    name: 'reviews',
+                    label: 'Reviews',
+                    contents: <TabReviews />,
+                  },
+                  {
+                    name: 'endorsements',
+                    label: 'Endorsements',
+                    contents: <TabEndorsements />,
+                  },
+                  {
+                    name: 'attachments',
+                    label: 'Attachments',
+                    contents: <TabAttachments />,
+                  },
+                ].concat(
+                  isEditor
+                    ? [
+                        {
+                          name: 'history',
+                          label: 'History',
+                          contents: <TabHistory />,
+                        },
+                      ]
+                    : []
+                )}
+                urlWithTabNameVar={routes.viewUserWithVarAndTabVar.replace(
+                  ':userId',
+                  user.id
+                )}
+                horizontal
+              />
+            </div>
           )}
-        </Heading>
-        <SocialMediaList
-          socialMedia={{
-            vrchatUsername: vrchatUsername,
-            neosVrUsername: neosVrUsername,
-            chilloutVrUsername: chilloutVrUsername,
-            vrchatUserId: vrchatUserId,
-            discordUsername: discordUsername,
-            twitterUsername: twitterUsername,
-            telegramUsername: telegramUsername,
-            youtubeChannelId: youtubeChannelId,
-            twitchUsername: twitchUsername,
-            patreonUsername: patreonUsername,
-          }}
-          actionCategory="ViewUser"
-        />
+        </div>
         {isEditor && (
-          <UserControls>
+          <ViewControls>
             <Button
               icon={<EditIcon />}
               url={routes.editUserWithVar.replace(':userId', user.id)}>
@@ -202,93 +314,7 @@ const UserOverview = ({
               )}?userId=${user.id}`}>
               View Comments
             </Button>
-          </UserControls>
-        )}
-        {bio && (
-          <>
-            <Heading variant="h2">Bio</Heading>
-            <div className={classes.bio}>
-              <Markdown source={bio} />
-            </div>
-          </>
-        )}
-        {favoriteSpeciesData && (
-          <div>
-            <Heading variant="h2" className={classes.favoriteSpeciesHeading}>
-              Favorite Species
-            </Heading>
-            <Link
-              to={routes.viewSpeciesWithVar.replace(
-                ':speciesIdOrSlug',
-                favoriteSpeciesData.id
-              )}
-              className={classes.favoriteSpecies}>
-              <img
-                src={fixAccessingImagesUsingToken(
-                  favoriteSpeciesData.thumbnailurl
-                )}
-                alt="Favorite species icon"
-              />
-              {favoriteSpeciesData.pluralname}
-            </Link>
-          </div>
-        )}
-        {!small && (
-          <Tabs
-            items={[
-              {
-                name: 'comments',
-                label: 'Comments',
-                contents: <TabComments />,
-                noLazy: true,
-              },
-              {
-                name: 'assets',
-                label: 'Assets',
-                contents: <TabAssets />,
-              },
-              {
-                name: 'collection',
-                label: 'Collection',
-                contents: <TabCollection />,
-              },
-              {
-                name: 'wishlist',
-                label: 'Wishlist',
-                contents: <TabWishlist />,
-              },
-              {
-                name: 'reviews',
-                label: 'Reviews',
-                contents: <TabReviews />,
-              },
-              {
-                name: 'endorsements',
-                label: 'Endorsements',
-                contents: <TabEndorsements />,
-              },
-              {
-                name: 'attachments',
-                label: 'Attachments',
-                contents: <TabAttachments />,
-              },
-            ].concat(
-              isEditor
-                ? [
-                    {
-                      name: 'history',
-                      label: 'History',
-                      contents: <TabHistory />,
-                    },
-                  ]
-                : []
-            )}
-            urlWithTabNameVar={routes.viewUserWithVarAndTabVar.replace(
-              ':userId',
-              user.id
-            )}
-            horizontal
-          />
+          </ViewControls>
         )}
       </Context.Provider>
     </>

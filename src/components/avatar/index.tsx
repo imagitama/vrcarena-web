@@ -7,11 +7,12 @@ import { ReactComponent as ChristmasHat } from '../../assets/images/christmas-ha
 import { fixAccessingImagesUsingToken, getIsChristmasTime } from '../../utils'
 import { VRCArenaTheme } from '../../themes'
 
-export const sizes = {
-  EXTRATINY: 'extratiny', // timeline
-  TINY: 'tiny',
-  SMALL: 'small',
-  MEDIUM: 'medium',
+export enum AvatarSize {
+  ExtraTiny = 'extratiny', // timeline
+  Tiny = 'tiny',
+  Small = 'small',
+  Medium = 'medium',
+  Large = 'large', // max size (eg. user overview)
 }
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
@@ -25,21 +26,26 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
   },
-  [sizes.EXTRATINY]: {
+  [AvatarSize.ExtraTiny]: {
     width: '25px',
     height: '25px',
   },
-  [sizes.TINY]: {
+  [AvatarSize.Tiny]: {
     width: '50px',
     height: '50px',
   },
-  [sizes.SMALL]: {
+  [AvatarSize.Small]: {
     width: '100px',
     height: '100px',
   },
-  [sizes.MEDIUM]: {
+  [AvatarSize.Medium]: {
     width: '200px',
     height: '200px',
+  },
+  [AvatarSize.Large]: {
+    // max
+    width: '300px',
+    height: '300px',
   },
   image: {
     width: '100%',
@@ -59,7 +65,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
 const Avatar = ({
   url = undefined,
   username = undefined,
-  size = sizes.MEDIUM,
+  size = AvatarSize.Medium,
   className = undefined,
   lazy = true,
   noHat = false,

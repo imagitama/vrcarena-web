@@ -26,6 +26,10 @@ interface SyncUserWithDiscordResult {
   ourAvatarUrl: string | null
 }
 
+enum FunctionName {
+  SyncUserWithDiscord = 'syncUserWithDiscord',
+}
+
 const SyncUserWithDiscordForm = ({
   discordUser,
   onDone,
@@ -53,7 +57,7 @@ const SyncUserWithDiscordForm = ({
         } = await callFunction<
           SyncUserWithDiscordPayload,
           SyncUserWithDiscordResult
-        >('syncUserWithDiscord', {
+        >(FunctionName.SyncUserWithDiscord, {
           userId: userId!,
         })
 

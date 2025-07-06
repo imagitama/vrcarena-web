@@ -27,12 +27,12 @@ import {
   getUrlForBoothByUsername,
 } from '../../utils'
 import { trackAction } from '../../analytics'
-
-import Paper from '../paper'
 import { getAuthorUrlForItchUsername } from '../../itch'
 import { getAuthorUrlForJinxxyUsername } from '../../jinxxy'
 import { getAuthorUrlForKofiUsername } from '../../kofi'
 import { getAuthorUrlForPayHipUsername } from '../../payhip'
+import { mediaQueryForMobiles } from '../../media-queries'
+import { inDevelopment } from '../../environment'
 
 export const socialMediaType = {
   twitter: 'twitter',
@@ -48,15 +48,17 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   item: {
+    width: '100%',
     padding: '0.25rem 0.5rem',
     display: 'flex',
     alignItems: 'center',
-    margin: '0 0.25rem 0.25rem 0',
     '& > a': {
       display: 'flex',
       alignItems: 'center',
-      width: '100%',
-      height: '100%',
+    },
+    fontSize: '125%', // to match user overview "bio"
+    [mediaQueryForMobiles]: {
+      fontSize: '100%',
     },
   },
   notUrl: {
@@ -74,6 +76,10 @@ const useStyles = makeStyles({
     width: '1em',
     height: '1em',
     fill: 'currentColor',
+  },
+  // specifics
+  vrchat: {
+    fontSize: '150%',
   },
 })
 
@@ -95,7 +101,7 @@ function SocialMediaListItem({
 }) {
   const classes = useStyles()
 
-  if (!label) {
+  if (!label && !inDevelopment()) {
     return null
   }
 
@@ -103,7 +109,7 @@ function SocialMediaListItem({
     <>
       {Icon && (
         <div className={classes.iconWrapper}>
-          <Icon className={`${classes.icon} ${iconClass || ''}`} />
+          <Icon className={`${classes.icon} ${(classes as any)[type] || ''}`} />
         </div>
       )}
       {label}
@@ -124,7 +130,7 @@ function SocialMediaListItem({
     contents
   )
 
-  return <Paper className={classes.item}>{wrapper}</Paper>
+  return <div className={classes.item}>{wrapper}</div>
 }
 
 const SocialMediaList = ({
@@ -150,6 +156,7 @@ const SocialMediaList = ({
     kofiUsername,
     payhipUsername,
   },
+  className = '',
 }: {
   actionCategory: string
   socialMedia: {
@@ -173,6 +180,7 @@ const SocialMediaList = ({
     kofiUsername?: string | null
     payhipUsername?: string | null
   }
+  className?: string
 }) => {
   const classes = useStyles()
 
@@ -326,7 +334,7 @@ const SocialMediaList = ({
     },
   ]
   return (
-    <div className={classes.items}>
+    <div className={`${classes.items} ${className}`}>
       {items.map((item) => (
         <SocialMediaListItem
           key={item.id}

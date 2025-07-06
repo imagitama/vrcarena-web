@@ -479,3 +479,25 @@ export function getUrlForPatreonByUsername(username: string): string {
 export function getUrlForBoothByUsername(username: string): string {
   return `https://${username}.booth.pm`
 }
+
+export function getPrefersBritishSpelling() {
+  const locales = navigator.languages || [navigator.language]
+
+  console.debug('locales', locales)
+
+  const britishLocales = [
+    'en-GB', // United Kingdom
+    'en-AU', // Australia
+    'en-CA', // Canada (sometimes)
+    'en-NZ', // New Zealand
+    'en-IE', // Ireland
+    'en-ZA', // South Africa
+    'en-IN', // India
+  ]
+
+  return locales.some((locale) =>
+    britishLocales.some((british) =>
+      locale.toLowerCase().startsWith(british.toLowerCase())
+    )
+  )
+}

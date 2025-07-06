@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
+import WarningIcon from '@mui/icons-material/Warning'
+
 import Heading from '../heading'
 import Button from '../button'
 import TextInput from '../text-input'
@@ -23,9 +25,9 @@ const useStyles = makeStyles({
     },
   },
   dangerButton: {
-    backgroundColor: '#910000',
+    backgroundColor: '#910000 !important',
     '&:hover': {
-      backgroundColor: '#590000',
+      backgroundColor: '#590000 !important',
     },
   },
 })
@@ -131,7 +133,7 @@ const DeleteAccountForm = () => {
         <LoadingIndicator message="Deleting your account..." />
       ) : !wantsToDelete ? (
         <FormControls>
-          <Button onClick={onClickContinue}>
+          <Button onClick={onClickContinue} color="secondary">
             I understand and I want to delete my account
           </Button>
         </FormControls>
@@ -150,7 +152,9 @@ const DeleteAccountForm = () => {
               <Button
                 isDisabled={usernameInput !== actualUsername}
                 onClick={onClickDeleteForever}
-                className={classes.dangerButton}>
+                className={classes.dangerButton}
+                icon={<WarningIcon />}
+                switchIconSide>
                 Delete My Account Forever
               </Button>
             </FormControls>

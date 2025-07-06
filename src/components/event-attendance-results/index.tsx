@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
 import ClearIcon from '@mui/icons-material/Clear'
 import { AttendanceStatus, FullEventAttendance } from '../../modules/events'
-import Avatar, { sizes } from '../avatar'
+import Avatar, { AvatarSize } from '../avatar'
 import UsernameLink from '../username-link'
 import { VRCArenaTheme } from '../../themes'
 
@@ -73,7 +73,7 @@ const Items = ({
             <Avatar
               url={item.createdbyavatarurl}
               username={item.createdbyusername}
-              size={sizes.TINY}
+              size={AvatarSize.Tiny}
             />
             <div className={classes.status}>
               {status === AttendanceStatus.Accepted ? (

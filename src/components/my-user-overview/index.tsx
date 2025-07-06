@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import UserOverview from '../user-overview'
 import useUserRecord from '../../hooks/useUserRecord'
 import Heading from '../heading'
@@ -6,6 +6,9 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../modules'
 import FormattedDate from '../formatted-date'
 import { FirebaseReducer } from 'react-redux-firebase'
+import Avatar from '../avatar'
+import UsernameLink from '../username-link'
+import Button from '../button'
 
 const getSigninMethod = (firebaseUser: FirebaseReducer.AuthState): string => {
   if (!firebaseUser.providerData) {
@@ -28,6 +31,7 @@ const MyUserOverview = () => {
   >(({ firebase }) => ({
     firebase,
   }))
+  const [isPrivateInfoRevealed, setIsPrivateInfoRevealed] = useState(false)
 
   if (!userRecord) {
     return null
@@ -35,14 +39,24 @@ const MyUserOverview = () => {
 
   const firebaseUser = firebase.auth
 
-  console.debug('auth', firebaseUser)
-
   return (
     <>
-      <UserOverview user={userRecord} small />
+      <Avatar url={userRecord.avatarurl} />
+      <Heading variant="h3">
+        <UsernameLink username={userRecord.username} id={userRecord.id} />
+      </Heading>
       <Heading variant="h1">Sign-up Info</Heading>
       <Heading variant="h2">Email</Heading>
-      {firebaseUser.email || '(none)'}
+      {!isPrivateInfoRevealed ? (
+        <Button
+          onClick={() => setIsPrivateInfoRevealed(true)}
+          size="small"
+          color="secondary">
+          Reveal
+        </Button>
+      ) : (
+        `${firebaseUser.email || '(none)'}`
+      )}
       <Heading variant="h2">Signed Up</Heading>
       <FormattedDate
         date={new Date(parseInt(firebaseUser.createdAt))}

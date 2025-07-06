@@ -221,12 +221,14 @@ const Markdown = ({
   enableHtml = false,
   onClickLineWithContent = undefined,
   replaceImagesWithButtons = false,
+  className = '',
 }: {
   source: string
   analyticsCategory?: string
   enableHtml?: boolean
   onClickLineWithContent?: (content: string) => void
   replaceImagesWithButtons?: boolean
+  className?: string
 }) => {
   const [tabState, setTabState] = useState({})
   const classes = useStyles()
@@ -239,7 +241,7 @@ const Markdown = ({
         children={source}
         rehypePlugins={enableHtml ? [rehypeRaw] : []}
         remarkPlugins={[remarkDirective, myRemarkDirectivePlugin, gfm]}
-        className={classes.root}
+        className={`${classes.root} ${className}`}
         components={{
           // @ts-ignore
           button: (props: { url: string; label: string }) => (

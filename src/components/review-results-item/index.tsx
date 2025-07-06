@@ -5,7 +5,7 @@ import { allowedRatings } from '../../ratings'
 import Paper from '../paper'
 import Markdown from '../markdown'
 import StarRating from '../star-rating'
-import Avatar, { sizes } from '../avatar'
+import Avatar, { AvatarSize } from '../avatar'
 import UsernameLink from '../username-link'
 import AssetResultsItem from '../asset-results-item'
 import LoadingShimmer from '../loading-shimmer'
@@ -72,7 +72,7 @@ export default ({
           {shimmer ? (
             <LoadingShimmer width={50} height={50} />
           ) : (
-            <Avatar url={review!.createdbyavatarurl} size={sizes.TINY} />
+            <Avatar url={review!.createdbyavatarurl} size={AvatarSize.Tiny} />
           )}
           <span className={classes.username}>
             {shimmer ? (

@@ -1,5 +1,4 @@
 import { useLocalStorage } from '@rehooks/local-storage'
-import { isError } from '../error-handling'
 
 // TODO: Move to each module/component who cares about them
 export const keys = {
@@ -42,7 +41,7 @@ function useStorage<TResult>(
     // handle legacy browsers or high-privacy browsers
     // todo: return isError?
     if (
-      isError(err) &&
+      err instanceof Error &&
       err.message.includes('Cannot read properties of null')
     ) {
       return [null, () => undefined, () => undefined]

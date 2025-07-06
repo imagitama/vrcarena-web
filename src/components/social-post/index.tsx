@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SecurityIcon from '@mui/icons-material/Security'
 
-import Avatar, { sizes } from '../avatar'
+import Avatar, { AvatarSize } from '../avatar'
 import {
   CollectionNames,
   FullSocialPost,
@@ -163,7 +163,7 @@ const SocialPost = ({
           <Avatar
             url={socialPost.createdbyavatarurl}
             username={socialPost.createdbyusername}
-            size={sizes.TINY}
+            size={AvatarSize.Tiny}
           />
         </UsernameLink>
       </div>

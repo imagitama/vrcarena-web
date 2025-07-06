@@ -65,7 +65,7 @@ const ChangePasswordForm = () => {
           isDisabled={!passwordInput || isChanging}
           onClick={onClickChange}
           icon={<SaveIcon />}>
-          Change Password
+          Save
         </Button>
       </FormControls>
       {isChanging ? (

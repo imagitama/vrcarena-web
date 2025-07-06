@@ -12,7 +12,7 @@ import * as routes from '../../routes'
 import Menu, { MenuItemData } from '../menu'
 import Button from '../button'
 import useUserRecord from '../../hooks/useUserRecord'
-import Avatar, { sizes } from '../avatar'
+import Avatar, { AvatarSize } from '../avatar'
 import useUserId from '../../hooks/useUserId'
 import { useLocation } from 'react-router'
 import { handleError } from '../../error-handling'
@@ -95,7 +95,7 @@ const AvatarMenuItem = () => {
       <Avatar
         url={user && user.avatarurl ? user.avatarurl : undefined}
         username={user && user.username ? user.username : undefined}
-        size={sizes.TINY}
+        size={AvatarSize.Tiny}
       />
       <KeyboardArrowDownIcon />
     </>

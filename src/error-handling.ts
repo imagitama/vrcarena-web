@@ -1,12 +1,10 @@
 import * as Sentry from '@sentry/browser'
 
-export const isError = (thing: unknown): thing is Error =>
-  thing instanceof Error
-
 const messagesToIgnore = [
   // internal
   'JWT expired',
-  'Loading CSS chunk',
+  'Loading CSS chunk', // webpack
+  'Failed to fetch dynamically imported module', // esbuild
   // 3rd party dep
   "Unable to get property 'set' of undefined or null reference", // supabase SDK
   // no idea what it is
@@ -23,15 +21,17 @@ const messagesToIgnore = [
   'SecurityError: The operation is insecure.',
   'window.ethereum',
   'deadline-exceeded',
-  "Can't find variable: setIOSParameters"
+  "Can't find variable: setIOSParameters",
 ]
 
 export function handleError(err: unknown): void {
   if (
-    isError(err) &&
-    err.message &&
-    messagesToIgnore.filter(messageToIgnore =>
-      err.message.toLowerCase().includes(messageToIgnore.toLowerCase())
+    err &&
+    (err as Error).message &&
+    messagesToIgnore.filter((messageToIgnore) =>
+      (err as Error).message
+        .toLowerCase()
+        .includes(messageToIgnore.toLowerCase())
     ).length
   ) {
     return

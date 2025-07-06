@@ -33,7 +33,7 @@ import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import LoadingIndicator from '../loading-indicator'
 import FormattedDate from '../formatted-date'
-import Avatar, { sizes } from '../avatar'
+import Avatar, { AvatarSize } from '../avatar'
 import UsernameLink from '../username-link'
 import ErrorMessage from '../error-message'
 import Button from '../button'
@@ -459,7 +459,7 @@ const AssetTimelineItem = ({
               <Avatar
                 url={event.avatarurl}
                 username={event.username}
-                size={sizes.EXTRATINY}
+                size={AvatarSize.ExtraTiny}
               />
             </UsernameLink>
           </div>
