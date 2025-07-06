@@ -30,7 +30,6 @@ const useStyles = makeStyles(() => ({
   },
   icon: {
     height: '100%',
-    // alignSelf: 'baseline', TODO: Why this
     marginRight: '1rem',
     display: 'flex',
     alignItems: 'center',
@@ -55,7 +54,6 @@ const useStyles = makeStyles(() => ({
   title: {
     fontSize: '125%',
     fontWeight: 100,
-    // display: 'flex', TODO: Why was this on? Breaks links in titles
     alignItems: 'center',
     position: 'relative',
     zIndex: 50,

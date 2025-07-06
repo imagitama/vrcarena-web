@@ -7,16 +7,38 @@ import Heading from '../../components/heading'
 import * as routes from '../../routes'
 import { CollectionNames, editableFields } from '../../modules/tags'
 import NoPermissionMessage from '../../components/no-permission-message'
-import useIsEditor from '../../hooks/useIsEditor'
+import usePermissions from '../../hooks/usePermissions'
+
+const View = () => {
+  const { tag } = useParams<{ tag?: string }>()
+  const isCreating = !tag
+
+  if (!usePermissions(routes.editTagWithVar)) {
+    return <NoPermissionMessage />
+  }
+
+  return (
+    <>
+      <Heading variant="h1">{isCreating ? 'Create' : 'Edit'} Tag</Heading>
+      <GenericEditor
+        fields={editableFields}
+        collectionName={CollectionNames.Tags}
+        id={tag}
+        analyticsCategory={`${tag ? 'Edit' : 'Create'}Tag`}
+        getSuccessUrl={(newTag) =>
+          routes.viewTagWithVar.replace(':tag', newTag || tag || 'fail')
+        }
+        cancelUrl={
+          tag ? routes.viewTagWithVar.replace(':tag', tag) : routes.tags
+        }
+      />
+    </>
+  )
+}
 
 export default () => {
   const { tag } = useParams<{ tag?: string }>()
   const isCreating = !tag
-  const isEditor = useIsEditor()
-
-  if (!isEditor) {
-    return <NoPermissionMessage />
-  }
 
   return (
     <>
@@ -27,19 +49,7 @@ export default () => {
           content={`Use this form to ${isCreating ? 'create' : 'edit'} a tag.`}
         />
       </Helmet>
-      <Heading variant="h1">{isCreating ? 'Create' : 'Edit'} Tag</Heading>
-      <GenericEditor
-        fields={editableFields}
-        collectionName={CollectionNames.Tags}
-        id={tag}
-        analyticsCategory={`${tag ? 'Edit' : 'Create'}Tag`}
-        getSuccessUrl={newTag =>
-          routes.viewTagWithVar.replace(':tag', newTag || tag || 'fail')
-        }
-        cancelUrl={
-          tag ? routes.viewTagWithVar.replace(':tag', tag) : routes.tags
-        }
-      />
+      <View />
     </>
   )
 }

@@ -6,15 +6,14 @@ import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 import NoPermissionMessage from '../../components/no-permission-message'
 import * as routes from '../../routes'
-import useIsEditor from '../../hooks/useIsEditor'
 import { CollectionNames, editableFields } from '../../modules/species'
+import usePermissions from '../../hooks/usePermissions'
 
 const View = () => {
   const { speciesId } = useParams<{ speciesId: string }>()
   const isCreating = !speciesId
-  const isEditor = useIsEditor()
 
-  if (!isEditor) {
+  if (!usePermissions(routes.editSpeciesWithVar)) {
     return <NoPermissionMessage />
   }
 

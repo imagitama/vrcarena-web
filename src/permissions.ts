@@ -1,56 +1,50 @@
-import { Event } from './modules/events'
-import { FullUser, PatreonStatus, UserRoles } from './modules/users'
+import { CommonRecordFields } from './data-store'
+import { BanStatus, FullUser, User, UserRoles } from './modules/users'
 
-export function canEditUsers(user: FullUser): boolean {
-  if (!user) {
+export const getHasPermissionForRecord = <TRecord extends CommonRecordFields>(
+  user: FullUser | User | null,
+  record: TRecord | null,
+  allowEditingOwnRecord = false
+): boolean => {
+  if (user === null || record === null) {
     return false
   }
-  return user.role === UserRoles.Editor || user.role === UserRoles.Admin
-}
 
-export function canEditComments(user: FullUser): boolean {
-  if (!user) {
+  if (user.banstatus === BanStatus.Banned) {
     return false
   }
-  return user.role === UserRoles.Editor || user.role === UserRoles.Admin
-}
 
-export function canCreateDiscordServer(user: FullUser): boolean {
-  if (!user) {
-    return false
-  }
-  return true
-}
-
-export function canEditDiscordServer(user: FullUser): boolean {
-  if (!user) {
-    return false
-  }
-  return user.role === UserRoles.Editor || user.role === UserRoles.Admin
-}
-
-export function canFeatureAssets(user: FullUser): boolean {
-  if (!user) {
-    return false
-  }
-  if (user.patreonstatus === PatreonStatus.Patron) {
-    return true
-  }
   if (user.role === UserRoles.Editor || user.role === UserRoles.Admin) {
     return true
   }
+
+  if (
+    allowEditingOwnRecord &&
+    record.createdby &&
+    user.id === record.createdby
+  ) {
+    return true
+  }
+
   return false
 }
 
-export function getCanUserEditThisEvent(user: FullUser, event: Event): boolean {
-  if (!user) {
+export const getHasPermissionForRoute = (
+  user: FullUser | User,
+  route: string
+): boolean => {
+  if (user.banstatus === BanStatus.Banned) {
     return false
   }
+
   if (user.role === UserRoles.Editor || user.role === UserRoles.Admin) {
     return true
   }
-  if (user.id === event.createdby) {
-    return true
+
+  // TODO: Maybe have a map of this for fine-grain control
+  if (route.includes('/edit') || route.includes('/create')) {
+    return false
   }
+
   return false
 }

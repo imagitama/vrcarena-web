@@ -1,27 +1,18 @@
 import React from 'react'
-import { makeStyles } from '@mui/styles'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { Endorsement } from '../../modules/endorsements'
 
-const useStyles = makeStyles({
-  // TODO: parent handle this
-  root: {
-    marginBottom: '1rem',
-    position: 'relative',
-  },
-})
-
 const EndorsementListItem = ({
   endorsement: { createdby },
+  className = '',
 }: {
   endorsement: Endorsement
+  className?: string
 }) => {
-  const classes = useStyles()
-
   return (
-    <Card className={classes.root}>
+    <Card className={className}>
       <CardContent>
         <Typography gutterBottom component="p">
           <strong>{createdby}</strong> endorsed this asset

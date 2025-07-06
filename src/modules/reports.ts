@@ -110,8 +110,7 @@ export interface FullReport extends Report, ReportMeta {
 
 export enum CollectionNames {
   Reports = 'reports',
-  // TODO: Pluralize this sometime
-  ReportsMeta = 'reportmeta',
+  ReportsMeta = 'reportmeta', // TODO: Pluralize this sometime
 }
 
 export enum ViewNames {

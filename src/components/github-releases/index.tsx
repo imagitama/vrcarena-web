@@ -112,6 +112,22 @@ interface GitHubRelease {
   html_url: string
 }
 
+enum ErrorCode {
+  FailedToFetch,
+  NotFound,
+  Unknown,
+}
+
+class ResponseNotOkError extends Error {
+  status: number
+  statusText: string
+  constructor(message: string, status: number, statusText: string) {
+    super(message)
+    this.status = status
+    this.statusText = statusText
+  }
+}
+
 export default ({
   gitHubUrl,
   showErrorOnNotFound = true,
@@ -121,9 +137,7 @@ export default ({
 }) => {
   const [results, setResults] = useState<GitHubRelease[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-
-  // TODO: Store last error code
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
   const classes = useStyles()
 
   useEffect(() => {
@@ -153,34 +167,37 @@ export default ({
         )
 
         if (!resp.ok) {
-          if (
-            (resp.status === 404 && showErrorOnNotFound) ||
-            resp.status !== 404
-          ) {
-            throw new Error(
-              `Response not ok! Status ${resp.status} ${resp.statusText}`
-            )
-          } else {
-            return
-          }
+          throw new ResponseNotOkError(
+            `Response not ok`,
+            resp.status,
+            resp.statusText
+          )
         }
 
         const newData = await resp.json()
 
         setResults(newData)
         setIsLoading(false)
-        setIsErrored(false)
+        setLastErrorCode(null)
       } catch (err) {
-        setIsErrored(true)
         setIsLoading(false)
         console.error(err)
 
         // ignore this useless error
         if ((err as Error).message === 'Failed to fetch') {
+          setLastErrorCode(ErrorCode.FailedToFetch)
+          return
+        }
+
+        if (err instanceof ResponseNotOkError) {
+          setLastErrorCode(
+            err.status === 404 ? ErrorCode.NotFound : ErrorCode.Unknown
+          )
           return
         }
 
         handleError(err)
+        setLastErrorCode(ErrorCode.Unknown)
       }
     })()
   }, [gitHubUrl])
@@ -193,8 +210,16 @@ export default ({
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to get details from GitHub</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to get details from GitHub (
+        {lastErrorCode === ErrorCode.NotFound
+          ? 'repo not found'
+          : `code ${lastErrorCode}`}
+        )
+      </ErrorMessage>
+    )
   }
 
   const latestNonBetaRelease = results.find(

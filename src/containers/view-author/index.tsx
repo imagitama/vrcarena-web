@@ -19,11 +19,8 @@ import Avatar from '../../components/avatar'
 import EditorRecordManager from '../../components/editor-record-manager'
 import Message from '../../components/message'
 
-import useUserRecord from '../../hooks/useUserRecord'
-
 import { CollectionNames } from '../../modules/authors'
 import { ViewNames as ClaimViewNames, FullClaim } from '../../modules/claims'
-import { canEditAuthor } from '../../utils'
 import { trackAction } from '../../analytics'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
@@ -41,6 +38,8 @@ import UserList from '../../components/user-list'
 import LazyLoad from 'react-lazyload'
 import { FullUser } from '../../modules/users'
 import { GetQueryFn } from '../../components/paginated-view'
+import useIsEditor from '../../hooks/useIsEditor'
+import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
   const getQuery = useCallback<GetQueryFn<PublicAsset>>(
@@ -134,10 +133,11 @@ const analyticsCategory = 'ViewAuthor'
 
 const View = () => {
   const { authorId } = useParams<{ authorId: string }>()
-  const [, , user] = useUserRecord()
+  const isLoggedIn = useIsLoggedIn()
   const [isLoading, lastErrorCode, author, hydrate] =
     useDataStoreItem<FullAuthor>('getfullauthors', authorId, 'view-author')
   const classes = useStyles()
+  const isEditor = useIsEditor()
 
   if (isLoading) {
     return <LoadingIndicator />
@@ -311,7 +311,7 @@ const View = () => {
         />
       )}
 
-      {user && canEditAuthor(user) && (
+      {isEditor && (
         <>
           <Heading variant="h2">Actions</Heading>
           <EditorRecordManager
@@ -354,7 +354,7 @@ const View = () => {
         Find More Authors...
       </Button>
 
-      {user ? (
+      {isLoggedIn ? (
         <>
           {' '}
           <Button

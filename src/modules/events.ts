@@ -92,14 +92,6 @@ export const EditableFields: EditableField<Event>[] = [
     type: fieldTypes.text,
     hint: 'The name of the event. Keep it short but descriptive.',
   },
-  // TODO: Delete this and replace with auto-generated from name like we do for assets
-  // authors with sales etc. should just use the ID
-  // {
-  //   name: 'slug',
-  //   label: 'Slug',
-  //   type: fieldTypes.text,
-  //   hint: 'A shortened name for the event. Used in the URL. Replace spaces with dashes. eg. "furality-aqua-2023"',
-  // },
   {
     name: 'description',
     label: 'Description',

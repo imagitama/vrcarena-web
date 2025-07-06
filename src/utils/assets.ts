@@ -1,5 +1,4 @@
 import { readRecord } from '../data-store'
-import { getCanUserEditAnyAsset } from '../users'
 import {
   ArchivedReason,
   Asset,
@@ -42,7 +41,6 @@ export const getIsUserCreator = (
 // we grab all of this stuff in the SQL query
 // but while the user is editing this stuff we can't grab it
 // so do it automagically
-// TODO: Do this in a generic way like with "refs" in Firestore and "populateRefs: true"
 // NOTE: This is the WORST performant way to do this stuff (especially grabbing children...)
 export const getFieldNameAndValueForOutput = async (
   supabase: SupabaseClient,
@@ -95,28 +93,6 @@ export const getFieldNameAndValueForOutput = async (
     default:
       return [fieldName, newValue]
   }
-}
-
-export const getCanUserEditAsset = (
-  assetMeta: AssetMeta,
-  userAdminMeta: UserAdminMeta
-): boolean => {
-  if (!userAdminMeta) {
-    return false
-  }
-
-  if (getCanUserEditAnyAsset(userAdminMeta)) {
-    return true
-  }
-
-  if (
-    getIsAssetADraft(assetMeta) &&
-    getIsUserIdCreatorOfAsset(assetMeta, userAdminMeta.id)
-  ) {
-    return true
-  }
-
-  return false
 }
 
 export const getIsUserIdCreatorOfAsset = (

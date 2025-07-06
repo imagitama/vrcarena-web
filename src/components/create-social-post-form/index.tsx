@@ -73,11 +73,7 @@ const Attachment = ({
   return (
     <div className={classes.attachmentImage}>
       <img src={attachment.url} />{' '}
-      <Button
-        onClick={onDelete}
-        size="small"
-        icon={<DeleteIcon />}
-        iconOnly></Button>
+      <Button onClick={onDelete} size="small" icon={<DeleteIcon />} iconOnly />
     </div>
   )
 }

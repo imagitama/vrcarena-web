@@ -19,6 +19,8 @@ import TextInput from '../text-input'
 import Paper from '../paper'
 import FormControls from '../form-controls'
 import { CollectionNames, Rating, Review } from '../../modules/reviews'
+import useIsBanned from '../../hooks/useIsBanned'
+import NoPermissionMessage from '../no-permission-message'
 
 const useStyles = makeStyles({
   root: {},
@@ -269,6 +271,10 @@ export default ({
     setNewOverallRatingNumber(reviewToEdit.overallrating)
     setNewRatings(reviewToEdit.ratings)
   }, [inEditMode])
+
+  if (useIsBanned()) {
+    return <NoPermissionMessage />
+  }
 
   if (Array.isArray(myReview) && myReview.length > 1) {
     return (

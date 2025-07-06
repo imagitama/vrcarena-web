@@ -8,12 +8,16 @@ import Heading from '../../components/heading'
 import { CollectionNames } from '../../modules/attachments'
 
 import * as routes from '../../routes'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import NoPermissionMessage from '../../components/no-permission-message'
+import usePermissions from '../../hooks/usePermissions'
 
 const View = () => {
   const { attachmentId } = useParams<{ attachmentId: string }>()
   const isCreating = !attachmentId || attachmentId === 'create'
+
+  if (!usePermissions(routes.editAttachmentWithVar)) {
+    return <NoPermissionMessage />
+  }
 
   return (
     <>
@@ -44,13 +48,7 @@ const View = () => {
 
 const EditAttachmentContainer = () => {
   const { attachmentId } = useParams<{ attachmentId: string }>()
-  const isLoggedIn = useIsLoggedIn()
-
   const isCreating = !attachmentId || attachmentId === 'create'
-
-  if (!isLoggedIn) {
-    return <NoPermissionMessage />
-  }
 
   return (
     <>

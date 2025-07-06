@@ -1,13 +1,18 @@
 import React from 'react'
+import { makeStyles } from '@mui/styles'
 
+import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
+import { CollectionNames, Endorsement } from '../../modules/endorsements'
 import EndorsementListItem from '../endorsement-list-item'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
-
-import { CollectionNames, Endorsement } from '../../modules/endorsements'
+const useStyles = makeStyles({
+  item: {
+    marginBottom: '1rem',
+  },
+})
 
 const EndorsementList = ({ assetId }: { assetId: string }) => {
   if (!assetId) {
@@ -18,6 +23,7 @@ const EndorsementList = ({ assetId }: { assetId: string }) => {
     CollectionNames.Endorsements,
     [['asset', Operators.EQUALS, assetId]]
   )
+  const classes = useStyles()
 
   if (isLoading) {
     return <LoadingIndicator />
@@ -38,7 +44,11 @@ const EndorsementList = ({ assetId }: { assetId: string }) => {
   return (
     <>
       {results.map((result) => (
-        <EndorsementListItem key={result.id} endorsement={result} />
+        <EndorsementListItem
+          key={result.id}
+          endorsement={result}
+          className={classes.item}
+        />
       ))}
     </>
   )

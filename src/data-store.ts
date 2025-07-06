@@ -228,7 +228,7 @@ export const deleteRecord = async (
   supabase: SupabaseClient,
   tableName: string,
   id: string
-): Promise<null> => {
+): Promise<void> => {
   const { error, data } = await supabase.from(tableName).delete().eq('id', id)
 
   console.debug(`deleteRecord`, tableName, id, data, error)
@@ -245,9 +245,6 @@ export const deleteRecord = async (
       `Could not delete record in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
     )
   }
-
-  // TODO: Do we need to get this? It will mean running SELECT but that could clash with security policies
-  return null
 }
 
 // hooks should extend from this
@@ -268,15 +265,18 @@ export interface DataStoreOptions {
 // the standard way of passing around errors is the "Error" class (not the Postgres error object)
 // this just wraps it all up nicely
 export class DataStoreError extends Error {
-  postgrestError: PostgrestError
-  constructor(message: string, postgrestError: PostgrestError) {
+  postgrestError?: PostgrestError
+  constructor(message: string, postgrestError?: PostgrestError) {
     super(`${message}${postgrestError ? `: ${postgrestError.message}` : ''}`)
     this.postgrestError = postgrestError
   }
 }
 
-// (note cannot have numeric keys so standard postgres errors prefixed with "PG" (vs "PGRST" for Postgrest))
-// TODO: Use lib's types
+// handle a PATCH but postgres returns success with 0 results which is confusing
+export class DataStoreUpdateError extends DataStoreError {}
+
+// Source: https://docs.postgrest.org/en/v12/references/errors.html
+// NOTE: cannot have numeric keys so standard postgres errors prefixed with "PG" (vs "PGRST" for Postgrest)
 export enum PostgresErrorCode {
   // code: "PGRST103", details: "An offset of 200 was requested, but there are only 33 rows.", hint: null, message: "Requested range not satisfiable"
   PGRST103 = 'PGRST103',
@@ -294,17 +294,12 @@ export enum DataStoreErrorCode {
   BadRange,
   Unknown,
   ChannelError,
+  FailedToUpdate,
 }
 
 export const getDataStoreErrorCodeFromPostgrestError = (
   postgresError: PostgrestError
 ): DataStoreErrorCode => {
-  if (!postgresError.code) {
-    throw new Error(
-      'Cannot get data store error code from postgres error: does not have code property'
-    )
-  }
-
   switch (postgresError.code) {
     case PostgresErrorCode.PGRST103:
       return DataStoreErrorCode.BadRange
@@ -318,6 +313,11 @@ export const getDataStoreErrorCodeFromPostgrestError = (
 export const getDataStoreErrorCodeFromError = (
   errorThing: unknown
 ): DataStoreErrorCode => {
+  if (errorThing instanceof DataStoreUpdateError) {
+    return DataStoreErrorCode.FailedToUpdate
+  }
+
+  // must be 2nd as above error extends from it
   if (errorThing instanceof DataStoreError) {
     return getDataStoreErrorCodeFromPostgrestError(errorThing.postgrestError!)
   }

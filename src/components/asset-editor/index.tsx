@@ -1044,7 +1044,7 @@ const Editor = () => {
             label: 'Attachments',
             contents: (
               <>
-                <FormEditorArea
+                <FormEditorArea<Asset>
                   // TODO: Type safe this var
                   fieldName="attachmentids"
                   title="Attachments"

@@ -60,10 +60,13 @@ const SyncFormWrapper = () => {
   )
 }
 
+enum ErrorCode {
+  Unknown,
+}
+
 const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
   const [, , user] = useUserRecord()
-  // TODO: Store last error code
-  const [isError, setIsError] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
   const [isHydrating, setIsHydrating] = useState(false)
   const [assetRecord, setAssetRecord] = useState<FullAsset | null>(null)
   const [newFields, setNewFields] = useState<Asset | null>(null)
@@ -78,7 +81,7 @@ const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
     }
 
     setIsHydrating(true)
-    setIsError(false)
+    setLastErrorCode(null)
 
     try {
       const rawAssetFields = await readRecord<FullAsset>(
@@ -93,11 +96,11 @@ const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
       }
 
       setAssetRecord(rawAssetFields)
-      setIsError(false)
+      setLastErrorCode(null)
     } catch (err) {
       console.error(err)
       handleError(err)
-      setIsError(true)
+      setLastErrorCode(ErrorCode.Unknown)
     }
 
     setIsHydrating(false)
@@ -127,8 +130,10 @@ const AssetEditorWithSync = ({ assetId }: { assetId: string }) => {
     return <LoadingIndicator message="Loading asset to edit..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to load asset</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (!user) {

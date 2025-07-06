@@ -27,6 +27,8 @@ import InfoMessage from '../info-message'
 import { getYouTubeVideoIdFromUrl, getIsUrlAYoutubeVideo } from '../../utils'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../../config'
 import { VRCArenaTheme } from '../../themes'
+import useIsBanned from '../../hooks/useIsBanned'
+import NoPermissionMessage from '../no-permission-message'
 
 const attachmentTypesMeta: { [key: string]: { name: string } } = {
   [AttachmentType.Image]: {
@@ -180,6 +182,10 @@ const AttachmentEditor = ({
   const classes = useStyles()
   const [newUrl, setNewUrl] = useState('')
   const [isExpanded, setIsExpanded] = useState(isPreExpanded)
+
+  if (useIsBanned()) {
+    return <NoPermissionMessage />
+  }
 
   const setField = (name: keyof AttachmentFields, newVal: any) =>
     setFields((currentVal) => ({

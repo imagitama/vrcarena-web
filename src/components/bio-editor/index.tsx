@@ -43,12 +43,10 @@ const BioEditor = ({
     CollectionNames.Users,
     userId
   )
-
   const [bioValue, setBioValue] = useState('')
   const [showPreview, setShowPreview] = useState(false)
 
   useEffect(() => {
-    // Check if "bio" is undefined otherwise throws Firebase error
     if (!profile || !profile.bio) {
       return
     }
@@ -106,7 +104,9 @@ const BioEditor = ({
       {isSuccess ? (
         <SuccessMessage>Your bio has been saved</SuccessMessage>
       ) : lastErrorCodeSaving !== null ? (
-        <>Failed to save (code {lastErrorCodeSaving})</>
+        <ErrorMessage>
+          Failed to save bio (code {lastErrorCodeSaving})
+        </ErrorMessage>
       ) : null}
       {showPreview === true && <Markdown source={bioValue} />}
       <div className={classes.controls}>

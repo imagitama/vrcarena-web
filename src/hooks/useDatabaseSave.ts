@@ -3,6 +3,7 @@ import { handleError } from '../error-handling'
 import {
   DataStoreError,
   DataStoreErrorCode,
+  DataStoreUpdateError,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
 import useSupabaseClient from './useSupabaseClient'
@@ -84,6 +85,8 @@ export default <TRecord, TReturnVal = TRecord>(
 
       if (idToSave) {
         if (isDelete) {
+          console.debug(`deleting ${idToSave}...`)
+
           const { error } = await supabase
             .from(collectionName)
             .delete()
@@ -98,10 +101,13 @@ export default <TRecord, TReturnVal = TRecord>(
             throw new Error('Need to pass fields')
           }
 
-          const { error } = await supabase
+          const { data, error } = await supabase
             .from(collectionName)
             .update(fields)
             .eq('id', idToSave)
+            .select()
+
+          console.debug(`useDatabaseSave update result`, { data, error })
 
           if ((Array.isArray(error) && error.length > 0) || error) {
             if (Array.isArray(error)) {
@@ -109,6 +115,12 @@ export default <TRecord, TReturnVal = TRecord>(
             } else {
               throw new DataStoreError('Failed to update record', error)
             }
+          }
+
+          if (data.length === 0) {
+            throw new DataStoreUpdateError(
+              `Result was length of 0 - probably RLS issue`
+            )
           }
         }
 
@@ -118,10 +130,12 @@ export default <TRecord, TReturnVal = TRecord>(
           throw new Error('Need to pass fields')
         }
 
-        const { data, error } = await supabase
+        const { data, error, ...other } = await supabase
           .from(collectionName)
           .insert(fields)
           .select()
+
+        console.debug(`useDatabaseSave insert result`, { data, error, other })
 
         if ((Array.isArray(error) && error.length > 0) || error) {
           console.error(error)
@@ -142,11 +156,11 @@ export default <TRecord, TReturnVal = TRecord>(
 
       return [returnData]
     } catch (err) {
+      console.error('Failed to save document', err)
+      handleError(err)
       setIsSuccess(false)
       setLastErrorCode(getDataStoreErrorCodeFromError(err))
       setIsSaving(false)
-      console.error('Failed to save document', err)
-      handleError(err)
       return []
     }
   }

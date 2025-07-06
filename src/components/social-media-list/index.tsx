@@ -25,7 +25,7 @@ import {
   getUrlForGumroadUsername,
   getUrlForPatreonByUsername,
   getUrlForBoothByUsername,
-} from '../../social-media'
+} from '../../utils'
 import { trackAction } from '../../analytics'
 
 import Paper from '../paper'

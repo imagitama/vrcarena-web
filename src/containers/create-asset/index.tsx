@@ -31,6 +31,7 @@ import useSupabaseClient from '../../hooks/useSupabaseClient'
 import { insertRecord } from '../../data-store'
 import AssetResults from '../../components/asset-results'
 import AssetSyncQueue from '../../components/asset-sync-queue'
+import usePermissions from '../../hooks/usePermissions'
 
 const useStyles = makeStyles({
   heading: {
@@ -231,10 +232,9 @@ const View = () => {
 }
 
 export default () => {
-  const isLoggedIn = useIsLoggedIn()
   const [isCreatingManually, setIsCreatingManually] = useState(false)
 
-  if (!isLoggedIn) {
+  if (!usePermissions(routes.createAsset)) {
     return <NoPermissionMessage />
   }
 

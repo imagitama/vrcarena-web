@@ -6,13 +6,19 @@ import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 
 import * as routes from '../../routes'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import NoPermissionMessage from '../../components/no-permission-message'
 import { CollectionNames } from '../../modules/authors'
+import usePermissions from '../../hooks/usePermissions'
 
 const View = () => {
   const { authorId } = useParams<{ authorId: string }>()
   const isCreating = !authorId || authorId === 'create'
+
+  if (
+    !usePermissions(isCreating ? routes.createAuthor : routes.editAuthorWithVar)
+  ) {
+    return <NoPermissionMessage />
+  }
 
   return (
     <>
@@ -40,13 +46,7 @@ const View = () => {
 
 export default () => {
   const { authorId } = useParams<{ authorId: string }>()
-  const isLoggedIn = useIsLoggedIn()
-
   const isCreating = !authorId || authorId === 'create'
-
-  if (!isLoggedIn) {
-    return <NoPermissionMessage />
-  }
 
   return (
     <>

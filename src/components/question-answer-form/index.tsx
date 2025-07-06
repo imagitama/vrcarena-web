@@ -9,6 +9,8 @@ import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import TextInput from '../text-input'
 import { handleError } from '../../error-handling'
+import useIsBanned from '../../hooks/useIsBanned'
+import NoPermissionMessage from '../no-permission-message'
 
 const QuestionAnswerForm = ({
   parentId,
@@ -26,6 +28,10 @@ const QuestionAnswerForm = ({
     })
   const [isCreating, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<QuestionAnswerFields>(CollectionNames.QuestionAnswers)
+
+  if (useIsBanned()) {
+    return <NoPermissionMessage />
+  }
 
   const onSubmitBtnClick = async () => {
     try {

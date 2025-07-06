@@ -21,19 +21,6 @@ export type PopularCurrency = keyof typeof popularCurrencies
 
 export const defaultCurrency: PopularCurrency = 'USD'
 
-const isDollars = (currency: PopularCurrency): boolean => {
-  // TODO: probably use NPM package for this
-  switch (currency) {
-    case 'USD':
-    case 'AUD':
-    case 'CAD':
-    case 'NZD':
-      return true
-  }
-
-  return false
-}
-
 const currencySymbols: Record<PopularCurrency, string> = {
   USD: '$',
   EUR: '€',

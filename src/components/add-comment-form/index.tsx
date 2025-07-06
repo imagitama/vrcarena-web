@@ -12,6 +12,8 @@ import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 import Button from '../button'
+import useIsBanned from '../../hooks/useIsBanned'
+import NoPermissionMessage from '../no-permission-message'
 
 const AddCommentForm = ({
   collectionName,
@@ -26,13 +28,6 @@ const AddCommentForm = ({
   onDone?: () => void
   asPrivate?: boolean
 }) => {
-  if (!collectionName) {
-    throw new Error('Cannot render comment list: no collection name!')
-  }
-  if (!parentId) {
-    throw new Error('Cannot render comment list: no parent ID')
-  }
-
   const [textFieldValue, setTextFieldValue] = useState('')
   const userId = useUserId()
   const [isSaving, isSuccess, lastErrorCode, create, clear] =
@@ -47,6 +42,10 @@ const AddCommentForm = ({
     },
     []
   )
+
+  if (useIsBanned()) {
+    return <NoPermissionMessage />
+  }
 
   if (!userId) {
     return (

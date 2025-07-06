@@ -43,7 +43,6 @@ const useStyles = makeStyles({
   content: {
     flex: 1,
   },
-  // TODO: Invert theme and share components with species selector
   isSelected: {
     backgroundColor: 'grey !important',
     boxShadow: '0px 0px 10px #FFF !important',

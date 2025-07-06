@@ -11,6 +11,8 @@ import TextInput from '../text-input'
 import { Question } from '../../modules/questions'
 import { handleError } from '../../error-handling'
 import InfoMessage from '../info-message'
+import useIsBanned from '../../hooks/useIsBanned'
+import NoPermissionMessage from '../no-permission-message'
 
 const QuestionForm = ({
   assetId,
@@ -26,6 +28,10 @@ const QuestionForm = ({
   })
   const [isCreating, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<QuestionFields>(CollectionNames.Questions)
+
+  if (useIsBanned()) {
+    return <NoPermissionMessage />
+  }
 
   const onSubmitBtnClick = async () => {
     try {

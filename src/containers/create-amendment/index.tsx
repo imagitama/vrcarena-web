@@ -7,13 +7,11 @@ import ErrorMessage from '../../components/error-message'
 import NoPermissionMessage from '../../components/no-permission-message'
 import AmendmentEditor from '../../components/amendment-editor'
 
-import useUserRecord from '../../hooks/useUserRecord'
 import useNotices from '../../hooks/useNotices'
 import InfoMessage from '../../components/info-message'
 import * as routes from '../../routes'
 import { CollectionNames } from '../../modules/assets'
-
-const noticeId = 'create-amendment-info'
+import usePermissions from '../../hooks/usePermissions'
 
 const getReturnUrl = (parentTable: string, parentId: string): string => {
   switch (parentTable) {
@@ -29,26 +27,24 @@ const View = () => {
     parentTable: string
     parentId: string
   }>()
-  const [, , user] = useUserRecord()
   const [hiddenNotices, hideNotice] = useNotices()
 
-  if (!parentTable || !parentId) {
-    return <ErrorMessage>Must provide a parent</ErrorMessage>
+  if (!usePermissions(routes.createReportWithVar)) {
+    return <NoPermissionMessage />
   }
 
-  if (!user) {
-    return <NoPermissionMessage />
+  if (!parentTable || !parentId) {
+    return <ErrorMessage>You must provide a parent and ID</ErrorMessage>
   }
 
   return (
     <>
       <Heading variant="h1">Create Amendment</Heading>
-      {!hiddenNotices.includes(noticeId) && (
-        <InfoMessage onOkay={() => hideNotice(noticeId)}>
-          Use this form to amend an existing record. Our staff members will
-          review your amendment usually within 48 hours.
-        </InfoMessage>
-      )}
+      <InfoMessage hideId="create-amendment-info">
+        Use this form to amend an existing record. Our staff members will review
+        your amendment usually within 48 hours. If it takes longer please open a
+        ticket in our Discord.
+      </InfoMessage>
       <AmendmentEditor
         parentTable={parentTable}
         parentId={parentId}

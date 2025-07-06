@@ -90,7 +90,6 @@ const getFieldsToSearchForCollectionName = (
   }
 }
 
-// TODO: Use enums and types
 const getTableOrViewNameForCollectionName = (collectionName: string) => {
   switch (collectionName) {
     case AuthorsCollectionNames.Authors:

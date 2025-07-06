@@ -41,18 +41,15 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
     useDataStoreEdit<User>(CollectionNames.Users, userId || false, {
       uncatchErrorCodes: [DataStoreErrorCode.ViolateUniqueConstraint],
     })
-
-  if (!user) {
-    throw new Error('Need a user')
-  }
-
-  const { username } = user
-  const [fieldValue, setFieldValue] = useState(username)
+  const [fieldValue, setFieldValue] = useState('')
   const classes = useStyles()
 
   useEffect(() => {
-    setFieldValue(username)
-  }, [username])
+    if (!user) {
+      return
+    }
+    setFieldValue(user.username)
+  }, [user ? user.username : null])
 
   if (!userId || isLoadingUser || !user) {
     return <LoadingIndicator message="Loading your user details..." />

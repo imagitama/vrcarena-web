@@ -8,12 +8,16 @@ import Heading from '../../components/heading'
 import { CollectionNames, ViewNames } from '../../modules/collections'
 
 import * as routes from '../../routes'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import NoPermissionMessage from '../../components/no-permission-message'
+import usePermissions from '../../hooks/usePermissions'
 
 const View = () => {
   const { collectionId } = useParams<{ collectionId: string }>()
   const isCreating = !collectionId || collectionId === 'create'
+
+  if (!usePermissions(routes.editCollectionWithVar)) {
+    return <NoPermissionMessage />
+  }
 
   return (
     <>
@@ -53,13 +57,7 @@ const View = () => {
 
 export default () => {
   const { collectionId } = useParams<{ collectionId: string }>()
-  const isLoggedIn = useIsLoggedIn()
-
   const isCreating = !collectionId || collectionId === 'create'
-
-  if (!isLoggedIn) {
-    return <NoPermissionMessage />
-  }
 
   return (
     <>

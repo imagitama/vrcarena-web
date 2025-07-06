@@ -32,6 +32,7 @@ import {
 } from '../../modules/reports'
 import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 import GenericOutputItem from '../../components/generic-output-item'
+import usePermissions from '../../hooks/usePermissions'
 
 const analyticsCategory = 'CreateReport'
 
@@ -43,12 +44,13 @@ const useStyles = makeStyles({
   },
 })
 
-const View = () => {
-  const userId = useUserId()
-  const { parentTable, parentId } = useParams<{
-    parentTable: string
-    parentId: string
-  }>()
+const Form = ({
+  parentTable,
+  parentId,
+}: {
+  parentTable: string
+  parentId: string
+}) => {
   const [isLoadingParent, lastErrorCodeLoadingParent, parent] =
     useDataStoreItem(parentTable, parentId, 'create-report')
   const [isSaving, isSaveSuccess, lastErrorCodeCreating, save] =
@@ -62,10 +64,6 @@ const View = () => {
   })
   const [createdDocId, setCreatedDocId] = useState<string | null>(null)
   const classes = useStyles()
-
-  if (!userId) {
-    return <NoPermissionMessage />
-  }
 
   if (isSaving) {
     return <LoadingIndicator message="Creating report..." />
@@ -191,10 +189,25 @@ const View = () => {
         minRows={5}
       />
       <FormControls>
-        <Button onClick={onCreateBtnClick}>Create</Button>
+        <Button onClick={onCreateBtnClick} size="large">
+          Create Report
+        </Button>
       </FormControls>
     </>
   )
+}
+
+const View = () => {
+  const { parentTable, parentId } = useParams<{
+    parentTable: string
+    parentId: string
+  }>()
+
+  if (!usePermissions(routes.createReportWithVar)) {
+    return <NoPermissionMessage />
+  }
+
+  return <Form parentTable={parentTable} parentId={parentId} />
 }
 
 export default () => (

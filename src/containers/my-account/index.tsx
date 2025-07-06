@@ -37,6 +37,7 @@ import ChangePasswordForm from '../../components/change-password-form'
 import MyClaims from '../../components/my-claims'
 import Discord from './components/discord'
 import InfoMessage from '../../components/info-message'
+import usePermissions from '../../hooks/usePermissions'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -67,15 +68,14 @@ function WelcomeMessage() {
 const analyticsCategoryName = 'MyAccount'
 
 const View = () => {
-  const userId = useUserId()
   const [, , user] = useUserRecord()
 
-  if (!userId || !user) {
+  if (!usePermissions(routes.myAccount)) {
     return <NoPermissionMessage />
   }
 
   // if they just signed up
-  if (!user.username) {
+  if (!user || !user.username) {
     return <LoadingIndicator message="Waiting for your profile..." />
   }
 

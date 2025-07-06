@@ -135,12 +135,16 @@ const newPrefsButDisabled = {
 
 type AnonymousDetails = any
 
+enum ErrorCode {
+  Unknown,
+}
+
 const useAnonymousSave = (
   anonymousDetails: AnonymousDetails
 ): [
   boolean,
   boolean,
-  boolean,
+  null | ErrorCode,
   (
     newPrefs: NotificationPreferences,
     unsubscribeFromEverything?: boolean
@@ -148,9 +152,7 @@ const useAnonymousSave = (
 ] => {
   const [isSaving, setIsSaving] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-
-  // TODO: Store last error code
-  const [isError, setIsError] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
 
   const save = async (
     newPrefs: NotificationPreferences,
@@ -159,7 +161,7 @@ const useAnonymousSave = (
     try {
       setIsSaving(true)
       setIsSuccess(false)
-      setIsError(false)
+      setLastErrorCode(null)
 
       const {
         data: { error },
@@ -178,11 +180,11 @@ const useAnonymousSave = (
         console.error('Error from saveNotificationPrefs', error)
         setIsSaving(false)
         setIsSuccess(false)
-        setIsError(true)
+        setLastErrorCode(ErrorCode.Unknown) // TODO: Map this
       } else {
         setIsSaving(false)
         setIsSuccess(true)
-        setIsError(false)
+        setLastErrorCode(null)
       }
     } catch (err) {
       console.error('Failed to anonymously save', err)
@@ -190,11 +192,11 @@ const useAnonymousSave = (
 
       setIsSaving(false)
       setIsSuccess(false)
-      setIsError(true)
+      setLastErrorCode(ErrorCode.Unknown)
     }
   }
 
-  return [isSaving, isSuccess, isError, save]
+  return [isSaving, isSuccess, lastErrorCode, save]
 }
 
 const NotificationSettings = ({
@@ -216,7 +218,7 @@ const NotificationSettings = ({
   const [
     isAnonymouslySaving,
     isAnonymouslySaveSuccess,
-    isAnonymouslySaveError,
+    lastAnonymouslySaveErrorCode,
     saveAnonymously,
   ] = useAnonymousSave(anonymousDetails)
 
@@ -304,10 +306,11 @@ const NotificationSettings = ({
       )
     }
 
-    if (isAnonymouslySaveError) {
+    if (lastAnonymouslySaveErrorCode) {
       return (
         <ErrorMessage>
-          Failed to save your notification preferences
+          Failed to save your notification preferences (code{' '}
+          {lastAnonymouslySaveErrorCode})
         </ErrorMessage>
       )
     }

@@ -4,29 +4,16 @@ import { Helmet } from 'react-helmet'
 
 import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
-import ErrorMessage from '../../components/error-message'
 import NoPermissionMessage from '../../components/no-permission-message'
-import LoadingIndicator from '../../components/loading-indicator'
-
-import useUserRecord from '../../hooks/useUserRecord'
-
 import * as routes from '../../routes'
-import { canEditUsers } from '../../permissions'
 import { CollectionNames } from '../../modules/users'
+import useIsEditor from '../../hooks/useIsEditor'
+import usePermissions from '../../hooks/usePermissions'
 
 const View = () => {
   const { userId } = useParams<{ userId: string }>()
-  const [isLoading, isErrored, user] = useUserRecord()
 
-  if (isLoading) {
-    return <LoadingIndicator />
-  }
-
-  if (isErrored) {
-    return <ErrorMessage>Failed to load your account</ErrorMessage>
-  }
-
-  if (!user || !canEditUsers(user)) {
+  if (!usePermissions(routes.editUserWithVar)) {
     return <NoPermissionMessage />
   }
 

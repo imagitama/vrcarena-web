@@ -38,7 +38,7 @@ export const getUrlForParent = (
       return routes.viewAssetWithVar.replace(':assetId', parentId)
     case AuthorsCollectionNames.Authors:
       return routes.viewAssetWithVar.replace(':assetId', parentId)
-    // TODO: Support comments on amendments/users/etc
+    // TODO: Support comments on reports/amendments/users/etc
     case CommentsCollectionNames.Comments:
     case CommentsCollectionNames.CommentsMeta:
       return routes.viewAssetWithVarAndCommentVar

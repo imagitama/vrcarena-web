@@ -8,33 +8,52 @@ import * as routes from '../../routes'
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
-import Button from '../button'
 import SyncUserWithDiscordForm from '../sync-user-with-discord-form'
 import { DiscordUser } from '../../discord'
 
 // when you log in this component gets completely remounted so it tries to repeat a bunch of times
 let isAlreadyAuthenticated = false
 
-// TODO: Use enum
-const errorCodes = {
-  BAD_ACCESS_CODE: 100,
-  UNKNOWN: 999
+// TODO: Change backend to return strings for easier debugging
+enum BackendErrorCode {
+  BadAccessCode = 100,
+  Unknown = 999,
+}
+
+enum ErrorCode {
+  BadAccessCode,
+  FailedToUpdateEmail,
+  Unknown,
+}
+
+const mapBackendErrorCode = (backendErrorCode: BackendErrorCode): ErrorCode => {
+  switch (backendErrorCode) {
+    case BackendErrorCode.BadAccessCode:
+      return ErrorCode.BadAccessCode
+    default:
+      return ErrorCode.Unknown
+  }
 }
 
 // TODO: Verify if actually used
 interface LoginWithDiscordError {
-  errorCode: number
+  errorCode: BackendErrorCode
 }
 
-export default ({ code, onSuccess, onFail }: {
+export default ({
+  code,
+  onSuccess,
+  onFail,
+}: {
   code: string
   onSuccess: () => void
   onFail: () => void
 }) => {
-  const [errorCode, setErrorCode] = useState<number | null>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<ErrorCode | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [lastKnownDiscordUser, setLastKnownDiscordUser] = useState<DiscordUser | null>(null)
+  const [lastKnownDiscordUser, setLastKnownDiscordUser] =
+    useState<DiscordUser | null>(null)
   const { push } = useHistory()
 
   useEffect(() => {
@@ -44,38 +63,42 @@ export default ({ code, onSuccess, onFail }: {
 
     async function main() {
       try {
-        setErrorCode(null)
+        setLastErrorCode(null)
         setIsLoading(true)
         setIsSuccess(false)
 
         const {
-          data: { token, discordUser, hasAlreadySignedUp, errorCode }
-        } = await callFunction<{ code: string }, {
-          token: string
-          discordUser: DiscordUser
-          hasAlreadySignedUp: boolean
-          errorCode?: number
-        }>('loginWithDiscord', {
-          code
+          data: { token, discordUser, hasAlreadySignedUp, errorCode },
+        } = await callFunction<
+          { code: string },
+          {
+            token: string
+            discordUser: DiscordUser
+            hasAlreadySignedUp: boolean
+            errorCode?: BackendErrorCode
+          }
+        >('loginWithDiscord', {
+          code,
         })
 
         if (errorCode !== undefined) {
-          setErrorCode(errorCode)
+          setLastErrorCode(mapBackendErrorCode(errorCode))
           setIsLoading(false)
           setIsSuccess(false)
           return
         }
 
-        const {
-          user: loggedInUser
-        } = await firebase.auth().signInWithCustomToken(token)
+        const { user: loggedInUser } = await firebase
+          .auth()
+          .signInWithCustomToken(token)
 
-        // the user might not have an email OR the email might already be taken so just ignore errors
-        // TODO: Check against existing emails?
+        // NOTE: the user might not have an email OR the email might already be taken so just ignore errors
         try {
           await loggedInUser!.updateEmail(discordUser.email)
         } catch (err) {
           console.error(err)
+
+          // NOTE: We may want to fix this issue but shouldn't block them logging in
         }
 
         isAlreadyAuthenticated = true
@@ -89,13 +112,17 @@ export default ({ code, onSuccess, onFail }: {
         }
 
         setLastKnownDiscordUser(discordUser)
-        setErrorCode(null)
+        setLastErrorCode(null)
         setIsLoading(false)
         setIsSuccess(true)
       } catch (err) {
         console.error(err)
         handleError(err)
-        setErrorCode((err as LoginWithDiscordError).errorCode || errorCodes.UNKNOWN)
+        setLastErrorCode(
+          (err as LoginWithDiscordError).errorCode
+            ? mapBackendErrorCode((err as LoginWithDiscordError).errorCode)
+            : ErrorCode.Unknown
+        )
         setIsLoading(false)
       }
     }
@@ -103,16 +130,10 @@ export default ({ code, onSuccess, onFail }: {
     main()
   }, [code])
 
-  if (errorCode) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to get your details from Discord:
-        <br />
-        <br />
-        Error: {errorCode || 'Internal server error'}
-        <br />
-        <br />
-        <Button onClick={() => onFail()}>Try Again</Button>
+      <ErrorMessage onRetry={onFail}>
+        Failed to get your details from Discord (code {lastErrorCode})
       </ErrorMessage>
     )
   }

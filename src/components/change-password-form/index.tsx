@@ -10,13 +10,15 @@ import { handleError } from '../../error-handling'
 import SuccessMessage from '../success-message'
 import FormControls from '../form-controls'
 
+enum ErrorCode {
+  Unknown,
+}
+
 const ChangePasswordForm = () => {
   const [passwordInput, setPasswordInput] = useState('')
   const [isChanging, setIsChanging] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-
-  // TODO: Store last error code
-  const [isFailed, setIsFailed] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
 
   if (!loggedInUser) {
     return null
@@ -35,17 +37,17 @@ const ChangePasswordForm = () => {
     try {
       setIsChanging(true)
       setIsSuccess(false)
-      setIsFailed(false)
+      setLastErrorCode(null)
       await changeLoggedInUserPassword(passwordInput)
       setIsChanging(false)
       setIsSuccess(true)
-      setIsFailed(false)
+      setLastErrorCode(null)
     } catch (err) {
       handleError(err)
       console.error(err)
       setIsChanging(false)
       setIsSuccess(false)
-      setIsFailed(true)
+      setLastErrorCode(ErrorCode.Unknown)
     }
   }
 
@@ -70,10 +72,10 @@ const ChangePasswordForm = () => {
         <LoadingIndicator message="Changing password..." />
       ) : isSuccess ? (
         <SuccessMessage>Your password has been changed</SuccessMessage>
-      ) : isFailed ? (
+      ) : lastErrorCode !== null ? (
         <ErrorMessage>
           Failed to change your password. Please try logging out and in, then
-          trying again
+          trying again (code {lastErrorCode})
         </ErrorMessage>
       ) : null}
     </>

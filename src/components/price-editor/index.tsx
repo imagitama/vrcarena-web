@@ -40,7 +40,7 @@ const PriceEditor = ({
 }: {
   assetId: string | null
   currentPrice?: number | null
-  currentPriceCurrency?: PopularCurrency
+  currentPriceCurrency?: PopularCurrency | null
   onDone?: () => void
   onCancel?: () => void
   actionCategory?: string

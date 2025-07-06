@@ -4,33 +4,19 @@ import { Helmet } from 'react-helmet'
 
 import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
-import ErrorMessage from '../../components/error-message'
 import NoPermissionMessage from '../../components/no-permission-message'
-import LoadingIndicator from '../../components/loading-indicator'
-
-import useUserRecord from '../../hooks/useUserRecord'
-
 import * as routes from '../../routes'
-import { canCreateDiscordServer, canEditDiscordServer } from '../../permissions'
 import { CollectionNames } from '../../modules/discordservers'
+import usePermissions from '../../hooks/usePermissions'
 
 const View = () => {
   const { discordServerId } = useParams<{ discordServerId: string }>()
-  const [isLoading, isErrored, user] = useUserRecord()
   const isCreating = !discordServerId || discordServerId === 'create'
 
-  if (isLoading) {
-    return <LoadingIndicator message="Loading your account..." />
-  }
-
-  if (isErrored) {
-    return <ErrorMessage>Failed to load your account</ErrorMessage>
-  }
-
   if (
-    !user ||
-    (isCreating && !canCreateDiscordServer(user)) ||
-    (!isCreating && !canEditDiscordServer(user))
+    !usePermissions(
+      isCreating ? routes.createDiscordServer : routes.editDiscordServerWithVar
+    )
   ) {
     return <NoPermissionMessage />
   }

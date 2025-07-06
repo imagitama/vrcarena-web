@@ -6,7 +6,7 @@ export enum ImageConvertQueueItemStatus {
 }
 
 interface ImageConvertQueueItemField {
-  imageurl: string | string[] // thumbnailurl or fileurls TODO: More complex structures
+  imageurl: string | string[] // thumbnailurl or fileurls
   fieldname: string // eg. thumbnailurl
 }
 

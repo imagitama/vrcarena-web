@@ -17,11 +17,7 @@ import PageControls from '../../components/page-controls'
 import Message from '../../components/message'
 import EditorRecordManager from '../../components/editor-record-manager'
 
-import useUserRecord from '../../hooks/useUserRecord'
-import { canEditDiscordServer } from '../../utils'
 import { trackAction } from '../../analytics'
-import { handleError } from '../../error-handling'
-import { callFunction } from '../../firebase'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import {
   CollectionNames,
@@ -30,55 +26,43 @@ import {
 } from '../../modules/discordservers'
 import useIsEditor from '../../hooks/useIsEditor'
 import { AccessStatus, ApprovalStatus } from '../../modules/common'
+import useFirebaseFunction from '../../hooks/useFirebaseFunction'
 
 const analyticsCategory = 'ViewDiscordServer'
+
+enum FunctionName {
+  SyncDiscordServerById = 'syncDiscordServerById',
+}
 
 function SyncDiscordServerButton({
   discordServerId,
 }: {
   discordServerId: string
 }) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSuccess, setIsSuccess] = useState<boolean | null>(null)
-
-  const onClick = async () => {
-    try {
-      if (isLoading) {
-        return
-      }
-
-      setIsLoading(true)
-      setIsSuccess(false)
-
-      await callFunction('syncDiscordServerById', {
-        id: discordServerId,
-      })
-
-      setIsLoading(false)
-      setIsSuccess(true)
-    } catch (err) {
-      // TODO: Re-render with error code
-      handleError(err)
-      setIsSuccess(false)
-    }
-  }
+  const [isCalling, lastErrorCode, lastResult, callFunction] =
+    useFirebaseFunction<{ id: string }, { message: string }>(
+      FunctionName.SyncDiscordServerById
+    )
 
   return (
-    <Button onClick={onClick} icon={<SyncIcon />}>
-      {isLoading
-        ? 'Loading data...'
-        : isSuccess === true
-        ? 'Synced'
-        : isSuccess === false
-        ? 'Failed to sync'
-        : 'Sync'}
+    <Button
+      onClick={() => {
+        callFunction({ id: discordServerId })
+      }}
+      icon={<SyncIcon />}>
+      {isCalling
+        ? 'Syncing...'
+        : lastResult !== null
+        ? 'Synced Successfully'
+        : lastErrorCode !== null
+        ? `Failed to sync (code ${lastErrorCode})`
+        : 'Sync Discord Server'}
     </Button>
   )
 }
 
 const View = () => {
   const { discordServerId } = useParams<{ discordServerId: string }>()
-  const [, , user] = useUserRecord()
   const [isLoading, lastErrorCode, result, hydrate] =
     useDataStoreItem<FullDiscordServer>(
       ViewNames.GetFullDiscordServers,
@@ -200,7 +184,7 @@ const View = () => {
           joinActionCategory={analyticsCategory}
         />
       )}
-      {user && canEditDiscordServer(user) && (
+      {isEditor && (
         <>
           <Heading variant="h2">Actions</Heading>
           <EditorRecordManager

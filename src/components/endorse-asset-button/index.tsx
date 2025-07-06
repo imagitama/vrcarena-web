@@ -14,7 +14,7 @@ import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
 import { DataStoreErrorCode } from '../../data-store'
-import { CollectionNames } from '../../modules/endorsements'
+import { CollectionNames, Endorsement } from '../../modules/endorsements'
 
 const getLabel = (
   isLoggedIn: boolean,
@@ -98,13 +98,6 @@ const getIcon = (
   return <ThumbUpIcon />
 }
 
-// TODO: Move to modules
-interface Endorsement {
-  id: string
-  asset: string
-  createdby: string
-}
-
 const EndorseAssetButton = ({
   isAssetLoading,
   assetId,
@@ -161,15 +154,19 @@ const EndorseAssetButton = ({
         })
       }
 
-      await createOrDelete({
+      const result = await createOrDelete({
         asset: assetId,
       })
+
+      if (!result.length) {
+        throw new Error('Failed to save')
+      }
 
       if (onDone) {
         onDone()
       }
     } catch (err) {
-      console.error('Failed to create endorsement', err)
+      console.error('Failed to perform save', err)
       handleError(err)
     }
   }
@@ -186,13 +183,17 @@ const EndorseAssetButton = ({
         })
       }
 
-      await createOrDelete()
+      const result = await createOrDelete()
+
+      if (!result.length) {
+        throw new Error('Failed to perform removal')
+      }
 
       if (onDone) {
         onDone()
       }
     } catch (err) {
-      console.error('Failed to delete endorsement', err)
+      console.error('Failed to remove endorsement', err)
       handleError(err)
     }
   }

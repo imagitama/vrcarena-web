@@ -86,7 +86,11 @@ const rewardMetaById: { [key: number]: RewardMeta } = {
   },
 }
 
-export default () => {
+enum ErrorCode {
+  Unknown,
+}
+
+const PatreonConnectForm = () => {
   const userId = useUserId()
   const [isLoadingMeta, lastErrorCodeLoadingMeta, metaResult, hydrate] =
     useDataStoreItem<UserMeta>(
@@ -96,11 +100,15 @@ export default () => {
     )
   const [isComplete, setIsComplete] = useState<boolean | null>(false)
   const [isLoading, setIsLoading] = useState(false)
-
-  // TODO: Store last error code
-  const [isErrored, setIsErrored] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
   const classes = useStyles()
   const isPatron = useIsPatron()
+
+  const clear = () => {
+    setLastErrorCode(null)
+    setIsLoading(false)
+    setIsComplete(null)
+  }
 
   useEffect(() => {
     async function main() {
@@ -124,7 +132,7 @@ export default () => {
         }
 
         setIsLoading(true)
-        setIsErrored(false)
+        setLastErrorCode(null)
         setIsComplete(false)
 
         oauthCode = queryParams.code
@@ -138,7 +146,7 @@ export default () => {
         }
 
         setIsLoading(false)
-        setIsErrored(false)
+        setLastErrorCode(null)
 
         setIsComplete(true)
 
@@ -146,7 +154,7 @@ export default () => {
       } catch (err) {
         console.error(err)
         setIsLoading(false)
-        setIsErrored(true)
+        setLastErrorCode(ErrorCode.Unknown) // TODO: Map this
         setIsComplete(false)
         handleError(err)
       }
@@ -155,25 +163,18 @@ export default () => {
     main()
   }, [])
 
-  const TryAgainButton = () => (
-    <Button
-      onClick={() => {
-        setIsErrored(false)
-        setIsLoading(false)
-        setIsComplete(null)
-      }}>
-      Start Again
-    </Button>
-  )
+  const TryAgainButton = () => <Button onClick={clear}>Start Again</Button>
 
   if (isLoading || isLoadingMeta) {
     return <LoadingIndicator message="Loading data..." />
   }
 
-  if (isErrored || lastErrorCodeLoadingMeta !== null) {
+  if (lastErrorCode !== null || lastErrorCodeLoadingMeta !== null) {
     return (
       <ErrorMessage>
-        Failed to talk to Patreon <br />
+        Failed to talk to Patreon (code{' '}
+        {lastErrorCode !== null ? lastErrorCode : lastErrorCodeLoadingMeta})
+        <br />
         <br />
         <TryAgainButton />
       </ErrorMessage>
@@ -248,3 +249,5 @@ export default () => {
     </div>
   )
 }
+
+export default PatreonConnectForm

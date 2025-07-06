@@ -6,17 +6,16 @@ import GenericEditor from '../../components/generic-editor'
 import Heading from '../../components/heading'
 import NoPermissionMessage from '../../components/no-permission-message'
 import * as routes from '../../routes'
-import useIsEditor from '../../hooks/useIsEditor'
 import { CollectionNames } from '../../modules/pages'
+import usePermissions from '../../hooks/usePermissions'
 
 const View = () => {
   const { parentName, pageName } = useParams<{
     parentName: string
     pageName: string
   }>()
-  const isEditor = useIsEditor()
 
-  if (!isEditor) {
+  if (!usePermissions(routes.editPageWithParentAndPageVar)) {
     return <NoPermissionMessage />
   }
 

@@ -18,8 +18,7 @@ import categoryMeta, {
   CategoryMeta,
   getCategoryMeta,
 } from '../../category-meta'
-import useSpecies from '../../hooks/useSpecies'
-import { Species } from '../../modules/species'
+import { CollectionNames, Species } from '../../modules/species'
 import { getPathForQueryString } from '../../queries'
 
 import ErrorMessage from '../error-message'
@@ -36,22 +35,10 @@ import { AssetCategory } from '../../modules/assets'
 import { DataStoreErrorCode } from '../../data-store'
 import LoadingIndicator from '../loading-indicator'
 
-import {
-  ViewNames as UsersViewNames,
-  CollectionNames as UsersCollectionNames,
-} from '../../modules/users'
-import {
-  ViewNames as AuthorsViewNames,
-  CollectionNames as AuthorsCollectionNames,
-} from '../../modules/authors'
-import {
-  ViewNames as AssetsViewNames,
-  CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
-import {
-  ViewNames as CommentsViewNames,
-  CollectionNames as CommentsCollectionNames,
-} from '../../modules/comments'
+import { CollectionNames as UsersCollectionNames } from '../../modules/users'
+import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
+import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
+import useDataStoreItems from '../../hooks/useDataStoreItems'
 
 const useStyles = makeStyles({
   tableButton: {
@@ -352,7 +339,7 @@ const CategoryAndSpeciesSearchHint = ({
 }: {
   searchTerm: string
 }) => {
-  const [species] = useSpecies()
+  const [, , species] = useDataStoreItems<Species>(CollectionNames.Species)
 
   const searchTermLower = searchTerm.toLowerCase().trim()
 
@@ -375,12 +362,14 @@ const CategoryAndSpeciesSearchHint = ({
 
   let suggestedSpecies: Species | null = null
 
-  for (const speciesItem of species) {
-    if (
-      speciesItem.singularname.toLowerCase().includes(searchTermLower) ||
-      speciesItem.pluralname.toLowerCase().includes(searchTermLower)
-    ) {
-      suggestedSpecies = speciesItem
+  if (species) {
+    for (const speciesItem of species) {
+      if (
+        speciesItem.singularname.toLowerCase().includes(searchTermLower) ||
+        speciesItem.pluralname.toLowerCase().includes(searchTermLower)
+      ) {
+        suggestedSpecies = speciesItem
+      }
     }
   }
 

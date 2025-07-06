@@ -30,9 +30,7 @@ import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
 } from '../../media-queries'
-import { getCanUserEditAsset } from '../../utils/assets'
 import Link from '../../components/link'
-import { ReactComponent as VRChatIcon } from '../../assets/images/icons/vrchat.svg'
 import { getCategoryMeta } from '../../category-meta'
 import {
   AssetCategory,
@@ -42,6 +40,7 @@ import {
   RelationType,
   SourceInfo,
   ViewNames,
+  getIsAssetADraft,
   getIsAssetWaitingForApproval,
 } from '../../modules/assets'
 
@@ -75,7 +74,6 @@ import TabAvatars from './components/tab-avatars'
 import TabAdmin from './components/tab-admin'
 import TabRelated from './components/tab-related'
 import AddToCartButton from '../add-to-cart-button'
-import { getUrlForVrChatWorldId } from '../../social-media'
 import SpeciesList from '../species-list'
 
 import Relations from '../relations'
@@ -100,6 +98,7 @@ import { getVrchatWorldLaunchUrlForId } from '../../vrchat'
 import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import LoadingIndicator from '../loading-indicator'
+import { getHasPermissionForRecord } from '../../permissions'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -428,8 +427,6 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     : null
 
   useBanner(bannerUrl)
-
-  const isAllowedToEditAsset = asset && user && getCanUserEditAsset(asset, user)
 
   const urlToAsset = routes.viewAssetWithVar.replace(
     ':assetId',
@@ -888,53 +885,6 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                   </Control>
                 </>
               )}
-              {asset &&
-              asset.vrchatclonableworldids &&
-              asset.vrchatclonableworldids.length ? (
-                <>
-                  <Control>
-                    <Button
-                      url={getUrlForVrChatWorldId(
-                        asset.vrchatclonableworldids[0]
-                      )}
-                      onClick={() =>
-                        trackAction(
-                          analyticsCategoryName,
-                          'Click view world on VRChat website button',
-                          assetId
-                        )
-                      }
-                      icon={
-                        <span className={classes.vrchatIcon}>
-                          <VRChatIcon />
-                        </span>
-                      }>
-                      View VRChat Website
-                    </Button>
-                  </Control>
-                  <Control>
-                    <Button
-                      url={getVrchatWorldLaunchUrlForId(
-                        asset.vrchatclonableworldids[0]
-                      )}
-                      onClick={() =>
-                        trackAction(
-                          analyticsCategoryName,
-                          'Click launch VRChat world button',
-                          assetId
-                        )
-                      }
-                      icon={
-                        <span className={classes.vrchatIcon}>
-                          <VRChatIcon />
-                        </span>
-                      }
-                      color="secondary">
-                      Launch VRChat
-                    </Button>
-                  </Control>
-                </>
-              ) : null}
               <Control>
                 <EndorseAssetButton
                   isAssetLoading={isLoading}
@@ -1010,7 +960,12 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                 </Suspense>
               </ControlGroup>
             )}
-            {isAllowedToEditAsset || isEditor ? (
+            {asset &&
+            getHasPermissionForRecord<FullAsset>(
+              user,
+              asset,
+              getIsAssetADraft(asset)
+            ) ? (
               <ControlGroup>
                 <Suspense
                   fallback={<LoadingIndicator message="Loading controls..." />}>

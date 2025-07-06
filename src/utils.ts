@@ -98,64 +98,7 @@ export function parseSearchTermFromUrlPath(urlPath: string): string {
   return window.decodeURIComponent(urlPath)
 }
 
-export function canEditPedestal(user: FullUser) {
-  if (!user) {
-    return false
-  }
-
-  if (user.role === UserRoles.Admin || user.role === UserRoles.Editor) {
-    return true
-  }
-
-  if (user.patreonstatus === PatreonStatus.Patron) {
-    return true
-  }
-
-  return false
-}
-
-export function canEditAuthor(user: FullUser): boolean {
-  if (!user) {
-    return false
-  }
-  if (user.role === UserRoles.Admin || user.role === UserRoles.Editor) {
-    return true
-  }
-  return false
-}
-
-export function canEditDiscordServer(user: FullUser): boolean {
-  if (!user) {
-    return false
-  }
-  if (user.role === UserRoles.Admin || user.role === UserRoles.Editor) {
-    return true
-  }
-  return false
-}
-
-export function canApproveAsset(user: FullUser): boolean {
-  if (!user) {
-    return false
-  }
-  if (user.role === UserRoles.Admin || user.role === UserRoles.Editor) {
-    return true
-  }
-  return false
-}
-
-export function canEditSpecies(user: FullUser) {
-  if (!user) {
-    return false
-  }
-  if (user.role === UserRoles.Admin || user.role === UserRoles.Editor) {
-    return true
-  }
-  return false
-}
-
 // Some uploaded files have an uppercase extension (.PNG)
-// TODO: Upload the files always as lowercase?
 function getValidUrl(url: string): string {
   if (!url) {
     return ''
@@ -207,33 +150,6 @@ export const getYouTubeVideoIdFromUrl = (url: string): string => {
 export function getIsUrlNotAnImageOrVideo(url: string): boolean {
   const validUrl = getValidUrl(url)
   return !getIsUrlAnImage(validUrl) && !getIsUrlAVideo(validUrl)
-}
-
-export function getFilenameFromUrl(url: string): string {
-  if (!url) {
-    return ''
-  }
-
-  if (getIsUrlAYoutubeVideo(url)) {
-    return 'YouTube Video'
-  }
-
-  if (url.includes('base64')) {
-    return 'base64url'
-  }
-
-  const validUrl = getValidUrl(url)
-
-  // @ts-ignore TODO fixup!
-  return validUrl
-    .replace('%2F', '/')
-    .split('/')
-    .pop()
-    .split('?')
-    .shift()
-    .replace(/%20/g, ' ')
-    .split('___')
-    .pop()
 }
 
 // even if you grant public access to a Firebase bucket
@@ -522,4 +438,44 @@ export const getLabelFromEditableFields = <TRecord>(
   }
 
   return fieldName
+}
+
+export function getUrlForVrChatAvatarId(avatarId: string): string {
+  return `https://vrchat.com/home/avatar/${avatarId}`
+}
+
+export function getUrlForVrChatWorldId(worldId: string): string {
+  return `https://vrchat.com/home/world/${worldId}`
+}
+
+export function getUrlForVrChatUserId(userId: string): string {
+  return `https://vrchat.com/home/user/${userId}`
+}
+
+export function getUrlForTwitterUsername(username: string): string {
+  return `https://twitter.com/${username}`
+}
+
+export function getUrlForYouTubeChannelByChannelId(channelId: string): string {
+  return `https://www.youtube.com/channel/${channelId}`
+}
+
+export function getUrlForTelegramUsername(username: string): string {
+  return `https://t.me/${username}`
+}
+
+export function getUrlForTwitchByUsername(username: string): string {
+  return `https://twitch.tv/${username}`
+}
+
+export function getUrlForGumroadUsername(username: string): string {
+  return `https://gumroad.com/${username}`
+}
+
+export function getUrlForPatreonByUsername(username: string): string {
+  return `https://patreon.com/${username}`
+}
+
+export function getUrlForBoothByUsername(username: string): string {
+  return `https://${username}.booth.pm`
 }

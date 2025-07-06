@@ -699,8 +699,7 @@ const Divider = () => {
   )
 }
 
-// TODO: Use correct type
-const textDiffFieldNames: string[] = [
+const textDiffFieldNames: (keyof Asset)[] = [
   'title',
   'description',
   'sourceurl',

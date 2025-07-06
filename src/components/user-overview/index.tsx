@@ -9,7 +9,6 @@ import useUserRecord from '../../hooks/useUserRecord'
 
 import * as routes from '../../routes'
 import { fixAccessingImagesUsingToken } from '../../utils'
-import { canEditUsers } from '../../permissions'
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
@@ -192,7 +191,7 @@ export default ({ userId }: { userId: string }) => {
           }}
           actionCategory="ViewUser"
         />
-        {currentUser && canEditUsers(currentUser) && (
+        {isEditor && (
           <UserControls>
             <Button
               icon={<EditIcon />}

@@ -10,7 +10,10 @@ export const prepareValueForQuery = (value: string): string => {
   let newValue = value
 
   if (newValue.includes(' ')) {
-    // TODO: Handle when " in value
+    if (newValue.includes('"')) {
+      throw new Error('Found " symbol')
+    }
+
     newValue = `"${newValue}"`
   }
 
