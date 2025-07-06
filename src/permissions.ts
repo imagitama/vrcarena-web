@@ -46,5 +46,6 @@ export const getHasPermissionForRoute = (
     return false
   }
 
+  // must always default to "true" to allow everyone access
   return true
 }

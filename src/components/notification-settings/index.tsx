@@ -234,12 +234,10 @@ const NotificationSettings = ({
     }
   }, [userPreferences !== null])
 
-  if (isLoadingPreferences || !userPreferences || isSaving) {
-    return (
-      <LoadingIndicator
-        message={`${isSaving ? 'Saving' : 'Loading'} preferences...`}
-      />
-    )
+  const isBusy = isSaving || isAnonymouslySaving
+
+  if (isLoadingPreferences || !userPreferences) {
+    return <LoadingIndicator message={`Loading preferences...`} />
   }
 
   if (lastErrorCodeLoadingPreferences !== null) {
@@ -251,8 +249,8 @@ const NotificationSettings = ({
   }
 
   const onChangeEvent = (
-    newVal: boolean,
-    eventName: keyof typeof NotificationEvents
+    eventName: keyof typeof NotificationEvents,
+    newVal: boolean
   ) => {
     setNewPrefs((currentVal) => ({
       ...currentVal,
@@ -264,8 +262,8 @@ const NotificationSettings = ({
   }
 
   const onChangeMethod = (
-    newVal: boolean,
-    methodName: keyof typeof NotificationMethods
+    methodName: keyof typeof NotificationMethods,
+    newVal: boolean
   ) => {
     setNewPrefs((currentVal) => ({
       ...currentVal,
@@ -297,38 +295,13 @@ const NotificationSettings = ({
     }
   }
 
-  if (anonymousDetails) {
-    if (isAnonymouslySaveSuccess) {
-      return (
-        <SuccessMessage>
-          Your preferences have been saved successfully
-        </SuccessMessage>
-      )
-    }
-
-    if (lastAnonymouslySaveErrorCode) {
-      return (
-        <ErrorMessage>
-          Failed to save your notification preferences (code{' '}
-          {lastAnonymouslySaveErrorCode})
-        </ErrorMessage>
-      )
-    }
-
-    if (isAnonymouslySaving) {
-      return (
-        <LoadingIndicator message="Saving your notification preferences..." />
-      )
-    }
-  }
-
   return (
     <div className={classes.root}>
       {anonymousDetails ? (
         <>
           <Button
             onClick={() => saveAnonymously(newPrefs, true)}
-            isDisabled={isSaving}>
+            isDisabled={isBusy}>
             Unsubscribe From Everything
           </Button>
           <br />
@@ -341,13 +314,13 @@ const NotificationSettings = ({
           key={eventName}
           value={newPrefs.events[eventName] !== false}
           onChange={(newVal) =>
-            onChangeEvent(newVal, eventName as keyof typeof NotificationEvents)
+            onChangeEvent(eventName as keyof typeof NotificationEvents, newVal)
           }
           label={getLabelForEventName(
             eventName as keyof typeof NotificationEvents
           )}
           fullWidth
-          isDisabled={isSaving}
+          isDisabled={isBusy}
         />
       ))}
       <Heading variant="h4">Methods</Heading>
@@ -357,18 +330,18 @@ const NotificationSettings = ({
         .map((methodName) => (
           <CheckboxInput
             key={methodName}
-            value={newPrefs.events[methodName] !== false}
+            value={newPrefs.methods[methodName] !== false}
             onChange={(newVal) =>
               onChangeMethod(
-                newVal,
-                methodName as keyof typeof NotificationMethods
+                methodName as keyof typeof NotificationMethods,
+                newVal
               )
             }
             label={getLabelForMethodName(
               methodName as keyof typeof NotificationMethods
             )}
             fullWidth
-            isDisabled={isSaving}
+            isDisabled={isBusy}
           />
         ))}
       {!anonymousDetails ? (
@@ -383,16 +356,27 @@ const NotificationSettings = ({
             value={notificationEmail}
             placeholder="eg. notifyme@hotmail.com"
             fullWidth
+            isDisabled={isBusy}
           />
         </>
       ) : null}
-      {lastErrorCodeSaving !== null ? (
-        <ErrorMessage>Failed to save. Please try again</ErrorMessage>
-      ) : isSaveSuccess ? (
+      {isAnonymouslySaving || isBusy ? (
+        <LoadingIndicator message="Saving..." />
+      ) : null}
+      {lastAnonymouslySaveErrorCode !== null ? (
+        <ErrorMessage>
+          Failed to save your preferences (code {lastAnonymouslySaveErrorCode})
+        </ErrorMessage>
+      ) : lastErrorCodeSaving !== null ? (
+        <ErrorMessage>
+          Failed to save your preferences (code {lastErrorCodeSaving})
+        </ErrorMessage>
+      ) : null}
+      {isSaveSuccess || isAnonymouslySaveSuccess ? (
         <SuccessMessage>Saved successfully</SuccessMessage>
       ) : null}
       <FormControls>
-        <Button onClick={onSaveClick} isDisabled={isSaving} icon={<SaveIcon />}>
+        <Button onClick={onSaveClick} isDisabled={isBusy} icon={<SaveIcon />}>
           Save
         </Button>
       </FormControls>

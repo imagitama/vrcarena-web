@@ -15,6 +15,7 @@ import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import Button from '../button'
+import TextInput from '../text-input'
 
 const useStyles = makeStyles({
   bioTextField: {
@@ -82,13 +83,14 @@ const BioEditor = ({
 
   return (
     <>
-      <TextField
+      <TextInput
         value={bioValue}
         onChange={(e) => setBioValue(e.target.value)}
         minRows={5}
         multiline
         variant="outlined"
         className={classes.bioTextField}
+        isDisabled={isSaving}
       />
       <p>
         You can use markdown to <strong>format</strong> <em>your</em> content.

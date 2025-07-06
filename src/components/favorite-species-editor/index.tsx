@@ -136,7 +136,8 @@ export default ({
             if (saveOnSelect) {
               onSaveBtnClick(newSpeciesId)
             }
-          }}>
+          }}
+          disabled={isSaving}>
           {species
             .filter(
               (speciesItem) => !speciesItem.singularname.includes('DO NOT USE')

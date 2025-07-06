@@ -197,6 +197,10 @@ export default ({
   )
 
   const toggleSelectPlatform = (platformName: VrPlatformName): void => {
+    if (isSaving) {
+      return
+    }
+
     setSelectedFields((currentVal) => ({
       ...currentVal,
       [platformName]: {
@@ -267,6 +271,7 @@ export default ({
               <div className={classes.checkbox}>
                 <CheckboxInput
                   value={selectedFields[platform.name].isSelected}
+                  isDisabled={isSaving}
                 />
               </div>
               <div className={classes.image}>
@@ -322,7 +327,9 @@ export default ({
                       setUsername(platform.name, event.target.value)
                     }
                     className={classes.usernameInput}
-                    disabled={!selectedFields[platform.name].isSelected}
+                    disabled={
+                      !selectedFields[platform.name].isSelected || isSaving
+                    }
                   />
                 </div>
               </div>
