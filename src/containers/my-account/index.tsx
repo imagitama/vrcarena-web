@@ -38,6 +38,8 @@ import MyClaims from '../../components/my-claims'
 import Discord from './components/discord'
 import InfoMessage from '../../components/info-message'
 import usePermissions from '../../hooks/usePermissions'
+import UserOverview from '../../components/user-overview'
+import MyUserOverview from '../../components/my-user-overview'
 
 function WelcomeMessage() {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -87,6 +89,11 @@ const View = () => {
       <Tabs
         urlWithTabNameVar={routes.myAccountWithTabNameVar}
         items={[
+          {
+            name: 'overview',
+            label: 'Overview',
+            contents: <MyUserOverview />,
+          },
           {
             name: 'username',
             label: 'Username',

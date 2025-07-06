@@ -1,5 +1,4 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 import Link from '../../components/link'
 import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'
@@ -10,7 +9,6 @@ import useUserRecord from '../../hooks/useUserRecord'
 import * as routes from '../../routes'
 import { fixAccessingImagesUsingToken } from '../../utils'
 
-import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import Heading from '../heading'
 import SocialMediaList from '../social-media-list'
@@ -34,7 +32,6 @@ import TabHistory from './components/tab-history'
 import Context from './context'
 import useIsEditor from '../../hooks/useIsEditor'
 import { BanStatus, FullUser, ViewNames } from '../../modules/users'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
 
 const useStyles = makeStyles({
   socialMediaItem: {
@@ -102,30 +99,15 @@ const UserControls = ({ children }: { children: React.ReactChild[] }) => {
   return <div className={classes.controls}>{children}</div>
 }
 
-export default ({ userId }: { userId: string }) => {
-  const [, , currentUser] = useUserRecord()
-  const [isLoadingUser, lastErrorCodeLoadingUser, user] =
-    useDataStoreItem<FullUser>(ViewNames.GetFullUsers, userId, 'user-overview')
+const UserOverview = ({
+  user,
+  small = false,
+}: {
+  user: FullUser
+  small?: boolean
+}) => {
   const classes = useStyles()
   const isEditor = useIsEditor()
-
-  if (isLoadingUser) {
-    return <LoadingIndicator message="Loading user profile..." />
-  }
-
-  if (lastErrorCodeLoadingUser !== null) {
-    return (
-      <ErrorMessage>
-        Failed to load their account (code {lastErrorCodeLoadingUser})
-      </ErrorMessage>
-    )
-  }
-
-  if (!user) {
-    return (
-      <ErrorMessage>Failed to load their account (invalid user)</ErrorMessage>
-    )
-  }
 
   const {
     username,
@@ -142,8 +124,6 @@ export default ({ userId }: { userId: string }) => {
     neosvrusername: neosVrUsername,
     chilloutvrusername: chilloutVrUsername,
     favoritespeciesdata: favoriteSpeciesData,
-
-    // TODO: Get this working again as this data is no longer provided
     banstatus: banStatus,
   } = user
 
@@ -155,19 +135,12 @@ export default ({ userId }: { userId: string }) => {
 
   return (
     <>
-      <Context.Provider value={{ userId, user }}>
-        <Helmet>
-          <title>View {username}'s profile | VRCArena</title>
-          <meta
-            name="description"
-            content={`View the user profile of ${username}.`}
-          />
-        </Helmet>
+      <Context.Provider value={{ userId: user.id, user }}>
         <Avatar username={username} url={avatarurl} lazy={false} noHat />
         <Heading
           variant="h1"
           className={`${classes.username} ${isBanned ? classes.isBanned : ''}`}>
-          <Link to={routes.viewUserWithVar.replace(':userId', userId)}>
+          <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
             {username}
           </Link>{' '}
           {getUserIsStaffMember(user) && (
@@ -195,7 +168,7 @@ export default ({ userId }: { userId: string }) => {
           <UserControls>
             <Button
               icon={<EditIcon />}
-              url={routes.editUserWithVar.replace(':userId', userId)}>
+              url={routes.editUserWithVar.replace(':userId', user.id)}>
               Edit User
             </Button>{' '}
             <Button
@@ -203,7 +176,7 @@ export default ({ userId }: { userId: string }) => {
               url={`${routes.adminWithTabNameVar.replace(
                 ':tabName',
                 'users'
-              )}?userId=${userId}`}>
+              )}?userId=${user.id}`}>
               View Comments
             </Button>
           </UserControls>
@@ -237,62 +210,66 @@ export default ({ userId }: { userId: string }) => {
             </Link>
           </div>
         )}
-        <Tabs
-          items={[
-            {
-              name: 'comments',
-              label: 'Comments',
-              contents: <TabComments />,
-              noLazy: true,
-            },
-            {
-              name: 'assets',
-              label: 'Assets',
-              contents: <TabAssets />,
-            },
-            {
-              name: 'collection',
-              label: 'Collection',
-              contents: <TabCollection />,
-            },
-            {
-              name: 'wishlist',
-              label: 'Wishlist',
-              contents: <TabWishlist />,
-            },
-            {
-              name: 'reviews',
-              label: 'Reviews',
-              contents: <TabReviews />,
-            },
-            {
-              name: 'endorsements',
-              label: 'Endorsements',
-              contents: <TabEndorsements />,
-            },
-            {
-              name: 'attachments',
-              label: 'Attachments',
-              contents: <TabAttachments />,
-            },
-          ].concat(
-            isEditor
-              ? [
-                  {
-                    name: 'history',
-                    label: 'History',
-                    contents: <TabHistory />,
-                  },
-                ]
-              : []
-          )}
-          urlWithTabNameVar={routes.viewUserWithVarAndTabVar.replace(
-            ':userId',
-            userId
-          )}
-          horizontal
-        />
+        {!small && (
+          <Tabs
+            items={[
+              {
+                name: 'comments',
+                label: 'Comments',
+                contents: <TabComments />,
+                noLazy: true,
+              },
+              {
+                name: 'assets',
+                label: 'Assets',
+                contents: <TabAssets />,
+              },
+              {
+                name: 'collection',
+                label: 'Collection',
+                contents: <TabCollection />,
+              },
+              {
+                name: 'wishlist',
+                label: 'Wishlist',
+                contents: <TabWishlist />,
+              },
+              {
+                name: 'reviews',
+                label: 'Reviews',
+                contents: <TabReviews />,
+              },
+              {
+                name: 'endorsements',
+                label: 'Endorsements',
+                contents: <TabEndorsements />,
+              },
+              {
+                name: 'attachments',
+                label: 'Attachments',
+                contents: <TabAttachments />,
+              },
+            ].concat(
+              isEditor
+                ? [
+                    {
+                      name: 'history',
+                      label: 'History',
+                      contents: <TabHistory />,
+                    },
+                  ]
+                : []
+            )}
+            urlWithTabNameVar={routes.viewUserWithVarAndTabVar.replace(
+              ':userId',
+              user.id
+            )}
+            horizontal
+          />
+        )}
       </Context.Provider>
     </>
   )
 }
+
+export default UserOverview

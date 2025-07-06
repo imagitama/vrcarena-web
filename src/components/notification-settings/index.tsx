@@ -136,7 +136,15 @@ const newPrefsButDisabled = {
 type AnonymousDetails = any
 
 enum ErrorCode {
+  UserNotFound,
   Unknown,
+}
+
+const mapErrorToErrorCode = (err: Error): ErrorCode => {
+  if (err.message.includes('There is no user')) {
+    return ErrorCode.UserNotFound
+  }
+  return ErrorCode.Unknown
 }
 
 const useAnonymousSave = (
@@ -192,7 +200,7 @@ const useAnonymousSave = (
 
       setIsSaving(false)
       setIsSuccess(false)
-      setLastErrorCode(ErrorCode.Unknown)
+      setLastErrorCode(mapErrorToErrorCode(err as Error))
     }
   }
 
@@ -236,7 +244,7 @@ const NotificationSettings = ({
 
   const isBusy = isSaving || isAnonymouslySaving
 
-  if (isLoadingPreferences || !userPreferences) {
+  if ((isLoadingPreferences || !userPreferences) && !anonymousDetails) {
     return <LoadingIndicator message={`Loading preferences...`} />
   }
 
@@ -365,7 +373,10 @@ const NotificationSettings = ({
       ) : null}
       {lastAnonymouslySaveErrorCode !== null ? (
         <ErrorMessage>
-          Failed to save your preferences (code {lastAnonymouslySaveErrorCode})
+          Failed to save your preferences
+          {lastAnonymouslySaveErrorCode === ErrorCode.UserNotFound
+            ? ': user not found'
+            : ` (code ${lastAnonymouslySaveErrorCode})`}
         </ErrorMessage>
       ) : lastErrorCodeSaving !== null ? (
         <ErrorMessage>
