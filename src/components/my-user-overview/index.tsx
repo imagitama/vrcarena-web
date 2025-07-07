@@ -11,7 +11,7 @@ import UsernameLink from '../username-link'
 import Button from '../button'
 
 const getSigninMethod = (firebaseUser: FirebaseReducer.AuthState): string => {
-  if (!firebaseUser.providerData) {
+  if (!firebaseUser.providerData || !firebaseUser.providerData.length) {
     return 'Unknown'
   }
 
