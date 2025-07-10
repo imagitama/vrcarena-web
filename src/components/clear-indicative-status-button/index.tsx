@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from '../button'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { AssetMeta, CollectionNames } from '../../modules/assets'
 import useTimer from '../../hooks/useTimer'
@@ -15,7 +15,7 @@ const ClearIndicativeStatusButton = ({
   onDone?: () => void
 }) => {
   const [isSaving, isSavingSuccess, lastSavingErrorCode, save] =
-    useDatabaseSave<AssetMeta>(CollectionNames.AssetsMeta, assetId)
+    useDataStoreEdit<AssetMeta>(CollectionNames.AssetsMeta, assetId)
   const onDoneAfterDelay = useTimer(onDone)
 
   const onSaveClick = async () => {

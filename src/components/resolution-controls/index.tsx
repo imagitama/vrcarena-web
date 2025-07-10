@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 import ClearIcon from '@mui/icons-material/Clear'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
@@ -25,7 +25,7 @@ export default ({
   onDone,
 }: {
   id: string
-  existingResolutionStatus?: string // pending | resolved
+  existingResolutionStatus?: ResolutionStatus
   existingResolutionNotes?: string
   onClick?: (newValue: string) => void
   onDone?: () => void
@@ -36,7 +36,7 @@ export default ({
       existingResolutionStatus ? false : id,
       'resolve-button'
     )
-  const [isSaving, , lastErrorCodeSaving, save] = useDatabaseSave(
+  const [isSaving, , lastErrorCodeSaving, save] = useDataStoreEdit<ReportMeta>(
     CollectionNames.ReportsMeta,
     id
   )
@@ -95,7 +95,7 @@ export default ({
 
       await save({
         resolutionstatus: newResolutionStatus,
-        resolvedat: newResolvedAt,
+        resolvedat: newResolvedAt ? newResolvedAt.toISOString() : null,
         resolvedby: newResolvedBy,
         resolutionnotes: newResolutionNotes,
       })
@@ -111,6 +111,15 @@ export default ({
 
   return (
     <>
+      <TextInput
+        label="Resolution notes (public)"
+        fullWidth
+        minRows={5}
+        multiline
+        onChange={(e) => setNewResolutionNotes(e.target.value)}
+        value={newResolutionNotes}
+      />
+      <br />
       <Button
         color="secondary"
         onClick={toggle}
@@ -122,21 +131,11 @@ export default ({
           ) : undefined
         }>
         {resolutionStatus === ResolutionStatus.Pending
-          ? 'Resolve'
+          ? 'Resolve (With Notes)'
           : resolutionStatus === ResolutionStatus.Resolved
-          ? 'Return To Pending'
-          : 'UNKNOWN'}
+          ? 'Return To Pending (With Notes)'
+          : `Unknown status: ${resolutionStatus}`}
       </Button>
-      <br />
-      <br />
-      Resolution notes (public):
-      <TextInput
-        fullWidth
-        minRows={5}
-        multiline
-        onChange={(e) => setNewResolutionNotes(e.target.value)}
-        value={newResolutionNotes}
-      />
     </>
   )
 }

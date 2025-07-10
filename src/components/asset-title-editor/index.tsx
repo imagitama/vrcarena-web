@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useSearching from '../../hooks/useSearching'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
@@ -53,10 +53,8 @@ const AssetTitleEditor = ({
 }) => {
   const [newTitleValue, setNewTitleValue] = useState(title || '')
   const [searchTerm, setSearchTerm] = useState('')
-  const [isSaving, isSaveSuccess, lastError, save] = useDatabaseSave<Asset>(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
   const classes = useStyles()
   const titleRef = useRef<HTMLSpanElement | null>(null)
   const [isSearching, , searchResults] = useSearching<Asset>(
@@ -188,8 +186,8 @@ const AssetTitleEditor = ({
         <LoadingIndicator message="Saving..." />
       ) : isSaveSuccess ? (
         'Saved!'
-      ) : lastError ? (
-        'Failed to save'
+      ) : lastErrorCode !== null ? (
+        <>Failed to save (code {lastErrorCode})</>
       ) : (
         <FormControls>
           <Button icon={<ChevronRightIcon />} onClick={searchForDuplicates}>

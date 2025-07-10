@@ -5,7 +5,7 @@ import ErrorMessage from '../error-message'
 import ImageUploader from '../image-uploader'
 import Heading from '../heading'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserRecord from '../../hooks/useUserRecord'
 import useUserId from '../../hooks/useUserId'
 
@@ -26,9 +26,9 @@ const AvatarUploadForm = ({
 }) => {
   const userId = useUserId()
   const [, , user, hydrate] = useUserRecord()
-  const [isSaving, , lastErrorCode, save] = useDatabaseSave<User>(
+  const [isSaving, , lastErrorCode, save] = useDataStoreEdit<User>(
     CollectionNames.Users,
-    userId
+    userId!
   )
 
   const onUploadedWithUrls = async (urls: string[]) => {

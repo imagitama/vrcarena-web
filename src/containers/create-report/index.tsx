@@ -16,9 +16,6 @@ import Heading from '../../components/heading'
 import TextInput from '../../components/text-input'
 import FormControls from '../../components/form-controls'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
-import useUserId from '../../hooks/useUserId'
-
 import * as routes from '../../routes'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
@@ -33,6 +30,8 @@ import {
 import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 import GenericOutputItem from '../../components/generic-output-item'
 import usePermissions from '../../hooks/usePermissions'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import { getViewNameForParentTable } from '../../utils/reports'
 
 const analyticsCategory = 'CreateReport'
 
@@ -46,15 +45,23 @@ const useStyles = makeStyles({
 
 const Form = ({
   parentTable,
+  viewName,
   parentId,
 }: {
   parentTable: string
+  viewName?: string
   parentId: string
 }) => {
   const [isLoadingParent, lastErrorCodeLoadingParent, parent] =
-    useDataStoreItem(parentTable, parentId, 'create-report')
-  const [isSaving, isSaveSuccess, lastErrorCodeCreating, save] =
-    useDatabaseSave<Report>(CollectionNames.Reports)
+    useDataStoreItem(viewName || parentTable, parentId, 'create-report')
+  const [
+    isSaving,
+    isSaveSuccess,
+    lastErrorCodeCreating,
+    save,
+    ,
+    createdReport,
+  ] = useDataStoreCreate<Report>(CollectionNames.Reports)
   const [fieldData, setFieldData] = useState<{
     reason: string
     comments: string
@@ -62,7 +69,6 @@ const Form = ({
     reason: '',
     comments: '',
   })
-  const [createdDocId, setCreatedDocId] = useState<string | null>(null)
   const classes = useStyles()
 
   if (isSaving) {
@@ -92,24 +98,23 @@ const Form = ({
 
   if (isSaveSuccess) {
     return (
-      <SuccessMessage>
+      <SuccessMessage
+        viewRecordUrl={
+          createdReport
+            ? routes.viewReportWithVar.replace(':reportId', createdReport.id)
+            : undefined
+        }>
         Report created successfully
         <br />
         <br />A member of the staff will review your report as soon as possible.
         You can also join our <a href={DISCORD_URL}>Discord server</a> to ask
         for more help.
-        <br />
-        <br />
-        {createdDocId ? (
-          <Button
-            url={routes.viewReportWithVar.replace(':reportId', createdDocId)}>
-            View Report
-          </Button>
-        ) : (
-          '(No report ID found)'
-        )}
       </SuccessMessage>
     )
+  }
+
+  if (!parent) {
+    return <ErrorMessage>Parent is empty</ErrorMessage>
   }
 
   const onFieldChange = (fieldName: string, newValue: string) =>
@@ -127,20 +132,11 @@ const Form = ({
     }
 
     try {
-      const [createdReport] = await save({
+      await save({
         ...fieldData,
         parenttable: parentTable,
         parent: parentId,
       })
-
-      if (!createdReport) {
-        throw new Error('Created report is null')
-      }
-      if (!createdReport.id) {
-        throw new Error('Created report does not have an ID property')
-      }
-
-      setCreatedDocId(createdReport.id)
     } catch (err) {
       console.error('Failed to create request', err)
       handleError(err)
@@ -207,7 +203,13 @@ const View = () => {
     return <NoPermissionMessage />
   }
 
-  return <Form parentTable={parentTable} parentId={parentId} />
+  return (
+    <Form
+      parentTable={parentTable}
+      parentId={parentId}
+      viewName={getViewNameForParentTable(parentTable)}
+    />
+  )
 }
 
 export default () => (

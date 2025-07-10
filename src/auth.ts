@@ -12,7 +12,7 @@ export const loadUserIntoStore = async (
     throw new Error('Cannot load user into store - no user ID')
   }
 
-  console.debug(`auth.loadUserIntoStore.start`, userId)
+  console.debug(`load user :: loading...`, userId)
 
   if (showLoading) {
     store.dispatch({
@@ -22,7 +22,7 @@ export const loadUserIntoStore = async (
 
   const user = await readRecord(supabase, 'getmyuser', userId)
 
-  console.debug(`auth.loadUserIntoStore.user`, user)
+  console.debug(`load user :: found user`, user)
 
   if (!user) {
     throw new Error('Cannot load user into store: user does not seem to exist!')
@@ -35,7 +35,7 @@ export const loadUserIntoStore = async (
     },
   })
 
-  console.debug(`auth.loadUserIntoStore.done`)
+  console.debug(`load user :: user loaded`)
 }
 
 export const unloadUserFromStore = async () => {

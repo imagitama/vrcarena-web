@@ -100,10 +100,10 @@ const QueuedAssetInfo = ({
     <Message title="Queued Asset">
       Published by{' '}
       <UsernameLink
-        id={asset.publishedby}
+        id={asset.publishedby!}
         username={asset.publishedbyusername}
       />{' '}
-      <FormattedDate date={asset.publishedat} />
+      <FormattedDate date={asset.publishedat!} />
       <Table size="small">
         <TableBody>
           <AssetApprovalChecklistItem

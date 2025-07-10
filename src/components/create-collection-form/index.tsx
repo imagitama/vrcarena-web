@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { handleError } from '../../error-handling'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import Button from '../button'
 import TextInput from '../text-input'
 import { CollectionNames, Collection } from '../../modules/collections'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const CreateCollectionForm = ({
   onDone,
@@ -14,7 +15,7 @@ const CreateCollectionForm = ({
 }) => {
   const [title, setTitle] = useState('')
   const [isCreating, isSuccess, lastErrorCode, create] =
-    useDatabaseSave<Collection>(CollectionNames.Collections)
+    useDataStoreCreate<Collection>(CollectionNames.Collections)
 
   const onClickCreate = async () => {
     try {

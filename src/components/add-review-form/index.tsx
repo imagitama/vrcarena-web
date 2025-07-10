@@ -2,10 +2,7 @@ import React, { useState, createContext, useContext, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
-
-import useDatabaseSave from '../../hooks/useDatabaseSave'
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
-import useUserId from '../../hooks/useUserId'
+import CheckIcon from '@mui/icons-material/Check'
 
 import { handleError } from '../../error-handling'
 import { allowedRatings, RatingMeta } from '../../ratings'
@@ -14,13 +11,14 @@ import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 import Button from '../button'
-import Message from '../message'
 import TextInput from '../text-input'
 import Paper from '../paper'
 import FormControls from '../form-controls'
 import { CollectionNames, Rating, Review } from '../../modules/reviews'
 import useIsBanned from '../../hooks/useIsBanned'
 import NoPermissionMessage from '../no-permission-message'
+import { routes } from '../../routes'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const useStyles = makeStyles({
   root: {},
@@ -205,8 +203,10 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
                   rating: newRatingNumber,
                   comments: newComments,
                 })
-              }}>
-              {isActive ? 'Save Changes' : 'Add'}
+              }}
+              size="small"
+              icon={<CheckIcon />}>
+              {isActive ? 'Save Changes' : 'Apply'}
             </Button>
           </>
         )}{' '}
@@ -242,62 +242,13 @@ export default ({
   >(null)
   const [newComments, setNewComments] = useState('')
   const [newRatings, setNewRatings] = useState<Rating[]>([])
-  const userId = useUserId()
-
-  const [isLoadingMyReview, lastErrorCodeLoadingMyReview, myReview] =
-    useDatabaseQuery<Review>(CollectionNames.Reviews, [
-      ['asset', Operators.EQUALS, assetId],
-      ['createdby', Operators.EQUALS, userId],
-    ])
-
-  const reviewToEdit =
-    myReview !== null && Array.isArray(myReview) ? myReview[0] : null
-  const inEditMode = !!reviewToEdit
-
-  const [isSaving, isSuccess, lastErrorCodeSaving, save, clear] =
-    useDatabaseSave<Review>(
-      CollectionNames.Reviews,
-      reviewToEdit ? reviewToEdit.id : null
-    )
+  const [isSaving, isSuccess, lastErrorCodeSaving, save, clear, createdReview] =
+    useDataStoreCreate<Review>(CollectionNames.Reviews)
 
   const classes = useStyles()
 
-  useEffect(() => {
-    if (!inEditMode) {
-      return
-    }
-
-    setNewComments(reviewToEdit.comments)
-    setNewOverallRatingNumber(reviewToEdit.overallrating)
-    setNewRatings(reviewToEdit.ratings)
-  }, [inEditMode])
-
   if (useIsBanned()) {
     return <NoPermissionMessage />
-  }
-
-  if (Array.isArray(myReview) && myReview.length > 1) {
-    return (
-      <ErrorMessage>
-        Failed to load review form: you have more than 1 review for this asset!
-      </ErrorMessage>
-    )
-  }
-
-  if (!userId) {
-    return <Message>You must be logged in to review</Message>
-  }
-
-  if (isLoadingMyReview) {
-    return <LoadingIndicator message="Checking your reviews..." />
-  }
-
-  if (lastErrorCodeLoadingMyReview !== null) {
-    return (
-      <ErrorMessage>
-        Failed to check your reviews (code {lastErrorCodeLoadingMyReview})
-      </ErrorMessage>
-    )
   }
 
   if (isSaving) {
@@ -306,10 +257,13 @@ export default ({
 
   if (isSuccess) {
     return (
-      <SuccessMessage>
-        {inEditMode
-          ? 'Your review has been edited successfully'
-          : 'Your review has been published successfully'}
+      <SuccessMessage
+        viewRecordUrl={
+          createdReview
+            ? routes.viewReviewWithVar.replace(':reviewId', createdReview.id)
+            : undefined
+        }>
+        Your review has been published successfully
       </SuccessMessage>
     )
   }
@@ -405,8 +359,8 @@ export default ({
         <Ratings />
       </ratingsContext.Provider>
       <FormControls>
-        <Button onClick={onAddClick} size="large">
-          {inEditMode ? 'Edit Review' : 'Publish Review'}
+        <Button onClick={onAddClick} size="large" icon={<CheckIcon />}>
+          Publish Review
         </Button>
       </FormControls>
     </div>

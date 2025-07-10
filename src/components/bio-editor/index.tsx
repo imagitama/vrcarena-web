@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField'
 import SaveIcon from '@mui/icons-material/Save'
 
 import useUserId from '../../hooks/useUserId'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { User } from '../../modules/users'
@@ -40,9 +40,9 @@ const BioEditor = ({
       userId ? userId : false,
       'bio-editor'
     )
-  const [isSaving, isSuccess, lastErrorCodeSaving, save] = useDatabaseSave(
+  const [isSaving, isSuccess, lastErrorCodeSaving, save] = useDataStoreEdit(
     CollectionNames.Users,
-    userId
+    userId!
   )
   const [bioValue, setBioValue] = useState('')
   const [showPreview, setShowPreview] = useState(false)
@@ -69,10 +69,6 @@ const BioEditor = ({
     }
   }
 
-  if (isLoadingProfile) {
-    return <LoadingIndicator />
-  }
-
   if (lastErrorCodeLoadingProfile !== null) {
     return (
       <ErrorMessage>
@@ -90,7 +86,7 @@ const BioEditor = ({
         multiline
         variant="outlined"
         className={classes.bioTextField}
-        isDisabled={isSaving}
+        isDisabled={isSaving || isLoadingProfile}
       />
       <p>
         You can use markdown to <strong>format</strong> <em>your</em> content.
@@ -121,7 +117,7 @@ const BioEditor = ({
         )}
         <Button
           onClick={onSaveBtnClick}
-          isDisabled={isSaving}
+          isDisabled={isSaving || isLoadingProfile}
           icon={<SaveIcon />}>
           Save
         </Button>

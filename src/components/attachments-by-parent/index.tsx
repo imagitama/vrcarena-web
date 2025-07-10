@@ -1,9 +1,6 @@
 import React from 'react'
 
-import useDatabaseQuery, {
-  Operators,
-  options,
-} from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import {
   AttachmentReason,
   FullAttachment,
@@ -51,8 +48,8 @@ const AttachmentsByParent = ({
           : []
       ),
       {
-        [options.queryName]: 'attachments',
-        [options.subscribe]: true,
+        queryName: 'attachments',
+        subscribe: true,
       }
     )
 

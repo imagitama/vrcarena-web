@@ -6,7 +6,7 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 
 import useUserId from '../../hooks/useUserId'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
@@ -52,9 +52,9 @@ export default ({
       queryName: 'favorite-species-editor-species',
       orderBy: 'pluralname',
     })
-  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDatabaseSave<User>(
+  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDataStoreEdit<User>(
     UsersCollectionNames.Users,
-    userId
+    userId!
   )
   const [newFavoriteSpeciesId, setNewFavoriteSpeciesId] = useState<
     string | null

@@ -6,7 +6,7 @@ import { callFunction } from '../../firebase'
 import { PublishErrorCode, getErrorMessageForCode } from '../../utils/assets'
 import { PublishStatus } from '../../modules/common'
 import { AssetMeta, CollectionNames } from '../../modules/assets'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 import Button from '../button'
 import ErrorMessage from '../error-message'
@@ -27,7 +27,7 @@ const AdminPublishButton = ({
   const [lastPublishErrorCode, setLastPublishErrorCode] = useState<
     string | null
   >(null)
-  const [isSaving, , lastSaveErrorCode, save] = useDatabaseSave<AssetMeta>(
+  const [isSaving, , lastSaveErrorCode, save] = useDataStoreEdit<AssetMeta>(
     CollectionNames.AssetsMeta,
     assetId
   )

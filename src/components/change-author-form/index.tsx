@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import TextInput from '../text-input'
@@ -32,6 +32,7 @@ import { Asset } from '../../modules/assets'
 import FormFieldLabel from '../form-field-label'
 import HintText from '../hint-text'
 import ImageUploaderWithPreview from '../image-uploader-with-preview'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const fieldsBySectionName = authorEditableFields.reduce<{
   [sectionName: string]: EditableField<Author>[]
@@ -209,13 +210,15 @@ const CreateForm = ({
     saledescription: '',
     saleexpiresat: undefined,
     promourl: '',
+    kofiusername: '',
+    payhipusername: '',
   })
   const [isSaving, isSuccess, lastErrorCode, create, clear] =
-    useDatabaseSave<Author>(CollectionNames.Authors)
+    useDataStoreCreate<Author>(CollectionNames.Authors)
   const [isClaiming, setIsClaiming] = useState(false)
   const [claimingComments, setClaimingComments] = useState('')
   const [isSavingClaim, , lastClaimErrorCode, createClaim] =
-    useDatabaseSave<Claim>(ClaimCollectionNames.Claims)
+    useDataStoreCreate<Claim>(ClaimCollectionNames.Claims)
 
   const onCreate = async () => {
     try {
@@ -228,21 +231,17 @@ const CreateForm = ({
         return
       }
 
-      const [createdDocument] = await create(newFields)
-
-      if (createdDocument === null) {
-        throw new Error('Newly created author is null')
-      }
+      const createdAuthor = await create(newFields)
 
       if (isClaiming) {
         await createClaim({
           parenttable: CollectionNames.Authors,
-          parent: createdDocument.id,
+          parent: createdAuthor.id,
           comments: claimingComments.trim(),
         })
       }
 
-      onClick(createdDocument.id, createdDocument)
+      onClick(createdAuthor.id, createdAuthor)
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -356,7 +355,7 @@ const ChangeAuthorForm = ({
   actionCategory?: string
 }) => {
   const [isSaving, isSuccess, lastErrorCode, save, clear] =
-    useDatabaseSave<Asset>(collectionName, id ? id : null)
+    useDataStoreEdit<Asset>(collectionName, id)
   const [isCreating, setIsCreating] = useState(false)
 
   const restart = () => {

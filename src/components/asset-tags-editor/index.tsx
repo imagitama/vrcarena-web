@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import { Asset, CollectionNames } from '../../modules/assets'
@@ -33,10 +33,8 @@ const AssetTagsEditor = ({
   asset?: Asset
 }) => {
   const [newTags, setNewTags] = useState(tags || [])
-  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
-    assetId ? CollectionNames.Assets : false,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
 
   const onSaveBtnClick = async () => {
     try {

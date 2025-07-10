@@ -460,6 +460,18 @@ const Attachments = lazy(() =>
       import(/* webpackChunkName: "attachments" */ './containers/attachments')
   )
 )
+const ViewReview = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "view-review" */ './containers/view-review')
+  )
+)
+const EditReview = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(/* webpackChunkName: "edit-review" */ './containers/edit-review')
+  )
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -750,6 +762,9 @@ const MainContent = () => {
         />
         <Route exact path={routes.newAssets} component={NewAssets} />
         <Route exact path={'/dev'} component={Dev} />
+        <Route exact path={routes.createReview} component={EditReview} />
+        <Route exact path={routes.editReviewWithVar} component={EditReview} />
+        <Route exact path={routes.viewReviewWithVar} component={ViewReview} />
         <Route exact path={routes.reviews} component={Reviews} />
         <Route exact path={routes.transparency} component={Transparency} />
         <Route exact path={routes.unsubscribe} component={Unsubscribe} />

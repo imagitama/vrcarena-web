@@ -3,7 +3,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import { makeStyles } from '@mui/styles'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserId from '../../hooks/useUserId'
 import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 
@@ -51,10 +51,11 @@ export default ({
     existingSubscriptions && existingSubscriptions.length
       ? existingSubscriptions[0]
       : null
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave(
-    existingSubscription ? CollectionNames.Subscriptions : false,
-    existingSubscription ? existingSubscription.id : undefined
-  )
+  const [isSaving, isSaveSuccess, isSaveError, save] =
+    useDataStoreEdit<Subscription>(
+      CollectionNames.Subscriptions,
+      existingSubscription ? existingSubscription.id : false
+    )
   const [newTopics, setNewTopics] = useState(defaultTopics)
   const classes = useStyles()
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 
@@ -59,10 +59,8 @@ const PriceEditor = ({
   const [newPriceCurrency, setNewPriceCurrency] = useState<PopularCurrency>(
     currentPriceCurrency || 'USD'
   )
-  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
-    assetId ? CollectionNames.Assets : false,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
 
   const onSaveBtnClick = async () => {
     try {

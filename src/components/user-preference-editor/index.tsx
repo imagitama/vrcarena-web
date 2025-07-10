@@ -4,7 +4,7 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import { makeStyles } from '@mui/styles'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { CollectionNames, UserPreferences } from '../../modules/user'
 import useUserPreferences from '../../hooks/useUserPreferences'
@@ -38,19 +38,19 @@ const UserPreferenceEditor = ({
 }) => {
   const classes = useStyles()
   const [tempNewValue, setTempNewValue] = useState<boolean | null>(null)
-  const [isLoadingUser, lastErrorcodeLoadingUser, userPreferences, hydrate] =
+  const [isLoadingUser, lastErrorCodeLoadingUser, userPreferences, hydrate] =
     useUserPreferences(true)
-  const [isSaving, isSaveSuccess, isSaveError, save, clear] =
-    useDatabaseSave<UserPreferences>(
+  const [isSaving, isSaveSuccess, lastSaveErrorCode, save, clear] =
+    useDataStoreEdit<UserPreferences>(
       CollectionNames.UserPreferences,
-      userPreferences ? userPreferences.id : null
+      userPreferences ? userPreferences.id : false
     )
   const startTimer = useTimer(clear, formHideDelay)
 
-  if (lastErrorcodeLoadingUser !== null) {
+  if (lastErrorCodeLoadingUser !== null) {
     return (
       <ErrorMessage>
-        Failed to load user account (code {lastErrorcodeLoadingUser})
+        Failed to load user account (code {lastErrorCodeLoadingUser})
       </ErrorMessage>
     )
   }
@@ -100,8 +100,8 @@ const UserPreferenceEditor = ({
           ? 'Saving...'
           : isSaveSuccess
           ? 'Saved!'
-          : isSaveError
-          ? 'Failed to save'
+          : lastSaveErrorCode !== null
+          ? `Failed to save (code ${lastSaveErrorCode})`
           : ''}
       </span>
     </div>

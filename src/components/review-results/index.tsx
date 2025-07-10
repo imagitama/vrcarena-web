@@ -12,7 +12,7 @@ export default ({
   shimmer?: boolean
 }) => {
   return (
-    <div>
+    <>
       {shimmer ? (
         <>
           <ReviewResultsItem shimmer />
@@ -28,6 +28,6 @@ export default ({
           />
         ))
       )}
-    </div>
+    </>
   )
 }

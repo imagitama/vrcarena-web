@@ -103,7 +103,7 @@ const AssetOverviewMessages = () => {
       <Message color="#1c0002" key="declined" icon={<CancelIcon />}>
         This asset has been declined for approval. It has the following issues:
         <ul style={{ marginBottom: 0 }}>
-          {asset.declinedreasons.length ? (
+          {asset.declinedreasons && asset.declinedreasons.length ? (
             asset.declinedreasons.map((reason) => (
               <li key={reason}>{getDeclinedReasonLabel(reason)}</li>
             ))

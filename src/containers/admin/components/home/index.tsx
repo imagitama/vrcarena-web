@@ -98,7 +98,7 @@ const QueueItemLabel = ({ queueItem }: { queueItem: AdminQueueItem }) => {
           Published by{' '}
           <UsernameLink
             username={queueItem.record.publishedbyusername}
-            id={queueItem.record.publishedby}
+            id={queueItem.record.publishedby!}
           />
         </>
       )

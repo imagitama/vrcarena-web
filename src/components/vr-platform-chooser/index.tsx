@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField'
 import SaveIcon from '@mui/icons-material/Save'
 
 import useUserId from '../../hooks/useUserId'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserRecord from '../../hooks/useUserRecord'
 
 import { handleError } from '../../error-handling'
@@ -148,9 +148,9 @@ export default ({
   const classes = useStyles()
   const userId = useUserId()
   const [isLoadingUser, isErroredLoadingUser, user] = useUserRecord()
-  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDatabaseSave(
+  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDataStoreEdit<User>(
     CollectionNames.Users,
-    userId
+    userId!
   )
 
   const [selectedFields, setSelectedFields] = useState<{

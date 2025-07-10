@@ -3,7 +3,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import { makeStyles } from '@mui/styles'
 
 import useUserId from '../../hooks/useUserId'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import { handleError } from '../../error-handling'
 import { deleteRecord } from '../../data-store'
@@ -42,7 +42,7 @@ export default ({
         ]
       : false
   )
-  const [, , , save] = useDatabaseSave(CollectionNames.Likes, parentId)
+  const [, , , save] = useDataStoreEdit(CollectionNames.Likes, parentId)
   const classes = useStyles()
   const supabase = useSupabaseClient()
 

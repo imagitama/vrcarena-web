@@ -4,7 +4,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 import editableFields, { EditableField } from '../../editable-fields'
 import { fieldTypes } from '../../generic-forms'
@@ -38,7 +38,7 @@ export type GenericInputProps = Omit<EditableField<any>, 'type'> & {
   defaultValue: any
   onChange: (newVal: any) => void
   extraFormData: any
-  setFieldsValues: (updates: Record) => void
+  setFieldsValues: (updates: Record<string, any>) => void
   databaseResult: any
 }
 
@@ -118,7 +118,7 @@ const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
 }
 
 const validateFields = (
-  newFields: Record,
+  newFields: Record<string, any>,
   fieldDefinitions: EditableField<any>[]
 ): boolean => {
   for (const fieldDef of fieldDefinitions) {
@@ -131,8 +131,6 @@ const validateFields = (
   }
   return true
 }
-
-type Record = { [fieldName: string]: string | boolean | number }
 
 const GenericEditor = ({
   fields = undefined,
@@ -163,7 +161,7 @@ const GenericEditor = ({
   cancelUrl?: string
   extraFormData?: Object
   getSuccessUrl?: (newId: string | null) => string
-  overrideFields?: Record | null
+  overrideFields?: Record<string, any> | null
   onFieldChanged?: (fieldName: string, newValue: any) => void
 }) => {
   if (!fields && !(collectionName in editableFields)) {
@@ -172,14 +170,16 @@ const GenericEditor = ({
 
   const fieldsToUse = fields || editableFields[collectionName]
 
-  const [isLoading, lastErrorCode, result] = useDataStoreItem<Record>(
+  const [isLoading, lastErrorCode, result] = useDataStoreItem<
+    Record<string, any>
+  >(
     viewName || collectionName,
     id || false,
     `generic-editor-${viewName || collectionName}`
   )
-  const [isSaving, isSuccess, lastErrorCodeSaving, save] =
-    useDatabaseSave<Record>(collectionName, id)
-  const [formFields, setFormFields] = useState<null | Record>(
+  const [isSaving, isSuccess, lastErrorCodeSaving, save, clear, updatedRecord] =
+    useDataStoreEdit<Record<string, any>>(collectionName, id || false)
+  const [formFields, setFormFields] = useState<null | Record<string, any>>(
     overrideFields
       ? overrideFields
       : id
@@ -192,7 +192,6 @@ const GenericEditor = ({
         }, {})
   )
   const classes = useStyles()
-  const [createdDocId, setCreatedDocId] = useState<string | null>(null)
   const [isInvalid, setIsInvalid] = useState(false)
 
   useEffect(() => {
@@ -229,7 +228,7 @@ const GenericEditor = ({
     setIsInvalid(false)
   }
 
-  const onFieldsChange = (updates: Record) => {
+  const onFieldsChange = (updates: Record<string, any>) => {
     setFormFields({
       ...formFields,
       ...updates,
@@ -255,13 +254,10 @@ const GenericEditor = ({
         return
       }
 
-      const [newDocument] = await save({
+      await save({
         ...formFields,
         ...getHiddenFieldsForDb(fieldsToUse),
       })
-
-      // @ts-ignore
-      setCreatedDocId(newDocument ? newDocument.id : null)
     } catch (err) {
       console.error(`Failed to save ${id} to ${collectionName}`, err)
       handleError(err)
@@ -300,23 +296,13 @@ const GenericEditor = ({
 
   if (isSuccess) {
     return (
-      <SuccessMessage>
+      <SuccessMessage
+        viewRecordUrl={
+          getSuccessUrl && updatedRecord
+            ? getSuccessUrl(updatedRecord.id)
+            : successUrl
+        }>
         The record has been saved
-        {getSuccessUrl || successUrl ? (
-          <>
-            <br />
-            <br />
-            <Button
-              url={getSuccessUrl ? getSuccessUrl(createdDocId) : successUrl}
-              onClick={() => {
-                if (analyticsCategory) {
-                  trackAction(analyticsCategory, viewBtnAction, id)
-                }
-              }}>
-              View
-            </Button>
-          </>
-        ) : null}
       </SuccessMessage>
     )
   }

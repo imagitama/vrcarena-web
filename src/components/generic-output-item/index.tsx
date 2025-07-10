@@ -9,8 +9,14 @@ import {
   FullComment,
   CollectionNames as CommentsCollectionNames,
 } from '../../modules/comments'
+import {
+  FullReview,
+  Review,
+  CollectionNames as ReviewsCollectionNames,
+} from '../../modules/reviews'
 import Link from '../link'
 import { getUrlForParent } from '../../relations'
+import ReviewResultsItem from '../review-results-item'
 
 export default ({
   type,
@@ -19,7 +25,7 @@ export default ({
 }: {
   type: string
   id: string
-  data?: Asset | FullComment
+  data?: Asset | FullComment | FullReview
 }) => {
   if (!data) {
     return (
@@ -35,7 +41,9 @@ export default ({
       return (
         <Comment comment={data as FullComment} showControls={false} shorten />
       )
+    case ReviewsCollectionNames.Reviews:
+      return <ReviewResultsItem review={data as FullReview} includeAsset />
     default:
-      return <>Invalid type "{type}"</>
+      return <>Cannot render generic output item: invalid type "{type}"</>
   }
 }

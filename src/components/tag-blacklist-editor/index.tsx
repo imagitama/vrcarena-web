@@ -8,7 +8,7 @@ import ErrorMessage from '../error-message'
 import TextInput from '../text-input'
 import Button from '../button'
 import SuccessMessage from '../success-message'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { CollectionNames, UserPreferences } from '../../modules/user'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
@@ -17,15 +17,11 @@ import TagChips from '../tag-chips'
 import WarningMessage from '../warning-message'
 
 const TagBlacklistEditor = () => {
-  const isLoggedIn = useIsLoggedIn()
   const userId = useUserId()
   const [isLoading, lastErrorCodeLoading, preferences, hydrate] =
     useUserPreferences()
   const [isSaving, isSaveSuccess, lastErrorCodeSaving, save] =
-    useDatabaseSave<UserPreferences>(
-      CollectionNames.UserPreferences,
-      isLoggedIn && userId ? userId : null
-    )
+    useDataStoreEdit<UserPreferences>(CollectionNames.UserPreferences, userId!)
   const [userInput, setUserInput] = useState('')
 
   useEffect(() => {
@@ -34,10 +30,6 @@ const TagBlacklistEditor = () => {
     }
     setUserInput(preferences.tagblacklist.join(' '))
   }, [preferences !== null])
-
-  if (!isLoggedIn) {
-    return null
-  }
 
   if (isLoading) {
     return <LoadingIndicator message="Loading preferences..." />

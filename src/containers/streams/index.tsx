@@ -5,10 +5,7 @@ import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
-import useDatabaseQuery, {
-  Operators,
-  options,
-} from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import { User } from '../../modules/users'
 import Button from '../../components/button'
 import { makeStyles } from '@mui/styles'
@@ -32,7 +29,7 @@ function Streams() {
     CollectionNames.Users,
     [['twitchusername', Operators.GREATER_THAN, '']],
     {
-      [options.queryName]: 'streams',
+      queryName: 'streams',
     }
   )
 
@@ -48,17 +45,18 @@ function Streams() {
 
   return (
     <>
-      {users.map((user) => {
-        const twitchUsername = getTwitchUsernameFromUrl(user.twitchusername)
-        console.log(twitchUsername)
-        return (
-          <div className={classes.item}>
-            <Button url={`https://twitch.tv/${twitchUsername}`}>
-              {twitchUsername}
-            </Button>
-          </div>
-        )
-      })}
+      {users
+        .filter((user) => user.twitchusername !== null)
+        .map((user) => {
+          const twitchUsername = getTwitchUsernameFromUrl(user.twitchusername!)
+          return (
+            <div className={classes.item}>
+              <Button url={`https://twitch.tv/${twitchUsername}`}>
+                {twitchUsername}
+              </Button>
+            </div>
+          )
+        })}
     </>
   )
 }

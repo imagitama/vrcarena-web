@@ -4,7 +4,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import CheckIcon from '@mui/icons-material/Check'
 
 import { handleError } from '../../error-handling'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import {
   Asset,
   CollectionNames,
@@ -215,16 +215,16 @@ const RelationsEditor = ({
   onCancel = undefined,
   overrideSave = undefined,
 }: {
-  assetId?: string
+  assetId: string | null
   currentRelations?: Relation[]
   assetsData?: Asset[]
   onDone?: () => void
   onCancel?: () => void
   overrideSave?: (newRelations: Relation[]) => void
 }) => {
-  const [isSaving, isSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
-    assetId
+    assetId || false
   )
   const [isAddFormVisible, setIsAddFormVisible] = useState(false)
   const [newRelations, setNewRelations] = useState<Relation[]>(

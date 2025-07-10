@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
@@ -21,7 +21,7 @@ const DeleteDraftButton = ({
 }) => {
   const [isConfirming, setIsConfirming] = useState(false)
   const [isSaving, , lastErrorCodeSaving, save, clear] =
-    useDatabaseSave<MetaRecord>(CollectionNames.AssetsMeta, assetId)
+    useDataStoreEdit<MetaRecord>(CollectionNames.AssetsMeta, assetId)
 
   if (isSaving) {
     return <LoadingIndicator message={'Saving...'} />

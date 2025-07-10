@@ -49,17 +49,13 @@ const CreateButton = () => {
   }
 
   const onClickCreate = () => {
-    createPage(
-      {
-        id: pageName,
-        parent: parentName,
-        title: 'Untitled page',
-        description: '',
-        content: '',
-      },
-      false,
-      true
-    )
+    createPage({
+      id: pageName,
+      parent: parentName,
+      title: 'Untitled page',
+      description: '',
+      content: '',
+    })
   }
 
   return <Button onClick={onClickCreate}>Create This Page</Button>

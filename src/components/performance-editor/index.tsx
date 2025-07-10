@@ -14,7 +14,7 @@ import {
   getPerformanceRankLabel,
 } from '../../avatar-performance'
 import { handleError } from '../../error-handling'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { Asset, CollectionNames } from '../../modules/assets'
 import Button from '../button'
 import ErrorMessage from '../error-message'
@@ -171,7 +171,7 @@ const PerformanceEditor = ({
   onDone,
   overrideSave,
 }: {
-  assetId?: string
+  assetId: string | null
   currentTags: string[]
   isEditing?: boolean
   actionCategory?: string
@@ -180,7 +180,7 @@ const PerformanceEditor = ({
 }) => {
   const [newTags, setNewTags] = useState<string[]>(currentTags)
   const [isSaving, isSaveSuccess, isSaveError, save, clear] =
-    useDatabaseSave<Asset>(CollectionNames.Assets, assetId)
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
   const classes = useStyles()
 
   if (isSaving) {

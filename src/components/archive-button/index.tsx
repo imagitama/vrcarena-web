@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { AccessStatus, MetaRecord } from '../../modules/common'
@@ -37,7 +37,7 @@ const ArchiveButton = ({
       existingAccessStatus !== undefined ? false : id,
       'delete-button'
     )
-  const [isSaving, , lastErrorCodeSaving, save] = useDatabaseSave<MetaRecord>(
+  const [isSaving, , lastErrorCodeSaving, save] = useDataStoreEdit<MetaRecord>(
     metaCollectionName,
     id
   )

@@ -1,5 +1,6 @@
 import { CollectionNames as AssetsCollectionNames } from './assets'
 import { CollectionNames as CommentsCollectionNames } from './comments'
+import { CollectionNames as ReviewsCollectionNames } from './reviews'
 
 const commonReportReasonKeys = {
   OFFENSIVE_CONTENT: 'OFFENSIVE_CONTENT',
@@ -54,6 +55,7 @@ const reasonsByCollectionName: { [collectionName: string]: ReportReason[] } = {
     },
   ],
   [CommentsCollectionNames.Comments]: [],
+  [ReviewsCollectionNames.Reviews]: [],
 }
 
 interface ReportReason {
@@ -77,15 +79,15 @@ export const getReasonsForCollectionName = (
   return withCommon
 }
 
-export interface Report {
+export interface Report extends Record<string, any> {
   id: string
   parenttable: string
   parent: string
   reason: string
   comments: string
-  lastmodifiedat: Date
+  lastmodifiedat: string // Date
   lastmodifiedby: string
-  createdat: Date
+  createdat: string // Date
   createdby: string
 }
 
@@ -97,13 +99,13 @@ export enum ResolutionStatus {
 export interface ReportMeta extends Record<string, unknown> {
   editornotes: string
   resolutionstatus: ResolutionStatus
-  resolvedat: Date
-  resolvedby: string
+  resolvedat: string | null // Date
+  resolvedby: string | null
   resolutionnotes: string
 }
 
-export interface FullReport extends Report, ReportMeta {
-  parentdata: any
+export interface FullReport<TParent = any> extends Report, ReportMeta {
+  parentdata: TParent
   createdbyusername: string
   resolvedbyusername: string
 }

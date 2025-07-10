@@ -30,6 +30,7 @@ import { getUrlForParent } from '../../relations'
 import ResolutionControls from '../../components/resolution-controls'
 import Markdown from '../../components/markdown'
 import useIsEditor from '../../hooks/useIsEditor'
+import { getViewNameForParentTable } from '../../utils/reports'
 
 const View = () => {
   const { reportId } = useParams<{ reportId: string }>()
@@ -42,6 +43,11 @@ const View = () => {
       isLoggedIn ? reportId : false,
       'view-report'
     )
+  const [, , parent] = useDataStoreItem(
+    report ? getViewNameForParentTable(report.parenttable) || '' : '',
+    report ? report.parent : false,
+    'view-report-parent'
+  )
 
   if (!isLoggedIn) {
     return <NoPermissionMessage />
@@ -65,7 +71,7 @@ const View = () => {
     id,
     reason,
     comments,
-    parent,
+    parent: parentId,
     parenttable: parentTable,
     createdat,
     createdby,
@@ -76,9 +82,11 @@ const View = () => {
     resolutionnotes: resolutionNotes,
     // view
     createdbyusername: createdByUsername,
-    parentdata: parentData,
+    parentdata: rawParentData,
     resolvedbyusername: resolvedByUsername,
   } = report
+
+  const parentData = parent || rawParentData
 
   const onResolutionStatusChanged = () => hydrate()
 
@@ -122,12 +130,14 @@ const View = () => {
         </>
       ) : null}
       <Heading variant="h2">Reported Item</Heading>
-      <Button url={getUrlForParent(parentTable, parent, parentData)}>
+      <Button
+        url={getUrlForParent(parentTable, parentId, parentData)}
+        color="secondary">
         View Reported Item
       </Button>
       <br />
       <br />
-      <GenericOutputItem type={parentTable} id={parent} data={parentData} />
+      <GenericOutputItem type={parentTable} id={parentId} data={parentData} />
       <Heading variant="h2">Reason</Heading>
       {reason || '(no reason)'}
       {reason ===

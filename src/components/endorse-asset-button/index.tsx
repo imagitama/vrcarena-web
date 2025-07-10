@@ -5,16 +5,14 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
 import Button from '../button'
 
-import useDatabaseQuery, {
-  Operators,
-  options,
-} from '../../hooks/useDatabaseQuery'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
 import { DataStoreErrorCode } from '../../data-store'
 import { CollectionNames, Endorsement } from '../../modules/endorsements'
+import useDataStoreDelete from '../../hooks/useDataStoreDelete'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const getLabel = (
   isLoggedIn: boolean,
@@ -22,7 +20,8 @@ const getLabel = (
   isAlreadyEndorsed: boolean,
   isSaving: boolean,
   lastErrorCode: null | DataStoreErrorCode,
-  isSuccess: boolean
+  isAddingSuccess: boolean,
+  isRemovingSuccess: boolean
 ) => {
   if (!isLoggedIn) {
     return 'Log in to endorse'
@@ -33,23 +32,19 @@ const getLabel = (
   }
 
   if (lastErrorCode) {
-    return 'Error!'
+    return `Error: ${lastErrorCode}`
+  }
+
+  if (isAlreadyEndorsed && isAddingSuccess) {
+    return 'Added your endorsement!'
+  }
+
+  if (!isAlreadyEndorsed && isRemovingSuccess) {
+    return 'Removed your endorsement!'
   }
 
   if (isSaving) {
-    if (isAlreadyEndorsed) {
-      return 'Removing endorsement...'
-    } else {
-      return 'Adding endorsement...'
-    }
-  }
-
-  if (isSuccess) {
-    if (isAlreadyEndorsed) {
-      return 'Removed your endorsement!'
-    } else {
-      return 'Added your endorsement!'
-    }
+    return 'Saving...'
   }
 
   if (isAlreadyEndorsed) {
@@ -64,30 +59,19 @@ const getIcon = (
   isLoading: boolean,
   isAlreadyEndorsed: boolean,
   isSaving: boolean,
-  lastErrorCode: null | boolean | DataStoreErrorCode,
-  isSuccess: boolean
+  lastErrorCode: null | DataStoreErrorCode,
+  isAddingSuccess: boolean,
+  isRemovingSuccess: boolean
 ) => {
   if (!isLoggedIn) {
     return <ThumbUpIcon />
   }
 
-  if (isLoading) {
+  if (isLoading || lastErrorCode !== null || isSaving) {
     return undefined
   }
 
-  if (lastErrorCode) {
-    return undefined
-  }
-
-  if (isSaving) {
-    if (isAlreadyEndorsed) {
-      return undefined
-    } else {
-      return undefined
-    }
-  }
-
-  if (isSuccess) {
+  if (isAddingSuccess || isRemovingSuccess) {
     return <CheckIcon />
   }
 
@@ -116,6 +100,7 @@ const EndorseAssetButton = ({
     isLoadingEndorsements,
     lastErrorCodeLoadingEndorsements,
     myEndorsements,
+    hydrate,
   ] = useDatabaseQuery<Endorsement>(
     CollectionNames.Endorsements,
     userId
@@ -125,7 +110,7 @@ const EndorseAssetButton = ({
         ]
       : false,
     {
-      [options.queryName]: 'get-my-endorsements',
+      queryName: 'get-my-endorsements',
     }
   )
 
@@ -133,14 +118,17 @@ const EndorseAssetButton = ({
   const isAlreadyEndorsed =
     Array.isArray(myEndorsements) && myEndorsements.length === 1 ? true : false
 
-  const [isSaving, isSavingSuccess, lastSavingErrorCode, createOrDelete] =
-    useDatabaseSave<Endorsement>(
-      CollectionNames.Endorsements,
-      isAlreadyEndorsed && Array.isArray(myEndorsements)
-        ? myEndorsements[0].id
-        : null,
-      isAlreadyEndorsed
-    )
+  const [isAdding, isAddingSuccess, lastSavingErrorCode, create] =
+    useDataStoreCreate<Endorsement>(CollectionNames.Endorsements)
+  const [
+    isRemoving,
+    isDeleteSuccess,
+    lastDeletingErrorCode,
+    deleteEndorsementRecord,
+  ] = useDataStoreDelete(
+    CollectionNames.Endorsements,
+    isAlreadyEndorsed ? myEndorsements![0].id : false
+  )
 
   const addEndorsement = async () => {
     try {
@@ -154,17 +142,13 @@ const EndorseAssetButton = ({
         })
       }
 
-      const result = await createOrDelete({
-        asset: assetId,
-      })
+      await create({ asset: assetId })
 
-      if (!result.length) {
-        throw new Error('Failed to save')
-      }
+      // if (onDone) {
+      //   onDone()
+      // }
 
-      if (onDone) {
-        onDone()
-      }
+      hydrate()
     } catch (err) {
       console.error('Failed to perform save', err)
       handleError(err)
@@ -183,15 +167,13 @@ const EndorseAssetButton = ({
         })
       }
 
-      const result = await createOrDelete()
+      await deleteEndorsementRecord()
 
-      if (!result.length) {
-        throw new Error('Failed to perform removal')
-      }
+      // if (onDone) {
+      //   onDone()
+      // }
 
-      if (onDone) {
-        onDone()
-      }
+      hydrate()
     } catch (err) {
       console.error('Failed to remove endorsement', err)
       handleError(err)
@@ -217,9 +199,12 @@ const EndorseAssetButton = ({
         isLoggedIn,
         isLoadingEndorsements,
         isAlreadyEndorsed,
-        isSaving,
-        lastSavingErrorCode || lastErrorCodeLoadingEndorsements,
-        isSavingSuccess
+        isAdding || isRemoving,
+        lastSavingErrorCode ||
+          lastDeletingErrorCode ||
+          lastErrorCodeLoadingEndorsements, // TODO: No truthy
+        isAddingSuccess,
+        isDeleteSuccess
       )}
       onClick={onClickBtn}
       isLoading={isAssetLoading}>
@@ -227,9 +212,12 @@ const EndorseAssetButton = ({
         isLoggedIn,
         isLoadingEndorsements,
         isAlreadyEndorsed,
-        isSaving,
-        lastSavingErrorCode || lastErrorCodeLoadingEndorsements,
-        isSavingSuccess
+        isAdding || isRemoving,
+        lastSavingErrorCode ||
+          lastDeletingErrorCode ||
+          lastErrorCodeLoadingEndorsements, // TODO: No truthy
+        isAddingSuccess,
+        isDeleteSuccess
       )}{' '}
       ({endorsementCount})
     </Button>

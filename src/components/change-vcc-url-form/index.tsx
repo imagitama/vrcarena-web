@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
@@ -20,7 +20,7 @@ const ChangeVccUrlForm = ({
   onCancel = undefined,
   overrideSave = undefined,
 }: {
-  assetId?: string
+  assetId: string | null
   existingVccUrl?: string
   actionCategory?: string
   onDone?: () => void
@@ -28,9 +28,9 @@ const ChangeVccUrlForm = ({
   overrideSave?: (newVccUrl: string) => void
 }) => {
   const userId = useUserId()
-  const [isSaving, isSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
-    assetId
+    assetId || false
   )
   const [newVccUrl, setNewVccUrl] = useState<string>(existingVccUrl || '')
 

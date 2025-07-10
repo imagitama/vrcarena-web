@@ -16,12 +16,10 @@ const Renderer = ({ items }: { items?: Asset[] }) => (
 )
 
 enum SubView {
-  Visible,
-  Drafts,
-  Deleted,
+  Visible = 'visible',
+  Drafts = 'drafts',
+  Deleted = 'deleted',
 }
-
-const analyticsCategoryName = 'MyAccount'
 
 const MyUploads = () => {
   const userId = useUserId()

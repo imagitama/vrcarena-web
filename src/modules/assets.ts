@@ -110,7 +110,7 @@ export interface AssetFields extends CoreAssetFields, Record<string, unknown> {
 
 export interface Asset extends AssetFields, Record<string, unknown> {
   id: string
-  createdat: Date
+  createdat: string
 }
 
 export interface ExtraData {
@@ -182,21 +182,21 @@ export enum IndicativeAuditStatus {
 
 export interface AssetMeta extends MetaRecord {
   id: string
-  publishedby: string
-  featuredby: string
+  publishedby: string | null
+  featuredby: string | null
   lastmodifiedby: string
-  lastmodifiedat: Date
+  lastmodifiedat: string // Date
   createdby: string
-  createdat: Date
-  approvedby: string
-  publishedat: Date
+  createdat: string // Date
+  approvedby: string | null
+  publishedat: string | null // Date
   // not in MetaRecord
-  deletionreason: DeletionReason
-  archivedreason: ArchivedReason
-  declinedreasons: DeclinedReason[]
+  deletionreason: DeletionReason | null
+  archivedreason: ArchivedReason | null
+  declinedreasons: DeclinedReason[] | null
   indicativeauditstatus: IndicativeAuditStatus | null
   // specific to assets
-  lastsyncedwithgumroadat: Date
+  lastsyncedwithgumroadat: string // Date
 }
 
 export interface AssetStats {
@@ -205,8 +205,7 @@ export interface AssetStats {
   reviewcount: number
 }
 
-export interface PublicAsset extends CoreAssetFields {
-  id: string
+export interface PublicAsset extends Asset {
   authorname: string
   speciesnames: string[]
   // meta
@@ -220,7 +219,7 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   showcommissionstatusforassets: boolean
   salereason: string | null
   saledescription: string | null
-  saleexpiresat: Date | null
+  saleexpiresat: string | null
   speciesnames: string[]
   createdbyusername: string
   lastmodifiedbyusername: string

@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useSearching from '../../hooks/useSearching'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
@@ -46,10 +46,8 @@ export default ({
   overrideSave?: (newUrl: string | undefined) => void
 }) => {
   const [userInput, setUserInput] = useState<string>(sourceUrl || '')
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
   const classes = useStyles()
   const [searchTerm, setSearchTerm] = useState<string | undefined>('')
   const [isSearching, , searchResults] = useSearching<Asset>(
@@ -198,8 +196,8 @@ export default ({
         <LoadingIndicator message="Saving..." />
       ) : isSaveSuccess ? (
         'Saved!'
-      ) : isSaveError ? (
-        'Failed to save'
+      ) : lastErrorCode !== null ? (
+        <>Failed to save (code {lastErrorCode})</>
       ) : (
         <FormControls>
           <Button icon={<ChevronRightIcon />} onClick={searchForDuplicates}>

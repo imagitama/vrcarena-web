@@ -3,16 +3,16 @@ import { Species } from './species'
 
 export interface SocialMediaUsernames extends Record<string, unknown> {
   // profile
-  vrchatuserid: string
-  vrchatusername: string
-  discordusername: string
-  twitterusername: string
-  telegramusername: string
-  youtubechannelid: string
-  twitchusername: string
-  neosvrusername: string
-  chilloutvrusername: string
-  patreonusername: string
+  vrchatuserid: string | null
+  vrchatusername: string | null
+  discordusername: string | null
+  twitterusername: string | null
+  telegramusername: string | null
+  youtubechannelid: string | null
+  twitchusername: string | null
+  neosvrusername: string | null
+  chilloutvrusername: string | null
+  patreonusername: string | null
 }
 
 export interface User extends SocialMediaUsernames {

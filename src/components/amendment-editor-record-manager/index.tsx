@@ -1,7 +1,7 @@
 import React from 'react'
 import { handleError } from '../../error-handling'
 import { PublishStatus } from '../../modules/common'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import EditorRecordManager from '../editor-record-manager'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
@@ -16,7 +16,7 @@ const AmendmentEditorRecordManager = ({
   onDone: () => void
 }) => {
   const [isSavingParent, isSavingParentSuccess, lastErrorCode, saveParent] =
-    useDatabaseSave(amendment.parenttable, amendment.parent)
+    useDataStoreEdit(amendment.parenttable, amendment.parent)
 
   const beforeApprove = async (): Promise<boolean> => {
     try {

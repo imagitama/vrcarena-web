@@ -12,7 +12,7 @@ import SketchfabEmbed from '../sketchfab-embed'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import { Asset, CollectionNames } from '../../modules/assets'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 const useStyles = makeStyles({
   root: {
@@ -41,9 +41,9 @@ export default ({
 }) => {
   const [textFieldVal, setTextFieldVal] = useState(existingUrl || '')
   const [embedUrl, setEmbedUrl] = useState('')
-  const [isSaving, , lastErrorCode, save] = useDatabaseSave<Asset>(
+  const [isSaving, , lastErrorCode, save] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
-    assetId
+    assetId || false
   )
   const classes = useStyles()
 

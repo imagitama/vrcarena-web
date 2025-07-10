@@ -1,7 +1,7 @@
 import React from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import {
   AttendanceStatus,
@@ -12,6 +12,7 @@ import {
 import ErrorMessage from '../error-message'
 import Button from '../button'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const EventAttendenceButton = ({
   eventId,
@@ -23,11 +24,12 @@ const EventAttendenceButton = ({
   onDone?: () => void
 }) => {
   const isLoggedIn = useIsLoggedIn()
-  const [isSaving, , lastErrorCode, saveOrCreate] =
-    useDatabaseSave<EventAttendance>(
-      CollectionNames.EventAttendance,
-      myAttendance ? myAttendance.id : null
-    )
+  const [isSaving, , lastErrorCode, saveOrCreate] = myAttendance
+    ? useDataStoreEdit<EventAttendance>(
+        CollectionNames.EventAttendance,
+        myAttendance.id
+      )
+    : useDataStoreCreate<EventAttendance>(CollectionNames.EventAttendance)
 
   const currentStatus = myAttendance ? myAttendance.status : undefined
 

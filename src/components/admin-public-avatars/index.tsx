@@ -34,7 +34,6 @@ import {
 import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 import NoResultsMessage from '../no-results-message'
-import Paper from '../paper'
 import InfoMessage from '../info-message'
 
 interface SyncMissingAvatarSubmissionsResult {

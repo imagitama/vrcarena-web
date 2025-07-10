@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
@@ -28,7 +28,7 @@ const DeleteButton = ({
   id: string
   metaCollectionName: string
   existingAccessStatus?: AccessStatus
-  existingDeletionReason?: DeletionReason
+  existingDeletionReason?: DeletionReason | null
   onClick?: ({ newValue }: { newValue: AccessStatus }) => void
   onDone?: () => void
 }) => {
@@ -38,7 +38,7 @@ const DeleteButton = ({
       existingAccessStatus !== undefined ? false : id,
       'delete-button'
     )
-  const [isSaving, , lastErrorCodeSaving, save] = useDatabaseSave<MetaRecord>(
+  const [isSaving, , lastErrorCodeSaving, save] = useDataStoreEdit<MetaRecord>(
     metaCollectionName,
     id
   )

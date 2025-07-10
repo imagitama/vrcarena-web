@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import { handleError } from '../../error-handling'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { CollectionNames, Notice, NoticeFields } from '../../modules/notices'
 import Button from '../button'
 import CheckboxInput from '../checkbox-input'
@@ -10,6 +10,7 @@ import FormControls from '../form-controls'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import TextInput from '../text-input'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const EditNoticeForm = ({
   id = undefined,
@@ -29,8 +30,9 @@ const EditNoticeForm = ({
     orderby: 0,
     isvisible: false,
   })
-  const [isSaving, isSuccess, lastErrorCode, createOrEdit] =
-    useDatabaseSave<Notice>(CollectionNames.Notices, id)
+  const [isSaving, isSuccess, lastErrorCode, createOrEdit] = id
+    ? useDataStoreEdit<Notice>(CollectionNames.Notices, id)
+    : useDataStoreCreate<Notice>(CollectionNames.Notices)
 
   useEffect(() => {
     if (!id || !notice) {

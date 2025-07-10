@@ -4,7 +4,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import Button from '../button'
 import FormControls from '../form-controls'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
@@ -31,7 +31,7 @@ export default ({
   onCancel = undefined,
   overrideSave = undefined,
 }: {
-  assetId?: string
+  assetId: string | null
   activeSpeciesIds?: string[]
   actionCategory?: string
   onDone?: () => void
@@ -45,7 +45,7 @@ export default ({
     'change-species-editor'
   )
   const [isSaving, isSuccess, lastErrorCodeSaving, save] =
-    useDatabaseSave<Asset>(CollectionNames.Assets, assetId)
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
   const [newSpeciesIds, setNewSpeciesIds] = useState<string[]>(
     activeSpeciesIds || []
   )

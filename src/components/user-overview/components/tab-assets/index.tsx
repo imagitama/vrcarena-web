@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled'
 import useUserOverview from '../../useUserOverview'
-import PaginatedView from '../../../paginated-view'
+import PaginatedView, { GetQueryFn } from '../../../paginated-view'
 import AssetResults from '../../../asset-results'
 import WarningMessage from '../../../warning-message'
 import { PublicAsset, ViewNames } from '../../../../modules/assets'
@@ -20,7 +20,7 @@ const TabAssets = () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
   // TODO: Refactor to useDatabaseQuery
-  const getQuery = useCallback(
+  const getQuery = useCallback<GetQueryFn<PublicAsset>>(
     (query) => {
       query = query
         .eq('createdby', userId)

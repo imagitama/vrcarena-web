@@ -85,9 +85,9 @@ const EditorRecordManager = ({
   existingEditorNotes?: string
   existingFeaturedStatus?: FeaturedStatus
   // assets
-  existingDeletionReason?: DeletionReason
-  existingArchivedReason?: ArchivedReason
-  existingDeclinedReasons?: DeclinedReason[]
+  existingDeletionReason?: DeletionReason | null
+  existingArchivedReason?: ArchivedReason | null
+  existingDeclinedReasons?: DeclinedReason[] | null
   onDone?: () => void
   showStatuses?: boolean
   showApprovalButtons?: boolean

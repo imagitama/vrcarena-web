@@ -1,6 +1,6 @@
 import React from 'react'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import { Asset, CollectionNames } from '../../modules/assets'
@@ -12,36 +12,36 @@ import ErrorMessage from '../error-message'
 import Button from '../button'
 
 const AssetBannerEditor = ({
-  assetId = undefined,
-  onDone = undefined,
-  actionCategory = undefined,
-  overrideSave = undefined,
-  assetIdForBucket = undefined,
+  assetId,
+  onDone,
+  actionCategory,
+  overrideSave,
+  assetIdForBucket,
 }: {
-  assetId?: string
+  assetId: string | null
   onDone?: () => void
   actionCategory?: string
   overrideSave?: (url: string) => void
   // for amendments to work
   assetIdForBucket?: string
 }) => {
-  const [isSaving, isSaveSuccess, isSaveError, save, clear] =
-    useDatabaseSave<Asset>(CollectionNames.Assets, assetId)
+  const [isSaving, isSaveSuccess, lastErrorCode, save, clear] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
 
   if (isSaving) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message="Saving asset banner..." />
   }
 
   if (isSaveSuccess) {
     return (
-      <SuccessMessage>
-        Banner saved successfully <Button onClick={clear}>Okay</Button>
-      </SuccessMessage>
+      <SuccessMessage onOkay={clear}>Banner saved successfully</SuccessMessage>
     )
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save banner</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to save banner (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   const onUploadedWithUrls = async (urls: string[]) => {

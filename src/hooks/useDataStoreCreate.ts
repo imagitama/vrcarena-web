@@ -1,26 +1,25 @@
 import { useState } from 'react'
 import { handleError } from '../error-handling'
 import {
+  DataStoreError,
   DataStoreErrorCode,
+  DataStoreOptions,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
 import useSupabaseClient from './useSupabaseClient'
 
 type ClearFn = () => void
 
-export default <TRecord extends Record<string, unknown>>(
-  collectionName: string
+const useDataStoreCreate = <TRecord extends Record<string, unknown>>(
+  collectionName: string,
+  options: DataStoreOptions = {}
 ): [
   boolean,
   boolean,
   null | DataStoreErrorCode,
-  (
-    fields: Partial<TRecord>,
-    returnEntireDocument?: boolean,
-    allowId?: boolean
-  ) => Promise<string | TRecord>,
+  (fields: Partial<TRecord>) => Promise<TRecord>,
   ClearFn,
-  null | string
+  null | TRecord
 ] => {
   if (!collectionName) {
     throw new Error('Cannot create: no collection name provided')
@@ -31,7 +30,7 @@ export default <TRecord extends Record<string, unknown>>(
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
     null
   )
-  const [id, setId] = useState<null | string>(null)
+  const [createdRecord, setCreatedRecord] = useState<null | TRecord>(null)
   const supabase = useSupabaseClient()
 
   const clear = () => {
@@ -40,34 +39,38 @@ export default <TRecord extends Record<string, unknown>>(
     setIsCreating(false)
   }
 
-  const create = async (
-    fields: Partial<TRecord>,
-    returnEntireDocument: boolean = false,
-    allowId: boolean = false
-  ): Promise<string | TRecord> => {
+  const create = async (fields: Partial<TRecord>): Promise<TRecord> => {
     try {
       setIsSuccess(false)
       setLastErrorCode(null)
       setIsCreating(true)
 
-      // @ts-ignore
-      if (fields.id && !allowId) {
-        throw new Error(`Cannot provide an id when performing create`)
-      }
+      console.debug(
+        `useDataStoreCreate :: ${
+          options.queryName || '(unnamed)'
+        } :: ${collectionName} :: create`,
+        fields
+      )
 
       const { data, error } = await supabase
         .from<any, { Row1: TRecord; Insert: TRecord }>(collectionName)
         .insert([fields as TRecord])
-        .select<'*', TRecord>()
+        .select<'*', TRecord>('*')
 
       if (error) {
         console.error(error)
-        throw new Error(`API error`)
+        throw new DataStoreError('useDataStoreCreate failed', error)
       }
 
-      if (!data || !data.length) {
-        throw new Error('Result is null or empty')
+      if (data.length !== 1) {
+        throw new Error(`Count is ${data.length}`)
       }
+
+      console.debug(
+        `useDataStoreCreate :: ${
+          options.queryName || '(unnamed)'
+        } :: ${collectionName} :: success`
+      )
 
       setIsCreating(false)
       setIsSuccess(true)
@@ -75,15 +78,9 @@ export default <TRecord extends Record<string, unknown>>(
 
       const createdRecord = data[0]
 
-      if (!createdRecord.id) {
-        throw new Error('Created record did NOT have an "id" field')
-      }
+      setCreatedRecord(data[0])
 
-      setId(data[0].id as string)
-
-      return returnEntireDocument
-        ? (data[0] as TRecord)
-        : (data[0].id as string)
+      return createdRecord
     } catch (err) {
       setIsCreating(false)
       setIsSuccess(false)
@@ -96,5 +93,7 @@ export default <TRecord extends Record<string, unknown>>(
     }
   }
 
-  return [isCreating, isSuccess, lastErrorCode, create, clear, id]
+  return [isCreating, isSuccess, lastErrorCode, create, clear, createdRecord]
 }
+
+export default useDataStoreCreate

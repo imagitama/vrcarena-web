@@ -22,7 +22,7 @@ export default ({
   resolvedByUsername,
 }: {
   resolutionStatus: string // waiting | resolved
-  resolvedAt: Date | null
+  resolvedAt: Date | string | null
   resolvedBy: string | null
   resolvedByUsername?: string
 }) => {

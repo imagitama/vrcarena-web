@@ -55,7 +55,7 @@ export namespace AttendanceStatus {
   export const Abstain: AttendanceStatus = 'abstain' as AttendanceStatus
 }
 
-export interface EventAttendance {
+export interface EventAttendance extends Record<string, any> {
   id: string
   event: string // id
   status: AttendanceStatus

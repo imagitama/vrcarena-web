@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 import { handleError } from '../../error-handling'
 
@@ -14,16 +14,27 @@ import SuccessMessage from '../success-message'
 import GetVrchatAvatarDetails from '../get-vrchat-avatar-details'
 import VrchatAvatarComponent from '../vrchat-avatar'
 import { VrchatAvatar } from '../../vrchat'
-import { AmendmentFields, CollectionNames } from '../../modules/amendments'
+import {
+  Amendment,
+  AmendmentFields,
+  CollectionNames,
+} from '../../modules/amendments'
 import {
   Asset,
   CollectionNames as AssetsCollectionNames,
 } from '../../modules/assets'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import { routes } from '../../routes'
 
 export default ({ assetId }: { assetId: string }) => {
-  const [isSaving, isSuccess, lastErrorCode, createAmendment] = useDatabaseSave(
-    CollectionNames.Amendments
-  )
+  const [
+    isSaving,
+    isSuccess,
+    lastErrorCode,
+    createAmendment,
+    clear,
+    createdAmendment,
+  ] = useDataStoreCreate<Amendment>(CollectionNames.Amendments)
   const [newAvatarId, setNewAvatarId] = useState('')
   const [newAvatarData, setNewAvatarData] = useState<VrchatAvatar | undefined>()
   const [comments, setComments] = useState('')
@@ -34,7 +45,15 @@ export default ({ assetId }: { assetId: string }) => {
 
   if (isSuccess) {
     return (
-      <SuccessMessage>
+      <SuccessMessage
+        viewRecordUrl={
+          createdAmendment
+            ? routes.viewAmendmentWithVar.replace(
+                ':amendmentId',
+                createdAmendment.id
+              )
+            : undefined
+        }>
         Asset amendment created successfully!
         <br />
         <br />

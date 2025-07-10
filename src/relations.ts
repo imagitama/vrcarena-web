@@ -22,6 +22,10 @@ import {
 } from './modules/comments'
 import { User, CollectionNames as UsersCollectionNames } from './modules/users'
 import { Page, CollectionNames as PagesCollectionNames } from './modules/pages'
+import {
+  Review,
+  CollectionNames as ReviewsCollectionNames,
+} from './modules/reviews'
 import * as routes from './routes'
 
 const labelMaxLength = 100
@@ -71,6 +75,8 @@ export const getUrlForParent = (
       return routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', parentId)
     case SocialCollectionNames.SocialPostMeta:
       return routes.socialWithPostVar.replace(':postId', parentData.id)
+    case ReviewsCollectionNames.Reviews:
+      return routes.viewReviewWithVar.replace(':reviewId', parentData.id)
     default:
       throw new Error(
         `Could not get URL for parent ${parentTable} - not supported`

@@ -1,4 +1,4 @@
-export interface Endorsement {
+export interface Endorsement extends Record<string, any> {
   id: string
   asset: string
   createdby: string

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Asset, CollectionNames } from '../../modules/assets'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { tagVrcFuryReady } from '../../vrcfury'
 import { handleError } from '../../error-handling'
 import { removeDuplicates } from '../../utils'
@@ -22,7 +22,7 @@ const VrcFuryToggle = ({
     existingTags.includes(tagVrcFuryReady)
   )
   const [isSaving, isSavingSuccess, lastErrorCode, save, clear] =
-    useDatabaseSave<Asset>(CollectionNames.Assets, assetId)
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId)
 
   const onChange = async () => {
     try {

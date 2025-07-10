@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
@@ -18,15 +18,15 @@ import { bucketNames } from '../../file-uploading'
 import { Asset, CollectionNames } from '../../modules/assets'
 
 export default ({
-  assetId = undefined,
-  onDone = undefined,
+  assetId,
+  onDone,
   skipDelay = false,
-  preloadImageUrl = undefined,
-  preloadFile = undefined,
-  overrideSave = undefined,
-  assetIdForBucket = undefined,
+  preloadImageUrl,
+  preloadFile,
+  overrideSave,
+  assetIdForBucket,
 }: {
-  assetId?: string
+  assetId: string | null
   onDone?: () => void
   skipDelay?: boolean
   preloadImageUrl?: string
@@ -35,9 +35,9 @@ export default ({
   // for amendments to work
   assetIdForBucket?: string
 }) => {
-  const [isSaving, isSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
-    assetId
+    assetId || false
   )
   const timeoutRef = useRef<NodeJS.Timeout>()
 
@@ -50,19 +50,21 @@ export default ({
   }, [])
 
   if (isSaving) {
-    return <LoadingIndicator message="Saving..." />
+    return <LoadingIndicator message="Saving asset..." />
   }
 
   if (lastErrorCode !== null) {
     return (
       <ErrorMessage>
-        Failed to save thumbnail (code {lastErrorCode})
+        Failed to save asset thumbnail (code {lastErrorCode})
       </ErrorMessage>
     )
   }
 
   if (isSuccess) {
-    return <SuccessMessage>Thumbnail has been changed!</SuccessMessage>
+    return (
+      <SuccessMessage>Thumbnail has been saved successfully</SuccessMessage>
+    )
   }
 
   const onUploaded = async (urls: string[]) => {

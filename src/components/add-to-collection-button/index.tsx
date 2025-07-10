@@ -7,7 +7,7 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd'
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck'
 
 import { DataStoreErrorCode } from '../../data-store'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useMyCollections from '../../hooks/useMyCollections'
 import CreateCollectionForm from '../create-collection-form'
 import { handleError } from '../../error-handling'
@@ -21,6 +21,7 @@ import {
   Collection,
   CollectionItem,
 } from '../../modules/collections'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const useStyles = makeStyles({
   createForm: {
@@ -73,7 +74,7 @@ const CollectionMenuItem = ({
   }
 
   const [isSaving, isSavingSuccess, lastSavingError, saveCollection] =
-    useDatabaseSave<Collection>(CollectionNames.Collections, collectionId)
+    useDataStoreEdit<Collection>(CollectionNames.Collections, collectionId)
 
   const isAssetInCollection =
     items.find((item) => item.asset === assetId) !== undefined
@@ -210,12 +211,16 @@ const MyCollectionMenuItem = ({
   const areWeCreating = myCollection === false
 
   const [isSaving, isSavingSuccess, lastSavingError, createOrUpdate] =
-    useDatabaseSave<CollectionForUser>(
-      CollectionNames.CollectionsForUsers,
-      areWeCreating ? null : userId,
-      undefined,
-      'save-my-collection'
-    )
+    areWeCreating
+      ? useDataStoreCreate<CollectionForUser>(
+          CollectionNames.CollectionsForUsers,
+          { queryName: 'save-my-collection' }
+        )
+      : useDataStoreEdit<CollectionForUser>(
+          CollectionNames.CollectionsForUsers,
+          userId,
+          { queryName: 'save-my-collection' }
+        )
 
   const isAssetInMyCollection = myCollection
     ? myCollection.assets.includes(assetId)

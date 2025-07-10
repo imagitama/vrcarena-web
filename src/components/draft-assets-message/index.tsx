@@ -25,7 +25,10 @@ const DraftAssetsMessage = () => {
           ['publishstatus', Operators.EQUALS, PublishStatus.Draft],
           ['createdby', Operators.EQUALS, user.id],
         ]
-      : false
+      : false,
+    {
+      queryName: 'draft-assets-message',
+    }
   )
   const location = useLocation()
 

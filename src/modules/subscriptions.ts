@@ -1,4 +1,4 @@
-export interface Subscription {
+export interface Subscription extends Record<string, any> {
   id: string
   parenttable: string
   parent: string

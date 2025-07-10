@@ -113,12 +113,12 @@ const PrefabEditor = ({
 }
 
 export default ({
-  assetId = undefined,
-  currentExtraData = undefined,
-  onDone = undefined,
-  overrideSave = undefined,
+  assetId,
+  currentExtraData,
+  onDone,
+  overrideSave,
 }: {
-  assetId?: string
+  assetId: string | null
   currentExtraData?: ExtraData
   onDone?: () => void
   overrideSave?: (newExtraData: ExtraData) => void

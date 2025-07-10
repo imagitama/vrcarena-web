@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import categoryMeta, { CategoryMeta } from '../../category-meta'
@@ -120,9 +120,9 @@ const ChangeCategoryForm = ({
   onDone?: () => void
   overrideSave?: (newCategory: AssetCategory) => void
 }) => {
-  const [isSaving, , , save] = useDatabaseSave<Asset>(
-    assetId ? CollectionNames.Assets : false,
-    assetId
+  const [isSaving, , , save] = useDataStoreEdit<Asset>(
+    CollectionNames.Assets,
+    assetId || false
   )
   const [newCategory, setNewCategory] = useState(existingCategory)
 

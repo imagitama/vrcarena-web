@@ -135,6 +135,7 @@ const PerformanceEditorDemo = () => {
       <Button onClick={() => setIsEditing(!isEditing)}>Toggle Editing</Button>
       <code>{newTags.join(' ')}</code>
       <PerformanceEditor
+        assetId={null}
         currentTags={newTags}
         overrideSave={(newTags) => setNewTags(newTags)}
         isEditing={isEditing}

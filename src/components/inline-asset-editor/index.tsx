@@ -16,6 +16,7 @@ import ErrorMessage from '../error-message'
 import useTimer from '../../hooks/useTimer'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import Heading from '../heading'
+import { handleError } from '../../error-handling'
 
 const useStyles = makeStyles({
   contents: {
@@ -76,7 +77,14 @@ const InlineAssetEditor = ({
       [fieldName]: value,
     }))
 
-  const onClickSave = () => save(newFields)
+  const onClickSave = async () => {
+    try {
+      await save(newFields)
+    } catch (err) {
+      console.error(err)
+      handleError(err)
+    }
+  }
 
   return (
     <Dialog

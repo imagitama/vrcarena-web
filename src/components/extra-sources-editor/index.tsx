@@ -5,7 +5,7 @@ import Button from '../button'
 import TextInput from '../text-input'
 import { AssetFields, CollectionNames, SourceInfo } from '../../modules/assets'
 import FormControls from '../form-controls'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import ErrorMessage from '../error-message'
@@ -99,10 +99,7 @@ const ExtraSourcesEditor = ({
     extraSources || []
   )
   const [isSaving, isSaveSuccess, lastErrorCode, save] =
-    useDatabaseSave<AssetFields>(
-      assetId ? CollectionNames.Assets : false,
-      assetId
-    )
+    useDataStoreEdit<AssetFields>(CollectionNames.Assets, assetId || false)
 
   const onClickSave = async () => {
     try {

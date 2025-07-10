@@ -77,19 +77,6 @@ export function getOrderByAsString(orderBy?: OrderBy<any>): string {
   return orderBy.join('+')
 }
 
-export const options = {
-  limit: 'limit',
-  orderBy: 'orderBy',
-  subscribe: 'subscribe',
-  startAfter: 'startAfter',
-  queryName: 'queryName',
-  // SQL
-  offset: 'offset',
-  selectQuery: 'selectQuery',
-  // special
-  supabase: 'supabase',
-}
-
 const getOptionsIfProvided = (
   maybeOptions: OptionsMap<any> | number | undefined
 ): OptionsMap<any> | false => {
@@ -168,17 +155,11 @@ export default <TRecord>(
 
   async function doIt(initiallyLoading = true) {
     try {
-      if (inDevelopment()) {
-        console.debug(
-          'useDatabaseQuery',
-          collectionName,
-          whereClausesAsString,
-          limitAsString,
-          orderByAsString,
-          startAfterAsString,
-          options.queryName
-        )
-      }
+      console.debug(
+        `useDatabaseQuery :: ${
+          options.queryName || '(unnamed)'
+        } :: ${collectionName} :: where=${whereClausesAsString} limit=${limitAsString} order=${orderByAsString} startAfter=${startAfterAsString}`
+      )
 
       if (initiallyLoading) {
         setIsLoading(true)
@@ -206,12 +187,6 @@ export default <TRecord>(
                 `${field}.${operator}.${value}`
             )
             .join(',')
-
-          console.debug(`or statement`, orStatement)
-
-          if (options.supabase) {
-            console.debug(`foreignTable=${options.supabase.foreignTable}`)
-          }
 
           queryChain = queryChain.or(
             orStatement,
@@ -273,13 +248,17 @@ export default <TRecord>(
       const result = await queryChain
 
       console.debug(
-        `Result of query ${options.queryName || 'unnamed'}:`,
+        `useDatabaseQuery :: ${
+          options.queryName || '(unnamed)'
+        } :: ${collectionName} :: query complete`,
         result
       )
 
       if (isUnmountedRef.current) {
         console.debug(
-          `Query complete but component has unmounted, skipping re-render...`
+          `useDatabaseQuery :: ${
+            options.queryName || '(unnamed)'
+          } :: ${collectionName} :: query complete but component has unmounted, skipping re-render...`
         )
         return
       }
@@ -290,7 +269,7 @@ export default <TRecord>(
           setLastErrorCode(DataStoreErrorCode.AuthExpired)
         } else {
           throw new Error(
-            `Failed to query database! ${result.error.code}: ${result.error.message}`
+            `Failed to query database: ${result.error.code}: ${result.error.message}`
           )
         }
       } else {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { handleError } from '../../error-handling'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import Button from '../button'
 import CheckboxInput from '../checkbox-input'
 import ErrorMessage from '../error-message'
@@ -23,7 +23,7 @@ export default ({
   onDone: () => void
 }) => {
   const [newTags, setNewTags] = useState<string[]>(tags)
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSaveSuccess, isSaveError, save] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
     assetId
   )

@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
 import useUserId from '../../hooks/useUserId'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import { Asset, CollectionNames } from '../../modules/assets'
@@ -28,9 +28,9 @@ const useStyles = makeStyles({
 export default ({
   assetId,
   description = '',
-  onDone = undefined,
+  onDone,
   actionCategory,
-  overrideSave = undefined,
+  overrideSave,
 }: {
   assetId: string | null
   description?: string
@@ -38,12 +38,10 @@ export default ({
   actionCategory?: string
   overrideSave?: (newDesc: string) => void
 }) => {
-  const userId = useUserId()
-  const [newDescriptionValue, setNewDescriptionValue] = useState(description)
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [newDescriptionValue, setNewDescriptionValue] =
+    useState<string>(description)
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
   const classes = useStyles()
 
   if (isSaving) {
@@ -54,8 +52,12 @@ export default ({
     return <SuccessMessage>Short description saved</SuccessMessage>
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save short description</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to save short description (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const onSaveBtnClick = async () => {

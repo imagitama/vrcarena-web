@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow'
 import Link from '../../components/link'
 import UsernameLink from '../username-link'
 import FormattedDate from '../formatted-date'
-import { FullHistoryEntry } from '../../modules/history'
+import { FullHistoryEntry, HistoryEntry } from '../../modules/history'
 import Button from '../button'
 
 import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
@@ -82,7 +82,11 @@ function ParentLabel({
   return <>(no parent)</>
 }
 
-const HistoryResults = ({ results }: { results: FullHistoryEntry[] }) => (
+const HistoryResults = ({
+  results,
+}: {
+  results: (FullHistoryEntry | HistoryEntry)[]
+}) => (
   <Table>
     <TableHead>
       <TableRow>
@@ -102,7 +106,7 @@ const HistoryResults = ({ results }: { results: FullHistoryEntry[] }) => (
           data,
           createdat: createdAt,
           createdby: createdBy,
-          createdbyusername,
+          ...result
         }) => (
           <TableRow key={id} title={id}>
             <TableCell>
@@ -117,7 +121,11 @@ const HistoryResults = ({ results }: { results: FullHistoryEntry[] }) => (
               {data ? <HistoryData data={data} /> : '(no data)'}
             </TableCell>
             <TableCell>
-              <UsernameLink id={createdBy} username={createdbyusername} />
+              <UsernameLink
+                id={createdBy}
+                // @ts-ignore
+                username={result.createdbyusername}
+              />
             </TableCell>
             <TableCell>
               <FormattedDate date={createdAt} />

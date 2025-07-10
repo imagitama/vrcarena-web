@@ -79,7 +79,7 @@ export const callFunction = async <TPayload, TResult>(
 
   const result = await firebase.app().functions().httpsCallable(name)(data)
 
-  console.debug(`function "${name}" is complete`, result)
+  console.debug(`function "${name}" complete`, result)
 
   return result as HttpsCallableResult<TResult>
 }
@@ -139,7 +139,7 @@ export const callFunctionWithFile = async <TResult>(
 
     const result = await response.json()
 
-    console.debug(`function "${name}" is complete`, result)
+    console.debug(`function "${name}" complete`, result)
 
     return { data: result } as HttpsCallableResult<TResult>
   } catch (error) {

@@ -1,12 +1,13 @@
 import React from 'react'
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 
 import Button from '../button'
 import WarningMessage from '../warning-message'
 import { Asset, CollectionNames } from '../../modules/assets'
+import ErrorMessage from '../error-message'
 
 export default ({
   assetId,
@@ -19,7 +20,7 @@ export default ({
   onDone: () => void
   overrideSave?: (newValue: boolean) => void
 }) => {
-  const [isSaving, , , save] = useDatabaseSave<Asset>(
+  const [isSaving, , lastErrorCode, save, clear] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
     assetId
   )
@@ -52,6 +53,14 @@ export default ({
       console.error('Failed to save asset is adult', err)
       handleError(err)
     }
+  }
+
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage onOkay={clear}>
+        Failed to save asset (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   return (

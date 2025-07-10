@@ -12,6 +12,9 @@ import LoadingShimmer from '../loading-shimmer'
 import Expander from '../expander'
 import { FullReview } from '../../modules/reviews'
 import { VRCArenaTheme } from '../../themes'
+import ReviewRating from '../review-rating'
+import Button from '../button'
+import { routes } from '../../routes'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {},
@@ -64,7 +67,7 @@ export default ({
     <Expander message="Click to expand review">
       {includeAsset && review && (
         <div className={classes.asset}>
-          <AssetResultsItem asset={review!.asset} />
+          <AssetResultsItem asset={review!.assetdata} />
         </div>
       )}
       <div className={classes.review}>
@@ -103,22 +106,19 @@ export default ({
                 const ratingMeta = allowedRatings.find(
                   (item) => item.name === rating.name
                 )!
-                return (
-                  <div key={rating.name} className={classes.rating}>
-                    <strong title={ratingMeta.description}>
-                      {ratingMeta.title}
-                    </strong>
-                    <br />
-                    <br />
-                    <StarRating ratingOutOf5={rating.rating / 2} />
-                    <Markdown source={rating.comments} />
-                  </div>
-                )
+                return <ReviewRating rating={rating} ratingMeta={ratingMeta} />
               })}
             </div>
           ) : null}
         </Paper>
       </div>
+      {review && (
+        <Button
+          url={routes.viewReviewWithVar.replace(':reviewId', review.id)}
+          color="secondary">
+          View Full Review
+        </Button>
+      )}
     </Expander>
   )
 }

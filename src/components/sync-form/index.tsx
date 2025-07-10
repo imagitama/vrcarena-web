@@ -25,7 +25,7 @@ import FormControls from '../form-controls'
 import ExperimentalMessage from '../experimental-message'
 import useNotice from '../../hooks/useNotice'
 import { handleError } from '../../error-handling'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import InfoMessage from '../info-message'
 import { addQuotesToDescription } from '../../utils/formatting'
 import { SyncContext } from './hooks/useSync'
@@ -196,7 +196,7 @@ const SyncForm = <TRecord extends object>({
     ValidationIssue[]
   >([])
 
-  const [isSaving, , isSavingError, save] = useDatabaseSave(
+  const [isSaving, , lastSaveErrorCode, save] = useDataStoreEdit(
     collectionName,
     parentId
   )
@@ -343,8 +343,12 @@ const SyncForm = <TRecord extends object>({
     return <LoadingIndicator message="Saving record..." />
   }
 
-  if (isSavingError) {
-    return <ErrorMessage>Failed to save record</ErrorMessage>
+  if (lastSaveErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to save record (code {lastSaveErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (!lastResult) {

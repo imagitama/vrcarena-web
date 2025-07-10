@@ -8,7 +8,8 @@
     "precommit": "pretty-quick --staged",
     "prettier": "prettier --write src/**/*.{js,jsx}",
     "lint": "eslint .",
-    "analyze": "source-map-explorer 'build/static/js/*.js' --html build/analyze_result.html"
+    "analyze": "source-map-explorer 'build/static/js/*.js' --html build/analyze_result.html",
+    "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

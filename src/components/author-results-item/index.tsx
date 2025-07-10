@@ -58,9 +58,11 @@ export default ({
             onClick={onClick}>
             <CardMedia
               className={classes.media}
-              image={avatarurl}
+              image={avatarurl || undefined}
               title={`Avatar for author ${name}`}>
-              {!avatarurl && <DefaultAvatar stringForDecision={name} />}
+              {!avatarurl && (
+                <DefaultAvatar stringForDecision={name || undefined} />
+              )}
             </CardMedia>
             <CardContent className={classes.content}>
               <Typography variant="h5" component="h2">

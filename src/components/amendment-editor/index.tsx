@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { mergeNewFieldsIntoParent } from '../../utils/amendments'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
@@ -27,10 +27,13 @@ import {
 } from '../../modules/assets'
 import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
 import {
+  Amendment,
   AmendmentFields,
   CollectionNames as AmendmentsCollectionNames,
 } from '../../modules/amendments'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import { routes } from '../../routes'
 
 const useStyles = makeStyles({
   cols: {
@@ -151,11 +154,19 @@ const AmendmentEditor = ({
       parentId || false,
       'amendment-editor-parent'
     )
-  const [isSaving, isSuccess, lastErrorCodeSaving, saveOrCreate] =
-    useDatabaseSave<AmendmentFields>(
-      AmendmentsCollectionNames.Amendments,
-      amendmentId
-    )
+  const [
+    isSaving,
+    isSuccess,
+    lastErrorCodeSaving,
+    saveOrCreate,
+    clear,
+    createdOrUpdatedAmendment,
+  ] = amendmentId
+    ? useDataStoreEdit<Amendment>(
+        AmendmentsCollectionNames.Amendments,
+        amendmentId
+      )
+    : useDataStoreCreate<Amendment>(AmendmentsCollectionNames.Amendments)
   const [newFieldsForSaving, setNewFieldsForSaving] = useState({})
   const [newFieldsForOutput, setNewFieldsForOutput] = useState<{
     [fieldName: string]: any
@@ -174,7 +185,15 @@ const AmendmentEditor = ({
 
   if (isSuccess) {
     return (
-      <SuccessMessage>
+      <SuccessMessage
+        viewRecordUrl={
+          createdOrUpdatedAmendment
+            ? routes.viewAmendmentWithVar.replace(
+                ':amendmentId',
+                createdOrUpdatedAmendment.id
+              )
+            : undefined
+        }>
         Amendment {amendmentId ? 'saved' : 'created'} successfully
         <br />
         <br />

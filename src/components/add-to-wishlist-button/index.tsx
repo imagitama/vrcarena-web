@@ -3,7 +3,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import AddToQueueIcon from '@mui/icons-material/AddToQueue'
 import RemoveFromQueueIcon from '@mui/icons-material/RemoveFromQueue'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
@@ -11,6 +11,7 @@ import { DataStoreErrorCode } from '../../data-store'
 
 import Button from '../button'
 import { CollectionNames, WishlistForUser } from '../../modules/wishlists'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const getLabel = (
   isLoggedIn: boolean,
@@ -110,11 +111,12 @@ export default ({
       userId || false,
       'add-to-wishlist-button'
     )
-  const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] =
-    useDatabaseSave(
-      CollectionNames.WishlistsForUsers,
-      myWishlist ? userId : null
-    )
+  const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] = myWishlist
+    ? useDataStoreEdit<WishlistForUser>(
+        CollectionNames.WishlistsForUsers,
+        userId!
+      )
+    : useDataStoreCreate<WishlistForUser>(CollectionNames.WishlistsForUsers)
   const isLoggedIn = !!userId
   const isAssetInWishlist =
     myWishlist && myWishlist.assets && myWishlist.assets.includes(assetId)
@@ -137,12 +139,9 @@ export default ({
         onClick({ newValue: isAssetInWishlist })
       }
 
-      const record: WishlistForUser = {
-        id: userId,
+      await saveOrCreate({
         assets: newAssetIds,
-      }
-
-      await saveOrCreate(record)
+      })
     } catch (err) {
       console.error('Failed to save wishlist', err)
       handleError(err)

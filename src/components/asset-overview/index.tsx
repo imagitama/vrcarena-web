@@ -314,7 +314,7 @@ const MiniSaleInfo = () => {
   if (
     !asset ||
     !asset.salereason ||
-    (asset.saleexpiresat && asset.saleexpiresat < new Date())
+    (asset.saleexpiresat && new Date(asset.saleexpiresat) < new Date())
   ) {
     return null
   }
@@ -1020,11 +1020,13 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                 {asset && asset.approvedat ? (
                   <div>
                     Approved <FormattedDate date={asset.approvedat} /> by{' '}
-                    {asset.approvedbyusername ? (
+                    {asset.approvedby && asset.approvedbyusername ? (
                       <UsernameLink
                         id={asset.approvedby}
                         username={asset.approvedbyusername}
                       />
+                    ) : asset.approvedby ? (
+                      asset.approvedby
                     ) : (
                       '(unknown)'
                     )}

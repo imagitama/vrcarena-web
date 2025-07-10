@@ -81,7 +81,7 @@ const Attachment = ({
 const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
   const classes = useStyles()
   const {
-    createdId,
+    createdSocialPost,
     internalText,
     setInternalText,
     isAdult,
@@ -113,18 +113,16 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
       ) : lastErrorCodeCreatingPost ? (
         <ErrorMessage>Failed to create post</ErrorMessage>
       ) : isCreatePostSuccess ? (
-        <SuccessMessage>
-          Your post has been created :)
-          <br />
-          <br />
-          <Button
-            color="secondary"
-            url={routes.socialWithPostVar.replace(
-              ':postId',
-              createdId || '<none>'
-            )}>
-            View On Social
-          </Button>
+        <SuccessMessage
+          viewRecordUrl={
+            createdSocialPost
+              ? routes.socialWithPostVar.replace(
+                  ':postId',
+                  createdSocialPost.id
+                )
+              : undefined
+          }>
+          Your post has been created :{')'}
         </SuccessMessage>
       ) : null}
       <Paper className={classes.paper}>
@@ -172,7 +170,7 @@ const Form = ({ triggerOpen }: { triggerOpen: () => void }) => {
 }
 
 interface FormContext {
-  createdId: string | null
+  createdSocialPost: SocialPost | null
   internalText: string
   setInternalText: (
     userInputHtml: string | ((currentVal: string) => string)
@@ -215,7 +213,7 @@ const CreateSocialPostForm = ({
     lastErrorCodeCreatingPost,
     create,
     ,
-    createdId,
+    createdSocialPost,
   ] = useDataStoreCreate<SocialPost>(CollectionNames.SocialPosts)
   const myUserId = useUserId()
   const classes = useStyles()
@@ -266,7 +264,7 @@ const CreateSocialPostForm = ({
     <div className={classes.root}>
       <formContext.Provider
         value={{
-          createdId,
+          createdSocialPost,
           internalText,
           setInternalText,
           isCreatingPost,

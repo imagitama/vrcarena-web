@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
@@ -32,7 +32,7 @@ const ApproveButton = ({
   metaCollectionName: string
   existingApprovalStatus?: ApprovalStatus
   // assets
-  existingDeclinedReasons?: DeclinedReason[]
+  existingDeclinedReasons?: DeclinedReason[] | null
   onClick?: ({
     newApprovalStatus,
   }: {
@@ -48,7 +48,7 @@ const ApproveButton = ({
       existingApprovalStatus ? false : id,
       'approve-button'
     )
-  const [isSaving, , lastErrorCodeSaving, save] = useDatabaseSave<MetaRecord>(
+  const [isSaving, , lastErrorCodeSaving, save] = useDataStoreEdit<MetaRecord>(
     metaCollectionName,
     id
   )
@@ -120,22 +120,15 @@ const ApproveButton = ({
           } as AssetMeta)
         : {}
 
-      console.debug('Saving...')
-
-      const updatedDocs = await save({
+      await save({
         approvalstatus: newApprovalStatus,
         approvedat:
-          newApprovalStatus === ApprovalStatus.Approved ? new Date() : null,
+          newApprovalStatus === ApprovalStatus.Approved
+            ? new Date().toISOString()
+            : null,
         ...extraFields,
         approvedby: userId,
       })
-
-      if (!updatedDocs.length) {
-        console.warn('Save was unsuccessful')
-        return
-      }
-
-      console.debug('Save success')
 
       if (onDone) {
         onDone()
@@ -150,7 +143,7 @@ const ApproveButton = ({
     try {
       await save({
         declinedreasons: selectedReasons,
-      } as AssetMeta)
+      })
 
       if (onDone) {
         onDone()
@@ -202,7 +195,7 @@ const ApproveButton = ({
         Decline{isAsset ? ' & Draft' : ''}
       </Button>
       {isAsset &&
-        existingDeclinedReasons !== undefined &&
+        existingDeclinedReasons &&
         !getAreArraysSame(existingDeclinedReasons, selectedReasons) && (
           <Button onClick={onClickUpdate} size="small">
             Update Reason

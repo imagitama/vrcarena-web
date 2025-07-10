@@ -88,6 +88,7 @@ const AssetSearch = ({
             {Object.entries(categoryMeta).map(
               ([categoryName, categoryInfo]) => (
                 <MenuItem
+                  key={categoryName}
                   value={categoryName}
                   selected={categoryName === selectedCategory}>
                   {categoryInfo.nameSingular}

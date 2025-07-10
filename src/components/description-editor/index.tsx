@@ -11,7 +11,7 @@ import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
 import Markdown from '../markdown'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
 import {
@@ -51,10 +51,8 @@ const DescriptionEditor = ({
 }) => {
   const [newDescriptionValue, setNewDescriptionValue] = useState(description)
   const [isUsingQuotes, setIsUsingQuotes] = useState(false)
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
   const classes = useStyles()
 
   if (isSaving) {
@@ -65,8 +63,12 @@ const DescriptionEditor = ({
     return <SuccessMessage>Description saved</SuccessMessage>
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save description</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to save description (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   const onSaveBtnClick = async () => {

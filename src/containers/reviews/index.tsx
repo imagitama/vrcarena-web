@@ -7,6 +7,8 @@ import ReviewResults from '../../components/review-results'
 import WarningMessage from '../../components/warning-message'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { PublicReview, ViewNames } from '../../modules/reviews'
+import Button from '../../components/button'
+import { routes } from '../../routes'
 
 const Renderer = ({ items }: { items?: PublicReview[] }) => (
   <ReviewResults reviews={items} includeAssets />
@@ -35,14 +37,13 @@ const ReviewsView = () => {
       </Helmet>
       <div>
         <Heading variant="h1">Reviews</Heading>
-        <WarningMessage>
-          Please contact us if you believe a review contains incorrect info or
-          is very unfair or unjust.
-        </WarningMessage>
         <PaginatedView<PublicReview>
           viewName={ViewNames.GetPublicReviewsForPublicAssets}
           getQuery={getQuery}
-          defaultFieldName="createdat">
+          defaultFieldName="createdat"
+          extraControls={[
+            <Button url={routes.createReview}>Create Review</Button>,
+          ]}>
           <Renderer />
         </PaginatedView>
       </div>

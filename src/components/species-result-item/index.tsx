@@ -139,13 +139,6 @@ const SpeciesResultItem = ({
   onClick?: (id: string) => void
   isSelectedByParent?: boolean
 }) => {
-  useEffect(() => {
-    console.log('mount')
-    return () => {
-      console.log('UMMOUNT')
-    }
-  }, [])
-
   const classes = useStyles()
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <Tooltip

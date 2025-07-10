@@ -18,7 +18,6 @@ import Button from '../../components/button'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import useDatabaseQuery, {
   Operators,
-  options,
   OrderDirections,
 } from '../../hooks/useDatabaseQuery'
 
@@ -375,7 +374,7 @@ const Pages = () => {
       CollectionNames.Pages,
       [['parent', Operators.EQUALS, parentName]],
       {
-        [options.orderBy]: ['pageorder', OrderDirections.ASC],
+        orderBy: ['pageorder', OrderDirections.ASC],
       }
     )
   const [selectedLineOfText, setSelectedLineOfText] = useState<string>('')

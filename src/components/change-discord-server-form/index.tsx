@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add'
 import CheckIcon from '@mui/icons-material/Check'
 import { makeStyles } from '@mui/styles'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
@@ -71,11 +71,14 @@ const CreateForm = ({
   const [name, setName] = useState('')
   const [inviteUrl, setInviteUrl] = useState('')
   const [widgetId, setWidgetId] = useState('')
-  const [isSaving, isSuccess, lastErrorCode, create, clear] =
-    useDataStoreCreate<DiscordServer>(CollectionNames.DiscordServers)
-  const [createdDocument, setCreatedDocument] = useState<DiscordServer | null>(
-    null
-  )
+  const [
+    isSaving,
+    isSuccess,
+    lastErrorCode,
+    create,
+    clear,
+    createdDiscordServer,
+  ] = useDataStoreCreate<DiscordServer>(CollectionNames.DiscordServers)
 
   const onCreate = async () => {
     try {
@@ -83,18 +86,11 @@ const CreateForm = ({
         trackAction(actionCategory, 'Click create Discord Server button')
       }
 
-      const justCreatedDocument = await create(
-        {
-          name,
-          inviteurl: inviteUrl,
-          widgetid: widgetId,
-        },
-        true
-      )
-
-      if (typeof justCreatedDocument !== 'string') {
-        setCreatedDocument(justCreatedDocument)
-      }
+      await create({
+        name,
+        inviteurl: inviteUrl,
+        widgetid: widgetId,
+      })
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -106,10 +102,10 @@ const CreateForm = ({
   }
 
   const onDone = () => {
-    if (!createdDocument) {
-      throw new Error('Cannot onDone without a created document')
+    if (!createdDiscordServer) {
+      throw new Error('No created Discord server')
     }
-    onClickWithIdAndDetails(createdDocument.id, createdDocument)
+    onClickWithIdAndDetails(createdDiscordServer.id, createdDiscordServer)
   }
 
   if (isSaving) {
@@ -239,7 +235,7 @@ const Form = ({
     DiscordServerData | undefined
   >(existingDiscordServerData)
   const [isSaving, isSuccess, lastErrorCode, save, clear] =
-    useDatabaseSave<AssetFields>(collectionName || false, id)
+    useDataStoreEdit<AssetFields>(collectionName || '', id || false)
   const [isCreating, setIsCreating] = useState(false)
   const [isBrowsingAll, setIsBrowsingAll] = useState(false)
 

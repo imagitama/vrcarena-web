@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
 import {
   Attachment,
@@ -29,6 +29,7 @@ import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../../config'
 import { VRCArenaTheme } from '../../themes'
 import useIsBanned from '../../hooks/useIsBanned'
 import NoPermissionMessage from '../no-permission-message'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 
 const attachmentTypesMeta: { [key: string]: { name: string } } = {
   [AttachmentType.Image]: {
@@ -175,10 +176,9 @@ const AttachmentEditor = ({
         }
       : emptyRecord
   )
-  const [isSaving, isSaveSuccess, isSaveFailed, save] = useDatabaseSave<
-    AttachmentFields,
-    Attachment
-  >(CollectionNames.Attachments, attachmentId || null)
+  const [isSaving, isSaveSuccess, isSaveFailed, saveOrCreate] = attachmentId
+    ? useDataStoreEdit<Attachment>(CollectionNames.Attachments, attachmentId)
+    : useDataStoreCreate<Attachment>(CollectionNames.Attachments)
   const classes = useStyles()
   const [newUrl, setNewUrl] = useState('')
   const [isExpanded, setIsExpanded] = useState(isPreExpanded)
@@ -206,16 +206,10 @@ const AttachmentEditor = ({
     try {
       console.debug(`AttachmentEditor.onSaveClick`, { fields })
 
-      const [newRecord] = await save(fields)
-      const returnVal = newRecord !== null ? newRecord.id : undefined
-
-      console.debug(`AttachmentEditor.onSaveClick.done`, {
-        newRecord,
-        returnVal,
-      })
+      const newAttachment = await saveOrCreate(fields)
 
       if (onDone) {
-        onDone(newRecord ? newRecord : fields, returnVal)
+        onDone(newAttachment)
       }
     } catch (err) {
       console.error(err)

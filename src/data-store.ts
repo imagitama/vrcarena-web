@@ -3,9 +3,9 @@ import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
 export interface CommonRecordFields {
   id: string
-  lastmodifiedat: Date | null
+  lastmodifiedat: string | null // Date
   lastmodifiedby: string | null
-  createdat: Date
+  createdat: string // Date
   createdby: string
 }
 

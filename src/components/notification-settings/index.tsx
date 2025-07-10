@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserId from '../../hooks/useUserId'
 
 import { handleError } from '../../error-handling'
@@ -227,7 +227,10 @@ const NotificationSettings = ({
     userPreferences,
   ] = useUserPreferences()
   const [isSaving, isSaveSuccess, lastErrorCodeSaving, save] =
-    useDatabaseSave<UserPreferences>(CollectionNames.UserPreferences, myUserId)
+    useDataStoreEdit<UserPreferences>(
+      CollectionNames.UserPreferences,
+      myUserId || false
+    )
   const [newPrefs, setNewPrefs] = useState(defaultNotificationPrefs)
   const [notificationEmail, setNotificationEmail] = useState('')
   const classes = useStyles()
@@ -392,7 +395,7 @@ const NotificationSettings = ({
         </ErrorMessage>
       ) : null}
       {isSaveSuccess || isAnonymouslySaveSuccess ? (
-        <SuccessMessage>Saved successfully</SuccessMessage>
+        <SuccessMessage>Preferences saved successfully</SuccessMessage>
       ) : null}
       <FormControls>
         <Button onClick={onSaveClick} isDisabled={isBusy} icon={<SaveIcon />}>

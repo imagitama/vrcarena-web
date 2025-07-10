@@ -9,7 +9,6 @@ import { trackAction } from '../../analytics'
 import useIsEditor from '../../hooks/useIsEditor'
 import useDatabaseQuery, {
   Operators,
-  options,
   OrderDirections,
 } from '../../hooks/useDatabaseQuery'
 import * as routes from '../../routes'
@@ -146,7 +145,7 @@ const SpeciesBrowser = ({
     ViewNames.GetPublicSpeciesCache,
     [['redirectto', Operators.IS, null]],
     {
-      [options.orderBy]: ['singularname', OrderDirections.ASC],
+      orderBy: ['singularname', OrderDirections.ASC],
     }
   )
   const [filterId, setFilterId] = useState<string | null>(null)

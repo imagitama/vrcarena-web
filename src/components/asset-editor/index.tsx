@@ -821,7 +821,7 @@ const Editor = () => {
                     display={RelationsDisplay}
                     editor={
                       <RelationsEditor
-                        assetId={assetId || undefined}
+                        assetId={assetId || null}
                         currentRelations={asset.relations || []}
                         assetsData={asset.relationsdata}
                         overrideSave={
@@ -926,7 +926,7 @@ const Editor = () => {
                   display={ThumbnailDisplay}
                   editor={
                     <AssetThumbnailUploader
-                      assetId={assetId || undefined}
+                      assetId={assetId || null}
                       assetIdForBucket={originalAssetId}
                       overrideSave={
                         onFieldChanged
@@ -1012,7 +1012,7 @@ const Editor = () => {
                     display={SpeciesDisplay}
                     editor={
                       <ChangeSpeciesEditor
-                        assetId={assetId ? assetId : undefined}
+                        assetId={assetId || null}
                         activeSpeciesIds={asset.species || []}
                       />
                     }
@@ -1026,7 +1026,7 @@ const Editor = () => {
                   display={BannerDisplay}
                   editor={
                     <AssetBannerEditor
-                      assetId={assetId ? assetId : undefined}
+                      assetId={assetId || null}
                       assetIdForBucket={originalAssetId}
                       overrideSave={
                         onFieldChanged
@@ -1107,7 +1107,7 @@ const Editor = () => {
                   display={RelationsDisplay}
                   editor={
                     <RelationsEditor
-                      assetId={assetId || undefined}
+                      assetId={assetId || null}
                       currentRelations={asset.relations || []}
                       assetsData={asset.relationsdata}
                       overrideSave={
@@ -1205,7 +1205,7 @@ const Editor = () => {
                   }
                   editor={
                     <VrcFurySettingsEditor
-                      assetId={assetId || undefined}
+                      assetId={assetId || null}
                       currentExtraData={
                         asset && asset.extradata ? asset.extradata : undefined
                       }
@@ -1233,13 +1233,13 @@ const Editor = () => {
                   doWeRender={asset.category === AssetCategory.Avatar}
                   display={() => (
                     <PerformanceEditor
-                      assetId={assetId || undefined}
+                      assetId={assetId || null}
                       currentTags={asset.tags || []}
                     />
                   )}
                   editor={
                     <PerformanceEditor
-                      assetId={assetId || undefined}
+                      assetId={assetId || null}
                       currentTags={asset.tags || []}
                       isEditing
                     />
@@ -1379,7 +1379,7 @@ const Editor = () => {
                   }
                   editor={
                     <ChangeVccUrlForm
-                      assetId={assetId || undefined}
+                      assetId={assetId || null}
                       existingVccUrl={asset.vccurl}
                       onDone={hydrate}
                     />

@@ -147,7 +147,7 @@ const LabelForEntry = ({
             return (
               <>
                 {getLabelForApprovalStatus(
-                  (data.changes as AssetMeta).approvalstatus
+                  (data.changes as AssetMeta).approvalstatus!
                 )}
               </>
             )
@@ -155,7 +155,7 @@ const LabelForEntry = ({
             return (
               <>
                 {getLabelForAccessStatus(
-                  (data.changes as AssetMeta).accessstatus
+                  (data.changes as AssetMeta).accessstatus!
                 )}
               </>
             )
@@ -163,7 +163,7 @@ const LabelForEntry = ({
             return (
               <>
                 {getLabelForPublishStatus(
-                  (data.changes as AssetMeta).publishstatus
+                  (data.changes as AssetMeta).publishstatus!
                 )}
               </>
             )

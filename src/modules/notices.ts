@@ -1,4 +1,4 @@
-export interface NoticeFields {
+export interface NoticeFields extends Record<string, any> {
   hideid: string
   title: string
   message: string
@@ -21,5 +21,5 @@ export enum CollectionNames {
 }
 
 export enum ViewNames {
-  GetFullNotices = 'getFullNotices',
+  GetFullNotices = 'getfullnotices',
 }

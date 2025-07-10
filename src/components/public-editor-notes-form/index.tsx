@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { CommonMetaRecordFields, CommonRecordFields } from '../../data-store'
 import useUserId from '../../hooks/useUserId'
 
@@ -43,7 +43,7 @@ const PublicEditorNotesForm = ({
       'editor-notes-form'
     )
   const [isSaving, , lastErrorCodeSavingMeta, saveMetaRecord] =
-    useDatabaseSave<MetaRecord>(metaCollectionName, id)
+    useDataStoreEdit<MetaRecord>(metaCollectionName, id)
 
   const [newEditorNotes, setNewEditorNotes] = useState(
     existingEditorNotes || ''

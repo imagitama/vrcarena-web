@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useUserId from '../../hooks/useUserId'
 import { handleError } from '../../error-handling'
 import { trackAction } from '../../analytics'
@@ -67,9 +67,9 @@ export default ({
   overrideSave?: (newIds: string[]) => void
 }) => {
   const userId = useUserId()
-  const [isSaving, isSuccess, lastErrorCode, save] = useDatabaseSave<Asset>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
-    assetId
+    assetId || false
   )
   const [newAvatarIds, setNewAvatarIds] = useState<string[]>(avatarIds || [])
   const classes = useStyles()

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import SyncIcon from '@mui/icons-material/Sync'
 
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { callFunction } from '../../firebase'
 import { handleError } from '../../error-handling'
 
@@ -30,6 +30,10 @@ enum FunctionName {
   SyncUserWithDiscord = 'syncUserWithDiscord',
 }
 
+enum ErrorCode {
+  Unknown = 999,
+}
+
 const SyncUserWithDiscordForm = ({
   discordUser,
   onDone,
@@ -39,16 +43,17 @@ const SyncUserWithDiscordForm = ({
 }) => {
   const userId = useUserId()
   const [, , , hydrateUser] = useUserRecord()
-  // TODO: Store last error code
-  const [isError, setIsError] = useState(false)
+  const [lastSyncErrorCode, setLastSyncErrorCode] = useState<ErrorCode | null>(
+    null
+  )
   const [isLoading, setIsLoading] = useState(false)
-  const [isSaving, isSuccess, lastErrorCode, save, clear] =
-    useDatabaseSave<User>(CollectionNames.Users, userId)
+  const [isSaving, isSuccess, lastSaveErrorCode, save, clear] =
+    useDataStoreEdit<User>(CollectionNames.Users, userId!)
   const avatarUrlRef = useRef<string | null>(null)
 
   const performSync = async (onlyWithAvatar: boolean = false) => {
     try {
-      setIsError(false)
+      setLastSyncErrorCode(null)
       setIsLoading(true)
 
       if (!onlyWithAvatar) {
@@ -78,7 +83,7 @@ const SyncUserWithDiscordForm = ({
         })
       }
 
-      setIsError(false)
+      setLastSyncErrorCode(null)
       setIsLoading(false)
 
       hydrateUser()
@@ -87,7 +92,7 @@ const SyncUserWithDiscordForm = ({
         onDone()
       }
     } catch (err) {
-      setIsError(true)
+      setLastSyncErrorCode(ErrorCode.Unknown) // TODO: Finish
       setIsLoading(false)
       console.error(err)
       handleError(err)
@@ -96,11 +101,11 @@ const SyncUserWithDiscordForm = ({
 
   const retryOnlyWithAvatar = () => performSync(true)
 
-  if (isError) {
+  if (lastSyncErrorCode !== null) {
     return (
       <ErrorMessage onOkay={onDone}>
-        Failed to sync with Discord. Are you sure you have signed in with
-        Discord before?
+        Failed to sync with Discord (code {lastSyncErrorCode}). Are you sure you
+        have signed in with Discord before?
       </ErrorMessage>
     )
   }
@@ -113,8 +118,8 @@ const SyncUserWithDiscordForm = ({
     return <LoadingIndicator message="Saving your account..." />
   }
 
-  if (lastErrorCode !== null) {
-    if (lastErrorCode === DataStoreErrorCode.ViolateUniqueConstraint) {
+  if (lastSaveErrorCode !== null) {
+    if (lastSaveErrorCode === DataStoreErrorCode.ViolateUniqueConstraint) {
       return (
         <ErrorMessage>
           Username is taken
@@ -128,7 +133,7 @@ const SyncUserWithDiscordForm = ({
 
     return (
       <ErrorMessage onOkay={clear}>
-        Failed to save your account: {lastErrorCode}
+        Failed to save your account: {lastSaveErrorCode}
       </ErrorMessage>
     )
   }

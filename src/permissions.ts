@@ -46,8 +46,6 @@ export const getHasPermissionForRecord = <TRecord extends CommonRecordFields>(
 const permissions = {
   [UserRoles.User]: [
     routes.home,
-    routes.login,
-    routes.loginWithVar,
     routes.logout,
     routes.logoutWithVar,
     routes.createAsset,
@@ -214,6 +212,8 @@ const permissions = {
   ],
 }
 
+const guest = [routes.login, routes.loginWithVar]
+
 export const getHasPermissionForRoute = (
   user: FullUser | User,
   route: string
@@ -231,6 +231,10 @@ export const getHasPermissionForRoute = (
     (user.role as UserRoles) in permissions &&
     Object.values(permissions[user.role as UserRoles]).includes(route)
   ) {
+    return true
+  }
+
+  if (!user.role && guest.includes(route)) {
     return true
   }
 

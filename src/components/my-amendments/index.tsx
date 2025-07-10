@@ -2,7 +2,6 @@ import React from 'react'
 
 import useDatabaseQuery, {
   Operators,
-  options,
   OrderDirections,
 } from '../../hooks/useDatabaseQuery'
 import useUserId from '../../hooks/useUserId'
@@ -18,7 +17,7 @@ export default () => {
     ViewNames.GetFullAmendments,
     [['createdby', Operators.EQUALS, userId]],
     {
-      [options.orderBy]: ['createdat', OrderDirections.DESC],
+      orderBy: ['createdat', OrderDirections.DESC],
     }
   )
 

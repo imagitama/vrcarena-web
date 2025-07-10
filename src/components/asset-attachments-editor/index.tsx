@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Attachment, AttachmentReason } from '../../modules/attachments'
 import { Asset, CollectionNames } from '../../modules/assets'
-import useDatabaseSave from '../../hooks/useDatabaseSave'
+import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { trackAction } from '../../analytics'
 import { handleError } from '../../error-handling'
 
@@ -29,10 +29,8 @@ const AssetAttachmentsEditor = ({
   onDone?: () => void
   actionCategory?: string
 }) => {
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDatabaseSave<Asset>(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId)
 
   const onSave = async (newIds: string[], newDatas: Attachment[]) => {
     try {
@@ -75,12 +73,14 @@ const AssetAttachmentsEditor = ({
     return <LoadingIndicator message="Saving asset..." />
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   if (isSaveSuccess) {
-    return <SuccessMessage>Saved!</SuccessMessage>
+    return <SuccessMessage>Asset saved</SuccessMessage>
   }
 
   return (

@@ -47,7 +47,7 @@ const useDataStoreDelete = (
       console.debug(
         `useDataStoreDelete :: ${
           options?.queryName || '(unknown)'
-        } :: Deleting ${id}`
+        } :: ${collectionName} :: ${id} :: delete`
       )
 
       setIsSuccess(false)
@@ -67,7 +67,7 @@ const useDataStoreDelete = (
       console.debug(
         `useDataStoreDelete :: ${
           options?.queryName || '(unknown)'
-        } :: Deleting ${id} success`
+        } :: ${collectionName} :: ${id} :: delete success`
       )
 
       setIsDeleting(false)
