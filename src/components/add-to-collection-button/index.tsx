@@ -33,10 +33,16 @@ import { getFriendlyDate } from '../../utils/dates'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 import NoResultsMessage from '../no-results-message'
+import { routes } from '../../routes'
 
 const useStyles = makeStyles({
-  root: {},
+  root: {
+    '& h2': {
+      marginBottom: '0.5rem !important',
+    },
+  },
   items: {
+    marginTop: '0.5rem',
     width: '550px', // 600px
     maxHeight: 'calc(36px * 8)',
     overflowY: 'auto',
@@ -329,6 +335,12 @@ const CollectionsList = ({
       <Heading variant="h2" noMargin>
         Custom Collections{collections ? ` (${collections.length})` : null}
       </Heading>
+      <Button
+        url={routes.myAccountWithTabNameVar.replace(':tabName', 'collection')}
+        size="small"
+        color="secondary">
+        View My Collections (redirects)
+      </Button>
       <div className={classes.items}>
         {collections ? (
           collections.length ? (
