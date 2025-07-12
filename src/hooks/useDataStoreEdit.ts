@@ -51,9 +51,9 @@ const useDataStoreEdit = <TRecord extends Record<string, unknown>>(
         return
       }
 
-      // @ts-ignore
       if (fields.id) {
-        throw new Error(`Cannot provide an id property when performing update`)
+        console.warn(`property "id" found in fields - removing as unnecessary`)
+        delete fields.id
       }
 
       const fieldsForUpdate = mapFieldsForDatabase(fields) as TRecord
