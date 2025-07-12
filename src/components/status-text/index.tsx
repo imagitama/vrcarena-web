@@ -35,7 +35,7 @@ const StatusText = ({
       ? classes.bad
       : ''
 
-  return <div className={`${classes.status} ${className}`}>{children}</div>
+  return <span className={`${classes.status} ${className}`}>{children}</span>
 }
 
 export default StatusText

@@ -113,7 +113,7 @@ type PossibleWhereClauses<TRecord> =
   | false
 
 type ClearFn = () => void
-type HydrateFn = () => void
+type HydrateFn = () => Promise<void>
 
 export default <TRecord>(
   collectionName: string,
@@ -314,11 +314,11 @@ export default <TRecord>(
     options.supabase && options.supabase.foreignTable,
   ])
 
-  const hydrate = () => {
+  const hydrate = async () => {
     if (whereClauses === false) {
       return
     }
-    doIt(false)
+    return doIt(false)
   }
 
   const clear = () => {

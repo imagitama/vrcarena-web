@@ -1,16 +1,16 @@
 import { useCallback } from 'react'
 import { DataStoreErrorCode } from '../data-store'
-import useDataStore from './useDataStore'
+import useDataStore, { HydrateFn } from './useDataStore'
 import useUserId from './useUserId'
-import { Collection, ViewNames } from '../modules/collections'
+import { FullCollection, ViewNames } from '../modules/collections'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 export default (): [
   boolean,
   null | DataStoreErrorCode,
-  Collection[] | null,
+  FullCollection[] | null,
   number | null,
-  () => void,
+  HydrateFn,
   boolean
 ] => {
   const userId = useUserId()
@@ -18,13 +18,13 @@ export default (): [
     (supabase: SupabaseClient) =>
       userId
         ? supabase
-            .from(ViewNames.GetPublicCollections)
+            .from(ViewNames.GetFullCollections)
             .select('*')
             .eq('createdby', userId)
             .order('createdat', { ascending: false })
         : null,
     [userId]
   )
-  const states = useDataStore<Collection>(getQuery, 'my-collections')
+  const states = useDataStore<FullCollection>(getQuery, 'my-collections')
   return states
 }

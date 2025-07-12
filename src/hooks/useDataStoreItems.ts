@@ -12,6 +12,8 @@ interface QueryOptions<TItem> {
   quietHydrate?: boolean
 }
 
+type HydrateFn = () => Promise<void>
+
 export default <TItem>(
   collectionName: string,
   ids?: string[] | undefined | false,
@@ -23,7 +25,7 @@ export default <TItem>(
   null | DataStoreErrorCode,
   TItem[] | null,
   number | null,
-  () => void
+  HydrateFn
 ] => {
   const [result, setResult] = useState<TItem[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)

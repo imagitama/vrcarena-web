@@ -910,12 +910,10 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                 <AddToCollectionButton
                   isAssetLoading={isLoading}
                   assetId={assetId}
-                  onClick={({ newValue }) =>
+                  onClick={() =>
                     trackAction(
                       analyticsCategoryName,
-                      newValue === true
-                        ? 'Click add to collection button'
-                        : 'Click remove from collection button',
+                      'Click add to collection button',
                       assetId
                     )
                   }

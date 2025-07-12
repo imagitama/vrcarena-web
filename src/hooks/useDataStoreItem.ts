@@ -7,7 +7,7 @@ import {
 } from '../data-store'
 import useSupabaseClient from './useSupabaseClient'
 
-type HydrateFunction = () => void
+type HydrateFn = () => Promise<void>
 
 /**
  * Uses a single item inside the data store.
@@ -18,12 +18,7 @@ export default <TResult extends Record<string, unknown>>(
   id: string | false,
   queryName: string = 'unnamed',
   select: string = '*'
-): [
-  boolean,
-  null | DataStoreErrorCode,
-  null | TResult | false,
-  HydrateFunction
-] => {
+): [boolean, null | DataStoreErrorCode, null | TResult | false, HydrateFn] => {
   const [result, setResult] = useState<null | TResult | false>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(

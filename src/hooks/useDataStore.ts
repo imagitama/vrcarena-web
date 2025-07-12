@@ -35,6 +35,8 @@ export type GetQueryFn<TRecord> = (
   client: SupabaseClient
 ) => GetQuery<TRecord> | Promise<GetQuery<TRecord>> | null
 
+export type HydrateFn = () => Promise<void>
+
 export default <TRecord>(
   getQuery: null | GetQueryFn<TRecord>,
   queryNameOrOptions?: string | UseDataStoreOptions
@@ -43,7 +45,7 @@ export default <TRecord>(
   null | DataStoreErrorCode,
   null | TRecord[],
   null | number,
-  () => void,
+  HydrateFn,
   boolean
 ] => {
   const client = useSupabaseClient()
