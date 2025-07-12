@@ -66,17 +66,18 @@ const useDataStoreCreate = <TRecord extends Record<string, unknown>>(
         throw new Error(`Count is ${data.length}`)
       }
 
+      const createdRecord = data[0]
+
       console.debug(
         `useDataStoreCreate :: ${
           options.queryName || '(unnamed)'
-        } :: ${collectionName} :: success`
+        } :: ${collectionName} :: success`,
+        createdRecord
       )
 
       setIsCreating(false)
       setIsSuccess(true)
       setLastErrorCode(null)
-
-      const createdRecord = data[0]
 
       setCreatedRecord(data[0])
 

@@ -31,6 +31,8 @@ import { getRandomInt } from '../../utils'
 import StatusText from '../status-text'
 import { getFriendlyDate } from '../../utils/dates'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
+import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import NoResultsMessage from '../no-results-message'
 
 const useStyles = makeStyles({
   root: {},
@@ -187,12 +189,16 @@ const OwnedAssetsCollectionListItem = ({
     CollectionNames.CollectionsForUsers,
     userId
   )
-  const [isSaving, isSavingSuccess, lastSavingErrorCode, save] =
+  const [isEditing, isSavingSuccess, lastSavingErrorCode, save] =
     useDataStoreEdit<CollectionForUser>(
       CollectionNames.CollectionsForUsers,
-      userId,
+      collectionForUser ? userId : false,
       { queryName: 'save-collection-for-user' }
     )
+  const [isCreating, isCreatingSuccess, lastCreatingErrorCode, create] =
+    useDataStoreCreate<CollectionForUser>(CollectionNames.CollectionsForUsers, {
+      queryName: 'create-collection-for-user',
+    })
 
   const isAssetInMyCollection = collectionForUser
     ? collectionForUser.assets.includes(assetId)
@@ -207,10 +213,16 @@ const OwnedAssetsCollectionListItem = ({
         ? assetIdsInMyCollection.filter((itemId) => itemId !== assetId)
         : assetIdsInMyCollection.concat([assetId])
 
-      await save({
-        id: userId,
-        assets: newAssetIds,
-      })
+      if (collectionForUser) {
+        await save({
+          assets: newAssetIds,
+        })
+      } else {
+        await create({
+          id: userId,
+          assets: newAssetIds,
+        })
+      }
 
       await hydrate()
 
@@ -236,6 +248,8 @@ const OwnedAssetsCollectionListItem = ({
     return <LoadingListItem />
   }
 
+  const isSaving = isEditing || isCreating
+
   return (
     <>
       <ListItem
@@ -244,7 +258,7 @@ const OwnedAssetsCollectionListItem = ({
         isSaving={isSaving}
         onClick={onClick}
         savedMessage={
-          isSavingSuccess && !isLoadingCollection
+          (isSavingSuccess || isCreatingSuccess) && !isLoadingCollection
             ? isAssetInMyCollection
               ? 'Added to collection, closing...'
               : 'Removed from collection, closing...'
@@ -256,8 +270,14 @@ const OwnedAssetsCollectionListItem = ({
           Failed to load (code {lastLoadingErrorCode})
         </ErrorMessage>
       ) : null}
-      {lastSavingErrorCode !== null ? (
-        <ErrorMessage>Failed to save (code {lastSavingErrorCode})</ErrorMessage>
+      {lastSavingErrorCode || lastCreatingErrorCode !== null ? (
+        <ErrorMessage>
+          Failed to save (code{' '}
+          {lastSavingErrorCode !== null
+            ? lastSavingErrorCode
+            : lastCreatingErrorCode}
+          )
+        </ErrorMessage>
       ) : null}
     </>
   )
@@ -311,15 +331,19 @@ const CollectionsList = ({
       </Heading>
       <div className={classes.items}>
         {collections ? (
-          collections.map((collection) => (
-            <CollectionListItem
-              key={collection.id}
-              assetId={assetId}
-              collection={collection}
-              hydrate={hydrate}
-              onDone={onDone}
-            />
-          ))
+          collections.length ? (
+            collections.map((collection) => (
+              <CollectionListItem
+                key={collection.id}
+                assetId={assetId}
+                collection={collection}
+                hydrate={hydrate}
+                onDone={onDone}
+              />
+            ))
+          ) : (
+            <NoResultsMessage>No collections yet</NoResultsMessage>
+          )
         ) : (
           <>
             <LoadingListItem />
