@@ -62,23 +62,17 @@ const Editor = ({
       parentId={parentId}
       attachmentId={item || undefined}
       attachment={attachmentData}
-      onDone={(newFields, newId) => {
+      onDone={(createdAttachment) => {
         console.debug(`AttachmentsForm.Editor.onDone`, {
-          newFields,
-          newId,
-          item,
+          createdAttachment,
         })
 
         // after creating/editing a record we dont want to read it again
         // instead we can store whatever we sent off for future re-renders
         // NOTE: could mean stale data especially if two people edit at same time
-        storeAttachmentsData({
-          ...newFields,
-          createdat: new Date().toISOString(),
-          id: newId || item!,
-        } as Attachment)
+        storeAttachmentsData(createdAttachment)
 
-        onDone(newId || item!)
+        onDone(createdAttachment.id)
       }}
     />
   )

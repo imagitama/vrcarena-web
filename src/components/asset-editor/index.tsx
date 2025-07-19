@@ -721,10 +721,10 @@ const AttachmentsEditor = ({
 
   return (
     <>
-      <InfoMessage>
-        The first three images and/or YouTube videos will be displayed at the
-        top of the page
-      </InfoMessage>
+      <WarningMessage>
+        You must create your attachments <strong>before</strong> saving your
+        asset.
+      </WarningMessage>
       <AssetAttachmentsEditor
         assetId={originalAssetId || assetId}
         ids={attachmentIds}

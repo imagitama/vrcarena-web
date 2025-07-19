@@ -140,7 +140,7 @@ const AttachmentEditor = ({
   parentTable?: string
   parentId?: string
   attachment?: Attachment
-  onDone?: (fields: AttachmentFields, newId?: string) => void
+  onDone?: (fields: Attachment) => void
   onCancel?: () => void
   isPreExpanded?: boolean
   allowEmptyIsAdult?: boolean
@@ -316,7 +316,7 @@ const AttachmentEditor = ({
             </div>
             <div className={classes.typeData}>
               {/* @ts-ignore */}
-              {attachmentTypesMeta[fields.type].name}{' '}
+              Attachment: {attachmentTypesMeta[fields.type].name}{' '}
             </div>
           </div>
           {isExpanded ? (
@@ -378,7 +378,10 @@ const AttachmentEditor = ({
             </>
           ) : (
             <div className={classes.expandBtnWrapper}>
-              <Button onClick={() => setIsExpanded(true)}>
+              <Button
+                onClick={() => setIsExpanded(true)}
+                color="secondary"
+                size="small">
                 Add Extra Metadata...
               </Button>
             </div>
