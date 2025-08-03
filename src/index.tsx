@@ -2,11 +2,11 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
-import firebase from 'firebase/app'
+// import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import { ThemeProvider } from '@mui/material/styles'
 // @ts-ignore
-import ReactReduxFirebaseProvider from 'react-redux-firebase/lib/ReactReduxFirebaseProvider'
+// import ReactReduxFirebaseProvider from 'react-redux-firebase/lib/ReactReduxFirebaseProvider'
 import { store, history } from './store'
 import App from './App'
 import { inDevelopment } from './environment'
@@ -28,11 +28,11 @@ history.listen(() => {
   store.dispatch(changeSearchTerm())
 })
 
-const rrfProps = {
-  firebase,
-  config: {},
-  dispatch: store.dispatch,
-}
+// const rrfProps = {
+//   firebase,
+//   config: {},
+//   dispatch: store.dispatch,
+// }
 
 const domNode = document.getElementById('root')
 const root = createRoot(domNode!)
@@ -41,11 +41,11 @@ root.render(
   <SupabaseClientContext.Provider value={supabaseClient}>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <ReactReduxFirebaseProvider {...rrfProps}>
-          <ThemeProvider theme={darkTheme}>
-            <App />
-          </ThemeProvider>
-        </ReactReduxFirebaseProvider>
+        {/* <ReactReduxFirebaseProvider {...rrfProps}> */}
+        <ThemeProvider theme={darkTheme}>
+          <App />
+        </ThemeProvider>
+        {/* </ReactReduxFirebaseProvider> */}
       </ConnectedRouter>
     </Provider>
   </SupabaseClientContext.Provider>

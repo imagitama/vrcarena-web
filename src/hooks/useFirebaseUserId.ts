@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux'
+import useFirebaseUser from './useFirebaseUser'
 
-export default (): string | null =>
-  useSelector(({ firebase: { auth } }: any) => auth.uid)
+export default (): string | null => useFirebaseUser()?.uid || null

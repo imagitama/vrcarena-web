@@ -3,6 +3,8 @@ import {
   getHasPermissionForRecord,
   getHasPermissionForRoute,
 } from '../permissions'
+import { routes } from '../routes'
+import useFirebaseUser from './useFirebaseUser'
 import useUserRecord from './useUserRecord'
 
 function usePermissions(route: string): boolean
@@ -13,8 +15,13 @@ function usePermissions<TRecord extends CommonRecordFields = never>(
   routeOrRecord: string | TRecord
 ): boolean {
   const [, , user] = useUserRecord()
+  const firebaseUser = useFirebaseUser()
 
-  if (!user) {
+  if (!user || !firebaseUser) {
+    return false
+  }
+
+  if (routeOrRecord !== routes.myAccount && !firebaseUser.emailVerified) {
     return false
   }
 

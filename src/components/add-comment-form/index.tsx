@@ -14,6 +14,7 @@ import LoadingIndicator from '../loading-indicator'
 import Button from '../button'
 import useIsBanned from '../../hooks/useIsBanned'
 import NoPermissionMessage from '../no-permission-message'
+import useAccountVerification from '../../hooks/useAccountVerification'
 
 const AddCommentForm = ({
   collectionName,
@@ -33,6 +34,7 @@ const AddCommentForm = ({
   const [isSaving, isSuccess, lastErrorCode, create, clear] =
     useDataStoreCreate<Comment>(CollectionNames.Comments)
   const timeoutRef = useRef<NodeJS.Timeout | undefined>()
+  const isVerified = useAccountVerification()
 
   useEffect(
     () => () => {
@@ -43,7 +45,7 @@ const AddCommentForm = ({
     []
   )
 
-  if (useIsBanned()) {
+  if (useIsBanned() || !isVerified) {
     return <NoPermissionMessage />
   }
 

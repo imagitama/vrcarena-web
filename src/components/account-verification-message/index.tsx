@@ -7,6 +7,8 @@ import { handleError } from '../../error-handling'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
+import useAccountVerification from '../../hooks/useAccountVerification'
+import { sendEmailVerification } from 'firebase/auth'
 
 enum ErrorCode {
   Unknown,
@@ -14,6 +16,7 @@ enum ErrorCode {
 
 const AccountVerificationMessage = () => {
   const firebaseUser = useFirebaseUser()
+  const isVerified = useAccountVerification() // NOTE: use this hook as it does extra functionality
   const [isSending, setIsSending] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
@@ -27,7 +30,7 @@ const AccountVerificationMessage = () => {
           throw new Error('No current user')
         }
         console.debug(`sending email verificationn...`)
-        await auth.currentUser.sendEmailVerification()
+        await sendEmailVerification(auth.currentUser)
         console.debug(`sent successfully`)
         setIsSuccess(true)
         setIsSending(false)
@@ -47,7 +50,7 @@ const AccountVerificationMessage = () => {
     )
   }
 
-  if (firebaseUser.isLoaded && firebaseUser.emailVerified === false) {
+  if (firebaseUser && !isVerified) {
     return (
       <WarningMessage
         title="Verification"

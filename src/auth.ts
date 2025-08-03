@@ -2,6 +2,7 @@ import { store } from './store'
 import { USER_IS_LOADING, USER_LOADED, USER_UNLOADED } from './modules/user'
 import { readRecord } from './data-store'
 import { SupabaseClient } from '@supabase/supabase-js'
+import { FirebaseUser } from './firebase'
 
 export const loadUserIntoStore = async (
   supabase: SupabaseClient,
@@ -43,3 +44,9 @@ export const unloadUserFromStore = async () => {
     type: USER_UNLOADED,
   })
 }
+
+export const getSignedUpWithDiscord = (user: FirebaseUser): boolean =>
+  !user.providerData || !user.providerData.length
+
+export const getHasUserVerifiedTheirEmail = (user: FirebaseUser): boolean =>
+  user.emailVerified || getSignedUpWithDiscord(user)

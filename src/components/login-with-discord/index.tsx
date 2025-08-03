@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import firebase from 'firebase'
 
 import useHistory from '../../hooks/useHistory'
-import { callFunction } from '../../firebase'
+import { auth, callFunction } from '../../firebase'
 import { handleError } from '../../error-handling'
 import * as routes from '../../routes'
 
@@ -10,6 +9,7 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import SyncUserWithDiscordForm from '../sync-user-with-discord-form'
 import { DiscordUser } from '../../discord'
+import { signInWithCustomToken, updateEmail } from 'firebase/auth'
 
 // when you log in this component gets completely remounted so it tries to repeat a bunch of times
 let isAlreadyAuthenticated = false
@@ -38,6 +38,10 @@ const mapBackendErrorCode = (backendErrorCode: BackendErrorCode): ErrorCode => {
 // TODO: Verify if actually used
 interface LoginWithDiscordError {
   errorCode: BackendErrorCode
+}
+
+enum FunctionNames {
+  LoginWithDiscord = 'loginWithDiscord',
 }
 
 export default ({
@@ -77,7 +81,7 @@ export default ({
             hasAlreadySignedUp: boolean
             errorCode?: BackendErrorCode
           }
-        >('loginWithDiscord', {
+        >(FunctionNames.LoginWithDiscord, {
           code,
         })
 
@@ -88,13 +92,11 @@ export default ({
           return
         }
 
-        const { user: loggedInUser } = await firebase
-          .auth()
-          .signInWithCustomToken(token)
+        const { user: loggedInUser } = await signInWithCustomToken(auth, token)
 
         // NOTE: the user might not have an email OR the email might already be taken so just ignore errors
         try {
-          await loggedInUser!.updateEmail(discordUser.email)
+          await updateEmail(loggedInUser, discordUser.email)
         } catch (err) {
           console.error(err)
 

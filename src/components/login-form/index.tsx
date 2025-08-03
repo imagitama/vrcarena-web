@@ -1,11 +1,14 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
-import firebase from 'firebase/app'
-
 import { auth as authInstance } from '../../firebase'
 import { trackAction } from '../../analytics'
 import LoginWithDiscordBtn from '../login-with-discord-btn'
+import {
+  EmailAuthProvider,
+  GoogleAuthProvider,
+  TwitterAuthProvider,
+} from 'firebase/auth'
+import StyledFirebaseAuth from './StyledFirebaseAuth'
 
 const loginWithDiscordUrl = `https://discord.com/api/oauth2/authorize?client_id=${process.env.REACT_APP_DISCORD_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_DISCORD_REDIRECT_URI}&response_type=code&scope=identify%20email&prompt=none`
 
@@ -19,18 +22,21 @@ const useStyles = makeStyles({
 const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const classes = useStyles()
 
-  const uiConfig = {
+  const uiConfig: firebaseui.auth.Config = {
     signInFlow: 'popup',
     callbacks: {
-      signInSuccessWithAuthResult: onSuccess,
+      signInSuccessWithAuthResult: () => {
+        onSuccess()
+        return false // prevent redirect
+      },
     },
     signInOptions: [
       {
-        provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        provider: EmailAuthProvider.PROVIDER_ID,
         requireDisplayName: false,
       },
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+      GoogleAuthProvider.PROVIDER_ID,
+      TwitterAuthProvider.PROVIDER_ID,
     ],
     credentialHelper: 'none', // disable redirect on email login
   }
@@ -48,7 +54,6 @@ const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
           />
         </div>
       )}
-      {/* @ts-ignore */}
       <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={authInstance} />
     </>
   )

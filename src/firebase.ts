@@ -1,11 +1,20 @@
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/functions'
+import {
+  connectFunctionsEmulator,
+  getFunctions,
+  httpsCallable,
+} from 'firebase/functions'
+import { initializeApp } from 'firebase/app'
 import * as Sentry from '@sentry/browser'
-import { FirebaseReducer } from 'react-redux-firebase'
 import { inDevelopment } from './environment'
+import {
+  connectAuthEmulator,
+  getAuth,
+  User as FirebaseUser,
+  updatePassword,
+  updateEmail,
+} from 'firebase/auth'
 
-export type FirebaseUser = FirebaseReducer.AuthState
+export type { FirebaseUser }
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -16,14 +25,17 @@ const firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
 }
 
-export const firebaseApp = firebase.initializeApp(firebaseConfig)
+export const firebaseApp = initializeApp(firebaseConfig)
+
+export const functions = getFunctions(firebaseApp)
+export const auth = getAuth(firebaseApp)
 
 if (
   process.env.REACT_APP_USE_EMULATORS === 'true' ||
   process.env.REACT_APP_USE_FUNCTIONS_EMULATOR === 'true'
 ) {
   console.debug(`using functions emulator`)
-  firebase.functions().useFunctionsEmulator('http://localhost:5000')
+  connectFunctionsEmulator(functions, 'localhost', 5000)
 }
 
 if (
@@ -31,10 +43,8 @@ if (
   process.env.REACT_APP_USE_AUTH_EMULATOR === 'true'
 ) {
   console.debug(`using auth emulator`)
-  firebase.auth().useEmulator('http://localhost:9099')
+  connectAuthEmulator(auth, 'http://localhost:9099')
 }
-
-export const auth = firebaseApp.auth()
 
 export const logout = () => auth.signOut()
 
@@ -43,12 +53,11 @@ export const roles = {
 }
 
 export let loggedInUserId: string | null = null
-export let loggedInUser: firebase.User | null = null
+export let loggedInUser: FirebaseUser | null = null
 
 auth.onAuthStateChanged((user) => {
   if (user) {
-    // @ts-ignore
-    loggedInUserId = user
+    loggedInUserId = user.uid
     loggedInUser = user
 
     Sentry.setUser({
@@ -79,7 +88,8 @@ export const callFunction = async <TPayload, TResult>(
     return Promise.resolve({ data: inDevResult })
   }
 
-  const result = await firebase.app().functions().httpsCallable(name)(data)
+  const callFunction = httpsCallable(functions, name)
+  const result = await callFunction(data)
 
   console.debug(`function "${name}" complete`, result)
 
@@ -87,11 +97,12 @@ export const callFunction = async <TPayload, TResult>(
 }
 
 export const getFunctionUrl = (functionName: string): string => {
-  const app = firebase.app()
-  // @ts-ignore Not public
-  const region = app.functions().region
-  // @ts-ignore
-  const projectId = app.options.projectId
+  const region = functions.region
+  const projectId = firebaseApp.options.projectId
+
+  if (!region || !projectId) {
+    throw new Error('Missing data')
+  }
 
   if (inDevelopment()) {
     return `http://127.0.0.1:5000/${projectId}/${region}/${functionName}`
@@ -155,9 +166,13 @@ export const changeLoggedInUserEmail = async (
 ): Promise<void> => {
   console.debug(`changing logged in user's email to "${newEmail}"...`)
 
-  await firebase.auth().currentUser?.updateEmail(newEmail)
+  if (!auth.currentUser) {
+    throw new Error('Need a usser')
+  }
 
-  console.debug('done')
+  await updateEmail(auth.currentUser, newEmail)
+
+  console.debug(`changed logged in user's email successfully`)
 }
 
 export const changeLoggedInUserPassword = async (
@@ -169,7 +184,11 @@ export const changeLoggedInUserPassword = async (
     throw new Error('Need a value')
   }
 
-  await firebase.auth().currentUser?.updatePassword(newPassword)
+  if (!auth.currentUser) {
+    throw new Error('Need a user')
+  }
 
-  console.debug('done')
+  await updatePassword(auth.currentUser, newPassword)
+
+  console.debug(`changed logged in user's password successfully`)
 }

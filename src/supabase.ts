@@ -1,9 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
-import firebase from 'firebase/app'
 import { callFunction } from './firebase'
 import { handleError } from './error-handling'
 import { loadUserIntoStore, unloadUserFromStore } from './auth'
 import { saveLastLoggedInDate } from './users'
+import { auth } from './firebase'
+import { store } from './store'
+import {
+  FIREBASE_USER_LOADED,
+  FIREBASE_USER_UNLOADED,
+} from './modules/firebase'
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
 const supabaseKey = process.env.REACT_APP_SUPABASE_API_KEY
@@ -38,12 +43,18 @@ interface GetSupabaseJwtResult {
 
 export const getUserId = () => loggedInUserId
 
-const refreshJwt = async () => {
+enum FunctionNames {
+  GetSupabaseJwt = 'getSupabaseJwt',
+}
+
+export const refreshJwt = async () => {
   console.debug(`Refreshing JWT...`)
 
   const {
     data: { token, expiryTimestamp, errorCode },
-  } = await callFunction<void, GetSupabaseJwtResult>('getSupabaseJwt')
+  } = await callFunction<void, GetSupabaseJwtResult>(
+    FunctionNames.GetSupabaseJwt
+  )
 
   if (errorCode) {
     console.error(`Error code from JWT function: ${errorCode}`)
@@ -98,7 +109,7 @@ const stopRefreshingJwt = () => {
 
 let waitForUserAdminMetaTimeout
 
-firebase.auth().onAuthStateChanged(async (user) => {
+auth.onAuthStateChanged(async (user) => {
   try {
     if (!user) {
       console.debug(`Firebase user has signed out, signing out of Supabase...`)
@@ -111,13 +122,17 @@ firebase.auth().onAuthStateChanged(async (user) => {
       // let our React hooks (like useSupabaseUserId()) know
       onJwtTokenChangedCallbacks.forEach((cb) => cb(null))
 
+      store.dispatch({
+        type: FIREBASE_USER_UNLOADED,
+      })
+
       await unloadUserFromStore()
 
       return
     }
 
     console.debug(`Firebase user has signed in, getting a new JWT...`, {
-      uid: user.uid,
+      user,
     })
 
     const userId = user.uid
@@ -149,6 +164,13 @@ firebase.auth().onAuthStateChanged(async (user) => {
     }
 
     queueRefreshJwt()
+
+    store.dispatch({
+      type: FIREBASE_USER_LOADED,
+      data: {
+        user,
+      },
+    })
 
     await loadUserIntoStore(client, userId)
 
