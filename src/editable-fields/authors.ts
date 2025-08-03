@@ -183,7 +183,7 @@ const fields: EditableField<Author>[] = [
     section: SectionNames.Social,
   },
   {
-    name: 'payhip',
+    name: 'payhipusername',
     label: 'PayHip Username',
     type: fieldTypes.text,
     default: '',

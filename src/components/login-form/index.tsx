@@ -43,17 +43,15 @@ const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return (
     <>
-      {loginWithDiscordUrl && (
-        <div className={classes.loginWithDiscordWrapper}>
-          <LoginWithDiscordBtn
-            url={loginWithDiscordUrl}
-            openInNewTab={false}
-            onClick={() =>
-              trackAction('Login', 'Click login with Discord button')
-            }
-          />
-        </div>
-      )}
+      <div className={classes.loginWithDiscordWrapper}>
+        <LoginWithDiscordBtn
+          url={loginWithDiscordUrl}
+          openInNewTab={false}
+          onClick={() =>
+            trackAction('Login', 'Click login with Discord button')
+          }
+        />
+      </div>
       <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={authInstance} />
     </>
   )
