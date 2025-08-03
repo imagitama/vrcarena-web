@@ -39,6 +39,7 @@ export default () => {
 
         case SubView.Declined:
           query = query.eq('approvalstatus', ApprovalStatus.Declined)
+          break
 
         case SubView.Pending:
         default:
