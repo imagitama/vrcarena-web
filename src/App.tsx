@@ -42,6 +42,7 @@ import useUserRecord from './hooks/useUserRecord'
 import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
 import DeprecatedRouteView from './containers/deprecated-route'
+import AccountVerificationMessage from './components/account-verification-message'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -827,6 +828,7 @@ export default () => {
         <div className={classes.mainContainer}>
           <BannedNotice />
           <Notices />
+          <AccountVerificationMessage />
           {/* <FuralityBanner /> */}
           <UnapprovedAssetsMessage />
           <DraftAssetsMessage />

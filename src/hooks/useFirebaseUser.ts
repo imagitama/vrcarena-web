@@ -1,4 +1,9 @@
 import { useSelector } from 'react-redux'
+import { RootState } from '../modules'
+import { FirebaseReducer } from 'react-redux-firebase'
+import { FirebaseUser } from '../firebase'
 
-// @ts-ignore
-export default () => useSelector(({ firebase: { auth } }) => auth)
+export default (): FirebaseUser =>
+  useSelector<RootState, FirebaseReducer.AuthState>(
+    ({ firebase: { auth } }) => auth
+  )

@@ -2,8 +2,10 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/functions'
 import * as Sentry from '@sentry/browser'
-
+import { FirebaseReducer } from 'react-redux-firebase'
 import { inDevelopment } from './environment'
+
+export type FirebaseUser = FirebaseReducer.AuthState
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
