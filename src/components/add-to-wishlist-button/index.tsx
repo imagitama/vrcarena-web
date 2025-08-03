@@ -140,6 +140,7 @@ export default ({
       }
 
       await saveOrCreate({
+        id: userId, // required to create/edit
         assets: newAssetIds,
       })
     } catch (err) {
