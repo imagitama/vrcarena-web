@@ -29,6 +29,10 @@ const AccountVerificationMessage = () => {
         if (!auth.currentUser) {
           throw new Error('No current user')
         }
+        if (!auth.currentUser.email) {
+          console.debug('cannot send verification without an email')
+          return
+        }
         console.debug(`sending email verificationn...`)
         await sendEmailVerification(auth.currentUser)
         console.debug(`sent successfully`)
@@ -50,7 +54,7 @@ const AccountVerificationMessage = () => {
     )
   }
 
-  if (firebaseUser && !isVerified) {
+  if (firebaseUser && firebaseUser.email && !isVerified) {
     return (
       <WarningMessage
         title="Verification"
