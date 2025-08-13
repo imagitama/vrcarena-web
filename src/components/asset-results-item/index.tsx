@@ -9,6 +9,7 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import LinkIcon from '@mui/icons-material/Link'
 import EditIcon from '@mui/icons-material/Edit'
 import Chip from '@mui/material/Chip'
+import { Warning as WarningIcon } from '../../icons'
 
 import * as routes from '../../routes'
 import {
@@ -27,13 +28,14 @@ import useUserPreferences from '../../hooks/useUserPreferences'
 import { getCategoryMeta } from '../../category-meta'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import { AssetSearchResult } from '../../hooks/useAlgoliaSearch'
-import { AccessStatus } from '../../modules/common'
+import { AccessStatus, ApprovalStatus } from '../../modules/common'
 
 import Link from '../link'
 import AddToCartButton from '../add-to-cart-button'
 import DefaultThumbnail from '../default-thumbnail'
 import Price from '../price'
 import LoadingShimmer from '../loading-shimmer'
+import Tooltip from '../tooltip'
 
 const useStyles = makeStyles({
   root: {
@@ -301,6 +303,12 @@ const AssetResultsItem = ({
                 <>
                   <span title={asset.title.trim()}>{asset.title.trim()}</span>
                   {asset.isadult ? <LoyaltyIcon /> : null}
+                  {(asset as FullAsset).approvalstatus ===
+                  ApprovalStatus.AutoApproved ? (
+                    <Tooltip title="This asset was auto-approved after 24 hours.">
+                      <WarningIcon />
+                    </Tooltip>
+                  ) : null}
                 </>
               ) : (
                 <LoadingShimmer width="100%" height="23px" />

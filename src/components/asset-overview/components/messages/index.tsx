@@ -115,6 +115,16 @@ const AssetOverviewMessages = () => {
     )
   }
 
+  if (asset.approvalstatus === ApprovalStatus.AutoApproved) {
+    messages.push(
+      <WarningMessage key="auto-approved">
+        This asset has not been approved by our editorial team so may contain
+        unmoderated content. If you are the asset poster please open a support
+        ticket in our Discord asking for it to be approved.
+      </WarningMessage>
+    )
+  }
+
   return <>{messages}</>
 }
 

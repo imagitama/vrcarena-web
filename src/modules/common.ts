@@ -18,6 +18,7 @@ export enum ApprovalStatus {
   Approved = 'approved',
   Waiting = 'waiting',
   Declined = 'declined',
+  AutoApproved = 'autoapproved',
 }
 
 export enum PinnedStatus {
