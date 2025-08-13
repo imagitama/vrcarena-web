@@ -17,12 +17,14 @@ export const getIsFullAsset = (asset: any): asset is FullAsset =>
 
 export const getIsAssetWaitingForApproval = (asset: AssetMeta): boolean =>
   asset.publishstatus == PublishStatus.Published &&
-  asset.approvalstatus == ApprovalStatus.Waiting &&
+  (asset.approvalstatus == ApprovalStatus.Waiting ||
+    asset.approvalstatus == ApprovalStatus.AutoApproved) &&
   asset.accessstatus == AccessStatus.Public
 
 export const getIsAssetVisibleToEveryone = (asset: AssetMeta): boolean =>
   asset.accessstatus === AccessStatus.Public &&
-  asset.approvalstatus === ApprovalStatus.Approved &&
+  (asset.approvalstatus === ApprovalStatus.Approved ||
+    asset.approvalstatus === ApprovalStatus.AutoApproved) &&
   asset.publishstatus === PublishStatus.Published
 
 export const getIsAssetDeclined = (asset: AssetMeta): boolean =>

@@ -31,7 +31,9 @@ const MyUploads = () => {
         case SubView.Visible:
           query = query
             .eq('publishstatus', PublishStatus.Published)
-            .eq('approvalstatus', ApprovalStatus.Approved)
+            .or(
+              `approvalstatus.eq.${ApprovalStatus.Waiting},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
+            )
             .eq('accessstatus', AccessStatus.Public)
           break
 

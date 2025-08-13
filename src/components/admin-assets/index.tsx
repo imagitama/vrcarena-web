@@ -394,7 +394,9 @@ const AdminAssets = () => {
         case SubView.Pending:
           query = query
             .eq('publishstatus', PublishStatus.Published)
-            .eq('approvalstatus', ApprovalStatus.Waiting)
+            .or(
+              `approvalstatus.eq.${ApprovalStatus.Waiting},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
+            )
             .eq('accessstatus', AccessStatus.Public)
           break
 

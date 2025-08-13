@@ -133,6 +133,8 @@ const getLabelForApprovalStatus = (approvalStatus: ApprovalStatus): string => {
       return 'declined'
     case ApprovalStatus.Waiting:
       return 'reverted back to waiting'
+    case ApprovalStatus.AutoApproved:
+      return 'auto-approved'
     default:
       throw new Error(`Unknown approval status: ${approvalStatus}`)
   }
