@@ -72,44 +72,6 @@ const useStyles = makeStyles({
   },
 })
 
-const AssetApprovalChecklistItem = ({
-  label,
-  isValid,
-  isNotImportant,
-  validLabel,
-  url,
-}: {
-  label: string
-  isValid: boolean
-  isNotImportant?: boolean
-  validLabel?: string
-  url?: string
-}) => {
-  const classes = useStyles()
-  return (
-    <li>
-      {label}:{' '}
-      {isValid ? (
-        <>
-          <span className={classes.pass}>{validLabel || 'Pass'}</span>{' '}
-          {url ? (
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              Link
-            </a>
-          ) : null}
-        </>
-      ) : (
-        <span
-          className={`${classes.fail} ${
-            isNotImportant ? classes.notImportant : ''
-          }`}>
-          Fail
-        </span>
-      )}
-    </li>
-  )
-}
-
 function AssetsTable({
   assets,
   hydrate,
@@ -132,33 +94,15 @@ function AssetsTable({
             assets.map((asset) => {
               const {
                 id,
-                title,
-                author,
-                authorname,
-                description,
-                category,
-                tags,
-                thumbnailurl,
                 editornotes,
                 approvalstatus,
                 publishstatus,
                 accessstatus,
-                species,
-                speciesnames,
-                publishedat,
-                sourceurl,
-                createdby,
-                createdbyusername,
               } = asset
               return (
                 <TableRow key={id}>
                   <TableCell>
                     <AssetResultsItem asset={asset} showState />
-                    {publishedat ? (
-                      <>
-                        Published <FormattedDate date={publishedat} />
-                      </>
-                    ) : null}
                   </TableCell>
                   <TableCell>
                     <QueuedAssetInfo
@@ -330,6 +274,7 @@ const AdminAssets = () => {
           query = query.or(
             `approvalstatus.eq.${ApprovalStatus.Approved},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
           )
+          break
 
         case SubView.Pending:
           query = query
