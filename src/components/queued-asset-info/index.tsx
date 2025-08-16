@@ -89,9 +89,11 @@ const AssetApprovalChecklistItem = ({
 const QueuedAssetInfo = ({
   asset,
   hydrate,
+  showEditorControls = true,
 }: {
   asset: FullAsset
-  hydrate: () => void
+  hydrate?: () => void
+  showEditorControls?: boolean
 }) => {
   const isEditor = useIsEditor()
   const [isEditing, setIsEditing] = useState(false)
@@ -147,7 +149,9 @@ const QueuedAssetInfo = ({
               (asset.category as string) !== ''
             }
             validLabel={
-              asset.category ? categoryMetas[asset.category].nameSingular : ''
+              asset.category && asset.category in categoryMetas
+                ? categoryMetas[asset.category].nameSingular
+                : ''
             }
           />
           <AssetApprovalChecklistItem
@@ -183,9 +187,15 @@ const QueuedAssetInfo = ({
               }
             />
           )}
+          <AssetApprovalChecklistItem
+            label="Adult Flag"
+            isValid={asset.isadult}
+            validLabel="Is NSFW"
+            invalidLabel="Is not NSFW"
+          />
         </TableBody>
       </Table>
-      {isEditor ? (
+      {isEditor && showEditorControls ? (
         <>
           <br />
           <br />
@@ -202,7 +212,7 @@ const QueuedAssetInfo = ({
               asset={asset}
               onDone={() => {
                 setIsEditing(false)
-                hydrate()
+                if (hydrate) hydrate()
               }}
               onCancel={() => setIsEditing(false)}
             />

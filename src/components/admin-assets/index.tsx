@@ -38,6 +38,7 @@ import useStorage from '../../hooks/useStorage'
 import AssetEditorWithSync from '../asset-editor-with-sync'
 import { EqualActiveFilter, FilterSubType, FilterType } from '../../filters'
 import UsernameLink from '../username-link'
+import QueuedAssetInfo from '../queued-asset-info'
 
 const useStyles = makeStyles({
   pass: {
@@ -160,78 +161,11 @@ function AssetsTable({
                     ) : null}
                   </TableCell>
                   <TableCell>
-                    Submitted by{' '}
-                    <UsernameLink username={createdbyusername} id={createdby} />
-                    <ul>
-                      <AssetApprovalChecklistItem
-                        label="Source"
-                        isValid={
-                          typeof sourceurl === 'string' && sourceurl !== ''
-                        }
-                        validLabel={'Set'}
-                        url={
-                          typeof sourceurl === 'string' && sourceurl !== ''
-                            ? sourceurl
-                            : ''
-                        }
-                      />
-                      <AssetApprovalChecklistItem
-                        label="Thumbnail"
-                        isValid={
-                          typeof thumbnailurl === 'string' &&
-                          thumbnailurl !== '' &&
-                          thumbnailurl !== defaultThumbnailUrl
-                        }
-                        validLabel={'Set'}
-                      />
-                      <AssetApprovalChecklistItem
-                        label="Title"
-                        isValid={
-                          typeof title === 'string' &&
-                          title !== 'My draft asset'
-                        }
-                        validLabel="Set"
-                      />
-                      <AssetApprovalChecklistItem
-                        label="Author"
-                        isValid={typeof author === 'string' && author !== ''}
-                        validLabel={`Set: ${authorname}`}
-                      />
-                      <AssetApprovalChecklistItem
-                        label="Category"
-                        isValid={
-                          typeof category === 'string' &&
-                          (category as string) !== ''
-                        }
-                        validLabel={category}
-                      />
-                      <AssetApprovalChecklistItem
-                        label="Description"
-                        isValid={
-                          typeof description === 'string' && description !== ''
-                        }
-                        validLabel={
-                          description ? `Length: ${description.length}` : ''
-                        }
-                      />
-                      <AssetApprovalChecklistItem
-                        label="Tags"
-                        isValid={Array.isArray(tags) && tags.length > 0}
-                        validLabel={tags ? `${tags.length} tags` : ''}
-                      />
-                      {category === AssetCategory.Avatar && (
-                        <AssetApprovalChecklistItem
-                          label="Species"
-                          isValid={Array.isArray(species) && species.length > 0}
-                          isNotImportant
-                          validLabel={
-                            speciesnames && speciesnames.length
-                              ? speciesnames.join(', ')
-                              : ''
-                          }
-                        />
-                      )}
-                    </ul>
+                    <QueuedAssetInfo
+                      asset={asset}
+                      hydrate={hydrate}
+                      showEditorControls={false}
+                    />
                   </TableCell>
                   <TableCell>
                     <EditorRecordManager
@@ -283,6 +217,7 @@ const Renderer = ({
 }
 
 enum SubView {
+  Approved = 'approved', // and auto
   Pending = 'pending',
   Deleted = 'deleted',
   Declined = 'declined',
@@ -391,6 +326,11 @@ const AdminAssets = () => {
       }
 
       switch (selectedSubView) {
+        case SubView.Approved:
+          query = query.or(
+            `approvalstatus.eq.${ApprovalStatus.Approved},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
+          )
+
         case SubView.Pending:
           query = query
             .eq('publishstatus', PublishStatus.Published)
@@ -457,6 +397,10 @@ const AdminAssets = () => {
           id: SubView.Pending,
           label: 'Pending',
           defaultActive: true,
+        },
+        {
+          id: SubView.Approved,
+          label: 'Auto/Approved',
         },
         {
           id: SubView.Deleted,
