@@ -45,10 +45,6 @@ const AddCommentForm = ({
     []
   )
 
-  if (useIsBanned() || !isVerified) {
-    return <NoPermissionMessage />
-  }
-
   if (!userId) {
     return (
       <FormControls>
@@ -57,6 +53,10 @@ const AddCommentForm = ({
         </Button>
       </FormControls>
     )
+  }
+
+  if (useIsBanned() || !isVerified) {
+    return <NoPermissionMessage />
   }
 
   if (isSaving) {
