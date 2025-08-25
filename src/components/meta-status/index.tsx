@@ -40,6 +40,10 @@ const approvalStatusMetas: { [key in ApprovalStatus]: Meta } = {
     positivity: -1,
     label: 'Declined',
   },
+  [ApprovalStatus.AutoApproved]: {
+    positivity: 0,
+    label: 'Waiting For Approval (Auto)',
+  },
 }
 
 const accessStatusMetas: { [key in AccessStatus]: Meta } = {
