@@ -261,6 +261,22 @@ const ViewReport = lazy(() =>
       import(/* webpackChunkName: "view-report" */ './containers/view-report')
   )
 )
+const CreateSupportTicket = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "create-support-ticket" */ './containers/create-support-ticket'
+      )
+  )
+)
+const ViewSupportTicket = lazy(() =>
+  catchChunkDeaths(
+    () =>
+      import(
+        /* webpackChunkName: "view-support-ticket" */ './containers/view-support-ticket'
+      )
+  )
+)
 const DmcaPolicy = lazy(() =>
   catchChunkDeaths(
     () =>
@@ -710,6 +726,21 @@ const MainContent = () => {
           component={CreateReport}
         />
         <Route exact path={routes.viewReportWithVar} component={ViewReport} />
+        <Route
+          exact
+          path={routes.createSupportTicketWithVar}
+          component={CreateSupportTicket}
+        />
+        <Route
+          exact
+          path={routes.createSupportTicket}
+          component={CreateSupportTicket}
+        />
+        <Route
+          exact
+          path={routes.viewSupportTicketWithVar}
+          component={ViewSupportTicket}
+        />
         <Route exact path={routes.dmcaPolicy} component={DmcaPolicy} />
         <Route
           exact

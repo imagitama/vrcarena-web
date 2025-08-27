@@ -15,6 +15,7 @@ import AdminComments from './components/comments'
 
 import AdminHome from './components/home'
 import History from './components/history'
+import AdminSupportTickets from './components/support-tickets'
 
 import useUserRecord from '../../hooks/useUserRecord'
 import * as routes from '../../routes'
@@ -109,6 +110,20 @@ const View = () => {
                   page etc. and it needs to be archived here too.
                 </InfoMessage>
                 <AdminReports />
+              </>
+            ),
+          },
+          {
+            name: 'support-tickets',
+            label: 'Support Tickets',
+            contents: (
+              <>
+                <InfoMessage
+                  title="How Support Tickets Work"
+                  hideId="admin-support-tickets-info">
+                  Can be created via the website or our Discord.
+                </InfoMessage>
+                <AdminSupportTickets />
               </>
             ),
           },

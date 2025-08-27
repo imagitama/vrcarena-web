@@ -145,5 +145,11 @@ export const viewReviewWithVar = '/reviews/:reviewId'
 export const editReviewWithVar = '/reviews/:reviewId/edit'
 export const createReview = '/reviews/create'
 
+export const createSupportTicket = '/support-tickets/create'
+export const createSupportTicketWithVar =
+  '/support-tickets/create/:parentTable/:parentId'
+// export const editSupportTicketWithVar = '/support-tickets/edit/:supportTicketId'
+export const viewSupportTicketWithVar = '/support-tickets/:supportTicketId'
+
 // deprecated
 export const news = '/news'

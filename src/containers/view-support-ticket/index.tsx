@@ -15,11 +15,10 @@ import NoPermissionMessage from '../../components/no-permission-message'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import {
   CollectionNames,
-  FullReport,
-  reportReasonsKeysByCollection,
+  FullSupportTicket,
   ResolutionStatus,
   ViewNames,
-} from '../../modules/reports'
+} from '../../modules/support-tickets'
 import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 import NoResultsMessage from '../../components/no-results-message'
 import WarningMessage from '../../components/warning-message'
@@ -34,20 +33,22 @@ import { getViewNameForParentTable } from '../../utils/reports'
 import EditorBox from '@/components/editor-box'
 
 const View = () => {
-  const { reportId } = useParams<{ reportId: string }>()
+  const { supportTicketId } = useParams<{ supportTicketId: string }>()
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
 
-  const [isLoading, lastErrorCode, report, hydrate] =
-    useDataStoreItem<FullReport>(
-      ViewNames.GetFullReports,
-      isLoggedIn ? reportId : false,
-      'view-report'
+  const [isLoading, lastErrorCode, supportTicket, hydrate] =
+    useDataStoreItem<FullSupportTicket>(
+      ViewNames.GetFullSupportTickets,
+      isLoggedIn ? supportTicketId : false,
+      'view-support-ticket'
     )
   const [, , parent] = useDataStoreItem(
-    report ? getViewNameForParentTable(report.parenttable) || '' : '',
-    report ? report.parent : false,
-    'view-report-parent'
+    supportTicket
+      ? getViewNameForParentTable(supportTicket.parenttable) || ''
+      : '',
+    supportTicket ? supportTicket.parent : false,
+    'view-support-ticket-parent'
   )
 
   if (!isLoggedIn) {
@@ -55,25 +56,28 @@ const View = () => {
   }
 
   if (isLoading) {
-    return <LoadingIndicator message="Loading report..." />
+    return <LoadingIndicator message="Loading support ticket..." />
   }
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load report (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage>
+        Failed to load support ticket (code {lastErrorCode})
+      </ErrorMessage>
     )
   }
 
-  if (!report) {
-    return <NoResultsMessage>Report not found</NoResultsMessage>
+  if (!supportTicket) {
+    return <NoResultsMessage>Support ticket not found</NoResultsMessage>
   }
 
   const {
     id,
-    reason,
+    category,
     comments,
-    parent: parentId,
-    parenttable: parentTable,
+    answers,
+    relatedtable: relatedTable,
+    relatedid: relatedId,
     createdat,
     createdby,
     // meta
@@ -85,7 +89,7 @@ const View = () => {
     createdbyusername: createdByUsername,
     parentdata: rawParentData,
     resolvedbyusername: resolvedByUsername,
-  } = report
+  } = supportTicket
 
   const parentData = parent || rawParentData
 
@@ -94,15 +98,19 @@ const View = () => {
   return (
     <>
       <Helmet>
-        <title>Report #{reportId} | VRCArena</title>
+        <title>Support ticket #{supportTicketId} | VRCArena</title>
         <meta
           name="description"
-          content={`Read more information about report #${reportId} on the site.`}
+          content={`Read more information about support ticket #${supportTicketId} on the site.`}
         />
       </Helmet>
       <Heading variant="h1">
-        <Link to={routes.viewReportWithVar.replace(':reportId', reportId)}>
-          Report #{reportId}
+        <Link
+          to={routes.viewSupportTicketWithVar.replace(
+            ':supportTicketId',
+            supportTicketId
+          )}>
+          Support Ticket #{supportTicketId}
         </Link>
       </Heading>
       <Heading variant="h2">Resolution Status</Heading>
@@ -122,9 +130,12 @@ const View = () => {
         <>
           <br />
           <EditorBox>
-            <Heading variant="h2">Editor Controls</Heading>
+            <Heading variant="h2" noTopMargin>
+              Editor Controls
+            </Heading>
             <ResolutionControls
               id={id}
+              metaCollectionName={CollectionNames.SupportTicketsMeta}
               existingResolutionStatus={resolutionStatus}
               existingResolutionNotes={resolutionNotes}
               onDone={onResolutionStatusChanged}
@@ -132,27 +143,35 @@ const View = () => {
           </EditorBox>
         </>
       ) : null}
-      <Heading variant="h2">Reported Item</Heading>
-      <Button
-        url={getUrlForParent(parentTable, parentId, parentData)}
-        color="secondary">
-        View Reported Item
-      </Button>
-      <br />
-      <br />
-      <GenericOutputItem type={parentTable} id={parentId} data={parentData} />
-      <Heading variant="h2">Reason</Heading>
-      {reason || '(no reason)'}
-      {reason ===
-        reportReasonsKeysByCollection[AssetsCollectionNames.Assets]
-          .TAKEDOWN && (
-        <WarningMessage>
-          Please ensure this report aligns with our{' '}
-          <Link to={routes.takedownPolicy}>takedown policy</Link>.
-        </WarningMessage>
-      )}
-      <Heading variant="h2">Reporter Comments</Heading>
-      {comments || '(none)'}
+      {relatedTable && relatedId ? (
+        <>
+          <Heading variant="h2">Related Item</Heading>
+          <Button
+            url={getUrlForParent(relatedTable, relatedId, parentData)}
+            color="secondary">
+            View Related Item
+          </Button>
+          <br />
+          <br />
+          <GenericOutputItem
+            type={relatedTable}
+            id={relatedId}
+            data={parentData}
+          />
+        </>
+      ) : null}
+      <Heading variant="h2">Category</Heading>
+      {category}
+      <Heading variant="h2">Answers</Heading>
+      {answers.length
+        ? answers.map((questionAndAnswer) => (
+            <div key={questionAndAnswer.question}>
+              {questionAndAnswer.question}: {questionAndAnswer.answer}
+            </div>
+          ))
+        : '(no answers)'}
+      <Heading variant="h2">Comments</Heading>
+      <Markdown source={comments} />
       <Heading variant="h2">Metadata</Heading>
       <FormattedDate date={createdat} />{' '}
       {createdByUsername ? (
@@ -165,8 +184,8 @@ const View = () => {
       ) : null}
       <Heading variant="h2">Comments</Heading>
       <CommentList
-        collectionName={CollectionNames.Reports}
-        parentId={reportId}
+        collectionName={CollectionNames.SupportTickets}
+        parentId={supportTicketId}
       />
     </>
   )
@@ -175,10 +194,10 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>View a report | VRCArena</title>
+      <title>View a support ticket | VRCArena</title>
       <meta
         name="description"
-        content="Read more information about a report on the site."
+        content="Read more information about a support ticket on the site."
       />
     </Helmet>
     <View />

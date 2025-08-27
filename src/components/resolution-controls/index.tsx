@@ -19,12 +19,14 @@ import TextInput from '../text-input'
 
 export default ({
   id,
+  metaCollectionName = CollectionNames.ReportsMeta,
   existingResolutionStatus,
   existingResolutionNotes,
   onClick,
   onDone,
 }: {
   id: string
+  metaCollectionName?: string
   existingResolutionStatus?: ResolutionStatus
   existingResolutionNotes?: string
   onClick?: (newValue: string) => void
@@ -32,12 +34,12 @@ export default ({
 }) => {
   const [isLoading, lastErrorCodeLoading, metaRecord] =
     useDataStoreItem<ReportMeta>(
-      CollectionNames.ReportsMeta,
+      metaCollectionName,
       existingResolutionStatus ? false : id,
       'resolve-button'
     )
   const [isSaving, , lastErrorCodeSaving, save] = useDataStoreEdit<ReportMeta>(
-    CollectionNames.ReportsMeta,
+    metaCollectionName,
     id
   )
   const userId = useUserId()

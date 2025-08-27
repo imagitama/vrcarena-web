@@ -6,6 +6,9 @@ import UsernameLink from '../username-link'
 import { colorPalette } from '../../config'
 
 const useStyles = makeStyles({
+  root: {
+    fontWeight: 'bold',
+  },
   waiting: {
     color: colorPalette.warning,
   },
@@ -30,13 +33,13 @@ export default ({
 
   return (
     <div
-      className={
+      className={`${classes.root} ${
         resolutionStatus === ResolutionStatus.Pending
           ? classes.waiting
           : resolutionStatus === ResolutionStatus.Resolved
           ? classes.resolved
           : ''
-      }>
+      }`}>
       {resolutionStatus === ResolutionStatus.Pending ? (
         'Pending Staff Input'
       ) : resolutionStatus === ResolutionStatus.Resolved ? (
@@ -46,7 +49,6 @@ export default ({
             id={resolvedBy as string}
             username={resolvedByUsername}
           />{' '}
-          at{' '}
           {resolvedAt !== null ? (
             <FormattedDate date={resolvedAt} />
           ) : (

@@ -1,6 +1,6 @@
 import React from 'react'
-import Link from '../../components/link'
 import { Helmet } from 'react-helmet'
+import CreateIcon from '@mui/icons-material/Create'
 
 import Tabs from '../../components/tabs'
 import LoadingIndicator from '../../components/loading-indicator'
@@ -39,6 +39,8 @@ import Discord from './components/discord'
 import InfoMessage from '../../components/info-message'
 import usePermissions from '../../hooks/usePermissions'
 import MyUserOverview from '../../components/my-user-overview'
+import MySupportTickets from './components/my-support-tickets'
+import Button from '@/components/button'
 
 const analyticsCategoryName = 'MyAccount'
 
@@ -257,6 +259,22 @@ const View = () => {
               <>
                 <Heading variant="h2">My Reports</Heading>
                 <MyReports />
+              </>
+            ),
+          },
+          {
+            name: 'support-tickets',
+            label: 'My Support Tickets',
+            contents: (
+              <>
+                <Heading variant="h2">My Support Tickets</Heading>
+                <Button
+                  url={routes.createSupportTicket}
+                  size="large"
+                  icon={<CreateIcon />}>
+                  Create Support Ticket
+                </Button>
+                <MySupportTickets />
               </>
             ),
           },
