@@ -237,8 +237,8 @@ const Form = ({
         <>
           <Heading variant="h2">More Info</Heading>
           {supportTicketCategoryMeta[fieldData.category].questions!.map(
-            (question, idx) => (
-              <div>
+            (question) => (
+              <div key={question}>
                 <p>{question}</p>
                 <TextInput
                   value={

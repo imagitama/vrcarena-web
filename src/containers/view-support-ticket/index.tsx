@@ -165,8 +165,12 @@ const View = () => {
       <Heading variant="h2">Answers</Heading>
       {answers.length
         ? answers.map((questionAndAnswer) => (
-            <div key={questionAndAnswer.question}>
-              {questionAndAnswer.question}: {questionAndAnswer.answer}
+            <div
+              key={questionAndAnswer.question}
+              style={{ marginTop: '0.5rem' }}>
+              <strong>{questionAndAnswer.question}:</strong>
+              <br />
+              {questionAndAnswer.answer}
             </div>
           ))
         : '(no answers)'}
