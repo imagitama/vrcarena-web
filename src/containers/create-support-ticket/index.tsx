@@ -31,6 +31,7 @@ import usePermissions from '../../hooks/usePermissions'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 import { getViewNameForParentTable } from '../../utils/reports'
 import WarningMessage from '@/components/warning-message'
+import Link from '@/components/link'
 
 const analyticsCategory = 'CreateSupportTicket'
 
@@ -185,6 +186,10 @@ const Form = ({
   return (
     <>
       <Heading variant="h1">Create Support Ticket</Heading>
+      <WarningMessage>
+        Have you seen your asset on this site and want it taken down? Please
+        read our <Link to={routes.takedownPolicy}>takedown policy</Link>.
+      </WarningMessage>
       <WarningMessage>
         Having trouble submitting this support ticket? You can message us via
         our <a href={DISCORD_URL}>Discord server</a> or email us at {EMAIL}{' '}
