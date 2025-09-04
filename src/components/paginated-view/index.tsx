@@ -4,6 +4,7 @@ import React, {
   createContext,
   useCallback,
   useState,
+  Suspense,
 } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@mui/styles'
@@ -466,7 +467,9 @@ const Page = () => {
           }}
         />
       ) : null}
-      <RefreshIcon className={classes.hydrateIcon} onClick={hydrate} />
+      <Suspense>
+        <RefreshIcon className={classes.hydrateIcon} onClick={hydrate} />
+      </Suspense>
       {getQueryString ? (
         <Button url={getPathForQueryString(getQueryString())} color="secondary">
           Generate Query
@@ -629,96 +632,100 @@ const PaginatedView = <TRecord,>({
         }}>
         <div className={classes.root}>
           <div className={classes.controls}>
-            <div className={classes.controlsLeft}>
-              {subViews ? (
-                <ControlGroup>
-                  {subViewConfigAll
-                    .concat(subViews)
-                    .map(({ label, id }, idx) => (
-                      <Fragment key={id}>
-                        {idx !== 0 ? <>&nbsp;</> : ''}
-                        <Button
-                          onClick={() => setSelectedSubView(id)}
-                          color="secondary"
-                          size="small"
-                          icon={
-                            selectedSubView === id ? (
-                              <CheckBoxIcon />
-                            ) : (
-                              <CheckBoxOutlineBlankIcon />
-                            )
-                          }>
-                          {label}
-                        </Button>
-                      </Fragment>
-                    ))}
-                </ControlGroup>
-              ) : null}
-              <ControlGroup>{extraControlsLeft}</ControlGroup>
-            </div>
-            <div className={classes.controlsRight}>
-              {isEditor && showCommonMetaControls ? (
-                <ControlGroup>
-                  <CommonMetaControl
-                    label="Access"
-                    fieldName={'accessstatus'}
-                    fieldMap={AccessStatus}
-                  />
-                  &nbsp;
-                  <CommonMetaControl
-                    label="Approval"
-                    fieldName={'approvalstatus'}
-                    fieldMap={ApprovalStatus}
-                  />
-                  &nbsp;
-                  <CommonMetaControl
-                    label="Publish"
-                    fieldName={'publishstatus'}
-                    fieldMap={PublishStatus}
-                  />
-                </ControlGroup>
-              ) : null}
-              {extraControls ? (
-                <ControlGroup>
-                  {extraControls.map((extraControl, idx) => (
-                    <Control key={idx}>
-                      {React.cloneElement<ButtonProps>(extraControl, {
-                        color: 'secondary',
-                        size: 'small',
-                      })}
-                    </Control>
-                  ))}
-                </ControlGroup>
-              ) : null}
-              {filters ? (
-                <Filters
-                  filters={filters}
-                  storageKey={`${keyPrefix}_filters`}
-                />
-              ) : null}
-              {sortOptions.length ? (
-                <ControlGroup>
-                  <Control>
-                    <SortControls
-                      options={sortOptions}
-                      sortKey={`${keyPrefix}_sorting`}
-                      defaultFieldName={defaultFieldName}
+            <Suspense>
+              <div className={classes.controlsLeft}>
+                {subViews ? (
+                  <ControlGroup>
+                    {subViewConfigAll
+                      .concat(subViews)
+                      .map(({ label, id }, idx) => (
+                        <Fragment key={id}>
+                          {idx !== 0 ? <>&nbsp;</> : ''}
+                          <Button
+                            onClick={() => setSelectedSubView(id)}
+                            color="secondary"
+                            size="small"
+                            icon={
+                              selectedSubView === id ? (
+                                <CheckBoxIcon />
+                              ) : (
+                                <CheckBoxOutlineBlankIcon />
+                              )
+                            }>
+                            {label}
+                          </Button>
+                        </Fragment>
+                      ))}
+                  </ControlGroup>
+                ) : null}
+                <ControlGroup>{extraControlsLeft}</ControlGroup>
+              </div>
+              <div className={classes.controlsRight}>
+                {isEditor && showCommonMetaControls ? (
+                  <ControlGroup>
+                    <CommonMetaControl
+                      label="Access"
+                      fieldName={'accessstatus'}
+                      fieldMap={AccessStatus}
                     />
-                  </Control>
-                </ControlGroup>
-              ) : null}
-              {createUrl ? (
-                <ControlGroup>
-                  <Control>
-                    <Button icon={<AddIcon />} size="small" url={createUrl}>
-                      Create
-                    </Button>
-                  </Control>
-                </ControlGroup>
-              ) : null}
-            </div>
+                    &nbsp;
+                    <CommonMetaControl
+                      label="Approval"
+                      fieldName={'approvalstatus'}
+                      fieldMap={ApprovalStatus}
+                    />
+                    &nbsp;
+                    <CommonMetaControl
+                      label="Publish"
+                      fieldName={'publishstatus'}
+                      fieldMap={PublishStatus}
+                    />
+                  </ControlGroup>
+                ) : null}
+                {extraControls ? (
+                  <ControlGroup>
+                    {extraControls.map((extraControl, idx) => (
+                      <Control key={idx}>
+                        {React.cloneElement<ButtonProps>(extraControl, {
+                          color: 'secondary',
+                          size: 'small',
+                        })}
+                      </Control>
+                    ))}
+                  </ControlGroup>
+                ) : null}
+                {filters ? (
+                  <Filters
+                    filters={filters}
+                    storageKey={`${keyPrefix}_filters`}
+                  />
+                ) : null}
+                {sortOptions.length ? (
+                  <ControlGroup>
+                    <Control>
+                      <SortControls
+                        options={sortOptions}
+                        sortKey={`${keyPrefix}_sorting`}
+                        defaultFieldName={defaultFieldName}
+                      />
+                    </Control>
+                  </ControlGroup>
+                ) : null}
+                {createUrl ? (
+                  <ControlGroup>
+                    <Control>
+                      <Button icon={<AddIcon />} size="small" url={createUrl}>
+                        Create
+                      </Button>
+                    </Control>
+                  </ControlGroup>
+                ) : null}
+              </div>
+            </Suspense>
           </div>
-          <Page />
+          <Suspense fallback={<LoadingIndicator message="PAGES" />}>
+            <Page />
+          </Suspense>
         </div>
       </PaginatedViewContext.Provider>
     </ErrorBoundary>

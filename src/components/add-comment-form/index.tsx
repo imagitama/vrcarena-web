@@ -35,6 +35,7 @@ const AddCommentForm = ({
     useDataStoreCreate<Comment>(CollectionNames.Comments)
   const timeoutRef = useRef<NodeJS.Timeout | undefined>()
   const isVerified = useAccountVerification()
+  const isBanned = useIsBanned()
 
   useEffect(
     () => () => {
@@ -55,7 +56,7 @@ const AddCommentForm = ({
     )
   }
 
-  if (useIsBanned() || !isVerified) {
+  if (isBanned || !isVerified) {
     return <NoPermissionMessage />
   }
 

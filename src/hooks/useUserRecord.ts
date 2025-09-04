@@ -5,7 +5,7 @@ import { FullUser } from '../modules/users'
 import { RootState } from '../modules'
 import useSupabaseClient from './useSupabaseClient'
 
-export default (): [boolean, boolean, FullUser | null, () => void] => {
+const useUserRecord = (): [boolean, boolean, FullUser | null, () => void] => {
   const userId = useSupabaseUserId()
   const isLoading = useSelector(({ user }: RootState) => user.isLoading)
   const isErrored = useSelector(({ user }: RootState) => user.isErrored)
@@ -16,3 +16,5 @@ export default (): [boolean, boolean, FullUser | null, () => void] => {
 
   return [isLoading, isErrored, record, hydrate]
 }
+
+export default useUserRecord

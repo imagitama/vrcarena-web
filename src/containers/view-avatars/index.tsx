@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { Suspense, useCallback, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import PetsIcon from '@mui/icons-material/Pets'
 import ShuffleIcon from '@mui/icons-material/Shuffle'
@@ -12,6 +12,7 @@ import * as routes from '../../routes'
 import { AssetCategory, PublicAsset } from '../../modules/assets'
 import AssetsPaginatedView from '../../components/assets-paginated-view'
 import { GetQuery } from '../../data-store'
+import LoadingIndicator from '@/components/loading-indicator'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   return getCategoryMeta(categoryName).name
@@ -50,27 +51,35 @@ const ViewAvatarsView = () => {
         {getDisplayNameByCategoryName(categoryName)}
       </Heading>
       <BodyText>{getDescriptionByCategoryName(categoryName)}</BodyText>
-      <AssetsPaginatedView
-        getQuery={getQuery}
-        name="view-avatars"
-        categoryName={AssetCategory.Avatar}
-        extraControls={[
-          <Button
-            url={routes.viewAllSpecies}
-            icon={<PetsIcon />}
-            color="secondary">
-            Browse All Species
-          </Button>,
-          <Button
-            url={routes.randomAvatars}
-            icon={<ShuffleIcon />}
-            color="secondary">
-            Random
-          </Button>,
-        ]}
-        urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
-        getQueryString={() => `category:${AssetCategory.Avatar}`}
-      />
+      <Suspense fallback={<LoadingIndicator message="VIEW AVATARS" />}>
+        <AssetsPaginatedView
+          getQuery={getQuery}
+          name="view-avatars"
+          categoryName={AssetCategory.Avatar}
+          extraControls={[
+            <Suspense
+              fallback={<LoadingIndicator message="Loading assets..." />}>
+              <Button
+                url={routes.viewAllSpecies}
+                icon={<PetsIcon />}
+                color="secondary">
+                Browse All Species
+              </Button>
+            </Suspense>,
+            <Suspense
+              fallback={<LoadingIndicator message="Loading assets..." />}>
+              <Button
+                url={routes.randomAvatars}
+                icon={<ShuffleIcon />}
+                color="secondary">
+                Random
+              </Button>
+            </Suspense>,
+          ]}
+          urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
+          getQueryString={() => `category:${AssetCategory.Avatar}`}
+        />
+      </Suspense>
     </>
   )
 }
