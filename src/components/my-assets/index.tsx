@@ -19,6 +19,7 @@ enum SubView {
   Visible = 'visible',
   Drafts = 'drafts',
   Deleted = 'deleted',
+  Declined = 'declined',
 }
 
 const MyUploads = () => {
@@ -38,13 +39,23 @@ const MyUploads = () => {
           break
 
         case SubView.Drafts:
-          query = query.eq('publishstatus', PublishStatus.Draft)
+          query = query
+            .eq('publishstatus', PublishStatus.Draft)
+            .eq('accessstatus', AccessStatus.Public)
           break
 
         case SubView.Deleted:
           query = query.or(
             `accessstatus.eq.${AccessStatus.Deleted},accessstatus.eq.${AccessStatus.Archived}`
           )
+          break
+
+        case SubView.Declined:
+          query = query
+            .eq('publishstatus', PublishStatus.Draft)
+            .eq('approvalstatus', ApprovalStatus.Declined)
+            .eq('accessstatus', AccessStatus.Public)
+          break
       }
 
       return query
@@ -56,7 +67,7 @@ const MyUploads = () => {
     <PaginatedView<Asset>
       viewName={ViewNames.GetFullAssets}
       getQuery={getQuery}
-      name="view-category"
+      name="my-assets"
       sortOptions={[
         {
           label: 'Submission date',
@@ -76,6 +87,10 @@ const MyUploads = () => {
         {
           id: SubView.Visible,
           label: 'Visible',
+        },
+        {
+          id: SubView.Declined,
+          label: 'Declined',
         },
         {
           id: SubView.Drafts,

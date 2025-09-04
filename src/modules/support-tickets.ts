@@ -153,8 +153,8 @@ export interface SupportTicket extends Record<string, any> {
   id: string
   category: SupportTicketCategory
   answers: SupportTicketAnswer[]
-  relatedtable: string // table name
-  relatedid: string
+  relatedtable: null | string // table name
+  relatedid: null | string
   comments: string
   guestid: string
   lastmodifiedat: string // Date

@@ -66,11 +66,15 @@ function SupportTicketsTable({
                   Category: {category}
                 </TableCell>
                 <TableCell>
-                  <GenericOutputItem
-                    type={relatedTable}
-                    id={relatedId}
-                    data={relatedData}
-                  />
+                  {relatedTable && relatedId ? (
+                    <GenericOutputItem
+                      type={relatedTable}
+                      id={relatedId}
+                      data={relatedData}
+                    />
+                  ) : (
+                    '(none)'
+                  )}
                 </TableCell>
                 <TableCell>
                   <FormattedDate date={createdAt} /> by{' '}
