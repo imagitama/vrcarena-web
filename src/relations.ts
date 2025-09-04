@@ -26,6 +26,10 @@ import {
   Review,
   CollectionNames as ReviewsCollectionNames,
 } from './modules/reviews'
+import {
+  SupportTicket,
+  CollectionNames as SupportTicketCollectionNames,
+} from './modules/support-tickets'
 import * as routes from './routes'
 
 const labelMaxLength = 100
@@ -77,6 +81,11 @@ export const getUrlForParent = (
       return routes.socialWithPostVar.replace(':postId', parentData.id)
     case ReviewsCollectionNames.Reviews:
       return routes.viewReviewWithVar.replace(':reviewId', parentData.id)
+    case SupportTicketCollectionNames.SupportTickets:
+      return routes.viewSupportTicketWithVar.replace(
+        ':supportTicketId',
+        parentData.id
+      )
     default:
       throw new Error(
         `Could not get URL for parent ${parentTable} - not supported`
