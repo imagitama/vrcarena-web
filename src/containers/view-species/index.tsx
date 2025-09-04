@@ -84,18 +84,7 @@ const AssetsForSpecies = ({
     <AssetsPaginatedView
       viewName={AssetsViewNames.GetPublicAssets}
       getQuery={getQuery}
-      // name="view-category"
-      // sortOptions={[
-      //   {
-      //     label: 'Submission date',
-      //     fieldName: 'createdat',
-      //   },
-      //   {
-      //     label: 'Title',
-      //     fieldName: 'title',
-      //   },
-      // ]}
-      // defaultFieldName="createdat"
+      categoryName={AssetCategory.Avatar} // hides controls
       urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
         .replace(':speciesIdOrSlug', species.id)
         .replace(':categoryName', AssetCategory.Avatar)}
