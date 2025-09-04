@@ -51,17 +51,22 @@ export default ({
               ':supportTicketId',
               supportTicketId
             )}
-            color="secondary">
+            color="secondary"
+            size="small">
             View Support Ticket
           </Button>
         </TableCell>
-        {showRelatedDetails && relatedTable && relatedId && (
+        {showRelatedDetails && (
           <TableCell>
-            <GenericOutputItem
-              type={relatedTable}
-              id={relatedId}
-              data={parentdata}
-            />
+            {relatedTable && relatedId ? (
+              <GenericOutputItem
+                type={relatedTable}
+                id={relatedId}
+                data={parentdata}
+              />
+            ) : (
+              '(none)'
+            )}
           </TableCell>
         )}
         <TableCell>{category}</TableCell>

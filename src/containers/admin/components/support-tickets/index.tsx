@@ -1,9 +1,4 @@
 import React from 'react'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
 
 import * as routes from '@/routes'
 import {
@@ -13,96 +8,11 @@ import {
 } from '@/modules/support-tickets'
 
 import PaginatedView from '@/components/paginated-view'
-import FormattedDate from '@/components/formatted-date'
-import GenericOutputItem from '@/components/generic-output-item'
-import ResolutionStatusOutput from '@/components/resolution-status'
-import Link from '@/components/link'
-import UsernameLink from '@/components/username-link'
 import { FilterSubType, FilterType, MultichoiceFilter } from '@/filters'
-
-function SupportTicketsTable({
-  supportTickets,
-}: {
-  supportTickets?: FullSupportTicket[]
-}) {
-  return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell />
-          <TableCell>Related</TableCell>
-          <TableCell>Metadata</TableCell>
-          <TableCell>Status</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {supportTickets ? (
-          supportTickets.map((report) => {
-            const {
-              id,
-              relatedtable: relatedTable,
-              relatedid: relatedId,
-              category,
-              guestid: guestId,
-              createdat: createdAt,
-              createdby: createdBy,
-              // meta
-              resolutionstatus: resolutionStatus,
-              resolvedat: resolvedAt,
-              resolvedby: resolvedBy,
-              // view
-              relateddata: relatedData,
-              createdbyusername: createdByUsername,
-              resolvedbyusername: resolvedByUsername,
-            } = report
-            return (
-              <TableRow key={id}>
-                <TableCell>
-                  <Link to={routes.viewReportWithVar.replace(':reportId', id)}>
-                    View Support Ticket
-                  </Link>
-                  <br />
-                  <br />
-                  Category: {category}
-                </TableCell>
-                <TableCell>
-                  {relatedTable && relatedId ? (
-                    <GenericOutputItem
-                      type={relatedTable}
-                      id={relatedId}
-                      data={relatedData}
-                    />
-                  ) : (
-                    '(none)'
-                  )}
-                </TableCell>
-                <TableCell>
-                  <FormattedDate date={createdAt} /> by{' '}
-                  <UsernameLink id={createdBy} username={createdByUsername} />
-                </TableCell>
-                <TableCell>
-                  <ResolutionStatusOutput
-                    resolutionStatus={resolutionStatus}
-                    resolvedAt={resolvedAt}
-                    resolvedBy={resolvedBy}
-                    resolvedByUsername={resolvedByUsername}
-                  />
-                </TableCell>
-              </TableRow>
-            )
-          })
-        ) : (
-          <TableRow>
-            <TableCell>Loading...</TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
-  )
-}
+import SupportTicketResults from '@/components/support-ticket-results'
 
 const Renderer = ({ items }: { items?: FullSupportTicket[] }) => (
-  <SupportTicketsTable supportTickets={items} />
+  <SupportTicketResults supportTickets={items!} />
 )
 
 export default () => {

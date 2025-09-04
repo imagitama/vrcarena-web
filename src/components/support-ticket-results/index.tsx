@@ -23,6 +23,7 @@ export default ({
     <Table>
       <TableHead>
         <TableRow>
+          <TableCell />
           {showRelatedDetails && <TableCell>Parent</TableCell>}
           <TableCell>Category</TableCell>
           <TableCell>Metadata</TableCell>
