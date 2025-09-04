@@ -30,8 +30,8 @@ const getLabelForSelectedSortOption = (
   return '...'
 }
 
-export interface SortOption<TRecord> {
-  fieldName: keyof TRecord
+export interface SortOption<TRecord extends Record<string, any>> {
+  fieldName: keyof TRecord | 'random'
   label: string
   direction?: OrderDirections
   withDirections?: boolean
@@ -66,7 +66,7 @@ const appendDirections = (options: SortOption<any>[]): SortOption<any>[] => {
   return newOptions
 }
 
-const SortControls = <TRecord,>({
+const SortControls = <TRecord extends Record<string, any>>({
   sortKey,
   options,
   defaultFieldName = '',
@@ -78,7 +78,6 @@ const SortControls = <TRecord,>({
   const [sorting, setSorting] = useSorting(sortKey, defaultFieldName)
   const buttonRef = useRef<HTMLSpanElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
   const optionsWithDirections = appendDirections(options)
 
   const onClickItem = (fieldName: string, direction: OrderDirections) => {
@@ -118,10 +117,11 @@ const SortControls = <TRecord,>({
           {optionsWithDirections.map(({ fieldName, label, direction }) => (
             <MenuItem
               key={`${fieldName as string}.${direction}`}
-              onClick={
-                direction !== undefined
-                  ? () => onClickItem(fieldName as string, direction)
-                  : undefined
+              onClick={() =>
+                onClickItem(
+                  fieldName as string,
+                  direction || OrderDirections.DESC
+                )
               }>
               {label}
             </MenuItem>

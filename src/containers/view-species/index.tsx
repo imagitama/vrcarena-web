@@ -40,6 +40,7 @@ import { trackAction } from '../../analytics'
 import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 import { handleError } from '../../error-handling'
 import { SupabaseClient } from '@supabase/supabase-js'
+import AssetsPaginatedView from '@/components/assets-paginated-view'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -80,21 +81,21 @@ const AssetsForSpecies = ({
   )
 
   return (
-    <PaginatedView<PublicAsset>
+    <AssetsPaginatedView
       viewName={AssetsViewNames.GetPublicAssets}
       getQuery={getQuery}
-      name="view-category"
-      sortOptions={[
-        {
-          label: 'Submission date',
-          fieldName: 'createdat',
-        },
-        {
-          label: 'Title',
-          fieldName: 'title',
-        },
-      ]}
-      defaultFieldName="createdat"
+      // name="view-category"
+      // sortOptions={[
+      //   {
+      //     label: 'Submission date',
+      //     fieldName: 'createdat',
+      //   },
+      //   {
+      //     label: 'Title',
+      //     fieldName: 'title',
+      //   },
+      // ]}
+      // defaultFieldName="createdat"
       urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
         .replace(':speciesIdOrSlug', species.id)
         .replace(':categoryName', AssetCategory.Avatar)}
@@ -118,9 +119,10 @@ const AssetsForSpecies = ({
           color="secondary">
           Child Species
         </Button>,
-      ]}>
+      ]}
+      allowRandomSort>
       <Renderer />
-    </PaginatedView>
+    </AssetsPaginatedView>
   )
 }
 

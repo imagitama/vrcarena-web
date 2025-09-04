@@ -132,7 +132,7 @@ interface SubViewConfig {
   defaultActive?: boolean
 }
 
-interface PaginatedViewData<TRecord> {
+interface PaginatedViewData<TRecord extends Record<string, any>> {
   name?: string
   viewName?: string
   editorViewName?: string
@@ -533,7 +533,7 @@ const subViewConfigAll: SubViewConfig[] = [
   },
 ]
 
-export interface PaginatedViewProps<TRecord> {
+export interface PaginatedViewProps<TRecord extends Record<string, any>> {
   name?: string
   viewName?: string
   editorViewName?: string
@@ -555,16 +555,17 @@ export interface PaginatedViewProps<TRecord> {
   whereClauses?: WhereClause<TRecord>[]
   filters?: Filter<TRecord>[]
   isRendererForLoading?: boolean // items will be null
+  allowRandomSort?: boolean
 }
 
-const PaginatedView = <TRecord,>({
+const PaginatedView = <TRecord extends Record<string, any>>({
   name, // for sort/filter keys
   viewName,
   editorViewName,
   collectionName,
   select = '*',
   getQuery = undefined,
-  sortOptions = [],
+  sortOptions: originalSortOptions = [],
   defaultFieldName = undefined,
   defaultDirection,
   children,
@@ -579,6 +580,7 @@ const PaginatedView = <TRecord,>({
   limit = undefined,
   whereClauses,
   isRendererForLoading,
+  allowRandomSort = false,
 }: PaginatedViewProps<TRecord>) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
@@ -605,6 +607,16 @@ const PaginatedView = <TRecord,>({
   const [internalPageNumber, setInternalPageNumber] = useState<number | null>(
     urlWithPageNumberVar ? null : currentPageNumber
   )
+
+  const sortOptions = allowRandomSort
+    ? originalSortOptions.concat([
+        {
+          label: 'Random',
+          fieldName: 'random',
+          withDirections: false,
+        },
+      ])
+    : originalSortOptions
 
   return (
     <ErrorBoundary>

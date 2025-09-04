@@ -8,6 +8,7 @@ import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
 import AssetResults from '../asset-results'
 import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import AssetsByArea from '../assets-by-area'
+import { SortOption } from '../sort-controls'
 
 interface ExtraRendererProps {
   categoryName?: string

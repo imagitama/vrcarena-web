@@ -1,7 +1,6 @@
-import React, { Suspense, useCallback, useState } from 'react'
+import React, { Suspense, useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import PetsIcon from '@mui/icons-material/Pets'
-import ShuffleIcon from '@mui/icons-material/Shuffle'
 
 import Heading from '../../components/heading'
 import BodyText from '../../components/body-text'
@@ -57,27 +56,16 @@ const ViewAvatarsView = () => {
           name="view-avatars"
           categoryName={AssetCategory.Avatar}
           extraControls={[
-            <Suspense
-              fallback={<LoadingIndicator message="Loading assets..." />}>
-              <Button
-                url={routes.viewAllSpecies}
-                icon={<PetsIcon />}
-                color="secondary">
-                Browse All Species
-              </Button>
-            </Suspense>,
-            <Suspense
-              fallback={<LoadingIndicator message="Loading assets..." />}>
-              <Button
-                url={routes.randomAvatars}
-                icon={<ShuffleIcon />}
-                color="secondary">
-                Random
-              </Button>
-            </Suspense>,
+            <Button
+              url={routes.viewAllSpecies}
+              icon={<PetsIcon />}
+              color="secondary">
+              Browse All Species
+            </Button>,
           ]}
           urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
           getQueryString={() => `category:${AssetCategory.Avatar}`}
+          allowRandomSort
         />
       </Suspense>
     </>
