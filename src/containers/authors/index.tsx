@@ -65,8 +65,7 @@ const AuthorsView = () => {
         ]}
         defaultFieldName={'name'}
         urlWithPageNumberVar={routes.viewAuthorsWithPageNumberVar}
-        createUrl={routes.createAuthor}
-        showCommonMetaControls>
+        createUrl={routes.createAuthor}>
         <Renderer />
       </PaginatedView>
     </>

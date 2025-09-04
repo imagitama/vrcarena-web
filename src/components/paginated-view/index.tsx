@@ -398,7 +398,7 @@ const Page = () => {
   const totalCount = whereClauses ? totalCountQuery : totalCountDataStore
   const hydrate = whereClauses ? hydrateQuery : hydrateDataStore
 
-  useScrollMemory(isLoading === false && lastErrorCode === null)
+  useScrollMemory()
 
   if (lastErrorCode !== null) {
     if (lastErrorCode === DataStoreErrorCode.BadRange) {
@@ -462,7 +462,6 @@ const Page = () => {
               )
             } else {
               setInternalPageNumber(newPageNumber)
-              smoothScrollToTop()
             }
           }}
         />
@@ -735,9 +734,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
               </div>
             </Suspense>
           </div>
-          <Suspense fallback={<LoadingIndicator message="PAGES" />}>
-            <Page />
-          </Suspense>
+          <Page />
         </div>
       </PaginatedViewContext.Provider>
     </ErrorBoundary>
