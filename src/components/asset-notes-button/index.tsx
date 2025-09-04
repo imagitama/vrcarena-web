@@ -9,6 +9,7 @@ import Button from '../button'
 import TextInput from '../text-input'
 import ErrorMessage from '../error-message'
 import Paper from '../paper'
+import Tooltip from '../tooltip'
 
 const AssetNotesButton = ({ assetId }: { assetId: string }) => {
   const userId = useUserId()! // assume logged in to see this
@@ -89,14 +90,17 @@ const AssetNotesButton = ({ assetId }: { assetId: string }) => {
       {lastErrorCode ? (
         <ErrorMessage>Failed to load notes (code {lastErrorCode})</ErrorMessage>
       ) : null}
-      {assetNotes ? <Paper margin>{assetNotes.notes}</Paper> : null}
-      <Button
-        icon={<NoteAddIcon />}
-        color="secondary"
-        onClick={() => setIsFormOpen(true)}
-        isDisabled={isBusy}>
-        Edit Your Notes
-      </Button>
+      {assetNotes && assetNotes.notes ? (
+        <Paper margin>{assetNotes.notes}</Paper>
+      ) : null}
+      <Tooltip title="Private to you">
+        <Button
+          icon={<NoteAddIcon />}
+          color="secondary"
+          onClick={() => setIsFormOpen(true)}>
+          Edit Your Notes
+        </Button>
+      </Tooltip>
     </>
   )
 }
