@@ -381,7 +381,9 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   ] = useDataStoreItem<FullAsset>(
     ViewNames.GetFullAssets,
     isSlug ? false : rawAssetId,
-    'asset-overview'
+    {
+      queryName: 'asset-overview',
+    }
   )
 
   const hydrate = isSlug ? hydrateCachedAsset : hydrateNonCachedAsset
@@ -861,29 +863,15 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             <ParentControlGroup />
             <ControlGroup>
               {asset && asset.category === AssetCategory.Avatar && (
-                <>
-                  <Control>
-                    <Button
-                      url={routes.avatarTutorial}
-                      color="secondary"
-                      icon={<BuildIcon />}
-                      isLoading={isLoading}>
-                      Avatar Tutorial
-                    </Button>
-                  </Control>
-                  <Control>
-                    <Button
-                      url={routes.accessorizeWithVar.replace(
-                        ':assetId',
-                        assetId
-                      )}
-                      color="secondary"
-                      icon={<AccessibilityNewIcon />}
-                      isLoading={isLoading}>
-                      Find Accessories
-                    </Button>
-                  </Control>
-                </>
+                <Control>
+                  <Button
+                    url={routes.accessorizeWithVar.replace(':assetId', assetId)}
+                    color="secondary"
+                    icon={<AccessibilityNewIcon />}
+                    isLoading={isLoading}>
+                    Find Accessories
+                  </Button>
+                </Control>
               )}
               <Control>
                 <EndorseAssetButton

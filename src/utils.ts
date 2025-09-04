@@ -324,8 +324,6 @@ export const findItemAndParents = <
 
     for (const item of items) {
       if (item.id === id) {
-        console.log('MATCH!', id)
-
         returnItems.push(item)
 
         if (item.parent) {

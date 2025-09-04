@@ -3,6 +3,7 @@ import { handleError } from '../error-handling'
 import {
   DataStoreError,
   DataStoreErrorCode,
+  DataStoreOptions,
   getDataStoreErrorCodeFromError,
 } from '../data-store'
 import useSupabaseClient from './useSupabaseClient'
@@ -16,8 +17,11 @@ type HydrateFn = () => Promise<void>
 export default <TResult extends Record<string, unknown>>(
   collectionName: string,
   id: string | false,
-  queryName: string = 'unnamed',
-  select: string = '*'
+  options: DataStoreOptions = {
+    idField: 'id',
+    queryName: 'unnamed',
+    select: 'id, *',
+  }
 ): [boolean, null | DataStoreErrorCode, null | TResult | false, HydrateFn] => {
   const [result, setResult] = useState<null | TResult | false>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -31,30 +35,41 @@ export default <TResult extends Record<string, unknown>>(
     try {
       if (!collectionName || !id) {
         console.debug(
-          `useDataStoreItem :: ${queryName} :: no collection name or ID - skipping`
+          `useDataStoreItem :: ${
+            options.queryName || 'unnamed'
+          } :: no collection name or ID - skipping`
         )
         return
       }
 
-      console.debug(`useDataStoreItem :: ${queryName} :: running getQuery`)
+      console.debug(
+        `useDataStoreItem :: ${
+          options.queryName || 'unnamed'
+        } :: running getQuery`
+      )
 
       setIsLoading(true)
       setLastErrorCode(null)
 
       const { error, data } = await supabase
         .from(collectionName.toLowerCase())
-        .select<any, TResult>(`id, ${select}`)
-        .eq('id', id)
+        .select<any, TResult>(options.select || `${options.idField || 'id'}, *`)
+        // TODO: Check if array
+        .eq((options.idField as string) || 'id', id)
 
       console.debug(
-        `useDataStoreItem :: ${queryName} :: query complete`,
+        `useDataStoreItem :: ${
+          options.queryName || 'unnamed'
+        } :: query complete`,
         error,
         data
       )
 
       if (error) {
         throw new DataStoreError(
-          `useDataStoreItem failed run query "${queryName}"`,
+          `useDataStoreItem failed run query "${
+            options.queryName || 'unnamed'
+          }"`,
           error
         )
       }
@@ -68,7 +83,9 @@ export default <TResult extends Record<string, unknown>>(
 
       if (isUnmountedRef.current) {
         console.debug(
-          `Query complete but component has unmounted, skipping re-render...`
+          `Query ${
+            options.queryName || 'unnamed'
+          } complete but component has unmounted, skipping re-render...`
         )
         return
       }

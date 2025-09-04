@@ -20,6 +20,8 @@ import {
 } from '../../../../modules/assets'
 import useUserId from '../../../../hooks/useUserId'
 import DeleteDraftButton from '../../../delete-draft-button'
+import AssetNotesButton from '@/components/asset-notes-button'
+import LazyLoad from 'react-lazyload'
 
 export default () => {
   const {
@@ -79,6 +81,11 @@ export default () => {
             Subscribe
           </Button>
         )}
+      </Control>
+      <Control>
+        <LazyLoad>
+          <AssetNotesButton assetId={assetId} />
+        </LazyLoad>
       </Control>
       {isPatron && (
         <Control>

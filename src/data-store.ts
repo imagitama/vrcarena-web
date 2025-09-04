@@ -256,6 +256,9 @@ export interface DataStoreOptions {
   unstoreErrorCodes?: DataStoreErrorCode[]
   // these errors won't be captured by Sentry
   uncatchErrorCodes?: DataStoreErrorCode[]
+  // defaults to "id" but sometimes want to be quirky
+  idField?: string | string[] // array of field names to .eq() on
+  select?: string
 }
 
 /**

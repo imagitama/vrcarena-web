@@ -17,6 +17,8 @@ import BulkEditButton from '../bulk-edit-button'
 import useSupabaseUserId from '../../hooks/useSupabaseUserId'
 import useIsEditor from '../../hooks/useIsEditor'
 import useDataStoreFunction from '../../hooks/useDataStoreFunction'
+import useAccountVerification from '@/hooks/useAccountVerification'
+import useIsBanned from '@/hooks/useIsBanned'
 
 const useStyles = makeStyles({
   footer: {
@@ -98,6 +100,9 @@ function DevelopmentTools() {
   useEffect(() => {
     callFunc()
   }, [firebaseUserId, supabaseUserId])
+  const isVerified = useAccountVerification()
+  const isBanned = useIsBanned()
+
   return (
     <table>
       <tbody>
@@ -129,6 +134,10 @@ function DevelopmentTools() {
               : lastErrorCode !== null
               ? `code: ${lastErrorCode}`
               : JSON.stringify(result)}
+            <br />
+            Is verified: {isVerified ? 'Yes' : 'No'}
+            <br />
+            Is banned: {isBanned ? 'Yes' : 'No'}
           </td>
         </tr>
       </tbody>

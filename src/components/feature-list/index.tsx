@@ -12,10 +12,10 @@ import { VRCArenaTheme } from '../../themes'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
-    margin: '2rem 0 1.5rem',
+    margin: '1rem 0 1.5rem',
   },
   items: {
-    marginBottom: '1rem',
+    marginBottom: '0.75rem',
   },
   feature: {
     marginBottom: '0.25rem',
@@ -29,10 +29,11 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       display: 'flex',
       alignItems: 'center',
     },
+    fontSize: '0.75rem',
   },
   featureIcon: {
-    width: '2.5rem',
-    height: '2.5rem',
+    width: '1.5rem',
+    height: '1.5rem',
     marginRight: '0.5rem',
     display: 'flex',
     alignItems: 'center',
@@ -42,6 +43,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     overflow: 'hidden',
     textTransform: 'uppercase',
     lineHeight: 1.6,
+    fontSize: '0.5rem',
     '& > div': {
       width: '100%',
       height: '100%',
@@ -74,23 +76,9 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   bad: {
     borderColor: 'rgba(255, 100, 100, 0.5)',
   },
-  icon: {
-    width: '25px',
-    display: 'flex',
-    justifyContent: 'center',
-    marginRight: '1rem',
-    fontSize: '1.5rem',
-    '& svg': {
-      width: '1em',
-      height: '1em',
-      fill: '#FFF',
-      '& path:not([fill*=none])': {
-        fill: 'inherit',
-      },
-    },
-  },
   label: {
     display: 'flex',
+    fontSize: '0.75rem',
   },
   tipIcon: {
     margin: '-0.25rem 0 0 0.25rem',
