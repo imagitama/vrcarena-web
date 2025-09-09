@@ -49,6 +49,7 @@ function AssetsByAuthor({ author }: { author: FullAuthor }) {
 
   return (
     <AssetsPaginatedView
+      name="assets-by-author"
       viewName={ViewNames.GetPublicAssets}
       getQuery={getQuery}
       getQueryString={() => `author:"${author.name}"`}
