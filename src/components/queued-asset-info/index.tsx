@@ -101,10 +101,14 @@ const QueuedAssetInfo = ({
   return (
     <Message title="Queued Asset">
       Published by{' '}
-      <UsernameLink
-        id={asset.publishedby!}
-        username={asset.publishedbyusername}
-      />{' '}
+      {asset.publishedby ? (
+        <UsernameLink
+          id={asset.publishedby}
+          username={asset.publishedbyusername}
+        />
+      ) : (
+        '(unknown)'
+      )}{' '}
       <FormattedDate date={asset.publishedat!} />
       <Table size="small">
         <TableBody>

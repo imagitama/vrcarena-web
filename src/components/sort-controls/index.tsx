@@ -120,7 +120,7 @@ const SortControls = <TRecord extends Record<string, any>>({
               onClick={() =>
                 onClickItem(
                   fieldName as string,
-                  direction || OrderDirections.DESC
+                  direction !== undefined ? direction : OrderDirections.DESC
                 )
               }>
               {label}

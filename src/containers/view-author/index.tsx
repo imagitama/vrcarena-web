@@ -136,7 +136,9 @@ const View = () => {
   const { authorId } = useParams<{ authorId: string }>()
   const isLoggedIn = useIsLoggedIn()
   const [isLoading, lastErrorCode, author, hydrate] =
-    useDataStoreItem<FullAuthor>('getfullauthors', authorId, 'view-author')
+    useDataStoreItem<FullAuthor>('getfullauthors', authorId, {
+      queryName: 'view-author',
+    })
   const classes = useStyles()
   const isEditor = useIsEditor()
 

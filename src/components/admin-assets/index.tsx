@@ -26,18 +26,15 @@ import {
   ViewNames,
 } from '../../modules/assets'
 import AssetResultsItem from '../../components/asset-results-item'
-import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
 import { colorPalette } from '../../config'
 
 import Button from '../button'
 import PaginatedView, { GetQueryFn } from '../paginated-view'
 import EditorRecordManager from '../editor-record-manager'
-import FormattedDate from '../formatted-date'
 import AssetOverview from '../asset-overview'
 import useStorage from '../../hooks/useStorage'
 import AssetEditorWithSync from '../asset-editor-with-sync'
 import { EqualActiveFilter, FilterSubType, FilterType } from '../../filters'
-import UsernameLink from '../username-link'
 import QueuedAssetInfo from '../queued-asset-info'
 
 const useStyles = makeStyles({

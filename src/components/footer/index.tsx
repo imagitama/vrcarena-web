@@ -96,7 +96,7 @@ function DevelopmentTools() {
   const [isCalling, lastErrorCode, result, callFunc] = useDataStoreFunction<
     {},
     boolean
-  >('get_is_current_user_editor_or_admin')
+  >('get_api_url')
   useEffect(() => {
     callFunc()
   }, [firebaseUserId, supabaseUserId])
