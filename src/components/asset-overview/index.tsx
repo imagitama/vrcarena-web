@@ -5,7 +5,6 @@ import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
 
 // icons
-import BuildIcon from '@mui/icons-material/Build'
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 import LinkIcon from '@mui/icons-material/Link'
@@ -72,7 +71,7 @@ import TabComments from './components/tab-comments'
 import TabAttachments from './components/tab-attachments'
 import TabAvatars from './components/tab-avatars'
 import TabAdmin from './components/tab-admin'
-import TabRelated from './components/tab-related'
+import TabSimilar from './components/tab-similar'
 import AddToCartButton from '../add-to-cart-button'
 import SpeciesList from '../species-list'
 
@@ -739,9 +738,11 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                 <Area name="questions" label="Community Questions">
                   <Questions assetId={asset.id} />
                 </Area>
-                <Area name="related" label="Related Assets">
-                  <TabRelated />
-                </Area>
+                {asset && asset.similarassets && asset.similarassets.length ? (
+                  <Area name="similar" label="Similar Assets">
+                    <TabSimilar />
+                  </Area>
+                ) : null}
                 {asset.isopenforcommission &&
                 asset.showcommissionstatusforassets ? (
                   <Area name="commissions" label="Commission Info">
@@ -751,7 +752,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     />
                   </Area>
                 ) : null}
-                <Area name="mentions" label="Relations">
+                <Area name="mentions" label="Mentions">
                   <TabMentions />
                 </Area>
                 {isEditor ? (

@@ -230,6 +230,7 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   discordserverdata: DiscordServerData | null
   clonableworlddata: VrchatWorld | null
   relationsdata: Asset[]
+  similarassets: Asset[]
   approvedbyusername: string
   tagsdata: Tag[]
   attachmentsdata: FullAttachment[] | null
