@@ -296,7 +296,7 @@ const QueuedItemRow = ({
   const client = useSupabaseClient()
   // const [isQuickEditOpen, setIsQuickEditOpen] = useState(false)
   const queuedItem = liveQueuedItem || originalQueuedItem
-  const [, , asset, hydrateAsset] = useDataStoreItem<FullAsset>(
+  const [, , fullAsset, hydrateAsset] = useDataStoreItem<FullAsset>(
     ViewNames.GetFullAssets,
     queuedItem.createdassetid || false
   )
@@ -375,11 +375,11 @@ const QueuedItemRow = ({
             rel="noopener noreferrer">
             <LaunchIcon />
           </a>
-          {asset ? (
+          {fullAsset ? (
             <>
               <br />
               <br />
-              <AssetResultsItem asset={asset} showMoreInfo />
+              <AssetResultsItem asset={fullAsset} showMoreInfo showState />
             </>
           ) : null}
         </TableCell>
