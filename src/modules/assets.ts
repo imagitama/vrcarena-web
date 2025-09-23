@@ -89,25 +89,26 @@ export interface CoreAssetFields extends Record<string, unknown> {
 export interface AssetFields extends CoreAssetFields, Record<string, unknown> {
   sourceurl: string
   description: string
-  shortdescription: string
-  pedestalvideourl: string
-  pedestalfallbackimageurl: string
   bannerurl: string
   vrchatclonableavatarids: string[]
-  vrchatclonableworldids: string[]
-  gumroad?: {
-    sync: boolean
-    fields: { [fieldName: string]: boolean }
-  }
   discordserver: string | null // id
   relations: Relation[]
-  tutorialsteps: TutorialStep[]
-  ranks: string[]
   extradata: ExtraData
   attachmentids: string[]
   extrasources: SourceInfo[]
   vccurl?: string
   sketchfabembedurl: string
+  // TODO: deprecate
+  shortdescription: string
+  pedestalvideourl: string
+  pedestalfallbackimageurl: string
+  gumroad?: {
+    sync: boolean
+    fields: { [fieldName: string]: boolean }
+  }
+  vrchatclonableworldids: string[]
+  ranks: string[]
+  tutorialsteps: TutorialStep[]
 }
 
 export interface Asset extends AssetFields, Record<string, unknown> {

@@ -17,4 +17,5 @@ export enum fieldTypes {
   url = 'url',
   email = 'email',
   item = 'item', // a single item eg. asset by ID
+  price = 'price',
 }

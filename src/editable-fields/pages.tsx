@@ -21,11 +21,9 @@ const fields: EditableField<Page, string>[] = [
     name: 'content',
     label: 'Content',
     type: fieldTypes.custom,
-    customProperties: {
-      renderer: ({ onChange, value }) => (
-        <MarkdownEditor content={value} onChange={onChange} />
-      ),
-    },
+    renderer: ({ onChange, value }) => (
+      <MarkdownEditor content={value} onChange={onChange} />
+    ),
   },
 ]
 

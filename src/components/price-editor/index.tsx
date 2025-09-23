@@ -15,6 +15,7 @@ import { Asset, CollectionNames } from '../../modules/assets'
 import LoadingIndicator from '../loading-indicator'
 import SuccessMessage from '../success-message'
 import ErrorMessage from '../error-message'
+import PriceAndCurrencyInput from '../price-and-currency-input'
 
 const useStyles = makeStyles({
   inputWrapper: {
@@ -96,9 +97,9 @@ const PriceEditor = ({
     <>
       <WarningMessage>
         If automatic syncing with Gumroad is enabled (and the currency is USD)
-        this price will be automatically updated daily.
+        this price will be automatically updated regularly.
       </WarningMessage>
-      <PriceInput
+      <PriceAndCurrencyInput
         price={newPrice}
         priceCurrency={newPriceCurrency}
         onChange={(newPrice, newPriceCurrency) => {

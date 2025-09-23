@@ -1,84 +1,56 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@mui/styles'
-import MenuItem from '@mui/material/MenuItem'
+import ClearIcon from '@mui/icons-material/Clear'
 
 import TextInput from '../text-input'
 import Button from '../button'
-import { popularCurrencies, PopularCurrency } from '../../currency'
-import Select from '../select'
-import Price from '../price'
-
-const useStyles = makeStyles({
-  inputWrapper: {
-    margin: '0.5rem 0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  currencySymbol: {
-    fontSize: '200%',
-    marginRight: '0.5rem',
-  },
-})
+import { PopularCurrency } from '@/currency'
+import { InputAdornment } from '@mui/material'
 
 const PriceInput = ({
-  price,
+  value,
   priceCurrency,
   onChange,
 }: {
-  price: number | null
-  priceCurrency: PopularCurrency
-  onChange: (
-    newUserPrice: number | null,
-    newPriceCurrency: PopularCurrency
-  ) => void
+  value: number | null
+  priceCurrency?: PopularCurrency | null
+  onChange: (newUserPrice: number | null) => void
 }) => {
-  const [userPrice, setUserPrice] = useState(price || '')
-  const classes = useStyles()
-
+  console.log('VALUE', { value })
+  const [userInput, setUserInput] = useState(value !== null ? value : '')
   return (
-    <>
-      <div className={classes.inputWrapper}>
-        <span>
-          <Select
-            onChange={(e) => onChange(price, e.target.value as PopularCurrency)}
-            value={priceCurrency}>
-            {Object.entries(popularCurrencies).map(
-              ([currencyCode, currencyName]) => (
-                <MenuItem
-                  key={currencyCode}
-                  value={currencyCode}
-                  title={currencyName}>
-                  {currencyCode}
-                </MenuItem>
-              )
-            )}
-          </Select>
-        </span>
-        <TextInput
-          value={userPrice}
-          onChange={(e) => {
-            setUserPrice(e.target.value.trim())
-            const newPrice = parseFloat(e.target.value.trim())
-            onChange(newPrice > 0 ? newPrice : null, priceCurrency)
+    <TextInput
+      InputProps={
+        priceCurrency
+          ? {
+              startAdornment: (
+                <InputAdornment position="start">
+                  {priceCurrency}
+                </InputAdornment>
+              ),
+            }
+          : undefined
+      }
+      value={userInput}
+      onChange={(e) => {
+        const newUserInput = e.target.value
+        setUserInput(newUserInput)
+        const newPrice = parseFloat(e.target.value.trim())
+        if (!isNaN(newPrice)) {
+          onChange(newPrice)
+        }
+      }}
+      button={
+        <Button
+          onClick={() => {
+            onChange(null)
+            setUserInput('')
           }}
-        />
-        <Button onClick={() => onChange(null, priceCurrency)} color="secondary">
-          Clear Price
+          color="secondary"
+          icon={<ClearIcon />}>
+          Clear
         </Button>
-      </div>
-      <br />
-      <strong>Preview:</strong>{' '}
-      {price === null ? (
-        '(no price set)'
-      ) : priceCurrency === null ? (
-        '(no currency set)'
-      ) : (
-        <Price price={price} priceCurrency={priceCurrency} />
-      )}
-      <br />
-      <br />
-    </>
+      }
+    />
   )
 }
 

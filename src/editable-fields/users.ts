@@ -15,11 +15,9 @@ const fields: EditableField<User>[] = [
     name: 'avatarurl',
     label: 'Avatar image URL',
     type: fieldTypes.imageUpload,
-    imageUploadProperties: {
-      width: AVATAR_WIDTH,
-      height: AVATAR_HEIGHT,
-      bucketName: bucketNames.userAvatars,
-    },
+    requiredWidth: AVATAR_WIDTH,
+    requiredHeight: AVATAR_HEIGHT,
+    bucketName: bucketNames.userAvatars,
     default: '',
   },
 ]

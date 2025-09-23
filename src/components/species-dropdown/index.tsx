@@ -11,7 +11,7 @@ import Select from '../select'
 // cache for bulk edit
 let lastKnownAllSpecies: Species[]
 
-const SpeciesSelector = ({
+const SpeciesDropdown = ({
   selectedSpeciesIds = [],
   onSpeciesClickWithId,
 }: {
@@ -54,4 +54,4 @@ const SpeciesSelector = ({
   )
 }
 
-export default SpeciesSelector
+export default SpeciesDropdown

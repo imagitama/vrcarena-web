@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
 import Button from '../button'
@@ -14,6 +14,8 @@ import { handleError } from '../../error-handling'
 import PriceInput from '../price-input'
 import ItemsEditor from '../items-editor'
 import VisitSourceButton from '../visit-source-button'
+import PriceAndCurrencyInput from '../price-and-currency-input'
+import UrlInput from '../url-input'
 
 const Renderer = ({ item }: { item: SourceInfo }) => (
   <>
@@ -33,20 +35,16 @@ const Editor = ({
   const [newSourceInfo, setNewSourceInfo] = useState(item)
   return (
     <>
-      <TextInput
-        label="URL"
-        fullWidth
+      <UrlInput
         value={newSourceInfo.url}
-        onChange={(e) => {
-          const newUrl = e.target.value.trim()
-          setNewSourceInfo({
-            ...newSourceInfo,
+        onChange={(newUrl) =>
+          setNewSourceInfo((currentVal) => ({
+            ...currentVal,
             url: newUrl,
-          })
-        }}
-        placeholder="Enter a URL"
+          }))
+        }
       />
-      <PriceInput
+      <PriceAndCurrencyInput
         price={newSourceInfo.price}
         priceCurrency={
           newSourceInfo.pricecurrency === null
@@ -60,6 +58,7 @@ const Editor = ({
             pricecurrency: newPriceCurrency,
           })
         }}
+        showPreview={false}
       />
       <TextInput
         label="Comments (optional)"
@@ -86,12 +85,14 @@ const ExtraSourcesEditor = ({
   assetId,
   extraSources,
   onDone,
+  onChange,
   overrideSave = undefined,
   actionCategory = undefined,
 }: {
   assetId: string | null
   extraSources: SourceInfo[]
-  onDone: () => void
+  onChange?: (newExtraSources: SourceInfo[]) => void
+  onDone?: () => void
   overrideSave?: (newExtraSources: SourceInfo[]) => void
   actionCategory?: string
 }) => {
@@ -100,6 +101,14 @@ const ExtraSourcesEditor = ({
   )
   const [isSaving, isSaveSuccess, lastErrorCode, save] =
     useDataStoreEdit<AssetFields>(CollectionNames.Assets, assetId || false)
+
+  // for asset editor mini
+  useEffect(() => {
+    if (!onChange || !extraSources) {
+      return
+    }
+    setNewExtraSources(extraSources)
+  }, [JSON.stringify(extraSources)])
 
   const onClickSave = async () => {
     try {
@@ -153,7 +162,13 @@ const ExtraSourcesEditor = ({
         items={newExtraSources || []}
         renderer={Renderer}
         editor={Editor}
-        onChange={(newItems) => setNewExtraSources(newItems)}
+        onChange={(newItems) => {
+          if (onChange) {
+            onChange(newItems)
+          } else {
+            setNewExtraSources(newItems)
+          }
+        }}
         emptyItem={{
           url: '',
           price: null,
@@ -161,11 +176,13 @@ const ExtraSourcesEditor = ({
           comments: '',
         }}
       />
-      <FormControls>
-        <Button onClick={onClickSave} size="large" icon={<SaveIcon />}>
-          Save
-        </Button>
-      </FormControls>
+      {!onChange && (
+        <FormControls>
+          <Button onClick={onClickSave} size="large" icon={<SaveIcon />}>
+            Save
+          </Button>
+        </FormControls>
+      )}
     </>
   )
 }

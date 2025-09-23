@@ -326,7 +326,11 @@ const Filters = <T,>({
           />
         ))}
       </div>
-      <Button onClick={onApply} size="small" icon={<FilterIcon />}>
+      <Button
+        onClick={onApply}
+        size="small"
+        icon={<FilterIcon />}
+        color="secondary">
         Apply Filters
       </Button>
     </div>

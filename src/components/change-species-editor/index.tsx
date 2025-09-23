@@ -12,8 +12,8 @@ import { trackAction } from '../../analytics'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import { Asset, CollectionNames } from '../../modules/assets'
 import Heading from '../heading'
-import Message from '../message'
 import SpeciesBrowser from '../species-browser'
+import InfoMessage from '../info-message'
 
 function isSpeciesIdActive(
   speciesId: string,
@@ -30,6 +30,9 @@ export default ({
   onDone = undefined,
   onCancel = undefined,
   overrideSave = undefined,
+  // asset editor mini
+  showControls = true,
+  onChange = undefined,
 }: {
   assetId: string | null
   activeSpeciesIds?: string[]
@@ -37,12 +40,16 @@ export default ({
   onDone?: () => void
   onCancel?: () => void
   overrideSave?: (newSpeciesIds: string[]) => void
+  showControls?: boolean
+  onChange?: (newIds: string[]) => void
 }) => {
   const userId = useUserId()
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
     CollectionNames.Assets,
     activeSpeciesIds ? false : assetId ? assetId : false,
-    'change-species-editor'
+    {
+      queryName: 'change-species-editor',
+    }
   )
   const [isSaving, isSuccess, lastErrorCodeSaving, save] =
     useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
@@ -87,11 +94,17 @@ export default ({
   }
 
   const onClickSpecies = (speciesId: string) =>
-    setNewSpeciesIds((currentIds) =>
-      isSpeciesIdActive(speciesId, newSpeciesIds)
+    setNewSpeciesIds((currentIds) => {
+      const newIds = isSpeciesIdActive(speciesId, newSpeciesIds)
         ? currentIds.filter((id) => id !== speciesId)
         : currentIds.concat([speciesId])
-    )
+
+      if (onChange) {
+        onChange(newIds)
+      }
+
+      return newIds
+    })
 
   const onSaveBtnClick = async () => {
     try {
@@ -123,7 +136,7 @@ export default ({
 
   return (
     <>
-      <Message>
+      <InfoMessage hideId="how-to-pick-species">
         <Heading variant="h2" noTopMargin>
           How do I pick a species?
         </Heading>
@@ -136,22 +149,24 @@ export default ({
             selecting a parent will automatically select all of the children
           </li>
         </ul>
-      </Message>
+      </InfoMessage>
       <SpeciesBrowser
         selectedSpeciesIds={newSpeciesIds}
         onClickSpecies={onClickSpecies}
         showControls={false}
       />
-      <FormControls>
-        <Button onClick={onSaveBtnClick} icon={<SaveIcon />}>
-          Save
-        </Button>{' '}
-        {onCancel && (
-          <Button onClick={() => onCancel()} color="secondary">
-            Cancel
-          </Button>
-        )}
-      </FormControls>
+      {showControls ? (
+        <FormControls>
+          <Button onClick={onSaveBtnClick} icon={<SaveIcon />}>
+            Save
+          </Button>{' '}
+          {onCancel && (
+            <Button onClick={() => onCancel()} color="secondary">
+              Cancel
+            </Button>
+          )}
+        </FormControls>
+      ) : null}
     </>
   )
 }

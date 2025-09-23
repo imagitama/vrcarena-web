@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { SearchableProperties } from '../../../../editable-fields'
+import { SearchableEditableField } from '../../../../editable-fields'
 import useDataStoreItem from '../../../../hooks/useDataStoreItem'
 
 import Button from '../../../button'
@@ -12,27 +12,26 @@ export default ({
   name,
   onChange,
   value,
-  searchableProperties,
+  ...props
 }: {
   name: string
   onChange: (id: string | null) => void
   value: any
-  searchableProperties: SearchableProperties
-}) => {
-  if (!searchableProperties.collectionName) {
+} & SearchableEditableField<any>) => {
+  if (!props.collectionName) {
     throw new Error(`Needs collection name! Field ${name}`)
   }
-  if (!searchableProperties.fieldAsLabel) {
+  if (!props.fieldAsLabel) {
     throw new Error(`Needs field name to use as label! Field ${name}`)
   }
-  if (!searchableProperties.renderer) {
+  if (!props.renderer) {
     throw new Error(`Needs renderer! Field ${name}`)
   }
 
   const [isFormVisible, setIsFormVisible] = useState(false)
   const [valueData, setValueData] = useState<null | { id: string }>(null)
   const [, , existingItem] = useDataStoreItem<SearchResult>(
-    searchableProperties.collectionName,
+    props.collectionName,
     value || false
   )
 
@@ -55,7 +54,7 @@ export default ({
           <br />
           <br />
           {valueData || existingItem ? (
-            <searchableProperties.renderer item={valueData || existingItem} />
+            <props.renderer item={valueData || existingItem} />
           ) : (
             <LoadingIndicator />
           )}
@@ -75,8 +74,8 @@ export default ({
       )}
       {(isFormVisible || !value) && (
         <SearchForIdForm
-          collectionName={searchableProperties.collectionName}
-          fieldAsLabel={searchableProperties.fieldAsLabel}
+          collectionName={props.collectionName}
+          fieldAsLabel={props.fieldAsLabel}
           onClickWithIdAndDetails={(id: string, item: any) => {
             setIsFormVisible(false)
             setValueData(item)

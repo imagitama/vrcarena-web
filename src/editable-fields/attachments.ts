@@ -43,11 +43,9 @@ const fields: EditableField<Attachment>[] = [
     name: 'thumbnailurl',
     label: 'Thumbnail',
     type: fieldTypes.imageUpload,
-    imageUploadProperties: {
-      width: THUMBNAIL_WIDTH,
-      height: THUMBNAIL_HEIGHT,
-      bucketName: bucketNames.attachmentThumbnails,
-    },
+    requiredWidth: THUMBNAIL_WIDTH,
+    requiredHeight: THUMBNAIL_HEIGHT,
+    bucketName: bucketNames.attachmentThumbnails,
   },
   {
     name: 'isadult',

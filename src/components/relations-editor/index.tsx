@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 import CheckIcon from '@mui/icons-material/Check'
@@ -211,6 +211,7 @@ const RelationsEditor = ({
   assetId,
   currentRelations = [],
   assetsData = undefined,
+  onChange = undefined,
   onDone = undefined,
   onCancel = undefined,
   overrideSave = undefined,
@@ -218,6 +219,7 @@ const RelationsEditor = ({
   assetId: string | null
   currentRelations?: Relation[]
   assetsData?: Asset[]
+  onChange?: (newRelations: Relation[]) => void
   onDone?: () => void
   onCancel?: () => void
   overrideSave?: (newRelations: Relation[]) => void
@@ -234,6 +236,14 @@ const RelationsEditor = ({
     () => (onDone ? onDone() : {}),
     formHideDelay
   )
+
+  // for asset editor mini
+  useEffect(() => {
+    if (!onChange || !currentRelations) {
+      return
+    }
+    setNewRelations(currentRelations)
+  }, [JSON.stringify(currentRelations)])
 
   const onNewRelations = (relations: Relation[]) => setNewRelations(relations)
   const onAddRelation = (newRelation: Relation) => {
@@ -321,16 +331,18 @@ const RelationsEditor = ({
           assetsData,
         }}
       />
-      <FormControls>
-        <Button onClick={onSaveClick} icon={<SaveIcon />}>
-          Save
-        </Button>{' '}
-        {onCancel ? (
-          <Button onClick={onCancel} color="secondary">
-            Cancel
-          </Button>
-        ) : null}
-      </FormControls>
+      {onChange ? null : (
+        <FormControls>
+          <Button onClick={onSaveClick} icon={<SaveIcon />}>
+            Save
+          </Button>{' '}
+          {onCancel ? (
+            <Button onClick={onCancel} color="secondary">
+              Cancel
+            </Button>
+          ) : null}
+        </FormControls>
+      )}
     </div>
   )
 }

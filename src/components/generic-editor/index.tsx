@@ -32,58 +32,53 @@ import DropdownInput from './components/dropdown-input'
 import ItemInput from './components/item-input'
 import Tabs from '../tabs'
 import DateInput from './components/date-input'
+import UrlInput from '../url-input'
 
-export type GenericInputProps = Omit<EditableField<any>, 'type'> & {
+export type GenericInputProps = {
+  name: string
+  label?: string
   value: any
   defaultValue: any
   onChange: (newVal: any) => void
   extraFormData: any
   setFieldsValues: (updates: Record<string, any>) => void
   databaseResult: any
+  formFields: any
 }
 
-type GenericInput = (props: GenericInputProps) => JSX.Element
+// TODO: better type safety here
+type GenericInput = (props: any) => JSX.Element
 
 function getInputForFieldType(type: keyof typeof fieldTypes): GenericInput {
   switch (type) {
     case fieldTypes.text:
-      // @ts-ignore
       return TextInput
     case fieldTypes.textMarkdown:
-      // @ts-ignore
       return TextMarkdownInput
     case fieldTypes.checkbox:
       return CheckboxInput
     case fieldTypes.multichoice:
-      // @ts-ignore
       return MultichoiceInput
     case fieldTypes.imageUpload:
-      // @ts-ignore
       return ImageUploadInput
     case fieldTypes.searchable:
-      // @ts-ignore
       return SearchableInput
     case fieldTypes.singlechoice:
-      // @ts-ignore
       return SinglechoiceInput
     case fieldTypes.date:
-      // @ts-ignore
       return DateInput
     case fieldTypes.assets:
-      // @ts-ignore
       return AssetsInput
     case fieldTypes.custom:
-      // @ts-ignore
       return CustomInput
     case fieldTypes.tags:
-      // @ts-ignore
       return TagsInput
     case fieldTypes.dropdown:
-      // @ts-ignore
       return DropdownInput
     case fieldTypes.item:
-      // @ts-ignore
       return ItemInput
+    case fieldTypes.url:
+      return UrlInput
     default:
       throw new Error(`Invalid field type "${type}"`)
   }
@@ -139,7 +134,6 @@ const GenericEditor = ({
   id = null,
   analyticsCategory = '',
   saveBtnAction = 'Click save button',
-  viewBtnAction = 'Click view item button after save',
   cancelBtnAction = 'Click cancel button',
   successUrl = '',
   cancelUrl = '',
@@ -148,6 +142,10 @@ const GenericEditor = ({
   // amendments
   overrideFields = null,
   onFieldChanged = undefined,
+  // asset editor mini
+  isAccordion = false,
+  onDone = undefined,
+  saveBtnRecordType = '',
 }: {
   fields?: EditableField<any>[]
   collectionName: string
@@ -155,7 +153,6 @@ const GenericEditor = ({
   id?: string | null
   analyticsCategory?: string
   saveBtnAction?: string
-  viewBtnAction?: string
   cancelBtnAction?: string
   successUrl?: string
   cancelUrl?: string
@@ -163,6 +160,10 @@ const GenericEditor = ({
   getSuccessUrl?: (newId: string | null) => string
   overrideFields?: Record<string, any> | null
   onFieldChanged?: (fieldName: string, newValue: any) => void
+  // asset editor mini
+  isAccordion?: boolean
+  onDone?: () => void
+  saveBtnRecordType?: string
 }) => {
   if (!fields && !(collectionName in editableFields)) {
     throw new Error(`Collection name ${collectionName} not in editable fields!`)
@@ -170,13 +171,11 @@ const GenericEditor = ({
 
   const fieldsToUse = fields || editableFields[collectionName]
 
-  const [isLoading, lastErrorCode, result] = useDataStoreItem<
+  const [isLoading, lastErrorCode, rawRecord] = useDataStoreItem<
     Record<string, any>
-  >(
-    viewName || collectionName,
-    id || false,
-    `generic-editor-${viewName || collectionName}`
-  )
+  >(viewName || collectionName, id || false, {
+    queryName: `generic-editor-${viewName || collectionName}`,
+  })
   const [isSaving, isSuccess, lastErrorCodeSaving, save, clear, updatedRecord] =
     useDataStoreEdit<Record<string, any>>(collectionName, id || false)
   const [formFields, setFormFields] = useState<null | Record<string, any>>(
@@ -195,7 +194,7 @@ const GenericEditor = ({
   const [isInvalid, setIsInvalid] = useState(false)
 
   useEffect(() => {
-    if (!result) {
+    if (!rawRecord) {
       return
     }
 
@@ -204,13 +203,15 @@ const GenericEditor = ({
         return {
           ...newFormFields,
           [fieldConfig.name]:
-            result[fieldConfig.name.toString()] === false
+            rawRecord[fieldConfig.name as string] === false
               ? false
-              : result[fieldConfig.name.toString()] || fieldConfig.default,
+              : (fieldConfig.name as string) in rawRecord
+              ? rawRecord[fieldConfig.name as string]
+              : fieldConfig.default,
         }
       }, {})
     )
-  }, [result === null])
+  }, [rawRecord === null])
 
   const onFieldChange = (name: string, newVal: string | boolean | number) => {
     if (onFieldChanged) {
@@ -258,6 +259,10 @@ const GenericEditor = ({
         ...formFields,
         ...getHiddenFieldsForDb(fieldsToUse),
       })
+
+      if (onDone) {
+        onDone()
+      }
     } catch (err) {
       console.error(`Failed to save ${id} to ${collectionName}`, err)
       handleError(err)
@@ -343,12 +348,17 @@ const GenericEditor = ({
 
     return (
       <Field
-        key={name.toString()}
-        label={type !== fieldTypes.checkbox ? label! : '(no label)'}>
+        key={name as string}
+        label={
+          type !== fieldTypes.checkbox || rest.alwaysShowLabel
+            ? label!
+            : '(no label)'
+        }
+        // for mini editor
+        isAccordion={isAccordion}>
         <Input
           name={name.toString()}
-          // @ts-ignore
-          value={formFields[name]}
+          value={formFields[name as string]}
           defaultValue={defaultValue}
           label={label}
           {...rest}
@@ -356,7 +366,9 @@ const GenericEditor = ({
           // @ts-ignore
           extraFormData={extraFormData}
           setFieldsValues={onFieldsChange}
-          databaseResult={result}
+          databaseResult={rawRecord}
+          // for mini editor
+          formFields={formFields}
         />
         {hint && <div className={classes.hint}>{hint}</div>}
       </Field>
@@ -392,16 +404,20 @@ const GenericEditor = ({
       )}
       {onFieldChanged ? null : (
         <div className={classes.saveBtn}>
-          <Button
-            url={cancelUrl}
-            color="secondary"
-            onClick={() => trackAction(analyticsCategory, cancelBtnAction, id)}>
-            Cancel
-          </Button>{' '}
+          {cancelUrl && (
+            <Button
+              url={cancelUrl}
+              color="secondary"
+              onClick={() => {
+                trackAction(analyticsCategory, cancelBtnAction, id)
+              }}>
+              Cancel
+            </Button>
+          )}
           <Button
             onClick={onSaveBtnClick}
             icon={id ? <SaveIcon /> : <AddIcon />}>
-            {id ? 'Save' : 'Create'}
+            {id ? 'Save' : 'Create'} {saveBtnRecordType}
           </Button>
         </div>
       )}

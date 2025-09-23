@@ -3,17 +3,18 @@ import FormHelperText from '@mui/material/FormHelperText'
 import ImageUploader from '../../../image-uploader'
 import { fixAccessingImagesUsingToken } from '../../../../utils'
 import Button from '../../../button'
-import { ImageUploadProperties } from '../../../../editable-fields'
+import { ImageUploadEditableField } from '../../../../editable-fields'
 
 export default ({
   onChange,
   value,
-  imageUploadProperties: { bucketName, width, height, directoryName },
+  formFields,
+  ...props
 }: {
   onChange: (newUrl: string | null) => void
   value: string
-  imageUploadProperties: ImageUploadProperties
-}) => {
+  formFields: any
+} & ImageUploadEditableField<any>) => {
   return (
     <>
       {value ? (
@@ -21,8 +22,8 @@ export default ({
           <img
             src={fixAccessingImagesUsingToken(value)}
             alt="Preview"
-            width={width}
-            height={height}
+            width={props.requiredWidth}
+            height={props.requiredHeight}
           />
           <br />
           <Button color="secondary" onClick={() => onChange(null)}>
@@ -33,13 +34,15 @@ export default ({
         <>
           <ImageUploader
             onDone={(urls) => onChange(urls[0])}
-            bucketName={bucketName}
-            requiredWidth={width}
-            requiredHeight={height}
-            directoryPath={directoryName}
+            {...props}
+            directoryPath={
+              props.getDirectoryPath
+                ? props.getDirectoryPath(formFields)
+                : props.directoryPath
+            }
           />
           <FormHelperText>
-            {width} x {height}
+            {props.requiredWidth} x {props.requiredHeight}
           </FormHelperText>
         </>
       )}

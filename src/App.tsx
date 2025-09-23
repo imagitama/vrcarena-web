@@ -429,11 +429,6 @@ const Social = lazy(() =>
     () => import(/* webpackChunkName: "social" */ './containers/social')
   )
 )
-const Promos = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "promos" */ './containers/promos')
-  )
-)
 const ImageAtlas = lazy(() =>
   catchChunkDeaths(
     () =>
@@ -814,7 +809,7 @@ const MainContent = () => {
           ]}
           component={Query}
         />
-        <Route exact path={routes.promos} component={Promos} />
+        <Route exact path={routes.promos} component={DeprecatedRouteView} />
         <Route exact path={routes.imageAtlas} component={ImageAtlas} />
         <Route
           exact

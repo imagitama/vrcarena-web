@@ -109,8 +109,8 @@ export const EditableFields: EditableField<Event>[] = [
     label: 'Thumbnail',
     type: fieldTypes.imageUpload,
     imageUploadProperties: {
-      width: THUMBNAIL_WIDTH,
-      height: THUMBNAIL_HEIGHT,
+      requiredWidth: THUMBNAIL_WIDTH,
+      requiredHeight: THUMBNAIL_HEIGHT,
       bucketName: bucketNames.eventThumbnails,
     },
     hint: 'A thumbnail used for your event. Used in search results etc.',
@@ -120,8 +120,8 @@ export const EditableFields: EditableField<Event>[] = [
     label: 'Banner',
     type: fieldTypes.imageUpload,
     imageUploadProperties: {
-      width: EVENT_BANNER_WIDTH,
-      height: EVENT_BANNER_HEIGHT,
+      requiredWidth: EVENT_BANNER_WIDTH,
+      requiredHeight: EVENT_BANNER_HEIGHT,
       bucketName: bucketNames.eventBanners,
     },
     hint: `The image to display in the header of the site if it is featured. ${EVENT_BANNER_WIDTH} width ${EVENT_BANNER_HEIGHT} height with transparent background.`,

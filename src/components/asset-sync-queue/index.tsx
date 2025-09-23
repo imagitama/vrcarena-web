@@ -38,7 +38,12 @@ import {
   AssetSyncStatus,
   FullAssetSyncQueueItem,
 } from '../../modules/assetsyncqueue'
-import { Asset } from '../../modules/assets'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+  FullAsset,
+  ViewNames,
+} from '../../modules/assets'
 import FormControls from '../form-controls'
 import useDataStoreCreateBulk from '../../hooks/useDataStoreCreateBulk'
 import { DataStoreErrorCode, updateRecord } from '../../data-store'
@@ -48,7 +53,13 @@ import UsernameLink from '../username-link'
 import FormattedDate from '../formatted-date'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
 import { VRCArenaTheme } from '../../themes'
-import { Warning as WarningIcon } from '../../icons'
+import { OpenExternalLink, Warning as WarningIcon } from '../../icons'
+import StatusText from '../status-text'
+import Dialog from '../dialog'
+import Heading from '../heading'
+import AssetEditorMini from '../asset-editor-mini'
+import AssetResultsItem from '../asset-results-item'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   queuedStatus: {
@@ -65,7 +76,6 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
   waiting: {},
   failedFieldsRoot: {
-    color: colorPalette.warning,
     margin: '0.5rem 0 0.25rem',
     fontSize: '75%',
     borderRadius: theme.shape.borderRadius,
@@ -244,7 +254,7 @@ const MissingFields = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
 
   return (
     <div className={classes.failedFieldsRoot}>
-      <WarningIcon /> These fields require your manual attention:
+      <WarningIcon /> These fields could not be synced:
       <ul>
         {importantFields
           .filter(
@@ -284,10 +294,16 @@ const QueuedItemRow = ({
   const [isDeleted, setIsDeleted] = useState(false)
   const classes = useStyles()
   const client = useSupabaseClient()
+  // const [isQuickEditOpen, setIsQuickEditOpen] = useState(false)
+  const queuedItem = liveQueuedItem || originalQueuedItem
+  const [, , asset, hydrateAsset] = useDataStoreItem<FullAsset>(
+    ViewNames.GetFullAssets,
+    queuedItem.createdassetid || false
+  )
 
   const onDelete = () => setIsDeleted(true)
 
-  const queuedItem = liveQueuedItem || originalQueuedItem
+  // const onClickQuickEdit = () => setIsQuickEditOpen(true)
 
   if (isSubscribing) {
     return <LoadingRow />
@@ -340,75 +356,139 @@ const QueuedItemRow = ({
   }
 
   return (
-    <TableRow className={`${isDeleted ? classes.deletedRow : ''}`}>
-      <TableCell>
-        {queuedItem.sourceurl}{' '}
-        <a
-          href={queuedItem.sourceurl}
-          target="_blank"
-          rel="noopener noreferrer">
-          <LaunchIcon />
-        </a>
-      </TableCell>
-      <TableCell>
-        <QueuedStatus queuedItem={queuedItem} />
-        {queuedItem.status === AssetSyncStatus.Success ? (
-          <>
-            <br />
-            {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
-              <MissingFields queuedItem={queuedItem} />
-            ) : null}
-            <Button
-              url={routes.viewAssetWithVar.replace(
-                ':assetId',
-                queuedItem.createdassetid
-              )}
-              size="small"
-              color="secondary">
-              View Asset
-            </Button>
-          </>
-        ) : null}
-        {lastSubscribeErrorCode !== null ? (
-          <ErrorMessage>
-            Failed to subscribe: {lastSubscribeErrorCode}
-          </ErrorMessage>
-        ) : null}
-        {showMoreInfo && queuedItem.createdbyusername ? (
-          <>
-            <br />
-            Queued by{' '}
-            <UsernameLink
-              username={
-                (queuedItem as FullAssetSyncQueueItem).createdbyusername
-              }
-              id={queuedItem.createdby}
-            />{' '}
-            <FormattedDate date={queuedItem.createdat} />
-          </>
-        ) : null}
-      </TableCell>
-      <TableCell>
-        <DeleteButton
-          queuedItem={queuedItem}
-          isBusy={isBusy}
-          onDelete={onDelete}
+    <>
+      {/* {isQuickEditOpen ? (
+        <QuickEditor
+          onClose={() => {
+            setIsQuickEditOpen(false)
+            hydrateAsset()
+          }}
+          assetId={queuedItem.createdassetid}
         />
-        {showMoreInfo && (
-          <>
-            {' '}
-            <Button onClick={onRetry} color="tertiary">
-              (Admin Only) Retry
-            </Button>
-          </>
-        )}
-      </TableCell>
-    </TableRow>
+      ) : null} */}
+      <TableRow className={`${isDeleted ? classes.deletedRow : ''}`}>
+        <TableCell>
+          <strong>{queuedItem.sourceurl}</strong>{' '}
+          <a
+            href={queuedItem.sourceurl}
+            target="_blank"
+            rel="noopener noreferrer">
+            <LaunchIcon />
+          </a>
+          {asset ? (
+            <>
+              <br />
+              <br />
+              <AssetResultsItem asset={asset} showMoreInfo />
+            </>
+          ) : null}
+        </TableCell>
+        <TableCell>
+          <QueuedStatus queuedItem={queuedItem} />
+          {queuedItem.status === AssetSyncStatus.Success ? (
+            <>
+              <br />
+              {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
+                <MissingFields queuedItem={queuedItem} />
+              ) : null}
+              {/* <Button
+                onClick={onClickQuickEdit}
+                icon={<EditIcon />}
+                size="small"
+                color="secondary">
+                Quick Edit
+              </Button>{' '} */}
+              <Button
+                url={routes.viewAssetWithVar.replace(
+                  ':assetId',
+                  queuedItem.createdassetid
+                )}
+                size="small"
+                color="secondary">
+                Go To Asset Editor
+              </Button>
+            </>
+          ) : null}
+          {lastSubscribeErrorCode !== null ? (
+            <ErrorMessage>
+              Failed to subscribe: {lastSubscribeErrorCode}
+            </ErrorMessage>
+          ) : null}
+          {showMoreInfo && queuedItem.createdbyusername ? (
+            <>
+              <br />
+              Queued by{' '}
+              <UsernameLink
+                username={
+                  (queuedItem as FullAssetSyncQueueItem).createdbyusername
+                }
+                id={queuedItem.createdby}
+              />{' '}
+              <FormattedDate date={queuedItem.createdat} />
+            </>
+          ) : null}
+        </TableCell>
+        <TableCell>
+          <DeleteButton
+            queuedItem={queuedItem}
+            isBusy={isBusy}
+            onDelete={onDelete}
+          />
+          {showMoreInfo && (
+            <>
+              {' '}
+              <Button onClick={onRetry} color="tertiary">
+                (Admin Only) Retry
+              </Button>
+            </>
+          )}
+        </TableCell>
+      </TableRow>
+    </>
   )
 }
 
 const oneWeekAgo = new Date()
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+
+const BulkEditor = ({ onAdd }: { onAdd: (urls: string[]) => void }) => {
+  const [textVal, setTextVal] = useState('')
+
+  const onClickDone = () => {
+    if (!textVal) {
+      console.warn('no text val')
+      return
+    }
+
+    const urls = textVal
+      .split('\n')
+      .filter((line) => line)
+      .map((line) => line.trim())
+
+    if (!urls.length) {
+      console.warn('no URLs')
+      return
+    }
+
+    onAdd(urls)
+  }
+
+  return (
+    <>
+      <TextInput
+        fullWidth
+        minRows={20}
+        value={textVal}
+        onChange={(e) => setTextVal(e.target.value)}
+        placeholder={`Paste a list of product URLs here eg.\nhttps://reval.gumroad.com/l/furpaw\nhttps://jinxxy.com/LegacyTwoTails/Astrawolf\nhttps://tzapfronpresents.itch.io/furry-dog`}
+      />{' '}
+      <br />
+      <Button onClick={() => onClickDone()} icon={<CheckIcon />}>
+        Bulk Add
+      </Button>
+    </>
+  )
+}
 
 const AssetSyncQueue = ({
   items,
@@ -428,6 +508,10 @@ const AssetSyncQueue = ({
     useDataStoreCreateBulk<AssetSyncQueueItem>(CollectionNames.AssetSyncQueue, {
       queryName: 'add-asset-sync-queue-items',
     })
+  const [isBulkEditorVisible, setIsBulkEditorVisible] = useState(false)
+
+  const toggleBulkAdd = () =>
+    setIsBulkEditorVisible((currentVal) => !currentVal)
 
   const updateSourceUrl = (index: number, newUrl: string) =>
     setSourceUrls((currentUrls) =>
@@ -494,6 +578,10 @@ const AssetSyncQueue = ({
 
   const isBusy: boolean = isCreating || (isLoading ? isLoading : false)
 
+  const onBulkAdd = (urls: string[]) => {
+    setSourceUrls((currentUrls) => currentUrls.concat(urls))
+  }
+
   return (
     <>
       <Table>
@@ -540,17 +628,17 @@ const AssetSyncQueue = ({
                 </TableCell>
                 <TableCell>
                   {getCanSync(newSourceUrl) ? (
-                    <>
+                    <StatusText positivity={1}>
                       <CheckIcon /> Can Be Synced
                       <br />
                       {cleanupSourceUrl(newSourceUrl)}
-                    </>
+                    </StatusText>
                   ) : newSourceUrl ? (
                     <>
                       <Tooltip title="Only Gumroad, Booth and Itch.io URLs can be synced">
-                        <span>
+                        <StatusText positivity={-1}>
                           <ClearIcon /> Cannot Be Synced
-                        </span>
+                        </StatusText>
                       </Tooltip>
                       <br />
                       <Button
@@ -558,7 +646,7 @@ const AssetSyncQueue = ({
                         icon={<EditIcon />}
                         size="small"
                         color="secondary">
-                        Create Manually
+                        Create Asset Manually (redirects)
                       </Button>
                     </>
                   ) : null}
@@ -577,7 +665,9 @@ const AssetSyncQueue = ({
             )
           })}
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell>
+              {isBulkEditorVisible ? <BulkEditor onAdd={onBulkAdd} /> : null}
+            </TableCell>
             <TableCell></TableCell>
             <TableCell>
               <Button
@@ -587,6 +677,9 @@ const AssetSyncQueue = ({
                 color="secondary"
                 switchIconSide>
                 Add Another
+              </Button>{' '}
+              <Button onClick={toggleBulkAdd} color="secondary">
+                Add Bulk
               </Button>
             </TableCell>
           </TableRow>

@@ -22,7 +22,7 @@ import { AVATAR_HEIGHT, AVATAR_WIDTH } from '../../config'
 import { bucketNames } from '../../file-uploading'
 
 import authorEditableFields from '../../editable-fields/authors'
-import { EditableField } from '../../editable-fields'
+import { EditableField, ImageUploadEditableField } from '../../editable-fields'
 import { fieldTypes } from '../../generic-forms'
 import {
   Claim,
@@ -127,8 +127,9 @@ const FormInput = ({
             requiredHeight={AVATAR_HEIGHT}
           />
           <HintText small>
-            {editableField.hint} {editableField.imageUploadProperties?.width}x
-            {editableField.imageUploadProperties?.height}
+            {editableField.hint}{' '}
+            {(editableField as ImageUploadEditableField<any>)?.requiredWidth}x
+            {(editableField as ImageUploadEditableField<any>)?.requiredHeight}
           </HintText>
           <br />
         </>
@@ -179,10 +180,10 @@ const FormInput = ({
 }
 
 const CreateForm = ({
-  onClick,
+  onCreated,
   actionCategory,
 }: {
-  onClick: (authorId: string, authorData: Author) => void
+  onCreated: (authorId: string, authorData: Author) => void
   actionCategory?: string
 }) => {
   const [newFields, setNewFields] = useState<AuthorFields>({
@@ -209,7 +210,6 @@ const CreateForm = ({
     salereason: '',
     saledescription: '',
     saleexpiresat: undefined,
-    promourl: '',
     kofiusername: '',
     payhipusername: '',
   })
@@ -241,7 +241,7 @@ const CreateForm = ({
         })
       }
 
-      onClick(createdAuthor.id, createdAuthor)
+      onCreated(createdAuthor.id, createdAuthor)
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -347,10 +347,10 @@ const ChangeAuthorForm = ({
   actionCategory,
 }: {
   collectionName: string
-  id: string
+  id: string | false
   existingAuthorId?: string | null
   existingAuthorData?: Author | null
-  overrideSave?: (newValue?: string | null) => void
+  overrideSave?: (newAuthorId?: string | null) => void
   onDone?: () => void
   actionCategory?: string
 }) => {
@@ -363,8 +363,10 @@ const ChangeAuthorForm = ({
     clear()
   }
 
-  const onSave = async (newAuthorId: string | null) => {
+  const saveAssetWithAuthorId = async (newAuthorId: string | null) => {
     try {
+      console.debug('author was created, saving asset...', { newAuthorId })
+
       if (overrideSave) {
         overrideSave(newAuthorId)
 
@@ -418,7 +420,12 @@ const ChangeAuthorForm = ({
   }
 
   if (isCreating) {
-    return <CreateForm onClick={onSave} actionCategory={actionCategory} />
+    return (
+      <CreateForm
+        onCreated={saveAssetWithAuthorId}
+        actionCategory={actionCategory}
+      />
+    )
   }
 
   return (
@@ -426,7 +433,7 @@ const ChangeAuthorForm = ({
       <SearchForIdForm
         collectionName={CollectionNames.Authors}
         renderer={SearchResultRenderer}
-        onClickWithIdAndDetails={onSave}
+        onClickWithIdAndDetails={saveAssetWithAuthorId}
       />
       <InfoMessage>Can't find the author? Create it below</InfoMessage>
       <FormControls>

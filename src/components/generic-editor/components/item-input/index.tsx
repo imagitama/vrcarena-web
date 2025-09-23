@@ -1,7 +1,7 @@
 import React from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '../../../select'
-import { ItemProperties } from '../../../../editable-fields'
+import { ItemEditableField } from '../../../../editable-fields'
 import useDataStoreItems from '../../../../hooks/useDataStoreItems'
 import LoadingIndicator from '../../../loading-indicator'
 import ErrorMessage from '../../../error-message'
@@ -16,14 +16,13 @@ interface ItemInputOption {
 export default ({
   onChange,
   value = null,
-  itemProperties,
+  ...props
 }: {
   onChange: (newVal: any) => void
   value: string | null
-  itemProperties: ItemProperties
-}) => {
+} & ItemEditableField<any, any>) => {
   const [isLoading, lastErrorCode, items] = useDataStoreItems<any>(
-    itemProperties.collectionName,
+    props.collectionName,
     undefined,
     { queryName: 'item-input' }
   )
@@ -45,10 +44,10 @@ export default ({
   const options: ItemInputOption[] = items
     .map((item) => ({
       value: item.id,
-      label: itemProperties.fieldAsLabel
-        ? item[itemProperties.fieldAsLabel]
-        : itemProperties.getLabel
-        ? itemProperties.getLabel(item)
+      label: props.fieldAsLabel
+        ? item[props.fieldAsLabel]
+        : props.getLabel
+        ? props.getLabel(item)
         : item.id,
       disabled: false,
     }))

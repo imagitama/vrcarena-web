@@ -222,11 +222,6 @@ const Queue = ({
           ))}
         </div>
         <Button
-          onClick={() => setIsEditing((currentVal) => !currentVal)}
-          icon={<EditIcon />}>
-          Toggle Edit
-        </Button>
-        <Button
           isDisabled={atEnd}
           onClick={onClickNext}
           icon={<ChevronRightIcon />}>

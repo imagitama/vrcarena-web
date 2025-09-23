@@ -3,19 +3,25 @@ import React from 'react'
 export default ({
   onChange,
   value,
-  customProperties: { renderer: Renderer },
-  databaseResult
+  renderer: Renderer,
+  databaseResult,
+  formFields,
 }: {
   value: any
   onChange: (newVal: any) => void
-  customProperties: {
-    renderer: React.ComponentType<{ value: any, databaseResult: any, onChange: (newValue: any) => void }>
-  },
+  renderer: React.ComponentType<{
+    value: any
+    databaseResult: any
+    onChange: (newValue: any) => void
+    formFields: any
+  }>
   databaseResult: any
+  formFields: any
 }) => (
   <Renderer
-    onChange={newValue => onChange(newValue)}
+    onChange={(newValue) => onChange(newValue)}
     value={value}
     databaseResult={databaseResult}
+    formFields={formFields}
   />
 )

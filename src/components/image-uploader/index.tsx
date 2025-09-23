@@ -308,19 +308,21 @@ const getImageInfo = async (file: File): Promise<ImageInfo> => {
   })
 }
 
-export interface ImageUploaderProps {
-  onDone: (urls: string[]) => void
+export interface ImageUploaderConfig {
   bucketName: string
   directoryPath?: string
   generateThumbnail?: boolean
-  onCancel?: () => void
-  // settings
   requiredWidth?: number
   requiredHeight?: number
   allowedMimeTypes?: string[]
   maxSizeBytes?: number
   allowMultiple?: boolean
   allowCropping?: boolean
+}
+
+export interface ImageUploaderProps extends ImageUploaderConfig {
+  onDone: (urls: string[]) => void
+  onCancel?: () => void
   // for sync with gumroad
   preloadImageUrl?: string
   preloadFile?: File

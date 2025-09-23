@@ -32,6 +32,9 @@ import { insertRecord } from '../../data-store'
 import AssetResults from '../../components/asset-results'
 import AssetSyncQueue from '../../components/asset-sync-queue'
 import usePermissions from '../../hooks/usePermissions'
+import Heading from '@/components/heading'
+import Message from '@/components/message'
+import InfoMessage from '@/components/info-message'
 
 const useStyles = makeStyles({
   heading: {
@@ -72,21 +75,9 @@ const ManualCreateView = () => {
   const [isError, setIsError] = useState(false)
   const classes = useStyles()
   const [isLoadingDrafts, lastErrorCodeLoadingDrafts, drafts] = useMyDrafts()
-  const [showRules, setShowRules] = useState(false)
   const { push } = useHistory()
   const supabase = useSupabaseClient()
   const isLoggedIn = useIsLoggedIn()
-
-  useEffect(() => {
-    if (isLoadingDrafts || !drafts) {
-      return
-    }
-
-    if (!drafts.length) {
-      console.debug('No drafts detected, showing rules...')
-      setShowRules(true)
-    }
-  }, [isLoadingDrafts, drafts ? drafts.length : null])
 
   const createDraft = async () => {
     try {
@@ -116,10 +107,6 @@ const ManualCreateView = () => {
     }
   }
 
-  const acceptRules = () => createDraft()
-
-  const onCreateNewDraft = () => setShowRules(true)
-
   if (isLoadingDrafts) {
     return <LoadingIndicator message="Checking for existing drafts..." />
   }
@@ -132,7 +119,7 @@ const ManualCreateView = () => {
     )
   }
 
-  if (drafts && drafts.length && !showRules) {
+  if (drafts && drafts.length) {
     const onClickWithEventAndAsset = (
       e: React.SyntheticEvent,
       asset: FullAsset
@@ -159,7 +146,7 @@ const ManualCreateView = () => {
           <Button
             size="large"
             icon={<ChevronRightIcon />}
-            onClick={() => onCreateNewDraft()}>
+            onClick={() => createDraft()}>
             Create New Draft
           </Button>
         </FormControls>
@@ -179,10 +166,6 @@ const ManualCreateView = () => {
     return <ErrorMessage>Failed to create draft</ErrorMessage>
   }
 
-  if (showRules) {
-    return <RulesForm onAccept={acceptRules} />
-  }
-
   return <>Waiting</>
 }
 
@@ -190,6 +173,7 @@ const oneWeekAgo = new Date()
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
 const View = () => {
+  const [isCreatingManually, setIsCreatingManually] = useState(false)
   const [showRules, setShowRules] = useState(true)
   const [isOldItemsShown, setIsOldItemsShown] = useState(false)
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
@@ -212,28 +196,38 @@ const View = () => {
 
   return (
     <>
-      <AssetSyncQueue
-        items={queuedItems}
-        isLoading={isLoading}
-        lastErrorCode={lastErrorCode}
-        hydrate={hydrate}
-      />
-      <Button
-        onClick={() => setIsOldItemsShown((currentVal) => !currentVal)}
-        size="small"
-        color="secondary"
-        icon={
-          isOldItemsShown ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
-        }>
-        Show Old Queued Assets
-      </Button>
+      {isCreatingManually ? (
+        <ManualCreateView />
+      ) : (
+        <>
+          <Button
+            onClick={() => setIsOldItemsShown((currentVal) => !currentVal)}
+            size="small"
+            color="secondary"
+            icon={
+              isOldItemsShown ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
+            }>
+            Show Old Queued Assets
+          </Button>{' '}
+          <Button
+            onClick={() => setIsCreatingManually(true)}
+            color="secondary"
+            size="small">
+            Create Asset Manually
+          </Button>
+          <AssetSyncQueue
+            items={queuedItems}
+            isLoading={isLoading}
+            lastErrorCode={lastErrorCode}
+            hydrate={hydrate}
+          />
+        </>
+      )}
     </>
   )
 }
 
 export default () => {
-  const [isCreatingManually, setIsCreatingManually] = useState(false)
-
   if (!usePermissions(routes.createAsset)) {
     return <NoPermissionMessage />
   }
@@ -247,27 +241,14 @@ export default () => {
           content="Complete the form, submit it for approval and your asset will be visible on the site."
         />
       </Helmet>
-      {isCreatingManually ? (
-        <ManualCreateView />
-      ) : (
-        <>
-          <ExperimentalMessage title="Asset Queue">
-            This is the new way of syncing assets with Gumroad, Itch.io, Jinxxy
-            and Booth. It now happens <em>in the background</em>, you can add
-            multiple at a time and syncs more fields. NSFW assets on Jinxxy are
-            not supported (they require logging in to view).
-            <br />
-            <br />
-            <Button
-              onClick={() => setIsCreatingManually(true)}
-              color="secondary"
-              size="small">
-              Create Asset Manually
-            </Button>
-          </ExperimentalMessage>
-          <View />
-        </>
-      )}
+      <Heading variant="h1">Create Asset</Heading>
+      <InfoMessage hideId="create-asset-intro">
+        Anyone can add any product from Gumroad, Jinxxy, Booth and Itch.io using
+        the form below (even if you aren't the creator of the product!). If the
+        asset is not on one of those sites (or you must log in to see it like{' '}
+        <em>some</em> Jinxxy products) you can create it manually.
+      </InfoMessage>
+      <View />
     </>
   )
 }

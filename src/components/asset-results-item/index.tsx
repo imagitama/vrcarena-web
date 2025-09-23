@@ -252,6 +252,7 @@ const AssetResultsItem = ({
   // extra
   toggleEditMode = undefined,
   showState = false,
+  showMoreInfo = undefined,
 }: {
   asset?: Asset | PublicAsset | FullAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
@@ -262,10 +263,12 @@ const AssetResultsItem = ({
   controls?: React.FC | null
   toggleEditMode?: () => void
   showState?: boolean
+  showMoreInfo?: boolean
 }) => {
   const classes = useStyles()
   const [, , prefs] = useUserPreferences()
-  const showMoreInfo = prefs && prefs.showmoreinfo
+  const actuallyShowMoreInfo =
+    (prefs && prefs.showmoreinfo) || showMoreInfo === true
 
   return (
     <Card
@@ -357,7 +360,10 @@ const AssetResultsItem = ({
                   </>
                 ) : null}
               </div>
-              {showMoreInfo && asset && 'price' in asset && asset.price ? (
+              {actuallyShowMoreInfo &&
+              asset &&
+              'price' in asset &&
+              asset.price ? (
                 asset.price > 0 || (getIsPublicAsset(asset) && asset.isfree) ? (
                   <Price
                     price={asset.price}

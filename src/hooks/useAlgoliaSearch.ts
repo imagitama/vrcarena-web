@@ -4,7 +4,7 @@ import createAlgoliaSearchClient, {
   SearchIndex,
 } from 'algoliasearch'
 import { Hit } from '@algolia/client-search'
-import { AssetCategory, CoreAssetFields } from '../modules/assets'
+import { AssetCategory } from '../modules/assets'
 
 export const Indexes = {
   Assets: `${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}_ASSETS`,

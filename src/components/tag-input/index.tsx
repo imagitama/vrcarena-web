@@ -216,6 +216,12 @@ const filterSuggestions = (
     }
   })
 
+export interface TagInputSettings {
+  showRecommendedTags?: boolean
+  showChatGptSuggestions?: boolean
+  autoComplete?: boolean
+}
+
 const TagInput = ({
   currentTags = [],
   onChange = undefined,
@@ -230,13 +236,10 @@ const TagInput = ({
   currentTags?: string[]
   onChange?: (newTags: string[]) => void
   onDone?: (newTags: string[]) => void
-  showRecommendedTags?: boolean
-  showChatGptSuggestions?: boolean
+  fullWidth?: boolean
   asset?: Asset
   isDisabled?: boolean
-  fullWidth?: boolean
-  autoComplete?: boolean
-}) => {
+} & TagInputSettings) => {
   const [textInput, setTextInput] = useState('')
   const [newTags, setNewTags] = useState(currentTags || [])
   const classes = useStyles()
