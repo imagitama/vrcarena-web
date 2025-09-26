@@ -166,7 +166,16 @@ const ManualCreateView = () => {
     return <ErrorMessage>Failed to create draft</ErrorMessage>
   }
 
-  return <>Waiting</>
+  return (
+    <>
+      <Button
+        size="large"
+        icon={<ChevronRightIcon />}
+        onClick={() => createDraft()}>
+        Create New Draft
+      </Button>
+    </>
+  )
 }
 
 const oneWeekAgo = new Date()
