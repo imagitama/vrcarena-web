@@ -167,14 +167,14 @@ const ManualCreateView = () => {
   }
 
   return (
-    <>
+    <FormControls>
       <Button
         size="large"
         icon={<ChevronRightIcon />}
         onClick={() => createDraft()}>
         Create New Draft
       </Button>
-    </>
+    </FormControls>
   )
 }
 
