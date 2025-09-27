@@ -89,7 +89,7 @@ import WarningMessage from '../warning-message'
 import { alreadyOver18Key } from '../../config'
 import useStorage from '../../hooks/useStorage'
 import AddToVccButton from '../add-to-vcc-button'
-import { AccessStatus } from '../../modules/common'
+import { AccessStatus, ApprovalStatus } from '../../modules/common'
 import { tagVrcFuryReady } from '../../vrcfury'
 import RequiresVerificationNotice from '../requires-verification-notice'
 import HintText from '../hint-text'
@@ -98,6 +98,9 @@ import useDataStoreFunction from '../../hooks/useDataStoreFunction'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
 import LoadingIndicator from '../loading-indicator'
 import { getHasPermissionForRecord } from '../../permissions'
+import infoMessage from '../info-message'
+import InfoMessage from '../info-message'
+import Tooltip from '../tooltip'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -764,6 +767,16 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             ) : null}
           </div>
           <div className={classes.rightCol}>
+            {asset && asset.approvalstatus === ApprovalStatus.AutoApproved ? (
+              <InfoMessage title="Auto-Approved">
+                <Tooltip title="Our team tries to verify and approve new assets posted to the site but we are volunteers and it is a time consuming task. If an asset is not approved within 48 hours it is automatically visible to everyone and this message is displayed.">
+                  <span>
+                    This asset has not been approved by our editorial team so
+                    may contain unmoderated content.
+                  </span>
+                </Tooltip>
+              </InfoMessage>
+            ) : null}
             {asset && asset.vccurl ? (
               <ControlGroup>
                 <Control>
