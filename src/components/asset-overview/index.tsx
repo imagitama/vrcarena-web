@@ -546,7 +546,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             ) : null}
           </Helmet>
         )}
-        {asset && getIsAssetWaitingForApproval(asset) ? (
+        {asset && getIsAssetWaitingForApproval(asset) && isEditor ? (
           <Suspense
             fallback={<LoadingIndicator message="Loading component..." />}>
             <QueuedAssetInfo asset={asset} hydrate={hydrate} />
