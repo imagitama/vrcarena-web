@@ -36,9 +36,9 @@ const useStyles = makeStyles({
     },
   },
   placeholder: {
-    width: '1980px',
-    height: '1080px',
-    background: 'rgba(255, 255, 255, 0.5)',
+    width: '100%',
+    height: '100%',
+    background: 'rgba(255, 255, 255, 0.1)',
   },
 })
 
@@ -53,7 +53,11 @@ const PrimaryImage = () => {
   const classes = useStyles()
 
   if (!asset || !asset.attachmentsdata) {
-    return <div className={classes.placeholder} />
+    return (
+      <div className={classes.root}>
+        <div className={`${classes.primary} ${classes.placeholder}`} />
+      </div>
+    )
   }
 
   const bestImageAttachment = asset.attachmentsdata.find(
