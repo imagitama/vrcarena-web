@@ -11,7 +11,6 @@ import LinkIcon from '@mui/icons-material/Link'
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew'
 import { Warning as WarningIcon } from '../../icons'
 
-import useBanner from '../../hooks/useBanner'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
 import useIsEditor from '../../hooks/useIsEditor'
 import useUserRecord from '../../hooks/useUserRecord'
@@ -101,6 +100,7 @@ import { getHasPermissionForRecord } from '../../permissions'
 import infoMessage from '../info-message'
 import InfoMessage from '../info-message'
 import Tooltip from '../tooltip'
+import PrimaryImage from './components/primary-image'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -412,25 +412,12 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
 
   const classes = useStyles()
   const [, , user] = useUserRecord()
-  useBanner(asset && asset.bannerurl ? asset.bannerurl : null)
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [bypassAdultFilterOnce, setBypassAdultFilterOnce] = useState(false)
   const [, setIsAlreadyOver18] = useStorage(alreadyOver18Key)
 
   const hideBecauseAdult =
     asset && asset.isadult && !isAdultContentEnabled && !bypassAdultFilterOnce
-
-  const bannerUrl = hideBecauseAdult
-    ? null
-    : asset
-    ? asset.bannerurl
-      ? asset.bannerurl
-      : asset.attachmentsdata && asset.attachmentsdata.length
-      ? asset.attachmentsdata[0].url
-      : null
-    : null
-
-  useBanner(bannerUrl)
 
   const urlToAsset = routes.viewAssetWithVar.replace(
     ':assetId',
@@ -566,34 +553,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
           </Suspense>
         ) : null}
         <Messages />
-        <ImageGallery
-          images={
-            isLoading
-              ? []
-              : mediaAttachments.length
-              ? mediaAttachments.slice(0, 3).map((attachment) => ({
-                  url: attachment.url,
-                }))
-              : [
-                  {
-                    url: asset.thumbnailurl,
-                  },
-                ]
-          }
-          onClickImage={() =>
-            trackAction(
-              analyticsCategoryName,
-              'Click attached image thumbnail to open gallery'
-            )
-          }
-          onMoveNext={() =>
-            trackAction(analyticsCategoryName, 'Click go next image in gallery')
-          }
-          onMovePrev={() =>
-            trackAction(analyticsCategoryName, 'Click go prev image in gallery')
-          }
-          showLoadingCount={isLoading ? 3 : 0}
-        />
+        <PrimaryImage />
         <div className={classes.primaryMetadata}>
           <div className={classes.primaryMetadataThumb}>
             {isLoading ? (
@@ -767,16 +727,6 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
             ) : null}
           </div>
           <div className={classes.rightCol}>
-            {asset && asset.approvalstatus === ApprovalStatus.AutoApproved ? (
-              <InfoMessage title="Auto-Approved">
-                <Tooltip title="Our team tries to verify and approve new assets posted to the site but we are volunteers and it is a time consuming task. If an asset is not approved within 48 hours it is automatically visible to everyone and this message is displayed.">
-                  <span>
-                    This asset has not been approved by our editorial team so
-                    may contain unmoderated content.
-                  </span>
-                </Tooltip>
-              </InfoMessage>
-            ) : null}
             {asset && asset.vccurl ? (
               <ControlGroup>
                 <Control>
@@ -868,6 +818,16 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     )}
                 </Control>
               </ControlGroup>
+            ) : null}
+            {asset && asset.approvalstatus === ApprovalStatus.AutoApproved ? (
+              <InfoMessage title="">
+                <Tooltip title="Our team tries to verify and approve new assets posted to the site but we are volunteers and it is a time consuming task. If an asset is not approved within 48 hours it is automatically visible to everyone and this message is displayed.">
+                  <span>
+                    This asset has not been approved by our editorial team so
+                    may contain unmoderated content.
+                  </span>
+                </Tooltip>
+              </InfoMessage>
             ) : null}
             <FeatureList
               tags={asset ? asset.tags : []}

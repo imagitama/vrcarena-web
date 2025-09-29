@@ -179,12 +179,14 @@ export interface ImageDetails {
 }
 
 const ImageGallery = ({
+  startSelected,
   images,
   onClickImage,
   onMoveNext,
   onMovePrev,
   showLoadingCount,
 }: {
+  startSelected?: boolean
   images?: ImageDetails[]
   onClickImage?: (image: ImageDetails) => void
   onMoveNext?: () => void
@@ -194,7 +196,7 @@ const ImageGallery = ({
   const classes = useStyles()
   const isMobile = useMediaQuery({ query: queryForMobiles })
   const [selectedIdx, setSelectedIdx] = useState<null | number>(
-    isMobile ? 0 : null
+    isMobile || startSelected ? 0 : null
   )
 
   return (

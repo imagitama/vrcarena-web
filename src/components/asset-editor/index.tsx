@@ -1018,24 +1018,6 @@ const Editor = () => {
                     }
                   />
                 ) : null}
-                <FormEditorArea
-                  fieldName="bannerurl"
-                  title="Banner"
-                  description="A wide and short image displayed behind the header to make your asset look pretty."
-                  icon={<PanoramaIcon />}
-                  display={BannerDisplay}
-                  editor={
-                    <AssetBannerEditor
-                      assetId={assetId || null}
-                      assetIdForBucket={originalAssetId}
-                      overrideSave={
-                        onFieldChanged
-                          ? (url) => onFieldChanged('bannerurl', url)
-                          : undefined
-                      }
-                    />
-                  }
-                />
               </>
             ),
           },

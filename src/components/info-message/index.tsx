@@ -16,7 +16,7 @@ export default ({
   <Message
     {...messageProps}
     icon={<InfoIcon />}
-    title={title || children}
+    title={title !== undefined ? title : children}
     controls={
       onOkay ? (
         <Button onClick={onOkay} icon={<CheckIcon />} color="secondary">
@@ -24,6 +24,6 @@ export default ({
         </Button>
       ) : undefined
     }>
-    {title ? children : null}
+    {title !== undefined ? children : null}
   </Message>
 )

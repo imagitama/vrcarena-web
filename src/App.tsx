@@ -848,7 +848,6 @@ export default () => {
   return (
     <ErrorBoundary>
       <CssBaseline />
-      <Banner />
       <PageHeader />
       <main className="main">
         <div className={classes.mainContainer}>
