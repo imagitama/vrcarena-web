@@ -30,10 +30,22 @@ export default <TResult extends Record<string, unknown>>(
   )
   const isUnmountedRef = useRef(false)
   const supabase = useSupabaseClient()
+  const lastIdRef = useRef<string | false>(id)
 
   const doIt = async () => {
     try {
       if (!collectionName || !id) {
+        if (lastIdRef.current !== id) {
+          console.debug(
+            `useDataStoreItem :: ${
+              options.queryName || 'unnamed'
+            } :: ID changed to nothing - resetting`
+          )
+          setResult(null)
+          lastIdRef.current = id
+          return
+        }
+
         console.debug(
           `useDataStoreItem :: ${
             options.queryName || 'unnamed'
@@ -47,6 +59,8 @@ export default <TResult extends Record<string, unknown>>(
           options.queryName || 'unnamed'
         } :: running getQuery`
       )
+
+      lastIdRef.current = id
 
       setIsLoading(true)
       setLastErrorCode(null)

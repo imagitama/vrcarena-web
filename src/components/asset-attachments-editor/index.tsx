@@ -19,7 +19,7 @@ const AssetAttachmentsEditor = ({
   onDone,
   actionCategory,
 }: {
-  assetId: string
+  assetId: string // needed to set parent
   ids: string[]
   attachmentsData: Attachment[]
   overrideSave?: (
@@ -30,7 +30,9 @@ const AssetAttachmentsEditor = ({
   actionCategory?: string
 }) => {
   const [isSaving, isSaveSuccess, lastErrorCode, save] =
-    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId)
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId, {
+      queryName: 'asset-attachments-editor',
+    })
 
   const onSave = async (newIds: string[], newDatas: Attachment[]) => {
     try {
@@ -90,7 +92,7 @@ const AssetAttachmentsEditor = ({
       parentId={assetId}
       ids={ids}
       attachmentsData={attachmentsData}
-      onDone={onSave}
+      onSave={onSave}
     />
   )
 }

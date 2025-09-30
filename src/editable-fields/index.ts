@@ -26,20 +26,21 @@ export interface EditableFieldBase<TRecord, TFieldData = undefined> {
   type: fieldTypes
   name: keyof TRecord
   label?: string // optional for hidden fields
-  alwaysShowLabel?: boolean // override for hidden checkbox label
   default?: any
   hint?: string
-  // imageUploadProperties?: ImageUploadProperties<TRecord>
-  // searchableProperties?: SearchableProperties
-  // customProperties?: CustomProperties<TRecord, TFieldData>
-  // itemProperties?: ItemProperties
   isRequired?: boolean
-  options?: Option[]
   isEditable?: boolean
   length?: number
   multiline?: true
   section?: string
   allowEmpty?: boolean // if boolean column can be "empty" or undefined
+}
+
+export interface SelectEditableField<TRecord>
+  extends ImageUploaderConfig,
+    EditableFieldBase<TRecord> {
+  type: fieldTypes.singlechoice | fieldTypes.multichoice | fieldTypes.dropdown
+  options: Option[]
 }
 
 export interface ImageUploadEditableField<TRecord>
@@ -79,6 +80,7 @@ export interface ItemEditableField<TRecord, TFieldData>
 export interface CheckboxEditableField<TRecord, TFieldData>
   extends EditableFieldBase<TRecord, TFieldData> {
   type: fieldTypes.checkbox
+  checkboxLabel?: string
 }
 
 export interface UrlEditableField<TRecord, TFieldData>
@@ -92,6 +94,13 @@ export interface TagEditableField<TRecord, TFieldData>
   type: fieldTypes.tags
 }
 
+export interface MarkdownEditableField<TRecord, TFieldData>
+  extends TagInputSettings,
+    EditableFieldBase<TRecord, TFieldData> {
+  type: fieldTypes.textMarkdown
+  allowImages?: boolean
+}
+
 export type EditableField<TRecord, TFieldData = undefined> =
   | CheckboxEditableField<TRecord, TFieldData>
   | ImageUploadEditableField<TRecord>
@@ -100,6 +109,8 @@ export type EditableField<TRecord, TFieldData = undefined> =
   | ItemEditableField<TRecord, TFieldData>
   | UrlEditableField<TRecord, TFieldData>
   | TagEditableField<TRecord, TFieldData>
+  | SelectEditableField<TRecord>
+  | MarkdownEditableField<TRecord, TFieldData>
   | EditableFieldBase<TRecord, TFieldData>
 
 // @ts-ignore

@@ -67,7 +67,7 @@ export const importantTags = {
   free: 'free',
 }
 
-export const nsfwRules = `"NSFW" means Not Safe For Work. In general it means anything that your boss wouldn't want you to look at while at work. This includes:
+export const nsfwRules = `"Adult" means NSFW (Not Safe For Work). In general it means anything that your boss wouldn't want you to look at while at work. This includes:
 
 - sexual acts
 - sex toys
@@ -77,7 +77,7 @@ export const nsfwRules = `"NSFW" means Not Safe For Work. In general it means an
 - suggestive poses (where focus is on the genital area or butt or some sexual act)
 - gore (some realistic blood is OK)
 
-**You must enable "NSFW" for any asset that has the above.**`
+**You must toggle adult "on" for any asset that has the above.**`
 
 export const adultSearchTerms = [
   // general
@@ -113,6 +113,9 @@ export const colorPalette = {
   positive: 'rgb(200, 255, 200)',
   negative: 'rgb(255, 200, 200)',
   warning: 'rgb(255, 255, 200)',
+  // TODO: move to a themes thing
+  selectedBg: 'rgb(50, 50, 0)',
+  selectedBoxShadow: '0 0 0 2px rgb(100, 100, 0)',
 }
 
 export const vrcFuryOrange = '#e90'

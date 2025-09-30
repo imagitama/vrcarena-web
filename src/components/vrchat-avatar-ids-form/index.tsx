@@ -10,10 +10,16 @@ import { trackAction } from '../../analytics'
 import FormControls from '../form-controls'
 import Button from '../button'
 import GetVrchatAvatarDetails from '../get-vrchat-avatar-details'
-import { Asset, CollectionNames } from '../../modules/assets'
+import { Asset, AssetFields, CollectionNames } from '../../modules/assets'
 import ErrorMessage from '../error-message'
 import SuccessMessage from '../success-message'
 import LoadingIndicator from '../loading-indicator'
+import {
+  AssetEditorProps,
+  ControlledEditorProps,
+  UncontrolledEditorProps,
+} from '@/generic-forms'
+import NoResultsMessage from '../no-results-message'
 
 const analyticsCategoryName = 'ViewAssetEditor'
 
@@ -49,29 +55,25 @@ const useStyles = makeStyles({
   avatarOutput: {
     padding: '0.5rem',
   },
-  form: {
-    padding: '1rem',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-  },
 })
 
-export default ({
+type VrchatClonableAvatarIds = AssetFields['vrchatclonableavatarids']
+
+const VrchatAvatarIdsForm = ({
   assetId,
-  avatarIds = [],
+  overrideSave,
   onDone,
-  overrideSave = undefined,
-}: {
-  assetId: string | null
-  avatarIds?: string[]
-  onDone?: () => void
-  overrideSave?: (newIds: string[]) => void
-}) => {
+  ...props
+}: AssetEditorProps<VrchatClonableAvatarIds>) => {
   const userId = useUserId()
   const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
     assetId || false
   )
-  const [newAvatarIds, setNewAvatarIds] = useState<string[]>(avatarIds || [])
+  const [newAvatarIds, setNewAvatarIds] = useState<VrchatClonableAvatarIds>(
+    (props as UncontrolledEditorProps<VrchatClonableAvatarIds>).initialValue ||
+      []
+  )
   const classes = useStyles()
 
   if (!userId) {
@@ -96,6 +98,7 @@ export default ({
     try {
       if (overrideSave) {
         overrideSave(newAvatarIds)
+
         if (onDone) {
           onDone()
         }
@@ -130,14 +133,12 @@ export default ({
 
   return (
     <div className={classes.root}>
-      <div className={classes.form}>
-        <GetVrchatAvatarDetails
-          onDone={(avatarId, avatarData, restart) => {
-            addAvatarId(avatarId)
-            restart()
-          }}
-        />
-      </div>
+      <GetVrchatAvatarDetails
+        onDone={(avatarId, avatarData, restart) => {
+          addAvatarId(avatarId)
+          restart()
+        }}
+      />
       {newAvatarIds.length ? (
         <div className={classes.results}>
           {newAvatarIds.map((avatarId) => (
@@ -153,13 +154,18 @@ export default ({
           ))}
         </div>
       ) : (
-        <div className={classes.message}>No avatar IDs have been set yet</div>
+        <NoResultsMessage>No avatar IDs have been set yet</NoResultsMessage>
       )}
-      <FormControls>
-        <Button onClick={onSaveBtnClick} icon={<SaveIcon />}>
-          Save
-        </Button>
-      </FormControls>
+      {(props as ControlledEditorProps<VrchatClonableAvatarIds>)
+        .onChange ? null : (
+        <FormControls>
+          <Button onClick={onSaveBtnClick} icon={<SaveIcon />}>
+            Save
+          </Button>
+        </FormControls>
+      )}
     </div>
   )
 }
+
+export default VrchatAvatarIdsForm

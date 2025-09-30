@@ -10,12 +10,13 @@ const PriceInput = ({
   value,
   priceCurrency,
   onChange,
+  allowClear = true,
 }: {
   value: number | null
   priceCurrency?: PopularCurrency | null
   onChange: (newUserPrice: number | null) => void
+  allowClear?: boolean
 }) => {
-  console.log('VALUE', { value })
   const [userInput, setUserInput] = useState(value !== null ? value : '')
   return (
     <TextInput
@@ -40,15 +41,17 @@ const PriceInput = ({
         }
       }}
       button={
-        <Button
-          onClick={() => {
-            onChange(null)
-            setUserInput('')
-          }}
-          color="secondary"
-          icon={<ClearIcon />}>
-          Clear
-        </Button>
+        allowClear ? (
+          <Button
+            onClick={() => {
+              onChange(null)
+              setUserInput('')
+            }}
+            color="secondary"
+            icon={<ClearIcon />}>
+            Clear
+          </Button>
+        ) : undefined
       }
     />
   )

@@ -8,6 +8,7 @@ import { VRCArenaTheme } from '../../themes'
 import Tooltip from '../tooltip'
 import LoadingShimmer from '../loading-shimmer'
 import { getRandomInt } from '../../utils'
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
@@ -31,8 +32,8 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     },
   },
   selected: {
-    backgroundColor: 'rgb(50, 50, 0) !important',
-    boxShadow: '0 0 0 2px rgb(100, 100, 0)',
+    backgroundColor: colorPalette.selectedBg,
+    boxShadow: colorPalette.selectedBoxShadow,
   },
   selectedByParent: {
     backgroundColor: 'rgb(50, 50, 0) !important',

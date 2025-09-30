@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import MaterialTabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
+import MaterialTab from '@mui/material/Tab'
 import { makeStyles } from '@mui/styles'
 import LazyLoad from 'react-lazyload'
 import { useParams } from 'react-router'
@@ -172,7 +172,7 @@ const Tabs = ({
               }}
               className={classes.tabs}>
               {enabledItems.map(({ name, label }, index) => (
-                <Tab
+                <MaterialTab
                   key={name}
                   label={label}
                   classes={{ selected: classes.selected }}

@@ -1,7 +1,7 @@
 import categoryMetas from '@/category-meta'
 import { EditableField } from '.'
 import { fieldTypes } from '../generic-forms'
-import { Asset, AssetCategory } from '../modules/assets'
+import { Asset, AssetCategory, CollectionNames } from '../modules/assets'
 import {
   BANNER_HEIGHT,
   BANNER_WIDTH,
@@ -18,97 +18,28 @@ import ChangeSpeciesEditor from '@/components/change-species-editor'
 import ChangeAuthorForm from '@/components/change-author-form'
 import ExtraSourcesEditor from '@/components/extra-sources-editor'
 import RelationsEditor from '@/components/relations-editor'
+import ChangeDiscordServerForm from '@/components/change-discord-server-form'
+import VrchatAvatarIdsForm from '@/components/vrchat-avatar-ids-form'
+import AttachmentsForm from '@/components/attachments-form'
+import { AttachmentReason } from '@/modules/attachments'
 
 const fields: EditableField<Asset>[] = [
   {
-    name: 'sourceurl',
-    label: 'Source URL',
-    type: fieldTypes.url,
-  },
-  {
-    name: 'extrasources',
-    label: 'Extra Sources',
-    type: fieldTypes.custom,
-    renderer: ({ value, onChange }) => (
-      <ExtraSourcesEditor
-        assetId={null}
-        extraSources={value as any}
-        onChange={(newSources) => onChange(newSources as any)}
-      />
-    ),
-  },
-  {
     name: 'category',
     label: 'Category',
-    type: fieldTypes.dropdown,
+    type: fieldTypes.singlechoice,
     options: Object.values(AssetCategory).map((category) => ({
       value: category,
       label: categoryMetas[category].nameSingular,
     })),
+    isRequired: true,
   },
   {
-    name: 'title',
-    label: 'Title',
-    type: fieldTypes.text,
-  },
-  {
-    name: 'thumbnailurl',
-    label: 'Thumbnail URL',
-    type: fieldTypes.imageUpload,
-    requiredWidth: THUMBNAIL_WIDTH,
-    requiredHeight: THUMBNAIL_HEIGHT,
-    bucketName: bucketNames.assetThumbnails,
-    getDirectoryPath: (fields) => fields.id,
-    maxSizeBytes: NONATTACHMENT_MAX_SIZE_BYTES,
-  },
-  {
-    name: 'bannerurl',
-    label: 'Banner URL',
-    type: fieldTypes.imageUpload,
-    requiredWidth: BANNER_WIDTH,
-    requiredHeight: BANNER_HEIGHT,
-    getDirectoryPath: (fields) => fields.id,
-    bucketName: bucketNames.assetBanners,
-    maxSizeBytes: NONATTACHMENT_MAX_SIZE_BYTES,
-  },
-  {
-    name: 'author',
-    label: 'Author',
-    type: fieldTypes.custom,
-    renderer: ({ value, onChange }: any) => (
-      <ChangeAuthorForm
-        collectionName="abc" // TODO: ignore this
-        id={false}
-        existingAuthorId={value}
-        overrideSave={onChange}
-      />
-    ),
-  },
-  // TODO: work out a better way to edit this in mini editor
-  // {
-  //   name: 'description',
-  //   label: 'Description',
-  //   type: fieldTypes.textMarkdown,
-  // },
-  {
-    name: 'species',
-    label: 'Species',
-    type: fieldTypes.custom,
-    renderer: ({ value, onChange }) => (
-      <ChangeSpeciesEditor
-        assetId={null}
-        activeSpeciesIds={value || []}
-        showControls={false}
-        onChange={(newIds) => onChange(newIds as any)} // TODO: fix up types
-      />
-    ),
-  },
-  {
-    name: 'isadult',
-    label: 'Is Adult',
-    alwaysShowLabel: true,
-    type: fieldTypes.checkbox,
-    hint: nsfwRules,
+    name: 'sourceurl',
+    label: 'Main Source URL',
+    type: fieldTypes.url,
+    hint: 'The recommended source of the asset.',
+    isRequired: true,
   },
   {
     name: 'pricecurrency',
@@ -134,10 +65,95 @@ const fields: EditableField<Asset>[] = [
     ),
   },
   {
+    name: 'extrasources',
+    label: 'Extra Sources',
+    type: fieldTypes.custom,
+    renderer: ({ value, onChange }) => (
+      <ExtraSourcesEditor
+        assetId={null}
+        extraSources={value as any}
+        onChange={(newSources) => onChange(newSources as any)}
+      />
+    ),
+  },
+  {
+    name: 'title',
+    label: 'Title',
+    type: fieldTypes.text,
+    isRequired: true,
+    hint: 'A short, descriptive name of the asset. Avoid any redundancy like the words "avatar" or "accessory".',
+  },
+  {
+    name: 'thumbnailurl',
+    label: 'Thumbnail URL',
+    type: fieldTypes.imageUpload,
+    requiredWidth: THUMBNAIL_WIDTH,
+    requiredHeight: THUMBNAIL_HEIGHT,
+    bucketName: bucketNames.assetThumbnails,
+    getDirectoryPath: (fields) => fields.id,
+    maxSizeBytes: NONATTACHMENT_MAX_SIZE_BYTES,
+    isRequired: true,
+    hint: 'A static square image used anywhere the asset is displayed on the site.',
+  },
+  // disabled sep 2025 for bandwidth
+  // {
+  //   name: 'bannerurl',
+  //   label: 'Banner URL',
+  //   type: fieldTypes.imageUpload,
+  //   requiredWidth: BANNER_WIDTH,
+  //   requiredHeight: BANNER_HEIGHT,
+  //   getDirectoryPath: (fields) => fields.id,
+  //   bucketName: bucketNames.assetBanners,
+  //   maxSizeBytes: NONATTACHMENT_MAX_SIZE_BYTES,
+  // },
+  {
+    name: 'author',
+    label: 'Author',
+    type: fieldTypes.custom,
+    renderer: ({ value, onChange, formFields }) => (
+      <ChangeAuthorForm
+        id={null}
+        existingAuthorId={value}
+        overrideSave={onChange as any}
+      />
+    ),
+    isRequired: true,
+    hint: 'Who actually created the asset. Authors are separate to the person who submits the asset.',
+  },
+  {
+    name: 'description',
+    label: 'Description',
+    type: fieldTypes.textMarkdown,
+    isRequired: true,
+    allowImages: false,
+  },
+  {
+    name: 'species',
+    label: 'Species',
+    type: fieldTypes.custom,
+    renderer: ({ value, onChange }) => (
+      <ChangeSpeciesEditor
+        assetId={null}
+        activeSpeciesIds={value || []}
+        showControls={false}
+        onChange={(newIds) => onChange(newIds as any)} // TODO: fix up types
+        startCollapsed
+      />
+    ),
+  },
+  {
+    name: 'isadult',
+    label: 'Adult Toggle',
+    checkboxLabel: 'Is adult',
+    type: fieldTypes.checkbox,
+    hint: nsfwRules,
+  },
+  {
     name: 'tags',
     label: 'Tags',
     type: fieldTypes.tags,
     showRecommendedTags: true,
+    showChatGptSuggestions: true,
   },
   {
     name: 'relations',
@@ -146,10 +162,71 @@ const fields: EditableField<Asset>[] = [
     renderer: ({ value, onChange }) => (
       <RelationsEditor
         assetId={null}
-        currentRelations={value}
+        currentRelations={value || []}
         onChange={(newRelations) => onChange(newRelations as any)} // TODO: fix up types
       />
     ),
+  },
+  {
+    name: 'attachmentids',
+    label: 'Attachments',
+    type: fieldTypes.custom,
+    renderer: ({ value, onChange, formFields }) => (
+      <AttachmentsForm
+        parentTable={CollectionNames.Assets}
+        parentId={formFields.id} // TODO: support creating without ID
+        reason={AttachmentReason.AssetFile}
+        ids={(value as any) || []}
+        attachmentsData={formFields.attachmentsdata}
+        onChange={(newAttachmentIds) => onChange(newAttachmentIds as any)} // TODO: fix up types
+      />
+    ),
+    hint: 'Images to help promote the asset. The first image is the most important and will always be shown to users.',
+  },
+  {
+    name: 'discordserver',
+    label: 'Required Discord Server',
+    type: fieldTypes.custom,
+    renderer: ({ value, onChange }) => (
+      <ChangeDiscordServerForm
+        assetId={null}
+        initialValue={value || null}
+        overrideSave={(newId) => onChange(newId as any)}
+      />
+    ),
+  },
+  {
+    name: 'vrchatclonableavatarids',
+    label: 'VRChat Avatar IDs',
+    type: fieldTypes.custom,
+    renderer: ({ value, onChange }) => (
+      <VrchatAvatarIdsForm
+        assetId={null}
+        initialValue={value || []}
+        onChange={onChange as any}
+      />
+    ),
+    hint: `A list of VRChat avatars the user can "try before they buy".`,
+  },
+  {
+    name: 'sketchfabembedurl',
+    label: 'Sketchfab Embed URL',
+    type: fieldTypes.url,
+    hint: `1. View your Sketchfab model and above the Triangles and Vertices count click the Embed button
+2. Check any options you want for your embed
+3. Select "iframe" as the format and copy the HTML code
+4. In a text editor find the URL of the iframe (the "src" attribute) and copy it here`,
+  },
+  {
+    name: 'vccurl',
+    label: 'VRChat Creator Companion URL',
+    type: fieldTypes.url,
+    hint: `Set to either a JSON file or a Git repo URL:
+
+- https://vrchat-community.github.io/template-package/index.json
+- https://github.com/vrchat-community/template-package.git
+
+If the URL has no extension it is considered a Git repo.`,
   },
 ]
 

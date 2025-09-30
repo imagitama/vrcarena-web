@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
+import ClearIcon from '@mui/icons-material/Clear'
 
 import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import { handleError } from '../../error-handling'
@@ -22,7 +23,11 @@ import { AVATAR_HEIGHT, AVATAR_WIDTH } from '../../config'
 import { bucketNames } from '../../file-uploading'
 
 import authorEditableFields from '../../editable-fields/authors'
-import { EditableField, ImageUploadEditableField } from '../../editable-fields'
+import {
+  EditableField,
+  ImageUploadEditableField,
+  SelectEditableField,
+} from '../../editable-fields'
 import { fieldTypes } from '../../generic-forms'
 import {
   Claim,
@@ -33,6 +38,8 @@ import FormFieldLabel from '../form-field-label'
 import HintText from '../hint-text'
 import ImageUploaderWithPreview from '../image-uploader-with-preview'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import NoResultsMessage from '../no-results-message'
 
 const fieldsBySectionName = authorEditableFields.reduce<{
   [sectionName: string]: EditableField<Author>[]
@@ -151,20 +158,22 @@ const FormInput = ({
         <>
           <FormFieldLabel>{editableField.label}</FormFieldLabel>
           <br />
-          {editableField.options?.map((option) => (
-            <CheckboxInput
-              key={option.value}
-              label={option.label}
-              value={currentValue.includes(option.value!)}
-              onChange={(newVal) =>
-                onChange(
-                  currentValue.includes(option.value!)
-                    ? currentValue.filter((item) => item !== option.value!)
-                    : currentValue.concat(option.value!)
-                )
-              }
-            />
-          ))}
+          {(editableField as SelectEditableField<any>).options?.map(
+            (option) => (
+              <CheckboxInput
+                key={option.value}
+                label={option.label}
+                value={currentValue.includes(option.value!)}
+                onChange={(newVal) =>
+                  onChange(
+                    currentValue.includes(option.value!)
+                      ? currentValue.filter((item) => item !== option.value!)
+                      : currentValue.concat(option.value!)
+                  )
+                }
+              />
+            )
+          )}
           <br />
           <HintText small>{editableField.hint}</HintText>
           <br />
@@ -342,30 +351,38 @@ const CreateForm = ({
 const ChangeAuthorForm = ({
   collectionName,
   id,
+  existingAuthorId,
+  // existingAuthorData,
   overrideSave,
   onDone,
   actionCategory,
 }: {
-  collectionName: string
-  id: string | false
+  collectionName?: string
+  id: string | null
   existingAuthorId?: string | null
-  existingAuthorData?: Author | null
+  // existingAuthorData?: Author | null
   overrideSave?: (newAuthorId?: string | null) => void
   onDone?: () => void
   actionCategory?: string
 }) => {
   const [isSaving, isSuccess, lastErrorCode, save, clear] =
-    useDataStoreEdit<Asset>(collectionName, id)
+    useDataStoreEdit<Asset>(collectionName || '', id !== null ? id : false)
   const [isCreating, setIsCreating] = useState(false)
+  const [isLoading, lastErrorCodeLoading, existingAuthor] =
+    useDataStoreItem<Author>(CollectionNames.Authors, existingAuthorId || false)
 
   const restart = () => {
     setIsCreating(false)
     clear()
   }
 
-  const saveAssetWithAuthorId = async (newAuthorId: string | null) => {
+  const onAuthorObtained = async (
+    newAuthorId: string | null,
+    author?: Author
+  ) => {
     try {
-      console.debug('author was created, saving asset...', { newAuthorId })
+      // TODO: do this here? after delay?
+      setIsCreating(false)
 
       if (overrideSave) {
         overrideSave(newAuthorId)
@@ -385,7 +402,7 @@ const ChangeAuthorForm = ({
       }
 
       await save({
-        author: newAuthorId || undefined,
+        author: newAuthorId || null,
       })
 
       if (onDone) {
@@ -396,6 +413,8 @@ const ChangeAuthorForm = ({
       handleError(err)
     }
   }
+
+  const onClickClear = () => onAuthorObtained(null)
 
   const create = () => setIsCreating(true)
 
@@ -422,7 +441,7 @@ const ChangeAuthorForm = ({
   if (isCreating) {
     return (
       <CreateForm
-        onCreated={saveAssetWithAuthorId}
+        onCreated={onAuthorObtained}
         actionCategory={actionCategory}
       />
     )
@@ -430,12 +449,32 @@ const ChangeAuthorForm = ({
 
   return (
     <>
+      {existingAuthorId ? (
+        <div>
+          <strong>Selected author:</strong>
+          {isLoading ? (
+            <>Loading author...</>
+          ) : lastErrorCodeLoading !== null ? (
+            <ErrorMessage>
+              Failed to load author (code {lastErrorCodeLoading})
+            </ErrorMessage>
+          ) : existingAuthor ? (
+            <AuthorResultsItem author={existingAuthor} isSelected />
+          ) : (
+            <>Author is null</>
+          )}
+          <Button icon={<ClearIcon />} color="secondary" onClick={onClickClear}>
+            Clear Author
+          </Button>
+        </div>
+      ) : (
+        <NoResultsMessage>No author selected</NoResultsMessage>
+      )}
       <SearchForIdForm
         collectionName={CollectionNames.Authors}
         renderer={SearchResultRenderer}
-        onClickWithIdAndDetails={saveAssetWithAuthorId}
+        onClickWithIdAndDetails={onAuthorObtained}
       />
-      <InfoMessage>Can't find the author? Create it below</InfoMessage>
       <FormControls>
         <Button onClick={() => create()} icon={<AddIcon />}>
           Create Author

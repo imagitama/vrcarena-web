@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 import CheckIcon from '@mui/icons-material/Check'
-import { makeStyles } from '@mui/styles'
-
 import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import useDataStoreItems from '../../hooks/useDataStoreItems'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
@@ -27,18 +25,7 @@ import DiscordServerResultsItem from '../discord-server-results-item'
 import Button from '../button'
 import FormControls from '../form-controls'
 import WarningMessage from '../warning-message'
-import { VRCArenaTheme } from '../../themes'
-
-const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
-  root: {
-    outline: `3px dashed ${theme.palette.background.paper}`,
-    borderRadius: theme.shape.borderRadius,
-    padding: '1rem',
-  },
-  textInput: {
-    width: '100%',
-  },
-}))
+import { AssetEditorProps } from '@/generic-forms'
 
 const SearchResultRenderer = ({
   result,
@@ -64,9 +51,11 @@ const SearchResultRenderer = ({
 const CreateForm = ({
   onClickWithIdAndDetails,
   actionCategory,
+  onCancel,
 }: {
   onClickWithIdAndDetails: (id: string, details: DiscordServer) => void
   actionCategory?: string
+  onCancel: () => void
 }) => {
   const [name, setName] = useState('')
   const [inviteUrl, setInviteUrl] = useState('')
@@ -159,6 +148,9 @@ const CreateForm = ({
       <FormControls>
         <Button onClick={() => onCreate()} icon={<CheckIcon />}>
           Create
+        </Button>{' '}
+        <Button onClick={() => onCancel()} color="secondary">
+          Cancel
         </Button>
       </FormControls>
     </>
@@ -219,21 +211,26 @@ interface FormProps {
   actionCategory?: string
 }
 
-const Form = ({
+type DiscordServerId = AssetFields['discordserver']
+
+const ChangeDiscordServerForm = ({
   collectionName = undefined,
   id = undefined,
-  existingDiscordServerId = undefined,
-  existingDiscordServerData = undefined,
+  initialValue = undefined,
+  associatedRecord = undefined,
   overrideSave = undefined,
   onDone = undefined,
   actionCategory = undefined,
-}: FormProps) => {
+}: { collectionName?: string; id?: string } & AssetEditorProps<
+  DiscordServerId,
+  DiscordServer
+>) => {
   const [selectedDiscordServerId, setSelectedDiscordServerId] = useState<
     string | null | undefined
-  >(existingDiscordServerId)
+  >(initialValue)
   const [selectedDiscordServerData, setSelectedDiscordServerData] = useState<
     DiscordServerData | undefined
-  >(existingDiscordServerData)
+  >(associatedRecord)
   const [isSaving, isSuccess, lastErrorCode, save, clear] =
     useDataStoreEdit<AssetFields>(collectionName || '', id || false)
   const [isCreating, setIsCreating] = useState(false)
@@ -257,7 +254,9 @@ const Form = ({
   const onSave = async (overrideValue?: string | null) => {
     try {
       const newValue =
-        overrideValue !== undefined ? overrideValue : selectedDiscordServerId
+        overrideValue !== undefined
+          ? overrideValue
+          : selectedDiscordServerId || null
 
       if (actionCategory) {
         trackAction(actionCategory, 'Click save Discord Server button', {
@@ -291,8 +290,8 @@ const Form = ({
 
   const onClear = () => onSave(null)
 
-  const create = () => setIsCreating(true)
-  const browseAll = () => setIsBrowsingAll(true)
+  const onClickCreate = () => setIsCreating(true)
+  const onClickBrowseAll = () => setIsBrowsingAll(true)
 
   if (isSaving) {
     return <LoadingIndicator message="Saving..." />
@@ -328,6 +327,7 @@ const Form = ({
       <CreateForm
         onClickWithIdAndDetails={onIdAndDetails}
         actionCategory={actionCategory}
+        onCancel={() => setIsCreating(false)}
       />
     )
   }
@@ -370,33 +370,29 @@ const Form = ({
   }
 
   return (
-    <>
+    <div>
+      <WarningMessage>
+        Only set a Discord server if they are <strong>required</strong> to join
+        to be able to purchase/download this asset. Set a support Discord in the
+        author.
+      </WarningMessage>
       <SearchForIdForm
         label="Search for a Discord server"
         collectionName={CollectionNames.DiscordServers}
         renderer={SearchResultRenderer}
         onClickWithIdAndDetails={onIdAndDetails}
       />
-      <br />
-      <Button onClick={() => create()} icon={<AddIcon />} color="secondary">
-        Add Server
-      </Button>{' '}
-      <Button onClick={() => browseAll()} color="secondary">
-        List All Servers
-      </Button>
-    </>
-  )
-}
-
-const ChangeDiscordServerForm = (props: FormProps) => {
-  const classes = useStyles()
-  return (
-    <div className={classes.root}>
-      <WarningMessage>
-        Only set a Discord server if they are <strong>required</strong> to join
-        it to be able to do something.
-      </WarningMessage>
-      <Form {...props} />
+      <FormControls>
+        <Button
+          onClick={() => onClickCreate()}
+          icon={<AddIcon />}
+          color="secondary">
+          Add Server
+        </Button>{' '}
+        <Button onClick={() => onClickBrowseAll()} color="secondary">
+          List All Servers
+        </Button>
+      </FormControls>
     </div>
   )
 }

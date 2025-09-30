@@ -31,7 +31,9 @@ const ExperimentalMessage = (messageProps: MessageProps) => {
     <Message
       icon={<BubbleChartIcon />}
       {...messageProps}
-      title={`New Feature: ${messageProps.title}`}
+      title={
+        messageProps.title ? `New Feature: ${messageProps.title}` : undefined
+      }
       className={classes.message}>
       {messageProps.children}
       <div className={classes.fancyEffect} />

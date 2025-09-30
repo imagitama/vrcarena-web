@@ -23,6 +23,7 @@ const UrlInput = ({
         }
       }}
       fullWidth
+      label="URL"
     />
   )
 }

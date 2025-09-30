@@ -6,7 +6,7 @@ import {
 } from '../data-store'
 import useSupabaseClient from './useSupabaseClient'
 
-interface QueryOptions<TItem> {
+export interface QueryOptions<TItem> {
   queryName?: string
   orderBy?: keyof TItem
   quietHydrate?: boolean

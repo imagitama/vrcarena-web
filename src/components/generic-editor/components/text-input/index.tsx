@@ -1,16 +1,21 @@
 import React from 'react'
 import TextInput from '../../../text-input'
+import { EditableField } from '@/editable-fields'
 
-export default ({ onChange, value, multiline }: {
+export default ({
+  editableField,
+  onChange,
+  value,
+}: {
+  editableField: EditableField<any, any>
   value: string
   onChange: (newStr: string) => void
-  multiline: boolean
 }) => (
   <TextInput
     onChange={(e) => onChange(e.target.value)}
     value={value}
-    multiline={multiline === true}
-    minRows={multiline ? 3 : 0}
+    multiline={editableField.multiline === true}
+    minRows={editableField.multiline ? 3 : 0}
     fullWidth
   />
 )

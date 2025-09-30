@@ -13,6 +13,7 @@ import { getCategoryMeta } from '../../category-meta'
 import { Author } from '../../modules/authors'
 import DefaultAvatar from '../default-avatar'
 import { AssetCategory } from '../../modules/assets'
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles({
   root: {
@@ -38,20 +39,26 @@ const useStyles = makeStyles({
   cats: {
     marginTop: '0.35rem',
   },
+  selectedCard: {
+    backgroundColor: `${colorPalette.selectedBg} !important`,
+    boxShadow: `${colorPalette.selectedBoxShadow} !important`,
+  },
 })
 
 export default ({
   author: { id, name, categories = [], avatarurl },
   onClick = undefined,
+  isSelected = false,
 }: {
   author: Author
   onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
+  isSelected?: boolean
 }) => {
   const classes = useStyles()
 
   return (
     <div className={classes.root}>
-      <Card>
+      <Card className={isSelected ? classes.selectedCard : ''}>
         <CardActionArea>
           <Link
             to={routes.viewAuthorWithVar.replace(':authorId', id)}

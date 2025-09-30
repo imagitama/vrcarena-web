@@ -1,24 +1,20 @@
+import { CustomEditableField } from '@/editable-fields'
 import React from 'react'
 
 export default ({
+  editableField,
   onChange,
   value,
-  renderer: Renderer,
   databaseResult,
   formFields,
 }: {
+  editableField: CustomEditableField<any, any>
   value: any
   onChange: (newVal: any) => void
-  renderer: React.ComponentType<{
-    value: any
-    databaseResult: any
-    onChange: (newValue: any) => void
-    formFields: any
-  }>
   databaseResult: any
   formFields: any
 }) => (
-  <Renderer
+  <editableField.renderer
     onChange={(newValue) => onChange(newValue)}
     value={value}
     databaseResult={databaseResult}

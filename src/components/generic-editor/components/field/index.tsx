@@ -1,36 +1,60 @@
 import React from 'react'
 import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
 import Heading from '../../../heading'
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  FormHelperText,
+} from '@mui/material'
+import Markdown from '@/components/markdown'
+import { EditableField } from '@/editable-fields'
+import { Warning as WarningIcon } from '@/icons'
+import StatusText from '@/components/status-text'
 
 export default ({
-  label,
+  editableField,
   children,
-  hint = '',
   isAccordion,
+  isRequired,
+  startExpanded,
 }: {
-  label: string
+  editableField: EditableField<any>
   children: React.ReactNode
-  hint?: string
   isAccordion?: boolean
+  isRequired?: boolean
+  startExpanded?: boolean
 }) =>
   isAccordion ? (
-    <Accordion>
-      <AccordionSummary>{label}</AccordionSummary>
+    <Accordion defaultExpanded={startExpanded}>
+      <AccordionSummary>
+        {editableField.label || '(no label)'}{' '}
+        {editableField.isRequired && (
+          <StatusText positivity={-1}>
+            {' '}
+            <WarningIcon /> Required
+          </StatusText>
+        )}
+      </AccordionSummary>
       <AccordionDetails>
-        <FormControl fullWidth>
-          {children}
-          {hint && <FormHelperText>{hint}</FormHelperText>}
-        </FormControl>
+        <FormControl fullWidth>{children}</FormControl>
+        {editableField.hint && (
+          <FormHelperText>
+            <Markdown source={editableField.hint} />
+          </FormHelperText>
+        )}
       </AccordionDetails>
     </Accordion>
   ) : (
     <FormControl fullWidth style={{ marginBottom: '2rem' }}>
       <Heading variant="h3" noTopMargin>
-        {label}
+        {editableField.label || '(no label)'}
       </Heading>
       {children}
-      {hint && <FormHelperText>{hint}</FormHelperText>}
+      {editableField.hint && (
+        <FormHelperText>
+          <Markdown source={editableField.hint} />
+        </FormHelperText>
+      )}
     </FormControl>
   )

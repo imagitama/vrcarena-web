@@ -1,18 +1,18 @@
 import React, { Fragment } from 'react'
 import CheckboxInput from '../../../checkbox-input'
-import { Option } from '../../../../editable-fields'
+import { Option, SelectEditableField } from '../../../../editable-fields'
 
 export default ({
+  editableField,
   onChange,
   value = null,
-  options,
 }: {
+  editableField: SelectEditableField<any>
   value: string | null
   onChange: (newVal: string | null) => void
-  options: Option[]
 }) => (
   <>
-    {options.map(({ value: optionValue, label }) => {
+    {editableField.options.map(({ value: optionValue, label }) => {
       const isChecked = value === optionValue
       return (
         <CheckboxInput

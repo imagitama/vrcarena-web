@@ -33,7 +33,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     justifyContent: 'center',
     height: '100%',
     minWidth: '200px',
-    minHeight: '400px',
+    minHeight: '300px',
     margin: '0 0.25rem',
     '& > *': {
       width: '100%',

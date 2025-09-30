@@ -9,29 +9,28 @@ import SearchForIdForm from '../../../search-for-id-form'
 type SearchResult = { [prop: string]: any }
 
 export default ({
-  name,
+  editableField,
   onChange,
   value,
-  ...props
 }: {
-  name: string
+  editableField: SearchableEditableField<any>
   onChange: (id: string | null) => void
   value: any
-} & SearchableEditableField<any>) => {
-  if (!props.collectionName) {
+}) => {
+  if (!editableField.collectionName) {
     throw new Error(`Needs collection name! Field ${name}`)
   }
-  if (!props.fieldAsLabel) {
+  if (!editableField.fieldAsLabel) {
     throw new Error(`Needs field name to use as label! Field ${name}`)
   }
-  if (!props.renderer) {
+  if (!editableField.renderer) {
     throw new Error(`Needs renderer! Field ${name}`)
   }
 
   const [isFormVisible, setIsFormVisible] = useState(false)
   const [valueData, setValueData] = useState<null | { id: string }>(null)
   const [, , existingItem] = useDataStoreItem<SearchResult>(
-    props.collectionName,
+    editableField.collectionName,
     value || false
   )
 
@@ -54,7 +53,7 @@ export default ({
           <br />
           <br />
           {valueData || existingItem ? (
-            <props.renderer item={valueData || existingItem} />
+            <editableField.renderer item={valueData || existingItem} />
           ) : (
             <LoadingIndicator />
           )}
@@ -74,8 +73,8 @@ export default ({
       )}
       {(isFormVisible || !value) && (
         <SearchForIdForm
-          collectionName={props.collectionName}
-          fieldAsLabel={props.fieldAsLabel}
+          collectionName={editableField.collectionName}
+          fieldAsLabel={editableField.fieldAsLabel}
           onClickWithIdAndDetails={(id: string, item: any) => {
             setIsFormVisible(false)
             setValueData(item)

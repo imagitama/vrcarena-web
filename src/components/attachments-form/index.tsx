@@ -3,7 +3,12 @@ import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
 import ItemsEditor from '../items-editor'
-import { Attachment, AttachmentReason } from '../../modules/attachments'
+import {
+  Attachment,
+  AttachmentReason,
+  CollectionNames,
+  ViewNames,
+} from '../../modules/attachments'
 import AttachmentEditor from '../attachment-editor'
 import AttachmentOutput from '../attachment'
 import { trackAction } from '../../analytics'
@@ -11,6 +16,8 @@ import { handleError } from '../../error-handling'
 import AttachmentMeta from '../attachment-meta'
 import FormControls from '../form-controls'
 import Button from '../button'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import useMissingDataStoreItems from '@/hooks/useMissingDataStoreItems'
 
 const useStyles = makeStyles({
   output: {
@@ -61,7 +68,7 @@ const Editor = ({
       parentTable={parentTable}
       parentId={parentId}
       attachmentId={item || undefined}
-      attachment={attachmentData}
+      existingAttachment={attachmentData}
       onDone={(createdAttachment) => {
         console.debug(`AttachmentsForm.Editor.onDone`, {
           createdAttachment,
@@ -93,7 +100,11 @@ const Renderer = ({
 
   const attachmentData = attachmentsData.find(
     (attachmentItem) => attachmentItem.id === item
-  )!
+  )
+
+  if (!attachmentData) {
+    return <>Attachment not found - are you sure it hasn't been deleted?</>
+  }
 
   return (
     <div className={classes.output}>
@@ -113,15 +124,17 @@ const AttachmentsForm = ({
   parentTable,
   parentId,
   attachmentsData,
-  onDone,
+  onChange,
+  onSave,
   actionCategory,
 }: {
   reason: AttachmentReason
   ids: string[]
   parentTable: string
   parentId: string
-  attachmentsData: Attachment[]
-  onDone?: (attachmentIds: string[], attachmentDatas: Attachment[]) => void
+  attachmentsData?: Attachment[]
+  onChange?: (attachmentIds: string[], attachmentDatas: Attachment[]) => void
+  onSave?: (attachmentIds: string[], attachmentDatas: Attachment[]) => void
   actionCategory?: string
 }) => {
   const [newAttachmentIds, setNewAttachmentIds] =
@@ -129,9 +142,26 @@ const AttachmentsForm = ({
   const [newAttachmentsDatas, setNewAttachmentDatas] = useState<Attachment[]>(
     []
   )
+  const [isLoading, lastErrorCode, attachments] =
+    useMissingDataStoreItems<Attachment>(
+      ViewNames.GetPublicAttachments,
+      ids,
+      attachmentsData || [],
+      { queryName: 'attachments-form-ids' }
+    )
   const classes = useStyles()
 
-  const onSave = async () => {
+  const idsToUse = onChange ? ids : newAttachmentIds
+
+  const onEditorChange = (newIds: string[]) => {
+    if (onChange) {
+      onChange(newIds, newAttachmentsDatas)
+    } else {
+      setNewAttachmentIds(newIds)
+    }
+  }
+
+  const onClickSave = async () => {
     try {
       const newValue = newAttachmentIds.filter(isIdActuallyId)
 
@@ -141,16 +171,14 @@ const AttachmentsForm = ({
         trackAction(actionCategory, 'Click save attachments form button')
       }
 
-      if (onDone) {
-        onDone(newValue, newAttachmentsDatas)
-      }
+      onSave!(newValue, newAttachmentsDatas)
     } catch (err) {
       console.error(err)
       handleError(err)
     }
   }
 
-  const allAttachmentDatas = attachmentsData
+  const allAttachmentDatas = (attachmentsData || [])
     .filter(
       (existingDataItem) =>
         !newAttachmentsDatas.find(
@@ -158,6 +186,7 @@ const AttachmentsForm = ({
         )
     )
     .concat(newAttachmentsDatas)
+    .concat(attachments || [])
 
   return (
     <AttachmentFormContext.Provider
@@ -169,11 +198,6 @@ const AttachmentsForm = ({
               .concat([data])
           ),
       }}>
-      <FormControls>
-        <Button icon={<SaveIcon />} onClick={onSave} size="large">
-          Save Asset
-        </Button>
-      </FormControls>
       <ItemsEditor<
         string,
         {
@@ -183,8 +207,8 @@ const AttachmentsForm = ({
           attachmentsData: Attachment[]
         }
       >
-        items={newAttachmentIds as string[]}
-        onChange={(newIds) => setNewAttachmentIds(newIds)}
+        items={idsToUse as any} // TODO: fix up types
+        onChange={(newIds) => onEditorChange(newIds)}
         editor={Editor}
         renderer={Renderer}
         commonProps={{
@@ -195,12 +219,15 @@ const AttachmentsForm = ({
         }}
         emptyItem={''}
         itemClassName={classes.item}
+        nameSingular="attachment"
       />
-      <FormControls>
-        <Button icon={<SaveIcon />} onClick={onSave} size="large">
-          Save Asset
-        </Button>
-      </FormControls>
+      {onSave && (
+        <FormControls>
+          <Button icon={<SaveIcon />} onClick={onClickSave} size="large">
+            Save Asset
+          </Button>
+        </FormControls>
+      )}
     </AttachmentFormContext.Provider>
   )
 }

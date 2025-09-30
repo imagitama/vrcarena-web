@@ -43,6 +43,7 @@ const PriceAndCurrencyInput = ({
       <div className={classes.inputWrapper}>
         <span>
           <Select
+            label="Currency"
             onChange={(e) => onChange(price, e.target.value as PopularCurrency)}
             value={priceCurrency}>
             {Object.entries(popularCurrencies).map(
@@ -60,6 +61,7 @@ const PriceAndCurrencyInput = ({
         <PriceInput
           value={price}
           onChange={(newPrice) => onChange(newPrice, priceCurrency)}
+          allowClear={false}
         />
         <Button onClick={() => onChange(null, priceCurrency)} color="secondary">
           Clear Price

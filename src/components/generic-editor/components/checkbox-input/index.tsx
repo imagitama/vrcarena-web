@@ -1,16 +1,24 @@
 import React from 'react'
-import Checkbox from '@mui/material/Checkbox'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import type { GenericInputProps } from '../../'
 import Button from '../../../button'
+import { CheckboxEditableField } from '@/editable-fields'
+import CheckboxInput from '@/components/checkbox-input'
 
-export default ({ onChange, label, value, allowEmpty }: GenericInputProps) => (
+export default ({
+  editableField,
+  onChange,
+  value,
+}: GenericInputProps & CheckboxEditableField<any, any>) => (
   <>
-    <FormControlLabel
-      label={label}
-      control={<Checkbox onChange={() => onChange(!value)} checked={value} />}
+    <CheckboxInput
+      onChange={() => onChange(!value)}
+      value={value}
+      label={
+        (editableField as CheckboxEditableField<any, any>).checkboxLabel ||
+        editableField.label
+      }
     />
-    {allowEmpty === true ? (
+    {editableField.allowEmpty === true ? (
       value === undefined || value === null ? (
         'Value is empty (inherits)'
       ) : (

@@ -146,10 +146,12 @@ export default ({
   assetId,
   asset,
   onDone = undefined,
+  enableRedirect = true,
 }: {
   assetId: string
   asset: Asset
   onDone?: () => void
+  enableRedirect?: boolean
 }) => {
   const [isPublishing, setIsPublishing] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -164,8 +166,6 @@ export default ({
   }, 3000)
 
   const attemptPublish = () => {
-    console.debug('attempt publish')
-
     const newValidationErrorMessages = getValidationErrorMessagesForAsset(asset)
     setLastValidationErrorMessages(newValidationErrorMessages)
 
@@ -188,8 +188,6 @@ export default ({
   }
 
   const publish = async () => {
-    console.debug('publish')
-
     try {
       setIsPublishing(true)
       setIsSuccess(false)
@@ -217,7 +215,9 @@ export default ({
         onDone()
       }
 
-      navigateAfterDelay()
+      if (enableRedirect) {
+        navigateAfterDelay()
+      }
     } catch (err) {
       console.error('Failed to publish asset', err)
       handleError(err)
@@ -245,9 +245,13 @@ export default ({
       <SuccessMessage>
         Asset has been published successfully. It will be reviewed by our staff
         (usually within 24 hours).
-        <br />
-        <br />
-        Redirecting you to the asset in 2 seconds...
+        {enableRedirect && (
+          <>
+            <br />
+            <br />
+            Redirecting you to the asset in 2 seconds...
+          </>
+        )}
       </SuccessMessage>
     )
   }

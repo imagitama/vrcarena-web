@@ -100,6 +100,7 @@ const GetVrchatAvatarDetails = ({
   }
 
   const retry = () => {
+    setTextInputValue('') // TODO: do this here? user might want it again
     setAvatarId('')
     setIsGettingAvatar(false)
     setLastErrorCode(null)
@@ -146,14 +147,16 @@ const GetVrchatAvatarDetails = ({
     <div>
       <div className={classes.inputWrapper}>
         <TextInput
-          label="Enter the URL of the avatar or the avatar ID"
+          label="Avatar URL or ID"
           placeholder="eg. avtr_69f1893b-2d7c-4d19-beb4-45a3c17ddd0f"
           value={textInputValue}
           onChange={(e) => setTextInputValue(e.target.value.trim())}
           className={classes.input}
           fullWidth
         />
-        <Button onClick={() => lookupAvatar()}>Look Up</Button>
+        <Button onClick={() => lookupAvatar()} color="secondary">
+          Look Up
+        </Button>
       </div>
     </div>
   )

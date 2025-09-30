@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
@@ -9,7 +9,7 @@ import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import editableFields, { EditableField } from '../../editable-fields'
 import { fieldTypes } from '../../generic-forms'
 import { trackAction } from '../../analytics'
-import { scrollToTop } from '../../utils'
+import { scrollTo, scrollToElement, scrollToTop } from '../../utils'
 import { handleError } from '../../error-handling'
 
 import Button from '../button'
@@ -35,10 +35,8 @@ import DateInput from './components/date-input'
 import UrlInput from '../url-input'
 
 export type GenericInputProps = {
-  name: string
-  label?: string
+  editableField: EditableField<any>
   value: any
-  defaultValue: any
   onChange: (newVal: any) => void
   extraFormData: any
   setFieldsValues: (updates: Record<string, any>) => void
@@ -46,36 +44,46 @@ export type GenericInputProps = {
   formFields: any
 }
 
-// TODO: better type safety here
-type GenericInput = (props: any) => JSX.Element
+type GenericInput = (props: GenericInputProps) => JSX.Element
 
 function getInputForFieldType(type: keyof typeof fieldTypes): GenericInput {
   switch (type) {
     case fieldTypes.text:
+      // @ts-ignore
       return TextInput
     case fieldTypes.textMarkdown:
+      // @ts-ignore
       return TextMarkdownInput
     case fieldTypes.checkbox:
+      // @ts-ignore
       return CheckboxInput
     case fieldTypes.multichoice:
+      // @ts-ignore
       return MultichoiceInput
     case fieldTypes.imageUpload:
+      // @ts-ignore
       return ImageUploadInput
     case fieldTypes.searchable:
+      // @ts-ignore
       return SearchableInput
     case fieldTypes.singlechoice:
+      // @ts-ignore
       return SinglechoiceInput
     case fieldTypes.date:
       return DateInput
     case fieldTypes.assets:
       return AssetsInput
     case fieldTypes.custom:
+      // @ts-ignore
       return CustomInput
     case fieldTypes.tags:
+      // @ts-ignore
       return TagsInput
     case fieldTypes.dropdown:
+      // @ts-ignore
       return DropdownInput
     case fieldTypes.item:
+      // @ts-ignore
       return ItemInput
     case fieldTypes.url:
       return UrlInput
@@ -144,8 +152,11 @@ const GenericEditor = ({
   onFieldChanged = undefined,
   // asset editor mini
   isAccordion = false,
+  startExpanded = false,
   onDone = undefined,
-  saveBtnRecordType = '',
+  itemTypeSingular = '',
+  showTopSaveBtn = false,
+  scrollToTopOfEditor,
 }: {
   fields?: EditableField<any>[]
   collectionName: string
@@ -162,8 +173,11 @@ const GenericEditor = ({
   onFieldChanged?: (fieldName: string, newValue: any) => void
   // asset editor mini
   isAccordion?: boolean
+  startExpanded?: boolean
   onDone?: () => void
-  saveBtnRecordType?: string
+  itemTypeSingular?: string
+  showTopSaveBtn?: boolean
+  scrollToTopOfEditor?: boolean
 }) => {
   if (!fields && !(collectionName in editableFields)) {
     throw new Error(`Collection name ${collectionName} not in editable fields!`)
@@ -192,6 +206,7 @@ const GenericEditor = ({
   )
   const classes = useStyles()
   const [isInvalid, setIsInvalid] = useState(false)
+  const rootElementRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!rawRecord) {
@@ -248,7 +263,11 @@ const GenericEditor = ({
         return
       }
 
-      scrollToTop()
+      if (scrollToTopOfEditor) {
+        scrollToElement(rootElementRef.current!)
+      } else {
+        scrollToTop()
+      }
 
       if (!validateFields(formFields, fieldsToUse)) {
         setIsInvalid(true)
@@ -269,47 +288,8 @@ const GenericEditor = ({
     }
   }
 
-  if (isLoading || !formFields || isSaving) {
-    return (
-      <LoadingIndicator
-        message={
-          isSaving
-            ? 'Saving...'
-            : !formFields
-            ? 'Waiting for fields...'
-            : isLoading
-            ? 'Loading data...'
-            : 'Loading...'
-        }
-      />
-    )
-  }
-
-  if (lastErrorCode !== null) {
-    return (
-      <ErrorMessage>
-        Failed to load item to edit (code {lastErrorCode})
-      </ErrorMessage>
-    )
-  }
-
-  if (lastErrorCodeSaving !== null) {
-    return (
-      <ErrorMessage>Failed to save (code {lastErrorCodeSaving})</ErrorMessage>
-    )
-  }
-
-  if (isSuccess) {
-    return (
-      <SuccessMessage
-        viewRecordUrl={
-          getSuccessUrl && updatedRecord
-            ? getSuccessUrl(updatedRecord.id)
-            : successUrl
-        }>
-        The record has been saved
-      </SuccessMessage>
-    )
+  if (!formFields) {
+    return <LoadingIndicator message={'Waiting for fields...'} />
   }
 
   const fieldsBySection =
@@ -336,52 +316,94 @@ const GenericEditor = ({
         )
       : undefined
 
-  const mapEditableFieldToFieldOutput = ({
-    name,
-    type,
-    default: defaultValue,
-    label,
-    hint,
-    ...rest
-  }: EditableField<any>) => {
-    const Input = getInputForFieldType(type)
+  const mapEditableFieldToFieldOutput = (editableField: EditableField<any>) => {
+    const Input = getInputForFieldType(editableField.type)
 
     return (
       <Field
-        key={name as string}
-        label={
-          type !== fieldTypes.checkbox || rest.alwaysShowLabel
-            ? label!
-            : '(no label)'
-        }
+        key={editableField.name as string}
+        editableField={editableField}
         // for mini editor
-        isAccordion={isAccordion}>
+        isAccordion={isAccordion}
+        startExpanded={startExpanded}>
         <Input
-          name={name.toString()}
-          value={formFields[name as string]}
-          defaultValue={defaultValue}
-          label={label}
-          {...rest}
-          onChange={(newVal: any) => onFieldChange(name.toString(), newVal)}
-          // @ts-ignore
+          editableField={editableField}
+          value={formFields[editableField.name as string]}
+          onChange={(newVal: any) =>
+            onFieldChange(editableField.name as string, newVal)
+          }
           extraFormData={extraFormData}
           setFieldsValues={onFieldsChange}
           databaseResult={rawRecord}
           // for mini editor
           formFields={formFields}
         />
-        {hint && <div className={classes.hint}>{hint}</div>}
       </Field>
     )
   }
 
   return (
-    <>
+    <div ref={rootElementRef}>
+      {isLoading || !formFields || isSaving ? (
+        <LoadingIndicator
+          message={
+            isSaving
+              ? 'Saving...'
+              : !formFields
+              ? 'Waiting for fields...'
+              : isLoading
+              ? 'Loading data...'
+              : 'Loading...'
+          }
+        />
+      ) : null}
+
+      {lastErrorCode !== null ? (
+        <ErrorMessage>Failed to load (code {lastErrorCode})</ErrorMessage>
+      ) : null}
+
+      {lastErrorCodeSaving !== null ? (
+        <ErrorMessage>Failed to save (code {lastErrorCodeSaving})</ErrorMessage>
+      ) : null}
+
+      {isSuccess ? (
+        <SuccessMessage
+          viewRecordUrl={
+            getSuccessUrl && updatedRecord
+              ? getSuccessUrl(updatedRecord.id)
+              : successUrl
+          }>
+          {itemTypeSingular ? `${itemTypeSingular} saved` : 'Saved'}{' '}
+          successfully
+        </SuccessMessage>
+      ) : null}
+
       {isInvalid && (
         <ErrorMessage>
           One or more fields are invalid. Ensure the required fields have a
           value.
         </ErrorMessage>
+      )}
+
+      {showTopSaveBtn && onFieldChanged ? null : (
+        <div className={classes.saveBtn}>
+          {cancelUrl && (
+            <Button
+              url={cancelUrl}
+              color="secondary"
+              onClick={() => {
+                trackAction(analyticsCategory, cancelBtnAction, id)
+              }}>
+              Cancel
+            </Button>
+          )}
+          <Button
+            onClick={onSaveBtnClick}
+            icon={id ? <SaveIcon /> : <AddIcon />}
+            size="large">
+            {id ? 'Save' : 'Create'} {itemTypeSingular}
+          </Button>
+        </div>
       )}
 
       {fieldsBySection ? (
@@ -416,12 +438,13 @@ const GenericEditor = ({
           )}
           <Button
             onClick={onSaveBtnClick}
-            icon={id ? <SaveIcon /> : <AddIcon />}>
-            {id ? 'Save' : 'Create'} {saveBtnRecordType}
+            icon={id ? <SaveIcon /> : <AddIcon />}
+            size="large">
+            {id ? 'Save' : 'Create'} {itemTypeSingular}
           </Button>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

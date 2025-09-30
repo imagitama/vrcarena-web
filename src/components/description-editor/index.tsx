@@ -23,6 +23,9 @@ import { Asset, CollectionNames } from '../../modules/assets'
 import CheckboxInput from '../checkbox-input'
 
 const useStyles = makeStyles({
+  root: {
+    width: '100%',
+  },
   input: {
     width: '100%',
     marginBottom: '1rem',
@@ -104,52 +107,50 @@ const DescriptionEditor = ({
   }
 
   return (
-    <>
-      <Paper>
-        <TextField
-          value={newDescriptionValue}
-          onChange={(e) => {
-            setNewDescriptionValue(e.target.value)
+    <div className={classes.root}>
+      <TextField
+        value={newDescriptionValue}
+        onChange={(e) => {
+          setNewDescriptionValue(e.target.value)
+
+          if (onChange) {
+            onChange(e.target.value)
+          }
+        }}
+        multiline
+        minRows={15}
+        className={classes.input}
+      />
+      <CheckboxInput
+        value={isUsingQuotes}
+        onClick={() => {
+          setNewDescriptionValue((currentVal) => {
+            const newDescription = isUsingQuotes
+              ? removeQuotesFromDescription(currentVal)
+              : addQuotesToDescription(currentVal)
 
             if (onChange) {
-              onChange(e.target.value)
+              onChange(newDescription)
             }
-          }}
-          multiline
-          minRows={15}
-          className={classes.input}
-        />
-        <CheckboxInput
-          value={isUsingQuotes}
-          onClick={() => {
-            setNewDescriptionValue((currentVal) => {
-              const newDescription = isUsingQuotes
-                ? removeQuotesFromDescription(currentVal)
-                : addQuotesToDescription(currentVal)
+            return newDescription
+          })
 
-              if (onChange) {
-                onChange(newDescription)
-              }
-              return newDescription
-            })
-
-            setIsUsingQuotes(!isUsingQuotes)
-          }}
-          label="Add quote symbols to description (use if you copy the description from a third party like Gumroad)"
-        />{' '}
-        <FormControls>
-          <Button onClick={() => onSaveBtnClick()} icon={<SaveIcon />}>
-            Save
-          </Button>{' '}
-          {onCancel && (
-            <Button onClick={() => onCancel()} color="secondary">
-              Cancel
-            </Button>
-          )}
-        </FormControls>
-      </Paper>
+          setIsUsingQuotes(!isUsingQuotes)
+        }}
+        label="Add quote symbols to description (use if you copy the description from a third party like Gumroad)"
+      />{' '}
+      <FormControls>
+        <Button onClick={() => onSaveBtnClick()} icon={<SaveIcon />}>
+          Save
+        </Button>{' '}
+        {onCancel && (
+          <Button onClick={() => onCancel()} color="secondary">
+            Cancel
+          </Button>
+        )}
+      </FormControls>
       <Markdown source={newDescriptionValue} replaceImagesWithButtons />
-    </>
+    </div>
   )
 }
 

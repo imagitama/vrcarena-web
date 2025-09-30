@@ -25,7 +25,8 @@ const useDataStoreEdit = <TRecord extends Record<string, unknown>>(
   ClearFn,
   null | TRecord
 ] => {
-  if (!collectionName) {
+  if (!collectionName && id !== false) {
+    console.debug(`useDataStoreEdit`, { id })
     throw new Error('Cannot edit: no collection name provided')
   }
 

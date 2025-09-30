@@ -22,6 +22,7 @@ import {
 import { findItemAndParents, getRandomInt } from '../../utils'
 import SpeciesResultItem from '../../components/species-result-item'
 import useStorage from '../../hooks/useStorage'
+import FormControls from '../form-controls'
 
 const analyticsCategory = 'ViewAllSpecies'
 
@@ -32,7 +33,7 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
   },
   autocompleteWrapper: {
-    margin: '1rem 0',
+    marginBottom: '1rem',
     display: 'flex',
     justifyContent: 'center',
   },
@@ -136,15 +137,18 @@ const SpeciesBrowser = ({
   selectedSpeciesIds,
   onClickSpecies,
   showControls = true,
+  startCollapsed = false,
 }: {
   selectedSpeciesIds?: string[]
   onClickSpecies?: (id: string) => void
   showControls?: boolean
+  startCollapsed?: boolean
 }) => {
   const [isLoading, lastErrorCode, speciesItems] = useDatabaseQuery<Species>(
     ViewNames.GetPublicSpeciesCache,
     [['redirectto', Operators.IS, null]],
     {
+      queryName: 'species-browser',
       orderBy: ['singularname', OrderDirections.ASC],
     }
   )
@@ -166,6 +170,7 @@ const SpeciesBrowser = ({
       )),
     []
   )
+  const [isExpanded, setIsExpanded] = useState(!startCollapsed)
 
   const filteredSpecies = speciesItems
     ? filterId !== null
@@ -286,6 +291,14 @@ const SpeciesBrowser = ({
   if (lastErrorCode !== null) {
     return (
       <ErrorMessage>Failed to load species (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
+  if (startCollapsed && !isExpanded) {
+    return (
+      <FormControls>
+        <Button onClick={() => setIsExpanded(true)}>Show Species List</Button>
+      </FormControls>
     )
   }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
@@ -30,6 +30,8 @@ import { VRCArenaTheme } from '../../themes'
 import useIsBanned from '../../hooks/useIsBanned'
 import NoPermissionMessage from '../no-permission-message'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
 const attachmentTypesMeta: { [key: string]: { name: string } } = {
   [AttachmentType.Image]: {
@@ -129,7 +131,7 @@ const AttachmentEditor = ({
   reason,
   parentTable,
   parentId,
-  attachment,
+  existingAttachment,
   onDone = undefined,
   onCancel = undefined,
   isPreExpanded = false,
@@ -139,7 +141,7 @@ const AttachmentEditor = ({
   attachmentId?: string
   parentTable?: string
   parentId?: string
-  attachment?: Attachment
+  existingAttachment?: Attachment
   onDone?: (fields: Attachment) => void
   onCancel?: () => void
   isPreExpanded?: boolean
@@ -160,21 +162,7 @@ const AttachmentEditor = ({
   }
 
   const [fields, setFields] = useState<AttachmentFields>(
-    attachment
-      ? {
-          reason: attachment.reason,
-          type: attachment.type,
-          url: attachment.url,
-          thumbnailurl: attachment.thumbnailurl,
-          title: attachment.title,
-          description: attachment.description,
-          isadult: attachment.isadult,
-          license: attachment.license,
-          tags: attachment.tags,
-          parenttable: attachment.parenttable,
-          parentid: attachment.parentid,
-        }
-      : emptyRecord
+    existingAttachment || emptyRecord
   )
   const [isSaving, isSaveSuccess, isSaveFailed, saveOrCreate] = attachmentId
     ? useDataStoreEdit<Attachment>(CollectionNames.Attachments, attachmentId)
@@ -182,6 +170,21 @@ const AttachmentEditor = ({
   const classes = useStyles()
   const [newUrl, setNewUrl] = useState('')
   const [isExpanded, setIsExpanded] = useState(isPreExpanded)
+  const [isLoading, lastErrorCodeLoading, attachment] =
+    useDataStoreItem<Attachment>(
+      CollectionNames.Attachments,
+      !existingAttachment && attachmentId ? attachmentId : false,
+      {
+        queryName: `attachment-${attachmentId || ''}`,
+      }
+    )
+
+  useEffect(() => {
+    if (!attachment) {
+      return
+    }
+    setFields(attachment)
+  }, [JSON.stringify(attachment)])
 
   if (useIsBanned()) {
     return <NoPermissionMessage />

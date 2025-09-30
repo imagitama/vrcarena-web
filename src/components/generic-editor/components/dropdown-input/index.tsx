@@ -2,26 +2,29 @@ import React, { Fragment } from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import { SelectProps } from '@mui/material/Select'
 import Select from '../../../select'
-import { Option } from '../../../../editable-fields'
+import {
+  EditableField,
+  Option,
+  SelectEditableField,
+} from '../../../../editable-fields'
 
 const DropdownInput = ({
+  editableField,
   onChange,
   value = null,
-  options,
-  isDisabled = false,
-  ...selectProps
+  selectProps = {},
 }: {
+  editableField: EditableField<any, any>
   onChange: (newVal: any) => void
   value: string | null
-  options: Option[]
-  isDisabled?: boolean
-} & SelectProps) => (
+  selectProps?: SelectProps
+}) => (
   <Select
     value={value}
     onChange={(e: any) => onChange(e.target.value)}
-    disabled={isDisabled}
+    // disabled={isDisabled} TODO: verify needed
     {...selectProps}>
-    {options.map((option) => (
+    {(editableField as SelectEditableField<any>).options.map((option) => (
       <MenuItem key={option.value} value={option.value || undefined}>
         {option.label}
       </MenuItem>

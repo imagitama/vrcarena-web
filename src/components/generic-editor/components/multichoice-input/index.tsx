@@ -1,24 +1,23 @@
 import React, { Fragment } from 'react'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
-
-// TODO: Re-use
-interface Option {
-  value: string
-  label: string
-}
+import { SelectEditableField } from '@/editable-fields'
 
 export default ({
+  editableField,
   onChange,
   value = [],
-  options,
 }: {
+  editableField: SelectEditableField<any>
   value: string[]
   onChange: (newOpts: string[]) => void
-  options: Option[]
 }) => (
   <>
-    {options.map(({ value: optionValue, label }) => {
+    {editableField.options.map(({ value: optionValue, label }) => {
+      if (optionValue === null) {
+        return null
+      }
+
       const isChecked = value.includes(optionValue)
       return (
         <Fragment key={optionValue}>

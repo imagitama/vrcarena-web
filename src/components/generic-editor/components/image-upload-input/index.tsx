@@ -6,15 +6,16 @@ import Button from '../../../button'
 import { ImageUploadEditableField } from '../../../../editable-fields'
 
 export default ({
+  editableField,
   onChange,
   value,
   formFields,
-  ...props
 }: {
+  editableField: ImageUploadEditableField<any>
   onChange: (newUrl: string | null) => void
   value: string
   formFields: any
-} & ImageUploadEditableField<any>) => {
+}) => {
   return (
     <>
       {value ? (
@@ -22,8 +23,8 @@ export default ({
           <img
             src={fixAccessingImagesUsingToken(value)}
             alt="Preview"
-            width={props.requiredWidth}
-            height={props.requiredHeight}
+            width={editableField.requiredWidth}
+            height={editableField.requiredHeight}
           />
           <br />
           <Button color="secondary" onClick={() => onChange(null)}>
@@ -34,15 +35,15 @@ export default ({
         <>
           <ImageUploader
             onDone={(urls) => onChange(urls[0])}
-            {...props}
+            {...editableField}
             directoryPath={
-              props.getDirectoryPath
-                ? props.getDirectoryPath(formFields)
-                : props.directoryPath
+              editableField.getDirectoryPath
+                ? editableField.getDirectoryPath(formFields)
+                : editableField.directoryPath
             }
           />
           <FormHelperText>
-            {props.requiredWidth} x {props.requiredHeight}
+            {editableField.requiredWidth} x {editableField.requiredHeight}
           </FormHelperText>
         </>
       )}

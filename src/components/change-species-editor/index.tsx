@@ -33,6 +33,7 @@ export default ({
   // asset editor mini
   showControls = true,
   onChange = undefined,
+  startCollapsed = false,
 }: {
   assetId: string | null
   activeSpeciesIds?: string[]
@@ -42,6 +43,7 @@ export default ({
   overrideSave?: (newSpeciesIds: string[]) => void
   showControls?: boolean
   onChange?: (newIds: string[]) => void
+  startCollapsed?: boolean
 }) => {
   const userId = useUserId()
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
@@ -154,6 +156,7 @@ export default ({
         selectedSpeciesIds={newSpeciesIds}
         onClickSpecies={onClickSpecies}
         showControls={false}
+        startCollapsed={startCollapsed}
       />
       {showControls ? (
         <FormControls>

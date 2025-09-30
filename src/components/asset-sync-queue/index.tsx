@@ -60,6 +60,7 @@ import Heading from '../heading'
 import AssetEditorMini from '../asset-editor-mini'
 import AssetResultsItem from '../asset-results-item'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useIsEditor from '@/hooks/useIsEditor'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   queuedStatus: {
@@ -294,16 +295,17 @@ const QueuedItemRow = ({
   const [isDeleted, setIsDeleted] = useState(false)
   const classes = useStyles()
   const client = useSupabaseClient()
-  // const [isQuickEditOpen, setIsQuickEditOpen] = useState(false)
+  const [isEditingAsset, setIsEditingAsset] = useState(false)
   const queuedItem = liveQueuedItem || originalQueuedItem
   const [, , fullAsset, hydrateAsset] = useDataStoreItem<FullAsset>(
     ViewNames.GetFullAssets,
     queuedItem.createdassetid || false
   )
+  const isEditor = useIsEditor()
 
   const onDelete = () => setIsDeleted(true)
 
-  // const onClickQuickEdit = () => setIsQuickEditOpen(true)
+  const onClickToggleEdit = () => setIsEditingAsset((currentVal) => !currentVal)
 
   if (isSubscribing) {
     return <LoadingRow />
@@ -357,15 +359,6 @@ const QueuedItemRow = ({
 
   return (
     <>
-      {/* {isQuickEditOpen ? (
-        <QuickEditor
-          onClose={() => {
-            setIsQuickEditOpen(false)
-            hydrateAsset()
-          }}
-          assetId={queuedItem.createdassetid}
-        />
-      ) : null} */}
       <TableRow className={`${isDeleted ? classes.deletedRow : ''}`}>
         <TableCell>
           <strong>{queuedItem.sourceurl}</strong>{' '}
@@ -391,20 +384,23 @@ const QueuedItemRow = ({
               {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
                 <MissingFields queuedItem={queuedItem} />
               ) : null}
-              {/* <Button
-                onClick={onClickQuickEdit}
+              {isEditor ? (
+                <Button
+                  onClick={onClickToggleEdit}
+                  icon={<EditIcon />}
+                  size="small"
+                  color="secondary">
+                  Editor Only - New Edit Form
+                </Button>
+              ) : null}
+              <Button
                 icon={<EditIcon />}
                 size="small"
-                color="secondary">
-                Quick Edit
-              </Button>{' '} */}
-              <Button
-                url={routes.viewAssetWithVar.replace(
+                color="secondary"
+                url={routes.editAssetWithVar.replace(
                   ':assetId',
                   queuedItem.createdassetid
-                )}
-                size="small"
-                color="secondary">
+                )}>
                 Go To Asset Editor
               </Button>
             </>
@@ -444,6 +440,21 @@ const QueuedItemRow = ({
           )}
         </TableCell>
       </TableRow>
+      {isEditingAsset ? (
+        <TableRow>
+          <TableCell colSpan={999}>
+            <div style={{ width: '100%' }}>
+              <AssetEditorMini
+                onDone={() => {
+                  hydrateAsset()
+                }}
+                assetId={queuedItem.createdassetid}
+                asset={fullAsset}
+              />
+            </div>
+          </TableCell>
+        </TableRow>
+      ) : null}
     </>
   )
 }
@@ -471,6 +482,7 @@ const BulkEditor = ({ onAdd }: { onAdd: (urls: string[]) => void }) => {
     }
 
     onAdd(urls)
+    setTextVal('')
   }
 
   return (

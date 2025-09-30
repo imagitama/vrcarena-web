@@ -14,15 +14,16 @@ interface ItemInputOption {
 }
 
 export default ({
+  editableField,
   onChange,
   value = null,
-  ...props
 }: {
+  editableField: ItemEditableField<any, any>
   onChange: (newVal: any) => void
   value: string | null
 } & ItemEditableField<any, any>) => {
   const [isLoading, lastErrorCode, items] = useDataStoreItems<any>(
-    props.collectionName,
+    editableField.collectionName,
     undefined,
     { queryName: 'item-input' }
   )
@@ -44,10 +45,10 @@ export default ({
   const options: ItemInputOption[] = items
     .map((item) => ({
       value: item.id,
-      label: props.fieldAsLabel
-        ? item[props.fieldAsLabel]
-        : props.getLabel
-        ? props.getLabel(item)
+      label: editableField.fieldAsLabel
+        ? item[editableField.fieldAsLabel]
+        : editableField.getLabel
+        ? editableField.getLabel(item)
         : item.id,
       disabled: false,
     }))

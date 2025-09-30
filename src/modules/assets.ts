@@ -76,7 +76,7 @@ export interface SourceInfo {
 export interface CoreAssetFields extends Record<string, unknown> {
   title: string
   thumbnailurl: string
-  author: string // id
+  author: string | null // id
   category: AssetCategory
   slug: string
   isadult: boolean
@@ -86,19 +86,7 @@ export interface CoreAssetFields extends Record<string, unknown> {
   tags: string[] // used for "free" check and to group into areas
 }
 
-export interface AssetFields extends CoreAssetFields, Record<string, unknown> {
-  sourceurl: string
-  description: string
-  bannerurl: string
-  vrchatclonableavatarids: string[]
-  discordserver: string | null // id
-  relations: Relation[]
-  extradata: ExtraData
-  attachmentids: string[]
-  extrasources: SourceInfo[]
-  vccurl?: string
-  sketchfabembedurl: string
-  // TODO: deprecate
+interface DeprecatedAssetFields {
   shortdescription: string
   pedestalvideourl: string
   pedestalfallbackimageurl: string
@@ -111,9 +99,27 @@ export interface AssetFields extends CoreAssetFields, Record<string, unknown> {
   tutorialsteps: TutorialStep[]
 }
 
+export interface AssetFields
+  extends DeprecatedAssetFields,
+    CoreAssetFields,
+    Record<string, unknown> {
+  sourceurl: string
+  description: string
+  bannerurl: string // disabled sep 2025 for bandwidth
+  vrchatclonableavatarids: string[]
+  discordserver: string | null // id
+  relations: Relation[]
+  extradata: ExtraData
+  attachmentids: string[]
+  extrasources: SourceInfo[]
+  vccurl?: string
+  sketchfabembedurl: string
+}
+
 export interface Asset extends AssetFields, Record<string, unknown> {
   id: string
   createdat: string
+  createdby: string
 }
 
 export interface ExtraData {

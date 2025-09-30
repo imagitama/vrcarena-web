@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { makeStyles } from '@mui/styles'
+import Tab from '@mui/material/Tab'
 
 import Paper from '../paper'
 import Markdown from '../markdown'
 import ImageUploader from '../image-uploader'
 import Button from '../button'
 import { bucketNames } from '../../file-uploading'
+import Tabs from '../tabs'
 
 const useStyles = makeStyles({
   input: {
@@ -34,10 +36,12 @@ export default ({
   content = '',
   onChange,
   isDisabled = false,
+  allowImages = true,
 }: {
   content: string
   onChange: (newText: string) => void
   isDisabled?: boolean
+  allowImages?: boolean
 }) => {
   const classes = useStyles()
   const [isImageEditorOpen, setIsImageEditorOpen] = useState(false)
@@ -103,67 +107,83 @@ This is a caption
     setIsImageEditorOpen((currentVal) => !currentVal)
 
   return (
-    <div className={classes.root}>
-      <div className={classes.col}>
-        <Paper>
-          <TextField
-            value={content}
-            onChange={(e) => onChange(e.target.value)}
-            multiline
-            minRows={75}
-            maxRows={25}
-            className={classes.input}
-            variant="outlined"
-            disabled={isDisabled}
-          />
-          <Button
-            size="small"
-            color="secondary"
-            onClick={onClickAddButtonWithUrl}>
-            Button (URL)
-          </Button>{' '}
-          <Button
-            size="small"
-            color="secondary"
-            onClick={onClickAddButtonWithAsset}>
-            Button (asset)
-          </Button>{' '}
-          <Button size="small" color="secondary" onClick={onClickAddInfo}>
-            Info
-          </Button>{' '}
-          <Button size="small" color="secondary" onClick={onClickAddWarning}>
-            Warning
-          </Button>{' '}
-          <Button size="small" color="secondary" onClick={onClickAddImage}>
-            Image
-          </Button>{' '}
-          <Button size="small" color="secondary" onClick={onClickAddTab}>
-            Tab
-          </Button>{' '}
-          <Button
-            size="small"
-            color="secondary"
-            onClick={onClickAddTabContents}>
-            Tab contents
-          </Button>{' '}
-        </Paper>
-        {isImageEditorOpen ? (
-          <>
-            <br />
-            <br />
-            <ImageUploader
-              // TODO: Better bucket
-              bucketName={bucketNames.attachments}
-              onDone={onImageUploadedWithUrl}
-              // TODO: Better path
-              directoryPath="pages"
-            />
-          </>
-        ) : null}
-      </div>
-      <div className={classes.col}>
-        <Markdown source={content} />
-      </div>
-    </div>
+    <Tabs
+      items={[
+        {
+          name: 'editor',
+          label: 'Editor',
+          contents: (
+            <>
+              <TextField
+                value={content}
+                onChange={(e) => onChange(e.target.value)}
+                multiline
+                minRows={75}
+                maxRows={25}
+                className={classes.input}
+                variant="outlined"
+                disabled={isDisabled}
+              />
+              <Button
+                size="small"
+                color="secondary"
+                onClick={onClickAddButtonWithUrl}>
+                Button (URL)
+              </Button>{' '}
+              <Button
+                size="small"
+                color="secondary"
+                onClick={onClickAddButtonWithAsset}>
+                Button (asset)
+              </Button>{' '}
+              <Button size="small" color="secondary" onClick={onClickAddInfo}>
+                Info
+              </Button>{' '}
+              <Button
+                size="small"
+                color="secondary"
+                onClick={onClickAddWarning}>
+                Warning
+              </Button>{' '}
+              {allowImages && (
+                <Button
+                  size="small"
+                  color="secondary"
+                  onClick={onClickAddImage}>
+                  Image
+                </Button>
+              )}{' '}
+              <Button size="small" color="secondary" onClick={onClickAddTab}>
+                Tab
+              </Button>{' '}
+              <Button
+                size="small"
+                color="secondary"
+                onClick={onClickAddTabContents}>
+                Tab contents
+              </Button>{' '}
+              {isImageEditorOpen ? (
+                <>
+                  <br />
+                  <br />
+                  <ImageUploader
+                    // TODO: Better bucket
+                    bucketName={bucketNames.attachments}
+                    onDone={onImageUploadedWithUrl}
+                    // TODO: Better path
+                    directoryPath="pages"
+                  />
+                </>
+              ) : null}
+            </>
+          ),
+        },
+        {
+          name: 'preview',
+          label: 'Preview',
+          contents: <Markdown source={content} />,
+        },
+      ]}
+    />
   )
 }
