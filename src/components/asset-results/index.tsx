@@ -3,8 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { mediaQueryForTabletsOrBelow } from '../../media-queries'
 import AssetResultsItem from '../asset-results-item'
 import { Asset, PublicAsset } from '../../modules/assets'
-import InlineAssetEditor from '../inline-asset-editor'
-import ErrorBoundary from '../error-boundary'
+import AssetEditorDialog from '../asset-editor-dialog'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -48,6 +47,13 @@ const AssetResults = ({
     return false
   }
 
+  const onEditDone = () => {
+    if (hydrate) {
+      hydrate()
+    }
+    setAssetIdToEdit(null)
+  }
+
   return (
     <div className={classes.root}>
       {shimmer
@@ -82,11 +88,7 @@ const AssetResults = ({
             </div>
           ))}
       {assetIdToEdit && hydrate ? (
-        <InlineAssetEditor
-          asset={assets.find((asset) => asset.id === assetIdToEdit)!}
-          onDone={hydrate}
-          onCancel={() => setAssetIdToEdit(null)}
-        />
+        <AssetEditorDialog assetId={assetIdToEdit} onClose={onEditDone} />
       ) : null}
     </div>
   )

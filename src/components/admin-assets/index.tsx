@@ -10,7 +10,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
-import EditIcon from '@mui/icons-material/Edit'
 
 import {
   PublishStatus,
@@ -33,7 +32,6 @@ import PaginatedView, { GetQueryFn } from '../paginated-view'
 import EditorRecordManager from '../editor-record-manager'
 import AssetOverview from '../asset-overview'
 import useStorage from '../../hooks/useStorage'
-import AssetEditorWithSync from '../asset-editor-with-sync'
 import { EqualActiveFilter, FilterSubType, FilterType } from '../../filters'
 import QueuedAssetInfo from '../queued-asset-info'
 
@@ -181,7 +179,6 @@ const Queue = ({
   hydrate: () => void
 }) => {
   const [currentAssetId, setCurrentAssetId] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
   const classes = useStyles()
 
   if (!assets) {
@@ -228,11 +225,7 @@ const Queue = ({
           Next Asset
         </Button>
       </div>
-      {isEditing ? (
-        <AssetEditorWithSync assetId={assetIdToDisplay} />
-      ) : (
-        <AssetOverview assetId={assetIdToDisplay} />
-      )}
+      <AssetOverview assetId={assetIdToDisplay} />
     </div>
   )
 }

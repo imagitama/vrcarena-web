@@ -17,8 +17,10 @@ import useHistory from '../../hooks/useHistory'
 import useTimer from '../../hooks/useTimer'
 import * as routes from '../../routes'
 import { PublishErrorCode, getErrorMessageForCode } from '../../utils/assets'
+import Tooltip from '../tooltip'
 
 enum BlockingErrorTypes {
+  NO_SOURCE_URL = 'NO_SOURCE_URL',
   NO_TITLE = 'NO_TITLE',
   DEFAULT_TITLE = 'DEFAULT_TITLE',
   NO_AUTHOR = 'NO_AUTHOR',
@@ -35,7 +37,6 @@ enum NonBlockingErrorTypes {
   NOT_MARKED_NSFW = 'NOT_MARKED_NSFW',
   MISSING_ACCESSORY_PARENT = 'MISSING_ACCESSORY_PARENT',
   NO_ATTACHMENTS = 'NO_ATTACHMENTS',
-  NO_SOURCE_URL = 'NO_SOURCE_URL',
   NO_PAID_OR_FREE_TAG = 'NO_PAID_OR_FREE_TAG',
 }
 
@@ -46,7 +47,7 @@ const validationErrorMessages = {
   [BlockingErrorTypes.NO_AUTHOR]: 'has no author',
   [NonBlockingErrorTypes.NO_SPECIES]: 'has no species',
   [BlockingErrorTypes.NO_THUMBNAIL]: 'has no thumbnail',
-  [NonBlockingErrorTypes.NO_SOURCE_URL]: 'has no source URL',
+  [BlockingErrorTypes.NO_SOURCE_URL]: 'has no source URL',
   [BlockingErrorTypes.NO_DESCRIPTION]: 'has no description',
   [NonBlockingErrorTypes.SHORT_DESCRIPTION]:
     'has a too short description (less than 20 characters)',
@@ -130,7 +131,7 @@ const getValidationErrorMessagesForAsset = (
     messages.push(NonBlockingErrorTypes.NOT_MARKED_NSFW)
   }
   if (!asset.sourceurl) {
-    messages.push(NonBlockingErrorTypes.NO_SOURCE_URL)
+    messages.push(BlockingErrorTypes.NO_SOURCE_URL)
   }
   if (
     asset.category === AssetCategory.Accessory &&
@@ -147,11 +148,13 @@ export default ({
   asset,
   onDone = undefined,
   enableRedirect = true,
+  isDisabled = false,
 }: {
   assetId: string
   asset: Asset
   onDone?: () => void
   enableRedirect?: boolean
+  isDisabled?: boolean
 }) => {
   const [isPublishing, setIsPublishing] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -266,19 +269,27 @@ export default ({
   return (
     <div>
       <FormControls>
-        <Button
-          icon={<PublishIcon />}
-          color="tertiary"
-          onClick={attemptPublish}
-          size="large">
-          Publish For Approval
-        </Button>
+        <Tooltip
+          title={
+            isDisabled
+              ? ''
+              : 'Asset cannot be published (may already be in the queue)'
+          }>
+          <Button
+            icon={<PublishIcon />}
+            color="tertiary"
+            onClick={attemptPublish}
+            size="large"
+            isDisabled={isDisabled}>
+            Publish For Approval
+          </Button>
+        </Tooltip>
       </FormControls>
       {blockingValidationErrorTypes.length ? (
         <>
-          <ErrorMessage hintText={false}>
-            There were some validation issues with your asset that you must fix
-            before it can be published:
+          <ErrorMessage title="Validation Issues" hintText={false}>
+            There are some issues with your asset that must be fixed before it
+            can be published for approval:
             <ul>
               {blockingValidationErrorTypes.map((errorType) => (
                 <li key={errorType}>
@@ -292,13 +303,13 @@ export default ({
       {nonBlockingValidationErrorTypes.length && !ignoreWarnings ? (
         <>
           <WarningMessage
+            title="Recommended Changes"
             controls={
               <Button onClick={() => setIgnoreWarnings(true)} color="secondary">
                 Ignore
               </Button>
             }>
-            There were some validation issues with your asset that we recommend
-            you fix:
+            There are some issues with your asset that we recommend you fix:
             <ul>
               {nonBlockingValidationErrorTypes.map((errorType) => (
                 <li key={errorType}>

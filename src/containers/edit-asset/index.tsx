@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
-import AssetEditorWithSync from '../../components/asset-editor-with-sync'
+import AssetEditor from '@/components/asset-editor'
 
 export default () => {
   const { assetId } = useParams<{ assetId: string }>()
@@ -16,7 +16,7 @@ export default () => {
           content="Edit all of the fields of an asset."
         />
       </Helmet>
-      <AssetEditorWithSync assetId={assetId} />
+      <AssetEditor assetId={assetId} />
     </>
   )
 }

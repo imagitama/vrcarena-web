@@ -36,6 +36,14 @@ export interface EditableFieldBase<TRecord, TFieldData = undefined> {
   allowEmpty?: boolean // if boolean column can be "empty" or undefined
 }
 
+export interface TextEditableField<TRecord>
+  extends ImageUploaderConfig,
+    EditableFieldBase<TRecord> {
+  type: fieldTypes.text
+  minLength?: number
+  maxLength?: number
+}
+
 export interface SelectEditableField<TRecord>
   extends ImageUploaderConfig,
     EditableFieldBase<TRecord> {
@@ -102,6 +110,7 @@ export interface MarkdownEditableField<TRecord, TFieldData>
 }
 
 export type EditableField<TRecord, TFieldData = undefined> =
+  | TextEditableField<TRecord>
   | CheckboxEditableField<TRecord, TFieldData>
   | ImageUploadEditableField<TRecord>
   | SearchableEditableField<TRecord>

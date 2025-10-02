@@ -33,6 +33,9 @@ import ItemInput from './components/item-input'
 import Tabs from '../tabs'
 import DateInput from './components/date-input'
 import UrlInput from '../url-input'
+import { ValidationIssue, getValidationIssues } from '@/validation'
+import ValidationIssuesMessage from '../validation-issues-message'
+import FormControls from '../form-controls'
 
 export type GenericInputProps = {
   editableField: EditableField<any>
@@ -93,10 +96,6 @@ function getInputForFieldType(type: keyof typeof fieldTypes): GenericInput {
 }
 
 const useStyles = makeStyles({
-  saveBtn: {
-    textAlign: 'center',
-    marginTop: '1rem',
-  },
   hint: {
     fontSize: '75%',
     fontStyle: 'italic',
@@ -157,6 +156,7 @@ const GenericEditor = ({
   itemTypeSingular = '',
   showTopSaveBtn = false,
   scrollToTopOfEditor,
+  scrollDisabled = false,
 }: {
   fields?: EditableField<any>[]
   collectionName: string
@@ -178,26 +178,27 @@ const GenericEditor = ({
   itemTypeSingular?: string
   showTopSaveBtn?: boolean
   scrollToTopOfEditor?: boolean
+  scrollDisabled?: boolean
 }) => {
   if (!fields && !(collectionName in editableFields)) {
-    throw new Error(`Collection name ${collectionName} not in editable fields!`)
+    throw new Error(`Collection name ${collectionName} not in editable fields`)
   }
 
-  const fieldsToUse = fields || editableFields[collectionName]
+  const editableFieldsToUse = fields || editableFields[collectionName]
 
   const [isLoading, lastErrorCode, rawRecord] = useDataStoreItem<
     Record<string, any>
   >(viewName || collectionName, id || false, {
     queryName: `generic-editor-${viewName || collectionName}`,
   })
-  const [isSaving, isSuccess, lastErrorCodeSaving, save, clear, updatedRecord] =
+  const [isSaving, isSuccess, lastErrorCodeSaving, save, , updatedRecord] =
     useDataStoreEdit<Record<string, any>>(collectionName, id || false)
   const [formFields, setFormFields] = useState<null | Record<string, any>>(
     overrideFields
       ? overrideFields
       : id
       ? null
-      : fieldsToUse.reduce((newFormFields, fieldConfig) => {
+      : editableFieldsToUse.reduce((newFormFields, fieldConfig) => {
           return {
             ...newFormFields,
             [fieldConfig.name]: fieldConfig.default,
@@ -205,7 +206,9 @@ const GenericEditor = ({
         }, {})
   )
   const classes = useStyles()
-  const [isInvalid, setIsInvalid] = useState(false)
+  const [validationIssues, setValidationIssues] = useState<ValidationIssue[]>(
+    []
+  )
   const rootElementRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -214,7 +217,7 @@ const GenericEditor = ({
     }
 
     setFormFields(
-      fieldsToUse.reduce((newFormFields, fieldConfig) => {
+      editableFieldsToUse.reduce((newFormFields, fieldConfig) => {
         return {
           ...newFormFields,
           [fieldConfig.name]:
@@ -241,7 +244,6 @@ const GenericEditor = ({
       ...formFields,
       [name]: newVal,
     })
-    setIsInvalid(false)
   }
 
   const onFieldsChange = (updates: Record<string, any>) => {
@@ -249,7 +251,6 @@ const GenericEditor = ({
       ...formFields,
       ...updates,
     })
-    setIsInvalid(false)
   }
 
   const onSaveBtnClick = async () => {
@@ -263,21 +264,35 @@ const GenericEditor = ({
         return
       }
 
-      if (scrollToTopOfEditor) {
-        scrollToElement(rootElementRef.current!)
-      } else {
-        scrollToTop()
+      if (scrollDisabled !== true) {
+        if (scrollToTopOfEditor) {
+          scrollToElement(rootElementRef.current!)
+        } else {
+          scrollToTop()
+        }
       }
 
-      if (!validateFields(formFields, fieldsToUse)) {
-        setIsInvalid(true)
+      const newValidationIssues = getValidationIssues(
+        formFields,
+        editableFieldsToUse
+      )
+
+      if (newValidationIssues.length) {
+        setValidationIssues(newValidationIssues)
+        return
+      } else {
+        setValidationIssues([])
+      }
+
+      const result = await save({
+        ...formFields,
+        ...getHiddenFieldsForDb(editableFieldsToUse),
+      })
+
+      if (!result) {
+        console.debug('result is empty')
         return
       }
-
-      await save({
-        ...formFields,
-        ...getHiddenFieldsForDb(fieldsToUse),
-      })
 
       if (onDone) {
         onDone()
@@ -293,27 +308,26 @@ const GenericEditor = ({
   }
 
   const fieldsBySection =
-    fieldsToUse[0].section !== undefined
-      ? fieldsToUse.reduce<{ [sectionName: string]: EditableField<any>[] }>(
-          (newFieldsBySection, field) => {
-            if (!field.section) {
-              throw new Error(
-                `Sections enabled but field ${
-                  field.name as string
-                } does not have a section`
-              )
-            }
+    editableFieldsToUse[0].section !== undefined
+      ? editableFieldsToUse.reduce<{
+          [sectionName: string]: EditableField<any>[]
+        }>((newFieldsBySection, field) => {
+          if (!field.section) {
+            throw new Error(
+              `Sections enabled but field ${
+                field.name as string
+              } does not have a section`
+            )
+          }
 
-            return {
-              ...newFieldsBySection,
-              [field.section]:
-                field.section in newFieldsBySection
-                  ? newFieldsBySection[field.section].concat([field])
-                  : [field],
-            }
-          },
-          {}
-        )
+          return {
+            ...newFieldsBySection,
+            [field.section]:
+              field.section in newFieldsBySection
+                ? newFieldsBySection[field.section].concat([field])
+                : [field],
+          }
+        }, {})
       : undefined
 
   const mapEditableFieldToFieldOutput = (editableField: EditableField<any>) => {
@@ -342,6 +356,27 @@ const GenericEditor = ({
     )
   }
 
+  const controls = (
+    <FormControls>
+      {cancelUrl && (
+        <Button
+          url={cancelUrl}
+          color="secondary"
+          onClick={() => {
+            trackAction(analyticsCategory, cancelBtnAction, id)
+          }}>
+          Cancel
+        </Button>
+      )}
+      <Button
+        onClick={onSaveBtnClick}
+        icon={id ? <SaveIcon /> : <AddIcon />}
+        size="large">
+        {id ? 'Save' : 'Create'} {itemTypeSingular}
+      </Button>
+    </FormControls>
+  )
+
   return (
     <div ref={rootElementRef}>
       {isLoading || !formFields || isSaving ? (
@@ -353,7 +388,7 @@ const GenericEditor = ({
               ? 'Waiting for fields...'
               : isLoading
               ? 'Loading data...'
-              : 'Loading...'
+              : 'Loading editor...'
           }
         />
       ) : null}
@@ -363,7 +398,9 @@ const GenericEditor = ({
       ) : null}
 
       {lastErrorCodeSaving !== null ? (
-        <ErrorMessage>Failed to save (code {lastErrorCodeSaving})</ErrorMessage>
+        <ErrorMessage>
+          Failed to save {itemTypeSingular} (code {lastErrorCodeSaving})
+        </ErrorMessage>
       ) : null}
 
       {isSuccess ? (
@@ -378,33 +415,15 @@ const GenericEditor = ({
         </SuccessMessage>
       ) : null}
 
-      {isInvalid && (
-        <ErrorMessage>
-          One or more fields are invalid. Ensure the required fields have a
-          value.
-        </ErrorMessage>
-      )}
+      {validationIssues.length ? (
+        <ValidationIssuesMessage
+          issues={validationIssues}
+          editableFields={editableFieldsToUse}
+          itemTypeSingular={itemTypeSingular}
+        />
+      ) : null}
 
-      {showTopSaveBtn && onFieldChanged ? null : (
-        <div className={classes.saveBtn}>
-          {cancelUrl && (
-            <Button
-              url={cancelUrl}
-              color="secondary"
-              onClick={() => {
-                trackAction(analyticsCategory, cancelBtnAction, id)
-              }}>
-              Cancel
-            </Button>
-          )}
-          <Button
-            onClick={onSaveBtnClick}
-            icon={id ? <SaveIcon /> : <AddIcon />}
-            size="large">
-            {id ? 'Save' : 'Create'} {itemTypeSingular}
-          </Button>
-        </div>
-      )}
+      {showTopSaveBtn && !onFieldChange && controls}
 
       {fieldsBySection ? (
         <Tabs
@@ -417,33 +436,14 @@ const GenericEditor = ({
           )}
         />
       ) : (
-        fieldsToUse
+        editableFieldsToUse
           .filter(({ type }) => type !== fieldTypes.hidden)
           .filter(({ isEditable }) =>
             id ? (isEditable !== false ? true : false) : true
           )
           .map(mapEditableFieldToFieldOutput)
       )}
-      {onFieldChanged ? null : (
-        <div className={classes.saveBtn}>
-          {cancelUrl && (
-            <Button
-              url={cancelUrl}
-              color="secondary"
-              onClick={() => {
-                trackAction(analyticsCategory, cancelBtnAction, id)
-              }}>
-              Cancel
-            </Button>
-          )}
-          <Button
-            onClick={onSaveBtnClick}
-            icon={id ? <SaveIcon /> : <AddIcon />}
-            size="large">
-            {id ? 'Save' : 'Create'} {itemTypeSingular}
-          </Button>
-        </div>
-      )}
+      {onFieldChanged ? null : controls}
     </div>
   )
 }

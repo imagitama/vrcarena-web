@@ -1,5 +1,5 @@
 import React from 'react'
-import TextInput from '../../../text-input'
+import TextInput from '@/components/text-input'
 import { EditableField } from '@/editable-fields'
 
 export default ({

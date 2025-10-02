@@ -18,7 +18,6 @@ import ErrorBoundary from '../../components/error-boundary'
 import ImageUploader from '../../components/image-uploader'
 import MarkdownEditor from '../../components/markdown-editor'
 import LoadingIndicator from '../../components/loading-indicator'
-import AssetEditor, { EditorContext } from '../../components/asset-editor'
 import TextDiff from '../../components/text-diff'
 import SetupProfile from '../../components/setup-profile'
 import FileUploader from '../../components/file-uploader'
@@ -90,24 +89,6 @@ const MarkdownEditorWrapper = () => {
   const [text, setText] = useState('Here is some *markdown*.')
   return (
     <MarkdownEditor content={text} onChange={(newText) => setText(newText)} />
-  )
-}
-
-const AssetEditorWrapper = () => {
-  const [enabled, setEnabled] = useState(false)
-
-  if (!enabled) {
-    return <Button onClick={() => setEnabled(true)}>Show</Button>
-  }
-
-  return (
-    <EditorContext.Provider
-      value={{
-        // @ts-ignore
-        asset: {},
-      }}>
-      <AssetEditor />
-    </EditorContext.Provider>
   )
 }
 

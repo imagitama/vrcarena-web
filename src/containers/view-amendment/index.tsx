@@ -36,6 +36,7 @@ import {
 } from '../../modules/amendments'
 import { CollectionNames as CommentsCollectionNames } from '../../modules/comments'
 import { ApprovalStatus } from '../../modules/common'
+import NoResultsMessage from '@/components/no-results-message'
 
 const AssetOutput = ({ assetId }: { assetId: string }) => {
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
@@ -108,7 +109,7 @@ const Changes = ({
   const [isLoading, lastErrorCode, parent] = useDataStoreItem(
     getViewNameForParentTable(parentTable),
     parentId,
-    'view-amendment-changes'
+    { queryName: 'view-amendment-changes' }
   )
 
   if (isLoading) {
@@ -126,7 +127,7 @@ const Changes = ({
   }
 
   if (Object.keys(fields).length === 0) {
-    return <ErrorMessage>No fields have been changed</ErrorMessage>
+    return <NoResultsMessage>No fields have been changed</NoResultsMessage>
   }
 
   return (

@@ -24,9 +24,7 @@ import NoResultsMessage from '../no-results-message'
 const analyticsCategoryName = 'ViewAssetEditor'
 
 const useStyles = makeStyles({
-  root: {
-    padding: '0.5rem',
-  },
+  root: {},
   label: {
     marginBottom: '0.5rem',
     fontWeight: 'bold',

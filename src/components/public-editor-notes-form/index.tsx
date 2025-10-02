@@ -65,7 +65,9 @@ const PublicEditorNotesForm = ({
   ) {
     return (
       <LoadingIndicator
-        message={isLoadingMeta || !metaRecord ? 'Loading...' : 'Saving...'}
+        message={
+          isLoadingMeta || !metaRecord ? 'Loading notes...' : 'Saving notes...'
+        }
       />
     )
   }

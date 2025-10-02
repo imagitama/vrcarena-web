@@ -32,6 +32,8 @@ import { SyncContext } from './hooks/useSync'
 import FormField from './components/form-field'
 import WarningMessage from '../warning-message'
 import { capitalize } from '../../utils'
+import { ValidationIssue, getValidationIssues } from '@/validation'
+import assetEditableFields from '@/editable-fields/assets'
 
 export const getSyncPlatformInfoFromName = (
   name: SyncPlatformName
@@ -133,32 +135,6 @@ const getOutputForErrorCode = (errorCode: ErrorCode): string => {
     default:
       return 'unknown'
   }
-}
-
-enum ValidationReason {
-  Empty,
-}
-
-const getValidationIssues = <TRecord extends object>(
-  fields: TRecord
-): ValidationIssue[] => {
-  const issues: ValidationIssue[] = []
-
-  for (const fieldName in fields) {
-    if (!fields[fieldName]) {
-      issues.push({
-        fieldName,
-        reason: ValidationReason.Empty,
-      })
-    }
-  }
-
-  return issues
-}
-
-interface ValidationIssue {
-  fieldName: string
-  reason: ValidationReason
 }
 
 const SyncForm = <TRecord extends object>({
@@ -283,7 +259,10 @@ const SyncForm = <TRecord extends object>({
         return
       }
 
-      const newValidationIssues = getValidationIssues(fieldsToActuallySave)
+      const newValidationIssues = getValidationIssues(
+        fieldsToActuallySave,
+        assetEditableFields
+      )
       setLastValidationIssues(newValidationIssues)
 
       if (newValidationIssues.length) {

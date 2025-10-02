@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import EditIcon from '@mui/icons-material/Edit'
 import { makeStyles } from '@mui/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -15,8 +14,6 @@ import FormattedDate from '../formatted-date'
 import EditorRecordManager from '../editor-record-manager'
 import useIsEditor from '../../hooks/useIsEditor'
 import Message from '../message'
-import Button from '../button'
-import InlineAssetEditor from '../inline-asset-editor'
 import { colorPalette } from '../../config'
 import categoryMetas from '../../category-meta'
 
@@ -96,7 +93,6 @@ const QueuedAssetInfo = ({
   showEditorControls?: boolean
 }) => {
   const isEditor = useIsEditor()
-  const [isEditing, setIsEditing] = useState(false)
 
   return (
     <Message title="Queued Asset">
@@ -200,39 +196,17 @@ const QueuedAssetInfo = ({
         </TableBody>
       </Table>
       {isEditor && showEditorControls ? (
-        <>
-          <br />
-          <br />
-          <Button
-            onClick={() => setIsEditing(true)}
-            color="secondary"
-            icon={<EditIcon />}>
-            Inline Edit
-          </Button>
-          <br />
-          <br />
-          {isEditing && (
-            <InlineAssetEditor
-              asset={asset}
-              onDone={() => {
-                setIsEditing(false)
-                if (hydrate) hydrate()
-              }}
-              onCancel={() => setIsEditing(false)}
-            />
-          )}
-          <EditorRecordManager
-            id={asset.id}
-            collectionName={CollectionNames.Assets}
-            metaCollectionName={CollectionNames.AssetsMeta}
-            existingApprovalStatus={asset.approvalstatus}
-            existingPublishStatus={asset.publishstatus}
-            existingAccessStatus={asset.accessstatus}
-            existingEditorNotes={asset.editornotes}
-            onDone={hydrate}
-            showStatuses
-          />
-        </>
+        <EditorRecordManager
+          id={asset.id}
+          collectionName={CollectionNames.Assets}
+          metaCollectionName={CollectionNames.AssetsMeta}
+          existingApprovalStatus={asset.approvalstatus}
+          existingPublishStatus={asset.publishstatus}
+          existingAccessStatus={asset.accessstatus}
+          existingEditorNotes={asset.editornotes}
+          onDone={hydrate}
+          showStatuses
+        />
       ) : null}
     </Message>
   )

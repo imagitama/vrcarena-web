@@ -112,6 +112,7 @@ This is a caption
         {
           name: 'editor',
           label: 'Editor',
+          noLazy: true,
           contents: (
             <>
               <TextField

@@ -11,7 +11,6 @@ import SuccessMessage from '../success-message'
 import ErrorMessage from '../error-message'
 import { trackAction } from '../../analytics'
 import { handleError } from '../../error-handling'
-import PriceInput from '../price-input'
 import ItemsEditor from '../items-editor'
 import VisitSourceButton from '../visit-source-button'
 import PriceAndCurrencyInput from '../price-and-currency-input'
@@ -143,7 +142,7 @@ const ExtraSourcesEditor = ({
   }
 
   if (isSaving) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message="Saving..." />
   }
 
   if (isSaveSuccess) {
@@ -175,6 +174,7 @@ const ExtraSourcesEditor = ({
           pricecurrency: null,
           comments: '',
         }}
+        nameSingular="extra source"
       />
       {!onChange && (
         <FormControls>

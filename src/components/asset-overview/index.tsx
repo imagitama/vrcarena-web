@@ -324,7 +324,11 @@ const MiniSaleInfo = () => {
   return (
     <Card className={classes.miniSaleInfo}>
       <CardActionArea>
-        <Link to={routes.viewAuthorWithVar.replace(':authorId', asset.author)}>
+        <Link
+          to={routes.viewAuthorWithVar.replace(
+            ':authorId',
+            asset.author || '#no-author'
+          )}>
           <div className={classes.saleTitle}>Sale!</div>
           Click here to view the author's sale info
         </Link>
@@ -583,7 +587,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                       <Link
                         to={routes.viewAuthorWithVar.replace(
                           ':authorId',
-                          asset.author
+                          asset.author || 'no-author'
                         )}>
                         {asset.authorname}
                       </Link>
@@ -707,7 +711,8 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                   </Area>
                 ) : null}
                 {asset.isopenforcommission &&
-                asset.showcommissionstatusforassets ? (
+                asset.showcommissionstatusforassets &&
+                asset.author ? (
                   <Area name="commissions" label="Commission Info">
                     <OpenForCommissionsMessage
                       info={asset.commissioninfo}

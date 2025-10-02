@@ -57,7 +57,7 @@ import { OpenExternalLink, Warning as WarningIcon } from '../../icons'
 import StatusText from '../status-text'
 import Dialog from '../dialog'
 import Heading from '../heading'
-import AssetEditorMini from '../asset-editor-mini'
+import AssetEditorDialog from '../asset-editor-dialog'
 import AssetResultsItem from '../asset-results-item'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useIsEditor from '@/hooks/useIsEditor'
@@ -384,25 +384,22 @@ const QueuedItemRow = ({
               {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
                 <MissingFields queuedItem={queuedItem} />
               ) : null}
-              {isEditor ? (
-                <Button
-                  onClick={onClickToggleEdit}
-                  icon={<EditIcon />}
-                  size="small"
-                  color="secondary">
-                  Editor Only - New Edit Form
-                </Button>
-              ) : null}
               <Button
+                onClick={onClickToggleEdit}
                 icon={<EditIcon />}
                 size="small"
-                color="secondary"
-                url={routes.editAssetWithVar.replace(
-                  ':assetId',
-                  queuedItem.createdassetid
-                )}>
-                Go To Asset Editor
+                color="secondary">
+                Edit Asset
               </Button>
+              {isEditingAsset && (
+                <AssetEditorDialog
+                  onClose={() => {
+                    hydrateAsset()
+                    setIsEditingAsset(false)
+                  }}
+                  assetId={queuedItem.createdassetid}
+                />
+              )}
             </>
           ) : null}
           {lastSubscribeErrorCode !== null ? (
@@ -440,21 +437,6 @@ const QueuedItemRow = ({
           )}
         </TableCell>
       </TableRow>
-      {isEditingAsset ? (
-        <TableRow>
-          <TableCell colSpan={999}>
-            <div style={{ width: '100%' }}>
-              <AssetEditorMini
-                onDone={() => {
-                  hydrateAsset()
-                }}
-                assetId={queuedItem.createdassetid}
-                asset={fullAsset}
-              />
-            </div>
-          </TableCell>
-        </TableRow>
-      ) : null}
     </>
   )
 }

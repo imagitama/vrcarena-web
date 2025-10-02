@@ -36,7 +36,7 @@ const DeleteButton = ({
     useDataStoreItem<MetaRecord>(
       metaCollectionName,
       existingAccessStatus !== undefined ? false : id,
-      'delete-button'
+      { queryName: 'delete-button' }
     )
   const [isSaving, , lastErrorCodeSaving, save] = useDataStoreEdit<MetaRecord>(
     metaCollectionName,

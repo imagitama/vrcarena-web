@@ -17,10 +17,7 @@ const UrlInput = ({
       placeholder="Enter a URL"
       onChange={(e) => {
         setUserInput(e.target.value)
-
-        if (getIsUrl(e.target.value)) {
-          onChange(e.target.value)
-        }
+        onChange(e.target.value)
       }}
       fullWidth
       label="URL"

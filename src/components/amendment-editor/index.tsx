@@ -11,7 +11,7 @@ import { getFieldNameAndValueForOutput } from '../../utils/assets'
 import ErrorMessage from '../error-message'
 import FormControls from '../form-controls'
 import Button from '../button'
-import AssetEditor, { EditorContext } from '../asset-editor'
+import AssetEditor from '../asset-editor'
 import Message from '../message'
 import TextInput from '../text-input'
 import LoadingIndicator from '../loading-indicator'
@@ -28,7 +28,6 @@ import {
 import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
 import {
   Amendment,
-  AmendmentFields,
   CollectionNames as AmendmentsCollectionNames,
 } from '../../modules/amendments'
 import useSupabaseClient from '../../hooks/useSupabaseClient'
@@ -98,16 +97,11 @@ const ParentEditor = ({
   switch (type) {
     case AssetsCollectionNames.Assets:
       return (
-        <EditorContext.Provider
-          // @ts-ignore
-          value={{
-            asset: fields,
-            originalAssetId: id,
-            onFieldChanged,
-            insertExtraFields,
-          }}>
-          <AssetEditor />
-        </EditorContext.Provider>
+        <AssetEditor
+          assetId={null}
+          overrideFields={fields}
+          onFieldChanged={onFieldChanged}
+        />
       )
     case AuthorsCollectionNames.Authors:
       return (
@@ -152,7 +146,7 @@ const AmendmentEditor = ({
     useDataStoreItem<any>(
       parentTable ? getViewNameForParentTable(parentTable) : '',
       parentId || false,
-      'amendment-editor-parent'
+      { queryName: 'amendment-editor-parent' }
     )
   const [
     isSaving,

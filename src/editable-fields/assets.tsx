@@ -3,8 +3,8 @@ import { EditableField } from '.'
 import { fieldTypes } from '../generic-forms'
 import { Asset, AssetCategory, CollectionNames } from '../modules/assets'
 import {
-  BANNER_HEIGHT,
-  BANNER_WIDTH,
+  ASSET_TITLE_MAX_LENGTH,
+  ASSET_TITLE_MIN_LENGTH,
   NONATTACHMENT_MAX_SIZE_BYTES,
   THUMBNAIL_HEIGHT,
   THUMBNAIL_WIDTH,
@@ -45,6 +45,7 @@ const fields: EditableField<Asset>[] = [
     name: 'pricecurrency',
     label: 'Price Currency',
     type: fieldTypes.dropdown,
+    default: null,
     options: Object.entries(popularCurrencies).map(
       ([threeLetterCurrency, name]) => ({
         value: threeLetterCurrency,
@@ -56,6 +57,7 @@ const fields: EditableField<Asset>[] = [
     name: 'price',
     label: 'Price',
     type: fieldTypes.custom,
+    default: null,
     renderer: ({ value, onChange, formFields }) => (
       <PriceInput
         value={value as any}
@@ -80,20 +82,21 @@ const fields: EditableField<Asset>[] = [
     name: 'title',
     label: 'Title',
     type: fieldTypes.text,
-    isRequired: true,
+    minLength: ASSET_TITLE_MIN_LENGTH,
+    maxLength: ASSET_TITLE_MAX_LENGTH,
     hint: 'A short, descriptive name of the asset. Avoid any redundancy like the words "avatar" or "accessory".',
   },
   {
     name: 'thumbnailurl',
     label: 'Thumbnail URL',
     type: fieldTypes.imageUpload,
+    isRequired: true,
+    hint: 'A static square image used anywhere the asset is displayed on the site.',
     requiredWidth: THUMBNAIL_WIDTH,
     requiredHeight: THUMBNAIL_HEIGHT,
     bucketName: bucketNames.assetThumbnails,
     getDirectoryPath: (fields) => fields.id,
     maxSizeBytes: NONATTACHMENT_MAX_SIZE_BYTES,
-    isRequired: true,
-    hint: 'A static square image used anywhere the asset is displayed on the site.',
   },
   // disabled sep 2025 for bandwidth
   // {
@@ -137,7 +140,6 @@ const fields: EditableField<Asset>[] = [
         activeSpeciesIds={value || []}
         showControls={false}
         onChange={(newIds) => onChange(newIds as any)} // TODO: fix up types
-        startCollapsed
       />
     ),
   },
@@ -146,12 +148,15 @@ const fields: EditableField<Asset>[] = [
     label: 'Adult Toggle',
     checkboxLabel: 'Is adult',
     type: fieldTypes.checkbox,
+    default: false,
     hint: nsfwRules,
+    isRequired: true,
   },
   {
     name: 'tags',
     label: 'Tags',
     type: fieldTypes.tags,
+    default: [],
     showRecommendedTags: true,
     showChatGptSuggestions: true,
   },
@@ -159,6 +164,7 @@ const fields: EditableField<Asset>[] = [
     name: 'relations',
     label: 'Relations',
     type: fieldTypes.custom,
+    default: [],
     renderer: ({ value, onChange }) => (
       <RelationsEditor
         assetId={null}
@@ -171,6 +177,7 @@ const fields: EditableField<Asset>[] = [
     name: 'attachmentids',
     label: 'Attachments',
     type: fieldTypes.custom,
+    default: [],
     renderer: ({ value, onChange, formFields }) => (
       <AttachmentsForm
         parentTable={CollectionNames.Assets}
@@ -187,6 +194,7 @@ const fields: EditableField<Asset>[] = [
     name: 'discordserver',
     label: 'Required Discord Server',
     type: fieldTypes.custom,
+    default: null,
     renderer: ({ value, onChange }) => (
       <ChangeDiscordServerForm
         assetId={null}
@@ -199,6 +207,7 @@ const fields: EditableField<Asset>[] = [
     name: 'vrchatclonableavatarids',
     label: 'VRChat Avatar IDs',
     type: fieldTypes.custom,
+    default: [],
     renderer: ({ value, onChange }) => (
       <VrchatAvatarIdsForm
         assetId={null}
@@ -212,6 +221,7 @@ const fields: EditableField<Asset>[] = [
     name: 'sketchfabembedurl',
     label: 'Sketchfab Embed URL',
     type: fieldTypes.url,
+    default: null,
     hint: `1. View your Sketchfab model and above the Triangles and Vertices count click the Embed button
 2. Check any options you want for your embed
 3. Select "iframe" as the format and copy the HTML code
@@ -221,6 +231,7 @@ const fields: EditableField<Asset>[] = [
     name: 'vccurl',
     label: 'VRChat Creator Companion URL',
     type: fieldTypes.url,
+    default: null,
     hint: `Set to either a JSON file or a Git repo URL:
 
 - https://vrchat-community.github.io/template-package/index.json
