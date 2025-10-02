@@ -423,7 +423,7 @@ const GenericEditor = ({
         />
       ) : null}
 
-      {showTopSaveBtn && !onFieldChange && controls}
+      {onFieldChanged || !showTopSaveBtn ? null : controls}
 
       {fieldsBySection ? (
         <Tabs

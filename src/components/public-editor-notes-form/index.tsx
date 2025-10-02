@@ -40,7 +40,7 @@ const PublicEditorNotesForm = ({
     useDataStoreItem<CommonMetaRecordFields>(
       metaCollectionName,
       existingEditorNotes !== undefined ? false : id,
-      'editor-notes-form'
+      { queryName: 'editor-notes-form' }
     )
   const [isSaving, , lastErrorCodeSavingMeta, saveMetaRecord] =
     useDataStoreEdit<MetaRecord>(metaCollectionName, id)

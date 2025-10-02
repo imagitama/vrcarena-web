@@ -42,7 +42,7 @@ const AssetOutput = ({ assetId }: { assetId: string }) => {
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
     AssetsCollectionNames.Assets,
     assetId,
-    'view-amendment-asset'
+    { queryName: 'view-amendment-asset' }
   )
 
   if (isLoading) {
@@ -66,7 +66,7 @@ const AuthorOutput = ({ authorId }: { authorId: string }) => {
   const [isLoading, lastErrorCode, author] = useDataStoreItem<Author>(
     AuthorsCollectionNames.Authors,
     authorId,
-    'view-amendment-author'
+    { queryName: 'view-amendment-author' }
   )
 
   if (isLoading) {
@@ -158,7 +158,7 @@ const View = () => {
     useDataStoreItem<FullAmendment>(
       AmendmentsViewNames.GetFullAmendments,
       userId ? amendmentId : false,
-      'view-amendment'
+      { queryName: 'view-amendment' }
     )
   const isEditor = useIsEditor()
 
