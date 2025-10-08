@@ -242,6 +242,7 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   tagsdata: Tag[]
   attachmentsdata: FullAttachment[] | null
   publishedbyusername: string
+  publishedbyreputation: number
 }
 
 export interface SmallAsset extends Asset, AssetMeta {
@@ -274,7 +275,6 @@ export enum ViewNames {
   GetPublicAssets = 'getpublicassets', // PublicAsset[]
   RelatedAssets = 'relatedassets', // RelatedAssetsResult[]
   GetNewPublicAssets = 'getnewpublicassets', // PublicAsset[]-like
-  GetRandomPublicAvatars = 'getrandompublicavatars',
   GetAssetTimeline = 'getassettimeline',
   GetCollectionAssetResults = 'getcollectionassetresults',
   GetEndorsementAssetResults = 'getendorsementassetresults',

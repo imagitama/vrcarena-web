@@ -25,7 +25,8 @@ export interface AmendmentMeta {
 export interface FullAmendment extends Amendment, AmendmentMeta {
   approvalstatus: ApprovalStatus
   parentdata: any
-  createdbyusername: any
+  createdbyusername: string
+  createdbyreputation: number
 }
 
 export enum CollectionNames {

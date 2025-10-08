@@ -8,6 +8,10 @@ import Link from '../../components/link'
 import useIsEditor from '../../hooks/useIsEditor'
 import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
 import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
+import {
+  UserMeta,
+  CollectionNames as UsersCollectionNames,
+} from '../../modules/users'
 
 import FormattedDate from '../formatted-date'
 import Button from '../button'
@@ -17,6 +21,9 @@ import SuccessMessage from '../success-message'
 import AmendmentEditorRecordManager from '../amendment-editor-record-manager'
 import AssetResultsItem from '../asset-results-item'
 import AuthorResultsItem from '../author-results-item'
+import StatusText from '../status-text'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import UsernameLink from '../username-link'
 
 const useStyles = makeStyles({
   mainCell: {
@@ -54,6 +61,7 @@ export default ({
     createdby: createdBy,
     parentdata: parentData,
     createdbyusername: createdByUsername,
+    createdbyreputation: createdByRep,
   } = result
 
   const classes = useStyles()
@@ -96,9 +104,11 @@ export default ({
         </TableCell>
         <TableCell className={classes.mainCell}>
           <FormattedDate date={createdAt} /> by{' '}
-          <Link to={routes.viewUserWithVar.replace(':userId', createdBy)}>
-            {createdByUsername}
-          </Link>
+          <UsernameLink
+            id={createdBy}
+            username={createdByUsername}
+            reputation={createdByRep}
+          />
         </TableCell>
         {isEditor ? (
           <TableCell className={classes.mainCell}>

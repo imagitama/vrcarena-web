@@ -16,6 +16,14 @@ import useIsEditor from '../../hooks/useIsEditor'
 import Message from '../message'
 import { colorPalette } from '../../config'
 import categoryMetas from '../../category-meta'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import {
+  UserMeta,
+  CollectionNames as UsersCollectionNames,
+} from '@/modules/users'
+import StatusText from '../status-text'
+import Link from '../link'
+import { routes } from '@/routes'
 
 const useStyles = makeStyles({
   pass: {
@@ -101,10 +109,12 @@ const QueuedAssetInfo = ({
         <UsernameLink
           id={asset.publishedby}
           username={asset.publishedbyusername}
+          reputation={asset.publishedbyreputation}
         />
       ) : (
         '(unknown)'
       )}{' '}
+      <br />
       <FormattedDate date={asset.publishedat!} />
       <Table size="small">
         <TableBody>
