@@ -46,6 +46,7 @@ export interface UserMeta extends Record<string, unknown> {
   banstatus: BanStatus
   banreason: string
   accessstatus: AccessStatus
+  reputation: number // int
 }
 
 export enum BanStatus {

@@ -43,6 +43,9 @@ import { VRCArenaTheme } from '../../themes'
 import ViewControls from '../view-controls'
 import BannedBadge from '../banned-badge'
 import DeletedBadge from '../deleted-badge'
+import RepChangeList from '../rep-change-list'
+import StatusText from '../status-text'
+import EditorBox from '../editor-box'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   cols: {
@@ -287,6 +290,11 @@ const UserOverview = ({
                           label: 'History',
                           contents: <TabHistory />,
                         },
+                        {
+                          name: 'reputation',
+                          label: 'Reputation',
+                          contents: <RepChangeList userId={user.id} />,
+                        },
                       ]
                     : []
                 )}
@@ -301,19 +309,25 @@ const UserOverview = ({
         </div>
         {isEditor && (
           <ViewControls>
-            <Button
-              icon={<EditIcon />}
-              url={routes.editUserWithVar.replace(':userId', user.id)}>
-              Edit User
-            </Button>{' '}
-            <Button
-              icon={<CommentIcon />}
-              url={`${routes.adminWithTabNameVar.replace(
-                ':tabName',
-                'users'
-              )}?userId=${user.id}`}>
-              View Comments
-            </Button>
+            <EditorBox>
+              Reputation:{' '}
+              <StatusText positivity={user.reputation > 0 ? 1 : -1}>
+                {user.reputation}
+              </StatusText>{' '}
+              <Button
+                icon={<EditIcon />}
+                url={routes.editUserWithVar.replace(':userId', user.id)}>
+                Edit User
+              </Button>{' '}
+              <Button
+                icon={<CommentIcon />}
+                url={`${routes.adminWithTabNameVar.replace(
+                  ':tabName',
+                  'users'
+                )}?userId=${user.id}`}>
+                View Comments
+              </Button>
+            </EditorBox>
           </ViewControls>
         )}
       </Context.Provider>

@@ -82,6 +82,7 @@ const fields: EditableField<Asset>[] = [
     name: 'title',
     label: 'Title',
     type: fieldTypes.text,
+    isRequired: true,
     minLength: ASSET_TITLE_MIN_LENGTH,
     maxLength: ASSET_TITLE_MAX_LENGTH,
     hint: 'A short, descriptive name of the asset. Avoid any redundancy like the words "avatar" or "accessory".',
@@ -113,7 +114,7 @@ const fields: EditableField<Asset>[] = [
     name: 'author',
     label: 'Author',
     type: fieldTypes.custom,
-    renderer: ({ value, onChange, formFields }) => (
+    renderer: ({ value, onChange }) => (
       <ChangeAuthorForm
         id={null}
         existingAuthorId={value}
@@ -134,6 +135,7 @@ const fields: EditableField<Asset>[] = [
     name: 'species',
     label: 'Species',
     type: fieldTypes.custom,
+    default: [],
     renderer: ({ value, onChange }) => (
       <ChangeSpeciesEditor
         assetId={null}
