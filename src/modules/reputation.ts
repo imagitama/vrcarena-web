@@ -1,4 +1,4 @@
-export interface RepReason {
+export interface RepReason extends Record<string, any> {
   name: string // unique
   delta: number // int
   description: string | null
@@ -8,7 +8,7 @@ export interface RepReason {
   createdat: string // date
 }
 
-export interface RepChange {
+export interface RepChange extends Record<string, any> {
   id: string
   userid: string
   reason: string // RepReason.name
@@ -20,6 +20,8 @@ export interface RepChange {
 
 export interface FullRepChange extends RepChange {
   reasoninfo: RepReason
+  userusername: string
+  userreputation: number
 }
 
 export enum CollectionNames {
@@ -28,5 +30,5 @@ export enum CollectionNames {
 }
 
 export enum ViewNames {
-  GetFullRepChanges = 'GETFULLREPCHANGES',
+  GetFullRepChanges = 'GetFullRepChanges',
 }

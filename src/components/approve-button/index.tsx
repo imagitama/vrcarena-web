@@ -46,7 +46,7 @@ const ApproveButton = ({
     useDataStoreItem<MetaRecord>(
       metaCollectionName,
       existingApprovalStatus ? false : id,
-      'approve-button'
+      { queryName: 'approve-button' }
     )
   const [isSaving, , lastErrorCodeSaving, save] = useDataStoreEdit<MetaRecord>(
     metaCollectionName,

@@ -15,6 +15,7 @@ const useDataStoreEdit = <TRecord extends Record<string, unknown>>(
   collectionName: string,
   id: string | false,
   options: DataStoreOptions = {
+    idField: 'id',
     ignoreErrorCodes: [],
   }
 ): [
@@ -70,10 +71,14 @@ const useDataStoreEdit = <TRecord extends Record<string, unknown>>(
       setLastErrorCode(null)
       setIsEditing(true)
 
+      if (Array.isArray(options.idField)) {
+        throw new Error('Array not supported')
+      }
+
       const { data, error } = await supabase
         .from(collectionName)
         .update<TRecord>(fieldsForUpdate)
-        .eq('id', id)
+        .eq(options.idField || 'id', id)
         .select<'*', TRecord>('*')
 
       if (error) {

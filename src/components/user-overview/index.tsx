@@ -43,7 +43,7 @@ import { VRCArenaTheme } from '../../themes'
 import ViewControls from '../view-controls'
 import BannedBadge from '../banned-badge'
 import DeletedBadge from '../deleted-badge'
-import RepChangeList from '../rep-change-list'
+import RepChangeForUser from '../rep-change-for-user'
 import StatusText from '../status-text'
 import EditorBox from '../editor-box'
 
@@ -293,7 +293,7 @@ const UserOverview = ({
                         {
                           name: 'reputation',
                           label: 'Reputation',
-                          contents: <RepChangeList userId={user.id} />,
+                          contents: <RepChangeForUser userId={user.id} />,
                         },
                       ]
                     : []

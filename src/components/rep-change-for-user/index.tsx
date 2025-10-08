@@ -1,5 +1,8 @@
 import React from 'react'
-import { FullRepChange } from '@/modules/reputation'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import { FullRepChange, ViewNames } from '@/modules/reputation'
+import LoadingIndicator from '../loading-indicator'
+import ErrorMessage from '../error-message'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -8,15 +11,30 @@ import TableRow from '@mui/material/TableRow'
 import NoResultsMessage from '../no-results-message'
 import StatusText from '../status-text'
 import FormattedDate from '../formatted-date'
-import UsernameLink from '../username-link'
 
-const RepChangeList = ({ repChanges }: { repChanges: FullRepChange[] }) => {
+const RepChangeForUser = ({ userId }: { userId: string }) => {
+  const [isLoading, lastErrorCode, repChanges] =
+    useDatabaseQuery<FullRepChange>(ViewNames.GetFullRepChanges, [
+      ['userid', Operators.EQUALS, userId],
+    ])
+
+  if (isLoading || !repChanges) {
+    return <LoadingIndicator message="Loading reputation..." />
+  }
+
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load reputation changes (code {lastErrorCode})
+      </ErrorMessage>
+    )
+  }
+
   return (
     <Table>
       <TableHead>
         <TableRow>
           <TableCell>ID</TableCell>
-          <TableCell>User</TableCell>
           <TableCell>Reason</TableCell>
           <TableCell>Delta</TableCell>
           <TableCell>Related Data</TableCell>
@@ -29,13 +47,6 @@ const RepChangeList = ({ repChanges }: { repChanges: FullRepChange[] }) => {
             <TableRow key={repChange.id}>
               <TableCell title={repChange.id}>
                 {repChange.id.substring(0, 5)}...
-              </TableCell>
-              <TableCell>
-                <UsernameLink
-                  id={repChange.userid}
-                  username={repChange.userusername}
-                  reputation={repChange.userreputation}
-                />
               </TableCell>
               <TableCell>
                 {repChange.reason}
@@ -72,4 +83,4 @@ const RepChangeList = ({ repChanges }: { repChanges: FullRepChange[] }) => {
   )
 }
 
-export default RepChangeList
+export default RepChangeForUser

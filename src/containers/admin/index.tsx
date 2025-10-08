@@ -25,6 +25,7 @@ import Link from '../../components/link'
 import AdminAssetSyncQueue from './components/asset-queue'
 import AdminAudit from './components/audit'
 import AdminDupes from './components/dupes'
+import AdminReputation from './components/reputation'
 import InfoMessage from '../../components/info-message'
 
 const View = () => {
@@ -214,6 +215,22 @@ const View = () => {
                   change you do is somewhat permanent.
                 </InfoMessage>
                 <AdminDupes />
+              </>
+            ),
+          },
+          {
+            name: 'reputation',
+            label: 'Reputation',
+            contents: (
+              <>
+                <InfoMessage
+                  title="How Reputation Works"
+                  hideId="admin-rep-info">
+                  Users gain reputation from performing actions on the site:
+                  creating assets, amendments, comments, having an old account,
+                  etc.
+                </InfoMessage>
+                <AdminReputation />
               </>
             ),
           },
