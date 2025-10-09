@@ -317,14 +317,16 @@ const FieldOutput = <TItem,>({
   }
 }
 
-const Labels = <TItem,>() => {
+type TItem = any
+
+const Labels = forwardRef<HTMLDivElement>((props, ref) => {
   const classes = useStyles()
   const { mainItem, otherItems, fields, replaceOtherIds } =
     useMultiDiff<TItem>()
   const { ids: cartIds } = useCart()
 
   return (
-    <div className={`${classes.item} ${classes.labels}`}>
+    <div ref={ref} className={`${classes.item} ${classes.labels}`}>
       <div className={classes.cell}>
         <div>
           <Button
@@ -366,7 +368,7 @@ const Labels = <TItem,>() => {
         })}
     </div>
   )
-}
+})
 
 const getCellSizeForField = (
   field: MultiDiffField<any>
