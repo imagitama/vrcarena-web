@@ -165,32 +165,54 @@ const AssetState = ({ asset }: { asset: FullAsset }) => {
   const classes = useStyles()
 
   if (asset.accessstatus === AccessStatus.Deleted) {
-    return <Chip className={classes.deleted} label="Deleted" />
-  }
-
-  if (asset.accessstatus === AccessStatus.Archived) {
-    return <Chip className={classes.deleted} label="Archived" />
-  }
-
-  if (getIsAssetWaitingForApproval(asset)) {
     return (
-      <Chip
-        className={classes.waitingForApproval}
-        label="Waiting For Approval"
-      />
+      <Tooltip title="This asset has been deleted by the editorial team. Please view the editor notes for more info.">
+        <Chip className={classes.deleted} label="Deleted" />
+      </Tooltip>
+    )
+  }
+
+  if (
+    getIsAssetWaitingForApproval(asset) &&
+    asset.approvalstatus !== ApprovalStatus.AutoApproved
+  ) {
+    return (
+      <Tooltip title="This asset is waiting for approval by our editorial team. It may also be waiting for automical approval.">
+        <Chip
+          className={classes.waitingForApproval}
+          label="Waiting For Approval"
+        />
+      </Tooltip>
     )
   }
 
   if (getIsAssetDeclined(asset)) {
-    return <Chip className={classes.declined} label="Declined" />
+    return (
+      <Tooltip title="This asset was declined by our editorial team. Please view the editor notes and comments.">
+        <Chip className={classes.declined} label="Declined" />
+      </Tooltip>
+    )
   }
 
   if (getIsAssetADraft(asset)) {
-    return <Chip className={classes.draft} label="Draft" />
+    return (
+      <Tooltip title="This asset is a draft and requires publishing before it is visible to everyone.">
+        <Chip className={classes.draft} label="Draft" />
+      </Tooltip>
+    )
   }
 
   if (getIsAssetVisibleToEveryone(asset)) {
-    return <Chip className={classes.visibleToEveryone} label="Visible" />
+    return (
+      <Tooltip title="This asset is in search results, viewing someone like an author, browsing a category, browsing a species, etc. * = auto-approved">
+        <Chip
+          className={classes.visibleToEveryone}
+          label={`Visible${
+            asset.approvalstatus === ApprovalStatus.AutoApproved ? '*' : ''
+          }`}
+        />
+      </Tooltip>
+    )
   }
 
   return null
