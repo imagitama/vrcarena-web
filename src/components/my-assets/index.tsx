@@ -33,7 +33,7 @@ const MyUploads = () => {
           query = query
             .eq('publishstatus', PublishStatus.Published)
             .or(
-              `approvalstatus.eq.${ApprovalStatus.Waiting},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
+              `approvalstatus.eq.${ApprovalStatus.Approved},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
             )
             .eq('accessstatus', AccessStatus.Public)
           break
