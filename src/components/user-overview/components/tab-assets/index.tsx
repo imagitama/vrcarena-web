@@ -1,15 +1,10 @@
 import React, { useCallback } from 'react'
-import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled'
 import useUserOverview from '../../useUserOverview'
-import PaginatedView, { GetQueryFn } from '../../../paginated-view'
+import { GetQueryFn } from '../../../paginated-view'
 import AssetResults from '../../../asset-results'
 import WarningMessage from '../../../warning-message'
 import { PublicAsset, ViewNames } from '../../../../modules/assets'
-import {
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-} from '../../../../modules/common'
+import AssetsPaginatedView from '@/components/assets-paginated-view'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -17,22 +12,9 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => (
 
 const TabAssets = () => {
   const { userId, user } = useUserOverview()
-  const isAdultContentEnabled = useIsAdultContentEnabled()
-
-  // TODO: Refactor to useDatabaseQuery
   const getQuery = useCallback<GetQueryFn<PublicAsset>>(
-    (query) => {
-      query = query
-        .eq('createdby', userId)
-        .eq('publishstatus', PublishStatus.Published)
-        .eq('approvalstatus', ApprovalStatus.Approved)
-        .eq('accessstatus', AccessStatus.Public)
-      if (isAdultContentEnabled !== true) {
-        query = query.eq('isadult', false)
-      }
-      return query
-    },
-    [userId, isAdultContentEnabled]
+    (query) => query.eq('createdby', userId),
+    [userId]
   )
 
   if (!userId || !user) {
@@ -45,23 +27,12 @@ const TabAssets = () => {
         These are assets this user has posted to the site and are not
         necessarily what they have created. Users are separate to authors.
       </WarningMessage>
-      <PaginatedView<PublicAsset>
-        viewName={ViewNames.GetFullAssets}
+      <AssetsPaginatedView
+        viewName={ViewNames.GetPublicAssets}
         getQuery={getQuery}
-        name="view-user-assets"
-        sortOptions={[
-          {
-            label: 'Submission date',
-            fieldName: 'createdat',
-          },
-          {
-            label: 'Title',
-            fieldName: 'title',
-          },
-        ]}
-        defaultFieldName="createdat">
+        name="view-user-assets">
         <Renderer />
-      </PaginatedView>
+      </AssetsPaginatedView>
     </>
   )
 }
