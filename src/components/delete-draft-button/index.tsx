@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
+import { handleError } from '../../error-handling'
+import { FirebaseFunctionNames } from '../../modules/assets'
 
 import Button from '../button'
 import LoadingIndicator from '../loading-indicator'
-
-import { handleError } from '../../error-handling'
-import { AccessStatus, MetaRecord } from '../../modules/common'
-import { CollectionNames } from '../../modules/assets'
 import Dialog from '../dialog'
 import ErrorMessage from '../error-message'
+import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+
+enum ErrorCode {
+  NotDraft = 'not-draft',
+  NotAllowed = 'not-allowed',
+}
 
 const DeleteDraftButton = ({
   assetId,
@@ -20,38 +23,41 @@ const DeleteDraftButton = ({
   onDone?: () => void
 }) => {
   const [isConfirming, setIsConfirming] = useState(false)
-  const [isSaving, , lastErrorCodeSaving, save, clear] =
-    useDataStoreEdit<MetaRecord>(CollectionNames.AssetsMeta, assetId)
+  const [isCalling, lastErrorCodeCalling, lastResult, call, clear] =
+    useFirebaseFunction<
+      { assetId: string },
+      { errorCode?: ErrorCode; success?: true }
+    >(FirebaseFunctionNames.DeleteDraft)
 
-  if (isSaving) {
-    return <LoadingIndicator message={'Saving...'} />
+  if (isCalling) {
+    return <LoadingIndicator message={'Deleting...'} />
   }
 
-  if (lastErrorCodeSaving !== null) {
+  if (lastErrorCodeCalling !== null || (lastResult && lastResult.errorCode)) {
     return (
       <ErrorMessage onOkay={clear}>
-        Failed to save asset (code {lastErrorCodeSaving})
+        Failed to delete draft (code{' '}
+        {lastErrorCodeCalling !== null
+          ? lastErrorCodeCalling
+          : lastResult?.errorCode}
+        )
       </ErrorMessage>
     )
   }
 
   const performDelete = async () => {
     try {
-      setIsConfirming(false)
+      const { success } = await call({ assetId })
 
-      const result = await save({
-        accessstatus: AccessStatus.Deleted,
-      })
+      if (success) {
+        console.debug('asset was deleted!')
 
-      if (!result.length) {
-        return
-      }
-
-      if (onDone) {
-        onDone()
+        if (onDone) {
+          onDone()
+        }
       }
     } catch (err) {
-      console.error('Failed to save draft deleted status', err)
+      console.error(err)
       handleError(err)
     }
   }

@@ -286,3 +286,7 @@ export enum FunctionNames {
   SearchAssets = 'searchassets',
   GetOrHydrateGetFullAssets = 'get_or_hydrate_getfullassets',
 }
+
+export enum FirebaseFunctionNames {
+  DeleteDraft = 'deleteDraft',
+}
