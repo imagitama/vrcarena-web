@@ -213,7 +213,7 @@ const fields: EditableField<Asset>[] = [
     renderer: ({ value, onChange }) => (
       <VrchatAvatarIdsForm
         assetId={null}
-        initialValue={value || []}
+        value={value || []}
         onChange={onChange as any}
       />
     ),

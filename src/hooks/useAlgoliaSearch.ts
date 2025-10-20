@@ -105,7 +105,7 @@ export default <T>(
     async function doIt() {
       try {
         if (!indexRef.current) {
-          throw new Error('No index')
+          throw new Error('useAlgoliaSearch - no index')
         }
 
         if (!keywords) {
@@ -115,7 +115,10 @@ export default <T>(
         setIsLoading(true)
         setLastErrorCode(null)
 
-        console.debug(`searching with algolia`, { keywords, filters })
+        console.debug(`useAlgoliaSearch searching with algolia`, {
+          keywords,
+          filters,
+        })
 
         const { hits } = await indexRef.current.search<AlgoliaAssetRecord>(
           keywords,
@@ -126,7 +129,9 @@ export default <T>(
           }
         )
 
-        console.debug(`searching with algolia complete`, { hits })
+        console.debug(`useAlgoliaSearch searching with algolia complete`, {
+          hits,
+        })
 
         // TODO: do generically
         const newResults = mapHitsToAssetSearchResults(hits) as unknown as T[]

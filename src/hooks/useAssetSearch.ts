@@ -41,7 +41,8 @@ const useAssetSearch = (
       limit
     )
 
-  const usingSimpleSearch = lastAlgoliaErrorCode !== null
+  const usingSimpleSearch =
+    lastAlgoliaErrorCode !== null || process.env.NODE_ENV === 'development'
 
   const [isSimpleLoading, lastSimpleErrorCode, simpleResults] =
     useDataStoreFunction<
@@ -62,11 +63,11 @@ const useAssetSearch = (
   const assets = usingSimpleSearch ? simpleResults : algoliaResults
 
   useEffect(() => {
-    dispatch(setIsSearching(isLoading))
-  }, [isLoading])
+    dispatch(setIsSearching(usingSimpleSearch ? isLoading : isSimpleLoading))
+  }, [usingSimpleSearch, isLoading, isSimpleLoading])
 
   return [
-    isLoading,
+    usingSimpleSearch ? isLoading : isSimpleLoading,
     hasErrorCode ? ErrorCode.Unknown : null,
     assets,
     usingSimpleSearch,

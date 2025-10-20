@@ -68,11 +68,24 @@ const VrchatAvatarIdsForm = ({
     CollectionNames.Assets,
     assetId || false
   )
-  const [newAvatarIds, setNewAvatarIds] = useState<VrchatClonableAvatarIds>(
-    (props as UncontrolledEditorProps<VrchatClonableAvatarIds>).initialValue ||
-      []
-  )
+  const [storedAvatarIds, setStoredAvatarIds] =
+    useState<VrchatClonableAvatarIds>(
+      (props as UncontrolledEditorProps<VrchatClonableAvatarIds>)
+        .initialValue || []
+    )
   const classes = useStyles()
+
+  const newAvatarIds = (props as ControlledEditorProps<VrchatClonableAvatarIds>)
+    .onChange
+    ? (props as ControlledEditorProps<VrchatClonableAvatarIds>).value
+    : storedAvatarIds
+
+  const setNewAvatarIds = (newIds: string[]) =>
+    (props as ControlledEditorProps<VrchatClonableAvatarIds>).onChange
+      ? (props as ControlledEditorProps<VrchatClonableAvatarIds>).onChange(
+          newIds
+        )
+      : setStoredAvatarIds(newIds)
 
   if (!userId) {
     return <ErrorMessage>You are not logged in</ErrorMessage>
@@ -123,11 +136,9 @@ const VrchatAvatarIdsForm = ({
   }
 
   const addAvatarId = (avatarId: string) =>
-    setNewAvatarIds((currentAvatarIds) => currentAvatarIds.concat([avatarId]))
+    setNewAvatarIds(newAvatarIds.concat([avatarId]))
   const removeAvatarId = (avatarId: string) =>
-    setNewAvatarIds((currentAvatarIds) =>
-      currentAvatarIds.filter((id) => id !== avatarId)
-    )
+    setNewAvatarIds(newAvatarIds.filter((id) => id !== avatarId))
 
   return (
     <div className={classes.root}>

@@ -232,6 +232,8 @@ const GenericEditor = ({
   }, [rawRecord === null])
 
   const onFieldChange = (name: string, newVal: string | boolean | number) => {
+    console.debug(`GenericEditor.onFieldChange`, name, newVal)
+
     if (onFieldChanged) {
       onFieldChanged(name, newVal)
     }

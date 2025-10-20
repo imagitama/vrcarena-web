@@ -237,6 +237,9 @@ const RelationsEditor = ({
     formHideDelay
   )
 
+  const storeNewRelations = (relations: Relation[]) =>
+    onChange ? onChange(relations) : setNewRelations(relations)
+
   // for asset editor mini
   useEffect(() => {
     if (!onChange || !currentRelations) {
@@ -245,9 +248,9 @@ const RelationsEditor = ({
     setNewRelations(currentRelations)
   }, [JSON.stringify(currentRelations)])
 
-  const onNewRelations = (relations: Relation[]) => setNewRelations(relations)
+  const onNewRelations = (relations: Relation[]) => storeNewRelations(relations)
   const onAddRelation = (newRelation: Relation) => {
-    setNewRelations(newRelations.concat(newRelation))
+    storeNewRelations(newRelations.concat(newRelation))
     setIsAddFormVisible(false)
   }
 

@@ -11,6 +11,7 @@ import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import TextInput from '../text-input'
 import Select from '../select'
+import NoResultsMessage from '../no-results-message'
 
 const useStyles = makeStyles({
   root: {
@@ -72,7 +73,9 @@ const AssetSearch = ({
           dimUnselected
           selectedAssetIds={selectedAsset ? [selectedAsset.id] : undefined}
         />
-      ) : null}
+      ) : (
+        <NoResultsMessage>No assets found</NoResultsMessage>
+      )}
 
       <div className={classes.root}>
         <div className={classes.dropdown}>
