@@ -101,7 +101,7 @@ function SocialMediaListItem({
 }) {
   const classes = useStyles()
 
-  if (!label && !inDevelopment()) {
+  if (!label) {
     return null
   }
 

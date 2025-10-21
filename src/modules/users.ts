@@ -45,7 +45,7 @@ export interface UserMeta extends Record<string, unknown> {
   discorduserid: number
   banstatus: BanStatus
   banreason: string
-  accessstatus: AccessStatus
+  accessstatus: AccessStatus // when user wants to delete their account
   reputation: number // int
 }
 

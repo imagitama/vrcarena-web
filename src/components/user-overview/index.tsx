@@ -1,8 +1,14 @@
 import React from 'react'
 import Link from '../../components/link'
-import { makeStyles } from '@mui/styles'
+import makeStyles from '@mui/styles/makeStyles'
 import EditIcon from '@mui/icons-material/Edit'
 import CommentIcon from '@mui/icons-material/Comment'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+
 import * as routes from '../../routes'
 import {
   fixAccessingImagesUsingToken,
@@ -46,6 +52,7 @@ import DeletedBadge from '../deleted-badge'
 import RepChangeForUser from '../rep-change-for-user'
 import StatusText from '../status-text'
 import EditorBox from '../editor-box'
+import FormattedDate from '../formatted-date'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   cols: {
@@ -310,10 +317,47 @@ const UserOverview = ({
         {isEditor && (
           <ViewControls>
             <EditorBox>
-              Reputation:{' '}
-              <StatusText positivity={user.reputation > 0 ? 1 : -1}>
-                {user.reputation}
-              </StatusText>{' '}
+              <Heading variant="h3" noTopMargin>
+                User Info
+              </Heading>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Signed up</TableCell>
+                    <TableCell>
+                      <FormattedDate date={user.createdat} />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Reputation</TableCell>
+                    <TableCell>
+                      <StatusText positivity={user.reputation > 0 ? 1 : -1}>
+                        {user.reputation}
+                      </StatusText>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Patreon</TableCell>
+                    <TableCell>
+                      {user.patreonstatus || 'Not Patron'} (
+                      {user.patreonrewardids?.length
+                        ? user.patreonrewardids.join(',')
+                        : 'no rewards'}
+                      )
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>VRChat ID</TableCell>
+                    <TableCell>
+                      {user.linkedvrchatuserid || 'Not Linked'}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Discord ID</TableCell>
+                    <TableCell>{user.discorduserid || 'No ID'}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
               <Button
                 icon={<EditIcon />}
                 url={routes.editUserWithVar.replace(':userId', user.id)}>
