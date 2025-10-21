@@ -166,7 +166,7 @@ export default ({
   const { push } = useHistory()
   const navigateAfterDelay = useTimer(() => {
     push(routes.viewAssetWithVar.replace(':assetId', assetId))
-  }, 3000)
+  }, 4000)
 
   const attemptPublish = () => {
     const newValidationErrorMessages = getValidationErrorMessagesForAsset(asset)
@@ -246,13 +246,22 @@ export default ({
   if (isSuccess) {
     return (
       <SuccessMessage>
-        Asset has been published successfully. It will be reviewed by our staff
-        (usually within 24 hours).
+        Asset has been published successfully. It is in the approval queue.
+        <br />
+        <br />
+        If you have enough reputation (eg. your account is over 1 month old) it
+        may be automatically approved.
+        <br />
+        <br />
+        <strong>
+          If it has been longer than 48 hours please open a support ticket to
+          have it actioned.
+        </strong>
         {enableRedirect && (
           <>
             <br />
             <br />
-            Redirecting you to the asset in 2 seconds...
+            Redirecting you to the asset in 4 seconds...
           </>
         )}
       </SuccessMessage>
