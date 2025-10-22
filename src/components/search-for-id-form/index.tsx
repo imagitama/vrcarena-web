@@ -25,6 +25,9 @@ import {
   ViewNames as CommentsViewNames,
   CollectionNames as CommentsCollectionNames,
 } from '../../modules/comments'
+import ErrorMessage from '../error-message'
+import LoadingIndicator from '../loading-indicator'
+import NoResultsMessage from '../no-results-message'
 
 const useStyles = makeStyles({
   textInput: {
@@ -43,6 +46,7 @@ const useStyles = makeStyles({
     margin: '0 0.5rem 0.5rem 0',
   },
   results: {
+    marginTop: '0.25rem',
     display: 'flex',
     flexWrap: 'wrap',
   },
@@ -119,21 +123,22 @@ function SearchForm({
   onClickWithIdAndDetails: (id: string, details: any) => void
   renderer?: (props: { result: any; onClick: () => void }) => React.ReactElement
 }) {
-  const [isSearching, lastErrorCode, results] = useSearching<SearchResult>(
-    getTableOrViewNameForCollectionName(collectionName),
-    searchTerm,
-    getSearchStatementForCollectionName(collectionName),
-    getFieldsToSearchForCollectionName(collectionName)
-  )
+  const [isSearching, lastErrorCode, results, clear] =
+    useSearching<SearchResult>(
+      getTableOrViewNameForCollectionName(collectionName),
+      searchTerm,
+      getSearchStatementForCollectionName(collectionName),
+      getFieldsToSearchForCollectionName(collectionName)
+    )
 
   const classes = useStyles()
 
   if (isSearching) {
-    return <>Searching...</>
+    return <LoadingIndicator message="Searching..." />
   }
 
   if (lastErrorCode !== null) {
-    return <>Error: {lastErrorCode}</>
+    return <ErrorMessage>Faileld to search (code {lastErrorCode})</ErrorMessage>
   }
 
   if (!results) {
@@ -141,24 +146,30 @@ function SearchForm({
   }
 
   if (!results.length) {
-    return <>No results!</>
+    return <NoResultsMessage>No results found</NoResultsMessage>
   }
 
   return (
     <>
-      Select a result:
+      <strong>Select a search result:</strong>
       <div className={classes.results}>
         {results.map((result) =>
           Renderer ? (
             <Renderer
               key={result.id}
               result={result}
-              onClick={() => onClickWithIdAndDetails(result.id, result)}
+              onClick={() => {
+                onClickWithIdAndDetails(result.id, result)
+                clear()
+              }}
             />
           ) : (
             <Button
               key={result.id}
-              onClick={() => onClickWithIdAndDetails(result.id, result)}
+              onClick={() => {
+                onClickWithIdAndDetails(result.id, result)
+                clear()
+              }}
               color="secondary"
               className={classes.button}>
               {fieldAsLabel ? result[fieldAsLabel] : '(no label)'}

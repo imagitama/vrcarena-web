@@ -40,6 +40,7 @@ import ImageUploaderWithPreview from '../image-uploader-with-preview'
 import useDataStoreCreate from '../../hooks/useDataStoreCreate'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import NoResultsMessage from '../no-results-message'
+import useSearching from '@/hooks/useSearching'
 
 const fieldsBySectionName = authorEditableFields.reduce<{
   [sectionName: string]: EditableField<Author>[]
@@ -73,39 +74,81 @@ const SearchResultRenderer = ({
   )
 }
 
-const FormField = ({
-  editableField,
-  value,
-  onChange,
+const CheckExistingAuthorForm = ({
+  nameToSearch,
+  onClickExistingAuthorId,
 }: {
-  editableField: EditableField<Author>
-  value: any
-  onChange: (newValue: any) => void
-}) => (
-  <>
-    <br />
-    <FormInput
-      editableField={editableField}
-      value={value}
-      onChange={onChange}
-    />
-  </>
-)
+  nameToSearch: string
+  onClickExistingAuthorId: (id: string) => void
+}) => {
+  const [isSearching, lastErrorCode, results] = useSearching<Author>(
+    CollectionNames.Authors,
+    nameToSearch,
+    '*',
+    ['name']
+  )
+
+  if (isSearching) {
+    return <LoadingIndicator message="Searching for existing authors..." />
+  }
+
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to search authors (code{lastErrorCode})
+      </ErrorMessage>
+    )
+  }
+
+  if (results && results.length) {
+    return (
+      <>
+        <InfoMessage>
+          We found these existing authors. Click one to use that instead of
+          creating one:
+        </InfoMessage>
+        {results.map((author) => (
+          <AuthorResultsItem
+            key={author.id}
+            author={author}
+            onClick={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+              onClickExistingAuthorId(author.id)
+              return false
+            }}
+          />
+        ))}
+      </>
+    )
+  }
+
+  return null
+}
 
 const FormInput = ({
   editableField,
   value,
   onChange,
+  onAuthorObtained,
 }: {
   editableField: EditableField<Author>
   value: any
   onChange: (newValue: any) => void
+  // for existing author form
+  onAuthorObtained: (newId: string) => void
 }) => {
   switch (editableField.type) {
     case fieldTypes.text:
     case fieldTypes.textMarkdown:
       return (
         <>
+          {value && value.length > 2 ? (
+            <CheckExistingAuthorForm
+              nameToSearch={value}
+              onClickExistingAuthorId={onAuthorObtained}
+            />
+          ) : null}
           <TextInput
             label={editableField.label}
             onChange={(e) => onChange(e.target.value)}
@@ -189,11 +232,13 @@ const FormInput = ({
 }
 
 const CreateForm = ({
-  onCreated,
+  onAuthorObtained,
   actionCategory,
+  onCancel,
 }: {
-  onCreated: (authorId: string, authorData: Author) => void
+  onAuthorObtained: (authorId: string, authorData?: Author) => void
   actionCategory?: string
+  onCancel: () => void
 }) => {
   const [newFields, setNewFields] = useState<AuthorFields>({
     name: '',
@@ -250,7 +295,7 @@ const CreateForm = ({
         })
       }
 
-      onCreated(createdAuthor.id, createdAuthor)
+      onAuthorObtained(createdAuthor.id, createdAuthor)
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -299,7 +344,7 @@ const CreateForm = ({
     }))
 
   return (
-    <Paper>
+    <>
       <Heading variant="h3" noMargin>
         Create Author
       </Heading>
@@ -312,13 +357,14 @@ const CreateForm = ({
                   !(editableField.name as string).includes('sale')
               )
               .map((editableField) => (
-                <FormField
+                <FormInput
                   key={editableField.name}
                   editableField={editableField}
                   value={newFields[editableField.name]}
                   onChange={(newVal) =>
                     onChange(editableField.name as string, newVal)
                   }
+                  onAuthorObtained={onAuthorObtained}
                 />
               ))}
           </Fragment>
@@ -342,9 +388,12 @@ const CreateForm = ({
       <FormControls>
         <Button onClick={() => onCreate()} icon={<SaveIcon />}>
           Create And Use
+        </Button>{' '}
+        <Button onClick={() => onCancel()} color="secondary">
+          Cancel
         </Button>
       </FormControls>
-    </Paper>
+    </>
   )
 }
 
@@ -352,7 +401,6 @@ const ChangeAuthorForm = ({
   collectionName,
   id,
   existingAuthorId,
-  // existingAuthorData,
   overrideSave,
   onDone,
   actionCategory,
@@ -360,7 +408,6 @@ const ChangeAuthorForm = ({
   collectionName?: string
   id: string | null
   existingAuthorId?: string | null
-  // existingAuthorData?: Author | null
   overrideSave?: (newAuthorId?: string | null) => void
   onDone?: () => void
   actionCategory?: string
@@ -425,7 +472,7 @@ const ChangeAuthorForm = ({
   if (isSuccess) {
     return (
       <SuccessMessage onOkay={restart}>
-        Resource has been updated with the new author
+        Record has been updated with the new author
       </SuccessMessage>
     )
   }
@@ -441,8 +488,9 @@ const ChangeAuthorForm = ({
   if (isCreating) {
     return (
       <CreateForm
-        onCreated={onAuthorObtained}
+        onAuthorObtained={onAuthorObtained}
         actionCategory={actionCategory}
+        onCancel={restart}
       />
     )
   }
@@ -451,7 +499,7 @@ const ChangeAuthorForm = ({
     <>
       {existingAuthorId ? (
         <div>
-          <strong>Selected author:</strong>
+          <strong>You have selected this author:</strong>
           {isLoading ? (
             <>Loading author...</>
           ) : lastErrorCodeLoading !== null ? (
@@ -459,7 +507,7 @@ const ChangeAuthorForm = ({
               Failed to load author (code {lastErrorCodeLoading})
             </ErrorMessage>
           ) : existingAuthor ? (
-            <AuthorResultsItem author={existingAuthor} isSelected />
+            <AuthorResultsItem author={existingAuthor} />
           ) : (
             <>Author is null</>
           )}

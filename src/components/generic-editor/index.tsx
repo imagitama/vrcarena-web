@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 
@@ -9,7 +8,7 @@ import useDataStoreEdit from '../../hooks/useDataStoreEdit'
 import editableFields, { EditableField } from '../../editable-fields'
 import { fieldTypes } from '../../generic-forms'
 import { trackAction } from '../../analytics'
-import { scrollTo, scrollToElement, scrollToTop } from '../../utils'
+import { scrollToElement, scrollToTop } from '../../utils'
 import { handleError } from '../../error-handling'
 
 import Button from '../button'
@@ -95,14 +94,6 @@ function getInputForFieldType(type: keyof typeof fieldTypes): GenericInput {
   }
 }
 
-const useStyles = makeStyles({
-  hint: {
-    fontSize: '75%',
-    fontStyle: 'italic',
-    marginTop: '5px',
-  },
-})
-
 const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
   const hiddenFields = fields.filter(({ type }) => type === fieldTypes.hidden)
 
@@ -117,21 +108,6 @@ const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
     }),
     {}
   )
-}
-
-const validateFields = (
-  newFields: Record<string, any>,
-  fieldDefinitions: EditableField<any>[]
-): boolean => {
-  for (const fieldDef of fieldDefinitions) {
-    if (fieldDef.isRequired) {
-      // TODO: Better required check - "false" is provided but would fail this
-      if (!newFields[fieldDef.name.toString()]) {
-        return false
-      }
-    }
-  }
-  return true
 }
 
 const GenericEditor = ({
@@ -205,7 +181,6 @@ const GenericEditor = ({
           }
         }, {})
   )
-  const classes = useStyles()
   const [validationIssues, setValidationIssues] = useState<ValidationIssue[]>(
     []
   )

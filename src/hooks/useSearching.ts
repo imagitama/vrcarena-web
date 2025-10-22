@@ -4,11 +4,12 @@ import { setIsSearching } from '../modules/app'
 import { useDispatch } from 'react-redux'
 import { DataStoreErrorCode, GetQuery } from '../data-store'
 import useSupabaseClient from './useSupabaseClient'
-import { SupabaseClient } from '@supabase/supabase-js'
 
 export type GetQueryFn<TRecord> = (
   query: GetQuery<TRecord>
 ) => GetQuery<TRecord>
+
+type ClearFn = () => void
 
 export default <TRecord>(
   tableName: string,
@@ -17,7 +18,7 @@ export default <TRecord>(
   fieldsToSearch: Extract<keyof TRecord, string>[],
   getQuery?: GetQueryFn<TRecord>,
   limit: number = 50
-): [boolean, DataStoreErrorCode | null, TRecord[] | null] => {
+): [boolean, DataStoreErrorCode | null, TRecord[] | null, ClearFn] => {
   const [results, setResults] = useState<TRecord[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<DataStoreErrorCode | null>(
@@ -25,6 +26,12 @@ export default <TRecord>(
   )
   const timerRef = useRef<NodeJS.Timeout>()
   const supabase = useSupabaseClient()
+
+  const clear = () => {
+    setResults(null)
+    setIsLoading(false)
+    setLastErrorCode(null)
+  }
 
   useEffect(() => {
     if (!searchTerm) {
@@ -108,5 +115,5 @@ export default <TRecord>(
     dispatch(setIsSearching(isLoading))
   }, [isLoading])
 
-  return [isLoading, lastErrorCode, results]
+  return [isLoading, lastErrorCode, results, clear]
 }

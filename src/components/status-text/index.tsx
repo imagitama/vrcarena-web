@@ -20,9 +20,11 @@ const useStyles = makeStyles({
 const StatusText = ({
   children,
   positivity,
+  className: extraClassName,
 }: {
   children: React.ReactNode
   positivity: number
+  className?: string
 }) => {
   const classes = useStyles()
 
@@ -35,7 +37,11 @@ const StatusText = ({
       ? classes.bad
       : ''
 
-  return <span className={`${classes.status} ${className}`}>{children}</span>
+  return (
+    <span className={`${classes.status} ${className} ${extraClassName || ''}`}>
+      {children}
+    </span>
+  )
 }
 
 export default StatusText
