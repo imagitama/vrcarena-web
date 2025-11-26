@@ -272,7 +272,7 @@ const AuthorOutputItem = ({ id }: { id: string }) => {
   const [isLoading, lastErrorCode, author] = useDataStoreItem<Author>(
     AuthorsCollectionNames.Authors,
     id ? id : false,
-    'short-asset-diff-author'
+    { queryName: 'short-asset-diff-author' }
   )
 
   if (isLoading || !author) return <>Loading...</>
@@ -302,7 +302,7 @@ const SpeciesOutputItem = ({ id, idx }: { id: string; idx: number }) => {
   const [isLoading, lastErrorCode, species] = useDataStoreItem<Species>(
     SpeciesCollectionNames.Species,
     id ? id : false,
-    'short-asset-diff-species'
+    { queryName: 'short-asset-diff-species' }
   )
 
   if (isLoading || !species) return <>Loading...</>
@@ -413,14 +413,6 @@ function AttachmentsOutput({ fields }: { fields: Asset }) {
 
   if (!ids.length) {
     return <NoResultsMessage>No attachments</NoResultsMessage>
-  }
-
-  if (ids.length !== attachments.length) {
-    return (
-      <ErrorMessage>
-        ID count mismatch ({ids.length} vs {attachments.length})
-      </ErrorMessage>
-    )
   }
 
   return <Attachments ids={ids} attachmentsData={attachments} />
