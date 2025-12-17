@@ -257,6 +257,9 @@ export default () => {
         asset is not on one of those sites (or you must log in to see it like{' '}
         <em>some</em> Jinxxy products) you can create it manually.
       </InfoMessage>
+      <InfoMessage hideId="sync_with_jinxxy_fixed_17dec25">
+        Sync with Jinxxy and Gumroad has been fixed (17 Dec 2025) -PB
+      </InfoMessage>
       <View />
     </>
   )
