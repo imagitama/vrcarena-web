@@ -28,9 +28,9 @@ export default ({
                 onChange={() => {
                   const newIsChecked = !isChecked
                   if (newIsChecked) {
-                    onChange(value.concat([optionValue]))
+                    onChange((value || []).concat([optionValue]))
                   } else {
-                    onChange(value.filter((val) => val !== optionValue))
+                    onChange((value || []).filter((val) => val !== optionValue))
                   }
                 }}
                 checked={isChecked}
