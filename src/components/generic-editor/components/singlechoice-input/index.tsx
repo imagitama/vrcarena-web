@@ -12,7 +12,7 @@ export default ({
   onChange: (newVal: string | null) => void
 }) => (
   <>
-    {editableField.options.map(({ value: optionValue, label }) => {
+    {(editableField.options || []).map(({ value: optionValue, label }) => {
       const isChecked = value === optionValue
       return (
         <CheckboxInput
