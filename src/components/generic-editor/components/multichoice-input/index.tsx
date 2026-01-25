@@ -13,7 +13,7 @@ export default ({
   onChange: (newOpts: string[]) => void
 }) => (
   <>
-    {editableField.options.map(({ value: optionValue, label }) => {
+    {(editableField.options || []).map(({ value: optionValue, label }) => {
       if (optionValue === null) {
         return null
       }
