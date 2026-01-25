@@ -18,7 +18,7 @@ export default ({
         return null
       }
 
-      const isChecked = value.includes(optionValue)
+      const isChecked = value && value.includes(optionValue)
       return (
         <Fragment key={optionValue}>
           <FormControlLabel
