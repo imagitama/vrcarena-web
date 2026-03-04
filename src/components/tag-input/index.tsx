@@ -22,7 +22,6 @@ import TagChip from '../tag-chip'
 import AutocompleteInput, { AutocompleteOption } from '../autocomplete-input'
 import TagChips from '../tag-chips'
 import { Asset } from '../../modules/assets'
-import ChatGptSuggestTags from '../chatgpt-suggest-tags'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
@@ -218,7 +217,6 @@ const filterSuggestions = (
 
 export interface TagInputSettings {
   showRecommendedTags?: boolean
-  showChatGptSuggestions?: boolean
   autoComplete?: boolean
 }
 
@@ -227,7 +225,6 @@ const TagInput = ({
   onChange = undefined,
   onDone = undefined,
   showRecommendedTags = true,
-  showChatGptSuggestions = true,
   asset = undefined,
   isDisabled = false,
   fullWidth = false,
@@ -334,20 +331,6 @@ const TagInput = ({
 
   return (
     <div className={`${fullWidth ? classes.fullWidth : ''}`}>
-      {asset && showChatGptSuggestions && (
-        <>
-          <ChatGptSuggestTags
-            asset={asset}
-            currentTags={newTags}
-            onDone={(tags) =>
-              setNewTags((currentTags) =>
-                removeDuplicates(currentTags.concat(tags))
-              )
-            }
-          />
-          <br />
-        </>
-      )}
       <TagChips tags={newTags} onDelete={removeTag} />
       <AutocompleteInput
         value={textInput}

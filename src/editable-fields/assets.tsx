@@ -160,7 +160,6 @@ const fields: EditableField<Asset>[] = [
     type: fieldTypes.tags,
     default: [],
     showRecommendedTags: true,
-    showChatGptSuggestions: true,
   },
   {
     name: 'relations',
