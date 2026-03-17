@@ -27,6 +27,9 @@ import { FirebaseError } from 'firebase/app'
 import FormControls from '../form-controls'
 import Center from '../center'
 import { signinWithProvider } from './utils'
+import SignUpWithEmailForm from '../signup-with-email-form'
+import Message from '../message'
+import { DISCORD_URL, EMAIL } from '@/config'
 
 const useStyles = makeStyles({
   root: {
@@ -50,9 +53,6 @@ const useStyles = makeStyles({
     width: '500px',
     marginBottom: '2rem',
   },
-  spacer: {
-    height: '1rem',
-  },
   discord: {
     backgroundColor: '#7289da !important',
     '&:hover': {
@@ -66,14 +66,23 @@ const useStyles = makeStyles({
     color: '#000 !important',
     backgroundColor: '#ffffff !important',
     '&:hover': {
-      backgroundColor: '#C2C2C2 !important',
+      backgroundColor: '#b0b0b0 !important',
     },
   },
   twitter: {
     backgroundColor: '#55acee !important',
     '&:hover': {
-      backgroundColor: '#4790c7 !important',
+      backgroundColor: '#3d7bab !important',
     },
+  },
+  signUpButton: {
+    marginTop: '1rem !important',
+    '& > *': {
+      width: '100%', // button inside anchor screws it up
+    },
+  },
+  cancelButton: {
+    marginTop: '2rem !important',
   },
 })
 
@@ -142,6 +151,8 @@ const getMessageForFirebaseErrorCode = (errorCode: string) => {
       return 'missing password'
     case 'auth/user-not-found':
       return 'email has never signed up here'
+    case AuthErrorCodes.MISSING_AUTH_DOMAIN: // needs REACT_APP_FIREBASE_AUTH_DOMAIN
+      return 'needs config'
     default:
       return `Error ${errorCode}`
   }
@@ -156,6 +167,8 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const submit = async () => {
     try {
+      if (!usernameVal || !passwordVal) return
+
       console.debug(`signing in with email and password...`, {
         email: usernameVal,
       })
@@ -193,7 +206,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   }
 
   return (
-    <div className={classes.loginWithEmailForm}>
+    <form className={classes.loginWithEmailForm}>
       <TextInput
         fullWidth
         value={usernameVal}
@@ -232,7 +245,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
           Failed to login: {getMessageForFirebaseErrorCode(lastErrorCode)}
         </ErrorMessage>
       ) : null}
-    </div>
+    </form>
   )
 }
 
@@ -242,12 +255,14 @@ const LoginButton = ({
   providerId,
   icon,
   onClick,
+  isSignUp,
 }: {
   label: string
   className?: string
   providerId: null | string
   icon: React.ReactElement
   onClick?: () => void
+  isSignUp: boolean
 }) => {
   const classes = useStyles()
   return (
@@ -257,99 +272,139 @@ const LoginButton = ({
       switchIconSide
       onClick={onClick}
       className={`${classes.loginButton} ${className}`}>
-      {label}
+      {isSignUp ? 'Signup' : 'Login'} with {label}
     </Button>
   )
 }
 
 const DISCORD_PROVIDER_ID = 'discord'
 
-const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
+const Form = ({
+  selectedProviderId,
+  setSelectedProviderId,
+  reset,
+  onSuccess,
+  isSignUp = false,
+}: {
+  selectedProviderId: null | string
+  setSelectedProviderId: (id: null | string) => void
+  reset: () => void
+  onSuccess: () => void
+  isSignUp?: boolean
+}) => {
   const classes = useStyles()
-  const [selectedProviderId, setSelectedProviderId] = useState<null | string>(
-    null
-  )
-
-  const reset = () => setSelectedProviderId(null)
-  const CancelButton = () => (
-    <Button onClick={reset} color="secondary">
-      Cancel Login
-    </Button>
-  )
 
   if (selectedProviderId != null) {
     switch (selectedProviderId) {
       case DISCORD_PROVIDER_ID:
         return (
-          <div className={classes.root}>
-            <div className={classes.form}>
-              <LoginWithDiscord
-                code={''}
-                onFail={reset}
-                onSuccess={onSuccess}
-              />
-            </div>
-            <CancelButton />
+          <div className={classes.form}>
+            <LoginWithDiscord code={''} onFail={reset} onSuccess={onSuccess} />
           </div>
         )
       case GoogleAuthProvider.PROVIDER_ID:
       case TwitterAuthProvider.PROVIDER_ID:
         return (
-          <div className={classes.root}>
-            <div className={classes.form}>
-              <LoginWithProviderForm
-                providerId={selectedProviderId}
-                onSuccess={onSuccess}
-              />
-            </div>
-            <CancelButton />
+          <div className={classes.form}>
+            <LoginWithProviderForm
+              providerId={selectedProviderId}
+              onSuccess={onSuccess}
+            />
           </div>
         )
       case EmailAuthProvider.PROVIDER_ID:
         return (
-          <div className={classes.root}>
-            <div className={classes.form}>
+          <div className={classes.form}>
+            {isSignUp ? (
+              <SignUpWithEmailForm onSuccess={onSuccess} />
+            ) : (
               <LoginWithEmailForm onSuccess={onSuccess} />
-            </div>
-            <CancelButton />
+            )}
           </div>
         )
     }
   }
 
   return (
+    <div className={classes.buttons}>
+      <LoginButton
+        isSignUp={isSignUp}
+        label="email"
+        providerId={EmailAuthProvider.PROVIDER_ID}
+        icon={<EmailIcon />}
+        className={classes.email}
+        onClick={() => setSelectedProviderId(EmailAuthProvider.PROVIDER_ID)}
+      />
+      <LoginButton
+        isSignUp={isSignUp}
+        label="Discord"
+        providerId={DISCORD_PROVIDER_ID}
+        icon={<DiscordIcon />}
+        className={classes.discord}
+        onClick={() => setSelectedProviderId(DISCORD_PROVIDER_ID)}
+      />
+      <LoginButton
+        isSignUp={isSignUp}
+        label="Google"
+        providerId={GoogleAuthProvider.PROVIDER_ID}
+        icon={<GoogleIcon />}
+        className={classes.google}
+        onClick={() => setSelectedProviderId(GoogleAuthProvider.PROVIDER_ID)}
+      />
+      <LoginButton
+        isSignUp={isSignUp}
+        label="Twitter/X"
+        providerId={TwitterAuthProvider.PROVIDER_ID}
+        icon={<TwitterIcon />}
+        className={classes.twitter}
+        onClick={() => setSelectedProviderId(TwitterAuthProvider.PROVIDER_ID)}
+      />
+      <Button
+        size="large"
+        url={isSignUp ? routes.login : routes.signUp}
+        className={classes.signUpButton}>
+        {isSignUp ? 'Login' : 'Sign Up'}
+      </Button>
+    </div>
+  )
+}
+
+const LoginForm = ({
+  onSuccess,
+  isSignUp = false,
+}: {
+  onSuccess: () => void
+  isSignUp?: boolean
+}) => {
+  const classes = useStyles()
+  const [selectedProviderId, setSelectedProviderId] = useState<null | string>(
+    null
+  )
+
+  const reset = () => setSelectedProviderId(null)
+
+  return (
     <div className={classes.root}>
-      <div className={classes.buttons}>
-        <LoginButton
-          label="Sign in with email"
-          providerId={EmailAuthProvider.PROVIDER_ID}
-          icon={<EmailIcon />}
-          className={classes.email}
-          onClick={() => setSelectedProviderId(EmailAuthProvider.PROVIDER_ID)}
-        />
-        <div className={classes.spacer} />
-        <LoginButton
-          label="Sign in with Discord"
-          providerId={DISCORD_PROVIDER_ID}
-          icon={<DiscordIcon />}
-          className={classes.discord}
-          onClick={() => setSelectedProviderId(DISCORD_PROVIDER_ID)}
-        />
-        <LoginButton
-          label="Sign in with Google"
-          providerId={GoogleAuthProvider.PROVIDER_ID}
-          icon={<GoogleIcon />}
-          className={classes.google}
-          onClick={() => setSelectedProviderId(GoogleAuthProvider.PROVIDER_ID)}
-        />
-        <LoginButton
-          label="Sign in with Twitter/X"
-          providerId={TwitterAuthProvider.PROVIDER_ID}
-          icon={<TwitterIcon />}
-          className={classes.twitter}
-          onClick={() => setSelectedProviderId(TwitterAuthProvider.PROVIDER_ID)}
-        />
-      </div>
+      <Message hideId="new-login-mar-2026" title="March 2026">
+        To combat increasing spam we have created a new login form with added
+        new spam protection. If you cannot sign up or login, please join our{' '}
+        <a href={DISCORD_URL}>Discord server</a> or email us at {EMAIL}
+      </Message>
+      <Form
+        onSuccess={onSuccess}
+        isSignUp={isSignUp}
+        reset={reset}
+        selectedProviderId={selectedProviderId}
+        setSelectedProviderId={setSelectedProviderId}
+      />
+      {selectedProviderId !== null && (
+        <Button
+          onClick={reset}
+          color="secondary"
+          className={classes.cancelButton}>
+          Cancel {isSignUp ? 'Signup' : 'Login'}
+        </Button>
+      )}
     </div>
   )
 }

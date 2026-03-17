@@ -81,7 +81,8 @@ export const callFunction = async <TPayload, TResult>(
   data?: TPayload,
   inDevResult?: TResult
 ): Promise<HttpsCallableResult<TResult>> => {
-  console.debug(`calling function "${name}"`, data)
+  // NOTE: do not dump payload as could contain sensitive info
+  console.debug(`calling function "${name}"`)
 
   if (inDevelopment() && inDevResult) {
     return Promise.resolve({ data: inDevResult })
@@ -116,7 +117,8 @@ export const callFunctionWithFile = async <TResult>(
   data?: { [key: string]: any },
   inDevResult?: any
 ): Promise<HttpsCallableResult<TResult>> => {
-  console.debug(`calling function "${name}" with file`, file, data)
+  // NOTE: do not dump payload as could contain sensitive info
+  console.debug(`calling function "${name}" with file`, file)
 
   if (inDevelopment() && inDevResult) {
     return Promise.resolve(inDevResult)

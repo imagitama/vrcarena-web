@@ -10,6 +10,8 @@ import useQueryParams from '../../hooks/useQueryParams'
 import LoginForm from '../../components/login-form'
 import ErrorMessage from '../../components/error-message'
 import LoginWithDiscord from '../../components/login-with-discord'
+import Message from '@/components/message'
+import { DISCORD_URL, EMAIL } from '@/config'
 
 export default () => {
   const firebaseUserId = useFirebaseUserId()

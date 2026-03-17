@@ -75,6 +75,7 @@
     "react-twitch-embed-video": "^2.0.3",
     "react-twitter-embed": "^3.0.3",
     "react-twitter-widgets": "^1.9.5",
+    "recaptcha-v3": "^1.11.3",
     "recharts": "^2.0.4",
     "redux": "4.0.1",
     "redux-beacon": "^2.1.0",

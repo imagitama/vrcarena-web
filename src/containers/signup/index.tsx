@@ -29,20 +29,13 @@ export default () => {
           content="Create an account on the site to upload and manage assets, comment and more."
         />
       </Helmet>
-      <Heading variant="h1">Sign Up</Heading>
-      <BodyText>Enter your details below to create a new account.</BodyText>
-      <br />
-      <br />
       <LoginForm
+        isSignUp
         onSuccess={() => {
           trackAction('Signup', 'Click sign-up button')
           push(routes.setupProfile)
         }}
       />
-      <BodyText>
-        You can read our <Link to={routes.privacyPolicy}>Privacy Policy</Link>{' '}
-        here.
-      </BodyText>
     </>
   )
 }
