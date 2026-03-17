@@ -84,7 +84,7 @@ export const getUrlForParent = (
     case SupportTicketCollectionNames.SupportTickets:
       return routes.viewSupportTicketWithVar.replace(
         ':supportTicketId',
-        parentData.id
+        parentData ? parentData.id : 'ERROR'
       )
     default:
       throw new Error(
