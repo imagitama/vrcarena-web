@@ -8,6 +8,7 @@ import TextInput from '../text-input'
 
 import { auth } from '../../firebase'
 import { handleError } from '../../error-handling'
+import FormControls from '../form-controls'
 
 enum ErrorCode {
   Unknown,
@@ -68,12 +69,15 @@ const ResetPasswordForm = () => {
 
   return (
     <>
-      Enter your email address:
       <TextInput
         value={emailValue}
         onChange={(e) => setEmailValue(e.target.value)}
+        label="Email address"
+        style={{ width: '500px' }}
       />
-      <Button onClick={onClickSend}>Send Reset Email</Button>
+      <FormControls>
+        <Button onClick={onClickSend}>Send Reset Email</Button>
+      </FormControls>
     </>
   )
 }

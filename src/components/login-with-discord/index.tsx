@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { makeStyles } from '@mui/styles'
 
 import useHistory from '../../hooks/useHistory'
 import { auth, callFunction } from '../../firebase'
@@ -10,6 +11,19 @@ import ErrorMessage from '../error-message'
 import SyncUserWithDiscordForm from '../sync-user-with-discord-form'
 import { DiscordUser } from '../../discord'
 import { signInWithCustomToken, updateEmail } from 'firebase/auth'
+import Button from '../button'
+import { OpenExternalLink as OpenExternalLinkIcon } from '@/icons'
+import { loginWithDiscordUrl } from '@/config'
+import HintText from '../hint-text'
+
+const useStyles = makeStyles({
+  button: {
+    backgroundColor: '#7289da !important',
+    '&:hover': {
+      backgroundColor: '#445282 !important',
+    },
+  },
+})
 
 // when you log in this component gets completely remounted so it tries to repeat a bunch of times
 let isAlreadyAuthenticated = false
@@ -59,6 +73,7 @@ export default ({
   const [lastKnownDiscordUser, setLastKnownDiscordUser] =
     useState<DiscordUser | null>(null)
   const { push } = useHistory()
+  const classes = useStyles()
 
   useEffect(() => {
     if (!code || isAlreadyAuthenticated) {
@@ -144,17 +159,33 @@ export default ({
     return <LoadingIndicator message="Loading your Discord details..." />
   }
 
-  if (isSuccess && lastKnownDiscordUser) {
+  if (isSuccess) {
+    if (lastKnownDiscordUser) {
+      return (
+        <SyncUserWithDiscordForm
+          discordUser={lastKnownDiscordUser}
+          onDone={onSuccess}
+        />
+      )
+    }
+
+    // useSetupProfileRedirect() hook in App should kick in and redirect us...
     return (
-      <SyncUserWithDiscordForm
-        discordUser={lastKnownDiscordUser}
-        onDone={onSuccess}
-      />
+      <LoadingIndicator message="You have logged in successfully, redirecting..." />
     )
   }
 
-  // useSetupProfileRedirect() hook in App should kick in and redirect us...
   return (
-    <LoadingIndicator message="You have logged in successfully, redirecting..." />
+    <>
+      <Button
+        size="large"
+        icon={<OpenExternalLinkIcon />}
+        className={classes.button}
+        url={loginWithDiscordUrl}>
+        Login with Discord
+      </Button>
+      <br />
+      <HintText>Opens Discord in a new tab</HintText>
+    </>
   )
 }

@@ -8,6 +8,8 @@ import { trackAction } from '../../analytics'
 import useUserRecord from '../../hooks/useUserRecord'
 import useQueryParams from '../../hooks/useQueryParams'
 import SuccessMessage from '../../components/success-message'
+import { handleError } from '@/error-handling'
+import { formHideDelay } from '@/config'
 
 export default () => {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -15,24 +17,29 @@ export default () => {
   const queryParams = useQueryParams()
 
   useEffect(() => {
-    if (isLoading || isErrored) {
-      return
-    }
+    ;(async () => {
+      try {
+        console.debug('logging out user...')
 
-    if (!user) {
-      trackAction('Logout', 'User tried to logout but was already logged out')
-      return
-    }
+        await logout()
 
-    logout()
+        trackAction('Logout', 'Auto-logout user')
 
-    trackAction('Logout', 'Auto-logout user')
+        const fromPath = queryParams.get('from')
 
-    setTimeout(() => {
-      const fromPath = queryParams.get('from')
-      push(fromPath || routes.home)
-    }, 1500)
-  }, [isLoading, isErrored, user === null])
+        console.debug(`user was logged out successfully, redirecting...`, {
+          from: fromPath,
+        })
+
+        setTimeout(() => {
+          push(fromPath || routes.home)
+        }, formHideDelay)
+      } catch (err) {
+        console.error(err)
+        handleError(err)
+      }
+    })()
+  }, [])
 
   return (
     <>

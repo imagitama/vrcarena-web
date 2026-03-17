@@ -17,6 +17,7 @@ export const YouTube = React.lazy(() => import('@mui/icons-material/YouTube').th
 export const Telegram = React.lazy(() => import('@mui/icons-material/Telegram').then(result => result.default))
 export const Twitter = React.lazy(() => import('@mui/icons-material/Twitter').then(result => result.default))
 export const Website = React.lazy(() => import('@mui/icons-material/Language').then(result => result.default))
+export const Google = React.lazy(() => import('@mui/icons-material/Google').then(result => result.default))
 
 export const Copy = React.lazy(() => import('@emotion-icons/entypo/Copy').then(result => ({ default: result.Copy }))) // prefabs
 export const HappyFace = React.lazy(() => import('@emotion-icons/material/TagFaces').then(result => ({ default: result.TagFaces }))) // custom gestures
@@ -56,3 +57,4 @@ export const Sort = React.lazy(() => import('@mui/icons-material/ImportExport').
 export const Filter = React.lazy(() => import('@mui/icons-material/FilterList').then(result => result.default))
 export const Warning = React.lazy(() => import('@mui/icons-material/Warning').then(result => result.default))
 export const Refresh = React.lazy(() => import('@mui/icons-material/Refresh').then(result => result.default))
+export const Login = React.lazy(() => import('@mui/icons-material/LockOpen').then(result => result.default))

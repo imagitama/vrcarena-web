@@ -35,12 +35,9 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     display: 'flex', // fix line height issue
     '& svg': {
       fontSize: '150%',
-      // fill: (props: ButtonProps) =>
-      //   props.color === 'secondary'
-      //     ? theme.palette.common.black
-      //     : theme.palette.common.white,
       width: '1em',
       height: '1em',
+      fill: 'currentColor' // fix custom icons (MUI icons work fine)
     },
   },
   small: {
