@@ -22,6 +22,8 @@ import { AccessStatus } from '../../modules/common'
 import useIsEditor from '../../hooks/useIsEditor'
 import NoResultsMessage from '../no-results-message'
 import Button from '../button'
+import { BanStatus } from '@/modules/users'
+import BannedBadge from '../banned-badge'
 
 const useStyles = makeStyles({
   cols: {
@@ -147,6 +149,7 @@ export default ({
     createdbyusername: createdByUsername,
     createdbyavatarurl: createdByAvatarUrl,
     createdbyrole: createdByRole,
+    createdbybanstatus: createdByBanStatus,
   } = comment || {}
 
   const isDeleted = accessStatus === AccessStatus.Deleted
@@ -179,6 +182,7 @@ export default ({
         {createdByRole && getIsRoleAStaffMember(createdByRole) && (
           <StaffBadge isSmall />
         )}
+        {createdByBanStatus === BanStatus.Banned && <BannedBadge isSmall />}
         {shimmer ? null : (
           <div className={classes.meta}>
             <div className={classes.metaItems}>

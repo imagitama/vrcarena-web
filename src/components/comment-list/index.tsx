@@ -15,6 +15,7 @@ import AddCommentForm from '../add-comment-form'
 import WarningMessage from '../warning-message'
 import { SupabaseClient } from '@supabase/supabase-js'
 import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import { BanStatus } from '@/modules/users'
 
 export default ({
   collectionName,
@@ -73,19 +74,24 @@ export default ({
 
   const commentIdToScrollTo = getQueryParam('comment')
 
+  const filterComments = (comment: FullComment): boolean =>
+    comment.createdbybanstatus !== BanStatus.Banned || isEditor === true
+
   return (
     <div className={className}>
       <div>
         {results && results.length ? (
-          results.map((result) => (
-            <CommentItem
-              key={result.id}
-              comment={result}
-              isHighlighted={commentIdToScrollTo === result.id}
-              performScroll={commentIdToScrollTo === result.id}
-              hydrate={hydrate}
-            />
-          ))
+          results
+            .filter(filterComments)
+            .map((result) => (
+              <CommentItem
+                key={result.id}
+                comment={result}
+                isHighlighted={commentIdToScrollTo === result.id}
+                performScroll={commentIdToScrollTo === result.id}
+                hydrate={hydrate}
+              />
+            ))
         ) : (
           <NoResultsMessage>
             No{getPrivate ? ' private' : ''} comments found
