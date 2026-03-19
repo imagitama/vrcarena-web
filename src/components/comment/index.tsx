@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from '../../components/link'
 import { makeStyles } from '@mui/styles'
 
@@ -21,6 +21,7 @@ import MentionsOutput from '../mentions-output'
 import { AccessStatus } from '../../modules/common'
 import useIsEditor from '../../hooks/useIsEditor'
 import NoResultsMessage from '../no-results-message'
+import Button from '../button'
 
 const useStyles = makeStyles({
   cols: {
@@ -53,6 +54,9 @@ const useStyles = makeStyles({
   },
   deletedMessage: {
     fontStyle: 'italic',
+    '& a': {
+      cursor: 'pointer',
+    },
   },
   date: {},
   contentWrapper: {
@@ -91,6 +95,8 @@ const shortenComment = (contents: string): string => {
   return contents
 }
 
+const MIN_SUSPICION = 0.5
+
 export default ({
   comment,
   isHighlighted = false,
@@ -113,6 +119,7 @@ export default ({
   const htmlElementRef = useRef(null)
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
+  const [showSuspiciousComment, setShowSuspiciousComment] = useState(false)
 
   useEffect(() => {
     if (!performScroll) {
@@ -134,6 +141,7 @@ export default ({
     editornotes: editorNotes,
     createdat: createdAt,
     createdby: createdBy,
+    suspicionamount: suspicionAmount,
     // view
     mentions,
     createdbyusername: createdByUsername,
@@ -184,7 +192,7 @@ export default ({
           {shimmer ? (
             <LoadingShimmer width={400} height={25} />
           ) : isDeleted ? (
-            <NoResultsMessage>
+            <div className={classes.deletedMessage}>
               Comment deleted
               {isEditor && (
                 <>
@@ -193,7 +201,14 @@ export default ({
                   Original message: {commentText}
                 </>
               )}
-            </NoResultsMessage>
+            </div>
+          ) : suspicionAmount !== null &&
+            suspicionAmount < MIN_SUSPICION &&
+            showSuspiciousComment !== true ? (
+            <div className={classes.deletedMessage}>
+              Comment looks like spam{' '}
+              <a onClick={() => setShowSuspiciousComment(true)}>Show Comment</a>
+            </div>
           ) : (
             <div className={classes.content}>
               <MentionsOutput

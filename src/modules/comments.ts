@@ -13,9 +13,17 @@ export interface Comment extends Record<string, unknown> {
   createdby: string
 }
 
+export enum SuspicionReason {
+  LongLength = 'long_length',
+  WeirdChars = 'weird_chars',
+  SameAsLast = 'same_as_last',
+}
+
 export interface CommentMeta {
   accessstatus: AccessStatus
   editornotes: string
+  suspicionamount: number | null
+  suspicionreason: SuspicionReason | null
   lastmodifiedat: string
   lastmodifiedby: string
   createdat: string
