@@ -328,12 +328,6 @@ const AssetResultsItem = ({
                 <>
                   <span title={asset.title.trim()}>{asset.title.trim()}</span>
                   {asset.isadult ? <LoyaltyIcon /> : null}
-                  {(asset as FullAsset).approvalstatus ===
-                  ApprovalStatus.AutoApproved ? (
-                    <Tooltip title="This asset was auto-approved after 24 hours.">
-                      <WarningIcon />
-                    </Tooltip>
-                  ) : null}
                 </>
               ) : (
                 <LoadingShimmer width="100%" height="23px" />

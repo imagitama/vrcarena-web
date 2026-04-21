@@ -122,7 +122,7 @@ const EditorRecordManager = ({
         <div className={classes.rows}>
           {showStatuses || showPublishButtons ? (
             <div className={classes.row}>
-              {showStatuses && showPublishButtons && (
+              {showStatuses && showPublishButtons && existingPublishStatus && (
                 <div className={classes.cell}>
                   <MetaStatus
                     status={existingPublishStatus}
@@ -143,7 +143,7 @@ const EditorRecordManager = ({
           ) : null}
           {showStatuses || showApprovalButtons ? (
             <div className={classes.row}>
-              {showStatuses && (
+              {showStatuses && existingApprovalStatus && (
                 <div className={classes.cell}>
                   <MetaStatus
                     status={existingApprovalStatus}
@@ -167,7 +167,7 @@ const EditorRecordManager = ({
           ) : null}
           {showStatuses || showAccessButtons ? (
             <div className={classes.row}>
-              {showStatuses && (
+              {showStatuses && existingAccessStatus && (
                 <div className={classes.cell}>
                   <MetaStatus
                     status={existingAccessStatus}

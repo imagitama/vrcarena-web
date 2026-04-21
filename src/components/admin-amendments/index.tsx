@@ -34,7 +34,9 @@ export default () => {
 
       switch (selectedSubView) {
         case SubView.Approved:
-          query = query.eq('approvalstatus', ApprovalStatus.Approved)
+          query = query.or(
+            `approvalstatus.eq.${ApprovalStatus.Approved},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
+          )
           break
 
         case SubView.Declined:

@@ -48,11 +48,12 @@ const AmendmentEditorRecordManager = ({
       <EditorRecordManager
         id={amendment.id}
         metaCollectionName={CollectionNames.AmendmentsMeta}
+        showStatuses
         showPublishButtons={false}
         showAccessButtons={false}
         showEditorNotes
         existingApprovalStatus={amendment.approvalstatus}
-        existingPublishStatus={PublishStatus.Published}
+        existingPublishStatus={PublishStatus.Published} // amendments don't have this field
         onDone={onDone}
         beforeApprove={beforeApprove}
       />
