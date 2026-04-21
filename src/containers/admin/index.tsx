@@ -66,6 +66,14 @@ const View = () => {
             label: 'Assets',
             contents: (
               <>
+                <InfoMessage
+                  title="How Amendments Work"
+                  hideId="admin-amendments-info">
+                  <strong>
+                    Assets are auto-approved after 24 hours (ignores rep). You
+                    can still manually approve/decline them.
+                  </strong>
+                </InfoMessage>
                 <AdminAssets />
               </>
             ),
@@ -80,6 +88,13 @@ const View = () => {
                   hideId="admin-amendments-info">
                   Anyone can amend (edit) anything on the site. Try your best to
                   verify the new fields are correct and click approve.
+                  <br />
+                  <br />
+                  <strong>
+                    Amendments are auto-approved after 24 hours, if the creator
+                    has enough rep (currently 100) and if they are the original
+                    creator of the record.
+                  </strong>
                 </InfoMessage>
                 <div style={{ maxWidth: '100vw' }}>
                   <AdminAmendments />
