@@ -4,9 +4,10 @@ import { Helmet } from 'react-helmet'
 
 import UserOverview from '../../components/user-overview'
 import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { FullUser, ViewNames } from '../../modules/users'
+import { BanStatus, FullUser, ViewNames } from '../../modules/users'
 import LoadingIndicator from '../../components/loading-indicator'
 import ErrorMessage from '../../components/error-message'
+import useIsEditor from '@/hooks/useIsEditor'
 
 export default () => {
   const { userId } = useParams<{ userId: string }>()
@@ -14,6 +15,7 @@ export default () => {
     useDataStoreItem<FullUser>(ViewNames.GetFullUsers, userId, {
       queryName: 'user-overview',
     })
+  const isEditor = useIsEditor()
 
   if (isLoadingUser) {
     return <LoadingIndicator message="Loading user profile..." />
@@ -31,6 +33,9 @@ export default () => {
     return <ErrorMessage>Failed to load the user (invalid user)</ErrorMessage>
   }
 
+  if (user.banstatus === BanStatus.Banned && !isEditor)
+    return <ErrorMessage>User is banned.</ErrorMessage>
+
   return (
     <>
       <Helmet>
@@ -40,6 +45,12 @@ export default () => {
           content={`View the user profile of ${user.username}.`}
         />
       </Helmet>
+      {user.banstatus === BanStatus.Banned && isEditor && (
+        <ErrorMessage>
+          User is banned. You can view their profile because you are a staff
+          member.
+        </ErrorMessage>
+      )}
       <UserOverview user={user} />
     </>
   )

@@ -7,7 +7,6 @@ import Heading from '../../components/heading'
 import NoPermissionMessage from '../../components/no-permission-message'
 import * as routes from '../../routes'
 import { CollectionNames } from '../../modules/users'
-import useIsEditor from '../../hooks/useIsEditor'
 import usePermissions from '../../hooks/usePermissions'
 
 const View = () => {
@@ -25,7 +24,7 @@ const View = () => {
         id={userId}
         analyticsCategory="EditUser"
         saveBtnAction="Click save button"
-        viewBtnAction="Click view item button after save"
+        // viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewUserWithVar.replace(':userId', userId)}
         cancelUrl={routes.viewUserWithVar.replace(':userId', userId)}
@@ -39,7 +38,7 @@ const View = () => {
         id={userId}
         analyticsCategory="EditUserMeta"
         saveBtnAction="Click save button"
-        viewBtnAction="Click view item button after save"
+        // viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewUserWithVar.replace(':userId', userId)}
         cancelUrl={routes.viewUserWithVar.replace(':userId', userId)}

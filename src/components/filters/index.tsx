@@ -18,6 +18,7 @@ import {
   MultichoiceFilter,
 } from '../../filters'
 import { Filter as FilterIcon } from '../../icons'
+import CheckboxInput from '../checkbox-input'
 
 const useStyles = makeStyles({
   root: {
@@ -112,7 +113,7 @@ const NotEqualInput = ({
   value,
 }: {
   filter: EqualFilter<any>
-  onChange: (value: null | string) => void
+  onChange: (value: null | string | boolean) => void
   value: any
 }) => {
   if (filter.subType === FilterSubType.UserId) {
@@ -122,6 +123,15 @@ const NotEqualInput = ({
   if (filter.subType === FilterSubType.Null) {
     return null
   }
+
+  if (filter.fieldValue)
+    return (
+      <CheckboxInput
+        value={value}
+        onChange={() => onChange(!value)}
+        label="Enabled"
+      />
+    )
 
   return (
     <>

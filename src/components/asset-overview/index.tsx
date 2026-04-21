@@ -824,16 +824,6 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                 </Control>
               </ControlGroup>
             ) : null}
-            {asset && asset.approvalstatus === ApprovalStatus.AutoApproved ? (
-              <InfoMessage title="">
-                <Tooltip title="Our team tries to verify and approve new assets posted to the site but we are volunteers and it is a time consuming task. If an asset is not approved within 48 hours it is automatically visible to everyone and this message is displayed.">
-                  <span>
-                    This asset has not been approved by our editorial team so
-                    may contain unmoderated content.
-                  </span>
-                </Tooltip>
-              </InfoMessage>
-            ) : null}
             <FeatureList
               tags={asset ? asset.tags : []}
               existingTagsData={asset ? asset.tagsdata : []}

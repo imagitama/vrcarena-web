@@ -290,6 +290,17 @@ const Page = () => {
                   activeFilter.fieldName,
                   (activeFilter as NotEqualActiveFilter<any>).value
                 )
+              } else if (activeFilter.fieldValue !== undefined) {
+                query = query.neq(
+                  activeFilter.fieldName,
+                  activeFilter.fieldValue
+                )
+
+                console.debug(
+                  `filter neq`,
+                  activeFilter.fieldName,
+                  activeFilter.fieldValue
+                )
               } else {
                 query = query.neq(
                   activeFilter.fieldName,

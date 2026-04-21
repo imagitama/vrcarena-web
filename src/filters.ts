@@ -21,6 +21,7 @@ export interface BaseFilter<TRecord> {
   direction?: OrderDirections
   defaultActive?: boolean
   defaultValue?: any
+  fieldValue?: any // for comments != banned
 }
 
 export interface EqualFilter<TRecord> extends BaseFilter<TRecord> {

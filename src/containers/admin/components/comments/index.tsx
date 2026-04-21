@@ -32,6 +32,7 @@ import PaginatedView, {
   RendererProps,
 } from '../../../../components/paginated-view'
 import { FilterSubType, FilterType } from '../../../../filters'
+import { BanStatus } from '@/modules/users'
 
 const BulkControls = ({
   ids,
@@ -260,6 +261,13 @@ export default () => (
           label: 'User',
           type: FilterType.Equal,
           subType: FilterSubType.UserId,
+        },
+        {
+          fieldName: 'createdbybanstatus',
+          label: 'Banned',
+          type: FilterType.NotEqual,
+          fieldValue: BanStatus.Banned,
+          defaultActive: true,
         },
       ]}>
       {/* @ts-ignore */}
