@@ -131,7 +131,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     maxHeight: '200px',
     padding: '0.5rem',
     '& img': {
-      aspectRatio: '1/1',
+      // aspectRatio: '1/1',
       maxWidth: '100%',
       maxHeight: '100%',
     },

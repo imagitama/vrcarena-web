@@ -31,7 +31,7 @@ const useStyles = makeStyles({
       display: 'block',
       maxWidth: '100%',
       // maxHeight: '400px',
-      aspectRatio: '1/1',
+      // aspectRatio: '1/1',
       objectFit: 'contain', // (default: fill) required to fix stretched images on Edge
     },
   },
