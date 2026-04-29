@@ -472,6 +472,8 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
   const isAssetLoaded =
     asset !== null && asset !== undefined && isLoading !== true
 
+  console.debug(`AssetOverview`, { asset, isLoading, isAssetLoaded })
+
   return (
     <>
       <AssetOverviewContext.Provider
