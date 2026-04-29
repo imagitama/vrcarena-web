@@ -26,8 +26,6 @@ export interface Event {
   lastmodifiedby: string
   createdat: Date
   createdby: string
-  // @deprecated apr 2026
-  // bannerurl: string
 }
 
 export interface EventMeta {

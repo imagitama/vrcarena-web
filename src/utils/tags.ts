@@ -73,12 +73,3 @@ export const renamedTags = {
   // textures
   '4k_textures': ['high_resolution_textures'],
 }
-
-/**
- * @deprecated:
- * - not_vrchat_compatible
- * - toggle_accessories
- * - dynamic_bones_ready
- * - requires_dynamic_bones
- * - multiple_blend_shapes
- */

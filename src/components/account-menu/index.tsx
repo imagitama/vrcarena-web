@@ -23,6 +23,7 @@ import useSupabaseClient from '@/hooks/useSupabaseClient'
 import Menu, { MenuItemData } from '@/components/menu'
 import Button from '@/components/button'
 import Avatar, { AvatarSize } from '@/components/avatar'
+import classNames from 'classnames'
 
 const useStyles = makeStyles({
   root: {
@@ -69,6 +70,8 @@ const useStyles = makeStyles({
   },
   username: {
     marginLeft: '0.5rem',
+  },
+  loggedIn: {
     fontWeight: 'bold',
   },
   submitBtn: {
@@ -104,7 +107,12 @@ const AvatarMenuItem = () => {
         username={user && user.username ? user.username : undefined}
         size={AvatarSize.Tiny}
       />
-      {user && <span className={classes.username}>{user.username}</span>}
+      <span
+        className={classNames(classes.username, {
+          [classes.loggedIn]: user !== null,
+        })}>
+        {user ? user.username : 'Logged out'}
+      </span>
       <KeyboardArrowDownIcon />
     </>
   )

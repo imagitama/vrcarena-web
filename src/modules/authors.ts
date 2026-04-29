@@ -18,14 +18,6 @@ export interface AuthorFields extends Record<string, unknown> {
   boothusername: string | null
   kofiusername: string | null
   payhipusername: string | null
-  // @deprecated apr 2026
-  // bannerurl: string | null
-  // isopenforcommission: boolean | null
-  // commissioninfo: string | null
-  // showcommissionstatusforassets: boolean
-  // salereason: string | null
-  // saledescription: string | null
-  // saleexpiresat: string | undefined
 }
 
 export interface Author extends AuthorFields {

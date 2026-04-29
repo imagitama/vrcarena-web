@@ -197,9 +197,4 @@ export const bucketNames = {
   authorPromos: 'author-promos',
   temp: 'temp',
   attachmentThumbnails: 'attachment-thumbnails',
-  // @deprecated apr 2026
-  // eventBanners: 'event-banners',
-  // assetBanners: 'asset-banners',
-  // authorBanners: 'author-banners',
-  // amendmentBanners: 'amendment-banners',
 }
