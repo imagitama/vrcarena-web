@@ -469,6 +469,8 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
     </Control>
   )
 
+  const isAssetLoaded = asset !== null && isLoading !== true
+
   return (
     <>
       <AssetOverviewContext.Provider
@@ -481,7 +483,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
           hydrate,
           analyticsCategoryName,
         }}>
-        {isLoading || !asset ? (
+        {!isAssetLoaded ? (
           <Helmet>
             <title>Loading asset... | VRCArena</title>
           </Helmet>
@@ -518,7 +520,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
             ) : null}
           </Helmet>
         )}
-        {asset && getIsAssetWaitingForApproval(asset) && isEditor ? (
+        {isAssetLoaded && getIsAssetWaitingForApproval(asset) && isEditor ? (
           <Suspense
             fallback={<LoadingIndicator message="Loading component..." />}>
             <QueuedAssetInfo asset={asset} hydrate={hydrate} />
@@ -528,7 +530,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
         <PrimaryImage />
         <div className={classes.primaryMetadata}>
           <div className={classes.primaryMetadataThumb}>
-            {isLoading ? (
+            {!isAssetLoaded ? (
               <LoadingShimmer width={75} height={75} />
             ) : (
               <AssetThumbnail url={asset.thumbnailurl} size="micro" alt="" />
@@ -536,7 +538,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
           </div>
           <div className={classes.primaryMetadataText}>
             <Heading variant="h1" noMargin className={classes.titleAndAuthor}>
-              {isLoading ? (
+              {!isAssetLoaded ? (
                 <LoadingShimmer width={300} height={50} />
               ) : (
                 <>
@@ -544,27 +546,25 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                   <NsfwIcon />
                 </>
               )}
-              {isLoading || asset.authorname ? (
-                <span className={classes.authorName}>
-                  {' '}
-                  {isLoading ? (
-                    <LoadingShimmer width={200} height={30} />
-                  ) : (
-                    <>
-                      by{' '}
-                      <Link
-                        to={routes.viewAuthorWithVar.replace(
-                          ':authorId',
-                          asset.author || 'no-author'
-                        )}>
-                        {asset.authorname}
-                      </Link>
-                    </>
-                  )}
-                </span>
-              ) : null}
+              <span className={classes.authorName}>
+                {' '}
+                {!isAssetLoaded ? (
+                  <LoadingShimmer width={200} height={30} />
+                ) : (
+                  <>
+                    by{' '}
+                    <Link
+                      to={routes.viewAuthorWithVar.replace(
+                        ':authorId',
+                        asset.author || 'no-author'
+                      )}>
+                      {asset.authorname}
+                    </Link>
+                  </>
+                )}
+              </span>
             </Heading>
-            {isLoading ? (
+            {!isAssetLoaded ? (
               <LoadingShimmer width={200} height={25} />
             ) : (
               <div className={classes.subTitle}>
@@ -600,7 +600,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
               <Area name="extra-attached-images" label="Images">
                 <ImageGallery
                   images={
-                    isLoading
+                    !isAssetLoaded
                       ? []
                       : nonMediaAttachments
                           .slice(3)
@@ -699,7 +699,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                 </Control>
               </ControlGroup>
             ) : null}
-            {isLoading || (asset && asset.sourceurl) ? (
+            {isAssetLoaded ? (
               <ControlGroup>
                 {asset?.relations?.find(
                   (relation) => relation.requiresVerification
@@ -764,7 +764,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
               )}
               <Control>
                 <EndorseAssetButton
-                  isAssetLoading={isLoading}
+                  isAssetLoading={!isAssetLoaded}
                   assetId={assetId}
                   endorsementCount={
                     asset ? asset.endorsementcount : 'Loading...'
@@ -785,7 +785,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
               </Control>
               <Control>
                 <AddToCollectionButton
-                  isAssetLoading={isLoading}
+                  isAssetLoading={!isAssetLoaded}
                   assetId={assetId}
                   onClick={() =>
                     trackAction(
@@ -798,7 +798,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
               </Control>
               <Control>
                 <AddToWishlistButton
-                  isAssetLoading={isLoading}
+                  isAssetLoading={!isAssetLoaded}
                   assetId={assetId}
                   onClick={({ newValue }) =>
                     trackAction(
