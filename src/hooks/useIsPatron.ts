@@ -1,5 +1,5 @@
-import { CollectionNames } from '../modules/users'
-import { PatreonStatus, UserMeta } from '../modules/users'
+import { CollectionNames } from '@/modules/users'
+import { PatreonStatus, UserMeta } from '@/modules/users'
 import useDataStoreItem from './useDataStoreItem'
 import useUserId from './useUserId'
 

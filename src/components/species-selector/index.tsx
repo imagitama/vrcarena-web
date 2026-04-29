@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
-import { CollectionNames, Species } from '../../modules/species'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import AutocompleteInput from '../autocomplete-input'
-import { findItemAndParents } from '../../utils'
+
+import { CollectionNames, Species } from '@/modules/species'
+import { findItemAndParents } from '@/utils'
+
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import AutocompleteInput from '@/components/autocomplete-input'
 
 interface SpeciesWithChildren extends Species {
   children?: SpeciesWithChildren[]

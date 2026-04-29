@@ -1,4 +1,4 @@
-import { DataStoreErrorCode } from '../data-store'
+import { DataStoreErrorCode } from '@/data-store'
 import useDatabaseQuery, { Operators } from './useDatabaseQuery'
 
 type SearchClause<TRecord> = [keyof TRecord, Operators, string]

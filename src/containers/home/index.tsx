@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
 import { makeStyles } from '@mui/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
-import useSearchTerm from '../../hooks/useSearchTerm'
-import { mediaQueryForMobiles } from '../../media-queries'
-import * as routes from '../../routes'
-import Button from '../../components/button'
-import SpeciesBrowser from '../../components/species-browser'
+import { mediaQueryForMobiles } from '@/media-queries'
+import * as routes from '@/routes'
+
+import useSearchTerm from '@/hooks/useSearchTerm'
+
+import Button from '@/components/button'
+import SpeciesBrowser from '@/components/species-browser'
 
 const contentMaxWidth = '900px'
 
@@ -27,8 +29,8 @@ const useStyles = makeStyles({
       marginBottom: 0,
     },
     '& > div': {
-      maxWidth: contentMaxWidth,
       margin: '0 auto',
+      maxWidth: contentMaxWidth,
     },
     '& .controls': {
       marginTop: '2rem',

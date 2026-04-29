@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import { handleError } from '../../error-handling'
-import { FirebaseFunctionNames } from '../../modules/assets'
+import { handleError } from '@/error-handling'
+import { FirebaseFunctionNames } from '@/modules/assets'
 
-import Button from '../button'
-import LoadingIndicator from '../loading-indicator'
-import Dialog from '../dialog'
-import ErrorMessage from '../error-message'
 import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+
+import Button from '@/components/button'
+import LoadingIndicator from '@/components/loading-indicator'
+import Dialog from '@/components/dialog'
+import ErrorMessage from '@/components/error-message'
 
 enum ErrorCode {
   NotDraft = 'not-draft',

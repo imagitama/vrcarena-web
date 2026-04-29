@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import PanToolIcon from '@mui/icons-material/PanTool'
-import Button from '../button'
-import Heading from '../heading'
-import Dialog from '../dialog'
-import WarningMessage from '../warning-message'
-import { messages } from '../../config'
-import ClaimForm from '../claim-form'
+
+import { messages } from '@/config'
+
+import Button from '@/components/button'
+import Heading from '@/components/heading'
+import Dialog from '@/components/dialog'
+import WarningMessage from '@/components/warning-message'
+import ClaimForm from '@/components/claim-form'
 
 const ClaimButton = <TData,>({
   parentTable,

@@ -1,43 +1,37 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
+
 import {
   CommentMeta,
   CollectionNames as CommentsCollectionNames,
-} from '../../modules/comments'
-import {
-  createMessage,
-  editMessage,
-  FullHistoryEntry,
-} from '../../modules/history'
+} from '@/modules/comments'
+import { createMessage, editMessage, FullHistoryEntry } from '@/modules/history'
 import {
   AssetMeta,
   CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
-import { getUrlForParent, getLabelForParent } from '../../relations'
-import Link from '../link'
-import UsernameLink from '../username-link'
-import FormattedDate from '../formatted-date'
+} from '@/modules/assets'
+import { getUrlForParent, getLabelForParent } from '@/relations'
 import {
   AmendmentMeta,
   CollectionNames as AmendmentsCollectionNames,
-} from '../../modules/amendments'
+} from '@/modules/amendments'
 import {
   BanStatus,
   UserMeta,
   CollectionNames as UsersCollectionNames,
-} from '../../modules/users'
-import ErrorBoundary from '../error-boundary'
+} from '@/modules/users'
 import {
   ReportMeta,
   CollectionNames as ReportsCollectionNames,
   ResolutionStatus,
-} from '../../modules/reports'
-import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
-import {
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-} from '../../modules/common'
+} from '@/modules/reports'
+import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
+import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+
+import ErrorBoundary from '@/components/error-boundary'
+import Link from '@/components/link'
+import UsernameLink from '@/components/username-link'
+import FormattedDate from '@/components/formatted-date'
 
 const getLabelForApprovalStatus = (approvalStatus: string): string => {
   switch (approvalStatus) {

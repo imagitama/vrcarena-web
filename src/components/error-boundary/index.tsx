@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo } from 'react'
 import * as Sentry from '@sentry/browser'
-import ErrorBoundaryMessage from '../error-boundary-message'
+import ErrorBoundaryMessage from '@/components/error-boundary-message'
 
 interface ErrorBoundaryProps {
   children: React.ReactNode | React.ReactNode[]

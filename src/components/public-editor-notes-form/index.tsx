@@ -2,19 +2,18 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { CommonMetaRecordFields, CommonRecordFields } from '../../data-store'
-import useUserId from '../../hooks/useUserId'
+import { CommonMetaRecordFields } from '@/data-store'
+import { handleError } from '@/error-handling'
+import { MetaRecord } from '@/modules/common'
 
-import { handleError } from '../../error-handling'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
-import Button from '../button'
-import TextInput from '../text-input'
-import LoadingIndicator from '../loading-indicator'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import FormControls from '../form-controls'
-import { MetaRecord } from '../../modules/common'
-import ErrorMessage from '../error-message'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import LoadingIndicator from '@/components/loading-indicator'
+import FormControls from '@/components/form-controls'
+import ErrorMessage from '@/components/error-message'
 
 const useStyles = makeStyles({
   label: {
@@ -117,7 +116,11 @@ const PublicEditorNotesForm = ({
         onChange={(e) => setNewEditorNotes(e.target.value)}
       />
       <FormControls>
-        <Button onClick={onSaveBtnClick} size="small" icon={<SaveIcon />}>
+        <Button
+          onClick={onSaveBtnClick}
+          size="small"
+          color="secondary"
+          icon={<SaveIcon />}>
           Save Notes
         </Button>
       </FormControls>

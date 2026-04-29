@@ -1,33 +1,28 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useSearching from '../../hooks/useSearching'
-import TextInput from '../text-input'
-import Button from '../button'
-import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
+import useSearching from '@/hooks/useSearching'
+import { CollectionNames as SpeciesCollectionNames } from '@/modules/species'
 import {
   ViewNames as DiscordServersViewNames,
   CollectionNames as DiscordServersCollectionNames,
-} from '../../modules/discordservers'
-import {
-  ViewNames as UsersViewNames,
-  CollectionNames as UsersCollectionNames,
-} from '../../modules/users'
+} from '@/modules/discordservers'
+import { CollectionNames as UsersCollectionNames } from '@/modules/users'
 import {
   ViewNames as AuthorsViewNames,
   CollectionNames as AuthorsCollectionNames,
-} from '../../modules/authors'
-import {
-  ViewNames as AssetsViewNames,
-  CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
+} from '@/modules/authors'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 import {
   ViewNames as CommentsViewNames,
   CollectionNames as CommentsCollectionNames,
-} from '../../modules/comments'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import NoResultsMessage from '../no-results-message'
+} from '@/modules/comments'
+
+import TextInput from '@/components/text-input'
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
 
 const useStyles = makeStyles({
   textInput: {

@@ -1,10 +1,10 @@
 import React from 'react'
 
-import useUserId from '../../hooks/useUserId'
-import WishlistForUser from '../wishlist-for-user'
-import NoPermissionMessage from '../no-permission-message'
+import useUserId from '@/hooks/useUserId'
+import WishlistForUser from '@/components/wishlist-for-user'
+import NoPermissionMessage from '@/components/no-permission-message'
 
-export default () => {
+const MyWishlist = () => {
   const userId = useUserId()
 
   if (!userId) {
@@ -13,3 +13,5 @@ export default () => {
 
   return <WishlistForUser userId={userId} />
 }
+
+export default MyWishlist

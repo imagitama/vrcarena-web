@@ -11,45 +11,47 @@ import { makeStyles } from '@mui/styles'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
-import { CollectionNames as CommentsCollectionNames } from '../../modules/comments'
-import { createMessage, editMessage, HistoryEntry } from '../../modules/history'
-import {
-  Asset,
-  AssetMeta,
-  CollectionNames as AssetsCollectionNames,
-  ViewNames,
-} from '../../modules/assets'
-import {
-  CollectionNames as AmendmentsCollectionNames,
-  AmendmentMeta,
-} from '../../modules/amendments'
-import { CollectionNames as UsersCollectionNames } from '../../modules/users'
-import {
-  FullReport,
-  CollectionNames as ReportsCollectionNames,
-  ResolutionStatus,
-} from '../../modules/reports'
-import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import LoadingIndicator from '../loading-indicator'
-import FormattedDate from '../formatted-date'
-import Avatar, { AvatarSize } from '../avatar'
-import UsernameLink from '../username-link'
-import ErrorMessage from '../error-message'
-import Button from '../button'
 import {
   AccessStatus,
   ApprovalStatus,
   MetaRecord,
   PublishStatus,
-} from '../../modules/common'
-import { BanStatus } from '../../modules/users'
-import assetEditableFields from '../../editable-fields/assets'
-import { fieldTypes } from '../../generic-forms'
-import TagChips from '../tag-chips'
-import { EditableField } from '../../editable-fields'
-import Markdown from '../markdown'
-import { getLabelForAssetField } from '../../utils/assets'
+} from '@/modules/common'
+import { BanStatus } from '@/modules/users'
+import assetEditableFields from '@/editable-fields/assets'
+import { fieldTypes } from '@/generic-forms'
+import { EditableField } from '@/editable-fields'
+import { getLabelForAssetField } from '@/utils/assets'
+import { CollectionNames as CommentsCollectionNames } from '@/modules/comments'
+import { createMessage, editMessage, HistoryEntry } from '@/modules/history'
+import {
+  Asset,
+  AssetMeta,
+  CollectionNames as AssetsCollectionNames,
+  ViewNames,
+} from '@/modules/assets'
+import {
+  CollectionNames as AmendmentsCollectionNames,
+  AmendmentMeta,
+} from '@/modules/amendments'
+import { CollectionNames as UsersCollectionNames } from '@/modules/users'
+import {
+  FullReport,
+  CollectionNames as ReportsCollectionNames,
+  ResolutionStatus,
+} from '@/modules/reports'
+import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
+
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import FormattedDate from '@/components/formatted-date'
+import Avatar, { AvatarSize } from '@/components/avatar'
+import UsernameLink from '@/components/username-link'
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
+import Markdown from '@/components/markdown'
+import TagChips from '@/components/tag-chips'
 
 enum Positivity {
   Positive = 'positive',
@@ -563,7 +565,9 @@ const AssetTimeline = ({ assetId }: { assetId: string }) => {
 
   return (
     <>
-      <Button onClick={() => setIsForceExpanded((currentVal) => !currentVal)}>
+      <Button
+        onClick={() => setIsForceExpanded((currentVal) => !currentVal)}
+        color="secondary">
         Expand All
       </Button>
       <Timeline>

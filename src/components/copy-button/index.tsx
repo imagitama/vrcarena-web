@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import FileCopyIcon from '@mui/icons-material/FileCopy'
-import Button from '../button'
-import { copyTextToClipboard } from '../../utils'
-import useTimer from '../../hooks/useTimer'
+import Button from '@/components/button'
+import { copyTextToClipboard } from '@/utils'
+import useTimer from '@/hooks/useTimer'
 
 const CopyButton = ({ text }: { text: string }) => {
   const [hasCopied, setHasCopied] = useState(false)

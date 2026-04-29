@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { handleError } from '../error-handling'
-import { uploadFile } from '../file-uploading'
+import { handleError } from '@/error-handling'
+import { uploadFile } from '@/file-uploading'
 import useSupabaseClient from './useSupabaseClient'
 
 type UploadFunc = (

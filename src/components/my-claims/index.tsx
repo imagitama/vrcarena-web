@@ -1,13 +1,13 @@
 import React from 'react'
 
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import useUserId from '@/hooks/useUserId'
+import { FullClaim, ViewNames } from '@/modules/claims'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import useUserId from '../../hooks/useUserId'
-import NoResultsMessage from '../no-results-message'
-import { FullClaim, ViewNames } from '../../modules/claims'
-import ClaimResults from '../claim-results'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
+import ClaimResults from '@/components/claim-results'
 
 const MyClaims = () => {
   const myUserId = useUserId()

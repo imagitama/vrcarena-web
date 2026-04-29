@@ -1,11 +1,13 @@
 import React, { SyntheticEvent, forwardRef } from 'react'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import MaterialButton from '@mui/material/Button'
 import { makeStyles } from '@mui/styles'
+import classnames from 'classnames'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import Tooltip from '../tooltip'
-import { VRCArenaTheme } from '../../themes'
+
+import Tooltip from '@/components/tooltip'
+import { VRCArenaTheme } from '@/themes'
 
 export interface ButtonProps {
   children?: React.ReactNode
@@ -23,24 +25,43 @@ export interface ButtonProps {
   title?: string
   iconOnly?: boolean
   checked?: boolean
+  hollow?: boolean
 }
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     whiteSpace: 'nowrap',
     minWidth: 0,
+    height: '34px',
+    '&&': {
+      textTransform: 'none',
+    },
   },
   icon: {
-    marginLeft: '0.5rem',
+    marginLeft: '0.25rem',
     display: 'flex', // fix line height issue
     '& svg': {
       fontSize: '150%',
       width: '1em',
       height: '1em',
-      fill: 'currentColor' // fix custom icons (MUI icons work fine)
+      fill: 'currentColor', // fix custom icons (MUI icons work fine)
     },
   },
   small: {
+    height: '24px',
+    '&&': {
+      paddingLeft: '8px',
+      paddingRight: '8px',
+    },
+  },
+  large: {
+    height: '40px',
+    '&&': {
+      paddingLeft: '12px',
+      paddingRight: '12px',
+    },
+  },
+  smallIcon: {
     marginLeft: '0.25rem',
   },
   switchIconSide: {
@@ -79,6 +100,21 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     margin: 0,
     '& svg': {
       margin: 0,
+    },
+  },
+  iconOnly: {
+    minWidth: 'auto !important',
+    paddingLeft: '0.25rem !important',
+    paddingRight: '0.25rem !important',
+  },
+  hollow: {
+    '&&': {
+      border: '1px solid rgba(255,255,255,0.25)',
+      color: '#FFF',
+      backgroundColor: 'rgba(255,255,255,0)',
+      '&:hover': {
+        backgroundColor: 'rgba(255,255,255,0.15)',
+      },
     },
   },
 }))
@@ -120,22 +156,27 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         color="primary"
         onClick={onClick}
         disabled={isDisabled}
-        className={`${classes.root} ${url ? '' : className} ${
-          // @ts-ignore
-          props.color === 'tertiary' ? classes.tertiary : ''
-        }`}
+        className={classnames({
+          [classes.root]: true,
+          [classes.tertiary]: props.color === 'tertiary',
+          [classes.iconOnly]: iconOnly,
+          [classes.hollow]: props.hollow,
+          [classes.small]: props.size === 'small',
+          [classes.large]: props.size === 'large',
+          [className]: true,
+        })}
         {...props}>
-        {/* > */}
         <span
           className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
           {!switchIconSide && children ? <>{children} </> : null}
           {iconToUse && (
             <span
-              className={`${classes.icon} ${iconOnly ? classes.noMargin : ''} ${
-                props.size === 'small' ? classes.small : ''
-              } ${switchIconSide ? classes.switchIconSide : ''} ${
-                children ? '' : classes.noChildren
-              }`}>
+              className={classnames({
+                [classes.icon]: true,
+                [classes.smallIcon]: props.size === 'small',
+                [classes.switchIconSide]: switchIconSide,
+                [classes.noChildren]: !children,
+              })}>
               {iconToUse}
             </span>
           )}

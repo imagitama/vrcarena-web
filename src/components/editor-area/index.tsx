@@ -3,8 +3,8 @@ import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 
-import { trackAction } from '../../analytics'
-import { colorPalette } from '../../config'
+import { trackAction } from '@/analytics'
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles({
   root: {

@@ -3,34 +3,35 @@ import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 import CheckIcon from '@mui/icons-material/Check'
 
-import { handleError } from '../../error-handling'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
+import { formHideDelay } from '@/config'
+import { handleError } from '@/error-handling'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import {
   Asset,
   CollectionNames,
   PublicAsset,
   Relation,
   RelationType,
-} from '../../modules/assets'
-import AssetSearch from '../asset-search'
-import Button from '../button'
-import FormControls from '../form-controls'
-import ItemsEditor, { Item } from '../items-editor'
-import TextInput from '../text-input'
-import AssetResultsItem from '../asset-results-item'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import SuccessMessage from '../success-message'
-import { RelationItem } from '../relations'
-import useTimer from '../../hooks/useTimer'
-import { formHideDelay } from '../../config'
-import RadioInputs from '../radio-inputs'
-import Message from '../message'
-import Paper from '../paper'
-import Heading from '../heading'
-import CheckboxInput from '../checkbox-input'
-import WarningMessage from '../warning-message'
+} from '@/modules/assets'
+import useTimer from '@/hooks/useTimer'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+
+import AssetSearch from '@/components/asset-search'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import ItemsEditor, { Item } from '@/components/items-editor'
+import TextInput from '@/components/text-input'
+import AssetResultsItem from '@/components/asset-results-item'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import { RelationItem } from '@/components/relations'
+import RadioInputs from '@/components/radio-inputs'
+import Message from '@/components/message'
+import Paper from '@/components/paper'
+import Heading from '@/components/heading'
+import CheckboxInput from '@/components/checkbox-input'
+import WarningMessage from '@/components/warning-message'
 
 const useStyles = makeStyles({
   editor: {

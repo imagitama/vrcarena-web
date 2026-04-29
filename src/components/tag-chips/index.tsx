@@ -1,5 +1,6 @@
 import React from 'react'
-import TagChip from '../tag-chip'
+
+import TagChip from '@/components/tag-chip'
 
 export default ({
   tags,

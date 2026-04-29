@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { getFriendlyDate } from '../../utils/dates'
+import { getFriendlyDate } from '@/utils/dates'
 
 export default ({
   date,

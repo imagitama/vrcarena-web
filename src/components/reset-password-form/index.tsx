@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import Button from '../button'
-import TextInput from '../text-input'
+import { auth } from '@/firebase'
+import { handleError } from '@/error-handling'
 
-import { auth } from '../../firebase'
-import { handleError } from '../../error-handling'
-import FormControls from '../form-controls'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import FormControls from '@/components/form-controls'
 
 enum ErrorCode {
   Unknown,

@@ -1,30 +1,28 @@
 import React, { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-
-import { handleError } from '../../error-handling'
-
-import ErrorMessage from '../error-message'
-import FormControls from '../form-controls'
-import Button from '../button'
-import TextInput from '../text-input'
-import LoadingIndicator from '../loading-indicator'
-import SuccessMessage from '../success-message'
-import GetVrchatAvatarDetails from '../get-vrchat-avatar-details'
-import VrchatAvatarComponent from '../vrchat-avatar'
-import { VrchatAvatar } from '../../vrchat'
+import { handleError } from '@/error-handling'
+import { VrchatAvatar } from '@/vrchat'
 import {
   Amendment,
   AmendmentFields,
   CollectionNames,
-} from '../../modules/amendments'
+} from '@/modules/amendments'
 import {
   Asset,
   CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import { routes } from '../../routes'
+} from '@/modules/assets'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import { routes } from '@/routes'
+
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import GetVrchatAvatarDetails from '@/components/get-vrchat-avatar-details'
+import VrchatAvatarComponent from '@/components/vrchat-avatar'
 
 export default ({ assetId }: { assetId: string }) => {
   const [

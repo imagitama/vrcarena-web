@@ -2,7 +2,8 @@ import React from 'react'
 import { makeStyles } from '@mui/styles'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
-import TagChip from '../tag-chip'
+
+import TagChip from '@/components/tag-chip'
 
 const useStyles = makeStyles({
   chip: {

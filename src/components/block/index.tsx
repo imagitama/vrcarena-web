@@ -1,22 +1,20 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import LazyLoad from 'react-lazyload'
-import Link from '../link'
-import { getIsUrlAbsolute } from '../../utils'
+import Link from '@/components/link'
+import { getIsUrlAbsolute } from '@/utils'
 import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
-} from '../../media-queries'
-import ErrorBoundary from '../error-boundary'
-import { VRCArenaTheme } from '../../themes'
+} from '@/media-queries'
+import ErrorBoundary from '@/components/error-boundary'
+import { VRCArenaTheme } from '@/themes'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
-    border: `1px solid ${theme.palette.background.paper}`,
-    borderRadius: theme.shape.borderRadius,
     padding: '1rem',
     marginBottom: '1rem',
-    backgroundColor: '#282828', // when rendered inside ExperimentalArea dont want big areas of green
+    // backgroundColor: '#282828', // when rendered inside ExperimentalArea dont want big areas of green
     [mediaQueryForTabletsOrBelow]: {
       padding: '0.5rem',
     },
@@ -24,7 +22,12 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       padding: '0.25rem',
     },
   },
+  titleWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+  },
   title: {
+    flex: '1 0 auto',
     fontSize: '150%',
     marginBottom: '0.5rem',
     display: 'flex',
@@ -47,6 +50,10 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     marginLeft: '0.5rem',
     display: 'flex',
     alignItems: 'center',
+  },
+  border: {
+    borderTop: `1px solid rgba(255,255,255,0.25)`,
+    width: '100%',
   },
 }))
 
@@ -76,18 +83,21 @@ const Block = ({
     <ErrorBoundary>
       <LazyLoad>
         <div className={`${classes.root} ${className}`}>
-          <div className={classes.title}>
-            {url ? (
-              getIsUrlAbsolute(url) ? (
-                <a href={url} target="_blank" rel="noopener noreferrer">
-                  {titleToRender}
-                </a>
+          <div className={classes.titleWrapper}>
+            <div className={classes.title}>
+              {url ? (
+                getIsUrlAbsolute(url) ? (
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    {titleToRender}
+                  </a>
+                ) : (
+                  <Link to={url}>{titleToRender}</Link>
+                )
               ) : (
-                <Link to={url}>{titleToRender}</Link>
-              )
-            ) : (
-              titleToRender
-            )}
+                titleToRender
+              )}
+            </div>
+            <div className={classes.border} />
           </div>
           {children}
         </div>

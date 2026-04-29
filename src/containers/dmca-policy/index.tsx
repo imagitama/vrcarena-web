@@ -1,8 +1,8 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import Markdown from '../../components/markdown'
-import { BUSINESS_NAME, EMAIL } from '../../config'
+import Markdown from '@/components/markdown'
+import { BUSINESS_NAME, EMAIL } from '@/config'
 
 const content = `
 Digital Millennium Copyright Act ("DMCA")

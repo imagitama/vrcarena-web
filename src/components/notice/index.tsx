@@ -3,9 +3,11 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import { makeStyles } from '@mui/styles'
 import CloseIcon from '@mui/icons-material/Close'
-import Markdown from '../markdown'
-import Chariot from '../chariot'
-import { VRCArenaTheme } from '../../themes'
+
+import { VRCArenaTheme } from '@/themes'
+
+import Markdown from '@/components/markdown'
+import Chariot from '@/components/chariot'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {

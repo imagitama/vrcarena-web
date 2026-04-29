@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
-import useDataStore from './useDataStore'
-import { DataStoreErrorCode, GetQuery } from '../data-store'
 import { SupabaseClient } from '@supabase/supabase-js'
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
+
+import { DataStoreErrorCode, GetQuery } from '@/data-store'
+import useDataStore from './useDataStore'
 
 export type GetQueryFn<TRecord> = (
   query: GetQuery<TRecord>

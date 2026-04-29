@@ -4,21 +4,23 @@ import Chip from '@mui/material/Chip'
 import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react'
 import AddIcon from '@mui/icons-material/Add'
 import Tooltip from '@mui/material/Tooltip'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 import {
   CollectionNames,
   ReactionSummary,
   SocialReaction,
   SocialReactionInsertFields,
-} from '../../modules/social'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import { handleError } from '../../error-handling'
-import useUserId from '../../hooks/useUserId'
-import { insertRecord } from '../../data-store'
-import ErrorMessage from '../error-message'
-import useClickAway from '../../hooks/useClickAway'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
-import { SupabaseClient } from '@supabase/supabase-js'
+} from '@/modules/social'
+import { handleError } from '@/error-handling'
+import { insertRecord } from '@/data-store'
+
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useUserId from '@/hooks/useUserId'
+import useClickAway from '@/hooks/useClickAway'
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+
+import ErrorMessage from '@/components/error-message'
 
 const useStyles = makeStyles({
   root: {

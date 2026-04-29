@@ -1,7 +1,7 @@
 import React from 'react'
-import { DISCORD_URL } from '../../config'
-import Link from '../link'
-import WarningMessage from '../warning-message'
+import { DISCORD_URL } from '@/config'
+import Link from '@/components/link'
+import WarningMessage from '@/components/warning-message'
 
 export default ({
   children = 'This feature of the site has been deprecated (removed) because of low usage or interest.',

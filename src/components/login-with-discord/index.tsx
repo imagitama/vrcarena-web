@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useHistory from '../../hooks/useHistory'
-import { auth, callFunction } from '../../firebase'
-import { handleError } from '../../error-handling'
-import * as routes from '../../routes'
-
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import SyncUserWithDiscordForm from '../sync-user-with-discord-form'
-import { DiscordUser } from '../../discord'
-import { signInWithCustomToken, updateEmail } from 'firebase/auth'
-import Button from '../button'
-import { OpenExternalLink as OpenExternalLinkIcon } from '@/icons'
+import useHistory from '@/hooks/useHistory'
+import { auth, callFunction } from '@/firebase'
+import { handleError } from '@/error-handling'
+import * as routes from '@/routes'
 import { loginWithDiscordUrl } from '@/config'
-import HintText from '../hint-text'
+import { DiscordUser } from '@/discord'
+import { signInWithCustomToken, updateEmail } from 'firebase/auth'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import SyncUserWithDiscordForm from '@/components/sync-user-with-discord-form'
+import Button from '@/components/button'
+import { OpenExternalLink as OpenExternalLinkIcon } from '@/icons'
+import HintText from '@/components/hint-text'
 
 const useStyles = makeStyles({
   button: {

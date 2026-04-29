@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
 import CreateIcon from '@mui/icons-material/Create'
+import CheckIcon from '@mui/icons-material/Check'
 
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import useUserId from '../../hooks/useUserId'
-import { handleError } from '../../error-handling'
-import { CollectionNames, Comment } from '../../modules/comments'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import useUserId from '@/hooks/useUserId'
+import { handleError } from '@/error-handling'
+import { CollectionNames, Comment } from '@/modules/comments'
 
-import FormControls from '../form-controls'
+import FormControls from '@/components/form-controls'
 import MentionsInput from '../mentions-input'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import LoadingIndicator from '../loading-indicator'
-import Button from '../button'
-import useIsBanned from '../../hooks/useIsBanned'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
+import useIsBanned from '@/hooks/useIsBanned'
 import NoPermissionMessage from '../no-permission-message'
-import useAccountVerification from '../../hooks/useAccountVerification'
+import useAccountVerification from '@/hooks/useAccountVerification'
 
 const AddCommentForm = ({
   collectionName,
@@ -115,7 +116,8 @@ const AddCommentForm = ({
       <FormControls extraTopMargin>
         <Button
           onClick={onAddCommentBtnClick}
-          isDisabled={!textFieldValue.trim()}>
+          isDisabled={!textFieldValue.trim()}
+          icon={<CheckIcon />}>
           Add{asPrivate ? ' Private' : ''} Comment
         </Button>
       </FormControls>

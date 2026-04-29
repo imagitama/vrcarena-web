@@ -1,15 +1,15 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import Link from '../../components/link'
 
-import * as routes from '../../routes'
-import { getUserIsStaffMember } from '../../utils/users'
+import * as routes from '@/routes'
+import { getUserIsStaffMember } from '@/utils/users'
+import { mediaQueryForMobiles } from '@/media-queries'
+import { BanStatus, FullUser, User, getIsFullUser } from '@/modules/users'
+import { AccessStatus } from '@/modules/common'
 
-import Avatar, { AvatarSize } from '../avatar'
-import StaffBadge from '../staff-badge'
-import { mediaQueryForMobiles } from '../../media-queries'
-import { BanStatus, FullUser, User, getIsFullUser } from '../../modules/users'
-import { AccessStatus } from '../../modules/common'
+import Link from '@/components/link'
+import Avatar, { AvatarSize } from '@/components/avatar'
+import StaffBadge from '@/components/staff-badge'
 
 const useStyles = makeStyles({
   container: {

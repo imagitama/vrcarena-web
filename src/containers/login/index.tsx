@@ -2,16 +2,15 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useHistory } from 'react-router-dom'
 
-import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
-import useFirebaseUserId from '../../hooks/useFirebaseUserId'
-import useQueryParams from '../../hooks/useQueryParams'
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
 
-import LoginForm from '../../components/login-form'
-import ErrorMessage from '../../components/error-message'
-import LoginWithDiscord from '../../components/login-with-discord'
-import Message from '@/components/message'
-import { DISCORD_URL, EMAIL } from '@/config'
+import useFirebaseUserId from '@/hooks/useFirebaseUserId'
+import useQueryParams from '@/hooks/useQueryParams'
+
+import LoginForm from '@/components/login-form'
+import ErrorMessage from '@/components/error-message'
+import LoginWithDiscord from '@/components/login-with-discord'
 
 export default () => {
   const firebaseUserId = useFirebaseUserId()

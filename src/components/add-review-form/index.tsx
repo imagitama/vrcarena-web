@@ -4,21 +4,20 @@ import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import CheckIcon from '@mui/icons-material/Check'
 
-import { handleError } from '../../error-handling'
+import { handleError } from '@/error-handling'
 import { allowedRatings, RatingMeta } from '../../ratings'
 
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import LoadingIndicator from '../loading-indicator'
-import Button from '../button'
-import TextInput from '../text-input'
-import Paper from '../paper'
-import FormControls from '../form-controls'
-import { CollectionNames, Rating, Review } from '../../modules/reviews'
-import useIsBanned from '../../hooks/useIsBanned'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import FormControls from '@/components/form-controls'
+import { CollectionNames, Rating, Review } from '@/modules/reviews'
+import useIsBanned from '@/hooks/useIsBanned'
 import NoPermissionMessage from '../no-permission-message'
-import { routes } from '../../routes'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import { routes } from '@/routes'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
 const useStyles = makeStyles({
   root: {},
@@ -160,7 +159,7 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
     )
 
   return (
-    <Paper
+    <div
       className={`${classes.rating} ${
         isActive || changesNeedToBeSaved ? classes.active : classes.inactive
       }`}>
@@ -216,7 +215,7 @@ function RatingOutput({ ratingMeta }: { ratingMeta: RatingMeta }) {
           </Button>
         )}
       </FormControls>
-    </Paper>
+    </div>
   )
 }
 
@@ -328,7 +327,7 @@ export default ({
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.overallRating}>
+      <div className={classes.overallRating}>
         <div className={classes.ratingInputWrapper}>
           <div className={classes.label}>Overall rating:</div>
           <RatingInput
@@ -349,7 +348,7 @@ export default ({
           multiline
           className={classes.input}
         />
-      </Paper>
+      </div>
       <ratingsContext.Provider
         value={{
           newRatings,

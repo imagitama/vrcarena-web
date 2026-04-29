@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 import PublishIcon from '@mui/icons-material/Publish'
 
-import { handleError } from '../../error-handling'
-import { callFunction } from '../../firebase'
-import { PublishErrorCode, getErrorMessageForCode } from '../../utils/assets'
-import { PublishStatus } from '../../modules/common'
-import { AssetMeta, CollectionNames } from '../../modules/assets'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import { callFunction } from '@/firebase'
+import { PublishErrorCode, getErrorMessageForCode } from '@/utils/assets'
+import { PublishStatus } from '@/modules/common'
+import { AssetMeta, CollectionNames } from '@/modules/assets'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 
-import Button from '../button'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import SuccessMessage from '../success-message'
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
 
 const AdminPublishButton = ({
   assetId,
@@ -127,6 +127,7 @@ const AdminPublishButton = ({
       }
       size="small"
       isDisabled={!canDoSomething}
+      color="secondary"
       title={
         existingPublishStatus === PublishStatus.Draft
           ? 'Notifies staff it needs approval'

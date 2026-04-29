@@ -5,31 +5,31 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { makeStyles } from '@mui/styles'
 
-import ErrorMessage from '../../components/error-message'
-import NoPermissionMessage from '../../components/no-permission-message'
-import SuccessMessage from '../../components/success-message'
-import LoadingIndicator from '../../components/loading-indicator'
-import Button from '../../components/button'
-import Heading from '../../components/heading'
-import TextInput from '../../components/text-input'
-import FormControls from '../../components/form-controls'
-
-import * as routes from '../../routes'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import { DISCORD_URL, EMAIL } from '../../config'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
+import * as routes from '@/routes'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { DISCORD_URL, EMAIL } from '@/config'
 import {
   CollectionNames,
   SupportTicket,
   SupportTicketAnswer,
   SupportTicketCategory,
   supportTicketCategoryMeta,
-} from '../../modules/support-tickets'
-import GenericOutputItem from '../../components/generic-output-item'
-import usePermissions from '../../hooks/usePermissions'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import { getViewNameForParentTable } from '../../utils/reports'
+} from '@/modules/support-tickets'
+import { getViewNameForParentTable } from '@/utils/reports'
+
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import usePermissions from '@/hooks/usePermissions'
+
+import ErrorMessage from '@/components/error-message'
+import NoPermissionMessage from '@/components/no-permission-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
+import Heading from '@/components/heading'
+import TextInput from '@/components/text-input'
+import FormControls from '@/components/form-controls'
 import WarningMessage from '@/components/warning-message'
 import Link from '@/components/link'
 
@@ -57,12 +57,11 @@ const Form = ({
   viewName?: string
   parentId?: string
 }) => {
-  const [isLoadingParent, lastErrorCodeLoadingParent, parent] =
-    useDataStoreItem(
-      viewName || parentTable || '',
-      parentId || false,
-      'create-support-ticket'
-    )
+  const [isLoadingParent, lastErrorCodeLoadingParent] = useDataStoreItem(
+    viewName || parentTable || '',
+    parentId || false,
+    { queryName: 'create-support-ticket' }
+  )
   const [
     isSaving,
     isSaveSuccess,

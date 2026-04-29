@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
-import useFirebaseFunction from '../../hooks/useFirebaseFunction'
-import useUserRecord from '../../hooks/useUserRecord'
-import Button from '../button'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import SuccessMessage from '../success-message'
-import Paper from '../paper'
-import Heading from '../heading'
+
+import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+import useUserRecord from '@/hooks/useUserRecord'
+
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import Paper from '@/components/paper'
+import Heading from '@/components/heading'
 
 interface GenerateCodePayload {}
 

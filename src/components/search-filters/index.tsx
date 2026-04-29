@@ -1,19 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 
-import Button from '../button'
-import { trackAction } from '../../analytics'
+import { trackAction } from '@/analytics'
 import {
   removeSearchFilter,
   addSearchFilter,
   clearSearchFilters,
-} from '../../modules/app'
-import categoryMeta from '../../category-meta'
-import { AssetCategory } from '../../modules/assets'
-import { RootState } from '../../modules'
+} from '@/modules/app'
+import categoryMeta from '@/category-meta'
+import { AssetCategory } from '@/modules/assets'
+import { RootState } from '@/modules'
+
+import Button from '@/components/button'
 
 const analyticsCategoryName = 'SearchResults'
 
@@ -24,7 +25,9 @@ const useStyles = makeStyles({
     width: '100%',
   },
   availableFilter: {
-    margin: '0 0.5rem 0.5rem 0',
+    '&&': {
+      margin: '0 0.1rem 0 0',
+    },
   },
 })
 

@@ -1,7 +1,8 @@
 import React from 'react'
-import Heading from '../../components/heading'
+
+import Heading from '@/components/heading'
 import { sortableFieldMap } from '../query'
-import { AssetCategory } from '../../modules/assets'
+import { AssetCategory } from '@/modules/assets'
 
 const QueryCheatsheet = () => {
   return (

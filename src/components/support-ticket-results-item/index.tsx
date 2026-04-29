@@ -1,15 +1,15 @@
 import React, { Fragment } from 'react'
-import Link from '@/components/link'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
 import * as routes from '@/routes'
-
-import FormattedDate from '../formatted-date'
 import { FullSupportTicket } from '@/modules/support-tickets'
-import GenericOutputItem from '../generic-output-item'
-import ResolutionStatus from '../resolution-status'
-import Button from '../button'
+
+import Link from '@/components/link'
+import FormattedDate from '@/components/formatted-date'
+import GenericOutputItem from '@/components/generic-output-item'
+import ResolutionStatus from '@/components/resolution-status'
+import Button from '@/components/button'
 
 export default ({
   supportTicket,

@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react'
-import useDataStore from '../../hooks/useDataStore'
-
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
-import ReviewResults from '../review-results'
-import { FullReview, ViewNames } from '../../modules/reviews'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+import useDataStore from '@/hooks/useDataStore'
+import { FullReview, ViewNames } from '@/modules/reviews'
+
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
+import ReviewResults from '@/components/review-results'
 
 export default ({
   assetId,

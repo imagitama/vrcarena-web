@@ -1,6 +1,6 @@
 import React from 'react'
-import ErrorMessage, { ErrorMessageProps } from '../error-message'
-import { DISCORD_URL, EMAIL } from '../../config'
+import ErrorMessage, { ErrorMessageProps } from '@/components/error-message'
+import { DISCORD_URL, EMAIL } from '@/config'
 
 const ErrorBoundaryMessage = (props: Omit<ErrorMessageProps, 'children'>) => (
   <ErrorMessage

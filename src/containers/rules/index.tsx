@@ -1,7 +1,8 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Markdown from '../../components/markdown'
-import { nsfwRules } from '../../config'
+
+import Markdown from '@/components/markdown'
+import { nsfwRules } from '@/config'
 
 const rules = `# Guidelines for using VRCArena
 

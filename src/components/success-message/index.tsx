@@ -1,7 +1,8 @@
 import React from 'react'
 import CheckIcon from '@mui/icons-material/Check'
-import Message, { MessageProps } from '../message'
-import Button from '../button'
+
+import Message, { MessageProps } from '@/components/message'
+import Button from '@/components/button'
 
 export default ({
   onOkay,

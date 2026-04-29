@@ -1,12 +1,20 @@
 import React, { useState } from 'react'
-import Link from '../../components/link'
 import Chip from '@mui/material/Chip'
 import Tooltip from '@mui/material/Tooltip'
 import { makeStyles } from '@mui/styles'
-import * as routes from '../../routes'
+
+import * as routes from '@/routes'
+import Link from '@/components/link'
 
 const useStyles = makeStyles({
-  chip: { margin: '0 0.25rem 0.25rem 0 !important' },
+  chip: {
+    margin: '0 0.25rem 0.25rem 0 !important',
+    background: 'transparent !important',
+    border: '1px solid rgba(255,255,255,0.5) !important',
+    '&:hover': {
+      background: 'rgba(255,255,255,0.5) !important',
+    },
+  },
   loading: {
     filter: 'blur(2px)',
   },

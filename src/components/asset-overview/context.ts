@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { FullAsset } from '../../modules/assets'
+import { FullAsset } from '@/modules/assets'
 
 export interface AssetOverviewContext {
   assetId: string

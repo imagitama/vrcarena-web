@@ -2,14 +2,16 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { makeStyles } from '@mui/styles'
 
-import FormattedDate from '../../components/formatted-date'
-import * as routes from '../../routes'
-import Paper from '../../components/paper'
-import PaginatedView from '../../components/paginated-view'
-import { FullActivityEntry, ViewNames } from '../../modules/activity'
-import ActivityItemLabel from '../../components/activity-item-label'
-import { FullHistoryEntry } from '../../modules/history'
+import * as routes from '@/routes'
+import { FullActivityEntry, ViewNames } from '@/modules/activity'
 
+import FormattedDate from '@/components/formatted-date'
+import Paper from '@/components/paper'
+import PaginatedView from '@/components/paginated-view'
+import ActivityItemLabel from '@/components/activity-item-label'
+import { FullHistoryEntry } from '@/modules/history'
+
+// TODO: migrate to component
 const useStyles = makeStyles({
   item: {},
   date: {

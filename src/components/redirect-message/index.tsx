@@ -1,4 +1,4 @@
 import React from 'react'
-import WarningMessage from '../warning-message'
+import WarningMessage from '@/components/warning-message'
 
 export default () => <WarningMessage>Redirecting you...</WarningMessage>

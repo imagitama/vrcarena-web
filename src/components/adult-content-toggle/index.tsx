@@ -1,5 +1,5 @@
 import React from 'react'
-import UserPreferenceEditor from '../user-preference-editor'
+import UserPreferenceEditor from '@/components/user-preference-editor'
 
 const AdultContentToggle = ({
   analyticsCategoryName,

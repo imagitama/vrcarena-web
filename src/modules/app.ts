@@ -7,9 +7,9 @@ import {
 import { CollectionNames as AuthorsCollectionNames } from './authors'
 
 export const searchIndexNameLabels = {
-  [AssetsCollectionNames.Assets]: 'assets',
-  [AuthorsCollectionNames.Authors]: 'authors',
-  [UsersCollectionNames.Users]: 'users',
+  [AssetsCollectionNames.Assets]: 'Assets',
+  [AuthorsCollectionNames.Authors]: 'Authors',
+  [UsersCollectionNames.Users]: 'Users',
 }
 
 function isSearchRoute() {
@@ -21,12 +21,12 @@ function getInitialSearchIndexName() {
     const chunks = window.location.pathname.split('/')
     const foundSearchIndexLabel = chunks[2]
     const foundSearchIndex = Object.entries(searchIndexNameLabels).find(
-      ([, label]) => label === foundSearchIndexLabel
+      ([name, label]) => name === foundSearchIndexLabel
     )
 
     if (!foundSearchIndex) {
       throw new Error(
-        `Found search index label "${foundSearchIndexLabel}" but no exist: ${Object.values(
+        `Found search index name "${foundSearchIndexLabel}" but no exist: ${Object.values(
           searchIndexNameLabels
         )}`
       )
@@ -54,8 +54,6 @@ export interface AppState {
   isMenuOpen: boolean
   searchTerm: string
   searchTableName: string
-  bannerUrl: string
-  bannerFallbackUrl: string
   searchFilters: SearchFilter[]
   searchCount: number // a (bad) way to force a re-render
   isSearching: boolean
@@ -69,8 +67,6 @@ const initialState: AppState = {
   isMenuOpen: false,
   searchTerm: getInitialSearchTerm(),
   searchTableName: getInitialSearchIndexName(),
-  bannerUrl: '',
-  bannerFallbackUrl: '',
   searchFilters: [],
   searchCount: 0,
   isSearching: false,
@@ -127,12 +123,6 @@ export default (
       return {
         ...state,
         searchTableName: action.payload.newTableName,
-      }
-
-    case SET_BANNER_URLS:
-      return {
-        ...state,
-        bannerUrl: action.payload.url,
       }
 
     case OVERRIDE_SEARCH_FILTER:
@@ -263,17 +253,6 @@ export const changeSearchTableName =
       type: CHANGE_SEARCH_TABLE_NAME,
       payload: {
         newTableName,
-      },
-    })
-  }
-
-export const setBannerUrls =
-  (newValue: { url: string }) => (dispatch: Dispatch) => {
-    console.debug('Set banner URLs', newValue)
-    dispatch({
-      type: SET_BANNER_URLS,
-      payload: {
-        ...newValue,
       },
     })
   }

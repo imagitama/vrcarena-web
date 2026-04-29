@@ -1,10 +1,10 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import { standardAreaNames, areasByCategory } from '../../areas'
-import * as routes from '../../routes'
-import Heading from '../heading'
-import Link from '../link'
+import { standardAreaNames, areasByCategory } from '@/areas'
+import * as routes from '@/routes'
+import Heading from '@/components/heading'
+import Link from '@/components/link'
 
 const useStyles = makeStyles({
   root: {

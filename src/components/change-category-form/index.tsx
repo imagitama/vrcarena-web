@@ -6,15 +6,15 @@ import Typography from '@mui/material/Typography'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import categoryMeta, { CategoryMeta } from '../../category-meta'
-import { Asset, AssetCategory, CollectionNames } from '../../modules/assets'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import categoryMeta, { CategoryMeta } from '@/category-meta'
+import { Asset, AssetCategory, CollectionNames } from '@/modules/assets'
 
-import LoadingIndicator from '../loading-indicator'
-import Button from '../button'
-import FormControls from '../form-controls'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
 
 const useStyles = makeStyles({
   buttons: {

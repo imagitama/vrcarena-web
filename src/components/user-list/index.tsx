@@ -1,7 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import UserListItem from '../user-list-item'
-import { FullUser, User } from '../../modules/users'
+
+import { FullUser, User } from '@/modules/users'
+import UserListItem from '@/components/user-list-item'
 
 const useStyles = makeStyles({
   container: {

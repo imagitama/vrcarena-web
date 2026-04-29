@@ -5,14 +5,17 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import Heading from '../../components/heading'
-import { CachedPatreonMember } from '../../modules/patreonmembercache'
-import LoadingIndicator from '../../components/loading-indicator'
-import ErrorMessage from '../../components/error-message'
-import Message from '../../components/message'
-import useSupabaseView from '../../hooks/useSupabaseView'
-import { costs, patreonTax, totalCostPerMonth } from '../../costs'
-import { ViewNames } from '../../modules/patreonpledgecache'
+
+import { CachedPatreonMember } from '@/modules/patreonmembercache'
+import { costs, patreonTax, totalCostPerMonth } from '@/costs'
+import { ViewNames } from '@/modules/patreonpledgecache'
+
+import useSupabaseView from '@/hooks/useSupabaseView'
+
+import Heading from '@/components/heading'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Message from '@/components/message'
 
 const PatreonStatus = () => {
   const [isLoading, lastErrorCode, members] =

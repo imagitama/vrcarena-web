@@ -1,10 +1,14 @@
 import React, { useContext } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import { mediaQueryForTabletsOrBelow } from '../../../../media-queries'
-import Markdown from '../../../markdown'
-import SketchfabEmbed from '../../../sketchfab-embed'
-import Expander from '../../../expander'
+import {
+  isMobile,
+  mediaQueryForTabletsOrBelow,
+  queryForMobiles,
+} from '@/media-queries'
+import Markdown from '@/components/markdown'
+import SketchfabEmbed from '@/components/sketchfab-embed'
+import Expander from '@/components/expander'
 import TabContext from '../../context'
 
 const useStyles = makeStyles({
@@ -21,7 +25,8 @@ const useStyles = makeStyles({
     },
   },
   description: {
-    '& A': { textDecoration: 'underline' },
+    fontSize: '125%',
+    '& a': { textDecoration: 'underline' },
   },
 })
 
@@ -29,24 +34,31 @@ export default () => {
   const { asset } = useContext(TabContext)
   const classes = useStyles()
 
-  return (
-    <Expander isLoaded={asset !== null} message="Click to expand description">
-      <div>
-        {asset && asset.sketchfabembedurl ? (
-          <div className={classes.sketchfabWrapper}>
-            <SketchfabEmbed
-              url={asset.sketchfabembedurl}
-              className={classes.sketchfab}
-            />
-          </div>
-        ) : null}
-        <div className={classes.description}>
-          <Markdown
-            source={asset ? asset.description : ''}
-            replaceImagesWithButtons
+  var content = (
+    <div>
+      {asset && asset.sketchfabembedurl ? (
+        <div className={classes.sketchfabWrapper}>
+          <SketchfabEmbed
+            url={asset.sketchfabembedurl}
+            className={classes.sketchfab}
           />
         </div>
+      ) : null}
+      <div className={classes.description}>
+        <Markdown
+          source={asset ? asset.description : ''}
+          replaceImagesWithButtons
+        />
       </div>
-    </Expander>
+    </div>
   )
+
+  if (isMobile)
+    return (
+      <Expander isLoaded={asset !== null} message="Click to expand description">
+        {content}
+      </Expander>
+    )
+
+  return content
 }

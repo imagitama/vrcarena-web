@@ -6,19 +6,19 @@ import 'react-image-crop/dist/ReactCrop.css'
 import CheckIcon from '@mui/icons-material/Check'
 import PhotoIcon from '@mui/icons-material/Photo'
 
-import useImageUpload from '../../hooks/useImageUpload'
-import { handleError } from '../../error-handling'
+import useImageUpload from '@/hooks/useImageUpload'
+import { handleError } from '@/error-handling'
 import {
   FileTooLargeError,
   SecurityError,
   UnsupportedMimeTypeError,
   UploadImageError,
-} from '../../file-uploading'
+} from '@/file-uploading'
 
-import FormControls from '../form-controls'
-import Button from '../button'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
+import FormControls from '@/components/form-controls'
+import Button from '@/components/button'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
 
 const useStyles = makeStyles({
   root: {},

@@ -1,4 +1,4 @@
-import { UserRoles } from '../modules/users'
+import { UserRoles } from '@/modules/users'
 import useUserRecord from './useUserRecord'
 
 export default (): boolean | null => {

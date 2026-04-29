@@ -7,9 +7,10 @@ import CardMedia from '@mui/material/CardMedia'
 import LazyLoad from 'react-lazyload'
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
 
-import Link from '../link'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import DefaultThumbnail from '../default-thumbnail'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+
+import DefaultThumbnail from '@/components/default-thumbnail'
+import Link from '@/components/link'
 
 const useStyles = makeStyles({
   root: {

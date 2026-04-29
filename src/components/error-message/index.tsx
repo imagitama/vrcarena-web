@@ -3,10 +3,10 @@ import ErrorIcon from '@mui/icons-material/Error'
 import ReplayIcon from '@mui/icons-material/Replay'
 import CheckIcon from '@mui/icons-material/Check'
 
-import { DISCORD_URL, EMAIL } from '../../config'
-import { base64EncodeString } from '../../utils'
-import Message, { MessageProps } from '../message'
-import Button from '../button'
+import { DISCORD_URL, EMAIL } from '@/config'
+import { base64EncodeString } from '@/utils'
+import Message, { MessageProps } from '@/components/message'
+import Button from '@/components/button'
 
 const getErrorCodeForError = (error: Error): string =>
   base64EncodeString(error.message)

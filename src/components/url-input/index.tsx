@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import TextInput from '../text-input'
-import { getIsUrl } from '@/utils'
+
+import TextInput from '@/components/text-input'
 
 const UrlInput = ({
   value,

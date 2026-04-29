@@ -1,10 +1,9 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { ReactComponent as AwtterLineart } from '../../assets/images/lineart/groupsonly/awtter.svg'
-import { ReactComponent as TaidumLineart } from '../../assets/images/lineart/groupsonly/taidum.svg'
-import { ReactComponent as RexouiumLineart } from '../../assets/images/lineart/groupsonly/rexouium.svg'
-import { VRCArenaTheme } from '../../themes'
-// import { ReactComponent as AwtterLineartPattern } from '../../assets/images/awtter-lineart-pattern.svg'
+import { ReactComponent as AwtterLineart } from '@/assets/images/lineart/groupsonly/awtter.svg'
+import { ReactComponent as TaidumLineart } from '@/assets/images/lineart/groupsonly/taidum.svg'
+import { ReactComponent as RexouiumLineart } from '@/assets/images/lineart/groupsonly/rexouium.svg'
+import { VRCArenaTheme } from '@/themes'
 
 /**
  * The plan is to create lineart of all the popular avatars and make a christmas wrapping effect.

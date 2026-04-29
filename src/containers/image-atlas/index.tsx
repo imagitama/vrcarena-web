@@ -5,15 +5,17 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
-import ErrorMessage from '../../components/error-message'
-import Paper from '../../components/paper'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
-import FormattedDate from '../../components/formatted-date'
-import Button from '../../components/button'
-import useInterval from '../../hooks/useInterval'
-import useIsEditor from '../../hooks/useIsEditor'
-import NoPermissionMessage from '../../components/no-permission-message'
-import { callFunction } from '../../firebase'
+import { callFunction } from '@/firebase'
+
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import useInterval from '@/hooks/useInterval'
+import useIsEditor from '@/hooks/useIsEditor'
+
+import ErrorMessage from '@/components/error-message'
+import Paper from '@/components/paper'
+import FormattedDate from '@/components/formatted-date'
+import Button from '@/components/button'
+import NoPermissionMessage from '@/components/no-permission-message'
 
 interface ImageAtlasCell {
   id: string

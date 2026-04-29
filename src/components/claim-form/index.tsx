@@ -1,27 +1,28 @@
 import React, { useState } from 'react'
 import PanToolIcon from '@mui/icons-material/PanTool'
-import Button from '../button'
+import Button from '@/components/button'
 import {
   Author,
   CollectionNames as AuthorCollectionNames,
-} from '../../modules/authors'
+} from '@/modules/authors'
 import {
   Claim,
   CollectionNames as ClaimCollectionNames,
-} from '../../modules/claims'
-import AuthorResultsItem from '../author-results-item'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import SuccessMessage from '../success-message'
-import TextInput from '../text-input'
-import Heading from '../heading'
-import ErrorMessage from '../error-message'
-import { handleError } from '../../error-handling'
-import FormControls from '../form-controls'
-import LoadingIndicator from '../loading-indicator'
-import useDataStoreExists from '../../hooks/useDataStoreExists'
-import InfoMessage from '../info-message'
-import { Operators } from '../../hooks/useDatabaseQuery'
-import useUserId from '../../hooks/useUserId'
+} from '@/modules/claims'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import { handleError } from '@/error-handling'
+import useDataStoreExists from '@/hooks/useDataStoreExists'
+import { Operators } from '@/hooks/useDatabaseQuery'
+import useUserId from '@/hooks/useUserId'
+
+import InfoMessage from '@/components/info-message'
+import AuthorResultsItem from '@/components/author-results-item'
+import SuccessMessage from '@/components/success-message'
+import TextInput from '@/components/text-input'
+import Heading from '@/components/heading'
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
+import LoadingIndicator from '@/components/loading-indicator'
 
 const Renderer = <TData,>({
   parentTable,
@@ -61,7 +62,9 @@ const ClaimForm = <TData,>({
   )
   const [comments, setComments] = useState('')
   const [isCreating, isSuccess, lastErrorCode, create] =
-    useDataStoreCreate<Claim>(ClaimCollectionNames.Claims)
+    useDataStoreCreate<Claim>(ClaimCollectionNames.Claims, {
+      queryName: 'claim-form',
+    })
 
   if (doesExist === true) {
     return (

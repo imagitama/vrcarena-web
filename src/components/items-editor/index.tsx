@@ -7,9 +7,9 @@ import EditIcon from '@mui/icons-material/Edit'
 import AddIcon from '@mui/icons-material/Add'
 import FlipMove from 'react-flip-move'
 
-import { moveItemToLeft, moveItemToRight } from '../../utils'
-import { VRCArenaTheme } from '../../themes'
-import Button from '../button'
+import { moveItemToLeft, moveItemToRight } from '@/utils'
+import { VRCArenaTheme } from '@/themes'
+import Button from '@/components/button'
 
 export type Item<T> = {} & T
 

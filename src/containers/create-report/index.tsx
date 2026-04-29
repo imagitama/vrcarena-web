@@ -4,34 +4,35 @@ import { useParams } from 'react-router'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { makeStyles } from '@mui/styles'
-import Link from '../../components/link'
 
-import ErrorMessage from '../../components/error-message'
-import WarningMessage from '../../components/warning-message'
-import NoPermissionMessage from '../../components/no-permission-message'
-import SuccessMessage from '../../components/success-message'
-import LoadingIndicator from '../../components/loading-indicator'
-import Button from '../../components/button'
-import Heading from '../../components/heading'
-import TextInput from '../../components/text-input'
-import FormControls from '../../components/form-controls'
-
-import * as routes from '../../routes'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import { DISCORD_URL } from '../../config'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
+import * as routes from '@/routes'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { DISCORD_URL } from '@/config'
 import {
   CollectionNames,
   getReasonsForCollectionName,
   Report,
   reportReasonsKeysByCollection,
-} from '../../modules/reports'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import GenericOutputItem from '../../components/generic-output-item'
-import usePermissions from '../../hooks/usePermissions'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import { getViewNameForParentTable } from '../../utils/reports'
+} from '@/modules/reports'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+import { getViewNameForParentTable } from '@/utils/reports'
+
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import usePermissions from '@/hooks/usePermissions'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+
+import Link from '@/components/link'
+import ErrorMessage from '@/components/error-message'
+import WarningMessage from '@/components/warning-message'
+import NoPermissionMessage from '@/components/no-permission-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
+import Heading from '@/components/heading'
+import TextInput from '@/components/text-input'
+import FormControls from '@/components/form-controls'
+import GenericOutputItem from '@/components/generic-output-item'
 
 const analyticsCategory = 'CreateReport'
 
@@ -53,7 +54,9 @@ const Form = ({
   parentId: string
 }) => {
   const [isLoadingParent, lastErrorCodeLoadingParent, parent] =
-    useDataStoreItem(viewName || parentTable, parentId, 'create-report')
+    useDataStoreItem(viewName || parentTable, parentId, {
+      queryName: 'create-report',
+    })
   const [
     isSaving,
     isSaveSuccess,

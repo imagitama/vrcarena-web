@@ -2,12 +2,14 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
-import GenericEditor from '../../components/generic-editor'
-import Heading from '../../components/heading'
-import NoPermissionMessage from '../../components/no-permission-message'
-import * as routes from '../../routes'
-import { CollectionNames } from '../../modules/discordservers'
-import usePermissions from '../../hooks/usePermissions'
+import * as routes from '@/routes'
+import { CollectionNames } from '@/modules/discordservers'
+
+import usePermissions from '@/hooks/usePermissions'
+
+import GenericEditor from '@/components/generic-editor'
+import Heading from '@/components/heading'
+import NoPermissionMessage from '@/components/no-permission-message'
 
 const View = () => {
   const { discordServerId } = useParams<{ discordServerId: string }>()

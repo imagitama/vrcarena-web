@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import useSupabaseClient from './useSupabaseClient'
-import { handleError } from '../error-handling'
+import { handleError } from '@/error-handling'
 
 enum ErrorCode {
   Unknown = 0,

@@ -1,10 +1,11 @@
 import React, { ChangeEventHandler } from 'react'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
+import type { AutocompleteRenderInputParams } from '@mui/material'
 import Autocomplete from '@mui/lab/Autocomplete'
 import ClearIcon from '@mui/icons-material/Clear'
 import { makeStyles } from '@mui/styles'
-import type { AutocompleteRenderInputParams } from '@mui/material'
-import { VRCArenaTheme } from '../../themes'
+
+import { VRCArenaTheme } from '@/themes'
 
 export interface AutocompleteOption<T> {
   label: string
@@ -13,8 +14,7 @@ export interface AutocompleteOption<T> {
 }
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
-  divInput: {
-    // wordWrap: 'anywhere',
+  fakeInput: {
     userSelect: 'element',
     background: '#FFF',
     color: '#000',
@@ -61,7 +61,7 @@ const MyTextField = ({
           // @ts-ignore
           ref={params.inputProps.ref}
           // @ts-ignore
-          className={`${classes.divInput} ${params.inputProps.className} ${textFieldProps.className}`}
+          className={`${classes.fakeInput} ${params.inputProps.className} ${textFieldProps.className}`}
           contentEditable
           onKeyDown={textFieldProps.onKeyDown}
           onMouseDown={(e) => {

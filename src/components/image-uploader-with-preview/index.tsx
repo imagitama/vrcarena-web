@@ -1,6 +1,6 @@
 import React from 'react'
-import ImageUploader, { ImageUploaderProps } from '../image-uploader'
-import Button from '../button'
+import ImageUploader, { ImageUploaderProps } from '@/components/image-uploader'
+import Button from '@/components/button'
 
 const ImageUploaderWithPreview = ({
   value,

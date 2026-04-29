@@ -15,7 +15,7 @@ import {
   YouTube as YouTubeIcon,
   Telegram as TelegramIcon,
   Website as WebsiteIcon,
-} from '../../icons'
+} from '@/icons'
 import {
   getUrlForVrChatUserId,
   getUrlForTwitterUsername,
@@ -25,14 +25,13 @@ import {
   getUrlForGumroadUsername,
   getUrlForPatreonByUsername,
   getUrlForBoothByUsername,
-} from '../../utils'
-import { trackAction } from '../../analytics'
-import { getAuthorUrlForItchUsername } from '../../itch'
-import { getAuthorUrlForJinxxyUsername } from '../../jinxxy'
-import { getAuthorUrlForKofiUsername } from '../../kofi'
-import { getAuthorUrlForPayHipUsername } from '../../payhip'
-import { mediaQueryForMobiles } from '../../media-queries'
-import { inDevelopment } from '../../environment'
+} from '@/utils'
+import { trackAction } from '@/analytics'
+import { getAuthorUrlForItchUsername } from '@/itch'
+import { getAuthorUrlForJinxxyUsername } from '@/jinxxy'
+import { getAuthorUrlForKofiUsername } from '@/kofi'
+import { getAuthorUrlForPayHipUsername } from '@/payhip'
+import { mediaQueryForMobiles } from '@/media-queries'
 
 export const socialMediaType = {
   twitter: 'twitter',

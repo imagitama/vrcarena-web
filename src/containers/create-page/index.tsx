@@ -2,17 +2,18 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
-import Heading from '../../components/heading'
-import NoPermissionMessage from '../../components/no-permission-message'
+import * as routes from '@/routes'
+import { CollectionNames, Page } from '@/modules/pages'
 
-import * as routes from '../../routes'
-import ErrorMessage from '../../components/error-message'
-import SuccessMessage from '../../components/success-message'
-import LoadingIndicator from '../../components/loading-indicator'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import { CollectionNames, Page } from '../../modules/pages'
-import Button from '../../components/button'
-import usePermissions from '../../hooks/usePermissions'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+
+import Heading from '@/components/heading'
+import NoPermissionMessage from '@/components/no-permission-message'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
+import usePermissions from '@/hooks/usePermissions'
 
 const CreateButton = () => {
   const [isCreating, isSuccess, lastErrorCode, createPage] =

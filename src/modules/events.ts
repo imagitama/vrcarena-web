@@ -1,8 +1,8 @@
 import { AccessStatus, ApprovalStatus, FeaturedStatus } from './common'
-import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../config'
-import { EditableField } from '../editable-fields'
-import { fieldTypes } from '../generic-forms'
-import { bucketNames } from '../file-uploading'
+import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
+import { EditableField } from '@/editable-fields'
+import { fieldTypes } from '@/generic-forms'
+import { bucketNames } from '@/file-uploading'
 
 export const EVENT_BANNER_WIDTH = 600
 export const EVENT_BANNER_HEIGHT = 300
@@ -13,7 +13,6 @@ export interface Event {
   description: string
   sourceurl: string
   thumbnailurl: string
-  bannerurl: string
   attachmentids: string[]
   speciesids: string[]
   assetids: string[]
@@ -27,6 +26,8 @@ export interface Event {
   lastmodifiedby: string
   createdat: Date
   createdby: string
+  // @deprecated apr 2026
+  // bannerurl: string
 }
 
 export interface EventMeta {
@@ -108,23 +109,10 @@ export const EditableFields: EditableField<Event>[] = [
     name: 'thumbnailurl',
     label: 'Thumbnail',
     type: fieldTypes.imageUpload,
-    imageUploadProperties: {
-      requiredWidth: THUMBNAIL_WIDTH,
-      requiredHeight: THUMBNAIL_HEIGHT,
-      bucketName: bucketNames.eventThumbnails,
-    },
+    requiredWidth: THUMBNAIL_WIDTH,
+    requiredHeight: THUMBNAIL_HEIGHT,
+    bucketName: bucketNames.eventThumbnails,
     hint: 'A thumbnail used for your event. Used in search results etc.',
-  },
-  {
-    name: 'bannerurl',
-    label: 'Banner',
-    type: fieldTypes.imageUpload,
-    imageUploadProperties: {
-      requiredWidth: EVENT_BANNER_WIDTH,
-      requiredHeight: EVENT_BANNER_HEIGHT,
-      bucketName: bucketNames.eventBanners,
-    },
-    hint: `The image to display in the header of the site if it is featured. ${EVENT_BANNER_WIDTH} width ${EVENT_BANNER_HEIGHT} height with transparent background.`,
   },
   {
     name: 'isadult',

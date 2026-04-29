@@ -1,7 +1,7 @@
 import React from 'react'
-import Heading from '../heading'
-import Markdown from '../markdown'
-import Message from '../message'
+import Heading from '@/components/heading'
+import Markdown from '@/components/markdown'
+import Message from '@/components/message'
 
 export default ({ notes }: { notes: string }) => (
   <Message key="notes">

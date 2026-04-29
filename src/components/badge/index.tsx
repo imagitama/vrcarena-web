@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import Chip from '@mui/material/Chip'
-import Tooltip from '../tooltip'
+import Tooltip from '@/components/tooltip'
 
 const useStyles = makeStyles({
   root: {

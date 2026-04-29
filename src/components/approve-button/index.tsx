@@ -2,22 +2,22 @@ import React, { useState } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useUserId from '../../hooks/useUserId'
-import { handleError } from '../../error-handling'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { ApprovalStatus, MetaRecord, PublishStatus } from '../../modules/common'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useUserId from '@/hooks/useUserId'
+import { handleError } from '@/error-handling'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import { ApprovalStatus, MetaRecord, PublishStatus } from '@/modules/common'
 import {
   AssetMeta,
   DeclinedReason,
   CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
-import { declinedReasonMeta } from '../../utils/assets'
-import { getAreArraysSame } from '../../utils'
+} from '@/modules/assets'
+import { declinedReasonMeta } from '@/utils/assets'
+import { getAreArraysSame } from '@/utils'
 
-import Button from '../button'
-import ErrorMessage from '../error-message'
-import ButtonDropdown from '../button-dropdown'
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import ButtonDropdown from '@/components/button-dropdown'
 
 const ApproveButton = ({
   id,
@@ -164,6 +164,7 @@ const ApproveButton = ({
         onClick={() => onClickApprove()}
         icon={<CheckCircleIcon />}
         size="small"
+        color="secondary"
         isDisabled={approvalStatus === ApprovalStatus.Approved}>
         Approve
       </Button>
@@ -185,12 +186,14 @@ const ApproveButton = ({
           }
           closeOnSelect={false}
           size="small"
+          iconOnly
         />
       )}
       <Button
         onClick={() => onClickDecline()}
         icon={<CancelIcon />}
         size="small"
+        color="secondary"
         isDisabled={approvalStatus === ApprovalStatus.Declined}>
         Decline{isAsset ? ' & Draft' : ''}
       </Button>

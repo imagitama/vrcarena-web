@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { makeStyles } from '@mui/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -7,23 +7,19 @@ import TableRow from '@mui/material/TableRow'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 
-import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
-import { AssetCategory, CollectionNames, FullAsset } from '../../modules/assets'
-import UsernameLink from '../username-link'
-import FormattedDate from '../formatted-date'
-import EditorRecordManager from '../editor-record-manager'
-import useIsEditor from '../../hooks/useIsEditor'
-import Message from '../message'
-import { colorPalette } from '../../config'
-import categoryMetas from '../../category-meta'
-import useDataStoreItem from '@/hooks/useDataStoreItem'
-import {
-  UserMeta,
-  CollectionNames as UsersCollectionNames,
-} from '@/modules/users'
-import StatusText from '../status-text'
-import Link from '../link'
-import { routes } from '@/routes'
+import defaultThumbnailUrl from '@/assets/images/default-thumbnail.webp'
+import { colorPalette } from '@/config'
+import categoryMetas from '@/category-meta'
+import { AssetCategory, CollectionNames, FullAsset } from '@/modules/assets'
+
+import useIsEditor from '@/hooks/useIsEditor'
+
+import UsernameLink from '@/components/username-link'
+import FormattedDate from '@/components/formatted-date'
+import EditorRecordManager from '@/components/editor-record-manager'
+import Message from '@/components/message'
+import Columns from '@/components/columns'
+import Column from '@/components/column'
 
 const useStyles = makeStyles({
   pass: {
@@ -116,108 +112,118 @@ const QueuedAssetInfo = ({
       )}{' '}
       <br />
       <FormattedDate date={asset.publishedat!} />
-      <Table size="small">
-        <TableBody>
-          <AssetApprovalChecklistItem
-            label="Source"
-            isValid={
-              typeof asset.sourceurl === 'string' && asset.sourceurl !== ''
-            }
-            validLabel={'Set'}
-            url={
-              typeof asset.sourceurl === 'string' && asset.sourceurl !== ''
-                ? asset.sourceurl
-                : ''
-            }
-          />
-          <AssetApprovalChecklistItem
-            label="Thumbnail"
-            isValid={
-              typeof asset.thumbnailurl === 'string' &&
-              asset.thumbnailurl !== '' &&
-              asset.thumbnailurl !== defaultThumbnailUrl
-            }
-            validLabel={'Set'}
-          />
-          <AssetApprovalChecklistItem
-            label="Title"
-            isValid={
-              typeof asset.title === 'string' &&
-              asset.title !== 'My draft asset'
-            }
-            validLabel="Set"
-          />
-          <AssetApprovalChecklistItem
-            label="Author"
-            isValid={typeof asset.author === 'string' && asset.author !== ''}
-            validLabel={`Set: ${asset.authorname}`}
-          />
-          <AssetApprovalChecklistItem
-            label="Category"
-            isValid={
-              typeof asset.category === 'string' &&
-              (asset.category as string) !== ''
-            }
-            validLabel={
-              asset.category && asset.category in categoryMetas
-                ? categoryMetas[asset.category].nameSingular
-                : ''
-            }
-          />
-          <AssetApprovalChecklistItem
-            label="Description"
-            isValid={
-              typeof asset.description === 'string' &&
-              asset.description !== '' &&
-              asset.description.length > 10
-            }
-            validLabel={
-              asset.description ? `Length: ${asset.description.length}` : ''
-            }
-            invalidLabel={
-              typeof asset.description === 'string'
-                ? `Only ${asset.description.length} characters`
-                : undefined
-            }
-          />
-          <AssetApprovalChecklistItem
-            label="Tags"
-            isValid={Array.isArray(asset.tags) && asset.tags.length > 0}
-            validLabel={asset.tags ? `${asset.tags.length} tags` : ''}
-          />
-          {asset.category === AssetCategory.Avatar && (
-            <AssetApprovalChecklistItem
-              label="Species"
-              isValid={Array.isArray(asset.species) && asset.species.length > 0}
-              isNotImportant
-              validLabel={
-                asset.speciesnames && asset.speciesnames.length
-                  ? asset.speciesnames.join(', ')
-                  : ''
-              }
+      <Columns>
+        <Column>
+          <Table size="small">
+            <TableBody>
+              <AssetApprovalChecklistItem
+                label="Source"
+                isValid={
+                  typeof asset.sourceurl === 'string' && asset.sourceurl !== ''
+                }
+                validLabel={'Set'}
+                url={
+                  typeof asset.sourceurl === 'string' && asset.sourceurl !== ''
+                    ? asset.sourceurl
+                    : ''
+                }
+              />
+              <AssetApprovalChecklistItem
+                label="Thumbnail"
+                isValid={
+                  typeof asset.thumbnailurl === 'string' &&
+                  asset.thumbnailurl !== '' &&
+                  asset.thumbnailurl !== defaultThumbnailUrl
+                }
+                validLabel={'Set'}
+              />
+              <AssetApprovalChecklistItem
+                label="Title"
+                isValid={
+                  typeof asset.title === 'string' &&
+                  asset.title !== 'My draft asset'
+                }
+                validLabel="Set"
+              />
+              <AssetApprovalChecklistItem
+                label="Author"
+                isValid={
+                  typeof asset.author === 'string' && asset.author !== ''
+                }
+                validLabel={`Set: ${asset.authorname}`}
+              />
+              <AssetApprovalChecklistItem
+                label="Category"
+                isValid={
+                  typeof asset.category === 'string' &&
+                  (asset.category as string) !== ''
+                }
+                validLabel={
+                  asset.category && asset.category in categoryMetas
+                    ? categoryMetas[asset.category].nameSingular
+                    : ''
+                }
+              />
+              <AssetApprovalChecklistItem
+                label="Description"
+                isValid={
+                  typeof asset.description === 'string' &&
+                  asset.description !== '' &&
+                  asset.description.length > 10
+                }
+                validLabel={
+                  asset.description ? `Length: ${asset.description.length}` : ''
+                }
+                invalidLabel={
+                  typeof asset.description === 'string'
+                    ? `Only ${asset.description.length} characters`
+                    : undefined
+                }
+              />
+              <AssetApprovalChecklistItem
+                label="Tags"
+                isValid={Array.isArray(asset.tags) && asset.tags.length > 0}
+                validLabel={asset.tags ? `${asset.tags.length} tags` : ''}
+              />
+              {asset.category === AssetCategory.Avatar && (
+                <AssetApprovalChecklistItem
+                  label="Species"
+                  isValid={
+                    Array.isArray(asset.species) && asset.species.length > 0
+                  }
+                  isNotImportant
+                  validLabel={
+                    asset.speciesnames && asset.speciesnames.length
+                      ? asset.speciesnames.join(', ')
+                      : ''
+                  }
+                />
+              )}
+              <AssetApprovalChecklistItem
+                label="Adult Flag"
+                isValid={asset.isadult}
+                validLabel="Is NSFW"
+                invalidLabel="Is not NSFW"
+              />
+            </TableBody>
+          </Table>
+        </Column>
+        {isEditor && showEditorControls ? (
+          <Column>
+            <EditorRecordManager
+              id={asset.id}
+              collectionName={CollectionNames.Assets}
+              metaCollectionName={CollectionNames.AssetsMeta}
+              existingApprovalStatus={asset.approvalstatus}
+              existingPublishStatus={asset.publishstatus}
+              existingAccessStatus={asset.accessstatus}
+              existingEditorNotes={asset.editornotes}
+              onDone={hydrate}
+              showStatuses
             />
-          )}
-          <AssetApprovalChecklistItem
-            label="Adult Flag"
-            isValid={asset.isadult}
-            validLabel="Is NSFW"
-            invalidLabel="Is not NSFW"
-          />
-        </TableBody>
-      </Table>
-      {isEditor && showEditorControls ? (
-        <EditorRecordManager
-          id={asset.id}
-          collectionName={CollectionNames.Assets}
-          metaCollectionName={CollectionNames.AssetsMeta}
-          existingApprovalStatus={asset.approvalstatus}
-          existingPublishStatus={asset.publishstatus}
-          existingAccessStatus={asset.accessstatus}
-          existingEditorNotes={asset.editornotes}
-          onDone={hydrate}
-          showStatuses
-        />
-      ) : null}
+          </Column>
+        ) : null}
+      </Columns>
     </Message>
   )
 }

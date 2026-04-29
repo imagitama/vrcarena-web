@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import ErrorMessage from '../../components/error-message'
+
+import ErrorMessage from '@/components/error-message'
 
 const DeprecatedRouteView = () => (
   <>

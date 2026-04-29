@@ -2,22 +2,25 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
-import Heading from '../../components/heading'
-import AssetsPaginatedView from '../../components/assets-paginated-view'
-import ErrorMessage from '../../components/error-message'
-import useIsEditor from '../../hooks/useIsEditor'
-import EditorRecordManager from '../../components/editor-record-manager'
-import { CollectionNames, FullTag } from '../../modules/tags'
-import * as routes from '../../routes'
-import BodyText from '../../components/body-text'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import Button from '../../components/button'
-import PublicEditorNotes from '../../components/public-editor-notes'
-import { getLabelForTag } from '../../utils/tags'
-import Message from '../../components/message'
-import { AccessStatus } from '../../modules/common'
-import { PublicAsset } from '../../modules/assets'
-import { GetQueryFn } from '../../components/paginated-view'
+import { CollectionNames, FullTag } from '@/modules/tags'
+import * as routes from '@/routes'
+import { getLabelForTag } from '@/utils/tags'
+import { AccessStatus } from '@/modules/common'
+import { PublicAsset } from '@/modules/assets'
+import { ViewNames } from '@/modules/tags'
+
+import useIsEditor from '@/hooks/useIsEditor'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+
+import Heading from '@/components/heading'
+import AssetsPaginatedView from '@/components/assets-paginated-view'
+import ErrorMessage from '@/components/error-message'
+import EditorRecordManager from '@/components/editor-record-manager'
+import BodyText from '@/components/body-text'
+import Button from '@/components/button'
+import PublicEditorNotes from '@/components/public-editor-notes'
+import Message from '@/components/message'
+import { GetQueryFn } from '@/components/paginated-view'
 
 const AssetsForTag = ({ tag }: { tag: string }) => {
   const getQuery = useCallback<GetQueryFn<PublicAsset>>(
@@ -27,6 +30,13 @@ const AssetsForTag = ({ tag }: { tag: string }) => {
   return (
     <AssetsPaginatedView
       getQuery={getQuery}
+      extraControlsLeft={[
+        <Button
+          url={routes.queryWithVar.replace(':query', tag)}
+          color="secondary">
+          Run As Query
+        </Button>,
+      ]}
       urlWithPageNumberVar={routes.viewTagWithPageNumberVar.replace(
         ':tag',
         tag
@@ -39,9 +49,9 @@ export default () => {
   const { tag } = useParams<{ tag: string }>()
   const isEditor = useIsEditor()
   const [, , fullTag, hydrate] = useDataStoreItem<FullTag>(
-    'getfulltags',
+    ViewNames.GetFullTags,
     tag,
-    'view-tag'
+    { queryName: 'view-tag' }
   )
 
   if (!tag) {
@@ -73,10 +83,6 @@ export default () => {
         </Heading>
       ) : null}
       {fullTag ? <BodyText>{fullTag.description}</BodyText> : null}
-      <br />
-      <Button url={routes.queryWithVar.replace(':query', tag)}>
-        Run As Query
-      </Button>
       {isEditor && fullTag ? (
         <EditorRecordManager
           id={tag}

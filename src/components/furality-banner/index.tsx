@@ -1,12 +1,14 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import CloseIcon from '@mui/icons-material/Close'
-import useNotice from '../../hooks/useNotice'
-import Heading from '../heading'
+
+import useNotice from '@/hooks/useNotice'
+import { FURALITY_URL } from '@/config'
+import { trackAction } from '@/analytics'
+import { mediaQueryForMobiles, mediaQueryForTablets } from '@/media-queries'
+import Heading from '@/components/heading'
+
 import bannerImageUrl from './banner.webp'
-import { FURALITY_URL } from '../../config'
-import { trackAction } from '../../analytics'
-import { mediaQueryForMobiles, mediaQueryForTablets } from '../../media-queries'
 
 const useStyles = makeStyles({
   root: {

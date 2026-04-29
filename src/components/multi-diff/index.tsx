@@ -12,19 +12,19 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import { popularCurrencies } from '../../currency'
-import SpeciesResultItem from '../species-result-item'
-import TagDiffChips from '../tag-diff-chips'
-import { Attachment, AttachmentType } from '../../modules/attachments'
-import { getIsUrlAYoutubeVideo } from '../../utils'
-import Link from '../link'
-import Button from '../button'
-import Price from '../price'
-import AssetSearch from '../asset-search'
-import useCart from '../../hooks/useCart'
-import TagChip from '../tag-chip'
-import { VRCArenaTheme, colorFree } from '../../themes'
-import ErrorMessage from '../error-message'
+import { popularCurrencies } from '@/currency'
+import { Attachment, AttachmentType } from '@/modules/attachments'
+import { getIsUrlAYoutubeVideo } from '@/utils'
+import { VRCArenaTheme, colorFree } from '@/themes'
+
+import TagDiffChips from '@/components/tag-diff-chips'
+import SpeciesResultItem from '@/components/species-result-item'
+import Link from '@/components/link'
+import Button from '@/components/button'
+import Price from '@/components/price'
+import AssetSearch from '@/components/asset-search'
+import TagChip from '@/components/tag-chip'
+import ErrorMessage from '@/components/error-message'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   items: {
@@ -323,7 +323,6 @@ const Labels = forwardRef<HTMLDivElement>((props, ref) => {
   const classes = useStyles()
   const { mainItem, otherItems, fields, replaceOtherIds } =
     useMultiDiff<TItem>()
-  const { ids: cartIds } = useCart()
 
   return (
     <div ref={ref} className={`${classes.item} ${classes.labels}`}>
@@ -335,14 +334,6 @@ const Labels = forwardRef<HTMLDivElement>((props, ref) => {
             isDisabled={otherItems.length === 0}
             onClick={() => replaceOtherIds([])}>
             Reset
-          </Button>{' '}
-          <Button
-            size="small"
-            color="secondary"
-            isDisabled={otherItems.length > 0 || cartIds.length === 0}
-            onClick={() => replaceOtherIds(cartIds)}
-            title="Ensure no other items first">
-            Use Cart
           </Button>
         </div>
       </div>

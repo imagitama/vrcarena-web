@@ -1,13 +1,13 @@
 import React, { forwardRef } from 'react'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { makeStyles } from '@mui/styles'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import { VRCArenaTheme } from '../../themes'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { VRCArenaTheme } from '@/themes'
 
 function getFontSizeForVariant(variant?: string) {
   switch (variant) {
     case 'h1':
-      return '3rem'
+      return '2rem'
     case 'h2':
       return '1.5rem'
     case 'h3':

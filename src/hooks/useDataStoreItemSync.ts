@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { handleError } from '../error-handling'
+import { handleError } from '@/error-handling'
 import {
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
-} from '../data-store'
+} from '@/data-store'
 import {
   REALTIME_LISTEN_TYPES,
   REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,

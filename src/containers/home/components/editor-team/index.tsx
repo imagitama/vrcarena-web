@@ -1,10 +1,10 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import useSupabaseView from '../../../../hooks/useSupabaseView'
-import { FullUser, ViewNames } from '../../../../modules/users'
-import Avatar, { AvatarSize } from '../../../../components/avatar'
-import UsernameLink from '../../../../components/username-link'
-import { shuffle } from '../../../../utils'
+import useSupabaseView from '@/hooks/useSupabaseView'
+import { FullUser, ViewNames } from '@/modules/users'
+import Avatar, { AvatarSize } from '@/components/avatar'
+import UsernameLink from '@/components/username-link'
+import { shuffle } from '@/utils'
 
 const useStyles = makeStyles({
   items: {

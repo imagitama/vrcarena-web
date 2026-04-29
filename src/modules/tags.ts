@@ -1,7 +1,7 @@
-import { EditableField } from '../editable-fields'
-import { fieldTypes } from '../generic-forms'
-import { categories } from '../utils/tags'
-import * as icons from '../icons'
+import { EditableField } from '@/editable-fields'
+import { fieldTypes } from '@/generic-forms'
+import { categories } from '@/utils/tags'
+import * as icons from '@/icons'
 import { AccessStatus } from './common'
 
 export interface Tag extends Record<string, unknown> {

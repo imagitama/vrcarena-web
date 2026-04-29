@@ -1,10 +1,12 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useStorage, { keys } from '../../hooks/useStorage'
-import { trackAction } from '../../analytics'
-import Message from '../message'
-import Button from '../button'
+import useStorage, { keys } from '@/hooks/useStorage'
+import { trackAction } from '@/analytics'
+
+import Message from '@/components/message'
+import Button from '@/components/button'
+
 import './fireworks.css'
 
 const useStyles = makeStyles({

@@ -3,19 +3,20 @@ import { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import MenuList from '@mui/material/MenuList'
 import MenuItem from '@mui/material/MenuItem'
-
-import useUserMentioning from '../../hooks/useUserMentioning'
-import { AutocompleteOption } from '../autocomplete-input'
-import EmojiPicker from '../emoji-picker'
 import Paper from '@mui/material/Paper'
-import { VRCArenaTheme } from '../../themes'
+
+import { VRCArenaTheme } from '@/themes'
+import useUserMentioning from '@/hooks/useUserMentioning'
+
+import { AutocompleteOption } from '@/components/autocomplete-input'
+import EmojiPicker from '@/components/emoji-picker'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     position: 'relative',
   },
   inputWrapper: {
-    background: '#FFF',
+    color: '#FFF',
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius,
     '& > *': {
@@ -37,12 +38,13 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       zIndex: 5,
       font: 'inherit',
       lineHeight: '1.25rem',
-      color: '#000',
+      color: '#FFF',
       padding: theme.spacing(1),
       '&:focus': {
         outline: 'none',
       },
       '&::placeholder': {
+        color: '#FFF',
         font: 'inherit',
         opacity: '0.5',
       },

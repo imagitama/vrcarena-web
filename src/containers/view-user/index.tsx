@@ -2,12 +2,14 @@ import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 
-import UserOverview from '../../components/user-overview'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { BanStatus, FullUser, ViewNames } from '../../modules/users'
-import LoadingIndicator from '../../components/loading-indicator'
-import ErrorMessage from '../../components/error-message'
+import { BanStatus, FullUser, ViewNames } from '@/modules/users'
+
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useIsEditor from '@/hooks/useIsEditor'
+
+import UserOverview from '@/components/user-overview'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
 
 export default () => {
   const { userId } = useParams<{ userId: string }>()

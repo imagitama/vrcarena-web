@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import { ReactComponent as AwtterLineart } from '../../assets/images/lineart/awtter.svg'
-import { ReactComponent as TaidumLineart } from '../../assets/images/lineart/taidum.svg'
-import { ReactComponent as RexouiumLineart } from '../../assets/images/lineart/rexouium.svg'
-import { ReactComponent as AvaliLineart } from '../../assets/images/lineart/avali.svg'
-import { ReactComponent as ProtogenLineart } from '../../assets/images/lineart/protogen.svg'
-import { ReactComponent as WickerbeastLineart } from '../../assets/images/lineart/wickerbeast.svg'
+import { ReactComponent as AwtterLineart } from '@/assets/images/lineart/awtter.svg'
+import { ReactComponent as TaidumLineart } from '@/assets/images/lineart/taidum.svg'
+import { ReactComponent as RexouiumLineart } from '@/assets/images/lineart/rexouium.svg'
+import { ReactComponent as AvaliLineart } from '@/assets/images/lineart/avali.svg'
+import { ReactComponent as ProtogenLineart } from '@/assets/images/lineart/protogen.svg'
+import { ReactComponent as WickerbeastLineart } from '@/assets/images/lineart/wickerbeast.svg'
 
 const options = [
   AwtterLineart,

@@ -5,42 +5,41 @@ import EditIcon from '@mui/icons-material/Edit'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { makeStyles } from '@mui/styles'
-
-import Link from '../../components/link'
-import Heading from '../../components/heading'
-import BodyText from '../../components/body-text'
-import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
-import AssetResults from '../../components/asset-results'
-import LoadingIndicator from '../../components/loading-indicator'
-import ErrorMessage from '../../components/error-message'
-import RedirectMessage from '../../components/redirect-message'
-import Button from '../../components/button'
-
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import useIsEditor from '../../hooks/useIsEditor'
-import useDataStore, {
-  GetQueryFn as GetQueryFnDataStore,
-} from '../../hooks/useDataStore'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 import {
   AssetCategory,
   PublicAsset,
   ViewNames as AssetsViewNames,
-} from '../../modules/assets'
+} from '@/modules/assets'
 import {
   CollectionNames,
   FullSpecies,
   Species,
   ViewNames,
-} from '../../modules/species'
-
-import * as routes from '../../routes'
+} from '@/modules/species'
+import * as routes from '@/routes'
 import { prepareValueForQuery } from '../../queries'
-import { trackAction } from '../../analytics'
-import useDataStoreFunction from '../../hooks/useDataStoreFunction'
-import { handleError } from '../../error-handling'
-import { SupabaseClient } from '@supabase/supabase-js'
+import { trackAction } from '@/analytics'
+import { handleError } from '@/error-handling'
+
+import useDataStoreFunction from '@/hooks/useDataStoreFunction'
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+import useIsEditor from '@/hooks/useIsEditor'
+import useDataStore, {
+  GetQueryFn as GetQueryFnDataStore,
+} from '@/hooks/useDataStore'
+
 import AssetsPaginatedView from '@/components/assets-paginated-view'
+import Link from '@/components/link'
+import Heading from '@/components/heading'
+import BodyText from '@/components/body-text'
+import { GetQueryFn } from '@/components/paginated-view'
+import AssetResults from '@/components/asset-results'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import RedirectMessage from '@/components/redirect-message'
+import Button from '@/components/button'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -48,15 +47,57 @@ const Renderer = ({ items }: { items?: PublicAsset[] }) => (
 
 const analyticsCategoryName = 'ViewSpecies'
 
+const RegenerateThumbnailButton = ({
+  speciesId,
+  hydrate,
+}: {
+  speciesId: string
+  hydrate: () => void
+}) => {
+  const [
+    isUpdatingThumbnail,
+    lastErrorCode,
+    lastThumbnailUpdateResult,
+    randomlyUpdateSpeciesThumbnailResult,
+  ] = useDataStoreFunction<
+    { speciesid: string },
+    RandomlyUpdateSpeciesThumbnailResult
+  >('randomly_update_species_thumbnail')
+
+  return (
+    <Button
+      onClick={async () => {
+        try {
+          await randomlyUpdateSpeciesThumbnailResult({
+            speciesid: speciesId,
+          })
+          await hydrate()
+        } catch (err) {
+          console.error(err)
+          handleError(err)
+        }
+      }}
+      color="secondary"
+      isDisabled={isUpdatingThumbnail}
+      title="Randomly picks a public asset with this species and uses its thumbnail">
+      Regenerate Thumbnail
+      {lastErrorCode !== null ? ` failed: ${lastErrorCode}` : ''}
+    </Button>
+  )
+}
+
 const AssetsForSpecies = ({
   species,
   childSpecies,
+  hydrate,
 }: {
   species: Species
   childSpecies: Species[]
+  hydrate: () => void
 }) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [includeChildren, setIncludeChildren] = useState(true)
+  const isEditor = useIsEditor()
 
   const speciesIdsToSearchFor = [
     species.id,
@@ -108,7 +149,24 @@ const AssetsForSpecies = ({
           color="secondary">
           Child Species
         </Button>,
-      ]}
+      ].concat(
+        isEditor
+          ? [
+              <Button
+                url={routes.editSpeciesWithVar.replace(
+                  ':speciesId',
+                  species.id
+                )}
+                icon={<EditIcon />}>
+                Edit Species
+              </Button>,
+              <RegenerateThumbnailButton
+                speciesId={species.id}
+                hydrate={hydrate}
+              />,
+            ]
+          : []
+      )}
       allowRandomSort>
       <Renderer />
     </AssetsPaginatedView>
@@ -144,7 +202,6 @@ const View = () => {
     speciesIdOrSlug: string
     categoryName: string
   }>()
-  const isEditor = useIsEditor()
   const getSpeciesQuery = useCallback<GetQueryFnDataStore<FullSpecies>>(
     (client) =>
       client
@@ -185,15 +242,6 @@ const View = () => {
       'view-species-children'
     )
   const { push } = useHistory()
-  const [
-    isUpdatingThumbnail,
-    lastErrorCode,
-    lastThumbnailUpdateResult,
-    randomlyUpdateSpeciesThumbnailResult,
-  ] = useDataStoreFunction<
-    { speciesid: string },
-    RandomlyUpdateSpeciesThumbnailResult
-  >('randomly_update_species_thumbnail')
 
   useEffect(() => {
     if (!species || !species.redirectto) {
@@ -247,32 +295,6 @@ const View = () => {
           content={species.description || species.shortdescription}
         />
       </Helmet>
-      {isEditor ? (
-        <>
-          <Button
-            url={routes.editSpeciesWithVar.replace(':speciesId', species.id)}
-            icon={<EditIcon />}>
-            Edit Species
-          </Button>
-          <Button
-            onClick={async () => {
-              try {
-                await randomlyUpdateSpeciesThumbnailResult({
-                  speciesid: speciesIdOrSlug,
-                })
-                await hydrate()
-              } catch (err) {
-                console.error(err)
-                handleError(err)
-              }
-            }}
-            color="secondary"
-            isDisabled={isUpdatingThumbnail}>
-            Regenerate Thumbnail
-            {lastErrorCode !== null ? ` failed: ${lastErrorCode}` : ''}
-          </Button>
-        </>
-      ) : null}
       <div className={classes.headings}>
         <Heading variant="h2" inline>
           <Link to={routes.viewAllSpecies}>All</Link>
@@ -325,7 +347,11 @@ const View = () => {
           ))}
         </Heading>
       ) : null}
-      <AssetsForSpecies species={species} childSpecies={childSpecies} />
+      <AssetsForSpecies
+        species={species}
+        childSpecies={childSpecies}
+        hydrate={hydrate}
+      />
     </>
   )
 }

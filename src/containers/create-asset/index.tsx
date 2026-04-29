@@ -1,41 +1,39 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { makeStyles } from '@mui/styles'
-
 import CheckIcon from '@mui/icons-material/Check'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 
-import * as routes from '../../routes'
+import * as routes from '@/routes'
+import { insertRecord } from '@/data-store'
+import { handleError } from '@/error-handling'
+import { CollectionNames, Asset, FullAsset } from '@/modules/assets'
+import { AssetSyncQueueItem, ViewNames } from '@/modules/assetsyncqueue'
 
-import Button from '../../components/button'
-import NoPermissionMessage from '../../components/no-permission-message'
-
-import Link from '../../components/link'
-import FormControls from '../../components/form-controls'
-import { handleError } from '../../error-handling'
-import { CollectionNames, Asset, FullAsset } from '../../modules/assets'
-import { AssetSyncQueueItem, ViewNames } from '../../modules/assetsyncqueue'
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
-} from '../../hooks/useDatabaseQuery'
-import LoadingIndicator from '../../components/loading-indicator'
-import ErrorMessage from '../../components/error-message'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import ExperimentalMessage from '../../components/experimental-message'
-import useHistory from '../../hooks/useHistory'
-import useMyDrafts from '../../hooks/useMyDrafts'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
-import { insertRecord } from '../../data-store'
-import AssetResults from '../../components/asset-results'
-import AssetSyncQueue from '../../components/asset-sync-queue'
-import usePermissions from '../../hooks/usePermissions'
+} from '@/hooks/useDatabaseQuery'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useHistory from '@/hooks/useHistory'
+import useMyDrafts from '@/hooks/useMyDrafts'
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+import usePermissions from '@/hooks/usePermissions'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Link from '@/components/link'
+import FormControls from '@/components/form-controls'
+import Button from '@/components/button'
+import NoPermissionMessage from '@/components/no-permission-message'
+import AssetResults from '@/components/asset-results'
+import AssetSyncQueue from '@/components/asset-sync-queue'
 import Heading from '@/components/heading'
-import Message from '@/components/message'
 import InfoMessage from '@/components/info-message'
 
+// TODO: move to component
 const useStyles = makeStyles({
   heading: {
     textAlign: 'center',

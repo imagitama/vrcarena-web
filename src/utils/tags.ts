@@ -75,7 +75,7 @@ export const renamedTags = {
 }
 
 /**
- * deprecated:
+ * @deprecated:
  * - not_vrchat_compatible
  * - toggle_accessories
  * - dynamic_bones_ready

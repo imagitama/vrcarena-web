@@ -3,15 +3,15 @@ import CheckIcon from '@mui/icons-material/Check'
 import AddToQueueIcon from '@mui/icons-material/AddToQueue'
 import RemoveFromQueueIcon from '@mui/icons-material/RemoveFromQueue'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useUserId from '../../hooks/useUserId'
-import { handleError } from '../../error-handling'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { DataStoreErrorCode } from '../../data-store'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useUserId from '@/hooks/useUserId'
+import { handleError } from '@/error-handling'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import { DataStoreErrorCode } from '@/data-store'
 
-import Button from '../button'
-import { CollectionNames, WishlistForUser } from '../../modules/wishlists'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import Button from '@/components/button'
+import { CollectionNames, WishlistForUser } from '@/modules/wishlists'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
 const getLabel = (
   isLoggedIn: boolean,

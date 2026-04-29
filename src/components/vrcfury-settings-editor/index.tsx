@@ -2,27 +2,28 @@ import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import CheckIcon from '@mui/icons-material/Check'
 
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import LoadingIndicator from '../loading-indicator'
-import Button from '../button'
-import FormControls from '../form-controls'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
 import {
   Asset,
   CollectionNames,
   ExtraData,
   VrcFuryPrefabInfo,
   VrcFurySettings,
-} from '../../modules/assets'
-import ItemsEditor, { Item } from '../items-editor'
-import UrlSelector from '../url-selector'
-import CheckboxInput from '../checkbox-input'
-import ChangeDiscordServerForm from '../change-discord-server-form'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import DiscordServerResultsItem from '../discord-server-results-item'
+} from '@/modules/assets'
+
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import ItemsEditor, { Item } from '@/components/items-editor'
+import UrlSelector from '@/components/url-selector'
+import CheckboxInput from '@/components/checkbox-input'
+import ChangeDiscordServerForm from '@/components/change-discord-server-form'
+import DiscordServerResultsItem from '@/components/discord-server-results-item'
 
 const actionCategory = 'AssetOverviewEditor'
 

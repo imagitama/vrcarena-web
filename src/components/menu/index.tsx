@@ -4,8 +4,8 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ClearIcon from '@mui/icons-material/Clear'
 
-import Link from '../link'
-import FormattedDate from '../formatted-date'
+import Link from '@/components/link'
+import FormattedDate from '@/components/formatted-date'
 
 const useStyles = makeStyles({
   noPadding: {

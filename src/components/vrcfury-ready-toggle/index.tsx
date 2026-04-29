@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
-import { Asset, CollectionNames } from '../../modules/assets'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { tagVrcFuryReady } from '../../vrcfury'
-import { handleError } from '../../error-handling'
-import { removeDuplicates } from '../../utils'
-import InlineSaveStatus from '../inline-save-status'
-import CheckboxInput from '../checkbox-input'
+
+import { Asset, CollectionNames } from '@/modules/assets'
+import { tagVrcFuryReady } from '@/vrcfury'
+import { handleError } from '@/error-handling'
+import { removeDuplicates } from '@/utils'
+
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import InlineSaveStatus from '@/components/inline-save-status'
+import CheckboxInput from '@/components/checkbox-input'
 
 const VrcFuryToggle = ({
   assetId,

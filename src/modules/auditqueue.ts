@@ -1,4 +1,4 @@
-import { PopularCurrency } from '../currency'
+import { PopularCurrency } from '@/currency'
 import {
   Asset,
   CollectionNames as AssetsCollectionNames,

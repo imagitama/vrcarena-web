@@ -1,7 +1,8 @@
 import React, { ImgHTMLAttributes } from 'react'
 import { makeStyles } from '@mui/styles'
-import Tooltip from '../tooltip'
-import { VRCArenaTheme } from '../../themes'
+import { VRCArenaTheme } from '@/themes'
+
+import Tooltip from '@/components/tooltip'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {

@@ -2,40 +2,41 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
-import * as routes from '../../routes'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import * as routes from '@/routes'
+import { CollectionNames, FullReview, ViewNames } from '@/modules/reviews'
+import { allowedRatings } from '@/ratings'
 
-import Link from '../../components/link'
-import ErrorMessage from '../../components/error-message'
-import Heading from '../../components/heading'
-import CommentList from '../../components/comment-list'
-import NoPermissionMessage from '../../components/no-permission-message'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { CollectionNames, FullReview, ViewNames } from '../../modules/reviews'
-import NoResultsMessage from '../../components/no-results-message'
-import FormattedDate from '../../components/formatted-date'
-import Markdown from '../../components/markdown'
-import useIsEditor from '../../hooks/useIsEditor'
-import UsernameLink from '../../components/username-link'
-import AssetResultsItem from '../../components/asset-results-item'
-import LoadingShimmer from '../../components/loading-shimmer'
-import StarRating from '../../components/star-rating'
-import ReviewRating from '../../components/review-rating'
-import { allowedRatings } from '../../ratings'
-import LoadingIndicator from '../../components/loading-indicator'
-import ReportButton from '../../components/report-button'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useIsEditor from '@/hooks/useIsEditor'
+
+import Link from '@/components/link'
+import ErrorMessage from '@/components/error-message'
+import Heading from '@/components/heading'
+import CommentList from '@/components/comment-list'
+import NoPermissionMessage from '@/components/no-permission-message'
+import NoResultsMessage from '@/components/no-results-message'
+import FormattedDate from '@/components/formatted-date'
+import Markdown from '@/components/markdown'
+import UsernameLink from '@/components/username-link'
+import AssetResultsItem from '@/components/asset-results-item'
+import LoadingShimmer from '@/components/loading-shimmer'
+import StarRating from '@/components/star-rating'
+import ReviewRating from '@/components/review-rating'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ReportButton from '@/components/report-button'
 
 const View = () => {
   const { reviewId } = useParams<{ reviewId: string }>()
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
 
-  const [isLoading, lastErrorCode, review, hydrate] =
-    useDataStoreItem<FullReview>(
-      ViewNames.GetFullReviews,
-      isLoggedIn ? reviewId : false,
-      'view-review'
-    )
+  const [isLoading, lastErrorCode, review] = useDataStoreItem<FullReview>(
+    ViewNames.GetFullReviews,
+    isLoggedIn ? reviewId : false,
+    { queryName: 'view-review' }
+  )
 
   if (!isLoggedIn) {
     return <NoPermissionMessage />

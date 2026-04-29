@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
-import useFileUpload from '../../hooks/useFileUpload'
-import Button from '../button'
-import { handleError } from '../../error-handling'
+import useFileUpload from '@/hooks/useFileUpload'
+import Button from '@/components/button'
+import { handleError } from '@/error-handling'
 
 const useStyles = makeStyles({
   container: {

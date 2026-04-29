@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useUserId from '../../hooks/useUserId'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
+import { handleError } from '@/error-handling'
+import { SocialMediaUsernames, User } from '@/modules/users'
+import { CollectionNames } from '@/modules/user'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Button from '../button'
-import TextInput from '../text-input'
-import { CollectionNames } from '../../modules/user'
-import { SocialMediaUsernames, User } from '../../modules/users'
-import FormControls from '../form-controls'
-import SuccessMessage from '../success-message'
+import useUserId from '@/hooks/useUserId'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import FormControls from '@/components/form-controls'
+import SuccessMessage from '@/components/success-message'
 
 const useStyles = makeStyles({
   field: {
@@ -73,7 +74,7 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
   const [, , profile] = useDataStoreItem<User>(
     CollectionNames.Users,
     userId || false,
-    'social-media-usernames-editor'
+    { queryName: 'social-media-usernames-editor' }
   )
   const [isSaving, isSaveSuccess, lastErrorCode, save] = useDataStoreEdit<User>(
     CollectionNames.Users,

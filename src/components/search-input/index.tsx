@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
-import Button from '../button'
-import TextInput from '../text-input'
+
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
 
 export default ({
   defaultValue = '',

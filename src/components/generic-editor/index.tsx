@@ -2,19 +2,24 @@ import React, { useState, useEffect, useRef } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
+import editableFields, { EditableField } from '@/editable-fields'
+import { fieldTypes } from '@/generic-forms'
+import { trackAction } from '@/analytics'
+import { scrollToElement, scrollToTop } from '@/utils'
+import { handleError } from '@/error-handling'
+import { ValidationIssue, getValidationIssues } from '@/validation'
 
-import editableFields, { EditableField } from '../../editable-fields'
-import { fieldTypes } from '../../generic-forms'
-import { trackAction } from '../../analytics'
-import { scrollToElement, scrollToTop } from '../../utils'
-import { handleError } from '../../error-handling'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 
-import Button from '../button'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
+import Button from '@/components/button'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import Tabs from '@/components/tabs'
+import UrlInput from '@/components/url-input'
+import ValidationIssuesMessage from '@/components/validation-issues-message'
+import FormControls from '@/components/form-controls'
 
 import Field from './components/field'
 import CheckboxInput from './components/checkbox-input'
@@ -29,12 +34,7 @@ import CustomInput from './components/custom-input'
 import TagsInput from './components/tags-input'
 import DropdownInput from './components/dropdown-input'
 import ItemInput from './components/item-input'
-import Tabs from '../tabs'
 import DateInput from './components/date-input'
-import UrlInput from '../url-input'
-import { ValidationIssue, getValidationIssues } from '@/validation'
-import ValidationIssuesMessage from '../validation-issues-message'
-import FormControls from '../form-controls'
 
 export type GenericInputProps = {
   editableField: EditableField<any>
@@ -335,22 +335,23 @@ const GenericEditor = ({
 
   const controls = (
     <FormControls>
-      {cancelUrl && (
-        <Button
-          url={cancelUrl}
-          color="secondary"
-          onClick={() => {
-            trackAction(analyticsCategory, cancelBtnAction, id)
-          }}>
-          Cancel
-        </Button>
-      )}
       <Button
         onClick={onSaveBtnClick}
         icon={id ? <SaveIcon /> : <AddIcon />}
         size="large">
         {id ? 'Save' : 'Create'} {itemTypeSingular}
       </Button>
+      {cancelUrl && (
+        <Button
+          url={cancelUrl}
+          color="secondary"
+          size="large"
+          onClick={() => {
+            trackAction(analyticsCategory, cancelBtnAction, id)
+          }}>
+          Cancel
+        </Button>
+      )}
     </FormControls>
   )
 

@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react'
-import Link from '../link'
-import * as routes from '../../routes'
+
+import Link from '@/components/link'
+import * as routes from '@/routes'
 
 export default ({
   speciesIds,
-  speciesNames
+  speciesNames,
 }: {
   speciesIds: string[]
   speciesNames: string[]

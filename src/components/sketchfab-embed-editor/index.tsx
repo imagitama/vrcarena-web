@@ -2,17 +2,18 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import Paper from '../paper'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Button from '../button'
-import TextInput from '../text-input'
-import SketchfabEmbed from '../sketchfab-embed'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { Asset, CollectionNames } from '@/modules/assets'
 
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import { Asset, CollectionNames } from '../../modules/assets'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import Paper from '@/components/paper'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import SketchfabEmbed from '@/components/sketchfab-embed'
 
 const useStyles = makeStyles({
   root: {

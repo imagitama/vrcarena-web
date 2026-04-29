@@ -1,9 +1,11 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Heading from '../../components/heading'
-import Button from '../../components/button'
-import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
+
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
+
+import Heading from '@/components/heading'
+import Button from '@/components/button'
 
 export default ({ code, message }: { code: number; message: string }) => (
   <>

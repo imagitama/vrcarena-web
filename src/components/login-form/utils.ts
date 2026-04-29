@@ -1,5 +1,5 @@
 import { AuthProvider, signInWithPopup } from 'firebase/auth'
-import { auth } from '../../firebase'
+import { auth } from '@/firebase'
 
 export async function signinWithProvider(provider: AuthProvider) {
   const result = await signInWithPopup(auth, provider)

@@ -1,19 +1,20 @@
 import React from 'react'
 
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import useUserId from '@/hooks/useUserId'
+import { ViewNames, FullReport } from '@/modules/reports'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import ReportResults from '../report-results'
-import useUserId from '../../hooks/useUserId'
-import NoResultsMessage from '../no-results-message'
-import { ViewNames, FullReport } from '../../modules/reports'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import ReportResults from '@/components/report-results'
+import NoResultsMessage from '@/components/no-results-message'
 
 export default () => {
   const myUserId = useUserId()
   const [isLoading, lastErrorCode, results] = useDatabaseQuery<FullReport>(
     ViewNames.GetFullReports,
-    [['createdby', Operators.EQUALS, myUserId]]
+    [['createdby', Operators.EQUALS, myUserId]],
+    { queryName: 'my-reports' }
   )
 
   if (isLoading || !results) {

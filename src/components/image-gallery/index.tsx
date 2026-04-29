@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import VideoPlayer from '../video-player'
-import { getImageUrlFromYouTubeUrl, getIsUrlAYoutubeVideo } from '../../utils'
-import Button from '../button'
 import { useMediaQuery } from 'react-responsive'
-import { mediaQueryForMobiles, queryForMobiles } from '../../media-queries'
+
+import { getImageUrlFromYouTubeUrl, getIsUrlAYoutubeVideo } from '@/utils'
+import { mediaQueryForMobiles, queryForMobiles } from '@/media-queries'
+
+import VideoPlayer from '@/components/video-player'
+import Button from '@/components/button'
 
 const useStyles = makeStyles({
   root: {

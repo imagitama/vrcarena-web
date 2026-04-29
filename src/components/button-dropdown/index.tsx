@@ -5,7 +5,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import CheckIcon from '@mui/icons-material/Check'
 import { makeStyles } from '@mui/styles'
 
-import Button, { ButtonProps } from '../../components/button'
+import Button, { ButtonProps } from '@/components/button'
 
 const useStyles = makeStyles({
   root: {

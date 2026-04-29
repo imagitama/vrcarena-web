@@ -3,12 +3,6 @@ import { makeStyles } from '@mui/styles'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 
-import useFilters from '../../hooks/useFilters'
-import Button from '../button'
-import TextInput from '../text-input'
-import Select, { MenuItem } from '../select'
-import useUserId from '../../hooks/useUserId'
-import ButtonDropdown from '../button-dropdown'
 import {
   ActiveFilter,
   EqualFilter,
@@ -16,9 +10,16 @@ import {
   FilterSubType,
   FilterType,
   MultichoiceFilter,
-} from '../../filters'
-import { Filter as FilterIcon } from '../../icons'
-import CheckboxInput from '../checkbox-input'
+} from '@/filters'
+import useFilters from '@/hooks/useFilters'
+import useUserId from '@/hooks/useUserId'
+import { Filter as FilterIcon } from '@/icons'
+
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import Select, { MenuItem } from '@/components/select'
+import ButtonDropdown from '@/components/button-dropdown'
+import CheckboxInput from '@/components/checkbox-input'
 
 const useStyles = makeStyles({
   root: {

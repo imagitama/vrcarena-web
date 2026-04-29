@@ -2,15 +2,13 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
-import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
-import useUserRecord from '../../hooks/useUserRecord'
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
 
-import Link from '../../components/link'
-import LoginForm from '../../components/login-form'
-import Heading from '../../components/heading'
-import BodyText from '../../components/body-text'
-import ErrorMessage from '../../components/error-message'
+import useUserRecord from '@/hooks/useUserRecord'
+
+import LoginForm from '@/components/login-form'
+import ErrorMessage from '@/components/error-message'
 
 export default () => {
   const [, , user] = useUserRecord()

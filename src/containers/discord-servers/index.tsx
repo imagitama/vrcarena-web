@@ -1,14 +1,14 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Link from '../../components/link'
 
-import Heading from '../../components/heading'
-import BodyText from '../../components/body-text'
-import PaginatedView from '../../components/paginated-view'
-import DiscordServerResults from '../../components/discord-server-results'
+import * as routes from '@/routes'
+import { DiscordServer, ViewNames } from '@/modules/discordservers'
 
-import * as routes from '../../routes'
-import { DiscordServer, ViewNames } from '../../modules/discordservers'
+import Link from '@/components/link'
+import Heading from '@/components/heading'
+import BodyText from '@/components/body-text'
+import PaginatedView from '@/components/paginated-view'
+import DiscordServerResults from '@/components/discord-server-results'
 
 const Renderer = ({ items }: { items?: DiscordServer[] }) => (
   <DiscordServerResults discordServers={items || []} />

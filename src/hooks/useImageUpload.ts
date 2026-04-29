@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { handleError } from '../error-handling'
-import { uploadImage } from '../file-uploading'
+import { handleError } from '@/error-handling'
+import { uploadImage } from '@/file-uploading'
 
 type UploadFunc = (
   file: File,

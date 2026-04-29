@@ -1,8 +1,10 @@
 import React from 'react'
-import Link from '../../components/link'
-import * as routes from '../../routes'
-import Avatar, { AvatarSize } from '../avatar'
-import StatusText from '../status-text'
+
+import Link from '@/components/link'
+import * as routes from '@/routes'
+
+import Avatar, { AvatarSize } from '@/components/avatar'
+import StatusText from '@/components/status-text'
 
 export default ({
   id,

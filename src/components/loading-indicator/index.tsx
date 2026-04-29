@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import Chariot from '../chariot'
+
+import Chariot from '@/components/chariot'
 
 const useStyles = makeStyles(() => ({
   progress: {

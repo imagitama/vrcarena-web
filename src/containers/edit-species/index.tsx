@@ -2,12 +2,14 @@ import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 
-import GenericEditor from '../../components/generic-editor'
-import Heading from '../../components/heading'
-import NoPermissionMessage from '../../components/no-permission-message'
-import * as routes from '../../routes'
-import { CollectionNames, editableFields } from '../../modules/species'
-import usePermissions from '../../hooks/usePermissions'
+import * as routes from '@/routes'
+import { CollectionNames, editableFields } from '@/modules/species'
+
+import usePermissions from '@/hooks/usePermissions'
+
+import GenericEditor from '@/components/generic-editor'
+import Heading from '@/components/heading'
+import NoPermissionMessage from '@/components/no-permission-message'
 
 const View = () => {
   const { speciesId } = useParams<{ speciesId: string }>()

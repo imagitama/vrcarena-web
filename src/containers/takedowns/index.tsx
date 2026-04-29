@@ -1,9 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import Markdown from '../../components/markdown'
-import { EMAIL } from '../../config'
-import * as routes from '../../routes'
+import Markdown from '@/components/markdown'
+import { EMAIL } from '@/config'
+import * as routes from '@/routes'
 
 const rules = `# Takedown Policy
 

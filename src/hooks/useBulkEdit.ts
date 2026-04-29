@@ -3,9 +3,9 @@ import {
   toggleBulkEditId as toggleBulkEditIdAction,
   selectBulkEditId as selectBulkEditIdAction,
   setSelectingAll as setSelectingAllAction,
-} from '../modules/app'
-import { Asset } from '../modules/assets'
-import { RootState } from '../modules'
+} from '@/modules/app'
+import { Asset } from '@/modules/assets'
+import { RootState } from '@/modules'
 
 const useBulkEdit = (): {
   ids: null | string[]

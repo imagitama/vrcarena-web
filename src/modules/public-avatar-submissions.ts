@@ -1,4 +1,4 @@
-import { VrchatAvatar } from '../vrchat'
+import { VrchatAvatar } from '@/vrchat'
 import { VrchatAvatarCachedItem } from './vrchat-cache'
 
 export interface PublicAvatarSubmission {

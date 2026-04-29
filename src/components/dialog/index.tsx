@@ -2,7 +2,7 @@ import React from 'react'
 import MaterialDialog, { DialogProps } from '@mui/material/Dialog'
 import CloseIcon from '@mui/icons-material/Close'
 import { makeStyles } from '@mui/styles'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const useStyles = makeStyles({
   contents: {

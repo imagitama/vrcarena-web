@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import Button from '../button'
-import FormControls from '../form-controls'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useUserId from '@/hooks/useUserId'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useUserId from '../../hooks/useUserId'
+import { Asset, CollectionNames } from '@/modules/assets'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
 
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { Asset, CollectionNames } from '../../modules/assets'
-import Heading from '../heading'
-import SpeciesBrowser from '../species-browser'
-import InfoMessage from '../info-message'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import Heading from '@/components/heading'
+import SpeciesBrowser from '@/components/species-browser'
+import InfoMessage from '@/components/info-message'
 
 function isSpeciesIdActive(
   speciesId: string,

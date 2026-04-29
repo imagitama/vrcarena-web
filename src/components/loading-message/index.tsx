@@ -1,7 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import Message from '../message'
-import Chariot from '../chariot'
+
+import Message from '@/components/message'
+import Chariot from '@/components/chariot'
 
 const useStyles = makeStyles({
   icon: {

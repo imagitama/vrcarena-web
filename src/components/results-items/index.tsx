@@ -1,7 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import ResultsItem from '../results-item'
+
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import ResultsItem from '@/components/results-item'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },

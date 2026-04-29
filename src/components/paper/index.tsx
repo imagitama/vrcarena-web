@@ -1,7 +1,7 @@
 import React from 'react'
 import Paper from '@mui/material/Paper'
 import { makeStyles } from '@mui/styles'
-import { VRCArenaTheme } from '../../themes'
+import { VRCArenaTheme } from '@/themes'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
@@ -12,18 +12,6 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   noMargin: {
     margin: '0',
   },
-  // hover: {
-  //   '&:hover': {
-  //     backgroundColor: 'grey',
-  //     // @ts-ignore
-  //     boxShadow: `0px 0px 10px #FFF`,
-  //   },
-  // },
-  // selected: {
-  //   backgroundColor: 'grey',
-  //   // @ts-ignore
-  //   boxShadow: `0px 0px 10px #FFF`,
-  // },
 }))
 
 export default ({

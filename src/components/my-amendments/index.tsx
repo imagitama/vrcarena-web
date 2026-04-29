@@ -3,13 +3,13 @@ import React from 'react'
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
-} from '../../hooks/useDatabaseQuery'
-import useUserId from '../../hooks/useUserId'
+} from '@/hooks/useDatabaseQuery'
+import useUserId from '@/hooks/useUserId'
+import { FullAmendment, ViewNames } from '@/modules/amendments'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import AmendmentResults from '../amendment-results'
-import { FullAmendment, ViewNames } from '../../modules/amendments'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import AmendmentResults from '@/components/amendment-results'
 
 export default () => {
   const userId = useUserId()

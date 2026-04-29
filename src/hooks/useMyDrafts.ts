@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+import { FullAsset, ViewNames } from '@/modules/assets'
 import useUserId from './useUserId'
 import useDataStore from './useDataStore'
-import { FullAsset, ViewNames } from '../modules/assets'
-import { DataStoreErrorCode } from '../data-store'
-import { SupabaseClient } from '@supabase/supabase-js'
+import { DataStoreErrorCode } from '@/data-store'
 
 export default (): [boolean, null | DataStoreErrorCode, FullAsset[] | null] => {
   const userId = useUserId()

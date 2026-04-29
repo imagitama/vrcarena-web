@@ -8,33 +8,34 @@ import { Helmet } from 'react-helmet'
 import InfoIcon from '@mui/icons-material/Info'
 import EditIcon from '@mui/icons-material/Edit'
 import HistoryIcon from '@mui/icons-material/History'
+import { Link } from 'react-router-dom'
 
-import LoadingIndicator from '../../components/loading-indicator'
-import ErrorMessage from '../../components/error-message'
-import Heading from '../../components/heading'
-import Markdown from '../../components/markdown'
-import Button from '../../components/button'
+import { DISCORD_URL } from '@/config'
+import * as routes from '@/routes'
+import { CollectionNames, Page } from '@/modules/pages'
+import {
+  HistoryEntry,
+  CollectionNames as HistoryCollectionNames,
+} from '@/modules/history'
 
-import useDataStoreItem from '../../hooks/useDataStoreItem'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
-} from '../../hooks/useDatabaseQuery'
+} from '@/hooks/useDatabaseQuery'
+import useIsEditor from '@/hooks/useIsEditor'
 
-import * as routes from '../../routes'
-import { Link } from 'react-router-dom'
-import useIsEditor from '../../hooks/useIsEditor'
-import Message from '../../components/message'
-import { DISCORD_URL } from '../../config'
-import TextInput from '../../components/text-input'
-import CopyButton from '../../components/copy-button'
-import { CollectionNames, Page } from '../../modules/pages'
-import NoResultsMessage from '../../components/no-results-message'
-import FormControls from '../../components/form-controls'
-import { HistoryEntry } from '../../modules/history'
-import HistoryRevisions from '../../components/history-revisions'
-import { CollectionNames as HistoryCollectionNames } from '../../modules/history'
-import { handleError } from '../../error-handling'
+import Message from '@/components/message'
+import TextInput from '@/components/text-input'
+import CopyButton from '@/components/copy-button'
+import NoResultsMessage from '@/components/no-results-message'
+import FormControls from '@/components/form-controls'
+import HistoryRevisions from '@/components/history-revisions'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Heading from '@/components/heading'
+import Markdown from '@/components/markdown'
+import Button from '@/components/button'
 
 interface PageContext {
   pagesInParent: Page[]
@@ -131,16 +132,6 @@ const PageControls = () => {
             Back
           </Button>
         )}
-      </div>
-
-      <div className={`${classes.control} ${classes.tableOfContentsBtn}`}>
-        <Button
-          url={routes.avatarTutorial}
-          icon={<TocIcon />}
-          size="small"
-          switchIconSide>
-          Table of Contents
-        </Button>
       </div>
       <div className={classes.control}>
         <Button
@@ -364,11 +355,9 @@ const Pages = () => {
     pageName: string
   }>()
   const [isLoading, lastErrorCodeLoadingParent, parent] =
-    useDataStoreItem<Page>(
-      CollectionNames.PageParents,
-      parentName,
-      'parent-overview'
-    )
+    useDataStoreItem<Page>(CollectionNames.PageParents, parentName, {
+      queryName: 'parent-overview',
+    })
   const [isLoadingPages, lastErrorCodeLoadingPages, pagesInParent] =
     useDatabaseQuery<Page>(
       CollectionNames.Pages,

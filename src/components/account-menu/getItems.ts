@@ -1,15 +1,15 @@
-import { deleteRecord } from '../../data-store'
-import { Asset, CollectionNames } from '../../modules/assets'
-import { handleError } from '../../error-handling'
-import { cartIdsStorageKey } from '../../cart'
-import { retrieveFromLocalStorage } from '../../storage'
-import { getUserId } from '../../supabase'
-import * as routes from '../../routes'
-import { getLabelForNotification, getLinkUrl } from '../../notifications'
+import { deleteRecord } from '@/data-store'
+import { Asset, CollectionNames } from '@/modules/assets'
+import { handleError } from '@/error-handling'
+import { cartIdsStorageKey } from '@/cart'
+import { retrieveFromLocalStorage } from '@/storage'
+import { getUserId } from '@/supabase'
+import * as routes from '@/routes'
+import { getLabelForNotification, getLinkUrl } from '@/notifications'
 import {
   CollectionNames as NotificationsCollectionNames,
   ViewNames,
-} from '../../modules/notifications'
+} from '@/modules/notifications'
 
 import { MenuItemData } from '../menu'
 import { SupabaseClient } from '@supabase/supabase-js'
@@ -47,26 +47,17 @@ export const cart = async (
         disabled: true,
         includeInCount: false,
       } as MenuItemData,
-    ]
-      .concat(
-        data.map((asset) => ({
-          id: asset.id,
-          url: routes.viewAssetWithVar.replace(
-            ':assetId',
-            asset.slug || asset.id
-          ),
-          label: asset.title,
-          imageUrl: asset.thumbnailurl,
-        }))
-      )
-      .concat([
-        {
-          id: 'view-cart',
-          label: 'View Cart',
-          url: routes.cart,
-          includeInCount: false,
-        },
-      ])
+    ].concat(
+      data.map((asset) => ({
+        id: asset.id,
+        url: routes.viewAssetWithVar.replace(
+          ':assetId',
+          asset.slug || asset.id
+        ),
+        label: asset.title,
+        imageUrl: asset.thumbnailurl,
+      }))
+    )
   } catch (err) {
     console.error(err)
     handleError(err)

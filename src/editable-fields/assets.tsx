@@ -1,7 +1,9 @@
+import React from 'react'
+
 import categoryMetas from '@/category-meta'
-import { EditableField } from '.'
-import { fieldTypes } from '../generic-forms'
-import { Asset, AssetCategory, CollectionNames } from '../modules/assets'
+import type { EditableField } from './'
+import { fieldTypes } from '@/generic-forms'
+import { Asset, AssetCategory, CollectionNames } from '@/modules/assets'
 import {
   ASSET_TITLE_MAX_LENGTH,
   ASSET_TITLE_MIN_LENGTH,
@@ -10,9 +12,10 @@ import {
   THUMBNAIL_WIDTH,
   nsfwRules,
 } from '@/config'
-import React from 'react'
 import { bucketNames } from '@/file-uploading'
 import { popularCurrencies } from '@/currency'
+import { AttachmentReason } from '@/modules/attachments'
+
 import PriceInput from '@/components/price-input'
 import ChangeSpeciesEditor from '@/components/change-species-editor'
 import ChangeAuthorForm from '@/components/change-author-form'
@@ -21,7 +24,6 @@ import RelationsEditor from '@/components/relations-editor'
 import ChangeDiscordServerForm from '@/components/change-discord-server-form'
 import VrchatAvatarIdsForm from '@/components/vrchat-avatar-ids-form'
 import AttachmentsForm from '@/components/attachments-form'
-import { AttachmentReason } from '@/modules/attachments'
 
 const fields: EditableField<Asset>[] = [
   {
@@ -99,17 +101,6 @@ const fields: EditableField<Asset>[] = [
     getDirectoryPath: (fields) => fields.id,
     maxSizeBytes: NONATTACHMENT_MAX_SIZE_BYTES,
   },
-  // disabled sep 2025 for bandwidth
-  // {
-  //   name: 'bannerurl',
-  //   label: 'Banner URL',
-  //   type: fieldTypes.imageUpload,
-  //   requiredWidth: BANNER_WIDTH,
-  //   requiredHeight: BANNER_HEIGHT,
-  //   getDirectoryPath: (fields) => fields.id,
-  //   bucketName: bucketNames.assetBanners,
-  //   maxSizeBytes: NONATTACHMENT_MAX_SIZE_BYTES,
-  // },
   {
     name: 'author',
     label: 'Author',

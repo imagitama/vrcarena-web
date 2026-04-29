@@ -1,7 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import DiscordServerResultsItem from '../discord-server-results-item'
-import { DiscordServer } from '../../modules/discordservers'
+
+import { DiscordServer } from '@/modules/discordservers'
+import DiscordServerResultsItem from '@/components/discord-server-results-item'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },

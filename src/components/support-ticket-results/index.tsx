@@ -4,9 +4,11 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import SupportTicketResultsItem from '../support-ticket-results-item'
-import ErrorMessage from '../error-message'
+
 import { FullSupportTicket } from '@/modules/support-tickets'
+
+import SupportTicketResultsItem from '@/components/support-ticket-results-item'
+import ErrorMessage from '@/components/error-message'
 
 export default ({
   supportTickets,

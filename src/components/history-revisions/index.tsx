@@ -1,10 +1,11 @@
 import React from 'react'
 
-import { HistoryEntry } from '../../modules/history'
-import FormattedDate from '../formatted-date'
-import Tabs from '../tabs'
-import TextDiff from '../text-diff'
-import NoResultsMessage from '../no-results-message'
+import { HistoryEntry } from '@/modules/history'
+
+import FormattedDate from '@/components/formatted-date'
+import Tabs from '@/components/tabs'
+import TextDiff from '@/components/text-diff'
+import NoResultsMessage from '@/components/no-results-message'
 
 interface EntryDiff {
   entry: HistoryEntry

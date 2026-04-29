@@ -3,11 +3,11 @@ import useAlgoliaSearch, {
   AssetSearchResult,
   Indexes,
 } from './useAlgoliaSearch'
-import { setIsSearching } from '../modules/app'
+import { setIsSearching } from '@/modules/app'
 import { useEffect } from 'react'
 import useIsAdultContentEnabled from './useIsAdultContentEnabled'
 import useDataStoreFunction from './useDataStoreFunction'
-import { FunctionNames } from '../modules/assets'
+import { FunctionNames } from '@/modules/assets'
 
 const defaultLimit = 50
 

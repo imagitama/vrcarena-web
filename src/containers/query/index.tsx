@@ -2,35 +2,37 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@mui/styles'
 import { Helmet } from 'react-helmet'
+import { SupabaseClient } from '@supabase/supabase-js'
 
-import BigSearchInput from '../../components/big-search-input'
-import * as routes from '../../routes'
+import * as routes from '@/routes'
 import {
   convertSearchTermToUrlPath,
   getIsUuid,
   parseSearchTermFromUrlPath,
-} from '../../utils'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import AssetResults from '../../components/asset-results'
-import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
+} from '@/utils'
 import {
   CollectionNames,
   FullAsset,
   PublicAsset,
   ViewNames,
-} from '../../modules/assets'
-import { GetQuery, escapeValue } from '../../data-store'
-import { CollectionNames as AuthorCollectionNames } from '../../modules/authors'
-import { CollectionNames as UserCollectionNames } from '../../modules/users'
-import { CollectionNames as SpeciesCollectionNames } from '../../modules/species'
-import Link from '../../components/link'
-import { handleError } from '../../error-handling'
-import ErrorMessage from '../../components/error-message'
-import Message from '../../components/message'
-import useDataStore from '../../hooks/useDataStore'
-import { SupabaseClient } from '@supabase/supabase-js'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
-import { VRCArenaTheme } from '../../themes'
+} from '@/modules/assets'
+import { GetQuery, escapeValue } from '@/data-store'
+import { CollectionNames as AuthorCollectionNames } from '@/modules/authors'
+import { CollectionNames as UserCollectionNames } from '@/modules/users'
+import { CollectionNames as SpeciesCollectionNames } from '@/modules/species'
+import { handleError } from '@/error-handling'
+import { VRCArenaTheme } from '@/themes'
+
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+import useDataStore from '@/hooks/useDataStore'
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+
+import AssetResults from '@/components/asset-results'
+import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
+import BigSearchInput from '@/components/big-search-input'
+import Link from '@/components/link'
+import ErrorMessage from '@/components/error-message'
+import Message from '@/components/message'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {

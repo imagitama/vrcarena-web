@@ -7,12 +7,12 @@ import {
   standardAreaNames,
   standardAreas,
 } from '../../areas'
-import * as routes from '../../routes'
-import { AssetCategory, PublicAsset } from '../../modules/assets'
-import Link from '../../components/link'
+import * as routes from '@/routes'
+import { AssetCategory, PublicAsset } from '@/modules/assets'
+import Link from '@/components/link'
 
-import AssetResults from '../asset-results'
-import Heading from '../heading'
+import AssetResults from '@/components/asset-results'
+import Heading from '@/components/heading'
 
 const useStyles = makeStyles({
   tags: {

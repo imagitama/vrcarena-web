@@ -5,16 +5,16 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 
-import useUserRecord from '../../hooks/useUserRecord'
+import useUserRecord from '@/hooks/useUserRecord'
 
 import navItems, {
   MenuItem as NavMenuItem,
   canShowMenuItem,
   getLabelForMenuItem,
-} from '../../navigation'
-import { trackAction } from '../../analytics'
-import useUserPreferences from '../../hooks/useUserPreferences'
-import Link from '../link'
+} from '@/navigation'
+import { trackAction } from '@/analytics'
+import useUserPreferences from '@/hooks/useUserPreferences'
+import Link from '@/components/link'
 
 const useStyles = makeStyles({
   root: {

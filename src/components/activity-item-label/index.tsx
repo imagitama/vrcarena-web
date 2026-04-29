@@ -1,16 +1,13 @@
 import React from 'react'
-import UsernameLink from '../../components/username-link'
-import { ActivityEvents } from '../../activity'
-import Link from '../../components/link'
+import UsernameLink from '@/components/username-link'
+import { ActivityEvents } from '@/activity'
+import Link from '@/components/link'
 import {
   Asset,
   CollectionNames as AssetCollectionNames,
-} from '../../modules/assets'
-import {
-  User,
-  CollectionNames as UserCollectionNames,
-} from '../../modules/users'
-import * as routes from '../../routes'
+} from '@/modules/assets'
+import { User, CollectionNames as UserCollectionNames } from '@/modules/users'
+import * as routes from '@/routes'
 
 const ActivityItemLabel = ({
   message,

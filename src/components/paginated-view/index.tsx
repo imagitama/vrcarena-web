@@ -11,36 +11,11 @@ import { makeStyles } from '@mui/styles'
 import AddIcon from '@mui/icons-material/Add'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-
-import SortControls, { SortOption } from '../sort-controls'
-import PagesNavigation from '../pages-navigation'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
-import LoadingIndicator from '../loading-indicator'
-import Button, { ButtonProps } from '../button'
-import ButtonDropdown from '../button-dropdown'
-
-import useHistory from '../../hooks/useHistory'
-import useSorting from '../../hooks/useSorting'
-import useDataStore from '../../hooks/useDataStore'
-import useIsEditor from '../../hooks/useIsEditor'
-import useDatabaseQuery, {
-  OrderDirections,
-  WhereClause,
-} from '../../hooks/useDatabaseQuery'
-import { DataStoreErrorCode, GetQuery } from '../../data-store'
-import useScrollMemory from '../../hooks/useScrollMemory'
-import { getPathForQueryString } from '../../queries'
-import { smoothScrollToTop } from '../../utils'
-import WarningMessage from '../warning-message'
-import { mediaQueryForMobiles } from '../../media-queries'
 import { SupabaseClient } from '@supabase/supabase-js'
-import {
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-} from '../../modules/common'
-import ErrorBoundary from '../error-boundary'
+
+import { mediaQueryForMobiles } from '@/media-queries'
+import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+import { Refresh as RefreshIcon } from '@/icons'
 import {
   ActiveFilter,
   EqualActiveFilter,
@@ -49,11 +24,32 @@ import {
   FilterType,
   MultichoiceActiveFilter,
   NotEqualActiveFilter,
-} from '../../filters'
-import useFilters from '../../hooks/useFilters'
-import Filters from '../filters'
-import useStorage from '../../hooks/useStorage'
-import { Refresh as RefreshIcon } from '../../icons'
+} from '@/filters'
+import { DataStoreErrorCode, GetQuery } from '@/data-store'
+import { getPathForQueryString } from '@/queries'
+
+import useFilters from '@/hooks/useFilters'
+import useStorage from '@/hooks/useStorage'
+import useHistory from '@/hooks/useHistory'
+import useSorting from '@/hooks/useSorting'
+import useDataStore from '@/hooks/useDataStore'
+import useIsEditor from '@/hooks/useIsEditor'
+import useDatabaseQuery, {
+  OrderDirections,
+  WhereClause,
+} from '@/hooks/useDatabaseQuery'
+import useScrollMemory from '@/hooks/useScrollMemory'
+
+import SortControls, { SortOption } from '@/components/sort-controls'
+import PagesNavigation from '@/components/pages-navigation'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button, { ButtonProps } from '@/components/button'
+import ButtonDropdown from '@/components/button-dropdown'
+import WarningMessage from '@/components/warning-message'
+import ErrorBoundary from '@/components/error-boundary'
+import Filters from '@/components/filters'
 
 const useStyles = makeStyles({
   root: {
@@ -99,8 +95,8 @@ const useStyles = makeStyles({
   },
   hydrateIcon: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    bottom: 0,
+    left: 0,
     cursor: 'pointer',
     padding: '0.5rem',
     fontSize: '2rem !important',
@@ -109,17 +105,6 @@ const useStyles = makeStyles({
       transform: 'scale(1.1)',
     },
   },
-  // isHydrating: {
-  //   animation: '$spinRefreshIcon 250ms linear infinite',
-  // },
-  // '@keyframes spinRefreshIcon': {
-  //   '0%': {
-  //     transform: 'rotate(0deg)',
-  //   },
-  //   '100%': {
-  //     transform: 'rotate(360deg)',
-  //   },
-  // },
 })
 
 const limitPerPage = 50
@@ -158,6 +143,7 @@ interface PaginatedViewData<TRecord extends Record<string, any>> {
   getQueryString?: () => string
   whereClauses?: WhereClause<TRecord>[]
   isRendererForLoading?: boolean
+  itemNamePlural?: string
 }
 
 // @ts-ignore
@@ -196,6 +182,7 @@ const Page = () => {
     getQueryString,
     whereClauses,
     isRendererForLoading,
+    itemNamePlural,
   } = usePaginatedView()
   const keyPrefix = name || viewName || collectionName
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
@@ -419,7 +406,7 @@ const Page = () => {
     if (lastErrorCode === DataStoreErrorCode.BadRange) {
       return (
         <NoResultsMessage>
-          No results found for page {currentPageNumber}
+          No {itemNamePlural || 'results'} found for page {currentPageNumber}
         </NoResultsMessage>
       )
     }
@@ -444,7 +431,11 @@ const Page = () => {
   }
 
   if (!items.length) {
-    return <NoResultsMessage />
+    return (
+      <NoResultsMessage>
+        No {itemNamePlural || 'results'} found
+      </NoResultsMessage>
+    )
   }
 
   return (
@@ -570,6 +561,7 @@ export interface PaginatedViewProps<TRecord extends Record<string, any>> {
   filters?: Filter<TRecord>[]
   isRendererForLoading?: boolean // items will be null
   allowRandomSort?: boolean
+  itemNamePlural?: string
 }
 
 const PaginatedView = <TRecord extends Record<string, any>>({
@@ -595,6 +587,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
   whereClauses,
   isRendererForLoading,
   allowRandomSort = false,
+  itemNamePlural,
 }: PaginatedViewProps<TRecord>) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
@@ -655,6 +648,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
           getQueryString,
           whereClauses,
           isRendererForLoading,
+          itemNamePlural,
         }}>
         <div className={classes.root}>
           <div className={classes.controls}>
@@ -740,7 +734,11 @@ const PaginatedView = <TRecord extends Record<string, any>>({
                 {createUrl ? (
                   <ControlGroup>
                     <Control>
-                      <Button icon={<AddIcon />} size="small" url={createUrl}>
+                      <Button
+                        icon={<AddIcon />}
+                        size="small"
+                        color="secondary"
+                        url={createUrl}>
                         Create
                       </Button>
                     </Control>

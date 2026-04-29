@@ -1,17 +1,19 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import LaunchIcon from '@mui/icons-material/Launch'
-import FormattedDate from '../formatted-date'
+
+import useUserId from '@/hooks/useUserId'
+import * as routes from '@/routes'
 import {
   Attachment,
   AttachmentType,
   FullAttachment,
   isFullAttachment,
-} from '../../modules/attachments'
-import TagChips from '../tag-chips'
-import useUserId from '../../hooks/useUserId'
-import Link from '../link'
-import * as routes from '../../routes'
+} from '@/modules/attachments'
+
+import FormattedDate from '@/components/formatted-date'
+import TagChips from '@/components/tag-chips'
+import Link from '@/components/link'
 
 const useStyles = makeStyles({
   paper: {

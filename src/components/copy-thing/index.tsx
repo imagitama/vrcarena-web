@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { copyTextToClipboard } from '../../utils'
-import useTimer from '../../hooks/useTimer'
-import Tooltip from '../tooltip'
+import { copyTextToClipboard } from '@/utils'
+import useTimer from '@/hooks/useTimer'
+import Tooltip from '@/components/tooltip'
 
 const CopyThing = ({
   text,

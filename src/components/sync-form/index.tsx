@@ -11,29 +11,30 @@ import {
   SyncFieldResult,
   SyncField,
   ErrorCode,
-} from '../../syncing'
-import GumroadSyncInfo from '../../syncing/gumroad'
-import BoothSyncInfo from '../../syncing/booth'
-import ItchSyncInfo from '../../syncing/itch'
-
-import useFirebaseFunction from '../../hooks/useFirebaseFunction'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Button from '../button'
-import FormControls from '../form-controls'
-
-import ExperimentalMessage from '../experimental-message'
-import useNotice from '../../hooks/useNotice'
-import { handleError } from '../../error-handling'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import InfoMessage from '../info-message'
-import { addQuotesToDescription } from '../../utils/formatting'
-import { SyncContext } from './hooks/useSync'
-import FormField from './components/form-field'
-import WarningMessage from '../warning-message'
-import { capitalize } from '../../utils'
+} from '@/syncing'
+import GumroadSyncInfo from '@/syncing/gumroad'
+import BoothSyncInfo from '@/syncing/booth'
+import ItchSyncInfo from '@/syncing/itch'
+import { handleError } from '@/error-handling'
+import { addQuotesToDescription } from '@/utils/formatting'
+import { capitalize } from '@/utils'
 import { ValidationIssue, getValidationIssues } from '@/validation'
 import assetEditableFields from '@/editable-fields/assets'
+
+import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+import useNotice from '@/hooks/useNotice'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import ExperimentalMessage from '@/components/experimental-message'
+import InfoMessage from '@/components/info-message'
+import WarningMessage from '@/components/warning-message'
+import FormField from './components/form-field'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+
+import { SyncContext } from './hooks/useSync'
 
 export const getSyncPlatformInfoFromName = (
   name: SyncPlatformName

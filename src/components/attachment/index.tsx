@@ -1,9 +1,9 @@
 import React from 'react'
 import LaunchIcon from '@mui/icons-material/Launch'
-import { AttachmentType, AttachmentFields } from '../../modules/attachments'
-import { getIsUrlAYoutubeVideo } from '../../utils'
-import VideoPlayer from '../video-player'
-import Button from '../button'
+import { AttachmentType, AttachmentFields } from '@/modules/attachments'
+import { getIsUrlAYoutubeVideo } from '@/utils'
+import VideoPlayer from '@/components/video-player'
+import Button from '@/components/button'
 
 const Attachment = ({
   attachment: { type, url },

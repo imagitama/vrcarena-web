@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import Heading from '../../components/heading'
-import * as routes from '../../routes'
-import PaginatedView from '../../components/paginated-view'
-import { Attachment, CollectionNames } from '../../modules/attachments'
-import AttachmentResults from '../../components/attachment-results'
+import * as routes from '@/routes'
+import { Attachment, CollectionNames } from '@/modules/attachments'
+
+import Heading from '@/components/heading'
+import PaginatedView from '@/components/paginated-view'
+import AttachmentResults from '@/components/attachment-results'
 
 const Renderer = ({ items }: { items?: Attachment[] }) => {
   return <AttachmentResults attachments={items || []} />

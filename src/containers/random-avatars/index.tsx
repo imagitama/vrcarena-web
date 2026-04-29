@@ -1,8 +1,10 @@
+import React from 'react'
+
+import { routes } from '@/routes'
+
 import Heading from '@/components/heading'
 import Link from '@/components/link'
 import WarningMessage from '@/components/warning-message'
-import { routes } from '@/routes'
-import React from 'react'
 
 export default () => {
   return (

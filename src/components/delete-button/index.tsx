@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-
-import Button from '../button'
-import LoadingIndicator from '../loading-indicator'
-
-import { handleError } from '../../error-handling'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { AccessStatus, MetaRecord } from '../../modules/common'
-import ButtonDropdown from '../button-dropdown'
-import { deletionReasonMeta } from '../../utils/assets'
+import { handleError } from '@/error-handling'
+import { AccessStatus, MetaRecord } from '@/modules/common'
+import { deletionReasonMeta } from '@/utils/assets'
 import {
   DeletionReason,
   CollectionNames as AssetCollectionNames,
   AssetMeta,
-} from '../../modules/assets'
+} from '@/modules/assets'
+
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+
+import Button from '@/components/button'
+import LoadingIndicator from '@/components/loading-indicator'
+import ButtonDropdown from '@/components/button-dropdown'
 
 const DeleteButton = ({
   id,
@@ -147,11 +147,17 @@ const DeleteButton = ({
           }
           closeOnSelect={true}
           size="small"
+          iconOnly
         />
       )}
-      <Button onClick={toggle} icon={<DeleteIcon />} size="small">
-        {accessStatus === AccessStatus.Deleted ? 'Un-delete' : 'Delete'}
-      </Button>
+      <Button
+        onClick={toggle}
+        icon={<DeleteIcon />}
+        size="small"
+        iconOnly
+        color="secondary"
+        title={accessStatus === AccessStatus.Deleted ? 'Un-delete' : 'Delete'}
+      />
       {isAsset &&
         existingDeletionReason !== undefined &&
         existingDeletionReason !== selectedReason && (

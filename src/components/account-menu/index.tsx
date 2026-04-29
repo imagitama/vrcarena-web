@@ -3,29 +3,26 @@ import { makeStyles } from '@mui/styles'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Badge from '@mui/material/Badge'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import AddBoxIcon from '@mui/icons-material/AddBox'
-
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import { trackAction } from '../../analytics'
-import * as routes from '../../routes'
-import Menu, { MenuItemData } from '../menu'
-import Button from '../button'
-import useUserRecord from '../../hooks/useUserRecord'
-import Avatar, { AvatarSize } from '../avatar'
-import useUserId from '../../hooks/useUserId'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useLocation } from 'react-router'
-import { handleError } from '../../error-handling'
-import {
-  cart as getItemsForCart,
-  notifications as getItemsForNotifications,
-} from './getItems'
-import { deleteRecord } from '../../data-store'
-import { cartIdsStorageKey, clear as clearCart } from '../../cart'
-import { getUserId } from '../../supabase'
-import { CollectionNames } from '../../modules/notifications'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+import { getUserId } from '@/supabase'
+import { trackAction } from '@/analytics'
+import * as routes from '@/routes'
+import { handleError } from '@/error-handling'
+import { notifications as getItemsForNotifications } from './getItems'
+import { deleteRecord } from '@/data-store'
+import { CollectionNames } from '@/modules/notifications'
+
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useUserId from '@/hooks/useUserId'
+import useUserRecord from '@/hooks/useUserRecord'
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+
+import Menu, { MenuItemData } from '@/components/menu'
+import Button from '@/components/button'
+import Avatar, { AvatarSize } from '@/components/avatar'
 
 const useStyles = makeStyles({
   root: {
@@ -70,6 +67,15 @@ const useStyles = makeStyles({
       width: '100%',
     },
   },
+  username: {
+    marginLeft: '0.5rem',
+    fontWeight: 'bold',
+  },
+  submitBtn: {
+    '& svg': {
+      marginLeft: '-4px',
+    },
+  },
 })
 
 interface MenuItemDetails {
@@ -88,6 +94,7 @@ interface MenuItemDetails {
 }
 
 const AvatarMenuItem = () => {
+  const classes = useStyles()
   const [, , user] = useUserRecord()
 
   return (
@@ -97,6 +104,7 @@ const AvatarMenuItem = () => {
         username={user && user.username ? user.username : undefined}
         size={AvatarSize.Tiny}
       />
+      {user && <span className={classes.username}>{user.username}</span>}
       <KeyboardArrowDownIcon />
     </>
   )
@@ -170,24 +178,6 @@ const getMenu = (
       setInterval(() => {
         callback()
       }, 30 * 60 * 1000) // 30 seconds
-    },
-  },
-  cart: {
-    icon: ShoppingCartIcon,
-    getItems: getItemsForCart,
-    noItemsMessage: 'No assets in your cart',
-    onClear: () => {
-      clearCart()
-    },
-    subscribe: (callback) => {
-      window.addEventListener(
-        'onLocalStorageChange',
-        ({ detail: { key } }: any) => {
-          if (key === cartIdsStorageKey) {
-            callback()
-          }
-        }
-      )
     },
   },
   user: {
@@ -284,12 +274,13 @@ export default ({
         <div className={classes.items}>
           <Button
             url={routes.createAsset}
-            className={`${classes.item} ${
+            className={`${classes.item} ${classes.submitBtn} ${
               isMobile ? classes.mobileButton : ''
             }`}
             onClick={closeAllDropdowns}
-            icon={<AddBoxIcon />}
-            color="secondary">
+            icon={<ChevronRightIcon />}
+            color="secondary"
+            hollow>
             Submit
           </Button>
         </div>

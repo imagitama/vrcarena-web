@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import EventResultsItem from '../event-results-item'
-import { Event } from '../../modules/events'
+import EventResultsItem from '@/components/event-results-item'
+import { Event } from '@/modules/events'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },

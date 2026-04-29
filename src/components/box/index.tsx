@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { VRCArenaTheme } from '../../themes'
+import { VRCArenaTheme } from '@/themes'
 
 interface BoxProps {
   children?: React.ReactNode

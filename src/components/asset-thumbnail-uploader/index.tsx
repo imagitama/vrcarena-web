@@ -1,21 +1,20 @@
 import React, { useRef, useEffect } from 'react'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import ImageUploader from '../image-uploader'
-
-import { handleError } from '../../error-handling'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
 import {
   formHideDelay,
   THUMBNAIL_WIDTH,
   THUMBNAIL_HEIGHT,
   NONATTACHMENT_MAX_SIZE_BYTES,
-} from '../../config'
-import { bucketNames } from '../../file-uploading'
-import { Asset, CollectionNames } from '../../modules/assets'
+} from '@/config'
+import { bucketNames } from '@/file-uploading'
+import { Asset, CollectionNames } from '@/modules/assets'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import ImageUploader from '@/components/image-uploader'
 
 export default ({
   assetId,

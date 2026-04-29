@@ -4,6 +4,7 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles({
   columns: {
     display: 'flex',
+    flexWrap: 'wrap', // mobile
   },
   withPadding: {
     padding: '0.5rem',

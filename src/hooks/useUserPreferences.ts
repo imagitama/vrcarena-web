@@ -1,10 +1,12 @@
-import useUserId from './useUserId'
-import useDataStoreItem from './useDataStoreItem'
-import { CollectionNames, UserPreferences } from '../modules/user'
-import { DataStoreErrorCode } from '../data-store'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setUserPrefs } from '../modules/app'
+
+import { CollectionNames, UserPreferences } from '@/modules/user'
+import { DataStoreErrorCode } from '@/data-store'
+import { setUserPrefs } from '@/modules/app'
+
+import useDataStoreItem from './useDataStoreItem'
+import useUserId from './useUserId'
 
 let isSomethingGoingToHydrate = false
 let isHydrating = false
@@ -39,7 +41,7 @@ export default (
     useDataStoreItem<UserPreferences>(
       CollectionNames.UserPreferences,
       needToHydrate ? userId : false,
-      'user-prefs-hook'
+      { queryName: 'user-prefs-hook' }
     )
 
   useEffect(() => {

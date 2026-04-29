@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useUserId from '../../hooks/useUserId'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import { Asset, CollectionNames } from '../../modules/assets'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useUserId from '@/hooks/useUserId'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { Asset, CollectionNames } from '@/modules/assets'
 
-import TextInput from '../text-input'
-import Button from '../button'
-import FormControls from '../form-controls'
-import AddToVccButton from '../add-to-vcc-button'
+import TextInput from '@/components/text-input'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import AddToVccButton from '@/components/add-to-vcc-button'
 
 const ChangeVccUrlForm = ({
   assetId,
@@ -30,7 +30,10 @@ const ChangeVccUrlForm = ({
   const userId = useUserId()
   const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<Asset>(
     CollectionNames.Assets,
-    assetId || false
+    assetId || false,
+    {
+      queryName: 'change-vcc-url-form',
+    }
   )
   const [newVccUrl, setNewVccUrl] = useState<string>(existingVccUrl || '')
 

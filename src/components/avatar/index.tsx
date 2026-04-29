@@ -1,11 +1,11 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import LazyLoad from 'react-lazyload'
-import LoadingIndicator from '../loading-indicator'
-import DefaultAvatar from '../default-avatar'
-import { ReactComponent as ChristmasHat } from '../../assets/images/christmas-hat.svg'
-import { fixAccessingImagesUsingToken, getIsChristmasTime } from '../../utils'
-import { VRCArenaTheme } from '../../themes'
+import LoadingIndicator from '@/components/loading-indicator'
+import DefaultAvatar from '@/components/default-avatar'
+import { ReactComponent as ChristmasHat } from '@/assets/images/christmas-hat.svg'
+import { fixAccessingImagesUsingToken, getIsChristmasTime } from '@/utils'
+import { VRCArenaTheme } from '@/themes'
 
 export enum AvatarSize {
   ExtraTiny = 'extratiny', // timeline

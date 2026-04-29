@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react'
-
-import AssetResults from '../asset-results'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
-
-import useDataStore from '../../hooks/useDataStore'
-import { Asset, ViewNames } from '../../modules/assets'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+import useDataStore from '@/hooks/useDataStore'
+import { Asset, ViewNames } from '@/modules/assets'
+
+import AssetResults from '@/components/asset-results'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
 
 const CollectionForUser = ({ userId }: { userId: string }) => {
   const getQuery = useCallback(
@@ -20,7 +20,7 @@ const CollectionForUser = ({ userId }: { userId: string }) => {
   )
   const [isLoading, lastErrorCode, assetsInCollection] = useDataStore<Asset>(
     getQuery,
-    'collection-for-user'
+    { queryName: 'collection-for-user' }
   )
 
   if (isLoading) {

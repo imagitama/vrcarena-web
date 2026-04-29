@@ -5,10 +5,11 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import NoResultsMessage from '../no-results-message'
-import StatusText from '../status-text'
-import FormattedDate from '../formatted-date'
-import UsernameLink from '../username-link'
+
+import NoResultsMessage from '@/components/no-results-message'
+import StatusText from '@/components/status-text'
+import FormattedDate from '@/components/formatted-date'
+import UsernameLink from '@/components/username-link'
 
 const RepChangeList = ({ repChanges }: { repChanges: FullRepChange[] }) => {
   return (

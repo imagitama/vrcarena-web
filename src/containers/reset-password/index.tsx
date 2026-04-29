@@ -1,8 +1,8 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import ResetPasswordForm from '../../components/reset-password-form'
-import Heading from '../../components/heading'
+import ResetPasswordForm from '@/components/reset-password-form'
+import Heading from '@/components/heading'
 import BodyText from '@/components/body-text'
 
 export default () => (

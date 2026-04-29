@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import Button from '../button'
-import TextInput from '../text-input'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import { changeLoggedInUserEmail, loggedInUser } from '../../firebase'
-import { handleError } from '../../error-handling'
-import SuccessMessage from '../success-message'
-import FormControls from '../form-controls'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import { changeLoggedInUserEmail, loggedInUser } from '@/firebase'
+import { handleError } from '@/error-handling'
+import SuccessMessage from '@/components/success-message'
+import FormControls from '@/components/form-controls'
 
 enum ErrorCode {
   Unknown,

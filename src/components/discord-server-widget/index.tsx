@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
-import { handleError } from '../../error-handling'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Heading from '../heading'
-import Button from '../button'
-import { trackAction } from '../../analytics'
+import { handleError } from '@/error-handling'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Heading from '@/components/heading'
+import Button from '@/components/button'
+import { trackAction } from '@/analytics'
 
 // {
 //   "id": "734993431507763289",

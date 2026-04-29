@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { formHideDelay } from '../config'
+import { formHideDelay } from '@/config'
 
 export default (
   callback?: () => void,

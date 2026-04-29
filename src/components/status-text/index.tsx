@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { colorPalette } from '../../config'
+
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles({
   status: {

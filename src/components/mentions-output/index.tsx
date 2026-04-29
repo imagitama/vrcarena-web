@@ -1,5 +1,5 @@
 import React from 'react'
-import UsernameLink from '../username-link'
+import UsernameLink from '@/components/username-link'
 
 const Line = ({ line, mentions }: { line: string; mentions: string[] }) => {
   const regex = /\[user:(\w+)\]/g

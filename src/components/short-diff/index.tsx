@@ -3,42 +3,44 @@ import { makeStyles } from '@mui/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import moment from 'moment'
 
-import { getCategoryMeta } from '../../category-meta'
-import AssetThumbnail from '../asset-thumbnail'
-import Markdown from '../markdown'
-import TagChip from '../tag-chip'
-import SketchfabEmbed from '../sketchfab-embed'
-import AuthorResultsItem from '../author-results-item'
-import DiscordServerResultsItem from '../discord-server-results-item'
-import { getDateFromString } from '../../utils'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import Message from '../message'
-import VrchatAvatars from '../vrchat-avatars'
-import { fieldTypes } from '../../generic-forms'
-import TextDiff from '../text-diff'
-import TagDiff from '../tag-diff'
-import Relations from '../relations'
-import authorsEditableFields from '../../editable-fields/authors'
-import VrcFurySettings from '../vrcfury-settings'
-import Attachments from '../attachments'
-import LoadingIndicator from '../loading-indicator'
-import NoResultsMessage from '../no-results-message'
-import ErrorMessage from '../error-message'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
-import VisitSourceButton from '../visit-source-button'
-import { Asset, FullAsset, SourceInfo } from '../../modules/assets'
+import { getCategoryMeta } from '@/category-meta'
+import authorsEditableFields from '@/editable-fields/authors'
+import { getDateFromString } from '@/utils'
+import { fieldTypes } from '@/generic-forms'
+import { Asset, FullAsset, SourceInfo } from '@/modules/assets'
 import {
   Author,
   CollectionNames as AuthorsCollectionNames,
-} from '../../modules/authors'
+} from '@/modules/authors'
 import {
   Species,
   CollectionNames as SpeciesCollectionNames,
-} from '../../modules/species'
+} from '@/modules/species'
 import {
   Attachment,
   CollectionNames as AttachmentsCollectionNames,
-} from '../../modules/attachments'
+} from '@/modules/attachments'
+
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+
+import AssetThumbnail from '@/components/asset-thumbnail'
+import Markdown from '@/components/markdown'
+import TagChip from '@/components/tag-chip'
+import SketchfabEmbed from '@/components/sketchfab-embed'
+import AuthorResultsItem from '@/components/author-results-item'
+import DiscordServerResultsItem from '@/components/discord-server-results-item'
+import Message from '@/components/message'
+import VrchatAvatars from '@/components/vrchat-avatars'
+import TextDiff from '@/components/text-diff'
+import TagDiff from '@/components/tag-diff'
+import Relations from '@/components/relations'
+import VrcFurySettings from '@/components/vrcfury-settings'
+import Attachments from '@/components/attachments'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
+import ErrorMessage from '@/components/error-message'
+import VisitSourceButton from '@/components/visit-source-button'
 
 const useStyles = makeStyles({
   output: {
@@ -79,11 +81,6 @@ const useStyles = makeStyles({
   },
   pedestalVideo: {
     width: '100%',
-  },
-  banner: {
-    '& img': {
-      width: '100%',
-    },
   },
   explanation: {
     display: 'flex',
@@ -195,23 +192,6 @@ function Field({
 
 const maxDescriptionLength = 100
 const noValueLabel = '(no value)'
-
-function BannerOutput({ fields }: { fields: Asset }) {
-  const classes = useStyles()
-  return (
-    <div>
-      {fields.bannerurl ? (
-        <div className={classes.banner}>
-          <a href={fields.bannerurl} target="_blank" rel="noopener noreferrer">
-            <img src={fields.bannerurl} />
-          </a>
-        </div>
-      ) : (
-        <NoValueLabel>(no banner)</NoValueLabel>
-      )}
-    </div>
-  )
-}
 
 function ThumbnailValue({ fields }: { fields: Asset }) {
   const classes = useStyles()
@@ -470,10 +450,6 @@ const RenderersForFields: {
   }
 } = {
   assets: {
-    bannerurl: {
-      label: 'Banner',
-      renderer: ({ fields }) => <BannerOutput fields={fields} />,
-    },
     // title stuff
     thumbnailurl: {
       label: 'Thumbnail',

@@ -1,4 +1,4 @@
-import { VrchatAvatar } from '../vrchat'
+import { VrchatAvatar } from '@/vrchat'
 
 export interface VrchatAvatarCachedItem {
   id: string // uuid

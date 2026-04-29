@@ -2,20 +2,20 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { PopularCurrency } from '@/currency'
+import { Asset, CollectionNames } from '@/modules/assets'
 
-import Button from '../button'
-import FormControls from '../form-controls'
-import { PopularCurrency } from '../../currency'
-import WarningMessage from '../warning-message'
-import PriceInput from '../price-input'
-import { Asset, CollectionNames } from '../../modules/assets'
-import LoadingIndicator from '../loading-indicator'
-import SuccessMessage from '../success-message'
-import ErrorMessage from '../error-message'
-import PriceAndCurrencyInput from '../price-and-currency-input'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import WarningMessage from '@/components/warning-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import ErrorMessage from '@/components/error-message'
+import PriceAndCurrencyInput from '@/components/price-and-currency-input'
 
 const useStyles = makeStyles({
   inputWrapper: {

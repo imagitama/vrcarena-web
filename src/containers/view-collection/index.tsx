@@ -3,23 +3,25 @@ import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 import EditIcon from '@mui/icons-material/Edit'
 
-import Link from '../../components/link'
-import * as routes from '../../routes'
-import Markdown from '../../components/markdown'
-import ErrorMessage from '../../components/error-message'
-import LoadingIndicator from '../../components/loading-indicator'
-import Heading from '../../components/heading'
-import Button from '../../components/button'
-import PageControls from '../../components/page-controls'
-import { trackAction } from '../../analytics'
-import AssetResults from '../../components/asset-results'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { FullCollection, ViewNames } from '../../modules/collections'
-import NoResultsMessage from '../../components/no-results-message'
-import UsernameLink from '../../components/username-link'
-import useUserId from '../../hooks/useUserId'
-import useIsEditor from '../../hooks/useIsEditor'
-import { PublicAsset } from '../../modules/assets'
+import { trackAction } from '@/analytics'
+import * as routes from '@/routes'
+import { PublicAsset } from '@/modules/assets'
+import { FullCollection, ViewNames } from '@/modules/collections'
+
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useUserId from '@/hooks/useUserId'
+import useIsEditor from '@/hooks/useIsEditor'
+
+import Link from '@/components/link'
+import Markdown from '@/components/markdown'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Heading from '@/components/heading'
+import Button from '@/components/button'
+import PageControls from '@/components/page-controls'
+import AssetResults from '@/components/asset-results'
+import NoResultsMessage from '@/components/no-results-message'
+import UsernameLink from '@/components/username-link'
 
 const analyticsCategory = 'ViewCollection'
 
@@ -28,7 +30,7 @@ const View = () => {
   const [isLoading, lastErrorCode, result] = useDataStoreItem<FullCollection>(
     ViewNames.GetFullCollections,
     collectionId,
-    'view-collection'
+    { queryName: 'view-collection' }
   )
   const userId = useUserId()
   const isEditor = useIsEditor()

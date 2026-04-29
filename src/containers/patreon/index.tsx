@@ -1,16 +1,16 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Link from '../../components/link'
 import { makeStyles } from '@mui/styles'
 import Container from '@mui/material/Container'
 
-import * as routes from '../../routes'
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
+import { PATREON_BECOME_PATRON_URL } from '@/config'
+import patreonLogoUrl from '@/assets/images/patreon-logo.png'
 
-import Heading from '../../components/heading'
-import Button from '../../components/button'
-import { trackAction } from '../../analytics'
-import { PATREON_BECOME_PATRON_URL } from '../../config'
-import patreonLogoUrl from '../../assets/images/patreon-logo.png'
+import Link from '@/components/link'
+import Heading from '@/components/heading'
+import Button from '@/components/button'
 
 const useStyles = makeStyles({
   logo: {

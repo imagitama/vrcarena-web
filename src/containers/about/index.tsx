@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Markdown from '../../components/markdown'
-import { PATREON_BECOME_PATRON_URL } from '../../config'
+import Markdown from '@/components/markdown'
+import { PATREON_BECOME_PATRON_URL } from '@/config'
 
 const aboutContent = `# About VRCArena
 

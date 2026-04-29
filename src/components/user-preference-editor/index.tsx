@@ -1,20 +1,17 @@
-import React, { SyntheticEvent, useState } from 'react'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
-import FormControl from '@mui/material/FormControl'
+import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { CollectionNames, UserPreferences } from '../../modules/user'
-import useUserPreferences from '../../hooks/useUserPreferences'
+import { handleError } from '@/error-handling'
+import { CollectionNames, UserPreferences } from '@/modules/user'
+import { trackAction } from '@/analytics'
+import { formHideDelay } from '@/config'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import { trackAction } from '../../analytics'
-import useTimer from '../../hooks/useTimer'
-import { formHideDelay } from '../../config'
-import CheckboxInput from '../checkbox-input'
+import useUserPreferences from '@/hooks/useUserPreferences'
+import useTimer from '@/hooks/useTimer'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import ErrorMessage from '@/components/error-message'
+import CheckboxInput from '@/components/checkbox-input'
 
 const useStyles = makeStyles({
   savingState: {

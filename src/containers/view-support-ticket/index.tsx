@@ -2,34 +2,33 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
-import * as routes from '../../routes'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-
-import Link from '../../components/link'
-import LoadingIndicator from '../../components/loading-indicator'
-import ErrorMessage from '../../components/error-message'
-import GenericOutputItem from '../../components/generic-output-item'
-import Heading from '../../components/heading'
-import CommentList from '../../components/comment-list'
-import NoPermissionMessage from '../../components/no-permission-message'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
+import * as routes from '@/routes'
+import { getUrlForParent } from '@/relations'
 import {
   CollectionNames,
   FullSupportTicket,
   ResolutionStatus,
   ViewNames,
-} from '../../modules/support-tickets'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import NoResultsMessage from '../../components/no-results-message'
-import WarningMessage from '../../components/warning-message'
-import FormattedDate from '../../components/formatted-date'
-import ResolutionStatusOutput from '../../components/resolution-status'
-import Button from '../../components/button'
-import { getUrlForParent } from '../../relations'
-import ResolutionControls from '../../components/resolution-controls'
-import Markdown from '../../components/markdown'
-import useIsEditor from '../../hooks/useIsEditor'
-import { getViewNameForParentTable } from '../../utils/reports'
+} from '@/modules/support-tickets'
+import { getViewNameForParentTable } from '@/utils/reports'
+
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useIsEditor from '@/hooks/useIsEditor'
+
+import Link from '@/components/link'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import GenericOutputItem from '@/components/generic-output-item'
+import Heading from '@/components/heading'
+import CommentList from '@/components/comment-list'
+import NoPermissionMessage from '@/components/no-permission-message'
+import NoResultsMessage from '@/components/no-results-message'
+import FormattedDate from '@/components/formatted-date'
+import ResolutionStatusOutput from '@/components/resolution-status'
+import Button from '@/components/button'
+import ResolutionControls from '@/components/resolution-controls'
+import Markdown from '@/components/markdown'
 import EditorBox from '@/components/editor-box'
 
 const View = () => {
@@ -41,14 +40,14 @@ const View = () => {
     useDataStoreItem<FullSupportTicket>(
       ViewNames.GetFullSupportTickets,
       isLoggedIn ? supportTicketId : false,
-      'view-support-ticket'
+      { queryName: 'view-support-ticket' }
     )
   const [, , parent] = useDataStoreItem(
     supportTicket
       ? getViewNameForParentTable(supportTicket.parenttable) || ''
       : '',
     supportTicket ? supportTicket.parent : false,
-    'view-support-ticket-parent'
+    { queryName: 'view-support-ticket-parent' }
   )
 
   if (!isLoggedIn) {

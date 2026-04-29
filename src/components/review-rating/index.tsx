@@ -1,10 +1,12 @@
-import { makeStyles } from '@mui/styles'
 import React from 'react'
-import { VRCArenaTheme } from '../../themes'
-import { Rating } from '../../modules/reviews'
-import { RatingMeta } from '../../ratings'
-import Markdown from '../markdown'
-import StarRating from '../star-rating'
+import { makeStyles } from '@mui/styles'
+
+import { VRCArenaTheme } from '@/themes'
+import { Rating } from '@/modules/reviews'
+import { RatingMeta } from '@/ratings'
+
+import Markdown from '@/components/markdown'
+import StarRating from '@/components/star-rating'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {

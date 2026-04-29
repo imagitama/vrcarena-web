@@ -2,13 +2,9 @@ import React from 'react'
 import YouTubePlayer from 'react-player/youtube'
 import { makeStyles } from '@mui/styles'
 
-import {
-  getIsUrlAYoutubeVideo,
-  getIsUrlAnImage,
-  getIsUrlAVideo,
-} from '../../utils'
-import VideoPlayer from '../video-player'
-import { trackAction } from '../../analytics'
+import { getIsUrlAYoutubeVideo, getIsUrlAnImage, getIsUrlAVideo } from '@/utils'
+import VideoPlayer from '@/components/video-player'
+import { trackAction } from '@/analytics'
 
 const getImageUrlFromUrls = (fileUrls: string[]): string | undefined =>
   fileUrls.find((url) => getIsUrlAnImage(url))

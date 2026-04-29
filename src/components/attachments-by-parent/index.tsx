@@ -1,16 +1,16 @@
 import React from 'react'
 
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
 import {
   AttachmentReason,
   FullAttachment,
   ViewNames,
-} from '../../modules/attachments'
+} from '@/modules/attachments'
 
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
-import ImageGallery from '../image-gallery'
-import Attachments from '../attachments'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
+import ImageGallery from '@/components/image-gallery'
+import Attachments from '@/components/attachments'
 
 const LoadingGallery = () => {
   return <ImageGallery showLoadingCount={3} />

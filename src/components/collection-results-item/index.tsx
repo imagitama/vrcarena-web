@@ -1,10 +1,10 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import * as routes from '../../routes'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import { Collection, FullCollection } from '../../modules/collections'
-import ResultsItem from '../results-item'
+import * as routes from '@/routes'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { Collection, FullCollection } from '@/modules/collections'
+import ResultsItem from '@/components/results-item'
 
 const useStyles = makeStyles({
   root: {
@@ -118,17 +118,7 @@ const useStyles = makeStyles({
   },
 })
 const CollectionResultsItem = ({
-  collection: {
-    id,
-    title,
-    items,
-    description,
-    // isadult,
-    thumbnailurl,
-    createdat,
-    createdbyusername,
-    createdbyavatarurl,
-  },
+  collection: { id, title, items, thumbnailurl, createdbyusername },
 }: {
   collection: FullCollection | Collection
 }) => (

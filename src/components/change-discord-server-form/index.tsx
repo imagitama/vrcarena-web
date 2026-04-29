@@ -2,30 +2,30 @@ import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 import CheckIcon from '@mui/icons-material/Check'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import { AssetFields, DiscordServerData } from '../../modules/assets'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { AssetFields, DiscordServerData } from '@/modules/assets'
 import {
   CollectionNames,
   DiscordServer,
   ViewNames,
-} from '../../modules/discordservers'
-
-import TextInput from '../text-input'
-import SearchForIdForm from '../search-for-id-form'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import DiscordServerResults from '../discord-server-results'
-import DiscordServerResultsItem from '../discord-server-results-item'
-import Button from '../button'
-import FormControls from '../form-controls'
-import WarningMessage from '../warning-message'
+} from '@/modules/discordservers'
 import { AssetEditorProps } from '@/generic-forms'
+
+import TextInput from '@/components/text-input'
+import SearchForIdForm from '@/components/search-for-id-form'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import DiscordServerResults from '@/components/discord-server-results'
+import DiscordServerResultsItem from '@/components/discord-server-results-item'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import WarningMessage from '@/components/warning-message'
 
 const SearchResultRenderer = ({
   result,
@@ -216,7 +216,6 @@ type DiscordServerId = AssetFields['discordserver']
 const ChangeDiscordServerForm = ({
   collectionName = undefined,
   id = undefined,
-  initialValue = undefined,
   associatedRecord = undefined,
   overrideSave = undefined,
   onDone = undefined,
@@ -227,7 +226,7 @@ const ChangeDiscordServerForm = ({
 >) => {
   const [selectedDiscordServerId, setSelectedDiscordServerId] = useState<
     string | null | undefined
-  >(initialValue)
+  >()
   const [selectedDiscordServerData, setSelectedDiscordServerData] = useState<
     DiscordServerData | undefined
   >(associatedRecord)

@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import { makeStyles } from '@mui/styles'
-
-import * as routes from '../../routes'
-import useDataStore from '../../hooks/useDataStore'
-import { Event, PublicEvent, ViewNames } from '../../modules/events'
-import { FeaturedStatus } from '../../modules/common'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import { getFriendlyDate } from '../../utils/dates'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+import * as routes from '@/routes'
+import useDataStore from '@/hooks/useDataStore'
+import { PublicEvent, ViewNames } from '@/modules/events'
+import { FeaturedStatus } from '@/modules/common'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { getFriendlyDate } from '@/utils/dates'
 
 const useStyles = makeStyles({
   root: {
@@ -115,11 +115,7 @@ const HeaderCurrentEvents = () => {
     return null
   }
 
-  const { id, name, bannerurl, slug, startsat, endsat } = events[0]
-
-  if (!bannerurl) {
-    return <>No banner URL configured</>
-  }
+  const { id, name, slug, startsat, endsat } = events[0]
 
   const isCurrentlyOn =
     new Date(startsat).getTime() <= new Date().getTime() &&
@@ -139,11 +135,6 @@ const HeaderCurrentEvents = () => {
           {isCurrentlyOn ? 'On Right Now!' : getFriendlyDate(startsat)}
         </div>
       ) : null}
-      <img
-        src={bannerurl}
-        alt={`Banner for ${name}`}
-        className={classes.banner}
-      />
     </Link>
   )
 }

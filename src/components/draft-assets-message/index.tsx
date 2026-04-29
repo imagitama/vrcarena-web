@@ -2,16 +2,12 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { matchPath } from 'react-router'
 
-import useUserRecord from '../../hooks/useUserRecord'
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
-import * as routes from '../../routes'
-import {
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-} from '../../modules/common'
-import { AssetMeta, CollectionNames } from '../../modules/assets'
-import WarningMessage from '../warning-message'
+import useUserRecord from '@/hooks/useUserRecord'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import * as routes from '@/routes'
+import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+import { AssetMeta, CollectionNames } from '@/modules/assets'
+import WarningMessage from '@/components/warning-message'
 
 const DraftAssetsMessage = () => {
   const [, , user] = useUserRecord()

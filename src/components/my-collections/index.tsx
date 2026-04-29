@@ -1,14 +1,15 @@
 import React from 'react'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
-import MyCollection from '../my-collection'
-import Heading from '../heading'
-import useMyCollections from '../../hooks/useMyCollections'
-import ResultsItems from '../results-items'
-import CollectionResultsItem from '../collection-results-item'
-import InfoMessage from '../info-message'
+import useMyCollections from '@/hooks/useMyCollections'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
+import MyCollection from '@/components/my-collection'
+import Heading from '@/components/heading'
+import ResultsItems from '@/components/results-items'
+import CollectionResultsItem from '@/components/collection-results-item'
+import InfoMessage from '@/components/info-message'
 
 const MyCollections = () => {
   const [isLoading, lastErrorCode, myCollections] = useMyCollections()

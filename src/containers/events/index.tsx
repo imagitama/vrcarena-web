@@ -1,27 +1,28 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import { makeStyles } from '@mui/styles'
 import AddIcon from '@mui/icons-material/Add'
-
-import Heading from '../../components/heading'
-import BodyText from '../../components/body-text'
-import Button from '../../components/button'
-import EventResults from '../../components/event-results'
-import ErrorMessage from '../../components/error-message'
-import LoadingIndicator from '../../components/loading-indicator'
-import NoResultsMessage from '../../components/no-results-message'
-
-import * as routes from '../../routes'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import useDataStore from '../../hooks/useDataStore'
-import { Event, ViewNames } from '../../modules/events'
-import Calendar from '../../components/calendar'
-import { getIsDateInFuture, getIsDateInPast } from '../../utils/dates'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
 import { SupabaseClient } from '@supabase/supabase-js'
-import DeprecationNotice from '../../components/deprecation-notice'
 
+import * as routes from '@/routes'
+import { Event, ViewNames } from '@/modules/events'
+import { getIsDateInFuture, getIsDateInPast } from '@/utils/dates'
+
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useDataStore from '@/hooks/useDataStore'
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+
+import Heading from '@/components/heading'
+import BodyText from '@/components/body-text'
+import Button from '@/components/button'
+import EventResults from '@/components/event-results'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
+import Calendar from '@/components/calendar'
+
+// TODO: move to component
 const useStyles = makeStyles({
   root: {
     position: 'relative',
@@ -132,10 +133,6 @@ export default () => {
           content="Browse the events that are being hosted in or about VRChat and other VR social games."
         />
       </Helmet>
-      <DeprecationNotice>
-        The events and calendar system of the site is mostly unused as of July
-        2025 so it will be removed.
-      </DeprecationNotice>
       <div className={classes.root}>
         <Heading variant="h1">
           <Link to={routes.events}>Events</Link>

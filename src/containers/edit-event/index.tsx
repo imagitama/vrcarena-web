@@ -2,15 +2,15 @@ import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 
-import GenericEditor from '../../components/generic-editor'
-import Heading from '../../components/heading'
-import Message from '../../components/message'
+import * as routes from '@/routes'
+import * as config from '@/config'
+import { CollectionNames, EditableFields } from '@/modules/events'
 
-import * as routes from '../../routes'
-import * as config from '../../config'
-import { CollectionNames, EditableFields } from '../../modules/events'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+import GenericEditor from '@/components/generic-editor'
+import Heading from '@/components/heading'
+import Message from '@/components/message'
 
 const HowToPromoteMessage = ({ isLoggedIn }: { isLoggedIn?: boolean }) => (
   <Message>

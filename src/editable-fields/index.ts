@@ -1,21 +1,23 @@
 import React from 'react'
+
+import { fieldTypes } from '@/generic-forms'
+import { CollectionNames as AttachmentsCollectionNames } from '@/modules/attachments'
+import { CollectionNames as UsersCollectionNames } from '@/modules/users'
+import { CollectionNames as DiscordServersCollectionNames } from '@/modules/discordservers'
+import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
+import { CollectionNames as PagesCollectionNames } from '@/modules/pages'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+
+import { ImageUploaderConfig } from '@/components/image-uploader'
+import { TagInputSettings } from '@/components/tag-input'
+
+import attachments from './attachments'
+import assets from './assets'
 import authors from './authors'
 import users from './users'
 import discordServers from './discord-servers'
 import userMeta from './user-meta'
 import pages from './pages'
-import { fieldTypes } from '../generic-forms'
-import attachments from './attachments'
-import assets from './assets'
-
-import { CollectionNames as AttachmentsCollectionNames } from '../modules/attachments'
-import { CollectionNames as UsersCollectionNames } from '../modules/users'
-import { CollectionNames as DiscordServersCollectionNames } from '../modules/discordservers'
-import { CollectionNames as AuthorsCollectionNames } from '../modules/authors'
-import { CollectionNames as PagesCollectionNames } from '../modules/pages'
-import { CollectionNames as AssetsCollectionNames } from '../modules/assets'
-import { ImageUploaderConfig } from '@/components/image-uploader'
-import { TagInputSettings } from '@/components/tag-input'
 
 export interface Option {
   value: string | null

@@ -1,8 +1,8 @@
-import { fieldTypes } from '../generic-forms'
-import { bucketNames } from '../file-uploading'
-import { AVATAR_HEIGHT, AVATAR_WIDTH } from '../config'
-import { EditableField } from './'
-import { User } from '../modules/users'
+import { fieldTypes } from '@/generic-forms'
+import { bucketNames } from '@/file-uploading'
+import { AVATAR_HEIGHT, AVATAR_WIDTH } from '@/config'
+import { User } from '@/modules/users'
+import type { EditableField } from './'
 
 const fields: EditableField<User>[] = [
   {

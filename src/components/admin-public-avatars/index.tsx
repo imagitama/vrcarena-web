@@ -7,34 +7,37 @@ import TableRow from '@mui/material/TableRow'
 import SaveIcon from '@mui/icons-material/Save'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
-import { updateRecords } from '../../data-store'
-import SuccessMessage from '../success-message'
-import { handleError } from '../../error-handling'
-import { callFunction } from '../../firebase'
-import useTimer from '../../hooks/useTimer'
-import {
-  Asset,
-  CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
+import { updateRecords } from '@/data-store'
+import { handleError } from '@/error-handling'
+import { callFunction } from '@/firebase'
+import { VrchatAvatar as VrchatAvatarData } from '@/vrchat'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import VrchatAvatar from '../vrchat-avatar'
-import { VrchatAvatar as VrchatAvatarData } from '../../vrchat'
-import AssetResultsItem from '../asset-results-item'
-import Button from '../button'
-import CheckboxInput from '../checkbox-input'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
+import { VrchatAvatarCachedItem } from '@/modules/vrchat-cache'
 import {
   CollectionNames,
   FullPublicAvatarSubmission,
   ViewNames,
-} from '../../modules/public-avatar-submissions'
-import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
-import NoResultsMessage from '../no-results-message'
-import InfoMessage from '../info-message'
+} from '@/modules/public-avatar-submissions'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+} from '@/modules/assets'
+
+import useTimer from '@/hooks/useTimer'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import VrchatAvatar from '@/components/vrchat-avatar'
+import AssetResultsItem from '@/components/asset-results-item'
+import Button from '@/components/button'
+import CheckboxInput from '@/components/checkbox-input'
+import NoResultsMessage from '@/components/no-results-message'
+import InfoMessage from '@/components/info-message'
+import SuccessMessage from '@/components/success-message'
 
 interface SyncMissingAvatarSubmissionsResult {
   success: boolean

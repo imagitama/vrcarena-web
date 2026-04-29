@@ -1,34 +1,20 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
-import Link from '../../components/link'
 
-import Heading from '../../components/heading'
-import BodyText from '../../components/body-text'
-import AuthorResults from '../../components/author-results'
+import * as routes from '@/routes'
+import { Author, ViewNames } from '@/modules/authors'
 
-import * as routes from '../../routes'
-import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
-import { Author, ViewNames } from '../../modules/authors'
-
-enum SubView {
-  DELETED = 'deleted',
-  OPEN_FOR_COMMISSION = 'open-for-commission',
-}
+import Link from '@/components/link'
+import Heading from '@/components/heading'
+import BodyText from '@/components/body-text'
+import AuthorResults from '@/components/author-results'
+import PaginatedView from '@/components/paginated-view'
 
 const Renderer = ({ items }: { items?: Author[] }) => (
   <AuthorResults authors={items || []} />
 )
 
 const AuthorsView = () => {
-  const getQuery = useCallback<GetQueryFn<Author>>((query, selectedSubView) => {
-    switch (selectedSubView) {
-      case SubView.OPEN_FOR_COMMISSION:
-        return query.is('isopenforcommission', true)
-      default:
-        return query
-    }
-  }, [])
-
   return (
     <>
       <Helmet>
@@ -45,7 +31,6 @@ const AuthorsView = () => {
       <PaginatedView<Author>
         viewName={ViewNames.GetFullAuthors}
         editorViewName={ViewNames.GetFullAuthors}
-        getQuery={getQuery}
         name="authors"
         sortOptions={[
           {
@@ -55,12 +40,6 @@ const AuthorsView = () => {
           {
             label: 'Created on',
             fieldName: 'createdat',
-          },
-        ]}
-        subViews={[
-          {
-            label: 'Open For Commission',
-            id: SubView.OPEN_FOR_COMMISSION,
           },
         ]}
         defaultFieldName={'name'}

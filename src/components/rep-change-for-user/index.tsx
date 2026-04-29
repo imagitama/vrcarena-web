@@ -1,16 +1,18 @@
 import React from 'react'
-import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
-import { FullRepChange, ViewNames } from '@/modules/reputation'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import NoResultsMessage from '../no-results-message'
-import StatusText from '../status-text'
-import FormattedDate from '../formatted-date'
+
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import { FullRepChange, ViewNames } from '@/modules/reputation'
+
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
+import StatusText from '@/components/status-text'
+import FormattedDate from '@/components/formatted-date'
 
 const RepChangeForUser = ({ userId }: { userId: string }) => {
   const [isLoading, lastErrorCode, repChanges] =

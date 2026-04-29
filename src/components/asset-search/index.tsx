@@ -2,16 +2,16 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import MenuItem from '@mui/material/MenuItem'
 
-import useAssetSearch from '../../hooks/useAssetSearch'
-import { Asset, AssetCategory, PublicAsset } from '../../modules/assets'
-import categoryMeta from '../../category-meta'
+import useAssetSearch from '@/hooks/useAssetSearch'
+import { Asset, AssetCategory, PublicAsset } from '@/modules/assets'
+import categoryMeta from '@/category-meta'
 
-import AssetResults from '../asset-results'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import TextInput from '../text-input'
-import Select from '../select'
-import NoResultsMessage from '../no-results-message'
+import AssetResults from '@/components/asset-results'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import TextInput from '@/components/text-input'
+import Select from '@/components/select'
+import NoResultsMessage from '@/components/no-results-message'
 
 const useStyles = makeStyles({
   root: {

@@ -3,27 +3,21 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { makeStyles } from '@mui/styles'
 
-import * as routes from '../../routes'
-import Link from '../../components/link'
-import useIsEditor from '../../hooks/useIsEditor'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
-import {
-  UserMeta,
-  CollectionNames as UsersCollectionNames,
-} from '../../modules/users'
+import * as routes from '@/routes'
+import Link from '@/components/link'
+import useIsEditor from '@/hooks/useIsEditor'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
+import { FullAmendment } from '@/modules/amendments'
 
-import FormattedDate from '../formatted-date'
-import Button from '../button'
-import ShortDiff from '../short-diff'
-import { FullAmendment } from '../../modules/amendments'
-import SuccessMessage from '../success-message'
-import AmendmentEditorRecordManager from '../amendment-editor-record-manager'
-import AssetResultsItem from '../asset-results-item'
-import AuthorResultsItem from '../author-results-item'
-import StatusText from '../status-text'
-import useDataStoreItem from '@/hooks/useDataStoreItem'
-import UsernameLink from '../username-link'
+import FormattedDate from '@/components/formatted-date'
+import Button from '@/components/button'
+import ShortDiff from '@/components/short-diff'
+import SuccessMessage from '@/components/success-message'
+import AmendmentEditorRecordManager from '@/components/amendment-editor-record-manager'
+import AssetResultsItem from '@/components/asset-results-item'
+import AuthorResultsItem from '@/components/author-results-item'
+import UsernameLink from '@/components/username-link'
 
 const useStyles = makeStyles({
   mainCell: {

@@ -1,21 +1,22 @@
 import React, { useRef, useState } from 'react'
 import SyncIcon from '@mui/icons-material/Sync'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { callFunction } from '../../firebase'
-import { handleError } from '../../error-handling'
+import { callFunction } from '@/firebase'
+import { handleError } from '@/error-handling'
+import { User } from '@/modules/users'
+import { CollectionNames } from '@/modules/user'
+import { DataStoreErrorCode } from '@/data-store'
+import { DiscordUser } from '@/discord'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Button from '../button'
-import useUserId from '../../hooks/useUserId'
-import useUserRecord from '../../hooks/useUserRecord'
-import { User } from '../../modules/users'
-import InfoMessage from '../info-message'
-import FormControls from '../form-controls'
-import { CollectionNames } from '../../modules/user'
-import { DataStoreErrorCode } from '../../data-store'
-import { DiscordUser } from '../../discord'
+import useUserId from '@/hooks/useUserId'
+import useUserRecord from '@/hooks/useUserRecord'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import InfoMessage from '@/components/info-message'
+import FormControls from '@/components/form-controls'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
 
 interface SyncUserWithDiscordPayload {
   userId: string

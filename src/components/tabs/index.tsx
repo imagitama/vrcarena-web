@@ -10,17 +10,18 @@ import MaterialTabs from '@mui/material/Tabs'
 import MaterialTab from '@mui/material/Tab'
 import { makeStyles } from '@mui/styles'
 import LazyLoad from 'react-lazyload'
+import { alpha } from '@mui/material' // TODO: specific
 import { useParams } from 'react-router'
 
-import useHistory from '../../hooks/useHistory'
 import {
   mediaQueryForTabletsOrBelow,
   queryForTabletsOrBelow,
-} from '../../media-queries'
-import LoadingIndicator from '../loading-indicator'
-import ErrorBoundary from '../error-boundary'
-import { colorBrandLight } from '../../themes'
-import { alpha } from '@mui/material'
+} from '@/media-queries'
+import { colorBrandLight } from '@/themes'
+
+import useHistory from '@/hooks/useHistory'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorBoundary from '@/components/error-boundary'
 
 const useStyles = makeStyles({
   tabsContainer: {

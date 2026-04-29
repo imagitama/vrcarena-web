@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
-import { handleError } from '../error-handling'
-import { inDevelopment } from '../environment'
+import { handleError } from '@/error-handling'
+import { inDevelopment } from '@/environment'
 import {
   DataStoreErrorCode,
   DataStoreOptions,
   GetQuery,
   PostgresErrorCode,
   getDataStoreErrorCodeFromError,
-} from '../data-store'
+} from '@/data-store'
 import useSupabaseClient from './useSupabaseClient'
 
 /**

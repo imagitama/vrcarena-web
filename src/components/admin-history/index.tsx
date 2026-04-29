@@ -3,14 +3,14 @@ import React from 'react'
 import useDatabaseQuery, {
   OrderDirections,
   Operators,
-} from '../../hooks/useDatabaseQuery'
-import { HistoryEntry, ViewNames } from '../../modules/history'
+} from '@/hooks/useDatabaseQuery'
+import { HistoryEntry, ViewNames } from '@/modules/history'
 
-import HistoryResults from '../history-results'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import NoResultsMessage from '../no-results-message'
-import Heading from '../heading'
+import HistoryResults from '@/components/history-results'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
+import Heading from '@/components/heading'
 
 const History = ({
   id,

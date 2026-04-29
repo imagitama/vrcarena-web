@@ -1,14 +1,15 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 
-import Heading from '../../components/heading'
-import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
-import ReviewResults from '../../components/review-results'
-import WarningMessage from '../../components/warning-message'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { PublicReview, ViewNames } from '../../modules/reviews'
-import Button from '../../components/button'
-import { routes } from '../../routes'
+import { PublicReview, ViewNames } from '@/modules/reviews'
+import { routes } from '@/routes'
+
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+
+import Heading from '@/components/heading'
+import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
+import ReviewResults from '@/components/review-results'
+import Button from '@/components/button'
 
 const Renderer = ({ items }: { items?: PublicReview[] }) => (
   <ReviewResults reviews={items} includeAssets />

@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
 
-import * as routes from '../../routes'
+import * as routes from '@/routes'
 import PaginatedView, { GetQueryFn } from '../paginated-view'
 import AmendmentResults from '../amendment-results'
-import { FullAmendment, ViewNames } from '../../modules/amendments'
-import NoResultsMessage from '../no-results-message'
-import { ApprovalStatus } from '../../modules/common'
-import { EqualActiveFilter } from '../../filters'
+import { FullAmendment, ViewNames } from '@/modules/amendments'
+import NoResultsMessage from '@/components/no-results-message'
+import { ApprovalStatus } from '@/modules/common'
+import { EqualActiveFilter } from '@/filters'
 
 const Renderer = ({ items }: { items?: FullAmendment[] }) =>
   items ? (

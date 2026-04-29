@@ -1,16 +1,18 @@
 import React, { useCallback, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd'
-
-import useDataStore from '../../hooks/useDataStore'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import VrchatAvatar from '../vrchat-avatar'
-import PublicAvatarForm from '../public-avatar-form'
-import { VrchatAvatarCachedItem } from '../../modules/vrchat-cache'
-import FindMoreAssetsButton from '../find-more-assets-button'
 import { SupabaseClient } from '@supabase/supabase-js'
-import { CollectionNames } from '../../modules/vrchatavatars'
+
+import { VrchatAvatarCachedItem } from '@/modules/vrchat-cache'
+import { CollectionNames } from '@/modules/vrchatavatars'
+
+import useDataStore from '@/hooks/useDataStore'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import VrchatAvatar from '@/components/vrchat-avatar'
+import PublicAvatarForm from '@/components/public-avatar-form'
+import FindMoreAssetsButton from '@/components/find-more-assets-button'
 
 const useStyles = makeStyles({
   avatars: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },

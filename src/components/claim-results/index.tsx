@@ -1,15 +1,15 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { FullClaim } from '../../modules/claims'
+import { FullClaim } from '@/modules/claims'
 import {
   Author,
   CollectionNames as AuthorCollectionNames,
-} from '../../modules/authors'
-import AuthorResultsItem from '../author-results-item'
-import Heading from '../heading'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import FormattedDate from '../formatted-date'
-import Paper from '../paper'
+} from '@/modules/authors'
+import AuthorResultsItem from '@/components/author-results-item'
+import Heading from '@/components/heading'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import FormattedDate from '@/components/formatted-date'
+import Paper from '@/components/paper'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },

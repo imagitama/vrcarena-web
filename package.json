@@ -37,6 +37,7 @@
     "@types/webpack-env": "^1.18.8",
     "algoliasearch": "^4.18.0",
     "braintree-web-drop-in-react": "^1.2.1",
+    "classnames": "^2.5.1",
     "connected-react-router": "^6.9.3",
     "dotenv": "^16.5.0",
     "emoji-picker-react": "^4.5.15",

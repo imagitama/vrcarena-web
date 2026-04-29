@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react'
 import { Helmet } from 'react-helmet'
-import Link from '../../components/link'
 import { makeStyles } from '@mui/styles'
 
-import * as routes from '../../routes'
+import * as routes from '@/routes'
+import { alreadyOver18Key } from '@/config'
+import { trackAction } from '@/analytics'
+import { getCategoryMeta } from '@/category-meta'
+import { AssetCategory, PublicAsset, ViewNames } from '@/modules/assets'
 
-import AssetResults from '../../components/asset-results'
-import Heading from '../../components/heading'
-import Paper from '../../components/paper'
-import Button from '../../components/button'
-import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
+import useStorage from '@/hooks/useStorage'
+import useUserPreferences from '@/hooks/useUserPreferences'
 
-import { alreadyOver18Key } from '../../config'
-import useStorage from '../../hooks/useStorage'
-import { trackAction } from '../../analytics'
-import { getCategoryMeta } from '../../category-meta'
-import useUserPreferences from '../../hooks/useUserPreferences'
-import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
+import Link from '@/components/link'
+import AssetResults from '@/components/asset-results'
+import Heading from '@/components/heading'
+import Paper from '@/components/paper'
+import Button from '@/components/button'
+import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => {
   const assetsByCategory = items
@@ -74,6 +74,7 @@ const Assets = () => {
   )
 }
 
+// TODO: move to component
 const useStyles = makeStyles({
   over18message: {
     padding: '5rem 0',

@@ -1,9 +1,9 @@
 import React from 'react'
 import Tooltip from '@mui/material/Tooltip'
 import { makeStyles } from '@mui/styles'
-import Button from '../button'
-import { VRChat as VRChatIcon } from '../../icons'
-import { isJsonUrl } from '../../utils'
+import Button from '@/components/button'
+import { VRChat as VRChatIcon } from '@/icons'
+import { isJsonUrl } from '@/utils'
 
 const useStyles = makeStyles({
   vrchatIcon: {

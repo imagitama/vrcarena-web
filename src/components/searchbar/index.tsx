@@ -2,19 +2,17 @@ import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { matchPath, useLocation } from 'react-router'
 
-import {
-  changeSearchTerm,
-  searchIndexNameLabels,
-  overrideSearchFilter,
-} from '../../modules/app'
-import * as routes from '../../routes'
-import { convertSearchTermToUrlPath } from '../../utils'
-import { trackAction } from '../../analytics'
-import useHistory from '../../hooks/useHistory'
-import BigSearchInput from '../big-search-input'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
-import { CollectionNames as UsersCollectionNames } from '../../modules/users'
+import { changeSearchTerm, overrideSearchFilter } from '@/modules/app'
+import * as routes from '@/routes'
+import { convertSearchTermToUrlPath } from '@/utils'
+import { trackAction } from '@/analytics'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
+import { CollectionNames as UsersCollectionNames } from '@/modules/users'
+
+import useHistory from '@/hooks/useHistory'
+
+import BigSearchInput from '@/components/big-search-input'
 
 function getPlaceholderForSearchIndexName(searchTableName: string): string {
   switch (searchTableName) {
@@ -34,10 +32,7 @@ function updateUrlWithSearchData(indexName: string, searchTerm: string): void {
     null,
     'Search',
     routes.searchWithVar
-      .replace(
-        ':indexName',
-        (searchIndexNameLabels as any)[indexName as any] as any
-      )
+      .replace(':indexName', indexName)
       .replace(':searchTerm', convertSearchTermToUrlPath(searchTerm))
   )
 }

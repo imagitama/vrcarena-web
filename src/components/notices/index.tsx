@@ -1,14 +1,16 @@
 import React from 'react'
+import { makeStyles } from '@mui/styles'
+
 import useDatabaseQuery, {
   OrderDirections,
   Operators,
-} from '../../hooks/useDatabaseQuery'
-import { makeStyles } from '@mui/styles'
-import { ViewNames, FullNotice } from '../../modules/notices'
-import Notice from '../notice'
-import ErrorMessage from '../error-message'
-import { mediaQueryForMobiles } from '../../media-queries'
-import useNotices from '../../hooks/useNotices'
+} from '@/hooks/useDatabaseQuery'
+import useNotices from '@/hooks/useNotices'
+import { ViewNames, FullNotice } from '@/modules/notices'
+import { mediaQueryForMobiles } from '@/media-queries'
+
+import Notice from '@/components/notice'
+import ErrorMessage from '@/components/error-message'
 
 const useStyles = makeStyles({
   notice: {

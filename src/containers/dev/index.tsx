@@ -1,36 +1,35 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
 
-import TextInput from '../../components/text-input'
-import Button from '../../components/button'
-import { parseBase64String } from '../../utils'
+import TextInput from '@/components/text-input'
+import Button from '@/components/button'
+import { parseBase64String } from '@/utils'
 
 // components
 
-import TagInput from '../../components/tag-input'
-import FeatureList from '../../components/feature-list'
-import ErrorMessage from '../../components/error-message'
-import SuccessMessage from '../../components/success-message'
-import NoPermissionMessage from '../../components/no-permission-message'
-import WarningMessage from '../../components/warning-message'
-import Message from '../../components/message'
-import ErrorBoundary from '../../components/error-boundary'
-import ImageUploader from '../../components/image-uploader'
-import MarkdownEditor from '../../components/markdown-editor'
-import LoadingIndicator from '../../components/loading-indicator'
-import TextDiff from '../../components/text-diff'
-import SetupProfile from '../../components/setup-profile'
-import FileUploader from '../../components/file-uploader'
+import TagInput from '@/components/tag-input'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import NoPermissionMessage from '@/components/no-permission-message'
+import WarningMessage from '@/components/warning-message'
+import Message from '@/components/message'
+import ErrorBoundary from '@/components/error-boundary'
+import ImageUploader from '@/components/image-uploader'
+import MarkdownEditor from '@/components/markdown-editor'
+import LoadingIndicator from '@/components/loading-indicator'
+import TextDiff from '@/components/text-diff'
+import SetupProfile from '@/components/setup-profile'
+import FileUploader from '@/components/file-uploader'
 
-import { bucketNames } from '../../file-uploading'
-import SurveyForm from '../../components/survey-form'
+import { bucketNames } from '@/file-uploading'
+import SurveyForm from '@/components/survey-form'
 import survey from '../../surveys/creating-asset'
-import { Asset, CollectionNames, FullAsset } from '../../modules/assets'
-import PerformanceEditor from '../../components/performance-editor'
-import SpeciesSelector from '../../components/species-selector'
-import DefaultAvatar from '../../components/default-avatar'
-import AssetResultsItem from '../../components/asset-results-item'
-import AssetResults from '../../components/asset-results'
+import { Asset, CollectionNames, FullAsset } from '@/modules/assets'
+import PerformanceEditor from '@/components/performance-editor'
+import SpeciesSelector from '@/components/species-selector'
+import DefaultAvatar from '@/components/default-avatar'
+import AssetResultsItem from '@/components/asset-results-item'
+import AssetResults from '@/components/asset-results'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -204,8 +203,6 @@ export default () => {
         />
         <h2>Loading</h2>
         <LoadingIndicator message="Loading items..." />
-        <h2>Feature List</h2>
-        <FeatureList />
         <h2>Text Diff</h2>
         <TextDiff
           oldValue={loremIpsum}
@@ -266,8 +263,6 @@ export default () => {
         <ImageUploadTest />
         <h2>Markdown Editor</h2>
         <MarkdownEditorWrapper />
-        <h2>Asset Editor</h2>
-        <AssetEditorWrapper />
         <h2>Setup Profile</h2>
         {/* @ts-ignore */}
         <SetupProfile initialStepIdx={2} />

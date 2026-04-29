@@ -1,11 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import {
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-} from '../../modules/common'
-import { colorPalette } from '../../config'
+import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles({
   status: {

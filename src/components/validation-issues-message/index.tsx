@@ -1,7 +1,9 @@
 import React from 'react'
+
 import { EditableField } from '@/editable-fields'
 import { ValidationIssue, ValidationReason } from '@/validation'
-import ErrorMessage from '../error-message'
+
+import ErrorMessage from '@/components/error-message'
 
 const getTextForIssue = (issue: ValidationIssue): string => {
   switch (issue.reason) {

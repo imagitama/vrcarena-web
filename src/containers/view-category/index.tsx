@@ -2,17 +2,16 @@ import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useLocation, useParams } from 'react-router'
 
-import Heading from '../../components/heading'
-import BodyText from '../../components/body-text'
+import { getCategoryMeta } from '@/category-meta'
+import * as routes from '@/routes'
+import { GetQuery } from '@/data-store'
+import { AssetCategory, PublicAsset, ViewNames } from '@/modules/assets'
 
-import { getCategoryMeta } from '../../category-meta'
-import * as routes from '../../routes'
-
-import AreaNavigation from '../../components/area-navigation'
-import Link from '../../components/link'
-import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
-import AssetsPaginatedView from '../../components/assets-paginated-view'
-import { GetQuery } from '../../data-store'
+import AreaNavigation from '@/components/area-navigation'
+import Link from '@/components/link'
+import AssetsPaginatedView from '@/components/assets-paginated-view'
+import Heading from '@/components/heading'
+import BodyText from '@/components/body-text'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   const category = getCategoryMeta(categoryName)

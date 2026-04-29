@@ -3,26 +3,27 @@ import AddIcon from '@mui/icons-material/Add'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { makeStyles } from '@mui/styles'
 
-import Button from '../../components/button'
-
-import { trackAction } from '../../analytics'
-import useIsEditor from '../../hooks/useIsEditor'
-import useDatabaseQuery, {
-  Operators,
-  OrderDirections,
-} from '../../hooks/useDatabaseQuery'
-import * as routes from '../../routes'
-import ErrorMessage from '../../components/error-message'
-import { FullSpecies, Species, ViewNames } from '../../modules/species'
-import AutocompleteInput from '../../components/autocomplete-input'
+import { trackAction } from '@/analytics'
+import * as routes from '@/routes'
+import { FullSpecies, Species, ViewNames } from '@/modules/species'
 import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
-} from '../../media-queries'
-import { findItemAndParents, getRandomInt } from '../../utils'
-import SpeciesResultItem from '../../components/species-result-item'
-import useStorage from '../../hooks/useStorage'
-import FormControls from '../form-controls'
+} from '@/media-queries'
+import { findItemAndParents, getRandomInt } from '@/utils'
+
+import useIsEditor from '@/hooks/useIsEditor'
+import useDatabaseQuery, {
+  Operators,
+  OrderDirections,
+} from '@/hooks/useDatabaseQuery'
+import useStorage from '@/hooks/useStorage'
+
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import SpeciesResultItem from '@/components/species-result-item'
+import FormControls from '@/components/form-controls'
+import AutocompleteInput from '@/components/autocomplete-input'
 
 const analyticsCategory = 'ViewAllSpecies'
 
@@ -126,7 +127,9 @@ const CreateButton = () => {
         onClick={() =>
           trackAction(analyticsCategory, 'Click create species button')
         }
-        size="small">
+        color="secondary"
+        size="small"
+        switchIconSide>
         Create
       </Button>
     </>

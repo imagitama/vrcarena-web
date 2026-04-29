@@ -5,14 +5,14 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
-import Link from '../../components/link'
-import UsernameLink from '../username-link'
-import FormattedDate from '../formatted-date'
-import { FullHistoryEntry, HistoryEntry } from '../../modules/history'
-import Button from '../button'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+import * as routes from '@/routes'
+import { FullHistoryEntry, HistoryEntry } from '@/modules/history'
 
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import * as routes from '../../routes'
+import Link from '@/components/link'
+import UsernameLink from '@/components/username-link'
+import FormattedDate from '@/components/formatted-date'
+import Button from '@/components/button'
 
 const removeUselessKeysFromChanges = (changes: any) => {
   delete changes.lastmodifiedby

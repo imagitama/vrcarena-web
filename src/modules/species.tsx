@@ -1,9 +1,9 @@
 import React from 'react'
-import SpeciesResultItem from '../components/species-result-item'
-import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../config'
-import { EditableField } from '../editable-fields'
-import { bucketNames } from '../file-uploading'
-import { fieldTypes } from '../generic-forms'
+import SpeciesResultItem from '@/components/species-result-item'
+import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
+import { EditableField } from '@/editable-fields'
+import { bucketNames } from '@/file-uploading'
+import { fieldTypes } from '@/generic-forms'
 import { AccessStatus } from './common'
 
 export interface SpeciesFields extends Record<string, any> {
@@ -50,13 +50,11 @@ export const editableFields: EditableField<Species>[] = [
     label: 'Parent',
     type: fieldTypes.searchable,
     hint: 'If this is a child of a Genus (avoid nesting too many levels)',
-    searchableProperties: {
-      collectionName: CollectionNames.Species,
-      fieldAsLabel: 'pluralname',
-      renderer: ({ item }: { item: Species }) => (
-        <SpeciesResultItem speciesItem={item} />
-      ),
-    },
+    collectionName: CollectionNames.Species,
+    fieldAsLabel: 'pluralname',
+    renderer: ({ item }: { item: Species }) => (
+      <SpeciesResultItem speciesItem={item} />
+    ),
   },
   {
     name: 'singularname',
@@ -96,11 +94,9 @@ export const editableFields: EditableField<Species>[] = [
     name: 'thumbnailurl',
     label: 'Thumbnail',
     type: fieldTypes.imageUpload,
-    imageUploadProperties: {
-      width: THUMBNAIL_WIDTH,
-      height: THUMBNAIL_HEIGHT,
-      bucketName: bucketNames.speciesThumbnails,
-    },
+    requiredWidth: THUMBNAIL_WIDTH,
+    requiredHeight: THUMBNAIL_HEIGHT,
+    bucketName: bucketNames.speciesThumbnails,
     hint: 'Use a dark image so it is easier on the eyes. Prefer an anthro version of the species as it is for VRChat.',
   },
   {
@@ -114,13 +110,11 @@ export const editableFields: EditableField<Species>[] = [
     label: 'Redirect',
     type: fieldTypes.searchable,
     hint: 'Redirect every visit to this species to another species',
-    searchableProperties: {
-      collectionName: CollectionNames.Species,
-      fieldAsLabel: 'pluralname',
-      renderer: ({ item }: { item: Species }) => (
-        <SpeciesResultItem speciesItem={item} />
-      ),
-    },
+    collectionName: CollectionNames.Species,
+    fieldAsLabel: 'pluralname',
+    renderer: ({ item }: { item: Species }) => (
+      <SpeciesResultItem speciesItem={item} />
+    ),
   },
   {
     name: 'accessstatus',

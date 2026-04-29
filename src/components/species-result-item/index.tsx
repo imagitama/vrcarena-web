@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { FullSpecies, Species } from '../../modules/species'
-import Link from '../../components/link'
-import * as routes from '../../routes'
 import LazyLoad from 'react-lazyload'
-import { VRCArenaTheme } from '../../themes'
-import Tooltip from '../tooltip'
-import LoadingShimmer from '../loading-shimmer'
-import { getRandomInt } from '../../utils'
+
+import { FullSpecies, Species } from '@/modules/species'
+import * as routes from '@/routes'
+import { VRCArenaTheme } from '@/themes'
+import { getRandomInt } from '@/utils'
 import { colorPalette } from '@/config'
+
+import Link from '@/components/link'
+import Tooltip from '@/components/tooltip'
+import LoadingShimmer from '@/components/loading-shimmer'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {

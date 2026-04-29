@@ -7,29 +7,31 @@ import {
   signInWithEmailAndPassword,
   AuthErrorCodes,
 } from 'firebase/auth'
-import { auth } from '../../firebase'
-import Button from '../button'
+import { auth } from '@/firebase'
+import { FirebaseError } from 'firebase/app' // TODO: re-export from other file
+import Button from '@/components/button'
 import {
   Discord as DiscordIcon,
   Email as EmailIcon,
   Twitter as TwitterIcon,
   Google as GoogleIcon,
   Login as LoginIcon,
-} from '../../icons'
-import LoginWithDiscord from '../login-with-discord'
-import LoadingIndicator from '../loading-indicator'
-import { handleError } from '@/error-handling'
-import TextInput from '../text-input'
-import Link from '../link'
-import { routes } from '@/routes'
-import ErrorMessage from '../error-message'
-import { FirebaseError } from 'firebase/app'
-import FormControls from '../form-controls'
-import Center from '../center'
-import { signinWithProvider } from './utils'
-import SignUpWithEmailForm from '../signup-with-email-form'
-import Message from '../message'
+} from '@/icons'
 import { DISCORD_URL, EMAIL } from '@/config'
+import { handleError } from '@/error-handling'
+import { routes } from '@/routes'
+
+import LoginWithDiscord from '@/components/login-with-discord'
+import LoadingIndicator from '@/components/loading-indicator'
+import TextInput from '@/components/text-input'
+import Link from '@/components/link'
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
+import Center from '@/components/center'
+import SignUpWithEmailForm from '@/components/signup-with-email-form'
+import Message from '@/components/message'
+
+import { signinWithProvider } from './utils'
 
 const useStyles = makeStyles({
   root: {

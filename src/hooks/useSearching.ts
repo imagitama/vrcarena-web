@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
-import { handleError } from '../error-handling'
-import { setIsSearching } from '../modules/app'
 import { useDispatch } from 'react-redux'
-import { DataStoreErrorCode, GetQuery } from '../data-store'
+
+import { handleError } from '@/error-handling'
+import { setIsSearching } from '@/modules/app'
+import { DataStoreErrorCode, GetQuery } from '@/data-store'
+
 import useSupabaseClient from './useSupabaseClient'
 
 export type GetQueryFn<TRecord> = (

@@ -1,7 +1,7 @@
 import React from 'react'
 import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 import { makeStyles } from '@mui/styles'
-import Message, { MessageProps } from '../message'
+import Message, { MessageProps } from '@/components/message'
 
 const useStyles = makeStyles({
   message: {

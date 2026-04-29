@@ -1,19 +1,21 @@
 import React, { useCallback } from 'react'
 import { makeStyles } from '@mui/styles'
+import { SupabaseClient } from '@supabase/supabase-js'
+
 import {
   Asset,
   PublicAsset,
   Relation,
   RelationType,
   ViewNames,
-} from '../../modules/assets'
-import AssetResultsItem from '../asset-results-item'
-import Markdown from '../markdown'
-import useDataStore from '../../hooks/useDataStore'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import { SupabaseClient } from '@supabase/supabase-js'
-import Paper from '../paper'
+} from '@/modules/assets'
+import useDataStore from '@/hooks/useDataStore'
+
+import AssetResultsItem from '@/components/asset-results-item'
+import Markdown from '@/components/markdown'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Paper from '@/components/paper'
 
 const useStyles = makeStyles({
   root: {

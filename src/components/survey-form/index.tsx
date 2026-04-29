@@ -1,20 +1,23 @@
 import React, { useState } from 'react'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+
 import {
   CollectionNames,
   SurveyQuestionResponse,
   SurveyResponse,
-} from '../../modules/surveys'
-import { Survey, SurveyQuestion } from '../../surveys'
-import Button from '../button'
-import CheckboxInput from '../checkbox-input'
-import ErrorMessage from '../error-message'
-import FormControls from '../form-controls'
-import Heading from '../heading'
-import LoadingIndicator from '../loading-indicator'
-import Paper from '../paper'
-import SuccessMessage from '../success-message'
-import TextInput from '../text-input'
+} from '@/modules/surveys'
+import { Survey, SurveyQuestion } from '@/surveys'
+
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+
+import Button from '@/components/button'
+import CheckboxInput from '@/components/checkbox-input'
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
+import Heading from '@/components/heading'
+import LoadingIndicator from '@/components/loading-indicator'
+import Paper from '@/components/paper'
+import SuccessMessage from '@/components/success-message'
+import TextInput from '@/components/text-input'
 
 const Question = ({
   question,

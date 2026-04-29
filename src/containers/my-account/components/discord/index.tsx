@@ -1,13 +1,13 @@
 import React from 'react'
-import ErrorMessage from '../../../../components/error-message'
-import LoadingIndicator from '../../../../components/loading-indicator'
-import NoResultsMessage from '../../../../components/no-results-message'
-import SuccessMessage from '../../../../components/success-message'
-import SyncUserWithDiscordForm from '../../../../components/sync-user-with-discord-form'
-import useDataStoreItem from '../../../../hooks/useDataStoreItem'
-import useUserId from '../../../../hooks/useUserId'
-import { CollectionNames } from '../../../../modules/user'
-import { UserMeta } from '../../../../modules/users'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
+import SuccessMessage from '@/components/success-message'
+import SyncUserWithDiscordForm from '@/components/sync-user-with-discord-form'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useUserId from '@/hooks/useUserId'
+import { CollectionNames } from '@/modules/user'
+import { UserMeta } from '@/modules/users'
 
 const Discord = () => {
   const userId = useUserId()

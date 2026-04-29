@@ -2,16 +2,16 @@ import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 
-import Heading from '../../components/heading'
-import ErrorMessage from '../../components/error-message'
-import NoPermissionMessage from '../../components/no-permission-message'
-import AmendmentEditor from '../../components/amendment-editor'
+import * as routes from '@/routes'
+import { CollectionNames } from '@/modules/assets'
 
-import useNotices from '../../hooks/useNotices'
-import InfoMessage from '../../components/info-message'
-import * as routes from '../../routes'
-import { CollectionNames } from '../../modules/assets'
-import usePermissions from '../../hooks/usePermissions'
+import usePermissions from '@/hooks/usePermissions'
+
+import Heading from '@/components/heading'
+import ErrorMessage from '@/components/error-message'
+import NoPermissionMessage from '@/components/no-permission-message'
+import AmendmentEditor from '@/components/amendment-editor'
+import InfoMessage from '@/components/info-message'
 
 const getReturnUrl = (parentTable: string, parentId: string): string => {
   switch (parentTable) {
@@ -27,7 +27,6 @@ const View = () => {
     parentTable: string
     parentId: string
   }>()
-  const [hiddenNotices, hideNotice] = useNotices()
 
   if (!usePermissions(routes.createReportWithVar)) {
     return <NoPermissionMessage />

@@ -1,8 +1,9 @@
 import React from 'react'
-import * as routes from '../../routes'
-import Button from '../button'
-import ErrorMessage from '../error-message'
-import FormControls from '../form-controls'
+
+import * as routes from '@/routes'
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
 
 export default () => (
   <ErrorMessage>

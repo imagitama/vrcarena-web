@@ -51,7 +51,6 @@ const permissions = {
     routes.createAsset,
     routes.editAssetWithVar,
     routes.editAssetWithVarAndTabNameVar,
-    routes.oldEditAssetWithVar,
     routes.viewAssetWithVar,
     routes.myAccount,
     routes.myAccountWithTabNameVar,

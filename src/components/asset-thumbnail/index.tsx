@@ -1,8 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '../../config'
-import defaultThumbnailUrl from '../../assets/images/default-thumbnail.webp'
+import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '@/config'
+import defaultThumbnailUrl from '@/assets/images/default-thumbnail.webp'
 
 const useStyles = makeStyles({
   root: {

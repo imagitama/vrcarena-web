@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import { SyncFieldBase } from '../../../../syncing'
-import useSync from '../../hooks/useSync'
+import useSync from '@/hooks/useSync'
 import Paper from '../../../paper'
 import CheckboxInput from '../../../checkbox-input'
 import FieldInput from '../form-field-input'

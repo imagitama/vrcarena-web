@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import ReactPlayer from 'react-player'
 import { BaseReactPlayerProps } from 'react-player/base'
-import { handleError } from '../../error-handling'
+
+import { handleError } from '@/error-handling'
 
 const errorStates = {
   ABORTED: 'aborted',

@@ -1,29 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import { makeStyles } from '@mui/styles'
 
-import useUserRecord from '../../hooks/useUserRecord'
-
-import * as routes from '../../routes'
-import { getIsRoleAStaffMember } from '../../utils/users'
-import { scrollToElement } from '../../utils'
-
-import FormattedDate from '../formatted-date'
-import Avatar from '../avatar'
-import StaffBadge from '../staff-badge'
-import LoadingShimmer from '../loading-shimmer'
-import EditorRecordManager from '../editor-record-manager'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import { CollectionNames, FullComment } from '../../modules/comments'
-import ReportButton from '../report-button'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import MentionsOutput from '../mentions-output'
-import { AccessStatus } from '../../modules/common'
-import useIsEditor from '../../hooks/useIsEditor'
-import NoResultsMessage from '../no-results-message'
-import Button from '../button'
+import * as routes from '@/routes'
+import { getIsRoleAStaffMember } from '@/utils/users'
+import { scrollToElement } from '@/utils'
+import { AccessStatus } from '@/modules/common'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { CollectionNames, FullComment } from '@/modules/comments'
 import { BanStatus } from '@/modules/users'
-import BannedBadge from '../banned-badge'
+
+import useUserRecord from '@/hooks/useUserRecord'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useIsEditor from '@/hooks/useIsEditor'
+
+import FormattedDate from '@/components/formatted-date'
+import Avatar from '@/components/avatar'
+import StaffBadge from '@/components/staff-badge'
+import LoadingShimmer from '@/components/loading-shimmer'
+import EditorRecordManager from '@/components/editor-record-manager'
+import ReportButton from '@/components/report-button'
+import MentionsOutput from '@/components/mentions-output'
+import BannedBadge from '@/components/banned-badge'
 
 const useStyles = makeStyles({
   cols: {
@@ -207,6 +205,7 @@ export default ({
               )}
             </div>
           ) : suspicionAmount !== null &&
+            suspicionAmount !== undefined &&
             suspicionAmount < MIN_SUSPICION &&
             showSuspiciousComment !== true ? (
             <div className={classes.deletedMessage}>
@@ -236,6 +235,7 @@ export default ({
                   showPublishButtons={false}
                   showEditorNotes={false}
                   onDone={hydrate ? () => hydrate() : undefined}
+                  showBox={false}
                 />
               </div>
             </div>

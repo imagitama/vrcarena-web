@@ -4,9 +4,10 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import ReportResultsItem from '../report-results-item'
-import ErrorMessage from '../error-message'
-import { FullReport } from '../../modules/reports'
+
+import { FullReport } from '@/modules/reports'
+import ReportResultsItem from '@/components/report-results-item'
+import ErrorMessage from '@/components/error-message'
 
 export default ({
   reports,

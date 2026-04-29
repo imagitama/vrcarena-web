@@ -3,16 +3,15 @@ import CheckIcon from '@mui/icons-material/Check'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
-import Button from '../button'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import useUserId from '@/hooks/useUserId'
+import { handleError } from '@/error-handling'
+import { DataStoreErrorCode } from '@/data-store'
+import { CollectionNames, Endorsement } from '@/modules/endorsements'
+import useDataStoreDelete from '@/hooks/useDataStoreDelete'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
-import useUserId from '../../hooks/useUserId'
-
-import { handleError } from '../../error-handling'
-import { DataStoreErrorCode } from '../../data-store'
-import { CollectionNames, Endorsement } from '../../modules/endorsements'
-import useDataStoreDelete from '../../hooks/useDataStoreDelete'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+import Button from '@/components/button'
 
 const getLabel = (
   isLoggedIn: boolean,

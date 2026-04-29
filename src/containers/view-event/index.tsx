@@ -4,45 +4,40 @@ import LaunchIcon from '@mui/icons-material/Launch'
 import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-
-import * as routes from '../../routes'
-import useDataStore, { GetQueryFn } from '../../hooks/useDataStore'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import Link from '../../components/link'
-import ErrorMessage from '../../components/error-message'
-import Heading from '../../components/heading'
-import Markdown from '../../components/markdown'
-import Button from '../../components/button'
-import TagChips from '../../components/tag-chips'
-import AssetResults from '../../components/asset-results'
 import { useParams } from 'react-router'
-import {
-  FullAuthor,
-  ViewNames as AuthorsViewNames,
-} from '../../modules/authors'
-import AuthorResultsItem from '../../components/author-results-item'
-import SaleInfo from '../../components/sale-info'
+
+import * as routes from '@/routes'
 import {
   AttendanceStatus,
   CollectionNames,
   FullEvent,
   ViewNames,
-} from '../../modules/events'
-import LoadingIndicator from '../../components/loading-indicator'
-import NoResultsMessage from '../../components/no-results-message'
-import useIsEditor from '../../hooks/useIsEditor'
-import EditorRecordManager from '../../components/editor-record-manager'
-import PublicEditorNotes from '../../components/public-editor-notes'
-import CommentList from '../../components/comment-list'
-import Block from '../../components/block'
-import FormattedDate from '../../components/formatted-date'
-import { mediaQueryForMobiles } from '../../media-queries'
-import EventAttendanceButton from '../../components/event-attendance-button'
-import EventAttendanceResults from '../../components/event-attendance-results'
-import useUserId from '../../hooks/useUserId'
-import { SupabaseClient } from '@supabase/supabase-js'
-import { PublicAsset, ViewNames as AssetsViewNames } from '../../modules/assets'
-import DeprecationNotice from '../../components/deprecation-notice'
+} from '@/modules/events'
+import { mediaQueryForMobiles } from '@/media-queries'
+import { PublicAsset, ViewNames as AssetsViewNames } from '@/modules/assets'
+
+import useDataStore, { GetQueryFn } from '@/hooks/useDataStore'
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+import useUserId from '@/hooks/useUserId'
+import useIsEditor from '@/hooks/useIsEditor'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
+import EditorRecordManager from '@/components/editor-record-manager'
+import PublicEditorNotes from '@/components/public-editor-notes'
+import CommentList from '@/components/comment-list'
+import Block from '@/components/block'
+import FormattedDate from '@/components/formatted-date'
+import EventAttendanceButton from '@/components/event-attendance-button'
+import EventAttendanceResults from '@/components/event-attendance-results'
+import DeprecationNotice from '@/components/deprecation-notice'
+import Link from '@/components/link'
+import ErrorMessage from '@/components/error-message'
+import Heading from '@/components/heading'
+import Markdown from '@/components/markdown'
+import Button from '@/components/button'
+import TagChips from '@/components/tag-chips'
+import AssetResults from '@/components/asset-results'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
@@ -184,79 +179,6 @@ const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
   )
 }
 
-const AuthorResults = ({ authors }: { authors: FullAuthor[] }) => {
-  const classes = useStyles()
-
-  return (
-    <div className={classes.authors}>
-      {authors.map((author) => (
-        <div key={author.id} className={classes.authorItem}>
-          <div>
-            <AuthorResultsItem author={author} />
-          </div>
-          <div>
-            <SaleInfo
-              authorId={author.id}
-              eventId={author.salereason}
-              description={author.saledescription}
-              expiresAt={
-                author.saleexpiresat ? new Date(author.saleexpiresat) : null
-              }
-              showTitle={false}
-              showViewAuthorButton={false}
-              showViewEventButton={false}
-            />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-const AuthorsWithSales = ({ eventId }: { eventId: string }) => {
-  const getQuery = useCallback<GetQueryFn<FullAuthor>>(
-    (client) =>
-      client
-        .from(AuthorsViewNames.GetPublicAuthors)
-        .select<string, FullAuthor>('*')
-        .eq('salereason', eventId),
-    [eventId]
-  )
-  const [isLoading, lastErrorCode, authors] = useDataStore<FullAuthor>(
-    getQuery,
-    'authors-for-event'
-  )
-
-  if (isLoading) {
-    return <LoadingIndicator message="Loading authors with sales..." />
-  }
-
-  if (lastErrorCode !== null) {
-    return (
-      <ErrorMessage>
-        Failed to get authors with sales (code {lastErrorCode})
-      </ErrorMessage>
-    )
-  }
-
-  if (!Array.isArray(authors) || !authors.length) {
-    return (
-      <NoResultsMessage>
-        No authors with a sale found
-        <br />
-        <br />
-        Hint: Add a sale to your author page to have it show here
-      </NoResultsMessage>
-    )
-  }
-
-  return (
-    <>
-      <AuthorResults authors={authors} />
-    </>
-  )
-}
-
 const View = () => {
   const { eventId: eventIdOrSlug } = useParams<{ eventId: string }>()
   const getQuery = useCallback<GetQueryFn<FullEvent>>(
@@ -361,9 +283,6 @@ const View = () => {
               ) : (
                 <NoResultsMessage>No description set</NoResultsMessage>
               )}
-            </Block>
-            <Block title="Sales">
-              <AuthorsWithSales eventId={id} />
             </Block>
             <Block title="Comments">
               <CommentList

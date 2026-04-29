@@ -6,15 +6,16 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import EditIcon from '@mui/icons-material/Edit'
 
-import { Notice, CollectionNames } from '../../modules/notices'
-import Button from '../button'
-import EditNoticeForm from '../edit-notice-form'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import Markdown from '../markdown'
-import Heading from '../heading'
-import Paper from '../paper'
-import useDatabaseQuery, { OrderDirections } from '../../hooks/useDatabaseQuery'
+import { Notice, CollectionNames } from '@/modules/notices'
+import useDatabaseQuery, { OrderDirections } from '@/hooks/useDatabaseQuery'
+
+import Button from '@/components/button'
+import EditNoticeForm from '@/components/edit-notice-form'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Markdown from '@/components/markdown'
+import Heading from '@/components/heading'
+import Paper from '@/components/paper'
 
 export default () => {
   const [isLoading, lastErrorCode, notices, hydrate] = useDatabaseQuery<Notice>(

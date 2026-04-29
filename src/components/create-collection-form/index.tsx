@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import { handleError } from '../../error-handling'
-import Button from '../button'
-import TextInput from '../text-input'
-import { CollectionNames, Collection } from '../../modules/collections'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import CheckboxInput from '../checkbox-input'
-import FormControls from '../form-controls'
-import SuccessMessage from '../success-message'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
+import { handleError } from '@/error-handling'
+import { CollectionNames, Collection } from '@/modules/collections'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import CheckboxInput from '@/components/checkbox-input'
+import FormControls from '@/components/form-controls'
+import SuccessMessage from '@/components/success-message'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
 
 const CreateCollectionForm = ({
   onDone,
@@ -23,7 +24,9 @@ const CreateCollectionForm = ({
   const [description, setDescription] = useState('')
   const [shouldAutoAddAsset, setShouldAutoAddAsset] = useState(true)
   const [isCreating, isSuccess, lastErrorCode, create, clear] =
-    useDataStoreCreate<Collection>(CollectionNames.Collections)
+    useDataStoreCreate<Collection>(CollectionNames.Collections, {
+      queryName: 'create-collection-form',
+    })
 
   const onClickCreate = async () => {
     try {

@@ -3,44 +3,44 @@ import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import TextInput from '../text-input'
-import SearchForIdForm from '../search-for-id-form'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import AuthorResultsItem from '../author-results-item'
-import Button from '../button'
-import FormControls from '../form-controls'
-import { Author, AuthorFields, CollectionNames } from '../../modules/authors'
-import InfoMessage from '../info-message'
-import Paper from '../paper'
-import Heading from '../heading'
-import CheckboxInput from '../checkbox-input'
-import { AVATAR_HEIGHT, AVATAR_WIDTH } from '../../config'
-import { bucketNames } from '../../file-uploading'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
 
-import authorEditableFields from '../../editable-fields/authors'
+import authorEditableFields from '@/editable-fields/authors'
 import {
   EditableField,
   ImageUploadEditableField,
   SelectEditableField,
-} from '../../editable-fields'
-import { fieldTypes } from '../../generic-forms'
+} from '@/editable-fields'
+import { fieldTypes } from '@/generic-forms'
 import {
   Claim,
   CollectionNames as ClaimCollectionNames,
-} from '../../modules/claims'
-import { Asset } from '../../modules/assets'
-import FormFieldLabel from '../form-field-label'
-import HintText from '../hint-text'
-import ImageUploaderWithPreview from '../image-uploader-with-preview'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+} from '@/modules/claims'
+import { Asset } from '@/modules/assets'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
-import NoResultsMessage from '../no-results-message'
 import useSearching from '@/hooks/useSearching'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { Author, AuthorFields, CollectionNames } from '@/modules/authors'
+import { AVATAR_HEIGHT, AVATAR_WIDTH } from '@/config'
+import { bucketNames } from '@/file-uploading'
+
+import HintText from '@/components/hint-text'
+import TextInput from '@/components/text-input'
+import SearchForIdForm from '@/components/search-for-id-form'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import AuthorResultsItem from '@/components/author-results-item'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import InfoMessage from '@/components/info-message'
+import Heading from '@/components/heading'
+import CheckboxInput from '@/components/checkbox-input'
+import NoResultsMessage from '@/components/no-results-message'
+import ImageUploaderWithPreview from '@/components/image-uploader-with-preview'
+import FormFieldLabel from '@/components/form-field-label'
 
 const fieldsBySectionName = authorEditableFields.reduce<{
   [sectionName: string]: EditableField<Author>[]
@@ -259,11 +259,7 @@ const CreateForm = ({
     commissioninfo: '',
     showcommissionstatusforassets: false,
     avatarurl: '',
-    bannerurl: '',
     boothusername: '',
-    salereason: '',
-    saledescription: '',
-    saleexpiresat: undefined,
     kofiusername: '',
     payhipusername: '',
   })
@@ -524,7 +520,10 @@ const ChangeAuthorForm = ({
         onClickWithIdAndDetails={onAuthorObtained}
       />
       <FormControls>
-        <Button onClick={() => create()} icon={<AddIcon />}>
+        <Button
+          onClick={() => create()}
+          icon={<AddIcon />}
+          color={onDone ? undefined : 'secondary'}>
           Create Author
         </Button>
         {onDone ? (

@@ -1,18 +1,21 @@
 import React, { KeyboardEventHandler, useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import TextInput from '../text-input'
-import FormControls from '../form-controls'
-import Center from '../center'
-import Button from '../button'
-import { Login as LoginIcon } from '../../icons'
-import { handleError } from '@/error-handling'
-import useFirebaseFunction from '@/hooks/useFirebaseFunction'
 import { load as loadRecaptcha } from 'recaptcha-v3'
-import { auth } from '@/firebase'
 import { signInWithCustomToken } from 'firebase/auth'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
+
+import { Login as LoginIcon } from '@/icons'
+import { auth } from '@/firebase'
+import { handleError } from '@/error-handling'
 import { getIsEmailAddress } from '@/utils/email'
+
+import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+
+import TextInput from '@/components/text-input'
+import FormControls from '@/components/form-controls'
+import Center from '@/components/center'
+import Button from '@/components/button'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
 
 const useStyles = makeStyles({
   root: {

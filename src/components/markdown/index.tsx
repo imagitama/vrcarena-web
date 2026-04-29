@@ -19,12 +19,12 @@ import { makeStyles } from '@mui/styles'
 import ImageIcon from '@mui/icons-material/Image'
 import CheckIcon from '@mui/icons-material/Check'
 
-import { trackAction } from '../../analytics'
-import * as routes from '../../routes'
+import { trackAction } from '@/analytics'
+import * as routes from '@/routes'
 
-import Button from '../button'
-import SlimMessage from '../slim-message'
-import ImageWithCaption from '../image-with-caption'
+import Button from '@/components/button'
+import SlimMessage from '@/components/slim-message'
+import ImageWithCaption from '@/components/image-with-caption'
 
 type ReactMarkdownNode = any
 

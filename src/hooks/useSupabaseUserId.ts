@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { onJwtTokenChanged, getUserId } from '../supabase'
+import { onJwtTokenChanged, getUserId } from '@/supabase'
 
 export default (): string | null => {
   const [userId, setUserId] = useState(getUserId())

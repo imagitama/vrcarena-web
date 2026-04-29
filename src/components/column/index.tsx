@@ -1,19 +1,22 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
+import { mediaQueryForMobiles } from '@/media-queries'
 
 const useStyles = makeStyles({
-  columns: {
-    display: 'flex',
+  column: {
+    width: '50%',
+    [mediaQueryForMobiles]: {
+      width: '100%',
+    },
   },
   withPadding: {
     padding: '0.5rem',
   },
-  column: {},
 })
 
 const Column = ({
   children,
-  width = 50,
+  width: overrideWidth,
   padding = false,
 }: {
   children: React.ReactNode
@@ -24,7 +27,7 @@ const Column = ({
   return (
     <div
       className={`${classes.column} ${padding ? classes.withPadding : ''}`}
-      style={{ width: `${width}%` }}>
+      style={overrideWidth ? { width: `${overrideWidth}%` } : {}}>
       {children}
     </div>
   )

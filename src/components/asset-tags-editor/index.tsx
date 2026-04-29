@@ -1,21 +1,17 @@
 import React, { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import { Asset, CollectionNames } from '../../modules/assets'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { Asset, CollectionNames } from '@/modules/assets'
 
-import TagInput from '../tag-input'
-import Columns from '../columns'
-import Column from '../column'
-import FeaturesSubEditor from '../features-sub-editor'
-import LoadingIndicator from '../loading-indicator'
-import SuccessMessage from '../success-message'
-import ErrorMessage from '../error-message'
-import FormControls from '../form-controls'
-import Button from '../button'
-import Heading from '../heading'
+import TagInput from '@/components/tag-input'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
+import Button from '@/components/button'
 
 const AssetTagsEditor = ({
   assetId,
@@ -78,22 +74,13 @@ const AssetTagsEditor = ({
       ) : lastErrorCode !== null ? (
         <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
       ) : null}
-      <Columns>
-        <Column padding>
-          <TagInput
-            currentTags={newTags}
-            onChange={(tags) => setNewTags(tags)}
-            asset={asset}
-          />
-        </Column>
-        <Column padding>
-          <Heading variant="h3">Features:</Heading>
-          <FeaturesSubEditor
-            currentTags={newTags}
-            onChange={(tags) => setNewTags(tags)}
-          />
-        </Column>
-      </Columns>
+      <div>
+        <TagInput
+          currentTags={newTags}
+          onChange={(tags) => setNewTags(tags)}
+          asset={asset}
+        />
+      </div>
       {isSaving ? (
         <LoadingIndicator message="Saving tags..." />
       ) : isSaveSuccess ? (

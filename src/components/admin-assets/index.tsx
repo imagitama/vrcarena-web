@@ -11,31 +11,26 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
 
-import {
-  PublishStatus,
-  ApprovalStatus,
-  AccessStatus,
-} from '../../modules/common'
-import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
+import { PublishStatus, ApprovalStatus, AccessStatus } from '@/modules/common'
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
 import {
   FullAsset,
   CollectionNames as AssetsCollectionNames,
-  AssetCategory,
   ViewNames,
   FullAsset_Editor,
-} from '../../modules/assets'
-import AssetResultsItem from '../../components/asset-results-item'
-import { colorPalette } from '../../config'
+} from '@/modules/assets'
+import { EqualActiveFilter, FilterSubType, FilterType } from '@/filters'
+import { colorPalette } from '@/config'
 
-import Button from '../button'
-import PaginatedView, { GetQueryFn } from '../paginated-view'
-import EditorRecordManager from '../editor-record-manager'
-import AssetOverview from '../asset-overview'
-import useStorage from '../../hooks/useStorage'
-import { EqualActiveFilter, FilterSubType, FilterType } from '../../filters'
-import QueuedAssetInfo from '../queued-asset-info'
-import AiEvaluationResult from '../ai-evaluation-result'
+import Button from '@/components/button'
+import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
+import EditorRecordManager from '@/components/editor-record-manager'
+import AssetOverview from '@/components/asset-overview'
+import useStorage from '@/hooks/useStorage'
+import QueuedAssetInfo from '@/components/queued-asset-info'
+import AiEvaluationResult from '@/components/ai-evaluation-result'
+import AssetResultsItem from '@/components/asset-results-item'
 
 const useStyles = makeStyles({
   pass: {
@@ -292,6 +287,9 @@ const AdminAssets = () => {
             .eq('publishstatus', PublishStatus.Draft)
             .eq('approvalstatus', ApprovalStatus.Declined)
             .eq('accessstatus', AccessStatus.Public)
+
+        default:
+          query = query.neq('publishstatus', PublishStatus.Draft)
       }
 
       return query

@@ -2,27 +2,28 @@ import React from 'react'
 import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'
 
-import ApproveButton from '../approve-button'
-import DeleteButton from '../delete-button'
-import PublicEditorNotesForm from '../public-editor-notes-form'
-import Button from '../button'
-import FeatureButton from '../feature-button'
+import {
+  ArchivedReason,
+  DeclinedReason,
+  DeletionReason,
+} from '@/modules/assets'
 import {
   AccessStatus,
   ApprovalStatus,
   FeaturedStatus,
   PublishStatus,
-} from '../../modules/common'
-import EditorBox from '../editor-box'
-import ArchiveButton from '../archive-button'
-import MetaStatus from '../meta-status'
-import {
-  ArchivedReason,
-  DeclinedReason,
-  DeletionReason,
-} from '../../modules/assets'
-import AdminPublishButton from '../admin-publish-button'
-import ErrorBoundary from '../error-boundary'
+} from '@/modules/common'
+
+import ApproveButton from '@/components/approve-button'
+import DeleteButton from '@/components/delete-button'
+import PublicEditorNotesForm from '@/components/public-editor-notes-form'
+import Button from '@/components/button'
+import FeatureButton from '@/components/feature-button'
+import EditorBox from '@/components/editor-box'
+import ArchiveButton from '@/components/archive-button'
+import MetaStatus from '@/components/meta-status'
+import AdminPublishButton from '@/components/admin-publish-button'
+import ErrorBoundary from '@/components/error-boundary'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -122,17 +123,14 @@ const EditorRecordManager = ({
         <div className={classes.rows}>
           {showStatuses || showPublishButtons ? (
             <div className={classes.row}>
-              {showStatuses &&
-                showPublishButtons &&
-                existingPublishStatus &
-                (
-                  <div className={classes.cell}>
-                    <MetaStatus
-                      status={existingPublishStatus}
-                      type={PublishStatus}
-                    />
-                  </div>
-                )}
+              {showStatuses && showPublishButtons && existingPublishStatus && (
+                <div className={classes.cell}>
+                  <MetaStatus
+                    status={existingPublishStatus}
+                    type={PublishStatus}
+                  />
+                </div>
+              )}
               {showPublishButtons && (
                 <div className={classes.cell}>
                   <AdminPublishButton

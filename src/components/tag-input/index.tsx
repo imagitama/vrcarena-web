@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
-
-import { areasByCategory } from '../../areas'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
-import { FullTag } from '../../modules/tags'
-import useDelimit from '../../hooks/useDelimit'
-import categoryMeta from '../../category-meta'
-import {
-  getTagFromUserInput,
-  removeDuplicates,
-  renamedTags,
-} from '../../utils/tags'
-
-import useDataStore from '../../hooks/useDataStore'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-
-import FormControls from '../form-controls'
-import Button from '../button'
-import Heading from '../heading'
-import TagChip from '../tag-chip'
-import AutocompleteInput, { AutocompleteOption } from '../autocomplete-input'
-import TagChips from '../tag-chips'
-import { Asset } from '../../modules/assets'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+import { areasByCategory } from '@/areas'
+import { FullTag } from '@/modules/tags'
+import categoryMeta from '@/category-meta'
+import { getTagFromUserInput, renamedTags } from '@/utils/tags'
+import { Asset } from '@/modules/assets'
+
+import useDelimit from '@/hooks/useDelimit'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import useDataStore from '@/hooks/useDataStore'
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+
+import FormControls from '@/components/form-controls'
+import Button from '@/components/button'
+import Heading from '@/components/heading'
+import TagChip from '@/components/tag-chip'
+import AutocompleteInput, {
+  AutocompleteOption,
+} from '@/components/autocomplete-input'
+import TagChips from '@/components/tag-chips'
 
 const useStyles = makeStyles({
   fullWidth: {

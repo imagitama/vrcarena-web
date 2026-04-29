@@ -1,31 +1,48 @@
 import React from 'react'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import makeStyles from '@mui/styles/makeStyles'
 import EditIcon from '@mui/icons-material/Edit'
 import CommentIcon from '@mui/icons-material/Comment'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
-import * as routes from '../../routes'
+import * as routes from '@/routes'
 import {
   fixAccessingImagesUsingToken,
   getPrefersBritishSpelling,
-} from '../../utils'
+} from '@/utils'
+import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
+import { BanStatus, FullUser } from '@/modules/users'
+import { AccessStatus } from '@/modules/common'
+import {
+  mediaQueryForMobiles,
+  mediaQueryForTabletsOrBelow,
+} from '@/media-queries'
+import { VRCArenaTheme } from '@/themes'
 
-import ErrorMessage from '../error-message'
-import Heading from '../heading'
-import SocialMediaList from '../social-media-list'
-import Button from '../button'
-import Avatar, { AvatarSize } from '../avatar'
-import Markdown from '../markdown'
-import StaffBadge from '../staff-badge'
-import { getIsUserBanned, getUserIsStaffMember } from '../../utils/users'
+import useIsEditor from '@/hooks/useIsEditor'
 
-import Tabs from '../tabs'
+import Tabs from '@/components/tabs'
+import ErrorMessage from '@/components/error-message'
+import Heading from '@/components/heading'
+import SocialMediaList from '@/components/social-media-list'
+import Button from '@/components/button'
+import Avatar, { AvatarSize } from '@/components/avatar'
+import Markdown from '@/components/markdown'
+import StaffBadge from '@/components/staff-badge'
+import Tooltip from '@/components/tooltip'
+import Image from '@/components/image'
+import ViewControls from '@/components/view-controls'
+import BannedBadge from '@/components/banned-badge'
+import DeletedBadge from '@/components/deleted-badge'
+import RepChangeForUser from '@/components/rep-change-for-user'
+import StatusText from '@/components/status-text'
+import EditorBox from '@/components/editor-box'
+import FormattedDate from '@/components/formatted-date'
 
+import Context from './context'
 import TabComments from './components/tab-comments'
 import TabCollection from './components/tab-collection'
 import TabWishlist from './components/tab-wishlist'
@@ -34,25 +51,6 @@ import TabAssets from './components/tab-assets'
 import TabAttachments from './components/tab-attachments'
 import TabEndorsements from './components/tab-endorsements'
 import TabHistory from './components/tab-history'
-
-import Context from './context'
-import useIsEditor from '../../hooks/useIsEditor'
-import { BanStatus, FullUser } from '../../modules/users'
-import { AccessStatus } from '../../modules/common'
-import {
-  mediaQueryForMobiles,
-  mediaQueryForTabletsOrBelow,
-} from '../../media-queries'
-import Tooltip from '../tooltip'
-import Image from '../image'
-import { VRCArenaTheme } from '../../themes'
-import ViewControls from '../view-controls'
-import BannedBadge from '../banned-badge'
-import DeletedBadge from '../deleted-badge'
-import RepChangeForUser from '../rep-change-for-user'
-import StatusText from '../status-text'
-import EditorBox from '../editor-box'
-import FormattedDate from '../formatted-date'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   cols: {
@@ -360,11 +358,13 @@ const UserOverview = ({
               </Table>
               <Button
                 icon={<EditIcon />}
+                color="secondary"
                 url={routes.editUserWithVar.replace(':userId', user.id)}>
                 Edit User
               </Button>{' '}
               <Button
                 icon={<CommentIcon />}
+                color="secondary"
                 url={`${routes.adminWithTabNameVar.replace(
                   ':tabName',
                   'users'

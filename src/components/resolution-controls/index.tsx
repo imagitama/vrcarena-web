@@ -2,20 +2,20 @@ import React, { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 import ClearIcon from '@mui/icons-material/Clear'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 
-import Button from '../button'
-import LoadingIndicator from '../loading-indicator'
-
-import { handleError } from '../../error-handling'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
+import { handleError } from '@/error-handling'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 import {
   CollectionNames,
   ReportMeta,
   ResolutionStatus,
-} from '../../modules/reports'
-import useUserId from '../../hooks/useUserId'
-import TextInput from '../text-input'
+} from '@/modules/reports'
+import useUserId from '@/hooks/useUserId'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
 
 export default ({
   id,
@@ -36,7 +36,7 @@ export default ({
     useDataStoreItem<ReportMeta>(
       metaCollectionName,
       existingResolutionStatus ? false : id,
-      'resolve-button'
+      { queryName: 'resolve-button' }
     )
   const [isSaving, , lastErrorCodeSaving, save] = useDataStoreEdit<ReportMeta>(
     metaCollectionName,

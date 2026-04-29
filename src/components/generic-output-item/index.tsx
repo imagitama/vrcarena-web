@@ -1,22 +1,24 @@
 import React from 'react'
-import AssetResultsItem from '../../components/asset-results-item'
+
 import {
   Asset,
   CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
-import Comment from '../comment'
+} from '@/modules/assets'
 import {
   FullComment,
   CollectionNames as CommentsCollectionNames,
-} from '../../modules/comments'
+} from '@/modules/comments'
 import {
   FullReview,
   Review,
   CollectionNames as ReviewsCollectionNames,
-} from '../../modules/reviews'
-import Link from '../link'
-import { getUrlForParent } from '../../relations'
-import ReviewResultsItem from '../review-results-item'
+} from '@/modules/reviews'
+import { getUrlForParent } from '@/relations'
+
+import AssetResultsItem from '@/components/asset-results-item'
+import Comment from '@/components/comment'
+import Link from '@/components/link'
+import ReviewResultsItem from '@/components/review-results-item'
 
 export default ({
   type,

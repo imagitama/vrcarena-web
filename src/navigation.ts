@@ -75,11 +75,6 @@ const items: MenuItem[] = [
       url: routes.viewCategoryWithVar.replace(':categoryName', name),
     })),
   {
-    id: 'tutorials',
-    label: 'Tutorials',
-    url: routes.tutorials,
-  },
-  {
     id: 'species',
     label: 'Species',
     url: routes.viewAllSpecies,
@@ -122,16 +117,6 @@ const items: MenuItem[] = [
         label: 'New Assets',
       },
       {
-        id: 'streams',
-        url: routes.streams,
-        label: 'Streams',
-      },
-      {
-        id: 'discord-servers',
-        label: 'Discord Servers',
-        url: routes.discordServers,
-      },
-      {
         id: 'about',
         url: routes.about,
         label: 'About',
@@ -151,11 +136,6 @@ const items: MenuItem[] = [
         url: routes.nsfw,
         label: 'NSFW Content',
         requiresAdultContentEnabled: true,
-      },
-      {
-        id: 'social',
-        label: 'Social',
-        url: routes.social,
       },
       {
         id: 'admin',

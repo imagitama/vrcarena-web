@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { getIsUrl, getIsUrlAVideo, getIsUrlAYoutubeVideo } from '../../utils'
-import Button from '../button'
-import FormControls from '../form-controls'
-import TextInput from '../text-input'
-import VideoPlayer from '../video-player'
-import YoutubePlayer from '../youtube-player'
+
+import { getIsUrl, getIsUrlAVideo, getIsUrlAYoutubeVideo } from '@/utils'
+
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import TextInput from '@/components/text-input'
+import VideoPlayer from '@/components/video-player'
+import YoutubePlayer from '@/components/youtube-player'
 
 const types = {
   YOUTUBE_VIDEO: 'youtube-video',

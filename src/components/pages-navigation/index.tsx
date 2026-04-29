@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import Button from '../button'
-import TextInput from '../text-input'
+
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
 
 const useStyles = makeStyles({
   root: {

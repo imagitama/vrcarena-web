@@ -1,7 +1,3 @@
-// import { CollectionNames as AssetsCollectionNames } from './assets'
-// import { CollectionNames as CommentsCollectionNames } from './comments'
-// import { CollectionNames as ReviewsCollectionNames } from './reviews'
-
 export enum SupportTicketCategory {
   // ccounts
   CantEditAccount = 'cant-edit-account',

@@ -5,16 +5,16 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
-import * as routes from '../../routes'
-import { FullReport, ResolutionStatus, ViewNames } from '../../modules/reports'
+import * as routes from '@/routes'
+import { FullReport, ResolutionStatus, ViewNames } from '@/modules/reports'
+import { FilterSubType, FilterType, MultichoiceFilter } from '@/filters'
 
-import PaginatedView from '../paginated-view'
-import FormattedDate from '../formatted-date'
-import GenericOutputItem from '../generic-output-item'
-import ResolutionStatusOutput from '../resolution-status'
-import Link from '../link'
-import UsernameLink from '../username-link'
-import { FilterSubType, FilterType, MultichoiceFilter } from '../../filters'
+import PaginatedView from '@/components/paginated-view'
+import FormattedDate from '@/components/formatted-date'
+import GenericOutputItem from '@/components/generic-output-item'
+import ResolutionStatusOutput from '@/components/resolution-status'
+import Link from '@/components/link'
+import UsernameLink from '@/components/username-link'
 
 function ReportsTable({ reports }: { reports?: FullReport[] }) {
   return (

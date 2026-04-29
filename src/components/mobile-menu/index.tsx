@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import { makeStyles } from '@mui/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
@@ -12,16 +12,13 @@ import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import ListItemIcon from '@mui/material/ListItemIcon'
 
-import useUserRecord from '../../hooks/useUserRecord'
-import { closeMenu } from '../../modules/app'
-import navItems, {
-  canShowMenuItem,
-  getLabelForMenuItem,
-} from '../../navigation'
-import { trackAction } from '../../analytics'
+import useUserRecord from '@/hooks/useUserRecord'
+import { closeMenu } from '@/modules/app'
+import navItems, { canShowMenuItem, getLabelForMenuItem } from '@/navigation'
+import { trackAction } from '@/analytics'
+import useUserPreferences from '@/hooks/useUserPreferences'
 
-import AccountMenu from '../account-menu'
-import useUserPreferences from '../../hooks/useUserPreferences'
+import AccountMenu from '@/components/account-menu'
 
 const useStyles = makeStyles({
   content: {

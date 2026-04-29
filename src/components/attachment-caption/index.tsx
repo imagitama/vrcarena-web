@@ -1,16 +1,16 @@
 import React from 'react'
 import AttachmentMeta from '../attachment-meta'
-import Link from '../../components/link'
-import useIsEditor from '../../hooks/useIsEditor'
+import Link from '@/components/link'
+import useIsEditor from '@/hooks/useIsEditor'
 import {
   Attachment,
   FullAttachment,
   isFullAttachment,
-} from '../../modules/attachments'
+} from '@/modules/attachments'
 
-import * as routes from '../../routes'
-import { CollectionNames } from '../../modules/assets'
-import Paper from '../paper'
+import * as routes from '@/routes'
+import { CollectionNames } from '@/modules/assets'
+import Paper from '@/components/paper'
 
 const getParentLink = (parentTable: string, parentId: string): string => {
   switch (parentTable) {

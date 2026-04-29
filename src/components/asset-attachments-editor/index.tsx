@@ -1,15 +1,15 @@
 import React from 'react'
 
-import { Attachment, AttachmentReason } from '../../modules/attachments'
-import { Asset, CollectionNames } from '../../modules/assets'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { trackAction } from '../../analytics'
-import { handleError } from '../../error-handling'
+import { Attachment, AttachmentReason } from '@/modules/attachments'
+import { Asset, CollectionNames } from '@/modules/assets'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { trackAction } from '@/analytics'
+import { handleError } from '@/error-handling'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import AttachmentsForm from '../attachments-form'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import AttachmentsForm from '@/components/attachments-form'
 
 const AssetAttachmentsEditor = ({
   assetId,

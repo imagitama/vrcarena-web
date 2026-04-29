@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { handleError } from '../error-handling'
-import { callFunction } from '../firebase'
+import { handleError } from '@/error-handling'
+import { callFunction } from '@/firebase'
 
 export enum FirebaseErrorCode {
   Unknown = 'unknown',

@@ -1,7 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { getIsUrlAYoutubeVideo } from '../../utils'
-import YouTubePlayer from '../youtube-player'
+
+import { getIsUrlAYoutubeVideo } from '@/utils'
+import YouTubePlayer from '@/components/youtube-player'
 
 const useStyles = makeStyles({
   customContent: {

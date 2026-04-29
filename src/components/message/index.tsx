@@ -2,8 +2,8 @@ import React from 'react'
 import Paper from '@mui/material/Paper'
 import CloseIcon from '@mui/icons-material/Close'
 import { makeStyles } from '@mui/styles'
-import Chariot from '../chariot'
-import useNotice from '../../hooks/useNotice'
+import Chariot from '@/components/chariot'
+import useNotice from '@/hooks/useNotice'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,6 +23,9 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    '&&': {
+      backgroundColor: 'transparent',
+    },
   },
   text: {
     width: '100%',

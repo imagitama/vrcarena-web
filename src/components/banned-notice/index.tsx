@@ -1,7 +1,7 @@
 import React from 'react'
-import useUserRecord from '../../hooks/useUserRecord'
-import { getIsUserBanned } from '../../utils/users'
-import ErrorMessage from '../error-message'
+import useUserRecord from '@/hooks/useUserRecord'
+import { getIsUserBanned } from '@/utils/users'
+import ErrorMessage from '@/components/error-message'
 
 const BannedNotice = () => {
   const [, , user] = useUserRecord()

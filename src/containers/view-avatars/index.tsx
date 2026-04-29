@@ -2,15 +2,15 @@ import React, { Suspense, useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import PetsIcon from '@mui/icons-material/Pets'
 
-import Heading from '../../components/heading'
-import BodyText from '../../components/body-text'
-import Button from '../../components/button'
+import { GetQuery } from '@/data-store'
+import { getCategoryMeta } from '@/category-meta'
+import * as routes from '@/routes'
+import { AssetCategory, PublicAsset } from '@/modules/assets'
 
-import { getCategoryMeta } from '../../category-meta'
-import * as routes from '../../routes'
-import { AssetCategory, PublicAsset } from '../../modules/assets'
-import AssetsPaginatedView from '../../components/assets-paginated-view'
-import { GetQuery } from '../../data-store'
+import Heading from '@/components/heading'
+import BodyText from '@/components/body-text'
+import Button from '@/components/button'
+import AssetsPaginatedView from '@/components/assets-paginated-view'
 import LoadingIndicator from '@/components/loading-indicator'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {

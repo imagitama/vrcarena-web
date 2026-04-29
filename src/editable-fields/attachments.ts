@@ -1,12 +1,8 @@
-import { fieldTypes } from '../generic-forms'
+import { fieldTypes } from '@/generic-forms'
 import { EditableField } from './'
-import {
-  Attachment,
-  AttachmentReason,
-  AttachmentType,
-} from '../modules/attachments'
-import { bucketNames } from '../file-uploading'
-import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../config'
+import { Attachment } from '@/modules/attachments'
+import { bucketNames } from '@/file-uploading'
+import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
 
 const fields: EditableField<Attachment>[] = [
   // probably should not be able to edit this afterwards

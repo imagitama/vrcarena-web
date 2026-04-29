@@ -12,6 +12,9 @@ export const colorFree = 'rgb(100, 150, 100)'
 export type VRCArenaTheme = Theme
 
 export const darkTheme: VRCArenaTheme = createTheme({
+  typography: {
+    fontWeightRegular: 400,
+  },
   palette: {
     mode: 'dark',
     primary: {
@@ -37,7 +40,7 @@ export const darkTheme: VRCArenaTheme = createTheme({
     MuiTypography: {
       styleOverrides: {
         h1: {
-          fontSize: '3rem',
+          fontSize: '2rem',
           margin: '2rem 0 1rem',
         },
         h2: {
@@ -94,6 +97,13 @@ export const darkTheme: VRCArenaTheme = createTheme({
               padding: '0.5rem',
             },
           },
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          padding: '4px 10px', // Your custom padding
         },
       },
     },

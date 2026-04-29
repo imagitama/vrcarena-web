@@ -1,13 +1,14 @@
 import React from 'react'
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
+import { handleError } from '@/error-handling'
+import { Asset, CollectionNames } from '@/modules/assets'
 
-import Button from '../button'
-import WarningMessage from '../warning-message'
-import { Asset, CollectionNames } from '../../modules/assets'
-import ErrorMessage from '../error-message'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import Button from '@/components/button'
+import WarningMessage from '@/components/warning-message'
+import ErrorMessage from '@/components/error-message'
 
 export default ({
   assetId,

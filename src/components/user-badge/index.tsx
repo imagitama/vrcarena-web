@@ -1,8 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import UsernameLink from '../username-link'
-import Avatar from '../avatar'
+import UsernameLink from '@/components/username-link'
+import Avatar from '@/components/avatar'
 
 const useStyles = makeStyles({
   root: {

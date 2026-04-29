@@ -1,14 +1,14 @@
 import React from 'react'
-import Markdown from '../markdown'
+import Markdown from '@/components/markdown'
 import { makeStyles } from '@mui/styles'
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 import moment from 'moment'
 
-import Button from '../button'
-import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
-import { getEventNameFromReason } from '../../events'
-import Paper from '../paper'
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
+
+import Button from '@/components/button'
+import Paper from '@/components/paper'
 
 const useStyles = makeStyles({
   root: {

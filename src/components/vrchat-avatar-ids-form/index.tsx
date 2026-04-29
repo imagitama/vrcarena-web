@@ -2,24 +2,25 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useUserId from '../../hooks/useUserId'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-
-import FormControls from '../form-controls'
-import Button from '../button'
-import GetVrchatAvatarDetails from '../get-vrchat-avatar-details'
-import { Asset, AssetFields, CollectionNames } from '../../modules/assets'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import LoadingIndicator from '../loading-indicator'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { Asset, AssetFields, CollectionNames } from '@/modules/assets'
 import {
   AssetEditorProps,
   ControlledEditorProps,
   UncontrolledEditorProps,
 } from '@/generic-forms'
-import NoResultsMessage from '../no-results-message'
+
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useUserId from '@/hooks/useUserId'
+
+import FormControls from '@/components/form-controls'
+import Button from '@/components/button'
+import GetVrchatAvatarDetails from '@/components/get-vrchat-avatar-details'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
 
 const analyticsCategoryName = 'ViewAssetEditor'
 

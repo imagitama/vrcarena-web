@@ -3,26 +3,29 @@ import { makeStyles } from '@mui/styles'
 import LaunchIcon from '@mui/icons-material/Launch'
 import HelpIcon from '@mui/icons-material/Help'
 
-import { handleError } from '../../error-handling'
-import { trackAction, trackInternalAction } from '../../analytics'
-import { mediaQueryForMobiles } from '../../media-queries'
-import * as config from '../../config'
-import { SourceInfo } from '../../modules/assets'
-import Button from '../button'
-import { getIsGitHubUrl, getIsGoogleDriveUrl } from '../../utils'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
-import { getIsItchProductUrl } from '../../itch'
-import { getIsBoothProductUrl } from '../../booth'
-import { getIsGumroadProductUrl } from '../../gumroad'
-import { getIsJinxxyProductUrl } from '../../jinxxy'
-import Price from '../price'
-import Tooltip from '../tooltip'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import { getIsDiscordUrl } from '../../discord'
-import { getIsPatreonUrl } from '../../patreon'
-import { getIsVrchatAvatarUrl, getIsVrchatWorldUrl } from '../../vrchat'
-import { getIsKofiProductUrl } from '../../kofi'
-import { getIsPayHipProductUrl } from '../../payhip'
+import { handleError } from '@/error-handling'
+import { trackAction, trackInternalAction } from '@/analytics'
+import { mediaQueryForMobiles } from '@/media-queries'
+import * as config from '@/config'
+import { SourceInfo } from '@/modules/assets'
+import { getIsGitHubUrl, getIsGoogleDriveUrl } from '@/utils'
+
+import { getIsItchProductUrl } from '@/itch'
+import { getIsBoothProductUrl } from '@/booth'
+import { getIsGumroadProductUrl } from '@/gumroad'
+import { getIsJinxxyProductUrl } from '@/jinxxy'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+import { getIsDiscordUrl } from '@/discord'
+import { getIsPatreonUrl } from '@/patreon'
+import { getIsVrchatAvatarUrl, getIsVrchatWorldUrl } from '@/vrchat'
+import { getIsKofiProductUrl } from '@/kofi'
+import { getIsPayHipProductUrl } from '@/payhip'
+
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+
+import Button from '@/components/button'
+import Price from '@/components/price'
+import Tooltip from '@/components/tooltip'
 
 const useStyles = makeStyles({
   root: {
@@ -182,7 +185,7 @@ const VisitSourceButton = ({
         url={sourceInfo ? addReferrerToUrl(sourceInfo.url) : undefined}
         icon={<LaunchIcon />}
         onClick={onBtnClick}
-        size={isLarge ? 'large' : undefined}
+        size="large"
         className={`${classes.button} ${
           isExtraSource ? classes.extraSource : ''
         } ${sourceInfo?.price ? classes.buttonWithPrice : ''}`}

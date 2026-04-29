@@ -1,48 +1,47 @@
 import React, { useCallback, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { makeStyles } from '@mui/styles'
 
-import useSearching, { GetQueryFn } from '../../hooks/useSearching'
-import useAssetSearch, { ErrorCode } from '../../hooks/useAssetSearch'
-import { searchIndexNameLabels, changeSearchTableName } from '../../modules/app'
-import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { mediaQueryForMobiles } from '../../media-queries'
-import { adultSearchTerms } from '../../config'
-import { areasByCategory } from '../../areas'
-import categoryMeta, {
-  CategoryMeta,
-  getCategoryMeta,
-} from '../../category-meta'
-import { CollectionNames, Species } from '../../modules/species'
-import { getPathForQueryString } from '../../queries'
+import { searchIndexNameLabels, changeSearchTableName } from '@/modules/app'
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
+import { mediaQueryForMobiles } from '@/media-queries'
+import { adultSearchTerms } from '@/config'
+import { areasByCategory } from '@/areas'
+import categoryMeta, { CategoryMeta, getCategoryMeta } from '@/category-meta'
+import { CollectionNames, Species } from '@/modules/species'
+import { getPathForQueryString } from '@/queries'
+import { AssetCategory } from '@/modules/assets'
+import { DataStoreErrorCode } from '@/data-store'
+import { CollectionNames as UsersCollectionNames } from '@/modules/users'
+import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
-import ErrorMessage from '../error-message'
-import AssetResults from '../asset-results'
-import AuthorResults from '../author-results'
-import NoResultsMessage from '../no-results-message'
-import Message from '../message'
-import Button from '../button'
-import PageControls from '../page-controls'
-import UserList from '../user-list'
-import SearchFilters from '../search-filters'
-import WarningMessage from '../warning-message'
-import { AssetCategory } from '../../modules/assets'
-import { DataStoreErrorCode } from '../../data-store'
-import LoadingIndicator from '../loading-indicator'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import useSearching, { GetQueryFn } from '@/hooks/useSearching'
+import useAssetSearch, { ErrorCode } from '@/hooks/useAssetSearch'
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
 
-import { CollectionNames as UsersCollectionNames } from '../../modules/users'
-import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
+import ErrorMessage from '@/components/error-message'
+import AssetResults from '@/components/asset-results'
+import AuthorResults from '@/components/author-results'
+import NoResultsMessage from '@/components/no-results-message'
+import Message from '@/components/message'
+import Button from '@/components/button'
+import PageControls from '@/components/page-controls'
+import UserList from '@/components/user-list'
+import SearchFilters from '@/components/search-filters'
+import WarningMessage from '@/components/warning-message'
+import LoadingIndicator from '@/components/loading-indicator'
 
 const useStyles = makeStyles({
   tableButton: {
-    margin: '0 0.5rem 0.5rem 0',
+    '&&': {
+      margin: '0 0.1rem 0 0',
+    },
   },
   poweredByAlgoliaLogo: {
     marginTop: '1rem',
@@ -257,7 +256,8 @@ function IndexFilters() {
             className={classes.tableButton}
             onClick={() => onClickWithTableName(tableName)}
             icon={isSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
-            size="small">
+            size="small"
+            color="secondary">
             {label}
           </Button>
         )

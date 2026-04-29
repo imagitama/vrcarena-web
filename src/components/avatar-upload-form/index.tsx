@@ -1,23 +1,23 @@
 import React from 'react'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import ImageUploader from '../image-uploader'
-import Heading from '../heading'
-
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useUserRecord from '../../hooks/useUserRecord'
-import useUserId from '../../hooks/useUserId'
-
-import { handleError } from '../../error-handling'
+import { handleError } from '@/error-handling'
 import {
   AVATAR_HEIGHT,
   AVATAR_WIDTH,
   NONATTACHMENT_MAX_SIZE_BYTES,
-} from '../../config'
-import { bucketNames } from '../../file-uploading'
-import { CollectionNames, User } from '../../modules/users'
-import Avatar from '../avatar'
+} from '@/config'
+import { bucketNames } from '@/file-uploading'
+import { CollectionNames, User } from '@/modules/users'
+
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useUserRecord from '@/hooks/useUserRecord'
+import useUserId from '@/hooks/useUserId'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import ImageUploader from '@/components/image-uploader'
+import Heading from '@/components/heading'
+import Avatar from '@/components/avatar'
 
 const AvatarUploadForm = ({
   onClick = undefined,

@@ -1,5 +1,5 @@
 import React from 'react'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import { makeStyles } from '@mui/styles'
 import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
@@ -7,10 +7,10 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import CardMedia from '@mui/material/CardMedia'
 
-import * as routes from '../../routes'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import DefaultAvatar from '../default-avatar'
-import { DiscordServer } from '../../modules/discordservers'
+import * as routes from '@/routes'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { DiscordServer } from '@/modules/discordservers'
+import DefaultAvatar from '@/components/default-avatar'
 
 const useStyles = makeStyles({
   root: {

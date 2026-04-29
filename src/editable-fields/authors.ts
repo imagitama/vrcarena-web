@@ -1,17 +1,9 @@
-import { fieldTypes } from '../generic-forms'
-import {
-  THUMBNAIL_WIDTH,
-  THUMBNAIL_HEIGHT,
-  BANNER_WIDTH,
-  BANNER_HEIGHT,
-  PROMO_WIDTH,
-} from '../config'
-import categoryMeta from '../category-meta'
-import { bucketNames } from '../file-uploading'
-import { EditableField } from './'
-import { CollectionNames, Event } from '../modules/events'
-import { getFriendlyDate } from '../utils/dates'
-import { Author } from '../modules/authors'
+import { fieldTypes } from '@/generic-forms'
+import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '@/config'
+import categoryMeta from '@/category-meta'
+import { bucketNames } from '@/file-uploading'
+import type { EditableField } from './'
+import { Author } from '@/modules/authors'
 
 export enum SectionNames {
   Basic = 'Basic',
@@ -59,17 +51,6 @@ const fields: EditableField<Author>[] = [
     bucketName: bucketNames.authorAvatars,
     default: '',
     section: SectionNames.Basic,
-  },
-  {
-    name: 'bannerurl',
-    label: 'Banner',
-    type: fieldTypes.imageUpload,
-    requiredWidth: BANNER_WIDTH,
-    requiredHeight: BANNER_HEIGHT,
-    bucketName: bucketNames.authorBanners,
-    default: '',
-    section: SectionNames.Basic,
-    hint: 'A short, wide image displayed at the top of the author page as a background image.',
   },
   {
     name: 'websiteurl',
@@ -173,59 +154,60 @@ const fields: EditableField<Author>[] = [
     hint: 'The name in the URL like https://payhip.com/[username]',
     section: SectionNames.Social,
   },
+  // april 2026 - removing "unused" features to reduce maintenance cost
   // commissions
-  {
-    name: 'isopenforcommission',
-    label: 'Open for commissions',
-    type: fieldTypes.checkbox,
-    default: false,
-    hint: 'Shows a message for the author page that they are open for commissions with optional text.',
-    section: SectionNames.Commissions,
-  },
-  {
-    name: 'showcommissionstatusforassets',
-    label: 'Show commission status in assets',
-    type: fieldTypes.checkbox,
-    default: true,
-    hint: 'Show a message at the top of each asset they have authored that they are open or closed for commissions.',
-    section: SectionNames.Commissions,
-  },
-  {
-    name: 'commissioninfo',
-    label: 'Commission info',
-    type: fieldTypes.textMarkdown,
-    default: '',
-    hint: 'Explain what they offer, their prices, links to work they have done. You can use Markdown so you can embed images and links.',
-    section: SectionNames.Commissions,
-  },
+  // {
+  //   name: 'isopenforcommission',
+  //   label: 'Open for commissions',
+  //   type: fieldTypes.checkbox,
+  //   default: false,
+  //   hint: 'Shows a message for the author page that they are open for commissions with optional text.',
+  //   section: SectionNames.Commissions,
+  // },
+  // {
+  //   name: 'showcommissionstatusforassets',
+  //   label: 'Show commission status in assets',
+  //   type: fieldTypes.checkbox,
+  //   default: true,
+  //   hint: 'Show a message at the top of each asset they have authored that they are open or closed for commissions.',
+  //   section: SectionNames.Commissions,
+  // },
+  // {
+  //   name: 'commissioninfo',
+  //   label: 'Commission info',
+  //   type: fieldTypes.textMarkdown,
+  //   default: '',
+  //   hint: 'Explain what they offer, their prices, links to work they have done. You can use Markdown so you can embed images and links.',
+  //   section: SectionNames.Commissions,
+  // },
   // sales
-  {
-    name: 'salereason',
-    label: 'Sale reason',
-    type: fieldTypes.item,
-    default: null,
-    collectionName: CollectionNames.Events,
-    getLabel: (event: Event) =>
-      `${event.name} (${getFriendlyDate(event.startsat, false)})`,
-    hint: 'You must select an event for your sale to appear. If your event is not listed here please contact us to have it show up.',
-    section: SectionNames.Sales,
-  },
-  {
-    name: 'saledescription',
-    label: 'Sale description/info',
-    type: fieldTypes.textMarkdown,
-    default: '',
-    hint: 'Explain what the sale is for, what assets are on sale, what booth you have at the event, etc.',
-    section: SectionNames.Sales,
-  },
-  {
-    name: 'saleexpiresat',
-    label: 'Sale expiry',
-    type: fieldTypes.date,
-    default: null,
-    hint: 'When does the sale expire? We will hide all sale info after this',
-    section: SectionNames.Sales,
-  },
+  // {
+  //   name: 'salereason',
+  //   label: 'Sale reason',
+  //   type: fieldTypes.item,
+  //   default: null,
+  //   collectionName: CollectionNames.Events,
+  //   getLabel: (event: Event) =>
+  //     `${event.name} (${getFriendlyDate(event.startsat, false)})`,
+  //   hint: 'You must select an event for your sale to appear. If your event is not listed here please contact us to have it show up.',
+  //   section: SectionNames.Sales,
+  // },
+  // {
+  //   name: 'saledescription',
+  //   label: 'Sale description/info',
+  //   type: fieldTypes.textMarkdown,
+  //   default: '',
+  //   hint: 'Explain what the sale is for, what assets are on sale, what booth you have at the event, etc.',
+  //   section: SectionNames.Sales,
+  // },
+  // {
+  //   name: 'saleexpiresat',
+  //   label: 'Sale expiry',
+  //   type: fieldTypes.date,
+  //   default: null,
+  //   hint: 'When does the sale expire? We will hide all sale info after this',
+  //   section: SectionNames.Sales,
+  // },
 ]
 
 export default fields

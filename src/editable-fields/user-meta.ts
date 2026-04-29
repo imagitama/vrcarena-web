@@ -1,7 +1,7 @@
-import { fieldTypes } from '../generic-forms'
-import { EditableField } from './'
-import { BanStatus, UserMeta } from '../modules/users'
-import { AccessStatus } from '../modules/common'
+import { fieldTypes } from '@/generic-forms'
+import { BanStatus, UserMeta } from '@/modules/users'
+import { AccessStatus } from '@/modules/common'
+import type { EditableField } from './'
 
 const fields: EditableField<UserMeta>[] = [
   {

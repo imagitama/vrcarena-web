@@ -1,18 +1,14 @@
 import React from 'react'
-import {
-  Asset,
-  CollectionNames,
-  FullAsset,
-  ViewNames,
-} from '../../modules/assets'
-import GenericEditor from '../generic-editor'
+import { Asset, CollectionNames, FullAsset, ViewNames } from '@/modules/assets'
 import { getCanAssetBePublished } from '@/utils/assets'
-import FormControls from '../form-controls'
-import PublishAssetButton from '../publish-asset-button'
+
+import GenericEditor from '@/components/generic-editor'
+import FormControls from '@/components/form-controls'
+import PublishAssetButton from '@/components/publish-asset-button'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
 
 const AssetEditor = ({
   assetId,

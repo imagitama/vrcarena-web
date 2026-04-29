@@ -1,9 +1,9 @@
-import { CommonRecordFields } from '../data-store'
+import { CommonRecordFields } from '@/data-store'
 import {
   getHasPermissionForRecord,
   getHasPermissionForRoute,
-} from '../permissions'
-import { routes } from '../routes'
+} from '@/permissions'
+import { routes } from '@/routes'
 import useAccountVerification from './useAccountVerification'
 import useFirebaseUser from './useFirebaseUser'
 import useUserRecord from './useUserRecord'

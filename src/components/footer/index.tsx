@@ -2,23 +2,23 @@ import React, { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { makeStyles } from '@mui/styles'
 
-import * as routes from '../../routes'
-import { scrollToTop } from '../../utils'
-import { trackAction } from '../../analytics'
-import useUserId from '../../hooks/useUserId'
-
+import * as routes from '@/routes'
+import { scrollToTop } from '@/utils'
+import { trackAction } from '@/analytics'
 // dev tools
-import { alreadyOver18Key } from '../../config'
-import useStorage from '../../hooks/useStorage'
-import { auth as firebaseAuth } from '../../firebase'
+import { alreadyOver18Key } from '@/config'
+import { auth as firebaseAuth } from '@/firebase'
 
-import Button from '../button'
-import BulkEditButton from '../bulk-edit-button'
-import useSupabaseUserId from '../../hooks/useSupabaseUserId'
-import useIsEditor from '../../hooks/useIsEditor'
-import useDataStoreFunction from '../../hooks/useDataStoreFunction'
+import useUserId from '@/hooks/useUserId'
+import useStorage from '@/hooks/useStorage'
+import useSupabaseUserId from '@/hooks/useSupabaseUserId'
+import useIsEditor from '@/hooks/useIsEditor'
+import useDataStoreFunction from '@/hooks/useDataStoreFunction'
 import useAccountVerification from '@/hooks/useAccountVerification'
 import useIsBanned from '@/hooks/useIsBanned'
+
+import Button from '@/components/button'
+import BulkEditButton from '@/components/bulk-edit-button'
 
 const useStyles = makeStyles({
   footer: {
@@ -28,9 +28,10 @@ const useStyles = makeStyles({
     display: 'flex',
   },
   col: {
-    width: '50%',
+    width: '25%',
   },
   colRight: {
+    width: '75%',
     textAlign: 'right',
   },
   scrollToTopBtnWrapper: {

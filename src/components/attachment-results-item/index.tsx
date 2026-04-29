@@ -1,7 +1,7 @@
 import React from 'react'
-import { FullAttachment } from '../../modules/attachments'
-import ResultsItem from '../results-item'
-import * as routes from '../../routes'
+import { FullAttachment } from '@/modules/attachments'
+import ResultsItem from '@/components/results-item'
+import * as routes from '@/routes'
 
 const AttachmentResultsItem = ({
   attachment,

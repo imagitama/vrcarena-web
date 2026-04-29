@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import Heading from '../../components/heading'
-import AssetResults from '../../components/asset-results'
-import * as routes from '../../routes'
-import { PublicAsset, ViewNames } from '../../modules/assets'
-import AssetsPaginatedView from '../../components/assets-paginated-view'
+import * as routes from '@/routes'
+import { PublicAsset, ViewNames } from '@/modules/assets'
+
+import Heading from '@/components/heading'
+import AssetResults from '@/components/asset-results'
+import AssetsPaginatedView from '@/components/assets-paginated-view'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => {
   return <AssetResults assets={items} />

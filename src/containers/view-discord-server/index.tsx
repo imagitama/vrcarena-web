@@ -1,32 +1,33 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
-import Link from '../../components/link'
 import LaunchIcon from '@mui/icons-material/Launch'
 import SyncIcon from '@mui/icons-material/Sync'
 import EditIcon from '@mui/icons-material/Edit'
 
-import * as routes from '../../routes'
-import Markdown from '../../components/markdown'
-import ErrorMessage from '../../components/error-message'
-import LoadingIndicator from '../../components/loading-indicator'
-import Heading from '../../components/heading'
-import Button from '../../components/button'
-import DiscordServerWidget from '../../components/discord-server-widget'
-import PageControls from '../../components/page-controls'
-import Message from '../../components/message'
-import EditorRecordManager from '../../components/editor-record-manager'
-
-import { trackAction } from '../../analytics'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
+import * as routes from '@/routes'
+import { AccessStatus, ApprovalStatus } from '@/modules/common'
+import { trackAction } from '@/analytics'
 import {
   CollectionNames,
   FullDiscordServer,
   ViewNames,
-} from '../../modules/discordservers'
-import useIsEditor from '../../hooks/useIsEditor'
-import { AccessStatus, ApprovalStatus } from '../../modules/common'
-import useFirebaseFunction from '../../hooks/useFirebaseFunction'
+} from '@/modules/discordservers'
+
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useIsEditor from '@/hooks/useIsEditor'
+import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+
+import Link from '@/components/link'
+import Markdown from '@/components/markdown'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Heading from '@/components/heading'
+import Button from '@/components/button'
+import DiscordServerWidget from '@/components/discord-server-widget'
+import PageControls from '@/components/page-controls'
+import Message from '@/components/message'
+import EditorRecordManager from '@/components/editor-record-manager'
 
 const analyticsCategory = 'ViewDiscordServer'
 

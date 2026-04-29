@@ -1,9 +1,9 @@
 import React from 'react'
 import ImageGallery from '../image-gallery'
-import { Attachment, FullAttachment } from '../../modules/attachments'
-import NoResultsMessage from '../no-results-message'
-import AttachmentCaption from '../attachment-caption'
-import ErrorMessage from '../error-message'
+import { Attachment, FullAttachment } from '@/modules/attachments'
+import NoResultsMessage from '@/components/no-results-message'
+import AttachmentCaption from '@/components/attachment-caption'
+import ErrorMessage from '@/components/error-message'
 
 const Attachments = ({
   ids,

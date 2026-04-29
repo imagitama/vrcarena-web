@@ -9,3 +9,5 @@ export const mediaQueryForTabletsOrAbove = `@media ${queryForTabletsOrAbove}`
 export const mediaQueryForTabletsOrBelow = `@media ${queryForTabletsOrBelow}`
 export const mediaQueryForDesktopsOnly = '@media (min-width: 960px)'
 export const mediaQueryForWideDesktops = '@media (min-width: 1280px)'
+
+export const isMobile = window.matchMedia(queryForMobiles).matches

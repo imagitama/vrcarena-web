@@ -4,11 +4,11 @@ import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
-import { CachedDiscordMessage } from '../../modules/discordmessagecache'
-import { getAvatarImageUrl } from '../../discord'
-import Paper from '../paper'
-import { getFormattedDate } from '../../utils/dates'
-import { VRCArenaTheme } from '../../themes'
+import { CachedDiscordMessage } from '@/modules/discordmessagecache'
+import { getAvatarImageUrl } from '@/discord'
+import Paper from '@/components/paper'
+import { getFormattedDate } from '@/utils/dates'
+import { VRCArenaTheme } from '@/themes'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   messageContainer: {

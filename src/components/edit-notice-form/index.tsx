@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
-import { handleError } from '../../error-handling'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { CollectionNames, Notice, NoticeFields } from '../../modules/notices'
-import Button from '../button'
-import CheckboxInput from '../checkbox-input'
-import ErrorMessage from '../error-message'
-import FormControls from '../form-controls'
-import LoadingIndicator from '../loading-indicator'
-import SuccessMessage from '../success-message'
-import TextInput from '../text-input'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
+
+import { handleError } from '@/error-handling'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import { CollectionNames, Notice, NoticeFields } from '@/modules/notices'
+
+import Button from '@/components/button'
+import CheckboxInput from '@/components/checkbox-input'
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import TextInput from '@/components/text-input'
 
 const EditNoticeForm = ({
   id = undefined,

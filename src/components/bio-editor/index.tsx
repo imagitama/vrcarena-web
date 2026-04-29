@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import Markdown from '../markdown'
+import Markdown from '@/components/markdown'
 import { makeStyles } from '@mui/styles'
-import TextField from '@mui/material/TextField'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useUserId from '../../hooks/useUserId'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { User } from '../../modules/users'
-import { CollectionNames } from '../../modules/user'
+import useUserId from '@/hooks/useUserId'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import { User } from '@/modules/users'
+import { CollectionNames } from '@/modules/user'
 
-import SuccessMessage from '../success-message'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Button from '../button'
-import TextInput from '../text-input'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
 
 const useStyles = makeStyles({
   bioTextField: {
@@ -35,11 +34,9 @@ const BioEditor = ({
   const classes = useStyles()
   const userId = useUserId()
   const [isLoadingProfile, lastErrorCodeLoadingProfile, profile] =
-    useDataStoreItem<User>(
-      CollectionNames.Users,
-      userId ? userId : false,
-      'bio-editor'
-    )
+    useDataStoreItem<User>(CollectionNames.Users, userId ? userId : false, {
+      queryName: 'bio-editor',
+    })
   const [isSaving, isSuccess, lastErrorCodeSaving, save] = useDataStoreEdit(
     CollectionNames.Users,
     userId!

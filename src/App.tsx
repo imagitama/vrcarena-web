@@ -28,7 +28,6 @@ import ErrorBoundary from './components/error-boundary'
 import LoadingIndicator from './components/loading-indicator'
 import UnapprovedAssetsMessage from './components/unapproved-assets-message'
 import BannedNotice from './components/banned-notice'
-import Banner from './components/banner'
 import DraftAssetsMessage from './components/draft-assets-message'
 
 import useSearchTerm from './hooks/useSearchTerm'
@@ -156,11 +155,6 @@ const Users = lazy(() =>
 const Activity = lazy(() =>
   catchChunkDeaths(
     () => import(/* webpackChunkName: "activity" */ './containers/activity')
-  )
-)
-const Streams = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "streams" */ './containers/streams')
   )
 )
 const About = lazy(() =>
@@ -309,12 +303,6 @@ const Brand = lazy(() =>
     () => import(/* webpackChunkName: "brand" */ './containers/brand')
   )
 )
-const Accessorize = lazy(() =>
-  catchChunkDeaths(
-    () =>
-      import(/* webpackChunkName: "accessorize" */ './containers/accessorize')
-  )
-)
 // events
 const Events = lazy(() =>
   catchChunkDeaths(
@@ -424,11 +412,6 @@ const QueryCheatsheetContainer = lazy(() =>
       )
   )
 )
-const Social = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "social" */ './containers/social')
-  )
-)
 const ImageAtlas = lazy(() =>
   catchChunkDeaths(
     () =>
@@ -449,21 +432,6 @@ const EditAttachment = lazy(() =>
       import(
         /* webpackChunkName: "edit-attachment" */ './containers/edit-attachment'
       )
-  )
-)
-const Compare = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "compare" */ './containers/compare')
-  )
-)
-const Cart = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "cart" */ './containers/cart')
-  )
-)
-const Tutorials = lazy(() =>
-  catchChunkDeaths(
-    () => import(/* webpackChunkName: "tutorials" */ './containers/tutorials')
   )
 )
 const Attachments = lazy(() =>
@@ -498,6 +466,17 @@ const useSetupProfileRedirect = () => {
   }, [user ? user.username !== null : null, location.pathname])
 }
 
+const items = [
+  'Reticulating splines...',
+  'Sharpening our spears...',
+  'Loading...',
+  'Loading...',
+  'Loading...',
+]
+const getLoadingNiceness = () => {
+  return items[Math.floor(Math.random() * items.length)]
+}
+
 const MainContent = () => {
   const searchTerm = useSearchTerm()
   useSetupProfileRedirect()
@@ -510,7 +489,7 @@ const MainContent = () => {
   }
 
   return (
-    <Suspense fallback={<LoadingIndicator message="Loading view..." />}>
+    <Suspense fallback={<LoadingIndicator message={getLoadingNiceness()} />}>
       {firebaseUserId && !supabaseUserId ? (
         <div className={classes.floatingLoadingIndicator}>
           <LoadingIndicator message="Waiting for auth..." />
@@ -522,8 +501,8 @@ const MainContent = () => {
         <Redirect from={'/dcma-policy'} to={routes.dmcaPolicy} />
         <Route exact path={routes.home} component={Home} />
         <Route exact path={routes.searchWithVar} component={Search} />
-        <Route exact path={routes.cart} component={Cart} />
-        <Route exact path={routes.social} component={Social} />
+        <Route exact path={routes.cart} component={DeprecatedRouteView} />
+        <Route exact path={routes.social} component={DeprecatedRouteView} />
         <Route exact path={routes.login} component={Login} />
         <Route exact path={routes.signUp} component={SignUp} />
         <Route exact path={routes.logout} component={Logout} />
@@ -563,7 +542,7 @@ const MainContent = () => {
           path={routes.viewAvatarsWithPageVar}
           component={ViewAvatars}
         />
-        <Route exact path={routes.tutorials} component={Tutorials} />
+        <Route exact path={routes.tutorials} component={DeprecatedRouteView} />
         <Route
           exact
           path={routes.viewCategoryWithVar.replace(':categoryName', 'world')}
@@ -662,7 +641,7 @@ const MainContent = () => {
           path={routes.activityWithPageNumberVar}
           component={Activity}
         />
-        <Route exact path={routes.streams} component={Streams} />
+        <Route exact path={routes.streams} component={DeprecatedRouteView} />
         <Route exact path={routes.about} component={About} />
         <Route exact path={routes.nsfw} component={AdultAssets} />
         <Route
@@ -748,7 +727,21 @@ const MainContent = () => {
           component={ViewAmendment}
         />
         <Route exact path={routes.brand} component={Brand} />
-        <Route exact path={routes.accessorizeWithVar} component={Accessorize} />
+        <Route
+          exact
+          path={routes.accessorizeWithVar}
+          component={DeprecatedRouteView}
+        />
+        <Route
+          exact
+          path={routes.avatarTutorialWithVar}
+          component={DeprecatedRouteView}
+        />
+        <Route
+          exact
+          path={routes.avatarTutorial}
+          component={DeprecatedRouteView}
+        />
         <Route
           exact
           path={[routes.editEventWithVar, routes.createEvent]}
@@ -814,7 +807,7 @@ const MainContent = () => {
         <Route
           exact
           path={[routes.compareWithVars, routes.compareWithVar]}
-          component={Compare}
+          component={DeprecatedRouteView}
         />
         {/* these must always be at the end as catch all */}
         <Route
@@ -844,7 +837,6 @@ const MainContent = () => {
 
 export default () => {
   const classes = useStyles()
-
   return (
     <ErrorBoundary>
       <CssBaseline />
@@ -854,7 +846,6 @@ export default () => {
           <BannedNotice />
           <Notices />
           <AccountVerificationMessage />
-          {/* <FuralityBanner /> */}
           <UnapprovedAssetsMessage />
           <DraftAssetsMessage />
           <ErrorBoundary>
@@ -862,10 +853,6 @@ export default () => {
           </ErrorBoundary>
         </div>
       </main>
-      {/* <ErrorMessage hintText="">
-          Website will be unavailable for a couple of hours (since 6:00 UTC) as
-          I upgrade the database -PB
-        </ErrorMessage> */}
       <PageFooter />
     </ErrorBoundary>
   )

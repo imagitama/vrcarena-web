@@ -3,17 +3,16 @@ import TextField from '@mui/material/TextField'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useUserId from '../../hooks/useUserId'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import { Asset, CollectionNames } from '../../modules/assets'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { Asset, CollectionNames } from '@/modules/assets'
 
-import Paper from '../paper'
-import Button from '../button'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import LoadingIndicator from '../loading-indicator'
+import Paper from '@/components/paper'
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
 
 const useStyles = makeStyles({
   input: {

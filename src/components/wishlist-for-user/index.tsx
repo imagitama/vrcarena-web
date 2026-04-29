@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
 
-import AssetResults from '../asset-results'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
+import AssetResults from '@/components/asset-results'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
 
-import useDataStore, { GetQueryFn } from '../../hooks/useDataStore'
-import { FullAsset, ViewNames } from '../../modules/assets'
+import useDataStore, { GetQueryFn } from '@/hooks/useDataStore'
+import { FullAsset, ViewNames } from '@/modules/assets'
 
 export default ({ userId }: { userId: string }) => {
   const getQuery = useCallback<GetQueryFn<FullAsset>>(

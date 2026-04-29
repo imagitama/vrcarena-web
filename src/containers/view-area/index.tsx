@@ -1,19 +1,21 @@
 import React, { useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useLocation, useParams } from 'react-router'
-
-import PaginatedView, { GetQueryFn } from '../../components/paginated-view'
-import AssetResults from '../../components/asset-results'
-import TagChips from '../../components/tag-chips'
-import AreaNavigation from '../../components/area-navigation'
-import Heading from '../../components/heading'
-
-import { getCategoryMeta } from '../../category-meta'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import * as routes from '../../routes'
-import { areasByCategory } from '../../areas'
 import { Link } from 'react-router-dom'
-import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
+
+import { getCategoryMeta } from '@/category-meta'
+import * as routes from '@/routes'
+import { areasByCategory } from '@/areas'
+import { AssetCategory, PublicAsset, ViewNames } from '@/modules/assets'
+
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+
+import AssetsPaginatedView from '@/components/assets-paginated-view'
+import { GetQueryFn } from '@/components/paginated-view'
+import AssetResults from '@/components/asset-results'
+import TagChips from '@/components/tag-chips'
+import AreaNavigation from '@/components/area-navigation'
+import Heading from '@/components/heading'
 
 function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
   return getCategoryMeta(categoryName).name
@@ -77,7 +79,8 @@ const ViewAreaView = () => {
           selectedAreaName={areaName}
         />
         <TagChips tags={getTags(categoryName, areaName)} />
-        <PaginatedView<PublicAsset>
+        <AssetsPaginatedView
+          showAreas={false}
           viewName={ViewNames.GetPublicAssets}
           getQuery={getQuery}
           name="view-area"
@@ -96,7 +99,7 @@ const ViewAreaView = () => {
             .replace(':categoryName', categoryName)
             .replace(':areaName', areaName)}>
           <Renderer />
-        </PaginatedView>
+        </AssetsPaginatedView>
       </div>
     </>
   )

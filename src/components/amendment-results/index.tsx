@@ -5,10 +5,10 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
-import AmendmentResultsItem from '../amendment-results-item'
-import useIsEditor from '../../hooks/useIsEditor'
-import { FullAmendment } from '../../modules/amendments'
-import NoResultsMessage from '../no-results-message'
+import useIsEditor from '@/hooks/useIsEditor'
+import { FullAmendment } from '@/modules/amendments'
+import NoResultsMessage from '@/components/no-results-message'
+import AmendmentResultsItem from '@/components/amendment-results-item'
 
 export default ({
   results,

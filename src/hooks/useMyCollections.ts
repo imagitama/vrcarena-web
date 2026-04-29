@@ -1,9 +1,11 @@
 import { useCallback } from 'react'
-import { DataStoreErrorCode } from '../data-store'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+import { DataStoreErrorCode } from '@/data-store'
+import { FullCollection, ViewNames } from '@/modules/collections'
+
 import useDataStore, { HydrateFn } from './useDataStore'
 import useUserId from './useUserId'
-import { FullCollection, ViewNames } from '../modules/collections'
-import { SupabaseClient } from '@supabase/supabase-js'
 
 export default (): [
   boolean,

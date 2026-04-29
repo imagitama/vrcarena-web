@@ -4,22 +4,22 @@ import CloseIcon from '@mui/icons-material/Close'
 import { makeStyles } from '@mui/styles'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-import { handleError } from '../../error-handling'
-import { callFunction } from '../../firebase'
-import useUserId from '../../hooks/useUserId'
+import { handleError } from '@/error-handling'
+import { callFunction } from '@/firebase'
+import { UserMeta } from '@/modules/users'
+import { CollectionNames } from '@/modules/user'
 
-import Button from '../button'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Paper from '../paper'
-import Heading from '../heading'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { UserMeta } from '../../modules/users'
-import WarningMessage from '../warning-message'
-import NoResultsMessage from '../no-results-message'
-import { CollectionNames } from '../../modules/user'
-import useIsPatron from '../../hooks/useIsPatron'
-import SuccessMessage from '../success-message'
+import useUserId from '@/hooks/useUserId'
+import useIsPatron from '@/hooks/useIsPatron'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+
+import Button from '@/components/button'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Paper from '@/components/paper'
+import Heading from '@/components/heading'
+import NoResultsMessage from '@/components/no-results-message'
+import SuccessMessage from '@/components/success-message'
 
 const patreonOAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${process.env.REACT_APP_PATREON_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_PATREON_REDIRECT_URI}&scope=identity%20campaigns.members`
 let oauthCode
@@ -93,11 +93,9 @@ enum ErrorCode {
 const PatreonConnectForm = () => {
   const userId = useUserId()
   const [isLoadingMeta, lastErrorCodeLoadingMeta, metaResult, hydrate] =
-    useDataStoreItem<UserMeta>(
-      CollectionNames.UsersMeta,
-      userId || false,
-      'usermeta-patreon'
-    )
+    useDataStoreItem<UserMeta>(CollectionNames.UsersMeta, userId || false, {
+      queryName: 'usermeta-patreon',
+    })
   const [isComplete, setIsComplete] = useState<boolean | null>(false)
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)

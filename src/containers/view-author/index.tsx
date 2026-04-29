@@ -3,43 +3,41 @@ import { Helmet } from 'react-helmet'
 import { Link, useParams } from 'react-router-dom'
 import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'
+import LazyLoad from 'react-lazyload'
 
-import * as routes from '../../routes'
-import categoryMeta from '../../category-meta'
+import * as routes from '@/routes'
+import categoryMeta from '@/category-meta'
+import { FullUser } from '@/modules/users'
+import { CollectionNames } from '@/modules/authors'
+import { ViewNames as ClaimViewNames, FullClaim } from '@/modules/claims'
+import { trackAction } from '@/analytics'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { FullAuthor } from '@/modules/authors'
+import { PublicAsset, ViewNames } from '@/modules/assets'
+import { AccessStatus } from '@/modules/common'
 
-import Markdown from '../../components/markdown'
-import ErrorMessage from '../../components/error-message'
-import LoadingIndicator from '../../components/loading-indicator'
-import Heading from '../../components/heading'
-import Button from '../../components/button'
-import DiscordServerWidget from '../../components/discord-server-widget'
-import SocialMediaList from '../../components/social-media-list'
-import OpenForCommissionMessage from '../../components/open-for-commissions-message'
-import Avatar from '../../components/avatar'
-import EditorRecordManager from '../../components/editor-record-manager'
-import Message from '../../components/message'
-
-import { CollectionNames } from '../../modules/authors'
-import { ViewNames as ClaimViewNames, FullClaim } from '../../modules/claims'
-import { trackAction } from '../../analytics'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { FullAuthor } from '../../modules/authors'
-import SaleInfo from '../../components/sale-info'
-import { PublicAsset, ViewNames } from '../../modules/assets'
-import { AccessStatus } from '../../modules/common'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
-} from '../../hooks/useDatabaseQuery'
-import AssetsPaginatedView from '../../components/assets-paginated-view'
-import ClaimButton from '../../components/claim-button'
-import UserList from '../../components/user-list'
-import LazyLoad from 'react-lazyload'
-import { FullUser } from '../../modules/users'
-import { GetQueryFn } from '../../components/paginated-view'
-import useIsEditor from '../../hooks/useIsEditor'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+} from '@/hooks/useDatabaseQuery'
+import useIsEditor from '@/hooks/useIsEditor'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+
+import Markdown from '@/components/markdown'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Heading from '@/components/heading'
+import Button from '@/components/button'
+import DiscordServerWidget from '@/components/discord-server-widget'
+import SocialMediaList from '@/components/social-media-list'
+import Avatar from '@/components/avatar'
+import EditorRecordManager from '@/components/editor-record-manager'
+import Message from '@/components/message'
+import AssetsPaginatedView from '@/components/assets-paginated-view'
+import { GetQueryFn } from '@/components/paginated-view'
+import ClaimButton from '@/components/claim-button'
+import UserList from '@/components/user-list'
 
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
   const getQuery = useCallback<GetQueryFn<PublicAsset>>(
@@ -161,8 +159,6 @@ const View = () => {
     description: description,
     categories: categories,
     discordserverid: discordServerId,
-    isopenforcommission: isOpenForCommission,
-    commissioninfo: commissionInfo,
     avatarurl: avatarUrl,
     email: email,
     websiteurl: websiteUrl,
@@ -175,9 +171,6 @@ const View = () => {
     discordserverinviteurl: discordServerInviteUrl,
     lastmodifiedby: lastModifiedBy,
     boothusername: boothUsername,
-    salereason: saleReason,
-    saledescription: saleDescription,
-    saleexpiresat: saleExpiresAtString,
     kofiusername: kofiUsername,
     payhipusername: payhipUsername,
 
@@ -194,10 +187,6 @@ const View = () => {
   } = author
 
   const isDeleted = accessStatus === AccessStatus.Deleted
-
-  const saleExpiresAt = saleExpiresAtString
-    ? new Date(saleExpiresAtString)
-    : null
 
   return (
     <>
@@ -276,31 +265,6 @@ const View = () => {
             }}
             actionCategory={analyticsCategory}
           />
-
-          {saleReason ? (
-            <SaleInfo
-              authorId={authorId}
-              eventId={saleReason}
-              description={saleDescription}
-              expiresAt={saleExpiresAt}
-              showViewAuthorButton={false}
-              showViewEventButton={true}
-            />
-          ) : null}
-
-          {isOpenForCommission && (
-            <OpenForCommissionMessage
-              authorId={authorId}
-              info={commissionInfo}
-            />
-          )}
-
-          {!isOpenForCommission && commissionInfo && (
-            <>
-              <Heading variant="h2">Commission Info</Heading>
-              {commissionInfo}
-            </>
-          )}
         </div>
         <div className={classes.col}>
           <AssetsByAuthor author={author} />

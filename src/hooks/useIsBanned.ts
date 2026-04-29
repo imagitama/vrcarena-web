@@ -1,4 +1,4 @@
-import { BanStatus } from '../modules/users'
+import { BanStatus } from '@/modules/users'
 import useUserRecord from './useUserRecord'
 
 function useIsBanned(): boolean | null {

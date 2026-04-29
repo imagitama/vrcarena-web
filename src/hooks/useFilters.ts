@@ -1,4 +1,4 @@
-import { ActiveFilter, Filter } from '../filters'
+import { ActiveFilter, Filter } from '@/filters'
 import useStorage from './useStorage'
 
 const useFilters = <TRecord>(

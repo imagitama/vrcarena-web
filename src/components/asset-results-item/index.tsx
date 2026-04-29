@@ -9,9 +9,8 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import LinkIcon from '@mui/icons-material/Link'
 import EditIcon from '@mui/icons-material/Edit'
 import Chip from '@mui/material/Chip'
-import { Warning as WarningIcon } from '../../icons'
 
-import * as routes from '../../routes'
+import * as routes from '@/routes'
 import {
   Asset,
   FullAsset,
@@ -23,19 +22,18 @@ import {
   getIsAssetWaitingForApproval,
   getIsFullAsset,
   getIsPublicAsset,
-} from '../../modules/assets'
-import useUserPreferences from '../../hooks/useUserPreferences'
-import { getCategoryMeta } from '../../category-meta'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
-import { AssetSearchResult } from '../../hooks/useAlgoliaSearch'
-import { AccessStatus, ApprovalStatus } from '../../modules/common'
+} from '@/modules/assets'
+import useUserPreferences from '@/hooks/useUserPreferences'
+import { getCategoryMeta } from '@/category-meta'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { AssetSearchResult } from '@/hooks/useAlgoliaSearch'
+import { AccessStatus, ApprovalStatus } from '@/modules/common'
 
-import Link from '../link'
-import AddToCartButton from '../add-to-cart-button'
-import DefaultThumbnail from '../default-thumbnail'
-import Price from '../price'
-import LoadingShimmer from '../loading-shimmer'
-import Tooltip from '../tooltip'
+import Link from '@/components/link'
+import DefaultThumbnail from '@/components/default-thumbnail'
+import Price from '@/components/price'
+import LoadingShimmer from '@/components/loading-shimmer'
+import Tooltip from '@/components/tooltip'
 
 const useStyles = makeStyles({
   root: {
@@ -358,10 +356,6 @@ const AssetResultsItem = ({
                   <Controls />
                 ) : Controls !== null ? (
                   <>
-                    <AddToCartButton
-                      assetId={asset?.id}
-                      className={classes.control}
-                    />
                     {toggleEditMode && (
                       <div
                         onClick={(e) => {

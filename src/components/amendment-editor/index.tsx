@@ -2,37 +2,37 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { mergeNewFieldsIntoParent } from '../../utils/amendments'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { getFieldNameAndValueForOutput } from '../../utils/assets'
-
-import ErrorMessage from '../error-message'
-import FormControls from '../form-controls'
-import Button from '../button'
-import AssetEditor from '../asset-editor'
-import Message from '../message'
-import TextInput from '../text-input'
-import LoadingIndicator from '../loading-indicator'
-import SuccessMessage from '../success-message'
-import ShortDiff from '../short-diff'
-import GenericEditor from '../generic-editor'
-import WarningMessage from '../warning-message'
-import Heading from '../heading'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import { mergeNewFieldsIntoParent } from '@/utils/amendments'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import { getFieldNameAndValueForOutput } from '@/utils/assets'
 import {
   Asset,
   ViewNames,
   CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
-import { CollectionNames as AuthorsCollectionNames } from '../../modules/authors'
+} from '@/modules/assets'
+import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
 import {
   Amendment,
   CollectionNames as AmendmentsCollectionNames,
-} from '../../modules/amendments'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import { routes } from '../../routes'
+} from '@/modules/amendments'
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import { routes } from '@/routes'
+
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
+import Button from '@/components/button'
+import AssetEditor from '@/components/asset-editor'
+import Message from '@/components/message'
+import TextInput from '@/components/text-input'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import ShortDiff from '@/components/short-diff'
+import GenericEditor from '@/components/generic-editor'
+import WarningMessage from '@/components/warning-message'
+import Heading from '@/components/heading'
 
 const useStyles = makeStyles({
   cols: {

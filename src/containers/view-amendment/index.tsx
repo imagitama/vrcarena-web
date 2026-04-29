@@ -2,41 +2,41 @@ import React from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 
-import Heading from '../../components/heading'
-import ErrorMessage from '../../components/error-message'
-import NoPermissionMessage from '../../components/no-permission-message'
-import LoadingIndicator from '../../components/loading-indicator'
-import WarningMessage from '../../components/warning-message'
-import AssetResultsItem from '../../components/asset-results-item'
-import ShortDiff from '../../components/short-diff'
-import PageControls from '../../components/page-controls'
-import UsernameLink from '../../components/username-link'
-import CommentList from '../../components/comment-list'
-
-import useIsEditor from '../../hooks/useIsEditor'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import useUserId from '../../hooks/useUserId'
-import AuthorResultsItem from '../../components/author-results-item'
-import AmendmentEditorRecordManager from '../../components/amendment-editor-record-manager'
-import Message from '../../components/message'
 import {
   Asset,
   ViewNames as AssetsViewNames,
   CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
+} from '@/modules/assets'
 import {
   Author,
   ViewNames as AuthorsViewNames,
   CollectionNames as AuthorsCollectionNames,
-} from '../../modules/authors'
+} from '@/modules/authors'
 import {
   ViewNames as AmendmentsViewNames,
-  CollectionNames as AmendmentsCollectionNames,
   FullAmendment,
-} from '../../modules/amendments'
-import { CollectionNames as CommentsCollectionNames } from '../../modules/comments'
-import { ApprovalStatus } from '../../modules/common'
+} from '@/modules/amendments'
+import { CollectionNames as CommentsCollectionNames } from '@/modules/comments'
+import { ApprovalStatus } from '@/modules/common'
+
+import useIsEditor from '@/hooks/useIsEditor'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useUserId from '@/hooks/useUserId'
+
+import AuthorResultsItem from '@/components/author-results-item'
+import AmendmentEditorRecordManager from '@/components/amendment-editor-record-manager'
+import Message from '@/components/message'
 import NoResultsMessage from '@/components/no-results-message'
+import Heading from '@/components/heading'
+import ErrorMessage from '@/components/error-message'
+import NoPermissionMessage from '@/components/no-permission-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import WarningMessage from '@/components/warning-message'
+import AssetResultsItem from '@/components/asset-results-item'
+import ShortDiff from '@/components/short-diff'
+import PageControls from '@/components/page-controls'
+import UsernameLink from '@/components/username-link'
+import CommentList from '@/components/comment-list'
 
 const AssetOutput = ({ assetId }: { assetId: string }) => {
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(

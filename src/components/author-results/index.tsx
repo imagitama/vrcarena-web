@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import AuthorResultsItem from '../author-results-item'
-import { Author } from '../../modules/authors'
+import AuthorResultsItem from '@/components/author-results-item'
+import { Author } from '@/modules/authors'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },

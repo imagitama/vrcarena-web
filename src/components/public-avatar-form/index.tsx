@@ -1,22 +1,23 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
+import AddIcon from '@mui/icons-material/Add'
 
-import { formHideDelay } from '../../config'
-import { handleError } from '../../error-handling'
-import useDataStoreCreate from '../../hooks/useDataStoreCreate'
-import useTimer from '../../hooks/useTimer'
-import { getAvatarIdFromUserInput } from '../../utils'
+import { formHideDelay } from '@/config'
+import { handleError } from '@/error-handling'
+import { getAvatarIdFromUserInput } from '@/utils'
 
-import Button from '../button'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import Paper from '../paper'
-import SuccessMessage from '../success-message'
-import TextInput from '../text-input'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import useTimer from '@/hooks/useTimer'
+
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import TextInput from '@/components/text-input'
+import FormControls from '@/components/form-controls'
+import { CollectionNames } from '@/modules/public-avatar-submissions'
 
 import screenshotUrl from './assets/images/screenshot.webp'
-import FormControls from '../form-controls'
-import { CollectionNames } from '../../modules/public-avatar-submissions'
 
 interface PublicAvatarCreateFields extends Record<string, unknown> {
   asset: string
@@ -145,11 +146,7 @@ export default ({
   const classes = useStyles()
 
   return (
-    <Paper>
-      <div className={classes.message}>
-        Do you have this avatar in your favorites? We need your help! Please
-        anonymously send us the avatar ID so we can show it on the site:
-      </div>
+    <>
       {isExpanded ? (
         <>
           <br />
@@ -158,11 +155,15 @@ export default ({
         </>
       ) : (
         <FormControls>
-          <Button onClick={() => setIsExpanded(true)} size="large">
-            Show me the form
+          <Button
+            icon={<AddIcon />}
+            switchIconSide
+            onClick={() => setIsExpanded(true)}
+            size="large">
+            Add Your Avatar (does not require login)
           </Button>
         </FormControls>
       )}
-    </Paper>
+    </>
   )
 }

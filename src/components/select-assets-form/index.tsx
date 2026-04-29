@@ -1,14 +1,14 @@
 import React, { SyntheticEvent, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useAssetSearch from '../../hooks/useAssetSearch'
+import { Asset, PublicAsset } from '@/modules/assets'
+import useAssetSearch from '@/hooks/useAssetSearch'
 
-import AssetResults from '../asset-results'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import NoResultsMessage from '../no-results-message'
-import TextInput from '../text-input'
-import { Asset, PublicAsset } from '../../modules/assets'
+import AssetResults from '@/components/asset-results'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoResultsMessage from '@/components/no-results-message'
+import TextInput from '@/components/text-input'
 
 const useStyles = makeStyles({
   root: {

@@ -1,8 +1,9 @@
 import React from 'react'
 import ReportIcon from '@mui/icons-material/Report'
-import { trackAction } from '../../analytics'
-import Button from '../button'
-import * as routes from '../../routes'
+
+import { trackAction } from '@/analytics'
+import * as routes from '@/routes'
+import Button from '@/components/button'
 
 export default ({
   type,

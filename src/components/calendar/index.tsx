@@ -4,12 +4,12 @@ import { makeStyles } from '@mui/styles'
 import { View } from 'react-calendar/dist/cjs/shared/types'
 import Chip from '@mui/material/Chip'
 
-import Paper from '../paper'
-import { Event } from '../../modules/events'
-import { isDateInbetweenTwoDates, isDateOnSameDay } from '../../utils/dates'
-import * as routes from '../../routes'
-import Link from '../link'
-import { VRCArenaTheme } from '../../themes'
+import Paper from '@/components/paper'
+import { Event } from '@/modules/events'
+import { isDateInbetweenTwoDates, isDateOnSameDay } from '@/utils/dates'
+import * as routes from '@/routes'
+import Link from '@/components/link'
+import { VRCArenaTheme } from '@/themes'
 
 enum EventStyle {
   StartsToday,

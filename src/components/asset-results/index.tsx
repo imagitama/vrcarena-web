@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import { mediaQueryForTabletsOrBelow } from '../../media-queries'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import AssetResultsItem from '../asset-results-item'
-import { Asset, PublicAsset } from '../../modules/assets'
-import AssetEditorDialog from '../asset-editor-dialog'
+import { Asset, PublicAsset } from '@/modules/assets'
+import AssetEditorDialog from '@/components/asset-editor-dialog'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },

@@ -2,13 +2,13 @@ import React from 'react'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import { makeStyles } from '@mui/styles'
 
-import useUserId from '../../hooks/useUserId'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
-import { handleError } from '../../error-handling'
-import { deleteRecord } from '../../data-store'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
-import { CollectionNames, Like } from '../../modules/likes'
+import useUserId from '@/hooks/useUserId'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import { handleError } from '@/error-handling'
+import { deleteRecord } from '@/data-store'
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+import { CollectionNames, Like } from '@/modules/likes'
 
 const useStyles = makeStyles({
   root: {

@@ -5,29 +5,26 @@ import SaveIcon from '@mui/icons-material/Save'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 
-import useUserId from '../../hooks/useUserId'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Button from '../button'
-import FormControls from '../form-controls'
-import Select from '../select'
-
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
-import useUserRecord from '../../hooks/useUserRecord'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import useUserRecord from '@/hooks/useUserRecord'
 import {
   Species,
   CollectionNames as SpeciesCollectionNames,
-} from '../../modules/species'
-import {
-  User,
-  CollectionNames as UsersCollectionNames,
-} from '../../modules/users'
-import SuccessMessage from '../success-message'
-import { VRCArenaTheme } from '../../themes'
+} from '@/modules/species'
+import { User, CollectionNames as UsersCollectionNames } from '@/modules/users'
+import { VRCArenaTheme } from '@/themes'
+
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import useUserId from '@/hooks/useUserId'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import Select from '@/components/select'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   formControl: {

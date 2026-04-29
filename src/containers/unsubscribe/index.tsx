@@ -1,8 +1,10 @@
 import React from 'react'
-import ErrorMessage from '../../components/error-message'
-import Heading from '../../components/heading'
-import NotificationSettings from '../../components/notification-settings'
-import useQueryParam from '../../hooks/useQueryParam'
+
+import useQueryParam from '@/hooks/useQueryParam'
+
+import ErrorMessage from '@/components/error-message'
+import Heading from '@/components/heading'
+import NotificationSettings from '@/components/notification-settings'
 
 export default () => {
   const userId = useQueryParam('userId')
@@ -19,7 +21,7 @@ export default () => {
       <NotificationSettings
         anonymousDetails={{
           userId,
-          email
+          email,
         }}
       />
     </>

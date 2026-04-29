@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles'
 const heightBeforeCollapsed = 300
 
 const useStyles = makeStyles({
-  root: {
+  expander: {
     position: 'relative',
   },
   collapsed: {
@@ -61,7 +61,8 @@ const Expander = ({
   }, [isLoaded === false])
 
   return (
-    <div className={`${classes.root} ${isExpanded ? '' : classes.collapsed}`}>
+    <div
+      className={`${classes.expander} ${isExpanded ? '' : classes.collapsed}`}>
       <div ref={contentRef}>{children}</div>
       {!isExpanded && (
         <div className={classes.overlay} onClick={expand}>

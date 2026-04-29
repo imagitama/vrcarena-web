@@ -2,14 +2,15 @@ import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
-import { logout } from '../../firebase'
-import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
-import useUserRecord from '../../hooks/useUserRecord'
-import useQueryParams from '../../hooks/useQueryParams'
-import SuccessMessage from '../../components/success-message'
+import { logout } from '@/firebase'
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
 import { handleError } from '@/error-handling'
 import { formHideDelay } from '@/config'
+
+import useUserRecord from '@/hooks/useUserRecord'
+import useQueryParams from '@/hooks/useQueryParams'
+import SuccessMessage from '@/components/success-message'
 
 export default () => {
   const [isLoading, isErrored, user] = useUserRecord()

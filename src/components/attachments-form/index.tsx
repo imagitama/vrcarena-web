@@ -2,22 +2,17 @@ import React, { createContext, useContext, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import ItemsEditor from '../items-editor'
-import {
-  Attachment,
-  AttachmentReason,
-  CollectionNames,
-  ViewNames,
-} from '../../modules/attachments'
-import AttachmentEditor from '../attachment-editor'
-import AttachmentOutput from '../attachment'
-import { trackAction } from '../../analytics'
-import { handleError } from '../../error-handling'
-import AttachmentMeta from '../attachment-meta'
-import FormControls from '../form-controls'
-import Button from '../button'
-import useDataStoreItems from '@/hooks/useDataStoreItems'
 import useMissingDataStoreItems from '@/hooks/useMissingDataStoreItems'
+import { trackAction } from '@/analytics'
+import { handleError } from '@/error-handling'
+import { Attachment, AttachmentReason, ViewNames } from '@/modules/attachments'
+
+import ItemsEditor from '@/components/items-editor'
+import AttachmentEditor from '@/components/attachment-editor'
+import AttachmentOutput from '@/components/attachment'
+import AttachmentMeta from '@/components/attachment-meta'
+import FormControls from '@/components/form-controls'
+import Button from '@/components/button'
 
 const useStyles = makeStyles({
   output: {

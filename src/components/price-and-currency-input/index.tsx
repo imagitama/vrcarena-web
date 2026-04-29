@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { makeStyles } from '@mui/styles'
 import MenuItem from '@mui/material/MenuItem'
 
-import TextInput from '../text-input'
-import Button from '../button'
-import { popularCurrencies, PopularCurrency } from '../../currency'
-import Select from '../select'
-import Price from '../price'
-import PriceInput from '../price-input'
+import { popularCurrencies, PopularCurrency } from '@/currency'
+
+import Button from '@/components/button'
+import Select from '@/components/select'
+import Price from '@/components/price'
+import PriceInput from '@/components/price-input'
 
 const useStyles = makeStyles({
   inputWrapper: {

@@ -2,33 +2,32 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import useUserId from '../../hooks/useUserId'
-
-import { handleError } from '../../error-handling'
-
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import Heading from '../heading'
-import Button from '../button'
-import TextInput from '../text-input'
-import FormControls from '../form-controls'
-
+import { callFunction } from '@/firebase'
+import { handleError } from '@/error-handling'
 import {
   NotificationEvents,
   NotificationMethods,
   defaultNotificationPrefs,
-} from '../../notifications'
-import { callFunction } from '../../firebase'
-import SuccessMessage from '../success-message'
-import useUserPreferences from '../../hooks/useUserPreferences'
+} from '@/notifications'
 import {
   CollectionNames,
   NotificationPreferences,
   NotificationPreferencesEvents,
   UserPreferences,
-} from '../../modules/user'
-import CheckboxInput from '../checkbox-input'
+} from '@/modules/user'
+
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useUserId from '@/hooks/useUserId'
+import useUserPreferences from '@/hooks/useUserPreferences'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Heading from '@/components/heading'
+import Button from '@/components/button'
+import TextInput from '@/components/text-input'
+import FormControls from '@/components/form-controls'
+import SuccessMessage from '@/components/success-message'
+import CheckboxInput from '@/components/checkbox-input'
 
 const useStyles = makeStyles({
   root: {

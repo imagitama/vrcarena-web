@@ -1,11 +1,14 @@
 import React from 'react'
 import StarIcon from '@mui/icons-material/Star'
-import Button from '../button'
-import { handleError } from '../../error-handling'
-import { FeaturedStatus, MetaRecord } from '../../modules/common'
-import useFirebaseFunction from '../../hooks/useFirebaseFunction'
-import ErrorMessage from '../error-message'
-import useIsPatron from '../../hooks/useIsPatron'
+
+import { handleError } from '@/error-handling'
+import { FeaturedStatus } from '@/modules/common'
+
+import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+import useIsPatron from '@/hooks/useIsPatron'
+
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
 
 enum FeatureAssetErrorCodes {
   NOT_ALLOWED = 'NOT_ALLOWED',

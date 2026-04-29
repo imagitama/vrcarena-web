@@ -1,14 +1,16 @@
 import React from 'react'
+
 import {
   Asset,
   CollectionNames as AssetsCollectionNames,
-} from '../../modules/assets'
+} from '@/modules/assets'
 import {
   FullComment,
   CollectionNames as CommentsCollectionNames,
-} from '../../modules/comments'
-import Link from '../link'
-import { getUrlForParent } from '../../relations'
+} from '@/modules/comments'
+import { getUrlForParent } from '@/relations'
+
+import Link from '@/components/link'
 
 const GenericOutputLabel = ({
   type,

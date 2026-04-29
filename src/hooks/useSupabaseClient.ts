@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
-import SupabaseClientContext from '../contexts/SupabaseClient'
-import { onJwtTokenChanged } from '../supabase'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+import SupabaseClientContext from '@/contexts/SupabaseClient'
+import { onJwtTokenChanged } from '@/supabase'
 
 const useSupabaseClient = (): SupabaseClient => {
   const [, setCount] = useState(0) // force re-render

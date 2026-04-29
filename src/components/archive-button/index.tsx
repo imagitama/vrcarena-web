@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import { AccessStatus, MetaRecord } from '../../modules/common'
-import { archivedReasonMeta } from '../../utils/assets'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import { AccessStatus, MetaRecord } from '@/modules/common'
+import { archivedReasonMeta } from '@/utils/assets'
 import {
   ArchivedReason,
   CollectionNames as AssetCollectionNames,
   AssetMeta,
-} from '../../modules/assets'
+} from '@/modules/assets'
 
-import ButtonDropdown from '../button-dropdown'
-import LoadingIndicator from '../loading-indicator'
-import Button from '../button'
+import ButtonDropdown from '@/components/button-dropdown'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
 
 const ArchiveButton = ({
   id,
@@ -146,12 +146,14 @@ const ArchiveButton = ({
           }
           closeOnSelect={true}
           size="small"
+          iconOnly
         />
       )}
       <Button
         onClick={onClickButton}
         icon={<BusinessCenterIcon />}
-        size="small">
+        size="small"
+        color="secondary">
         {accessStatus === AccessStatus.Archived ? 'Un-archive' : 'Archive'}
       </Button>
       {existingArchivedReason !== undefined &&

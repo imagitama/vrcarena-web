@@ -1,11 +1,13 @@
 import React, { Fragment, useCallback } from 'react'
-import TagChip from '../tag-chip'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import useDataStore from '../../hooks/useDataStore'
-import { FullTag, ViewNames } from '../../modules/tags'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+import useDataStore from '@/hooks/useDataStore'
+import TagChip from '@/components/tag-chip'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import { FullTag, ViewNames } from '@/modules/tags'
+import NoResultsMessage from '../no-results-message'
 
 export default () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -30,16 +32,18 @@ export default () => {
     'all-tags-browser'
   )
 
-  if (isLoading) {
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to load tags (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
+  if (isLoading || !Array.isArray(allTagDetails)) {
     return <LoadingIndicator message="Loading tags..." />
   }
 
-  if (
-    lastErrorCode !== null ||
-    !Array.isArray(allTagDetails) ||
-    !allTagDetails.length
-  ) {
-    return <ErrorMessage>Failed to load tags</ErrorMessage>
+  if (!allTagDetails.length) {
+    return <NoResultsMessage>No tags found</NoResultsMessage>
   }
 
   return (

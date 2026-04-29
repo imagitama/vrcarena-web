@@ -1,6 +1,7 @@
 import React from 'react'
-import ReviewResultsItem from '../review-results-item'
-import { FullReview } from '../../modules/reviews'
+
+import { FullReview } from '@/modules/reviews'
+import ReviewResultsItem from '@/components/review-results-item'
 
 export default ({
   reviews = [],

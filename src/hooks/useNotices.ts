@@ -1,6 +1,6 @@
+import { trackAction } from '@/analytics'
+import { write as writeStorage } from '@/utils/storage'
 import useStorage, { keys as storageKeys } from './useStorage'
-import { trackAction } from '../analytics'
-import { write as writeStorage } from '../utils/storage'
 
 const useNotices = (): [string[], (idToHide: string) => void] => {
   const [hiddenNoticeIds] = useStorage<string[]>(storageKeys.hiddenNotices, [])

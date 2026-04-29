@@ -1,15 +1,18 @@
 import React from 'react'
-import Link from '../link'
-import * as routes from '../../routes'
-import useIsEditor from '../../hooks/useIsEditor'
-import useDataStoreItems from '../../hooks/useDataStoreItems'
+
+import * as routes from '@/routes'
 import {
   AdminQueueItem,
   AdminQueueItemType,
   ViewNames,
-} from '../../modules/admin-queue'
-import ErrorMessage from '../error-message'
-import Message from '../message'
+} from '@/modules/admin-queue'
+
+import useIsEditor from '@/hooks/useIsEditor'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+
+import Link from '@/components/link'
+import ErrorMessage from '@/components/error-message'
+import Message from '@/components/message'
 
 const UnapprovedAssetsMessage = () => {
   const isEditor = useIsEditor()

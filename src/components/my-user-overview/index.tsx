@@ -1,14 +1,4 @@
 import React, { useState } from 'react'
-import UserOverview from '../user-overview'
-import useUserRecord from '../../hooks/useUserRecord'
-import Heading from '../heading'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../modules'
-import FormattedDate from '../formatted-date'
-import { FirebaseReducer } from 'react-redux-firebase'
-import Avatar from '../avatar'
-import UsernameLink from '../username-link'
-import Button from '../button'
 import {
   EmailAuthProvider,
   FacebookAuthProvider,
@@ -17,8 +7,16 @@ import {
   PhoneAuthProvider,
   TwitterAuthProvider,
 } from 'firebase/auth'
-import useFirebaseUser from '../../hooks/useFirebaseUser'
-import { FirebaseUser } from '../../firebase'
+
+import useUserRecord from '@/hooks/useUserRecord'
+import useFirebaseUser from '@/hooks/useFirebaseUser'
+import { FirebaseUser } from '@/firebase'
+
+import Heading from '@/components/heading'
+import FormattedDate from '@/components/formatted-date'
+import Avatar from '@/components/avatar'
+import UsernameLink from '@/components/username-link'
+import Button from '@/components/button'
 
 const getSigninMethod = (firebaseUser: FirebaseUser): string => {
   // TODO: someday populate this
@@ -53,22 +51,19 @@ const MyUserOverview = () => {
     return null
   }
 
-  console.debug('USER????', firebaseUser)
-
   return (
     <>
       <Avatar url={userRecord.avatarurl} />
-      <Heading variant="h3">
+      <Heading variant="h1">
         <UsernameLink username={userRecord.username} id={userRecord.id} />
       </Heading>
-      <Heading variant="h1">Sign-up Info</Heading>
       <Heading variant="h2">Email</Heading>
       {!isPrivateInfoRevealed ? (
         <Button
           onClick={() => setIsPrivateInfoRevealed(true)}
           size="small"
           color="secondary">
-          Reveal
+          Reveal Email
         </Button>
       ) : (
         `${firebaseUser.email || '(none)'}`

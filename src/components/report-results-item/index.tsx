@@ -1,20 +1,17 @@
 import React, { Fragment } from 'react'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
-import * as routes from '../../routes'
-import WarningMessage from '../../components/warning-message'
+import * as routes from '@/routes'
+import { CollectionNames } from '@/modules/assets'
+import { FullReport, reportReasonsKeysByCollection } from '@/modules/reports'
 
-import FormattedDate from '../formatted-date'
-import {
-  FullReport,
-  reportReasonsKeysByCollection,
-} from '../../modules/reports'
-import GenericOutputItem from '../generic-output-item'
-import ResolutionStatus from '../resolution-status'
-import { CollectionNames } from '../../modules/assets'
-import Button from '../button'
+import WarningMessage from '@/components/warning-message'
+import FormattedDate from '@/components/formatted-date'
+import GenericOutputItem from '@/components/generic-output-item'
+import ResolutionStatus from '@/components/resolution-status'
+import Button from '@/components/button'
 
 export default ({
   report,

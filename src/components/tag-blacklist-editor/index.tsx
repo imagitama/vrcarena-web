@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import useUserPreferences from '../../hooks/useUserPreferences'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import TextInput from '../text-input'
-import Button from '../button'
-import SuccessMessage from '../success-message'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { CollectionNames, UserPreferences } from '../../modules/user'
-import useUserId from '../../hooks/useUserId'
-import { handleError } from '../../error-handling'
-import { cleanupTags } from '../../utils/tags'
-import TagChips from '../tag-chips'
-import WarningMessage from '../warning-message'
+import { CollectionNames, UserPreferences } from '@/modules/user'
+import { handleError } from '@/error-handling'
+import { cleanupTags } from '@/utils/tags'
+
+import useUserPreferences from '@/hooks/useUserPreferences'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useUserId from '@/hooks/useUserId'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import TextInput from '@/components/text-input'
+import Button from '@/components/button'
+import SuccessMessage from '@/components/success-message'
+import TagChips from '@/components/tag-chips'
+import WarningMessage from '@/components/warning-message'
 
 const TagBlacklistEditor = () => {
   const userId = useUserId()

@@ -1,21 +1,21 @@
 import React, { useCallback } from 'react'
-
-import useDataStore from '../../hooks/useDataStore'
-import useIsEditor from '../../hooks/useIsEditor'
-
-import { getQueryParam } from '../../utils'
-import { trackAction } from '../../analytics'
-import { CollectionNames } from '../../modules/assets'
-import { FullComment, ViewNames } from '../../modules/comments'
-
-import CommentItem from '../comment'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
-import AddCommentForm from '../add-comment-form'
-import WarningMessage from '../warning-message'
 import { SupabaseClient } from '@supabase/supabase-js'
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
+
+import useDataStore from '@/hooks/useDataStore'
+import useIsEditor from '@/hooks/useIsEditor'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+
 import { BanStatus } from '@/modules/users'
+import { getQueryParam } from '@/utils'
+import { trackAction } from '@/analytics'
+import { CollectionNames } from '@/modules/assets'
+import { FullComment, ViewNames } from '@/modules/comments'
+
+import CommentItem from '@/components/comment'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
+import AddCommentForm from '@/components/add-comment-form'
+import WarningMessage from '@/components/warning-message'
 
 export default ({
   collectionName,

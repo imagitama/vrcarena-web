@@ -3,9 +3,9 @@ import { makeStyles } from '@mui/styles'
 import WarningIcon from '@mui/icons-material/Warning'
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 
-import { Asset, Relation } from '../../modules/assets'
-import Box from '../box'
-import AssetResultsItem from '../asset-results-item'
+import { Asset, Relation } from '@/modules/assets'
+import Box from '@/components/box'
+import AssetResultsItem from '@/components/asset-results-item'
 
 const useStyles = makeStyles({
   title: {

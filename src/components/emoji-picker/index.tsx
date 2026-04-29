@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import EmojiPickerReact, { EmojiStyle } from 'emoji-picker-react'
-import { useCallback, useRef, useState } from 'react'
-import useClickAway from '../../hooks/useClickAway'
+
+import useClickAway from '@/hooks/useClickAway'
 
 const useStyles = makeStyles({
   root: {

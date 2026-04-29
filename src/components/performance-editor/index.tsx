@@ -6,23 +6,25 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows'
 import { makeStyles } from '@mui/styles'
 
-import { trackAction } from '../../analytics'
+import { ReactComponent as OculusIcon } from '@/assets/images/icons/oculus.svg'
+
+import { trackAction } from '@/analytics'
 import {
   getAvatarPcPerformanceRankFromTags,
   getAvatarQuestPerformanceRankFromTags,
   PerformanceRank,
   getPerformanceRankLabel,
-} from '../../avatar-performance'
-import { handleError } from '../../error-handling'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { Asset, CollectionNames } from '../../modules/assets'
-import Button from '../button'
-import ErrorMessage from '../error-message'
-import FormControls from '../form-controls'
-import LoadingIndicator from '../loading-indicator'
-import Select from '../select'
-import SuccessMessage from '../success-message'
-import { ReactComponent as OculusIcon } from '../../assets/images/icons/oculus.svg'
+} from '@/avatar-performance'
+import { handleError } from '@/error-handling'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { Asset, CollectionNames } from '@/modules/assets'
+
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import FormControls from '@/components/form-controls'
+import LoadingIndicator from '@/components/loading-indicator'
+import Select from '@/components/select'
+import SuccessMessage from '@/components/success-message'
 
 const useStyles = makeStyles({
   row: {

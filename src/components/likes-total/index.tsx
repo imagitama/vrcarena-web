@@ -1,8 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
-import { CollectionNames } from '../../modules/likes'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import { CollectionNames } from '@/modules/likes'
 
 const useStyles = makeStyles({
   root: {

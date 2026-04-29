@@ -1,4 +1,4 @@
-import { PopularCurrency } from '../currency'
+import { PopularCurrency } from '@/currency'
 import { AiEvaluateQueuedItem } from './aievaluation'
 import { FullAttachment } from './attachments'
 import {
@@ -106,7 +106,6 @@ export interface AssetFields
     Record<string, unknown> {
   sourceurl: string
   description: string
-  bannerurl: string // disabled sep 2025 for bandwidth
   vrchatclonableavatarids: string[]
   discordserver: string | null // id
   relations: Relation[]
@@ -224,12 +223,6 @@ export interface PublicAsset extends Asset {
 
 export interface FullAsset extends Asset, AssetMeta, AssetStats {
   authorname: string
-  isopenforcommission: boolean
-  commissioninfo: string
-  showcommissionstatusforassets: boolean
-  salereason: string | null
-  saledescription: string | null
-  saleexpiresat: string | null
   speciesnames: string[]
   createdbyusername: string
   lastmodifiedbyusername: string

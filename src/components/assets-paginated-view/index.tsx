@@ -4,15 +4,15 @@ import PaginatedView, {
   PaginatedViewProps,
   RendererProps,
 } from '../paginated-view'
-import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
-import AssetResults from '../asset-results'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import AssetsByArea from '../assets-by-area'
-import { SortOption } from '../sort-controls'
+import { AssetCategory, PublicAsset, ViewNames } from '@/modules/assets'
+import AssetResults from '@/components/asset-results'
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+import AssetsByArea from '@/components/assets-by-area'
 
 interface ExtraRendererProps {
   categoryName?: string
   defaultGroupByArea?: boolean
+  showAreas?: boolean
 }
 
 enum SubView {
@@ -51,6 +51,7 @@ const Renderer = ({
 const AssetsPaginatedView = ({
   categoryName,
   defaultGroupByArea = true,
+  showAreas = true,
   ...props
 }: ExtraRendererProps & PaginatedViewProps<PublicAsset>) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -86,7 +87,7 @@ const AssetsPaginatedView = ({
       ]}
       defaultFieldName="createdat"
       subViews={
-        categoryName !== AssetCategory.Avatar
+        categoryName !== AssetCategory.Avatar && showAreas
           ? [
               {
                 id: SubView.GroupByArea,
@@ -99,7 +100,8 @@ const AssetsPaginatedView = ({
       {...props}
       // NOTE: Do not override props with this as we do adult check
       getQuery={getQuery}
-      isRendererForLoading>
+      isRendererForLoading
+      itemNamePlural="assets">
       {/* @ts-ignore */}
       <Renderer categoryName={categoryName} />
     </PaginatedView>

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { handleError } from '../error-handling'
+import { handleError } from '@/error-handling'
 import {
   DataStoreError,
   DataStoreErrorCode,
   DataStoreOptions,
   getDataStoreErrorCodeFromError,
-} from '../data-store'
+} from '@/data-store'
 import useSupabaseClient from './useSupabaseClient'
 
 type HydrateFn = () => Promise<void>

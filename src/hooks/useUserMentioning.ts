@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { AutocompleteOption } from '../components/autocomplete-input'
-import { simpleSearchRecords } from '../data-store'
-import { handleError } from '../error-handling'
-import { CollectionNames, User } from '../modules/users'
+
+import { simpleSearchRecords } from '@/data-store'
+import { handleError } from '@/error-handling'
+import { CollectionNames, User } from '@/modules/users'
+import { AutocompleteOption } from '@/components/autocomplete-input'
 import useSupabaseClient from './useSupabaseClient'
 
 const useUserTagging = (

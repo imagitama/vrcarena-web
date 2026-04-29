@@ -1,12 +1,13 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useDatabaseQuery, { Operators } from '../../hooks/useDatabaseQuery'
-import { CollectionNames, Endorsement } from '../../modules/endorsements'
-import EndorsementListItem from '../endorsement-list-item'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import { CollectionNames, Endorsement } from '@/modules/endorsements'
+
+import EndorsementListItem from '@/components/endorsement-list-item'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
 
 const useStyles = makeStyles({
   item: {
@@ -21,7 +22,8 @@ const EndorsementList = ({ assetId }: { assetId: string }) => {
 
   const [isLoading, lastErrorCode, results] = useDatabaseQuery<Endorsement>(
     CollectionNames.Endorsements,
-    [['asset', Operators.EQUALS, assetId]]
+    [['asset', Operators.EQUALS, assetId]],
+    { queryName: 'endorsement-list' }
   )
   const classes = useStyles()
 

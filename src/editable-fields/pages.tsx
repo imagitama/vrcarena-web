@@ -1,8 +1,10 @@
 import React from 'react'
-import { fieldTypes } from '../generic-forms'
-import MarkdownEditor from '../components/markdown-editor'
-import { EditableField } from './'
-import { Page } from '../modules/pages'
+
+import { fieldTypes } from '@/generic-forms'
+import MarkdownEditor from '@/components/markdown-editor'
+import { Page } from '@/modules/pages'
+
+import type { EditableField } from './'
 
 const fields: EditableField<Page, string>[] = [
   {

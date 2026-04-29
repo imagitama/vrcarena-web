@@ -1,6 +1,7 @@
+import { SupabaseClient } from '@supabase/supabase-js'
+
 import { inDevelopment } from './environment'
 import { insertRecord } from './data-store'
-import { SupabaseClient } from '@supabase/supabase-js'
 import { AnalyticsEntry, CollectionNames } from './modules/analytics'
 
 export const trackAction = (

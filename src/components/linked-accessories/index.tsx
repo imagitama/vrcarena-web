@@ -1,16 +1,13 @@
 import React, { useCallback } from 'react'
 import { makeStyles } from '@mui/styles'
-import CheckroomIcon from '@mui/icons-material/Checkroom'
 
-import useDataStore from '../../hooks/useDataStore'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import { AssetCategory, PublicAsset, ViewNames } from '../../modules/assets'
-import * as routes from '../../routes'
+import useDataStore from '@/hooks/useDataStore'
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+import { AssetCategory, PublicAsset, ViewNames } from '@/modules/assets'
 
-import AssetResults from '../asset-results'
-import ErrorMessage from '../error-message'
-import NoResultsMessage from '../no-results-message'
-import FindMoreAssetsButton from '../find-more-assets-button'
+import AssetResults from '@/components/asset-results'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
@@ -72,13 +69,6 @@ const LinkedAccessories = ({
   return (
     <div className={classes.root}>
       <AssetResults assets={results} />
-      {totalCount && totalCount > results.length ? (
-        <FindMoreAssetsButton
-          icon={<CheckroomIcon />}
-          url={routes.accessorizeWithVar.replace(':assetId', assetId)}
-          label="Browse Accessories"
-        />
-      ) : null}
     </div>
   )
 }

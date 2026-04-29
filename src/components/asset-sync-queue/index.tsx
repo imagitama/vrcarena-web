@@ -15,50 +15,46 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
-import TextInput from '../text-input'
-import Tooltip from '../tooltip'
-import CopyThing from '../copy-thing'
-import SuccessMessage from '../success-message'
-import LoadingShimmer from '../loading-shimmer'
-import ErrorMessage from '../error-message'
-import LoadingIndicator from '../loading-indicator'
-import Button from '../button'
+import useIsEditor from '@/hooks/useIsEditor'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+import useDataStoreCreateBulk from '@/hooks/useDataStoreCreateBulk'
+import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
+import useDataStoreDelete from '@/hooks/useDataStoreDelete'
 
-import { cleanupSourceUrl, getCanSync } from '../../syncing'
-import { getFriendlyDate } from '../../utils/dates'
-import { capitalize } from '../../utils'
-import useDataStoreItemSync from '../../hooks/useDataStoreItemSync'
-import useDataStoreDelete from '../../hooks/useDataStoreDelete'
-import { DISCORD_URL, colorPalette } from '../../config'
-import * as routes from '../../routes'
+import { VRCArenaTheme } from '@/themes'
+import { Warning as WarningIcon } from '@/icons'
+import { cleanupSourceUrl, getCanSync } from '@/syncing'
+import { getFriendlyDate } from '@/utils/dates'
+import { capitalize } from '@/utils'
+import { DISCORD_URL, colorPalette } from '@/config'
+import * as routes from '@/routes'
 import {
   AssetSyncQueueItem,
   AssetSyncQueueItemFields,
   CollectionNames,
   AssetSyncStatus,
   FullAssetSyncQueueItem,
-} from '../../modules/assetsyncqueue'
-import {
-  Asset,
-  CollectionNames as AssetsCollectionNames,
-  FullAsset,
-  ViewNames,
-} from '../../modules/assets'
-import FormControls from '../form-controls'
-import useDataStoreCreateBulk from '../../hooks/useDataStoreCreateBulk'
-import { DataStoreErrorCode, updateRecord } from '../../data-store'
-import { handleError } from '../../error-handling'
-import WarningMessage from '../warning-message'
-import UsernameLink from '../username-link'
-import FormattedDate from '../formatted-date'
-import useSupabaseClient from '../../hooks/useSupabaseClient'
-import { VRCArenaTheme } from '../../themes'
-import { Warning as WarningIcon } from '../../icons'
-import StatusText from '../status-text'
-import AssetEditorDialog from '../asset-editor-dialog'
-import AssetResultsItem from '../asset-results-item'
-import useDataStoreItem from '@/hooks/useDataStoreItem'
-import useIsEditor from '@/hooks/useIsEditor'
+} from '@/modules/assetsyncqueue'
+import { Asset, FullAsset, ViewNames } from '@/modules/assets'
+import { DataStoreErrorCode, updateRecord } from '@/data-store'
+import { handleError } from '@/error-handling'
+
+import FormControls from '@/components/form-controls'
+import WarningMessage from '@/components/warning-message'
+import UsernameLink from '@/components/username-link'
+import FormattedDate from '@/components/formatted-date'
+import StatusText from '@/components/status-text'
+import AssetEditorDialog from '@/components/asset-editor-dialog'
+import AssetResultsItem from '@/components/asset-results-item'
+import TextInput from '@/components/text-input'
+import Tooltip from '@/components/tooltip'
+import CopyThing from '@/components/copy-thing'
+import SuccessMessage from '@/components/success-message'
+import LoadingShimmer from '@/components/loading-shimmer'
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Button from '@/components/button'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   queuedStatus: {

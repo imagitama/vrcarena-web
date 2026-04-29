@@ -1,8 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import ActivityItemLabel from '../../components/activity-item-label'
-import FormattedDate from '../../components/formatted-date'
-import { FullActivityEntry } from '../../modules/activity'
+import ActivityItemLabel from '@/components/activity-item-label'
+import FormattedDate from '@/components/formatted-date'
+import { FullActivityEntry } from '@/modules/activity'
 
 const useStyles = makeStyles({
   items: {},

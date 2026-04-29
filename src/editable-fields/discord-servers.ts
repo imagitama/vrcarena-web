@@ -1,6 +1,6 @@
-import { fieldTypes } from '../generic-forms'
-import { EditableField } from './'
-import { DiscordServer } from '../modules/discordservers'
+import { fieldTypes } from '@/generic-forms'
+import type { EditableField } from './'
+import { DiscordServer } from '@/modules/discordservers'
 
 const fields: EditableField<DiscordServer>[] = [
   {

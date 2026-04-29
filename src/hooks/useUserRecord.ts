@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux'
+
+import { loadUserIntoStore } from '@/auth'
+import { FullUser } from '@/modules/users'
+import { RootState } from '@/modules'
 import useSupabaseUserId from './useSupabaseUserId'
-import { loadUserIntoStore } from '../auth'
-import { FullUser } from '../modules/users'
-import { RootState } from '../modules'
 import useSupabaseClient from './useSupabaseClient'
 
 const useUserRecord = (): [boolean, boolean, FullUser | null, () => void] => {

@@ -1,11 +1,11 @@
 import React from 'react'
-import Button from '../button'
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { AssetMeta, CollectionNames } from '../../modules/assets'
-import useTimer from '../../hooks/useTimer'
-import SuccessMessage from '../success-message'
-import ErrorMessage from '../error-message'
+import Button from '@/components/button'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import { AssetMeta, CollectionNames } from '@/modules/assets'
+import useTimer from '@/hooks/useTimer'
+import SuccessMessage from '@/components/success-message'
+import ErrorMessage from '@/components/error-message'
 
 const ClearIndicativeStatusButton = ({
   assetId,
@@ -15,7 +15,9 @@ const ClearIndicativeStatusButton = ({
   onDone?: () => void
 }) => {
   const [isSaving, isSavingSuccess, lastSavingErrorCode, save] =
-    useDataStoreEdit<AssetMeta>(CollectionNames.AssetsMeta, assetId)
+    useDataStoreEdit<AssetMeta>(CollectionNames.AssetsMeta, assetId, {
+      queryName: 'clear-indicative-status',
+    })
   const onDoneAfterDelay = useTimer(onDone)
 
   const onSaveClick = async () => {

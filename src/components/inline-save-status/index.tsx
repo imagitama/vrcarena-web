@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import MiniLoadingIndicator from '../mini-loading-indicator'
-import { DataStoreErrorCode } from '../../data-store'
-import { colors } from '../../brand'
-import { colorPalette } from '../../config'
-import useInterval from '../../hooks/useInterval'
+import { DataStoreErrorCode } from '@/data-store'
+import MiniLoadingIndicator from '@/components/mini-loading-indicator'
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles({
   root: {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { ReactComponent as ChariotImage } from '../../assets/images/chariot.svg'
+import { ReactComponent as ChariotImage } from '@/assets/images/chariot.svg'
 
 const useStyles = makeStyles({
   root: {

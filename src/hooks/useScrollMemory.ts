@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router'
-import { scrollTo, scrollToTop } from '../utils'
+
+import { scrollTo, scrollToTop } from '@/utils'
 
 const scrollAmountsByUrl = new Map<string, number>()
 

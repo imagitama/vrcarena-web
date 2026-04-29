@@ -1,9 +1,11 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { ResolutionStatus } from '../../modules/reports'
-import FormattedDate from '../formatted-date'
-import UsernameLink from '../username-link'
-import { colorPalette } from '../../config'
+
+import { ResolutionStatus } from '@/modules/reports'
+import { colorPalette } from '@/config'
+
+import FormattedDate from '@/components/formatted-date'
+import UsernameLink from '@/components/username-link'
 
 const useStyles = makeStyles({
   root: {

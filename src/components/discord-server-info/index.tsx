@@ -1,8 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import { trackAction } from '../../analytics'
-import { DiscordServer } from '../../modules/discordservers'
+import { trackAction } from '@/analytics'
+import { DiscordServer } from '@/modules/discordservers'
 
 const useStyles = makeStyles({
   root: {

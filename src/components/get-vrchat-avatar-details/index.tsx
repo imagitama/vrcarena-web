@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import { handleError } from '../../error-handling'
-import { callFunction } from '../../firebase'
-import { getAvatarIdFromUserInput } from '../../utils'
+import { handleError } from '@/error-handling'
+import { callFunction } from '@/firebase'
+import { getAvatarIdFromUserInput } from '@/utils'
+import { VrchatAvatar as VrchatAvatarDetails } from '@/vrchat'
 
-import FormControls from '../form-controls'
-import TextInput from '../text-input'
-import Button from '../button'
-import VrchatAvatar from '../vrchat-avatar'
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import { VrchatAvatar as VrchatAvatarDetails } from '../../vrchat'
+import FormControls from '@/components/form-controls'
+import TextInput from '@/components/text-input'
+import Button from '@/components/button'
+import VrchatAvatar from '@/components/vrchat-avatar'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
 
 const useStyles = makeStyles({
   label: {

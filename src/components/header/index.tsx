@@ -1,32 +1,29 @@
-import React, { useEffect, useRef } from 'react'
-import Link from '../../components/link'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 import { makeStyles } from '@mui/styles'
-import Button from '@mui/material/Button'
 import { useMediaQuery } from 'react-responsive'
 import MenuIcon from '@mui/icons-material/Menu'
 
-import * as routes from '../../routes'
-import { openMenu } from '../../modules/app'
-import { ReactComponent as Logo } from '../../assets/images/logo.svg'
-import { ReactComponent as DiscordIcon } from '../../assets/images/icons/discord.svg'
-import { ReactComponent as PatreonIcon } from '../../assets/images/icons/patreon.svg'
+import * as routes from '@/routes'
+import { openMenu } from '@/modules/app'
+import { ReactComponent as Logo } from '@/assets/images/logo.svg'
+import { ReactComponent as DiscordIcon } from '@/assets/images/icons/discord.svg'
+import { ReactComponent as PatreonIcon } from '@/assets/images/icons/patreon.svg'
 import {
   queryForMobiles,
   mediaQueryForMobiles,
   mediaQueryForDesktopsOnly,
   mediaQueryForTabletsOrBelow,
-} from '../../media-queries'
-import { trackAction } from '../../analytics'
-import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '../../config'
-import bgImageUrl from '../../assets/images/brushed-metal.webp'
+} from '@/media-queries'
+import { trackAction } from '@/analytics'
+import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '@/config'
+import { colors } from '@/brand'
 
-import MobileMenu from '../mobile-menu'
-import AccountMenu from '../account-menu'
-import { colors } from '../../brand'
-import useBannerUrl from '../../hooks/useBannerUrl'
-import Searchbar from '../searchbar'
-import DesktopMenu from '../desktop-menu'
+import Link from '@/components/link'
+import MobileMenu from '@/components/mobile-menu'
+import AccountMenu from '@/components/account-menu'
+import Searchbar from '@/components/searchbar'
+import DesktopMenu from '@/components/desktop-menu'
 
 // when the navigation starts obstructing the logo
 const mediaQueryForMenuLogoCollision = '@media (max-width: 1280px)'
@@ -36,48 +33,10 @@ const useStyles = makeStyles({
     display: 'flex',
     position: 'relative',
     padding: '1rem',
+    background: `linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(110, 74, 158, 0.2) 100%)`,
     [mediaQueryForMobiles]: {
       padding: '0.5rem',
       flexDirection: 'column',
-    },
-  },
-  background: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: -5,
-    transition: 'all 1000ms',
-    background: `url(${bgImageUrl}) repeat #322148`,
-    backgroundBlendMode: 'overlay',
-    borderBottom: '1px solid #424242',
-    boxShadow: '0 5px 5px rgba(0, 0, 0, 0.2)',
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      top: '0',
-      left: 'calc(var(--x, 0) * 1px - 50px)',
-      width: '200px',
-      height: '100%',
-      background:
-        'linear-gradient(110deg, rgba(0, 0, 0, 0) 20%, #FFF 50%, rgba(0,0,0,0) 80%)',
-      opacity: '0.025',
-      transition: 'opacity 0.5s',
-      zIndex: 1000,
-    },
-  },
-  withBanner: {
-    opacity: 0.15,
-    transition: '500ms all',
-    '& .background': {
-      opacity: 0,
-    },
-    '&:hover': {
-      opacity: 1,
-      '& .background': {
-        opacity: 1,
-      },
     },
   },
   cols: {
@@ -162,6 +121,7 @@ const useStyles = makeStyles({
     transition: 'all 100ms',
     '&:hover': {
       opacity: 1,
+      animation: '$wiggle 500ms',
     },
     [mediaQueryForMenuLogoCollision]: {
       height: '50px',
@@ -169,6 +129,16 @@ const useStyles = makeStyles({
     [mediaQueryForMobiles]: {
       height: '50px',
     },
+  },
+  '@keyframes wiggle': {
+    '0%': { transform: 'rotate(0deg)' },
+    '15%': { transform: 'rotate(6deg)' },
+    '30%': { transform: 'rotate(-5deg)' },
+    '45%': { transform: 'rotate(4deg)' },
+    '60%': { transform: 'rotate(-3deg)' },
+    '75%': { transform: 'rotate(2deg)' },
+    '90%': { transform: 'rotate(-1deg)' },
+    '100%': { transform: 'rotate(0deg)' },
   },
   menuToggleButton: {
     width: '3rem',
@@ -241,19 +211,6 @@ export default () => {
   const dispatch = useDispatch()
   const isMobile = useMediaQuery({ query: queryForMobiles })
   const dispatchOpenMenu = () => dispatch(openMenu())
-  const hasBannerSet = useBannerUrl()!!
-  const backgroundElementRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    const backgroundElement = backgroundElementRef.current!
-
-    document.body.addEventListener('mousemove', (e) => {
-      if (window.scrollY < 10) {
-        const { x, y } = document.body.getBoundingClientRect()
-        backgroundElement.style.setProperty('--x', (e.clientX - x).toString())
-      }
-    })
-  }, [])
 
   const onToggleMobileMenuClick = () => {
     dispatchOpenMenu()
@@ -261,8 +218,7 @@ export default () => {
   }
 
   return (
-    <header
-      className={`${classes.root} ${hasBannerSet ? classes.withBanner : ''}`}>
+    <header className={classes.root}>
       <div className={classes.logoWrapper}>
         <Link to={routes.home} title="Go to the homepage of VRCArena">
           <Logo className={classes.logo} />
@@ -292,8 +248,6 @@ export default () => {
       </div>
 
       {isMobile ? <MobileMenu /> : null}
-
-      <div className={classes.background} ref={backgroundElementRef} />
     </header>
   )
 }

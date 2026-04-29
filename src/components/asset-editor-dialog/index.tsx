@@ -1,6 +1,6 @@
 import React from 'react'
-import AssetEditor from '../asset-editor'
-import Dialog from '../dialog'
+import AssetEditor from '@/components/asset-editor'
+import Dialog from '@/components/dialog'
 
 const AssetEditorDialog = ({
   onClose,

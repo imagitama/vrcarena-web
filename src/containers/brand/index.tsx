@@ -1,7 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { colors } from '../../brand'
-import Markdown from '../../components/markdown'
+
+import { colors } from '@/brand'
+import Markdown from '@/components/markdown'
+
 import { ReactComponent as Logo } from './assets/logo-v1/logo-v1.svg'
 import avatarUrl from './assets/logo-v1/avatar.png'
 
@@ -64,12 +66,7 @@ The icons used for social media (Discord, etc.) is a square image with the white
 - 20% from the top and bottom
 - 5% from the left and right
 
-The background is a linear gradient from Brand (0% bottom left) to Brand Very Dark (75% top right).
-
-## Extra
-
-- [Memory Game](./memory)  
-- [Guess The Avatar](./guess-the-avatar)`
+The background is a linear gradient from Brand (0% bottom left) to Brand Very Dark (75% top right).`
 
 export default () => (
   <>

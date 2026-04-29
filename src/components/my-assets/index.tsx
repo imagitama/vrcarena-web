@@ -1,15 +1,12 @@
 import React, { useCallback } from 'react'
 
-import useUserId from '../../hooks/useUserId'
-import * as routes from '../../routes'
-import PaginatedView, { GetQueryFn } from '../paginated-view'
-import AssetResults from '../asset-results'
-import { Asset, ViewNames } from '../../modules/assets'
-import {
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-} from '../../modules/common'
+import useUserId from '@/hooks/useUserId'
+import * as routes from '@/routes'
+import { Asset, ViewNames } from '@/modules/assets'
+import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+
+import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
+import AssetResults from '@/components/asset-results'
 
 const Renderer = ({ items }: { items?: Asset[] }) => (
   <AssetResults assets={items} showStates />

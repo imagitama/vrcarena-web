@@ -2,25 +2,23 @@ import React, { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
-import Checkbox from '@mui/material/Checkbox'
 
-import Paper from '../paper'
-import Button from '../button'
-import ErrorMessage from '../error-message'
-import SuccessMessage from '../success-message'
-import LoadingIndicator from '../loading-indicator'
-import Markdown from '../markdown'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { handleError } from '@/error-handling'
+import { trackAction } from '@/analytics'
+import { Asset, CollectionNames } from '@/modules/assets'
 
-import useDataStoreEdit from '../../hooks/useDataStoreEdit'
-import { handleError } from '../../error-handling'
-import { trackAction } from '../../analytics'
 import {
   addQuotesToDescription,
   removeQuotesFromDescription,
-} from '../../utils/formatting'
-import FormControls from '../form-controls'
-import { Asset, CollectionNames } from '../../modules/assets'
-import CheckboxInput from '../checkbox-input'
+} from '@/utils/formatting'
+import FormControls from '@/components/form-controls'
+import CheckboxInput from '@/components/checkbox-input'
+import Button from '@/components/button'
+import ErrorMessage from '@/components/error-message'
+import SuccessMessage from '@/components/success-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import Markdown from '@/components/markdown'
 
 const useStyles = makeStyles({
   root: {

@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react'
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import useDataStore from '../../hooks/useDataStore'
-import { FullAmendment, ViewNames } from '../../modules/amendments'
-import { CollectionNames as AssetsCollectionNames } from '../../modules/assets'
+import useDataStore from '@/hooks/useDataStore'
+import { FullAmendment, ViewNames } from '@/modules/amendments'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
-import LoadingIndicator from '../loading-indicator'
-import ErrorMessage from '../error-message'
-import AmendmentResults from '../amendment-results'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import AmendmentResults from '@/components/amendment-results'
 
 export default ({ assetId }: { assetId: string }) => {
   const getQuery = useCallback(

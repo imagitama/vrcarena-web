@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { makeStyles } from '@mui/styles'
-import Tab from '@mui/material/Tab'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
-import Paper from '../paper'
-import Markdown from '../markdown'
-import ImageUploader from '../image-uploader'
-import Button from '../button'
-import { bucketNames } from '../../file-uploading'
-import Tabs from '../tabs'
+import Markdown from '@/components/markdown'
+import ImageUploader from '@/components/image-uploader'
+import Button from '@/components/button'
+import { bucketNames } from '@/file-uploading'
+import Tabs from '@/components/tabs'
 
 const useStyles = makeStyles({
   input: {
@@ -125,6 +124,10 @@ This is a caption
                 variant="outlined"
                 disabled={isDisabled}
               />
+              <a href="https://www.markdownguide.org/" target="_blank">
+                Markdown <OpenInNewIcon />
+              </a>{' '}
+              supported{' '}
               <Button
                 size="small"
                 color="secondary"

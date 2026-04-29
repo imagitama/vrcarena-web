@@ -1,10 +1,12 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import HelpIcon from '@mui/icons-material/Help'
-import { formatPrice, popularCurrencies } from '../../currency'
-import * as routes from '../../routes'
-import Link from '../link'
-import { VRCArenaTheme } from '../../themes'
+
+import { formatPrice, popularCurrencies } from '@/currency'
+import * as routes from '@/routes'
+import { VRCArenaTheme } from '@/themes'
+
+import Link from '@/components/link'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   tag: {

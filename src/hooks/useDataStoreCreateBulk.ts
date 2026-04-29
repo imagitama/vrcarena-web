@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { handleError } from '../error-handling'
+import { handleError } from '@/error-handling'
 import {
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
-} from '../data-store'
+} from '@/data-store'
 import useSupabaseClient from './useSupabaseClient'
 
 const useDataStoreCreateBulk = <TRecord extends Record<string, unknown>>(

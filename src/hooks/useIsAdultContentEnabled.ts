@@ -1,4 +1,4 @@
-import { alreadyOver18Key } from '../config'
+import { alreadyOver18Key } from '@/config'
 import useStorage from './useStorage'
 import useUserPreferences from './useUserPreferences'
 

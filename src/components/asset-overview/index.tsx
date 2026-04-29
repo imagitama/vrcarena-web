@@ -1,19 +1,10 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import { Helmet } from 'react-helmet'
-import Card from '@mui/material/Card'
-import CardActionArea from '@mui/material/CardActionArea'
-
-// icons
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 import LinkIcon from '@mui/icons-material/Link'
-import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew'
-import { Warning as WarningIcon } from '../../icons'
 
-import useIsLoggedIn from '../../hooks/useIsLoggedIn'
-import useIsEditor from '../../hooks/useIsEditor'
-import useUserRecord from '../../hooks/useUserRecord'
+import { Warning as WarningIcon } from '@/icons'
 import {
   getDescriptionForHtmlMeta,
   getOpenGraphUrlForRouteUrl,
@@ -21,89 +12,80 @@ import {
   getIsUrlRisky,
   getIsUuid,
   scrollToTop,
-} from '../../utils'
-import * as routes from '../../routes'
-import { trackAction } from '../../analytics'
+} from '@/utils'
+import * as routes from '@/routes'
+import { trackAction } from '@/analytics'
 import {
+  isMobile,
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
-} from '../../media-queries'
-import Link from '../../components/link'
-import { getCategoryMeta } from '../../category-meta'
+} from '@/media-queries'
+import { getCategoryMeta } from '@/category-meta'
 import {
   AssetCategory,
   FullAsset,
-  FunctionNames,
-  GetFullAssetCacheItem,
   RelationType,
   SourceInfo,
   ViewNames,
   getIsAssetADraft,
   getIsAssetWaitingForApproval,
-} from '../../modules/assets'
+} from '@/modules/assets'
+import { getHasPermissionForRecord } from '@/permissions'
+import { DataStoreErrorCode } from '@/data-store'
+import { alreadyOver18Key } from '@/config'
+import { AttachmentType } from '@/modules/attachments'
+import { AccessStatus } from '@/modules/common'
+import { tagVrcFuryReady } from '@/vrcfury'
 
-import AssetThumbnail from '../asset-thumbnail'
-import Heading from '../heading'
-import ErrorMessage from '../error-message'
-import LoadingShimmer from '../loading-shimmer'
-import ImageGallery from '../image-gallery'
-import FeatureList from '../feature-list'
-import TagChips from '../tag-chips'
-import Button from '../button'
-import AssetResultsItem from '../asset-results-item'
-import FormattedDate from '../formatted-date'
-import UsernameLink from '../username-link'
-import GitHubReleases from '../github-releases'
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+import useStorage from '@/hooks/useStorage'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useIsEditor from '@/hooks/useIsEditor'
+import useUserRecord from '@/hooks/useUserRecord'
+import { HydrateFn } from '@/hooks/useDataStore'
 
-// controls
-import VisitSourceButton from '../visit-source-button'
-import EndorseAssetButton from '../endorse-asset-button'
-import AddToWishlistButton from '../add-to-wishlist-button'
-import AddToCollectionButton from '../add-to-collection-button'
+import AssetThumbnail from '@/components/asset-thumbnail'
+import Heading from '@/components/heading'
+import ErrorMessage from '@/components/error-message'
+import LoadingShimmer from '@/components/loading-shimmer'
+import ImageGallery from '@/components/image-gallery'
+import TagChips from '@/components/tag-chips'
+import Button from '@/components/button'
+import AssetResultsItem from '@/components/asset-results-item'
+import FormattedDate from '@/components/formatted-date'
+import UsernameLink from '@/components/username-link'
+import GitHubReleases from '@/components/github-releases'
+import Link from '@/components/link'
+import SpeciesList from '@/components/species-list'
+import VisitSourceButton from '@/components/visit-source-button'
+import EndorseAssetButton from '@/components/endorse-asset-button'
+import AddToWishlistButton from '@/components/add-to-wishlist-button'
+import AddToCollectionButton from '@/components/add-to-collection-button'
 
+import useAssetOverview from './useAssetOverview'
 import AssetOverviewContext from './context'
 import Messages from './components/messages'
 import Control from './components/control'
 import TabDescription from './components/tab-description'
 import TabReviews from './components/tab-reviews'
 import TabComments from './components/tab-comments'
-import TabAttachments from './components/tab-attachments'
 import TabAvatars from './components/tab-avatars'
 import TabAdmin from './components/tab-admin'
 import TabSimilar from './components/tab-similar'
-import AddToCartButton from '../add-to-cart-button'
-import SpeciesList from '../species-list'
 
-import Relations from '../relations'
-import useAssetOverview from './useAssetOverview'
-import OpenForCommissionsMessage from '../open-for-commissions-message'
+import Relations from '@/components/relations'
 import TabMentions from './components/tab-mentions'
-import VrcFurySettings from '../vrcfury-settings'
-import DiscordServerMustJoinNotice from '../discord-server-must-join-notice'
-import Block from '../block'
-import Questions from '../questions'
-import { AttachmentType } from '../../modules/attachments'
-import useIsAdultContentEnabled from '../../hooks/useIsAdultContentEnabled'
-import WarningMessage from '../warning-message'
-import { alreadyOver18Key } from '../../config'
-import useStorage from '../../hooks/useStorage'
-import AddToVccButton from '../add-to-vcc-button'
-import { AccessStatus, ApprovalStatus } from '../../modules/common'
-import { tagVrcFuryReady } from '../../vrcfury'
-import RequiresVerificationNotice from '../requires-verification-notice'
-import HintText from '../hint-text'
-import { getVrchatWorldLaunchUrlForId } from '../../vrchat'
-import useDataStoreFunction from '../../hooks/useDataStoreFunction'
-import useDataStoreItem from '../../hooks/useDataStoreItem'
-import LoadingIndicator from '../loading-indicator'
-import { getHasPermissionForRecord } from '../../permissions'
-import infoMessage from '../info-message'
-import InfoMessage from '../info-message'
-import Tooltip from '../tooltip'
+import VrcFurySettings from '@/components/vrcfury-settings'
+import DiscordServerMustJoinNotice from '@/components/discord-server-must-join-notice'
+import Block from '@/components/block'
+import WarningMessage from '@/components/warning-message'
+import AddToVccButton from '@/components/add-to-vcc-button'
+import RequiresVerificationNotice from '@/components/requires-verification-notice'
+import HintText from '@/components/hint-text'
+import LoadingIndicator from '@/components/loading-indicator'
 import PrimaryImage from './components/primary-image'
-import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
-import { DataStoreErrorCode } from '@/data-store'
-import { HydrateFn } from '@/hooks/useDataStore'
+import TagChip from '@/components/tag-chip'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -126,7 +108,7 @@ const CreatorControls = React.lazy(
 const QueuedAssetInfo = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "asset-overview-queued-asset-info" */ '../queued-asset-info'
+      /* webpackChunkName: "asset-overview-queued-asset-info" */ '@/components/queued-asset-info'
     )
 )
 
@@ -138,7 +120,7 @@ const useStyles = makeStyles({
     flexDirection: 'row',
 
     [mediaQueryForMobiles]: {
-      flexDirection: 'column-reverse',
+      flexDirection: 'column',
     },
   },
   leftCol: {
@@ -179,6 +161,10 @@ const useStyles = makeStyles({
   },
   authorName: {
     fontSize: '50%',
+    [mediaQueryForMobiles]: {
+      marginTop: '0.25rem',
+      display: 'block',
+    },
   },
   primaryImageGallery: {
     marginBottom: '1rem',
@@ -197,12 +183,21 @@ const useStyles = makeStyles({
   primaryMetadataThumb: {
     marginRight: '1rem',
   },
+  primaryMetadataText: {
+    [mediaQueryForMobiles]: { width: '100%', marginTop: '0.5rem' },
+  },
   thumbnailWrapper: {
     display: 'flex',
     justifyContent: 'center',
   },
   titleAndAuthor: {
     marginBottom: '0.5rem',
+  },
+  subTitle: {
+    fontSize: '1rem',
+    [mediaQueryForMobiles]: {
+      marginTop: '0.25rem',
+    },
   },
   // controls
   controlGroup: {
@@ -312,34 +307,6 @@ const RiskyFileNotice = ({ sourceUrl }: { sourceUrl?: string }) => {
   )
 }
 
-const MiniSaleInfo = () => {
-  const { asset } = useAssetOverview()
-  const classes = useStyles()
-
-  if (
-    !asset ||
-    !asset.salereason ||
-    (asset.saleexpiresat && new Date(asset.saleexpiresat) < new Date())
-  ) {
-    return null
-  }
-
-  return (
-    <Card className={classes.miniSaleInfo}>
-      <CardActionArea>
-        <Link
-          to={routes.viewAuthorWithVar.replace(
-            ':authorId',
-            asset.author || '#no-author'
-          )}>
-          <div className={classes.saleTitle}>Sale!</div>
-          Click here to view the author's sale info
-        </Link>
-      </CardActionArea>
-    </Card>
-  )
-}
-
 const Area = ({
   name,
   label,
@@ -385,9 +352,6 @@ const useSluggedAsset = (
   ]
 }
 
-const getIsSlug = (text: string): boolean =>
-  getIsUuid(text) === false && text.includes('-')
-
 const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
@@ -411,11 +375,6 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
     ':assetId',
     asset && asset.slug ? asset.slug : assetId
   )
-
-  // const isLoading =
-  //   (isSlug && isLoadingCachedAsset) ||
-  //   (!isSlug && isLoadingNonCachedAsset) ||
-  //   !asset
 
   useEffect(() => {
     console.debug('asset loaded, scrolling to top...')
@@ -465,12 +424,6 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
     )
   }
 
-  const mediaAttachments =
-    asset && asset.attachmentsdata
-      ? asset.attachmentsdata.filter(
-          (attachment) => attachment.type !== AttachmentType.File
-        )
-      : []
   const nonMediaAttachments =
     asset && asset.attachmentsdata
       ? asset.attachmentsdata.filter(
@@ -483,6 +436,38 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
           (attachment) => attachment.type === AttachmentType.File
         )
       : undefined
+
+  const visitSourceButtons = asset ? (
+    [
+      {
+        url: asset.sourceurl,
+        price: asset.price,
+        pricecurrency: asset.pricecurrency,
+      } as SourceInfo,
+    ]
+      .concat(asset.extrasources || []) // TODO: Ensure data is always empty array
+      .map((sourceInfo) => (
+        <Control key={sourceInfo.url}>
+          <VisitSourceButton
+            sourceInfo={sourceInfo}
+            // analytics
+            analyticsCategoryName={analyticsCategoryName}
+            assetId={assetId}
+          />
+
+          <HintText small>
+            *prices are an indication only and may be outdated
+          </HintText>
+        </Control>
+      ))
+  ) : (
+    <Control>
+      <VisitSourceButton isAssetLoading />
+      <HintText small>
+        *prices are an indication only and may be outdated
+      </HintText>
+    </Control>
+  )
 
   return (
     <>
@@ -549,7 +534,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
               <AssetThumbnail url={asset.thumbnailurl} size="micro" alt="" />
             )}
           </div>
-          <div>
+          <div className={classes.primaryMetadataText}>
             <Heading variant="h1" noMargin className={classes.titleAndAuthor}>
               {isLoading ? (
                 <LoadingShimmer width={300} height={50} />
@@ -582,7 +567,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
             {isLoading ? (
               <LoadingShimmer width={200} height={25} />
             ) : (
-              <>
+              <div className={classes.subTitle}>
                 {asset.category === AssetCategory.Avatar ? (
                   <>
                     <SpeciesList
@@ -603,12 +588,13 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                     ? getCategoryMeta(asset.category).nameSingular
                     : '(no category)'}
                 </Link>
-              </>
+              </div>
             )}
           </div>
         </div>
         <div className={classes.cols}>
           <div className={classes.leftCol}>
+            {isMobile && visitSourceButtons}
             <TabDescription />
             {nonMediaAttachments.length > 3 && (
               <Area name="extra-attached-images" label="Images">
@@ -677,30 +663,14 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                   }`}>
                   <TabReviews />
                 </Area>
-                <Area name="attachments" label="User Content">
-                  <TabAttachments />
-                </Area>
                 {asset && asset.relations && asset.relations.length ? (
                   <Area name="relations">
                     <Relations relations={asset.relations} />
                   </Area>
                 ) : null}
-                <Area name="questions" label="Community Questions">
-                  <Questions assetId={asset.id} />
-                </Area>
                 {asset && asset.similarassets && asset.similarassets.length ? (
                   <Area name="similar" label="Similar Assets">
                     <TabSimilar />
-                  </Area>
-                ) : null}
-                {asset.isopenforcommission &&
-                asset.showcommissionstatusforassets &&
-                asset.author ? (
-                  <Area name="commissions" label="Commission Info">
-                    <OpenForCommissionsMessage
-                      info={asset.commissioninfo}
-                      authorId={asset.author}
-                    />
                   </Area>
                 ) : null}
                 <Area name="mentions" label="Mentions">
@@ -759,38 +729,10 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                   </Control>
                 ) : null}
 
-                {asset ? (
-                  [
-                    {
-                      url: asset.sourceurl,
-                      price: asset.price,
-                      pricecurrency: asset.pricecurrency,
-                    } as SourceInfo,
-                  ]
-                    .concat(asset.extrasources || []) // TODO: Ensure data is always empty array
-                    .map((sourceInfo) => (
-                      <Control key={sourceInfo.url}>
-                        <VisitSourceButton
-                          sourceInfo={sourceInfo}
-                          // analytics
-                          analyticsCategoryName={analyticsCategoryName}
-                          assetId={assetId}
-                        />
-                      </Control>
-                    ))
-                ) : (
-                  <Control>
-                    <VisitSourceButton isAssetLoading />
-                  </Control>
-                )}
-
-                <HintText>
-                  *prices are an indication only and may be outdated
-                </HintText>
+                {visitSourceButtons}
 
                 <Control>
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
-                  <MiniSaleInfo />
                 </Control>
                 <Control>
                   {asset &&
@@ -807,23 +749,18 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                 </Control>
               </ControlGroup>
             ) : null}
-            <FeatureList
-              tags={asset ? asset.tags : []}
-              existingTagsData={asset ? asset.tagsdata : []}
-              shimmer={isLoading}
-            />
             <ParentControlGroup />
             <ControlGroup>
-              {asset && asset.category === AssetCategory.Avatar && (
-                <Control>
-                  <Button
-                    url={routes.accessorizeWithVar.replace(':assetId', assetId)}
-                    color="secondary"
-                    icon={<AccessibilityNewIcon />}
-                    isLoading={isLoading}>
-                    Find Accessories
-                  </Button>
-                </Control>
+              {asset && (
+                <ControlGroup>
+                  {asset.tags
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((tag) => (
+                      <div key={tag}>
+                        <TagChip tagName={tag} isFilled />
+                      </div>
+                    ))}
+                </ControlGroup>
               )}
               <Control>
                 <EndorseAssetButton
@@ -874,21 +811,6 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                   }
                 />
               </Control>
-              <Control>
-                <AddToCartButton
-                  isLoading={isLoading}
-                  assetId={assetId}
-                  asButton
-                />
-              </Control>
-              <Control>
-                <Button
-                  url={routes.compareWithVar.replace(':assetId', assetId)}
-                  icon={<CompareArrowsIcon />}
-                  color="secondary">
-                  Compare
-                </Button>
-              </Control>
             </ControlGroup>
             {isLoggedIn && (
               <ControlGroup>
@@ -919,13 +841,6 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                 </Suspense>
               </ControlGroup>
             )}
-            <ControlGroup>
-              <TagChips
-                tags={asset ? asset.tags : []}
-                shimmer={isLoading}
-                isFilled={false}
-              />
-            </ControlGroup>
             {isEditor && (
               <ControlGroup>
                 {asset && asset.createdat ? (

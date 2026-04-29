@@ -1,32 +1,32 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import Tabs from '../../components/tabs'
-import Heading from '../../components/heading'
-import LoadingIndicator from '../../components/loading-indicator'
-import NoPermissionMessage from '../../components/no-permission-message'
-import ErrorMessage from '../../components/error-message'
-import AdminAssets from '../../components/admin-assets'
-import AdminAmendments from '../../components/admin-amendments'
-import AdminReports from '../../components/admin-reports'
-import AdminPublicAvatars from '../../components/admin-public-avatars'
-import AdminNotices from '../../components/admin-notices'
-import AdminComments from './components/comments'
+import * as routes from '@/routes'
+import { UserRoles } from '@/modules/users'
 
+import useUserRecord from '@/hooks/useUserRecord'
+
+import Tabs from '@/components/tabs'
+import Heading from '@/components/heading'
+import LoadingIndicator from '@/components/loading-indicator'
+import NoPermissionMessage from '@/components/no-permission-message'
+import ErrorMessage from '@/components/error-message'
+import AdminAssets from '@/components/admin-assets'
+import AdminAmendments from '@/components/admin-amendments'
+import AdminReports from '@/components/admin-reports'
+import AdminPublicAvatars from '@/components/admin-public-avatars'
+import AdminNotices from '@/components/admin-notices'
+import InfoMessage from '@/components/info-message'
+
+import AdminComments from './components/comments'
 import AdminHome from './components/home'
 import History from './components/history'
 import AdminSupportTickets from './components/support-tickets'
-
-import useUserRecord from '../../hooks/useUserRecord'
-import * as routes from '../../routes'
-
-import { UserRoles } from '../../modules/users'
-import Link from '../../components/link'
+import Link from '@/components/link'
 import AdminAssetSyncQueue from './components/asset-queue'
 import AdminAudit from './components/audit'
 import AdminDupes from './components/dupes'
 import AdminReputation from './components/reputation'
-import InfoMessage from '../../components/info-message'
 
 const View = () => {
   const [isLoading, isErrored, user] = useUserRecord()

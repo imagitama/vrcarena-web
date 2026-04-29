@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useSync from '../../hooks/useSync'
+import useSync from '@/hooks/useSync'
 import Button from '../../../button'
 import ImageUploader from '../../../image-uploader'
 import { bucketNames } from '../../../../file-uploading'
