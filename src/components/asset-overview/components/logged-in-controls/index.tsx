@@ -1,33 +1,25 @@
 import React, { useContext } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 
-import * as routes from '../../../../routes'
-
-import Button from '../../../button'
-import ReportButton from '../../../report-button'
-import FeatureButton from '../../../feature-button'
-import TabContext from '../../context'
-import Control from '../control'
-import useIsPatron from '../../../../hooks/useIsPatron'
+import * as routes from '@/routes'
 import {
   CollectionNames,
   getIsAssetADraft,
   getIsAssetDeleted,
-} from '../../../../modules/assets'
-import useUserId from '../../../../hooks/useUserId'
-import DeleteDraftButton from '../../../delete-draft-button'
+} from '@/modules/assets'
+import useUserId from '@/hooks/useUserId'
+
+import Button from '@/components/button'
+import ReportButton from '@/components/report-button'
+import DeleteDraftButton from '@/components/delete-draft-button'
+
+import TabContext from '../../context'
+import Control from '../control'
 
 export default () => {
-  const {
-    assetId,
-    asset,
-    isLoading,
-    analyticsCategoryName,
-    trackAction,
-    hydrate,
-  } = useContext(TabContext)
+  const { assetId, asset, isLoading, analyticsCategoryName, hydrate } =
+    useContext(TabContext)
   const myUserId = useUserId()
-  const isPatron = useIsPatron()
 
   if (isLoading) {
     return null
@@ -59,16 +51,6 @@ export default () => {
           <DeleteDraftButton assetId={assetId} onDone={hydrate} />
         </Control>
       ) : null}
-      {isPatron && (
-        <Control>
-          <FeatureButton
-            id={assetId}
-            existingFeaturedStatus={asset?.featuredstatus}
-            onClick={() => trackAction('Click feature asset button', assetId)}
-            onDone={hydrate}
-          />
-        </Control>
-      )}
     </>
   )
 }
