@@ -1,4 +1,5 @@
 import { PopularCurrency } from '../currency'
+import { AiEvaluateQueuedItem } from './aievaluation'
 import { FullAttachment } from './attachments'
 import {
   AccessStatus,
@@ -245,6 +246,10 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   publishedbyreputation: number
 }
 
+export interface FullAsset_Editor extends FullAsset {
+  aievaluation: AiEvaluateQueuedItem | null
+}
+
 export interface SmallAsset extends Asset, AssetMeta {
   createdbyusername: string
   authorname: string
@@ -271,6 +276,7 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullAssets = 'getfullassets', // FullAsset[]
+  GetFullAssets_Editor = 'getfullassets_editor', // FullAsset_Editor[]
   GetFullAssetsCache = 'getfullassetscache',
   GetPublicAssets = 'getpublicassets', // PublicAsset[]
   RelatedAssets = 'relatedassets', // RelatedAssetsResult[]

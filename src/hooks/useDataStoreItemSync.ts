@@ -17,7 +17,7 @@ import useSupabaseClient from './useSupabaseClient'
  */
 export default <TResult extends { [key: string]: any }>(
   collectionName: string,
-  id: string,
+  id: string | false,
   queryName: string = 'unnamed',
   select: string = '*'
 ): [boolean, null | DataStoreErrorCode, null | TResult | false] => {

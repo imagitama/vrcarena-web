@@ -26,6 +26,13 @@ export enum PinnedStatus {
   Unpinned = 'unpinned',
 }
 
+export enum QueueStatus {
+  Queued = 'queued',
+  Processing = 'processing',
+  Processed = 'processed',
+  Failed = 'failed',
+}
+
 export interface MetaRecord extends Record<string, unknown> {
   editornotes: string
   featuredstatus: FeaturedStatus

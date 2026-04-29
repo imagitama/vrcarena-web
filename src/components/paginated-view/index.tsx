@@ -57,6 +57,7 @@ import { Refresh as RefreshIcon } from '../../icons'
 
 const useStyles = makeStyles({
   root: {
+    position: 'relative',
     marginTop: '0.5rem',
   },
   controls: {
@@ -97,6 +98,9 @@ const useStyles = makeStyles({
     marginTop: '0.5rem',
   },
   hydrateIcon: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
     cursor: 'pointer',
     padding: '0.5rem',
     fontSize: '2rem !important',

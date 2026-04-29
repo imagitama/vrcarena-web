@@ -101,6 +101,9 @@ import infoMessage from '../info-message'
 import InfoMessage from '../info-message'
 import Tooltip from '../tooltip'
 import PrimaryImage from './components/primary-image'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import { DataStoreErrorCode } from '@/data-store'
+import { HydrateFn } from '@/hooks/useDataStore'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -362,57 +365,38 @@ const Area = ({
   )
 }
 
-const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
+const useSluggedAsset = (
+  idOrSlug: string
+): [boolean, DataStoreErrorCode | null, FullAsset | null, HydrateFn] => {
+  const isEditor = useIsEditor()
+  const isSlug = getIsUuid(idOrSlug) === false && idOrSlug.includes('-')
+
+  const [isLoading, lastErrorCode, results, hydrate] =
+    useDatabaseQuery<FullAsset>(
+      isEditor ? ViewNames.GetFullAssets_Editor : ViewNames.GetFullAssets,
+      [[isSlug ? 'slug' : 'id', Operators.EQUALS, idOrSlug]]
+    )
+
+  return [
+    isLoading,
+    lastErrorCode,
+    results !== null ? results[0] : null,
+    hydrate,
+  ]
+}
+
+const getIsSlug = (text: string): boolean =>
+  getIsUuid(text) === false && text.includes('-')
+
+const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
-  const isSlug = getIsUuid(rawAssetId) === false && rawAssetId.includes('-')
+  const [isLoadingAsset, lastErrorCode, asset, hydrate] =
+    useSluggedAsset(assetIdOrSlug)
 
-  const [
-    isLoadingCachedAsset,
-    lastErrorCodeCached,
-    cacheResults,
-    hydrateCachedAsset,
-  ] = useDataStoreFunction<{ slug_to_search: string }, GetFullAssetCacheItem>(
-    isSlug ? FunctionNames.GetOrHydrateGetFullAssets : false,
-    true,
-    {
-      slug_to_search: rawAssetId,
-    }
-  )
-  const [
-    isLoadingNonCachedAsset,
-    lastErrorCodeNonCached,
-    nonCachedResults,
-    hydrateNonCachedAsset,
-  ] = useDataStoreItem<FullAsset>(
-    ViewNames.GetFullAssets,
-    isSlug ? false : rawAssetId,
-    {
-      queryName: 'asset-overview',
-    }
-  )
+  const isLoading = isLoadingAsset || asset === null
 
-  const hydrate = isSlug ? hydrateCachedAsset : hydrateNonCachedAsset
-
-  const cachedRecord =
-    isSlug && Array.isArray(cacheResults) ? cacheResults[0] : null
-  const asset: FullAsset | null = cachedRecord
-    ? cachedRecord.data
-    : isSlug
-    ? null
-    : nonCachedResults
-    ? nonCachedResults
-    : null
-  const assetId = asset ? asset.id : rawAssetId
-
-  console.debug('asset-overview.render', {
-    rawAssetId,
-    isSlug,
-    cachedRecord,
-    cacheResults,
-    nonCachedResults,
-    asset,
-  })
+  const assetId = asset ? asset.id : assetIdOrSlug
 
   const classes = useStyles()
   const [, , user] = useUserRecord()
@@ -428,10 +412,10 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
     asset && asset.slug ? asset.slug : assetId
   )
 
-  const isLoading =
-    (isSlug && isLoadingCachedAsset) ||
-    (!isSlug && isLoadingNonCachedAsset) ||
-    !asset
+  // const isLoading =
+  //   (isSlug && isLoadingCachedAsset) ||
+  //   (!isSlug && isLoadingNonCachedAsset) ||
+  //   !asset
 
   useEffect(() => {
     console.debug('asset loaded, scrolling to top...')
@@ -439,8 +423,7 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
   }, [asset ? asset.id : undefined])
 
   if (
-    lastErrorCodeCached !== null ||
-    lastErrorCodeNonCached !== null ||
+    lastErrorCode !== null ||
     (asset &&
       ((asset.category as string) === 'world' ||
         (asset.category as string) === 'article'))
@@ -993,11 +976,11 @@ const AssetOverview = ({ assetId: rawAssetId }: { assetId: string }) => {
                     <FormattedDate date={asset.lastsyncedwithgumroadat} />
                   </div>
                 ) : null}
-                {cachedRecord && (
+                {/* {cachedRecord && (
                   <>
                     Cached <FormattedDate date={cachedRecord.updatedat} />
                   </>
-                )}
+                )} */}
               </ControlGroup>
             )}
           </div>

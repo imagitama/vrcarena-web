@@ -66,9 +66,7 @@ const View = () => {
             label: 'Assets',
             contents: (
               <>
-                <InfoMessage
-                  title="How Amendments Work"
-                  hideId="admin-amendments-info">
+                <InfoMessage title="How Assets Work" hideId="admin-assets-info">
                   <strong>
                     Assets are auto-approved after 24 hours (ignores rep). You
                     can still manually approve/decline them.

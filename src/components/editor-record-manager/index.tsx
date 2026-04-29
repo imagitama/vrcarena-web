@@ -122,14 +122,17 @@ const EditorRecordManager = ({
         <div className={classes.rows}>
           {showStatuses || showPublishButtons ? (
             <div className={classes.row}>
-              {showStatuses && showPublishButtons && existingPublishStatus && (
-                <div className={classes.cell}>
-                  <MetaStatus
-                    status={existingPublishStatus}
-                    type={PublishStatus}
-                  />
-                </div>
-              )}
+              {showStatuses &&
+                showPublishButtons &&
+                existingPublishStatus &
+                (
+                  <div className={classes.cell}>
+                    <MetaStatus
+                      status={existingPublishStatus}
+                      type={PublishStatus}
+                    />
+                  </div>
+                )}
               {showPublishButtons && (
                 <div className={classes.cell}>
                   <AdminPublishButton

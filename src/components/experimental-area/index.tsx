@@ -5,16 +5,17 @@ import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 const useStyles = makeStyles({
   root: {
     padding: '1rem',
-    border: '2px dashed rgba(0, 255, 0, 0.5)',
+    border: '1px dashed rgba(0, 255, 0, 0.5)',
     backgroundColor: 'rgba(0, 255, 0, 0.01)',
     position: 'relative',
   },
   title: {
-    color: 'rgba(0, 255, 0, 0.5)',
+    fontSize: '75%',
+    color: 'rgba(0, 255, 0, 0.25)',
     position: 'absolute',
     display: 'flex',
     alignItems: 'center',
-    padding: '0.5rem',
+    padding: '0.25rem',
     cursor: 'default',
     '&:first-child': {
       top: 0,

@@ -23,6 +23,7 @@ import {
   CollectionNames as AssetsCollectionNames,
   AssetCategory,
   ViewNames,
+  FullAsset_Editor,
 } from '../../modules/assets'
 import AssetResultsItem from '../../components/asset-results-item'
 import { colorPalette } from '../../config'
@@ -34,6 +35,7 @@ import AssetOverview from '../asset-overview'
 import useStorage from '../../hooks/useStorage'
 import { EqualActiveFilter, FilterSubType, FilterType } from '../../filters'
 import QueuedAssetInfo from '../queued-asset-info'
+import AiEvaluationResult from '../ai-evaluation-result'
 
 const useStyles = makeStyles({
   pass: {
@@ -119,6 +121,8 @@ function AssetsTable({
                       onDone={hydrate ? () => hydrate() : undefined}
                       callOnDoneOnEditorNotes={false}
                     />
+                    <br />
+                    <AiEvaluationResult asset={asset as FullAsset_Editor} />
                   </TableCell>
                 </TableRow>
               )
@@ -299,7 +303,7 @@ const AdminAssets = () => {
     <PaginatedView<FullAsset>
       // cannot re-use other paginated views because "publishedat" field does not exist for them
       name="view-admin-assets"
-      viewName={ViewNames.GetFullAssets}
+      viewName={ViewNames.GetFullAssets_Editor}
       getQuery={getQuery}
       sortOptions={[
         {
