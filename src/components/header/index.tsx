@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { makeStyles } from '@mui/styles'
 import { useMediaQuery } from 'react-responsive'
 import MenuIcon from '@mui/icons-material/Menu'
+import GitHubIcon from '@mui/icons-material/GitHub'
 
 import * as routes from '@/routes'
 import { openMenu } from '@/modules/app'
@@ -16,7 +17,11 @@ import {
   mediaQueryForTabletsOrBelow,
 } from '@/media-queries'
 import { trackAction } from '@/analytics'
-import { DISCORD_URL, PATREON_BECOME_PATRON_URL } from '@/config'
+import {
+  DISCORD_URL,
+  GITHUB_REPO_URL,
+  PATREON_BECOME_PATRON_URL,
+} from '@/config'
 import { colors } from '@/brand'
 
 import Link from '@/components/link'
@@ -201,6 +206,12 @@ const SocialMediaIcons = () => {
         title="Visit our Patreon"
         onClick={() => trackAction('Header', 'Click visit Patreon icon')}>
         <PatreonIcon />
+      </a>
+      <a
+        href={GITHUB_REPO_URL}
+        title="Visit our GitHub repo"
+        onClick={() => trackAction('Header', 'Click visit GitHub icon')}>
+        <GitHubIcon />
       </a>
     </div>
   )

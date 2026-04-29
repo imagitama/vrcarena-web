@@ -11,6 +11,7 @@ export const EMAIL = 'contact@vrcarena.com'
 export const FURALITY_URL = `https://furality.org/?referrer=${encodeURIComponent(
   WEBSITE_FULL_URL
 )}`
+export const GITHUB_REPO_URL = 'https://github.com/imagitama/vrcarena-web'
 
 export const BANNER_WIDTH = 1280
 export const BANNER_HEIGHT = 300

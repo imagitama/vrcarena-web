@@ -36,6 +36,7 @@ const useStyles = makeStyles({
       marginTop: '2rem',
     },
     [mediaQueryForMobiles]: {
+      width: '100%',
       padding: '1rem',
       '& .controls': {
         marginTop: '1rem',
