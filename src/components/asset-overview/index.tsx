@@ -469,7 +469,8 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
     </Control>
   )
 
-  const isAssetLoaded = asset !== null && isLoading !== true
+  const isAssetLoaded =
+    asset !== null && asset !== undefined && isLoading !== true
 
   return (
     <>
