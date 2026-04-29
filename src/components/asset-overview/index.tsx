@@ -481,7 +481,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
           hydrate,
           analyticsCategoryName,
         }}>
-        {isLoading ? (
+        {isLoading || !asset ? (
           <Helmet>
             <title>Loading asset... | VRCArena</title>
           </Helmet>
