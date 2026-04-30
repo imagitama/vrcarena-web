@@ -58,6 +58,9 @@ const useStyles = makeStyles({
     margin: '5px 0 0 5px',
     opacity: 0.5, // same as "HintText"
   },
+  hint: {
+    marginLeft: '0.25rem',
+  },
 })
 
 function getButtonLabel(sourceUrl: string): string {
@@ -213,7 +216,7 @@ const VisitSourceButton = ({
         </Tooltip>
       )}
       {hasPrice && (
-        <HintText small>
+        <HintText small className={classes.hint}>
           *prices are an indication only and may be outdated
         </HintText>
       )}

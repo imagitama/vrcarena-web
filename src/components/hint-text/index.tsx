@@ -13,13 +13,16 @@ const useStyles = makeStyles({
 const HintText = ({
   children,
   small,
+  className = '',
 }: {
   children: React.ReactNode
   small?: boolean
+  className?: string
 }) => {
   const classes = useStyles()
   return (
-    <span className={`${classes.root} ${small ? classes.small : ''}`}>
+    <span
+      className={`${classes.root} ${small ? classes.small : ''} ${className}`}>
       {children}
     </span>
   )
