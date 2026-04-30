@@ -572,18 +572,20 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
         <Messages />
         <PrimaryImage />
         <div className={classes.primaryMetadata}>
-          <div className={classes.primaryMetadataThumb}>
-            {!isAssetLoaded ? (
-              <LoadingShimmer width={75} height={75} />
-            ) : (
-              <AssetThumbnail
-                url={asset.thumbnailurl}
-                size={isMobile && !hasPrimaryImage ? 'full' : 'micro'}
-                alt="Asset thumbnail"
-                className={classes.thumbnail}
-              />
-            )}
-          </div>
+          {isMobile && hasPrimaryImage ? null : (
+            <div className={classes.primaryMetadataThumb}>
+              {!isAssetLoaded ? (
+                <LoadingShimmer width={75} height={75} />
+              ) : (
+                <AssetThumbnail
+                  url={asset.thumbnailurl}
+                  size={isMobile && !hasPrimaryImage ? 'full' : 'micro'}
+                  alt="Asset thumbnail"
+                  className={classes.thumbnail}
+                />
+              )}
+            </div>
+          )}
           <div className={classes.primaryMetadataText}>
             <Heading variant="h1" noMargin className={classes.titleAndAuthor}>
               {!isAssetLoaded ? (
@@ -749,7 +751,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
             ) : null}
             {isAssetLoaded ? (
               <ControlGroup>
-                {visitSourceButtons}
+                {!isMobile && visitSourceButtons}
                 <Control>
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
                 </Control>
@@ -767,7 +769,13 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                     )}
                 </Control>
               </ControlGroup>
-            ) : null}
+            ) : (
+              <ControlGroup>
+                <Control>
+                  <VisitSourceButton isAssetLoading={true} />
+                </Control>
+              </ControlGroup>
+            )}
             <ParentControlGroup />
             <ControlGroup>
               {asset && (
