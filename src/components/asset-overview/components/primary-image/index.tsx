@@ -30,9 +30,10 @@ const useStyles = makeStyles({
     '& img': {
       display: 'block',
       maxWidth: '100%',
-      // maxHeight: '400px',
-      // aspectRatio: '1/1',
       objectFit: 'contain', // (default: fill) required to fix stretched images on Edge
+    },
+    [mediaQueryForMobiles]: {
+      maxWidth: '100%',
     },
   },
   placeholder: {

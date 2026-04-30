@@ -29,6 +29,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   title: {
     flex: '1 0 auto',
     fontSize: '150%',
+    fontWeight: '200',
     marginBottom: '0.5rem',
     display: 'flex',
     alignItems: 'center',

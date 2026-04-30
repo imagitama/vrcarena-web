@@ -396,6 +396,7 @@ const AddToCollectionButton = ({
   }, [])
 
   const onClickMainButton = () => {
+    if (!isLoggedIn) return
     setIsOpen((currentVal) => !currentVal)
     onClick()
   }

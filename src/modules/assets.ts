@@ -7,7 +7,7 @@ import {
   MetaRecord,
   PublishStatus,
 } from './common'
-import { Tag } from './tags'
+import { Tag, TagStats } from './tags'
 
 // TODO: Better func here as technically FullAsset has speciesnames
 export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
@@ -237,6 +237,7 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   attachmentsdata: FullAttachment[] | null
   publishedbyusername: string
   publishedbyreputation: number
+  tagscount: TagStats[] // different to tagsdata as that returns null if tag already in database
 }
 
 export interface FullAsset_Editor extends FullAsset {

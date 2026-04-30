@@ -3,7 +3,7 @@ import { FullAsset } from '@/modules/assets'
 
 export interface AssetOverviewContext {
   assetId: string
-  asset: FullAsset | null
+  asset: FullAsset | null | false
   isLoading: boolean
   trackAction: (action: string, payload: any) => void
   hydrate: () => void

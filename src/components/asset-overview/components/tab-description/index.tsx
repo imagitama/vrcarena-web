@@ -55,7 +55,7 @@ export default () => {
 
   if (isMobile)
     return (
-      <Expander isLoaded={asset !== null} message="Click to expand description">
+      <Expander isLoaded={asset !== null} message="Tap to expand description">
         {content}
       </Expander>
     )

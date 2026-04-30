@@ -33,6 +33,7 @@ interface Props {
   noLink?: boolean
   className?: string
   visualOnly?: boolean
+  count?: number
 }
 
 const ChipWithTooltip = ({

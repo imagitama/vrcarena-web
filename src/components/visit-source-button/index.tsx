@@ -26,6 +26,7 @@ import useSupabaseClient from '@/hooks/useSupabaseClient'
 import Button from '@/components/button'
 import Price from '@/components/price'
 import Tooltip from '@/components/tooltip'
+import HintText from '@/components/hint-text'
 
 const useStyles = makeStyles({
   root: {
@@ -126,7 +127,6 @@ const VisitSourceButton = ({
   sourceInfo,
   isAssetLoading = false,
   assetId,
-  isLarge = false,
   onClick,
   analyticsCategoryName,
   analyticsEvent,
@@ -136,7 +136,6 @@ const VisitSourceButton = ({
   assetId?: string
   analyticsCategoryName?: string
   analyticsEvent?: string
-  isLarge?: boolean
   isAssetLoading?: boolean
   onClick?: (payload: { assetId?: string; sourceUrl: string }) => void
   isExtraSource?: boolean
@@ -178,6 +177,11 @@ const VisitSourceButton = ({
     }
   }
 
+  const hasPrice =
+    sourceInfo !== undefined &&
+    sourceInfo.price !== null &&
+    sourceInfo.price !== undefined
+
   return (
     <div className={classes.root}>
       <Button
@@ -190,9 +194,9 @@ const VisitSourceButton = ({
           isExtraSource ? classes.extraSource : ''
         } ${sourceInfo?.price ? classes.buttonWithPrice : ''}`}
         isLoading={isAssetLoading}>
-        {sourceInfo?.price !== null && sourceInfo?.price !== undefined ? (
+        {hasPrice ? (
           <Price
-            price={sourceInfo?.price}
+            price={sourceInfo.price!}
             priceCurrency={sourceInfo?.pricecurrency!}
             isGreyscale
             className={classes.price}
@@ -207,6 +211,11 @@ const VisitSourceButton = ({
         <Tooltip title={sourceInfo?.comments}>
           <HelpIcon className={classes.icon} />
         </Tooltip>
+      )}
+      {hasPrice && (
+        <HintText small>
+          *prices are an indication only and may be outdated
+        </HintText>
       )}
     </div>
   )

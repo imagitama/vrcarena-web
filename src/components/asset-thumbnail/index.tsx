@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '@/config'
 import defaultThumbnailUrl from '@/assets/images/default-thumbnail.webp'
+import classNames from 'classnames'
 
 const useStyles = makeStyles({
   root: {
@@ -64,15 +65,16 @@ const AssetThumbnail = ({
 }) => {
   const classes = useStyles()
   return (
-    <div className={`${classes.root} ${classes[size]}`}>
+    <div className={`${classes.root} ${classes[size]} ${className}`}>
       <img
         src={url || defaultThumbnailUrl}
         width={THUMBNAIL_WIDTH}
         height={THUMBNAIL_HEIGHT}
         alt={alt !== undefined ? alt : 'Thumbnail for asset'}
-        className={`${className} ${spin ? classes.spin : ''} ${
-          pauseOnHover ? classes.pauseOnHover : ''
-        }`}
+        className={classNames({
+          [classes.spin]: spin,
+          [classes.pauseOnHover]: pauseOnHover,
+        })}
       />
     </div>
   )

@@ -93,7 +93,7 @@ const useStyles = makeStyles({
     '& a': {
       display: 'flex',
       alignItems: 'center',
-      padding: '0 0.5rem',
+      padding: '0 0.25rem',
       opacity: '0.75',
       transition: 'all 100ms',
       '&:hover': {

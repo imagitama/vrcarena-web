@@ -161,6 +161,7 @@ const useStyles = makeStyles({
   },
   authorName: {
     fontSize: '50%',
+    fontWeight: '400',
     [mediaQueryForMobiles]: {
       marginTop: '0.25rem',
       display: 'block',
@@ -182,6 +183,12 @@ const useStyles = makeStyles({
   },
   primaryMetadataThumb: {
     marginRight: '1rem',
+    [mediaQueryForMobiles]: {
+      marginRight: 0,
+    },
+  },
+  thumbnail: {
+    [mediaQueryForMobiles]: { width: '100%', height: 'auto' },
   },
   primaryMetadataText: {
     [mediaQueryForMobiles]: { width: '100%', marginTop: '0.5rem' },
@@ -195,6 +202,7 @@ const useStyles = makeStyles({
   },
   subTitle: {
     fontSize: '1rem',
+    fontWeight: '300',
     [mediaQueryForMobiles]: {
       marginTop: '0.25rem',
     },
@@ -334,22 +342,29 @@ const Area = ({
 
 const useSluggedAsset = (
   idOrSlug: string
-): [boolean, DataStoreErrorCode | null, FullAsset | null, HydrateFn] => {
+): [
+  boolean,
+  DataStoreErrorCode | null,
+  FullAsset | null | false,
+  HydrateFn
+] => {
   const isEditor = useIsEditor()
   const isSlug = getIsUuid(idOrSlug) === false && idOrSlug.includes('-')
 
   const [isLoading, lastErrorCode, results, hydrate] =
     useDatabaseQuery<FullAsset>(
       isEditor ? ViewNames.GetFullAssets_Editor : ViewNames.GetFullAssets,
-      [[isSlug ? 'slug' : 'id', Operators.EQUALS, idOrSlug]]
+      [[isSlug ? 'slug' : 'id', Operators.EQUALS, idOrSlug]],
+      { queryName: `asset-overview-${idOrSlug}` }
     )
 
-  return [
-    isLoading,
-    lastErrorCode,
-    results !== null ? results[0] : null,
-    hydrate,
-  ]
+  const result = Array.isArray(results)
+    ? results.length === 1
+      ? results[0]
+      : false
+    : null
+
+  return [isLoading, lastErrorCode, result, hydrate]
 }
 
 const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
@@ -359,6 +374,8 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
     useSluggedAsset(assetIdOrSlug)
 
   const isLoading = isLoadingAsset || asset === null
+  const hasLoadedAndExists =
+    isLoading === false && asset !== null && asset !== false
 
   const assetId = asset ? asset.id : assetIdOrSlug
 
@@ -385,7 +402,8 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
     lastErrorCode !== null ||
     (asset &&
       ((asset.category as string) === 'world' ||
-        (asset.category as string) === 'article'))
+        (asset.category as string) === 'article')) ||
+    (!isLoading && asset === false)
   ) {
     return (
       <ErrorMessage>
@@ -427,7 +445,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
   const nonMediaAttachments =
     asset && asset.attachmentsdata
       ? asset.attachmentsdata.filter(
-          (attachment) => attachment.type === AttachmentType.File
+          (attachment) => attachment.type !== AttachmentType.File
         )
       : []
   const firstFileAttachment =
@@ -436,43 +454,65 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
           (attachment) => attachment.type === AttachmentType.File
         )
       : undefined
+  const hasPrimaryImage = nonMediaAttachments.length > 0
 
   const visitSourceButtons = asset ? (
-    [
-      {
-        url: asset.sourceurl,
-        price: asset.price,
-        pricecurrency: asset.pricecurrency,
-      } as SourceInfo,
-    ]
-      .concat(asset.extrasources || []) // TODO: Ensure data is always empty array
-      .map((sourceInfo) => (
-        <Control key={sourceInfo.url}>
-          <VisitSourceButton
-            sourceInfo={sourceInfo}
-            // analytics
-            analyticsCategoryName={analyticsCategoryName}
-            assetId={assetId}
+    <>
+      {asset?.relations?.find((relation) => relation.requiresVerification) ? (
+        <Control>
+          <RequiresVerificationNotice
+            relations={asset.relations}
+            relationsData={asset.relationsdata}
           />
-
-          <HintText small>
-            *prices are an indication only and may be outdated
-          </HintText>
         </Control>
-      ))
+      ) : null}
+      {asset?.discordserver ? (
+        <Control>
+          <DiscordServerMustJoinNotice
+            discordServerId={asset?.discordserver}
+            discordServerData={asset?.discordserverdata || undefined}
+          />
+        </Control>
+      ) : null}
+
+      {asset && asset.sourceurl && getIsGitHubUrl(asset.sourceurl) ? (
+        <Control>
+          <GitHubReleases
+            gitHubUrl={asset.sourceurl}
+            showErrorOnNotFound={false}
+          />
+        </Control>
+      ) : null}
+      {[
+        {
+          url: asset.sourceurl,
+          price: asset.price,
+          pricecurrency: asset.pricecurrency,
+        } as SourceInfo,
+      ]
+        .concat(asset.extrasources || []) // TODO: Ensure data is always empty array
+        .map((sourceInfo) => (
+          <Control key={sourceInfo.url}>
+            <VisitSourceButton
+              sourceInfo={sourceInfo}
+              // analytics
+              analyticsCategoryName={analyticsCategoryName}
+              assetId={assetId}
+            />
+          </Control>
+        ))}
+    </>
   ) : (
     <Control>
       <VisitSourceButton isAssetLoading />
-      <HintText small>
-        *prices are an indication only and may be outdated
-      </HintText>
     </Control>
   )
 
   const isAssetLoaded =
-    asset !== null && asset !== undefined && isLoading !== true
-
-  console.debug(`AssetOverview`, { asset, isLoading, isAssetLoaded })
+    asset !== null &&
+    asset !== undefined &&
+    asset !== false &&
+    isLoading !== true
 
   return (
     <>
@@ -486,7 +526,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
           hydrate,
           analyticsCategoryName,
         }}>
-        {!isAssetLoaded ? (
+        {!isAssetLoaded || !hasLoadedAndExists ? (
           <Helmet>
             <title>Loading asset... | VRCArena</title>
           </Helmet>
@@ -536,7 +576,12 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
             {!isAssetLoaded ? (
               <LoadingShimmer width={75} height={75} />
             ) : (
-              <AssetThumbnail url={asset.thumbnailurl} size="micro" alt="" />
+              <AssetThumbnail
+                url={asset.thumbnailurl}
+                size={isMobile && !hasPrimaryImage ? 'full' : 'micro'}
+                alt="Asset thumbnail"
+                className={classes.thumbnail}
+              />
             )}
           </div>
           <div className={classes.primaryMetadataText}>
@@ -704,36 +749,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
             ) : null}
             {isAssetLoaded ? (
               <ControlGroup>
-                {asset?.relations?.find(
-                  (relation) => relation.requiresVerification
-                ) ? (
-                  <Control>
-                    <RequiresVerificationNotice
-                      relations={asset.relations}
-                      relationsData={asset.relationsdata}
-                    />
-                  </Control>
-                ) : null}
-                {asset?.discordserver ? (
-                  <Control>
-                    <DiscordServerMustJoinNotice
-                      discordServerId={asset?.discordserver}
-                      discordServerData={asset?.discordserverdata || undefined}
-                    />
-                  </Control>
-                ) : null}
-
-                {asset && asset.sourceurl && getIsGitHubUrl(asset.sourceurl) ? (
-                  <Control>
-                    <GitHubReleases
-                      gitHubUrl={asset.sourceurl}
-                      showErrorOnNotFound={false}
-                    />
-                  </Control>
-                ) : null}
-
                 {visitSourceButtons}
-
                 <Control>
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
                 </Control>
@@ -758,11 +774,20 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                 <ControlGroup>
                   {asset.tags
                     .sort((a, b) => a.localeCompare(b))
-                    .map((tag) => (
-                      <div key={tag}>
-                        <TagChip tagName={tag} isFilled />
-                      </div>
-                    ))}
+                    .map((tag, i) => {
+                      const stats = asset.tagscount.find(
+                        (stats) => stats.tag === tag
+                      )
+                      return (
+                        <div key={tag}>
+                          <TagChip
+                            tagName={tag}
+                            label={`${tag}${stats ? ` (${stats.count})` : ''}`}
+                            isFilled
+                          />
+                        </div>
+                      )
+                    })}
                 </ControlGroup>
               )}
               <Control>

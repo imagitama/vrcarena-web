@@ -18,6 +18,7 @@ import FormControls from '@/components/form-controls'
 import { CollectionNames } from '@/modules/public-avatar-submissions'
 
 import screenshotUrl from './assets/images/screenshot.webp'
+import HintText from '../hint-text'
 
 interface PublicAvatarCreateFields extends Record<string, unknown> {
   asset: string
@@ -155,13 +156,17 @@ export default ({
         </>
       ) : (
         <FormControls>
-          <Button
-            icon={<AddIcon />}
-            switchIconSide
-            onClick={() => setIsExpanded(true)}
-            size="large">
-            Add Your Avatar (does not require login)
-          </Button>
+          <span>
+            <Button
+              icon={<AddIcon />}
+              switchIconSide
+              onClick={() => setIsExpanded(true)}
+              size="large">
+              Add Your Avatar
+            </Button>
+            <br />
+            <HintText>No login required!</HintText>
+          </span>
         </FormControls>
       )}
     </>
