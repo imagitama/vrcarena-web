@@ -95,8 +95,17 @@ const HistoryEntryLabel = ({
 }: {
   entry: HistoryEntry
 }) => {
-  const fields =
-    data !== null ? ('changes' in data ? data.changes : data.record) : {}
+  let fields = {}
+
+  if (data !== null) {
+    if ('changes' in data && data.changes) {
+      fields = data.changes
+    } else if ('record' in data && data.record !== null) {
+      fields = data.record
+    }
+  }
+
+  if (!fields) return <>no data found</>
 
   const changesWithoutMetafields: Partial<Asset> = Object.entries(
     fields
