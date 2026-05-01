@@ -95,20 +95,23 @@ const HistoryEntryLabel = ({
 }: {
   entry: HistoryEntry
 }) => {
-  const changesWithoutMetafields: Partial<Asset> = data.changes
-    ? Object.entries(data.changes).reduce(
-        (newChanges, [fieldName, newValue]) =>
-          fieldName !== 'lastmodifiedat' &&
-          fieldName !== 'lastmodifiedby' &&
-          fieldName !== 'ts'
-            ? {
-                ...newChanges,
-                [fieldName]: newValue,
-              }
-            : newChanges,
-        {}
-      )
-    : {}
+  const fields =
+    data !== null ? ('changes' in data ? data.changes : data.record) : {}
+
+  const changesWithoutMetafields: Partial<Asset> = Object.entries(
+    fields
+  ).reduce(
+    (newChanges, [fieldName, newValue]) =>
+      fieldName !== 'lastmodifiedat' &&
+      fieldName !== 'lastmodifiedby' &&
+      fieldName !== 'ts'
+        ? {
+            ...newChanges,
+            [fieldName]: newValue,
+          }
+        : newChanges,
+    {}
+  )
 
   switch (message) {
     case Message.Create:
@@ -140,48 +143,44 @@ const HistoryEntryLabel = ({
             </>
           )
         case AssetsCollectionNames.AssetsMeta:
-          if ((data.changes as AssetMeta).approvalstatus) {
+          if ((fields as AssetMeta).approvalstatus) {
             return (
               <>
                 {getLabelForApprovalStatus(
-                  (data.changes as AssetMeta).approvalstatus!
+                  (fields as AssetMeta).approvalstatus!
                 )}
               </>
             )
-          } else if ((data.changes as AssetMeta).accessstatus) {
+          } else if ((fields as AssetMeta).accessstatus) {
             return (
               <>
-                {getLabelForAccessStatus(
-                  (data.changes as AssetMeta).accessstatus!
-                )}
+                {getLabelForAccessStatus((fields as AssetMeta).accessstatus!)}
               </>
             )
-          } else if ((data.changes as AssetMeta).publishstatus) {
+          } else if ((fields as AssetMeta).publishstatus) {
             return (
               <>
-                {getLabelForPublishStatus(
-                  (data.changes as AssetMeta).publishstatus!
-                )}
+                {getLabelForPublishStatus((fields as AssetMeta).publishstatus!)}
               </>
             )
-          } else if ((data.changes as AssetMeta).editornotes) {
+          } else if ((fields as AssetMeta).editornotes) {
             return <>changed editor notes for asset</>
           } else {
             return null
           }
         case AmendmentsCollectionNames.AmendmentsMeta:
-          if ((data.changes as AmendmentMeta).approvalstatus) {
+          if ((fields as AmendmentMeta).approvalstatus) {
             return (
               <>
-                {(data.changes as AmendmentMeta).approvalstatus ===
+                {(fields as AmendmentMeta).approvalstatus ===
                 ApprovalStatus.Approved
                   ? 'applied'
                   : getLabelForApprovalStatus(
-                      (data.changes as AmendmentMeta).approvalstatus
+                      (fields as AmendmentMeta).approvalstatus
                     )}
               </>
             )
-          } else if ((data.changes as AmendmentMeta).editornotes) {
+          } else if ((fields as AmendmentMeta).editornotes) {
             return <>changed editor notes for amendment</>
           }
         case UsersCollectionNames.Users:
@@ -191,24 +190,24 @@ const HistoryEntryLabel = ({
             )
           }
         case UsersCollectionNames.UsersMeta:
-          if (data.changes.banstatus) {
-            return <>{getLabelForBanStatus(data.changes.banstatus)} user</>
+          if (fields.banstatus) {
+            return <>{getLabelForBanStatus(fields.banstatus)} user</>
           }
         case AuthorsCollectionNames.Authors:
           return <>edited author</>
         case ReportsCollectionNames.ReportsMeta:
-          if ((data.changes as FullReport).resolutionstatus) {
+          if ((fields as FullReport).resolutionstatus) {
             return (
               <>
                 {getLabelForResolutionStatus(
-                  (data.changes as FullReport).resolutionstatus
+                  (fields as FullReport).resolutionstatus
                 )}{' '}
                 report
               </>
             )
-          } else if ((data.changes as FullReport).resolutionnotes) {
+          } else if ((fields as FullReport).resolutionnotes) {
             return <>changed the resolution notes</>
-          } else if ((data.changes as FullReport).editornotes) {
+          } else if ((fields as FullReport).editornotes) {
             return <>changed editor notes for report</>
           } else {
             return (
@@ -216,12 +215,10 @@ const HistoryEntryLabel = ({
             )
           }
         case CommentsCollectionNames.CommentsMeta:
-          if ((data.changes as MetaRecord).accessstatus) {
+          if ((fields as MetaRecord).accessstatus) {
             return (
               <>
-                {getLabelForAccessStatus(
-                  (data.changes as MetaRecord).accessstatus!
-                )}{' '}
+                {getLabelForAccessStatus((fields as MetaRecord).accessstatus!)}{' '}
                 comment
               </>
             )
