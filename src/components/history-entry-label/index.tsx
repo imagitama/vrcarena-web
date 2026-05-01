@@ -24,6 +24,8 @@ import {
 } from '@/modules/reports'
 import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
 import { CollectionNames as CollectionsCollectionNames } from '@/modules/collections'
+import { CollectionNames as WishlistsCollectionNames } from '@/modules/wishlists'
+import { CollectionNames as SpeciesCollectionNames } from '@/modules/species'
 import {
   AccessStatus,
   ApprovalStatus,
@@ -243,7 +245,11 @@ const HistoryEntryLabel = ({
             )
           }
         case CollectionsCollectionNames.Collections:
-          return <>added to their collection</>
+          return <>updated the collection</>
+        case WishlistsCollectionNames.WishlistsForUsers:
+          return <>updated their wishlist</>
+        case SpeciesCollectionNames.Species:
+          return <>edited the species</>
       }
   }
 

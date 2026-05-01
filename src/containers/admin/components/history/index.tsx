@@ -17,6 +17,7 @@ import useQueryParam from '@/hooks/useQueryParam'
 
 const getShouldRender = (entry: FullHistoryEntry): boolean => {
   if (entry.parenttable.includes('meta')) return false
+  if (entry.parenttable === 'discordusers') return false
 
   return true
 }
