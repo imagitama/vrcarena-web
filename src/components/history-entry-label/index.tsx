@@ -119,7 +119,6 @@ const HistoryEntryLabel = ({
           return <>created the asset</>
         case AuthorsCollectionNames.Authors:
           return <>created the author</>
-          return <>created the author</>
         default:
           return (
             <>created the {parenttable.substring(0, parenttable.length - 1)}*</>

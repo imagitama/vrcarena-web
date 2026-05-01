@@ -18,6 +18,7 @@ import HistoryEntryLabel from '@/components/history-entry-label'
 import ToggleIcon from '../toggle-icon'
 
 const ExpandedData = ({ data }: { data: any }) => {
+  if (!data) return '(no data)'
   return (
     <Table padding="none">
       <TableHead>
