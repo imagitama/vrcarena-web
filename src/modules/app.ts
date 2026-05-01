@@ -1,9 +1,7 @@
 import { AnyAction, Dispatch } from 'redux'
 import { Asset, CollectionNames as AssetsCollectionNames } from './assets'
-import {
-  UserPreferences,
-  CollectionNames as UsersCollectionNames,
-} from './user'
+import { UserPreferences } from './user'
+import { CollectionNames as UsersCollectionNames } from './users'
 import { CollectionNames as AuthorsCollectionNames } from './authors'
 
 export const searchIndexNameLabels = {
