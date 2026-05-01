@@ -7,6 +7,7 @@ import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
+import InfoIcon from '@mui/icons-material/Info'
 
 import * as routes from '@/routes'
 import {
@@ -88,26 +89,30 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       marginTop: '0.5rem',
     },
   },
-  bio: {
+  tile: {
     marginTop: '1rem',
     borderRadius: theme.shape.borderRadius,
     padding: '1rem',
     border: '1px solid rgba(255, 255, 255, 0.25)',
+
+    [mediaQueryForMobiles]: {
+      marginTop: '0.5rem',
+    },
+  },
+  bioTile: {
     fontSize: '125%',
     '& img': {
       maxWidth: '100%',
     },
     [mediaQueryForTabletsOrBelow]: {},
     [mediaQueryForMobiles]: {
-      marginTop: '0.5rem',
       fontSize: '100%',
     },
   },
   isUnallowed: {
     textDecoration: 'line-through',
   },
-  favoriteSpecies: {
-    marginTop: '1rem',
+  favoriteSpeciesTile: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -129,6 +134,36 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     marginTop: '1rem',
     [mediaQueryForTabletsOrBelow]: {
       marginTop: '0.5rem',
+    },
+  },
+  repNumber: { fontSize: '200%', fontWeight: 'bold' },
+  repText: {
+    marginLeft: '0.25rem',
+  },
+  tiles: {
+    display: 'flex',
+    alignItems: 'center',
+    [mediaQueryForMobiles]: {
+      flexWrap: 'wrap',
+    },
+    '& > *': {
+      flex: 1,
+      width: 'calc(50% - 1rem)',
+      [mediaQueryForMobiles]: {
+        width: '100%',
+      },
+    },
+    '& > *:first-child': {
+      marginRight: '0.5rem',
+      [mediaQueryForMobiles]: {
+        marginRight: 0,
+      },
+    },
+    '& > *:last-child': {
+      marginLeft: '0.5rem',
+      [mediaQueryForMobiles]: {
+        marginLeft: 0,
+      },
     },
   },
 }))
@@ -216,28 +251,60 @@ const UserOverview = ({
               </Heading>
             </div>
             {favoriteSpeciesData && (
-              <div className={classes.favoriteSpecies}>
-                <span>
-                  Favo{getPrefersBritishSpelling() ? 'u' : ''}rite Species:
-                </span>
-                <Tooltip title={favoriteSpeciesData.pluralname}>
-                  <Link
-                    to={routes.viewSpeciesWithVar.replace(
-                      ':speciesIdOrSlug',
-                      favoriteSpeciesData.id
-                    )}>
-                    <Image
-                      src={fixAccessingImagesUsingToken(
-                        favoriteSpeciesData.thumbnailurl
-                      )}
-                      alt={`Image for species ${favoriteSpeciesData.pluralname}`}
-                      title={favoriteSpeciesData.pluralname}
-                    />
-                  </Link>
-                </Tooltip>
-              </div>
+              <>
+                <Heading variant="h2">
+                  Favo{getPrefersBritishSpelling() ? 'u' : ''}rite Species
+                </Heading>
+                <div
+                  className={`${classes.tile} ${classes.favoriteSpeciesTile}`}>
+                  <Tooltip title={favoriteSpeciesData.pluralname}>
+                    <Link
+                      to={routes.viewSpeciesWithVar.replace(
+                        ':speciesIdOrSlug',
+                        favoriteSpeciesData.id
+                      )}>
+                      <Image
+                        src={fixAccessingImagesUsingToken(
+                          favoriteSpeciesData.thumbnailurl
+                        )}
+                        alt={`Image for species ${favoriteSpeciesData.pluralname}`}
+                        title={favoriteSpeciesData.pluralname}
+                      />
+                    </Link>
+                  </Tooltip>
+                </div>
+              </>
             )}
-            {bio && <Markdown source={bio} className={classes.bio} />}
+            <Heading variant="h2">Reputation</Heading>
+            <div className={classes.tile}>
+              <StatusText
+                positivity={user.reputation > 0 ? 1 : -1}
+                className={classes.repNumber}>
+                {user.reputation}
+              </StatusText>{' '}
+              <Tooltip
+                title={
+                  <>
+                    Users gain rep by performing actions on the site and by
+                    having an older account
+                    <br />
+                    <br />
+                    Higher rep means you are more trustworthy so your assets,
+                    amendments and other actions may be approved faster
+                  </>
+                }>
+                <InfoIcon />
+              </Tooltip>
+            </div>
+            {bio && (
+              <>
+                <Heading variant="h2">Bio</Heading>
+                <Markdown
+                  source={bio}
+                  className={`${classes.tile} ${classes.bioTile}`}
+                />
+              </>
+            )}
             <SocialMediaList
               socialMedia={{
                 vrchatUsername: vrchatUsername,
