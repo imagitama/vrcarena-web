@@ -23,6 +23,7 @@ import {
   ResolutionStatus,
 } from '@/modules/reports'
 import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
+import { CollectionNames as CollectionsCollectionNames } from '@/modules/collections'
 import {
   AccessStatus,
   ApprovalStatus,
@@ -241,6 +242,8 @@ const HistoryEntryLabel = ({
               <>changed {Object.keys(changesWithoutMetafields).join(', ')}</>
             )
           }
+        case CollectionsCollectionNames.Collections:
+          return <>added to their collection</>
       }
   }
 

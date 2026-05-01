@@ -19,6 +19,7 @@ import { CollectionNames as AuthorsCollectionNames } from './modules/authors'
 import { CollectionNames as CommentsCollectionNames } from './modules/comments'
 import { CollectionNames as WishlistsCollectionNames } from './modules/wishlists'
 import { CollectionNames as AttachmentsCollectionNames } from './modules/attachments'
+import { CollectionNames as CollectionsCollectionNames } from '@/modules/collections'
 
 export interface CommonRecordFields {
   id: string
@@ -401,6 +402,9 @@ export const getParentLabel = (
 
     case UsersCollectionNames.UserPreferences:
       return 'user preferences'
+
+    case CollectionsCollectionNames.Collections:
+      return 'collection'
 
     default:
       return `Parent: ${parentTable}.${parentId}`
