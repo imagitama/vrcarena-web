@@ -112,7 +112,7 @@ const VrcFurySettings = ({
         {isVrcFuryReady ? (
           <div className={classes.title}>
             VRCFury Ready{' '}
-            <Tooltip title="The asset has a Unity prefab with VRCFury components.">
+            <Tooltip title="The asset (hopefully) has a Unity prefab with VRCFury components.">
               <HelpIcon className={classes.vrcFuryReadyIcon} />
             </Tooltip>
           </div>

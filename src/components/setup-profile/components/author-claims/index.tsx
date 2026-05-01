@@ -1,21 +1,22 @@
 import React, { useState } from 'react'
-import InfoMessage from '../../../info-message'
-import WarningMessage from '../../../warning-message'
-import { messages } from '../../../../config'
-import useSearching from '../../../../hooks/useSearching'
+
+import { messages } from '@/config'
+import useSearching from '@/hooks/useSearching'
 import {
   Author,
   CollectionNames as AuthorCollectionNames,
-} from '../../../../modules/authors'
-import TextInput from '../../../text-input'
-import { cleanupSearchTerm } from '../../../../utils'
-import AuthorResults from '../../../author-results'
-import Heading from '../../../heading'
-import LoadingIndicator from '../../../loading-indicator'
-import ErrorMessage from '../../../error-message'
-import Button from '../../../button'
-import ClaimForm from '../../../claim-form'
-import Dialog from '../../../dialog'
+} from '@/modules/authors'
+
+import InfoMessage from '@/components/info-message'
+import WarningMessage from '@/components/warning-message'
+import TextInput from '@/components/text-input'
+import { cleanupSearchTerm } from '@/components/../utils'
+import AuthorResults from '@/components/author-results'
+import Heading from '@/components/heading'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import ClaimForm from '@/components/claim-form'
+import Dialog from '@/components/dialog'
 
 const AuthorClaims = () => {
   const [selectedAuthorId, setSelectedAuthorId] = useState<null | string>(null)

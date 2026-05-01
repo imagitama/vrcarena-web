@@ -1,16 +1,17 @@
 import React, { useContext } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useIsEditor from '../../../../hooks/useIsEditor'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { getIsUserCreator } from '@/utils/assets'
+import { CollectionNames } from '@/modules/assets'
 
-import { mediaQueryForTabletsOrBelow } from '../../../../media-queries'
-import { getIsUserCreator } from '../../../../utils/assets'
+import useIsEditor from '@/hooks/useIsEditor'
+import useUserId from '@/hooks/useUserId'
 
-import CommentList from '../../../comment-list'
-import Heading from '../../../heading'
+import CommentList from '@/components/comment-list'
+import Heading from '@/components/heading'
+
 import TabContext from '../../context'
-import useUserId from '../../../../hooks/useUserId'
-import { CollectionNames } from '../../../../modules/assets'
 
 const useStyles = makeStyles({
   root: {

@@ -1,11 +1,13 @@
-import React from 'react'
-import { updateRecord } from '../../../data-store'
-import { useBulkEdit } from '../context'
-import { Asset, CollectionNames, FullAsset } from '../../../modules/assets'
-import TextInput from '../../text-input'
-import TagDiff from '../../tag-diff'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { SupabaseClient } from '@supabase/supabase-js'
+
+import { updateRecord } from '@/data-store'
+import { Asset, CollectionNames } from '@/modules/assets'
+
+import TextInput from '@/components/text-input'
+import TagDiff from '@/components/tag-diff'
+
+import { useBulkEdit } from '../context'
 
 export const Action = async (
   supabase: SupabaseClient,

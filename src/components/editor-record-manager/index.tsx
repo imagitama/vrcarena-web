@@ -109,8 +109,12 @@ const EditorRecordManager = ({
       <EditorBox className={classes.root} show={showBox}>
         {editUrl ? (
           <div>
-            <Button icon={<EditIcon />} url={editUrl}>
-              Edit
+            <Button
+              icon={<EditIcon />}
+              url={editUrl}
+              size="small"
+              color="secondary">
+              Edit Record
             </Button>
           </div>
         ) : null}

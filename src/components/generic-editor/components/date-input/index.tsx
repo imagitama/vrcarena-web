@@ -1,7 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import DateTimeInput from '../../../datetime-input'
-import FormattedDate from '../../../formatted-date'
+
+import DateTimeInput from '@/components/datetime-input'
+import FormattedDate from '@/components/formatted-date'
 
 const useStyles = makeStyles({
   preview: {

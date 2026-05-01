@@ -1,5 +1,5 @@
 import React from 'react'
-import AttachmentMeta from '../attachment-meta'
+import AttachmentMeta from '@/components/attachment-meta'
 import Link from '@/components/link'
 import useIsEditor from '@/hooks/useIsEditor'
 import {

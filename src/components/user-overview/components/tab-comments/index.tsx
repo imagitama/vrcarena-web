@@ -1,11 +1,14 @@
 import React from 'react'
-import CommentList from '../../../comment-list'
-import Heading from '../../../heading'
+
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import { getUserIsStaffMember } from '@/utils/users'
+
+import CommentList from '@/components/comment-list'
+import Heading from '@/components/heading'
+import { CollectionNames } from '@/modules/user'
+import WarningMessage from '@/components/warning-message'
+
 import useUserOverview from '../../useUserOverview'
-import { CollectionNames } from '../../../../modules/user'
-import WarningMessage from '../../../warning-message'
-import { getUserIsStaffMember } from '../../../../utils/users'
-import useIsLoggedIn from '../../../../hooks/useIsLoggedIn'
 
 export default () => {
   const { userId, user } = useUserOverview()

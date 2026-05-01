@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react'
-import EditorRecordManager from '../../../editor-record-manager'
+import React, { useContext } from 'react'
+import EditorRecordManager from '@/components/editor-record-manager'
 import TabContext from '../../context'
 import Control from '../control'
-import { CollectionNames, FullAsset_Editor } from '../../../../modules/assets'
+import { CollectionNames, FullAsset_Editor } from '@/modules/assets'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 
 export default () => {

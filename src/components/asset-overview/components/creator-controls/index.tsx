@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
-import Button from '../../../button'
+import Button from '@/components/button'
 import TabContext from '../../context'
 import Control from '../control'
 import AssetEditorDialog from '@/components/asset-editor-dialog'

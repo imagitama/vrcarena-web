@@ -18,7 +18,7 @@ import FormControls from '@/components/form-controls'
 import { CollectionNames } from '@/modules/public-avatar-submissions'
 
 import screenshotUrl from './assets/images/screenshot.webp'
-import HintText from '../hint-text'
+import HintText from '@/components/hint-text'
 
 interface PublicAvatarCreateFields extends Record<string, unknown> {
   asset: string

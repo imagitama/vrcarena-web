@@ -11,7 +11,7 @@ import {
   ViewNames,
 } from '@/modules/notifications'
 
-import { MenuItemData } from '../menu'
+import { MenuItemData } from '@/components/menu'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 export const cart = async (

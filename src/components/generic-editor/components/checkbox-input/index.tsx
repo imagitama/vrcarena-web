@@ -1,6 +1,6 @@
 import React from 'react'
 import type { GenericInputProps } from '../../'
-import Button from '../../../button'
+import Button from '@/components/button'
 import { CheckboxEditableField } from '@/editable-fields'
 import CheckboxInput from '@/components/checkbox-input'
 

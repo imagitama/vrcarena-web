@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import {
   addQuotesToDescription,
   removeQuotesFromDescription,
-} from '../../../../utils/formatting'
-import CheckboxInput from '../../../checkbox-input'
-import MarkdownEditor from '../../../markdown-editor'
-import FormControls from '../../../form-controls'
+} from '@/utils/formatting'
+import CheckboxInput from '@/components/../../checkbox-input'
+import MarkdownEditor from '@/components/../../markdown-editor'
+import FormControls from '@/components/../../form-controls'
 
 const MarkdownInput = ({
   value,

@@ -19,7 +19,7 @@ import {
   ViewNames,
 } from '@/modules/species'
 import * as routes from '@/routes'
-import { prepareValueForQuery } from '../../queries'
+import { prepareValueForQuery } from '@/queries'
 import { trackAction } from '@/analytics'
 import { handleError } from '@/error-handling'
 

@@ -1,5 +1,7 @@
 import React from 'react'
-import EndorsementsForUser from '../../../endorsements-for-user'
+
+import EndorsementsForUser from '@/components/endorsements-for-user'
+
 import useUserOverview from '../../useUserOverview'
 
 export default () => {

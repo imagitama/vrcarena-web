@@ -1,7 +1,7 @@
 import {
   CollectionNames as ReviewsCollectionNames,
   ViewNames as ReviewsViewNames,
-} from '../modules/reviews'
+} from '@/modules/reviews'
 
 export const getViewNameForParentTable = (
   parentTable: string

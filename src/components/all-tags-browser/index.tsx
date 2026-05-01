@@ -7,7 +7,7 @@ import TagChip from '@/components/tag-chip'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import { FullTag, ViewNames } from '@/modules/tags'
-import NoResultsMessage from '../no-results-message'
+import NoResultsMessage from '@/components/no-results-message'
 
 export default () => {
   const isAdultContentEnabled = useIsAdultContentEnabled()

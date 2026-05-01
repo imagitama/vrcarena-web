@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 
 import * as routes from '@/routes'
-import PaginatedView, { GetQueryFn } from '../paginated-view'
-import AmendmentResults from '../amendment-results'
+import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
+import AmendmentResults from '@/components/amendment-results'
 import { FullAmendment, ViewNames } from '@/modules/amendments'
 import NoResultsMessage from '@/components/no-results-message'
 import { ApprovalStatus } from '@/modules/common'

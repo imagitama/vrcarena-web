@@ -1,13 +1,9 @@
 import React from 'react'
-import {
-  SyncFieldBase,
-  SyncFieldResult,
-  SyncFieldTypes,
-} from '../../../../syncing'
-import TextInput from '../../../text-input'
-import AttachmentsSelector from '../attachment-selector'
-import MarkdownInput from '../markdown-input'
-import ThumbnailSelector from '../thumbnail-selector'
+import { SyncFieldBase, SyncFieldResult, SyncFieldTypes } from '@/syncing'
+import TextInput from '@/components/../../text-input'
+import AttachmentsSelector from '@/components/attachment-selector'
+import MarkdownInput from '@/components/markdown-input'
+import ThumbnailSelector from '@/components/thumbnail-selector'
 
 const FormFieldInput = ({
   fieldMeta,

@@ -4,24 +4,22 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CreateIcon from '@mui/icons-material/Create'
 
-import Message from '../../../message'
-import PublicEditorNotes from '../../../public-editor-notes'
-import AssetOverviewContext from '../../context'
-import {
-  AccessStatus,
-  ApprovalStatus,
-  PublishStatus,
-} from '../../../../modules/common'
+import { IndicativeAuditStatus } from '@/modules/assets'
+import useIsEditor from '@/hooks/useIsEditor'
+import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
 import {
   getArchivedReasonLabel,
   getDeclinedReasonLabel,
   getDeletionReasonLabel,
-} from '../../../../utils/assets'
-import ErrorMessage from '../../../error-message'
-import WarningMessage from '../../../warning-message'
-import { IndicativeAuditStatus } from '../../../../modules/assets'
-import useIsEditor from '../../../../hooks/useIsEditor'
-import ClearIndicativeStatusButton from '../../../clear-indicative-status-button'
+} from '@/utils/assets'
+
+import Message from '@/components/message'
+import PublicEditorNotes from '@/components/public-editor-notes'
+import ErrorMessage from '@/components/error-message'
+import WarningMessage from '@/components/warning-message'
+import ClearIndicativeStatusButton from '@/components/clear-indicative-status-button'
+
+import AssetOverviewContext from '../../context'
 
 const AssetOverviewMessages = () => {
   const { asset, isLoading, hydrate } = useContext(AssetOverviewContext)

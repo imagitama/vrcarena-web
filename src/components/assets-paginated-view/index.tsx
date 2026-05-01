@@ -3,7 +3,7 @@ import PaginatedView, {
   GetQueryFn,
   PaginatedViewProps,
   RendererProps,
-} from '../paginated-view'
+} from '@/components/paginated-view'
 import { AssetCategory, PublicAsset, ViewNames } from '@/modules/assets'
 import AssetResults from '@/components/asset-results'
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'

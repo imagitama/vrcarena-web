@@ -1,17 +1,18 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
-import useIsAdultContentEnabled from '../../../../hooks/useIsAdultContentEnabled'
+
+import { Asset } from '@/modules/assets'
+
+import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+import useDataStoreFunction from '@/hooks/useDataStoreFunction'
+
+import { RelationItem, RelationsItems } from '@/components/relations'
+import LoadingIndicator from '@/components/loading-indicator'
+import AssetResults from '@/components/asset-results'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
+
 import TabContext from '../../context'
-import PaginatedView from '../../../paginated-view'
-import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
-import { Asset } from '../../../../modules/assets'
-import { RelationItem, RelationsItems } from '../../../relations'
-import { SupabaseClient } from '@supabase/supabase-js'
-import useDataStoreFunction from '../../../../hooks/useDataStoreFunction'
-import LoadingIndicator from '../../../loading-indicator'
-import AssetResults from '../../../asset-results'
-import ErrorMessage from '../../../error-message'
-import NoResultsMessage from '../../../no-results-message'
 
 const useStyles = makeStyles({
   item: { margin: '0.5rem' },

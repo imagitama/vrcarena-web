@@ -21,7 +21,7 @@ export default () => {
     useContext(TabContext)
   const myUserId = useUserId()
 
-  if (isLoading) {
+  if (isLoading || !asset) {
     return null
   }
 

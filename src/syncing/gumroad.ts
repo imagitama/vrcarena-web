@@ -1,4 +1,4 @@
-import { FullAsset } from '../modules/assets'
+import { FullAsset } from '@/modules/assets'
 import { SyncFieldTypes, SyncPlatformName, SyncPlatformInfo } from './'
 
 const gumroad: SyncPlatformInfo<FullAsset> = {

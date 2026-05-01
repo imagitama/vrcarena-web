@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { SearchableEditableField } from '../../../../editable-fields'
-import useDataStoreItem from '../../../../hooks/useDataStoreItem'
+import React, { useState } from 'react'
+import { SearchableEditableField } from '@/editable-fields'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
-import Button from '../../../button'
-import LoadingIndicator from '../../../loading-indicator'
-import SearchForIdForm from '../../../search-for-id-form'
+import Button from '@/components/button'
+import LoadingIndicator from '@/components/loading-indicator'
+import SearchForIdForm from '@/components/search-for-id-form'
 
 type SearchResult = { [prop: string]: any }
 

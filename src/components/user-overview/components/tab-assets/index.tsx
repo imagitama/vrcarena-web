@@ -1,10 +1,13 @@
 import React, { useCallback } from 'react'
-import useUserOverview from '../../useUserOverview'
-import { GetQueryFn } from '../../../paginated-view'
-import AssetResults from '../../../asset-results'
-import WarningMessage from '../../../warning-message'
-import { PublicAsset, ViewNames } from '../../../../modules/assets'
+
+import { PublicAsset, ViewNames } from '@/modules/assets'
+
+import { GetQueryFn } from '@/components/paginated-view'
+import AssetResults from '@/components/asset-results'
+import WarningMessage from '@/components/warning-message'
 import AssetsPaginatedView from '@/components/assets-paginated-view'
+
+import useUserOverview from '../../useUserOverview'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />

@@ -1,4 +1,4 @@
-import { BanStatus, FullUser, UserRoles } from '../modules/users'
+import { BanStatus, FullUser, UserRoles } from '@/modules/users'
 
 export function getIsRoleAStaffMember(role: UserRoles): boolean {
   return role === UserRoles.Admin || role === UserRoles.Editor

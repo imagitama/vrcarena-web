@@ -1,11 +1,11 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { SyncFieldBase } from '../../../../syncing'
+import { SyncFieldBase } from '@/syncing'
 import useSync from '@/hooks/useSync'
-import Paper from '../../../paper'
-import CheckboxInput from '../../../checkbox-input'
-import FieldInput from '../form-field-input'
-import Block from '../../../block'
+import Paper from '@/components/../../paper'
+import CheckboxInput from '@/components/../../checkbox-input'
+import FieldInput from '@/components/form-field-input'
+import Block from '@/components/../../block'
 
 const useStyles = makeStyles({
   field: {

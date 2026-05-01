@@ -1,14 +1,12 @@
 import React, { useContext } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import {
-  isMobile,
-  mediaQueryForTabletsOrBelow,
-  queryForMobiles,
-} from '@/media-queries'
+import { isMobile, mediaQueryForTabletsOrBelow } from '@/media-queries'
+
 import Markdown from '@/components/markdown'
 import SketchfabEmbed from '@/components/sketchfab-embed'
 import Expander from '@/components/expander'
+
 import TabContext from '../../context'
 
 const useStyles = makeStyles({

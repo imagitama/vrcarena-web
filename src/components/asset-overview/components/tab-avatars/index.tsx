@@ -1,8 +1,10 @@
 import React, { useContext } from 'react'
-import VrchatAvatars from '../../../vrchat-avatars'
-import PublicAvatarForm from '../../../public-avatar-form'
+
+import VrchatAvatars from '@/components/vrchat-avatars'
+import PublicAvatarForm from '@/components/public-avatar-form'
+import NoResultsMessage from '@/components/no-results-message'
+
 import TabContext from '../../context'
-import NoResultsMessage from '../../../no-results-message'
 
 // assume this tab is only rendered if tab is inserted in overview
 export default () => {

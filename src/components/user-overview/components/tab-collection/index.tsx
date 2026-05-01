@@ -1,5 +1,5 @@
 import React from 'react'
-import CollectionForUser from '../../../collection-for-user'
+import CollectionForUser from '@/components/collection-for-user'
 import useUserOverview from '../../useUserOverview'
 
 export default () => {

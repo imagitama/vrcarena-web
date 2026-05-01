@@ -1,4 +1,4 @@
-import { Areas } from '../areas'
+import { Areas } from '@/areas'
 
 export const areaNames = {
   chill: 'chill',

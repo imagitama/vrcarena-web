@@ -1,4 +1,4 @@
-import type { Area, Areas } from '../areas'
+import type { Area, Areas } from '@/areas'
 
 export const areaNames: { [key: string]: string } = {
   hat: 'hat',

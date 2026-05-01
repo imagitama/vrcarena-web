@@ -1,7 +1,9 @@
 import React, { useContext } from 'react'
-import AssetResults from '../../../asset-results'
+
+import AssetResults from '@/components/asset-results'
+import LinkedAccessories from '@/components/linked-accessories'
+
 import TabContext from '../../context'
-import LinkedAccessories from '../../../linked-accessories'
 
 export default () => {
   const { assetId, isLoading } = useContext(TabContext)

@@ -1,18 +1,18 @@
 import React from 'react'
-import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
+import { OrderDirections } from '@/hooks/useDatabaseQuery'
 import {
   FullHistoryEntry,
   HistoryEntry,
   ViewNames,
   createMessage,
   editMessage,
-} from '../../../../modules/history'
-import HistoryResults from '../../../../components/history-results'
+} from '@/modules/history'
+import HistoryResults from '@/components/history-results'
 
-import { CollectionNames as UsersCollectionNames } from '../../../../modules/user'
-import { CollectionNames as AssetsCollectionNames } from '../../../../modules/assets'
-import PaginatedView from '../../../../components/paginated-view'
-import { Filter, FilterSubType, FilterType } from '../../../../filters'
+import { CollectionNames as UsersCollectionNames } from '@/modules/user'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+import PaginatedView from '@/components/paginated-view'
+import { Filter, FilterSubType, FilterType } from '@/filters'
 
 const filters: Filter<HistoryEntry>[] = [
   {

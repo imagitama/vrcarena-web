@@ -1,9 +1,11 @@
 import React from 'react'
 import FormHelperText from '@mui/material/FormHelperText'
-import ImageUploader from '../../../image-uploader'
-import { fixAccessingImagesUsingToken } from '../../../../utils'
-import Button from '../../../button'
-import { ImageUploadEditableField } from '../../../../editable-fields'
+
+import { fixAccessingImagesUsingToken } from '@/utils'
+import { ImageUploadEditableField } from '@/editable-fields'
+
+import ImageUploader from '@/components/image-uploader'
+import Button from '@/components/button'
 
 export default ({
   editableField,

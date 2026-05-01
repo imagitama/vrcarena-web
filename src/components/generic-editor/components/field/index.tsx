@@ -1,17 +1,18 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import FormControl from '@mui/material/FormControl'
-
-import Heading from '../../../heading'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   FormHelperText,
 } from '@mui/material'
-import Markdown from '@/components/markdown'
+
 import { EditableField } from '@/editable-fields'
 import { Warning as WarningIcon } from '@/icons'
+
+import Heading from '@/components/heading'
+import Markdown from '@/components/markdown'
 import StatusText from '@/components/status-text'
 
 const useStyles = makeStyles({

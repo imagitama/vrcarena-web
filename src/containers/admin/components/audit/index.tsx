@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -7,50 +7,49 @@ import TableRow from '@mui/material/TableRow'
 import SaveIcon from '@mui/icons-material/Save'
 import HelpIcon from '@mui/icons-material/Help'
 
-import AssetResultsItem from '../../../../components/asset-results-item'
-import Button from '../../../../components/button'
-import PaginatedView, {
-  RendererProps,
-} from '../../../../components/paginated-view'
-import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
-import { FilterSubType, FilterType } from '../../../../filters'
-import StatusText from '../../../../components/status-text'
-import useDataStoreEdit from '../../../../hooks/useDataStoreEdit'
-import { handleError } from '../../../../error-handling'
-import { AccessStatus } from '../../../../modules/common'
-import SuccessMessage from '../../../../components/success-message'
-import ErrorMessage from '../../../../components/error-message'
-import Heading from '../../../../components/heading'
-import { getFriendlyDate } from '../../../../utils/dates'
-import Link from '../../../../components/link'
-import Price from '../../../../components/price'
-import HintText from '../../../../components/hint-text'
-import useTimer from '../../../../hooks/useTimer'
-import LoadingIndicator from '../../../../components/loading-indicator'
-import Dialog from '../../../../components/dialog'
-import FormControls from '../../../../components/form-controls'
-import NoValueLabel from '../../../../components/no-value-label'
-import Tooltip from '../../../../components/tooltip'
-import LoadingMessage from '../../../../components/loading-message'
-import { routes } from '../../../../routes'
+import { getFriendlyDate } from '@/utils/dates'
+import { handleError } from '@/error-handling'
+import { AccessStatus } from '@/modules/common'
+import { FilterSubType, FilterType } from '@/filters'
+import { routes } from '@/routes'
 import {
   AuditQueueItem,
   AuditQueueItemsByAsset,
-  AuditResult,
   AuditResultResult,
   CollectionNames,
   QueueStatus,
   ViewNames,
-} from '../../../../modules/auditqueue'
+} from '@/modules/auditqueue'
 import {
   ArchivedReason,
   Asset,
   AssetMeta,
   CollectionNames as AssetsCollectionNames,
   SourceInfo,
-} from '../../../../modules/assets'
-import useDataStoreCreate from '../../../../hooks/useDataStoreCreate'
-import useUserId from '../../../../hooks/useUserId'
+} from '@/modules/assets'
+
+import useTimer from '@/hooks/useTimer'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import { OrderDirections } from '@/hooks/useDatabaseQuery'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import useUserId from '@/hooks/useUserId'
+
+import AssetResultsItem from '@/components/asset-results-item'
+import Button from '@/components/button'
+import PaginatedView, { RendererProps } from '@/components/paginated-view'
+import StatusText from '@/components/status-text'
+import SuccessMessage from '@/components/success-message'
+import ErrorMessage from '@/components/error-message'
+import Heading from '@/components/heading'
+import Link from '@/components/link'
+import Price from '@/components/price'
+import HintText from '@/components/hint-text'
+import LoadingIndicator from '@/components/loading-indicator'
+import Dialog from '@/components/dialog'
+import FormControls from '@/components/form-controls'
+import NoValueLabel from '@/components/no-value-label'
+import Tooltip from '@/components/tooltip'
+import LoadingMessage from '@/components/loading-message'
 
 const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {

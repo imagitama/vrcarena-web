@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
-import AssetResultsItem from '../asset-results-item'
+import AssetResultsItem from '@/components/asset-results-item'
 import { Asset, PublicAsset } from '@/modules/assets'
 import AssetEditorDialog from '@/components/asset-editor-dialog'
 

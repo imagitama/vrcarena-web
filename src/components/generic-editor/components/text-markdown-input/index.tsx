@@ -1,6 +1,7 @@
 import React from 'react'
-import MarkdownEditor from '../../../markdown-editor'
+
 import { MarkdownEditableField } from '@/editable-fields'
+import MarkdownEditor from '@/components/markdown-editor'
 
 export default ({
   editableField,

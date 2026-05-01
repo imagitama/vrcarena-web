@@ -6,7 +6,7 @@ import {
   groupAssetsIntoAreas,
   standardAreaNames,
   standardAreas,
-} from '../../areas'
+} from '@/components/../areas'
 import * as routes from '@/routes'
 import { AssetCategory, PublicAsset } from '@/modules/assets'
 import Link from '@/components/link'

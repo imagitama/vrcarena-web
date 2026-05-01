@@ -1,10 +1,8 @@
 import React, { useContext } from 'react'
 
-import Heading from '../../../heading'
-import AdminHistory from '../../../admin-history'
+import Heading from '@/components/heading'
+import AssetTimeline from '@/components/asset-timeline'
 import TabContext from '../../context'
-import { CollectionNames } from '../../../../modules/assets'
-import AssetTimeline from '../../../asset-timeline'
 
 export default () => {
   const { assetId } = useContext(TabContext)

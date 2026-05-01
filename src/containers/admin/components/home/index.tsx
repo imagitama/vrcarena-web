@@ -8,31 +8,30 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
-import Markdown from '../../../../components/markdown'
-import LoadingIndicator from '../../../../components/loading-indicator'
-import ErrorMessage from '../../../../components/error-message'
-import useDataStoreItem from '../../../../hooks/useDataStoreItem'
-import {
-  CollectionNames as PagesCollectionNames,
-  Page,
-} from '../../../../modules/pages'
-import Button from '../../../../components/button'
-import * as routes from '../../../../routes'
-import Heading from '../../../../components/heading'
-import Column from '../../../../components/column'
-import Columns from '../../../../components/columns'
-import Link from '../../../../components/link'
-import useDataStoreItems from '../../../../hooks/useDataStoreItems'
-import { capitalize } from '../../../../utils'
-import FormattedDate from '../../../../components/formatted-date'
-import UsernameLink from '../../../../components/username-link'
-import GenericOutputLabel from '../../../../components/generic-output-label'
-import FormControls from '../../../../components/form-controls'
 import {
   AdminQueueItem,
   AdminQueueItemType,
   ViewNames,
-} from '../../../../modules/admin-queue'
+} from '@/modules/admin-queue'
+import { CollectionNames as PagesCollectionNames, Page } from '@/modules/pages'
+import * as routes from '@/routes'
+import { capitalize } from '@/utils'
+
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+
+import Markdown from '@/components/markdown'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Button from '@/components/button'
+import Heading from '@/components/heading'
+import Column from '@/components/column'
+import Columns from '@/components/columns'
+import Link from '@/components/link'
+import FormattedDate from '@/components/formatted-date'
+import UsernameLink from '@/components/username-link'
+import GenericOutputLabel from '@/components/generic-output-label'
+import FormControls from '@/components/form-controls'
 
 const parentName = 'admin'
 const pageName = 'notepad'
@@ -41,7 +40,7 @@ const Notepad = () => {
   const [isLoading, lastErrorCode, page] = useDataStoreItem<Page>(
     PagesCollectionNames.Pages,
     pageName,
-    'admin-home'
+    { queryName: 'admin-home' }
   )
 
   if (isLoading) {
@@ -84,7 +83,7 @@ const QueueItemLabel = ({ queueItem }: { queueItem: AdminQueueItem }) => {
           <Link
             to={routes.viewAuthorWithVar.replace(
               ':authorId',
-              queueItem.record.author
+              queueItem.record.author || 'NO_AUTHOR'
             )}>
             {queueItem.record.authorname}
           </Link>

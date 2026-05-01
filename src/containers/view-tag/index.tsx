@@ -33,7 +33,8 @@ const AssetsForTag = ({ tag }: { tag: string }) => {
       extraControlsLeft={[
         <Button
           url={routes.queryWithVar.replace(':query', tag)}
-          color="secondary">
+          color="secondary"
+          size="small">
           Run As Query
         </Button>,
       ]}

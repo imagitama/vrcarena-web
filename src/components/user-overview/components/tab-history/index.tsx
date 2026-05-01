@@ -1,8 +1,9 @@
 import React from 'react'
+
+import { CollectionNames } from '@/modules/users'
+import useIsEditor from '@/hooks/useIsEditor'
+import AdminHistory from '@/components/admin-history'
 import useUserOverview from '../../useUserOverview'
-import useIsEditor from '../../../../hooks/useIsEditor'
-import AdminHistory from '../../../admin-history'
-import { CollectionNames } from '../../../../modules/users'
 
 export default () => {
   const { userId, user } = useUserOverview()

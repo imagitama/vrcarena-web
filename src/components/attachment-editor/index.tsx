@@ -12,7 +12,7 @@ import {
   CollectionNames,
 } from '@/modules/attachments'
 
-import ImageUploader from '../image-uploader'
+import ImageUploader from '@/components/image-uploader'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import SuccessMessage from '@/components/success-message'
@@ -28,7 +28,7 @@ import { getYouTubeVideoIdFromUrl, getIsUrlAYoutubeVideo } from '@/utils'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
 import { VRCArenaTheme } from '@/themes'
 import useIsBanned from '@/hooks/useIsBanned'
-import NoPermissionMessage from '../no-permission-message'
+import NoPermissionMessage from '@/components/no-permission-message'
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 

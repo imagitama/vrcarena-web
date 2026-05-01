@@ -1,6 +1,7 @@
 import React from 'react'
-import TagInput, { TagInputSettings } from '../../../tag-input'
+
 import { TagEditableField } from '@/editable-fields'
+import TagInput, { TagInputSettings } from '@/components/tag-input'
 
 export default ({
   editableField,

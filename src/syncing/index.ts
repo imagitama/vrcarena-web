@@ -1,9 +1,9 @@
-import { getIsBoothProductUrl } from '../booth'
-import { getIsGumroadProductUrl } from '../gumroad'
-import { getIsItchProductUrl } from '../itch'
-import { getIsJinxxyProductUrl } from '../jinxxy'
-import { getIsKofiProductUrl } from '../kofi'
-import { getIsPayHipProductUrl } from '../payhip'
+import { getIsBoothProductUrl } from '@/booth'
+import { getIsGumroadProductUrl } from '@/gumroad'
+import { getIsItchProductUrl } from '@/itch'
+import { getIsJinxxyProductUrl } from '@/jinxxy'
+import { getIsKofiProductUrl } from '@/kofi'
+import { getIsPayHipProductUrl } from '@/payhip'
 
 // shared with backend
 export enum SyncPlatformName {

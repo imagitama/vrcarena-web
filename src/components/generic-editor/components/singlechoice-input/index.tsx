@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react'
-import CheckboxInput from '../../../checkbox-input'
-import { Option, SelectEditableField } from '../../../../editable-fields'
+import React from 'react'
+import CheckboxInput from '@/components/checkbox-input'
+import { SelectEditableField } from '@/editable-fields'
 
 export default ({
   editableField,

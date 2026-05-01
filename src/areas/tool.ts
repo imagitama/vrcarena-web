@@ -1,4 +1,4 @@
-import type { Areas } from '../areas'
+import type { Areas } from '@/areas'
 
 const areaNames = {
   mods: 'mods',

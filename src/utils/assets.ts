@@ -1,4 +1,6 @@
-import { readRecord } from '../data-store'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+import { readRecord } from '@/data-store'
 import {
   ArchivedReason,
   Asset,
@@ -6,29 +8,26 @@ import {
   DeclinedReason,
   DeletionReason,
   FullAsset,
-  getIsAssetADraft,
-} from '../modules/assets'
+} from '@/modules/assets'
 import {
   Author,
   CollectionNames as AuthorCollectionNames,
-} from '../modules/authors'
+} from '@/modules/authors'
 import {
   CollectionNames as SpeciesCollectionNames,
   Species,
-} from '../modules/species'
+} from '@/modules/species'
 import {
   DiscordServer,
   CollectionNames as DiscordServerCollectionNames,
-} from '../modules/discordservers'
-import { UserAdminMeta } from '../modules/users'
-import { AccessStatus, ApprovalStatus, PublishStatus } from '../modules/common'
-import { SupabaseClient } from '@supabase/supabase-js'
-import { getIsGumroadProductUrl } from '../gumroad'
-import { getIsBoothProductUrl } from '../booth'
-import { getIsJinxxyProductUrl } from '../jinxxy'
-import { getIsItchProductUrl } from '../itch'
-import { cleanupSourceUrl as cleanupSyncSourceUrl } from '../syncing'
-import assetEditableFields from '../editable-fields/assets'
+} from '@/modules/discordservers'
+import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+import { getIsGumroadProductUrl } from '@/gumroad'
+import { getIsBoothProductUrl } from '@/booth'
+import { getIsJinxxyProductUrl } from '@/jinxxy'
+import { getIsItchProductUrl } from '@/itch'
+import { cleanupSourceUrl as cleanupSyncSourceUrl } from '@/syncing'
+import assetEditableFields from '@/editable-fields/assets'
 
 export const getDoesAssetNeedPublishing = (assetMeta: AssetMeta): boolean =>
   assetMeta.publishstatus === PublishStatus.Draft

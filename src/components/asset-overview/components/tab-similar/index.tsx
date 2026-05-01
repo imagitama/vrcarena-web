@@ -1,8 +1,11 @@
 import React, { useContext } from 'react'
-import AssetResults from '../../../asset-results'
-import TabContext from '../../context'
-import NoResultsMessage from '../../../no-results-message'
+
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
+
+import AssetResults from '@/components/asset-results'
+import NoResultsMessage from '@/components/no-results-message'
+
+import TabContext from '../../context'
 
 export default () => {
   const { asset } = useContext(TabContext)

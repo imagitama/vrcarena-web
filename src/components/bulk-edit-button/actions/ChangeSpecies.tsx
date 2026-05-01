@@ -1,8 +1,8 @@
 import React from 'react'
-import { updateRecord } from '../../../data-store'
+import { updateRecord } from '@/data-store'
 import { useBulkEdit } from '../context'
-import { Asset, CollectionNames } from '../../../modules/assets'
-import SpeciesDropdown from '../../species-dropdown'
+import { Asset, CollectionNames } from '@/modules/assets'
+import SpeciesDropdown from '@/components/species-dropdown'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 export const Action = async (

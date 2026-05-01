@@ -1,11 +1,13 @@
 import React from 'react'
 import MenuItem from '@mui/material/MenuItem'
-import Select from '../../../select'
-import { ItemEditableField } from '../../../../editable-fields'
-import useDataStoreItems from '../../../../hooks/useDataStoreItems'
-import LoadingIndicator from '../../../loading-indicator'
-import ErrorMessage from '../../../error-message'
-import NoResultsMessage from '../../../no-results-message'
+
+import { ItemEditableField } from '@/editable-fields'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+
+import Select from '@/components/select'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import NoResultsMessage from '@/components/no-results-message'
 
 interface ItemInputOption {
   value: string

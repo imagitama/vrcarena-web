@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import useAssetOverview from '../../useAssetOverview'
-import ImageGallery from '@/components/image-gallery'
+
 import { AttachmentType } from '@/modules/attachments'
 import { trackAction } from '@/analytics'
 import { mediaQueryForMobiles } from '@/media-queries'
+
+import ImageGallery from '@/components/image-gallery'
+
+import useAssetOverview from '../../useAssetOverview'
 
 const useStyles = makeStyles({
   root: {

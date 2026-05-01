@@ -1,4 +1,4 @@
-import { getHasUserVerifiedTheirEmail } from '../auth'
+import { getHasUserVerifiedTheirEmail } from '@/auth'
 import useFirebaseUser from './useFirebaseUser'
 
 export const useAccountVerification = (): boolean => {

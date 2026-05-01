@@ -8,13 +8,13 @@ import { handleError } from '@/error-handling'
 import { CollectionNames, Comment } from '@/modules/comments'
 
 import FormControls from '@/components/form-controls'
-import MentionsInput from '../mentions-input'
+import MentionsInput from '@/components/mentions-input'
 import ErrorMessage from '@/components/error-message'
 import SuccessMessage from '@/components/success-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import Button from '@/components/button'
 import useIsBanned from '@/hooks/useIsBanned'
-import NoPermissionMessage from '../no-permission-message'
+import NoPermissionMessage from '@/components/no-permission-message'
 import useAccountVerification from '@/hooks/useAccountVerification'
 
 const AddCommentForm = ({

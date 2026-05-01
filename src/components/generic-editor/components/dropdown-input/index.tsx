@@ -1,12 +1,9 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import { SelectProps } from '@mui/material/Select'
-import Select from '../../../select'
-import {
-  EditableField,
-  Option,
-  SelectEditableField,
-} from '../../../../editable-fields'
+
+import { EditableField, SelectEditableField } from '@/editable-fields'
+import Select from '@/components/select'
 
 const DropdownInput = ({
   editableField,

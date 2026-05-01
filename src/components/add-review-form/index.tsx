@@ -5,7 +5,7 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import CheckIcon from '@mui/icons-material/Check'
 
 import { handleError } from '@/error-handling'
-import { allowedRatings, RatingMeta } from '../../ratings'
+import { allowedRatings, RatingMeta } from '@/components/../ratings'
 
 import ErrorMessage from '@/components/error-message'
 import SuccessMessage from '@/components/success-message'
@@ -15,7 +15,7 @@ import TextInput from '@/components/text-input'
 import FormControls from '@/components/form-controls'
 import { CollectionNames, Rating, Review } from '@/modules/reviews'
 import useIsBanned from '@/hooks/useIsBanned'
-import NoPermissionMessage from '../no-permission-message'
+import NoPermissionMessage from '@/components/no-permission-message'
 import { routes } from '@/routes'
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 

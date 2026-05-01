@@ -1,15 +1,17 @@
+import { SupabaseClient } from '@supabase/supabase-js'
+
 import {
   Author,
   AuthorMeta,
   CollectionNames as AuthorsCollectionNames,
-} from '../../../../modules/authors'
+} from '@/modules/authors'
 import {
   Asset,
   CollectionNames as AssetsCollectionNames,
-} from '../../../../modules/assets'
-import { AccessStatus } from '../../../../modules/common'
-import { updateRecord } from '../../../../data-store'
-import { SupabaseClient } from '@supabase/supabase-js'
+} from '@/modules/assets'
+import { AccessStatus } from '@/modules/common'
+import { updateRecord } from '@/data-store'
+
 import { AssetInfo, GetAuthorDupesResult, PlannedField } from './types'
 
 export const dedupe = async (

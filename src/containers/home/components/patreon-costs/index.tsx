@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { totalCostPerMonth } from '../../../../costs'
-import { colorPalette } from '../../../../config'
+import { totalCostPerMonth } from '@/costs'
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles({
   root: {

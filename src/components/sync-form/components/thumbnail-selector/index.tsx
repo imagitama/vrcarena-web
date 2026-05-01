@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
 import useSync from '@/hooks/useSync'
-import Button from '../../../button'
-import ImageUploader from '../../../image-uploader'
-import { bucketNames } from '../../../../file-uploading'
-import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '../../../../config'
-import NoResultsMessage from '../../../no-results-message'
-import WarningMessage from '../../../warning-message'
+import Button from '@/components/../../button'
+import ImageUploader from '@/components/../../image-uploader'
+import { bucketNames } from '@/file-uploading'
+import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
+import NoResultsMessage from '@/components/../../no-results-message'
+import WarningMessage from '@/components/../../warning-message'
 
 const useStyles = makeStyles({
   thumbnailsToSelect: {

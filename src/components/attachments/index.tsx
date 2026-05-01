@@ -1,5 +1,5 @@
 import React from 'react'
-import ImageGallery from '../image-gallery'
+import ImageGallery from '@/components/image-gallery'
 import { Attachment, FullAttachment } from '@/modules/attachments'
 import NoResultsMessage from '@/components/no-results-message'
 import AttachmentCaption from '@/components/attachment-caption'

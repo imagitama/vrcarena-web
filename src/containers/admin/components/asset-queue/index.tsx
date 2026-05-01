@@ -1,15 +1,13 @@
 import React from 'react'
-import { OrderDirections } from '../../../../hooks/useDatabaseQuery'
+import { OrderDirections } from '@/hooks/useDatabaseQuery'
 import {
   AssetSyncQueueItem,
   AssetSyncStatus,
   ViewNames,
-} from '../../../../modules/assetsyncqueue'
-import AssetSyncQueue from '../../../../components/asset-sync-queue'
-import PaginatedView, {
-  RendererProps,
-} from '../../../../components/paginated-view'
-import { FilterType, MultichoiceFilter } from '../../../../filters'
+} from '@/modules/assetsyncqueue'
+import AssetSyncQueue from '@/components/asset-sync-queue'
+import PaginatedView, { RendererProps } from '@/components/paginated-view'
+import { FilterType, MultichoiceFilter } from '@/filters'
 
 const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => (
   <AssetSyncQueue items={items!} hydrate={hydrate} showMoreInfo />

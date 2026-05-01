@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react'
 import CreateIcon from '@mui/icons-material/Create'
 
-import useIsLoggedIn from '../../../../hooks/useIsLoggedIn'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 
-import ReviewsForAsset from '../../../reviews-for-asset'
-import ReviewResults from '../../../review-results'
-import Button from '../../../button'
-import AddReviewForm from '../../../add-review-form'
-import FormControls from '../../../form-controls'
+import ReviewsForAsset from '@/components/reviews-for-asset'
+import ReviewResults from '@/components/review-results'
+import Button from '@/components/button'
+import AddReviewForm from '@/components/add-review-form'
+import FormControls from '@/components/form-controls'
 
 import TabContext from '../../context'
 

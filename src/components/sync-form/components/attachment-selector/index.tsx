@@ -2,31 +2,34 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import AttachFileIcon from '@mui/icons-material/AttachFile'
 
-import { SyncAttachment, SyncAttachmentType } from '../../../../syncing'
-import ErrorMessage from '../../../error-message'
-import LoadingIndicator from '../../../loading-indicator'
-import SuccessMessage from '../../../success-message'
+import { SyncAttachment, SyncAttachmentType } from '@/syncing'
 import {
   Attachment,
   AttachmentFields,
   AttachmentReason,
   AttachmentType,
   CollectionNames,
-} from '../../../../modules/attachments'
-import { insertRecord } from '../../../../data-store'
-import { handleError } from '../../../../error-handling'
-import Button from '../../../button'
-import { getIsUrlAnImage } from '../../../../utils'
-import FormControls from '../../../form-controls'
-import CheckboxInput from '../../../checkbox-input'
-import AttachmentOutput from '../../../attachment'
-import useSync from '@/hooks/useSync'
-import { optimizeImageByUrl } from '../../../../images'
-import { bucketNames } from '../../../../file-uploading'
-import NoResultsMessage from '../../../no-results-message'
-import AttachmentMeta from '../../../attachment-meta'
-import WarningMessage from '../../../warning-message'
-import useSupabaseClient from '../../../../hooks/useSupabaseClient'
+} from '@/modules/attachments'
+import { insertRecord } from '@/data-store'
+import { handleError } from '@/error-handling'
+import { getIsUrlAnImage } from '@/utils'
+import { optimizeImageByUrl } from '@/images'
+import { bucketNames } from '@/file-uploading'
+
+import useSupabaseClient from '@/hooks/useSupabaseClient'
+
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import CheckboxInput from '@/components/checkbox-input'
+import AttachmentOutput from '@/components/attachment'
+import NoResultsMessage from '@/components/no-results-message'
+import AttachmentMeta from '@/components/attachment-meta'
+import WarningMessage from '@/components/warning-message'
+
+import useSync from '../../hooks/useSync'
 
 const useStyles = makeStyles({
   attachmentsSelector: {},

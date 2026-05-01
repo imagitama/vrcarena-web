@@ -1,5 +1,5 @@
 import React from 'react'
-import WishlistForUser from '../../../wishlist-for-user'
+import WishlistForUser from '@/components/wishlist-for-user'
 import useUserOverview from '../../useUserOverview'
 
 export default () => {

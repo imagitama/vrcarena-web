@@ -3,10 +3,10 @@ import { makeStyles } from '@mui/styles'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 
-import useStorage from '../../../../hooks/useStorage'
-import { trackAction } from '../../../../analytics'
-import { importantTags } from '../../../../config'
-import Heading from '../../../../components/heading'
+import useStorage from '@/hooks/useStorage'
+import { trackAction } from '@/analytics'
+import { importantTags } from '@/config'
+import Heading from '@/components/heading'
 
 const analyticsActionCategory = 'AvatarPages'
 

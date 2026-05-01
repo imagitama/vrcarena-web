@@ -1,7 +1,7 @@
 import React from 'react'
 import useUserOverview from '../../useUserOverview'
-import AttachmentsByParent from '../../../attachments-by-parent'
-import { AttachmentReason } from '../../../../modules/attachments'
+import AttachmentsByParent from '@/components/attachments-by-parent'
+import { AttachmentReason } from '@/modules/attachments'
 
 const TabAttachments = () => {
   const { userId, user } = useUserOverview()

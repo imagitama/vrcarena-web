@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import { SyncResult } from '../../../syncing'
+import { SyncResult } from '@/components/../../syncing'
 
 export interface SyncContextValue<TData extends object> {
   parentId: string
