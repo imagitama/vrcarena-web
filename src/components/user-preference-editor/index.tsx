@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
 import { handleError } from '@/error-handling'
-import { CollectionNames, UserPreferences } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
+import { UserPreferences } from '@/modules/user'
 import { trackAction } from '@/analytics'
 import { formHideDelay } from '@/config'
 

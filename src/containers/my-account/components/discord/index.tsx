@@ -6,7 +6,7 @@ import SuccessMessage from '@/components/success-message'
 import SyncUserWithDiscordForm from '@/components/sync-user-with-discord-form'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useUserId from '@/hooks/useUserId'
-import { CollectionNames } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 import { UserMeta } from '@/modules/users'
 
 const Discord = () => {

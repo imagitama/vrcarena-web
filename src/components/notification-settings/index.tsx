@@ -10,11 +10,11 @@ import {
   defaultNotificationPrefs,
 } from '@/notifications'
 import {
-  CollectionNames,
   NotificationPreferences,
   NotificationPreferencesEvents,
   UserPreferences,
 } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useUserId from '@/hooks/useUserId'

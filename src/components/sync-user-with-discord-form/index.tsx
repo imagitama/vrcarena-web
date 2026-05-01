@@ -4,7 +4,7 @@ import SyncIcon from '@mui/icons-material/Sync'
 import { callFunction } from '@/firebase'
 import { handleError } from '@/error-handling'
 import { User } from '@/modules/users'
-import { CollectionNames } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 import { DataStoreErrorCode } from '@/data-store'
 import { DiscordUser } from '@/discord'
 

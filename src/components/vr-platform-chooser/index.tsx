@@ -12,7 +12,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import { handleError } from '@/error-handling'
 import { trackAction } from '@/analytics'
 import { mediaQueryForMobiles } from '@/media-queries'
-import { CollectionNames } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 import { User } from '@/modules/users'
 
 import useUserId from '@/hooks/useUserId'

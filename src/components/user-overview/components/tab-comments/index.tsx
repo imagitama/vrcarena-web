@@ -5,7 +5,7 @@ import { getUserIsStaffMember } from '@/utils/users'
 
 import CommentList from '@/components/comment-list'
 import Heading from '@/components/heading'
-import { CollectionNames } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 import WarningMessage from '@/components/warning-message'
 
 import useUserOverview from '../../useUserOverview'

@@ -7,7 +7,7 @@ import RefreshIcon from '@mui/icons-material/Refresh'
 import { handleError } from '@/error-handling'
 import { callFunction } from '@/firebase'
 import { UserMeta } from '@/modules/users'
-import { CollectionNames } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 
 import useUserId from '@/hooks/useUserId'
 import useIsPatron from '@/hooks/useIsPatron'

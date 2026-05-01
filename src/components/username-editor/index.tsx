@@ -6,7 +6,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import { handleError } from '@/error-handling'
 import { DataStoreErrorCode } from '@/data-store'
 import { User } from '@/modules/users'
-import { CollectionNames } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useUserRecord from '@/hooks/useUserRecord'

@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { CollectionNames, UserPreferences } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
+import { UserPreferences } from '@/modules/user'
 import { DataStoreErrorCode } from '@/data-store'
 import { setUserPrefs } from '@/modules/app'
 

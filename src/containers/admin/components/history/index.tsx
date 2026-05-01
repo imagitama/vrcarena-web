@@ -9,7 +9,7 @@ import {
 } from '@/modules/history'
 import HistoryResults from '@/components/history-results'
 
-import { CollectionNames as UsersCollectionNames } from '@/modules/user'
+import { CollectionNames as UsersCollectionNames } from '@/modules/users'
 import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 import PaginatedView from '@/components/paginated-view'
 import { Filter, FilterSubType, FilterType } from '@/filters'

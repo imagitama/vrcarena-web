@@ -8,7 +8,7 @@ import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import { handleError } from '@/error-handling'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import { User } from '@/modules/users'
-import { CollectionNames } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 
 import SuccessMessage from '@/components/success-message'
 import LoadingIndicator from '@/components/loading-indicator'

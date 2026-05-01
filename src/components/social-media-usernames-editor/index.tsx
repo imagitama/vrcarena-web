@@ -4,7 +4,7 @@ import SaveIcon from '@mui/icons-material/Save'
 
 import { handleError } from '@/error-handling'
 import { SocialMediaUsernames, User } from '@/modules/users'
-import { CollectionNames } from '@/modules/user'
+import { CollectionNames } from '@/modules/users'
 
 import useUserId from '@/hooks/useUserId'
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
