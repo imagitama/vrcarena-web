@@ -3,6 +3,6 @@ export interface WishlistForUser extends Record<string, unknown> {
   assets: string[]
 }
 
-export const CollectionNames = {
-  WishlistsForUsers: 'wishlistsforusers',
+export enum CollectionNames {
+  WishlistsForUsers = 'wishlistsforusers',
 }

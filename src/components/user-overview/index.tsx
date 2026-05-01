@@ -370,6 +370,15 @@ const UserOverview = ({
                   'users'
                 )}?userId=${user.id}`}>
                 View Comments
+              </Button>{' '}
+              <Button
+                icon={<CommentIcon />}
+                color="secondary"
+                url={`${routes.adminWithTabNameVar.replace(
+                  ':tabName',
+                  'history'
+                )}?userId=${user.id}`}>
+                View Actions
               </Button>
             </EditorBox>
           </ViewControls>

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { CollectionNames } from '@/modules/users'
 import useIsEditor from '@/hooks/useIsEditor'
-import AdminHistory from '@/components/admin-history'
+import AdminGenericHistory from '@/components/admin-generic-history'
 import useUserOverview from '../../useUserOverview'
 
 export default () => {
@@ -14,7 +14,7 @@ export default () => {
   }
 
   return (
-    <AdminHistory
+    <AdminGenericHistory
       id={userId}
       type={CollectionNames.Users}
       metaType={CollectionNames.UsersMeta}

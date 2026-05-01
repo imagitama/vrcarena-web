@@ -259,7 +259,5 @@ export const getLinkUrl = ({
       return routes.viewAssetWithVar.replace(':assetId', parentId)
     case UsersCollectionNames.Users:
       return routes.viewUserWithVar.replace(':userId', parentId)
-    default:
-      return `/#unknown-message-${message}`
   }
 }

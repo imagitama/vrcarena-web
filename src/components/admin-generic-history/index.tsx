@@ -94,7 +94,7 @@ const MetaHistory = ({
   return <HistoryResults results={results} />
 }
 
-const AdminHistory = ({
+const AdminGenericHistory = ({
   id,
   type,
   metaType,
@@ -113,4 +113,4 @@ const AdminHistory = ({
   </>
 )
 
-export default AdminHistory
+export default AdminGenericHistory

@@ -5,81 +5,87 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
-import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
-import * as routes from '@/routes'
 import { FullHistoryEntry, HistoryEntry } from '@/modules/history'
+import { getMessageLabel } from '@/history'
+import { getLinkUrl } from '@/notifications'
 
-import Link from '@/components/link'
 import UsernameLink from '@/components/username-link'
 import FormattedDate from '@/components/formatted-date'
-import Button from '@/components/button'
+import Link from '@/components/link'
 
-const removeUselessKeysFromChanges = (changes: any) => {
-  delete changes.lastmodifiedby
-  delete changes.lastmodifiedat
-  delete changes.createdby
-  delete changes.createdat
-  return changes
-}
+import { getParentLabel } from '@/data-store'
+import HistoryEntryLabel from '@/components/history-entry-label'
+import ToggleIcon from '../toggle-icon'
 
-function HistoryData({ data }: { data: any }) {
-  const [isExpanded, setIsExpanded] = useState(false)
-
-  if (!data.changes) {
-    return <>No data</>
-  }
-
+const ExpandedData = ({ data }: { data: any }) => {
   return (
-    <>
-      {isExpanded && (
-        <div style={{ font: 'monospace' }}>
-          {JSON.stringify(
-            removeUselessKeysFromChanges(data.changes),
-            null,
-            '  '
-          )}
-        </div>
-      )}
-      {!isExpanded && (
-        <Button
-          onClick={() => setIsExpanded((currentVal) => !currentVal)}
-          size="small"
-          color="secondary">
-          Toggle Data
-        </Button>
-      )}
-    </>
+    <Table padding="none">
+      <TableHead>
+        <TableRow>
+          <TableCell>Field</TableCell>
+          <TableCell>Value</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {Object.entries(data).map(([fieldName, value]) => (
+          <TableRow key={fieldName}>
+            <TableCell>{fieldName}</TableCell>
+            <TableCell>{JSON.stringify(value, null, '  ')}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   )
 }
 
-function ParentLabel({
-  parentTable,
-  parentId,
-}: {
-  parentTable: string
-  parentId: string
-}) {
-  const collectionName = parentTable
+function MessageLabel({ entry }: { entry: HistoryEntry }) {
+  const url = getLinkUrl(entry)
+  const label = getParentLabel(entry.parenttable, entry.parent)
+  return (
+    <span
+      title={`${entry.id} ${entry.message} ${entry.parenttable} ${entry.parent}`}>
+      {getMessageLabel(entry)} {url ? <Link to={url}>{label}</Link> : label}
+    </span>
+  )
+}
 
-  switch (collectionName) {
-    case AssetsCollectionNames.Assets:
-    case AssetsCollectionNames.AssetsMeta:
-      return (
-        <Link to={routes.viewAssetWithVar.replace(':assetId', parentId)}>
-          {collectionName}: {parentId}
-        </Link>
-      )
-  }
-
-  if (parentId) {
-    return (
-      <>
-        {collectionName}: {parentId}
-      </>
-    )
-  }
-
-  return <>(no parent)</>
+const HistoryResultsItem = ({ entry }: { entry: HistoryEntry<any> }) => {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+  return (
+    <TableRow>
+      <TableCell>
+        <MessageLabel entry={entry} />
+      </TableCell>
+      <TableCell>
+        {entry.data ? <HistoryEntryLabel entry={entry} /> : '(no data)'}{' '}
+        <ToggleIcon
+          isExpanded={isExpanded}
+          onClick={() => setIsExpanded((val) => !val)}
+        />
+        {entry.data && isExpanded ? (
+          <ExpandedData
+            data={
+              'changes' in entry.data ? entry.data.changes : entry.data.record
+            }
+          />
+        ) : null}
+      </TableCell>
+      <TableCell>
+        {'createdbyusername' in entry && entry.createdbyusername ? (
+          <UsernameLink
+            id={entry.createdby}
+            // @ts-ignore
+            username={entry.createdbyusername}
+          />
+        ) : (
+          'System'
+        )}
+      </TableCell>
+      <TableCell>
+        <FormattedDate date={entry.createdat} />
+      </TableCell>
+    </TableRow>
+  )
 }
 
 const HistoryResults = ({
@@ -97,42 +103,10 @@ const HistoryResults = ({
       </TableRow>
     </TableHead>
     <TableBody>
-      {results.map(
-        ({
-          id,
-          message,
-          parent,
-          parenttable: parentTable,
-          data,
-          createdat: createdAt,
-          createdby: createdBy,
-          ...result
-        }) => (
-          <TableRow key={id} title={id}>
-            <TableCell>
-              {message}&nbsp;
-              {parent ? (
-                <ParentLabel parentId={parent} parentTable={parentTable} />
-              ) : (
-                '(no parent)'
-              )}
-            </TableCell>
-            <TableCell>
-              {data ? <HistoryData data={data} /> : '(no data)'}
-            </TableCell>
-            <TableCell>
-              <UsernameLink
-                id={createdBy}
-                // @ts-ignore
-                username={result.createdbyusername}
-              />
-            </TableCell>
-            <TableCell>
-              <FormattedDate date={createdAt} />
-            </TableCell>
-          </TableRow>
-        )
-      )}
+      {results.map((entry) => {
+        const { id, data, createdat: createdAt, createdby: createdBy } = entry
+        return <HistoryResultsItem key={entry.id} entry={entry} />
+      })}
     </TableBody>
   </Table>
 )

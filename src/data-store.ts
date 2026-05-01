@@ -1,6 +1,25 @@
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
+import { getNameForAwardId } from './awards'
+import { getRouteForTopic, getSubscriptionMessage } from './subscriptions'
+import * as routes from './routes'
+import { getUserId } from './supabase'
+import { CollectionNames as SocialCollectionNames } from './modules/social'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+} from './modules/assets'
+import { Author } from './modules/authors'
+import { User, CollectionNames as UsersCollectionNames } from './modules/users'
+import { CollectionNames as AmendmentsCollectionNames } from './modules/amendments'
+import { CollectionNames as ReportsCollectionNames } from './modules/reports'
+import { CollectionNames as SpeciesCollectionNames } from './modules/species'
+import { CollectionNames as AuthorsCollectionNames } from './modules/authors'
+import { CollectionNames as CommentsCollectionNames } from './modules/comments'
+import { CollectionNames as WishlistsCollectionNames } from './modules/wishlists'
+import { CollectionNames as AttachmentsCollectionNames } from './modules/attachments'
+
 export interface CommonRecordFields {
   id: string
   lastmodifiedat: string | null // Date
@@ -338,4 +357,51 @@ export const escapeValue = (value: string): string => {
   }
 
   return value
+}
+
+export const getParentLabel = (
+  parentTable: string,
+  parentId: string
+): string => {
+  switch (parentTable) {
+    case AssetsCollectionNames.Assets:
+      return 'asset'
+    case AssetsCollectionNames.AssetsMeta:
+      return 'asset metadata'
+
+    case CommentsCollectionNames.Comments:
+      return 'comment'
+    case CommentsCollectionNames.CommentsMeta:
+      return 'comment metadata'
+
+    case AuthorsCollectionNames.Authors:
+      return 'author'
+    case AuthorsCollectionNames.AuthorsMeta:
+      return 'author metadata'
+
+    case UsersCollectionNames.Users:
+      return 'user'
+    case UsersCollectionNames.UsersMeta:
+      return 'user metadata'
+    case UsersCollectionNames.UsersAdminMeta:
+      return 'user admin metadata'
+
+    case AttachmentsCollectionNames.Attachments:
+      return 'attachment'
+    case AttachmentsCollectionNames.AttachmentsMeta:
+      return 'attachment metadata'
+
+    case WishlistsCollectionNames.WishlistsForUsers:
+      return 'wishlist'
+
+    case SpeciesCollectionNames.Species:
+      return 'comment'
+    // case SpeciesCollectionNames.SpeciesMeta:
+    //   return 'comment metadata'
+
+    default:
+      return `Parent: ${parentTable}.${parentId}`
+
+    // return routes.viewAmendmentWithVar.replace(':amendmentId', parentId)
+  }
 }

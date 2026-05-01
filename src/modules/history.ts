@@ -5,9 +5,13 @@ export interface HistoryEntry<TData = any> {
   parenttable: string
   parent: string
   message: string
-  data: {
-    changes: TData
-  }
+  data:
+    | {
+        changes: Partial<TData>
+      }
+    | {
+        record: TData
+      }
 }
 
 export interface FullHistoryEntry<TData = any> extends HistoryEntry<TData> {
@@ -18,6 +22,11 @@ export interface FullHistoryEntry<TData = any> extends HistoryEntry<TData> {
 
 export const createMessage = 'Create'
 export const editMessage = 'Edit'
+
+export enum Message {
+  Create = 'Create',
+  Edit = 'Edit',
+}
 
 export enum CollectionNames {
   History = 'history',
