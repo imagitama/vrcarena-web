@@ -14,7 +14,7 @@ import {
   getPrefersBritishSpelling,
 } from '@/utils'
 import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
-import { BanStatus, FullUser } from '@/modules/users'
+import { BanStatus, FullUser, UserRoles } from '@/modules/users'
 import { AccessStatus } from '@/modules/common'
 import {
   mediaQueryForMobiles,
@@ -51,6 +51,8 @@ import TabAssets from './components/tab-assets'
 import TabAttachments from './components/tab-attachments'
 import TabEndorsements from './components/tab-endorsements'
 import TabHistory from './components/tab-history'
+import useUserRecord from '@/hooks/useUserRecord'
+import AwardRepButton from '../award-rep-button'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   cols: {
@@ -131,6 +133,11 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
 }))
 
+const useIsAdmin = (): boolean => {
+  const [, , user] = useUserRecord()
+  return user ? user.role === UserRoles.Admin : false
+}
+
 const UserOverview = ({
   user,
   small = false,
@@ -140,6 +147,7 @@ const UserOverview = ({
 }) => {
   const classes = useStyles()
   const isEditor = useIsEditor()
+  const isAdmin = useIsAdmin()
 
   const {
     username,
@@ -371,15 +379,7 @@ const UserOverview = ({
                 )}?userId=${user.id}`}>
                 View Comments
               </Button>{' '}
-              <Button
-                icon={<CommentIcon />}
-                color="secondary"
-                url={`${routes.adminWithTabNameVar.replace(
-                  ':tabName',
-                  'history'
-                )}?userId=${user.id}`}>
-                View Actions
-              </Button>
+              {isAdmin && <AwardRepButton userId={user.id} />}
             </EditorBox>
           </ViewControls>
         )}
