@@ -73,6 +73,7 @@ export enum CollectionNames {
   Users = 'users',
   UsersMeta = 'usermeta',
   UsersAdminMeta = 'useradminmeta',
+  UserPreferences = 'userpreferences',
 }
 
 export enum ViewNames {

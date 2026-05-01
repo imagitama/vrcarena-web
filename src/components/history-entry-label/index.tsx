@@ -14,6 +14,7 @@ import {
 } from '@/modules/amendments'
 import {
   BanStatus,
+  UserMeta,
   CollectionNames as UsersCollectionNames,
 } from '@/modules/users'
 import {
@@ -199,9 +200,13 @@ const HistoryEntryLabel = ({
             )
           }
         case UsersCollectionNames.UsersMeta:
-          if (fields.banstatus) {
-            return <>{getLabelForBanStatus(fields.banstatus)} user</>
+          if ((fields as UserMeta).banstatus) {
+            return (
+              <>{getLabelForBanStatus((fields as UserMeta).banstatus)} user</>
+            )
           }
+        case UsersCollectionNames.UserPreferences:
+          return <>edited their preferences</>
         case AuthorsCollectionNames.Authors:
           return <>edited author</>
         case ReportsCollectionNames.ReportsMeta:

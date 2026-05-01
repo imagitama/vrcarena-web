@@ -399,6 +399,9 @@ export const getParentLabel = (
     // case SpeciesCollectionNames.SpeciesMeta:
     //   return 'comment metadata'
 
+    case UsersCollectionNames.UserPreferences:
+      return 'user preferences'
+
     default:
       return `Parent: ${parentTable}.${parentId}`
 

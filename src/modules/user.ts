@@ -37,13 +37,6 @@ export interface UserPreferences extends Record<string, unknown> {
   showmoreinfo: boolean
 }
 
-export enum CollectionNames {
-  Users = 'users',
-  UsersMeta = 'usermeta',
-  UsersAdminMeta = 'useradminmeta',
-  UserPreferences = 'userpreferences',
-}
-
 export default (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case USER_IS_LOADING:
