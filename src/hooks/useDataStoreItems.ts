@@ -95,7 +95,11 @@ export default <TItem>(
 
         const { error, data } = await query
 
-        if (error) throw error
+        if (error) {
+          if (error.code === 'PGRST103') break // offset exceeds row count, we're done
+          throw error
+        }
+
         if (!data || data.length === 0) break
 
         allData = allData.concat(data)
