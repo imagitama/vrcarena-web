@@ -244,6 +244,43 @@ export const insertRecord = async <TFields, TReturnVal>(
   }
 }
 
+export const insertRecords = async <TFields, TReturnVal>(
+  supabase: SupabaseClient,
+  tableName: string,
+  newVals: TFields[],
+  selectAfter = false
+): Promise<TReturnVal[] | void> => {
+  let query: PostgrestFilterBuilder<any, any, null, unknown> = supabase
+    .from(tableName)
+    .insert(newVals)
+
+  if (selectAfter) {
+    // @ts-ignore
+    query = query.select()
+  }
+
+  const { error, data } = await query
+
+  console.debug(`insertRecords`, tableName, data, error)
+
+  // returns an error per record (which is 1)
+  if (error && Array.isArray(error) && error.length > 0) {
+    console.error(error)
+    const firstError = error[0]
+    throw new Error(
+      `Could not insert records in table ${tableName}: ${firstError.code} ${firstError.message} (${firstError.hint})`
+    )
+  } else if (error) {
+    throw new Error(
+      `Could not insert records in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
+    )
+  }
+
+  if (data) {
+    return data
+  }
+}
+
 export const deleteRecord = async (
   supabase: SupabaseClient,
   tableName: string,
@@ -252,6 +289,32 @@ export const deleteRecord = async (
   const { error, data } = await supabase.from(tableName).delete().eq('id', id)
 
   console.debug(`deleteRecord`, tableName, id, data, error)
+
+  // returns an error per record (which is 1)
+  if (error && Array.isArray(error) && error.length > 0) {
+    console.error(error)
+    const firstError = error[0]
+    throw new Error(
+      `Could not delete record in table ${tableName}: ${firstError.code} ${firstError.message} (${firstError.hint})`
+    )
+  } else if (error) {
+    throw new Error(
+      `Could not delete record in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
+    )
+  }
+}
+
+export const deleteRecordsByUser = async (
+  supabase: SupabaseClient,
+  tableName: string,
+  userId: string
+): Promise<void> => {
+  const { error, data } = await supabase
+    .from(tableName)
+    .delete()
+    .eq('createdby', userId)
+
+  console.debug(`deleteRecordsByUser`, tableName, userId, data, error)
 
   // returns an error per record (which is 1)
   if (error && Array.isArray(error) && error.length > 0) {

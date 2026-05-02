@@ -32,20 +32,22 @@ const useStyles = makeStyles(() => ({
 const LoadingIndicator = ({
   message = '',
   fill = false,
+  className = '',
 }: {
   message?: React.ReactNode
   fill?: boolean
+  className?: string
 }) => {
   const classes = useStyles()
   return (
-    <>
+    <div className={className}>
       <div className={classes.iconWrapper}>
         <div className={`${classes.icon} ${fill ? classes.fill : ''}`}>
           <Chariot spin />
         </div>
       </div>
       {message && <div className={classes.message}>{message}</div>}
-    </>
+    </div>
   )
 }
 

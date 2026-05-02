@@ -10,9 +10,10 @@ export interface QueryOptions<TItem> {
   queryName?: string
   orderBy?: keyof TItem
   quietHydrate?: boolean
+  limit?: number
 }
 
-type HydrateFn = () => Promise<void>
+export type HydrateFn = () => Promise<void>
 
 export default <TItem>(
   collectionName: string,
@@ -67,32 +68,60 @@ export default <TItem>(
       }
       setLastErrorCode(null)
 
-      let query = supabase.from(collectionName).select('*')
+      let allData: TItem[] = []
+      let page = 0
+      const pageSize = 1000
 
-      if (ids !== undefined) {
-        query = query.or(ids.map((id) => `id.eq.${id}`).join(','))
+      while (true) {
+        let query = supabase
+          .from(collectionName)
+          .select('*', { count: 'exact' })
+
+        if (ids !== undefined) {
+          query = query.or(ids.map((id) => `id.eq.${id}`).join(','))
+        }
+
+        // TODO: change to array like useDatabaseQuery
+        if (options.orderBy) {
+          query = query.order(options.orderBy as string, { ascending: true })
+        }
+
+        const from = page * pageSize
+        const to = from + pageSize - 1
+        query = query.range(
+          from,
+          options.limit ? Math.min(to, options.limit - 1) : to
+        )
+
+        const { error, data } = await query
+
+        if (error) throw error
+        if (!data || data.length === 0) break
+
+        allData = allData.concat(data)
+
+        const reachedLimit = options.limit && allData.length >= options.limit
+        if (reachedLimit || data.length < pageSize) break
+
+        page++
       }
 
-      // TODO: Do this better
-      if (options.orderBy) {
-        query = query.order(options.orderBy as string, { ascending: true })
-      }
-
-      const { error, data, count } = await query
+      const data = allData
+      const count = allData.length
 
       console.debug(
         `useDataStoreItems :: ${collectionName} :: ${options.queryName} :: query complete`,
         { ids },
-        error,
+        // error,
         data,
         count
       )
 
-      if (error) {
-        throw new Error(
-          `useDataStoreItems failed run query for collection "${collectionName}" query "${options.queryName}": ${error.code}: ${error.message} (${error.hint})`
-        )
-      }
+      // if (error) {
+      //   throw new Error(
+      //     `useDataStoreItems failed run query for collection "${collectionName}" query "${options.queryName}": ${error.code}: ${error.message} (${error.hint})`
+      //   )
+      // }
 
       if (hasUnmountedRef.current) {
         return

@@ -32,6 +32,8 @@ import FormattedDate from '@/components/formatted-date'
 import UsernameLink from '@/components/username-link'
 import GenericOutputLabel from '@/components/generic-output-label'
 import FormControls from '@/components/form-controls'
+import Whiteboard from '@/components/whiteboard'
+import ErrorBoundary from '@/components/error-boundary'
 
 const parentName = 'admin'
 const pageName = 'notepad'
@@ -221,11 +223,18 @@ export default () => {
       <Columns padding>
         <Column width={50} padding>
           <Heading variant="h2">Queue Overview</Heading>
-          <AdminQueue />
+          <ErrorBoundary>
+            <AdminQueue />
+          </ErrorBoundary>
         </Column>
         <Column width={50} padding>
           <Heading variant="h2">Notepad</Heading>
-          <Notepad />
+          <ErrorBoundary>
+            <Whiteboard />
+          </ErrorBoundary>
+          <ErrorBoundary>
+            <Notepad />
+          </ErrorBoundary>
         </Column>
       </Columns>
     </>
