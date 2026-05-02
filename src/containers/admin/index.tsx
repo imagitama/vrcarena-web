@@ -67,10 +67,10 @@ const View = () => {
             contents: (
               <>
                 <InfoMessage title="How Assets Work" hideId="admin-assets-info">
-                  <strong>
-                    Assets are auto-approved after 24 hours (ignores rep). You
-                    can still manually approve/decline them.
-                  </strong>
+                  Assets are auto-approved after <strong>24 hours</strong>, if
+                  the user has over <strong>20 rep</strong> (a month old
+                  account) and if the AI evaluation is over <strong>0.6</strong>
+                  .
                 </InfoMessage>
                 <AdminAssets />
               </>
