@@ -81,8 +81,7 @@ const PlatformSyncAssertion = () => {
 
   if (isLoading) return <>...</>
 
-  if (!lastResult || !lastResult.value)
-    return <ErrorMessage>No result</ErrorMessage>
+  if (!lastResult || !lastResult.value) return null
 
   const { value } = lastResult
 
