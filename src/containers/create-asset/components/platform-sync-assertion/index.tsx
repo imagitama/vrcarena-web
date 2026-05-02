@@ -10,8 +10,8 @@ import Tooltip from '@/components/tooltip'
 import FormattedDate from '@/components/formatted-date'
 
 enum PlatformSyncStatus {
-  Success,
-  Failed,
+  Success = 'success',
+  Failed = 'failed',
 }
 
 interface PlatformSyncAssertionResult {
