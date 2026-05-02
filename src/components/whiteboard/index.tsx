@@ -228,7 +228,7 @@ const Whiteboard = () => {
       []
     )
 
-    dotsToRender.sort((dotA, dotB) => dotA.t - dotB.t)
+    dotsToRender.sort((a, b) => (a.t ?? -Infinity) - (b.t ?? -Infinity)) // do infinity stuff to handle old dots without timestamp
 
     render(canvas, dotsToRender)
   }, [
