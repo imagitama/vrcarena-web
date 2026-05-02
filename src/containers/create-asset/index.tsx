@@ -32,6 +32,8 @@ import AssetResults from '@/components/asset-results'
 import AssetSyncQueue from '@/components/asset-sync-queue'
 import Heading from '@/components/heading'
 import InfoMessage from '@/components/info-message'
+import PlatformSyncAssertion from './components/platform-sync-assertion'
+import ErrorBoundary from '@/components/error-boundary'
 
 // TODO: move to component
 const useStyles = makeStyles({
@@ -221,7 +223,10 @@ const View = () => {
             color="secondary"
             size="small">
             Create Asset Manually
-          </Button>
+          </Button>{' '}
+          <ErrorBoundary>
+            <PlatformSyncAssertion />
+          </ErrorBoundary>
           <AssetSyncQueue
             items={queuedItems}
             isLoading={isLoading}

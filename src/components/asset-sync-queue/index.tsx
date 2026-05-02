@@ -617,15 +617,15 @@ const AssetSyncQueue = ({
                 <TableCell>
                   {getCanSync(newSourceUrl) ? (
                     <StatusText positivity={1}>
-                      <CheckIcon /> Can Be Synced
+                      <CheckIcon /> Valid
                       <br />
                       {cleanupSourceUrl(newSourceUrl)}
                     </StatusText>
                   ) : newSourceUrl ? (
                     <>
-                      <Tooltip title="Only Gumroad, Booth and Itch.io URLs can be synced">
+                      <Tooltip title="Only product URLs (such as Gumroad, Booth, Jinxxy, Itch, PayHip) can be synced">
                         <StatusText positivity={-1}>
-                          <ClearIcon /> Cannot Be Synced
+                          <ClearIcon /> Invalid
                         </StatusText>
                       </Tooltip>
                       <br />

@@ -7,8 +7,11 @@ import {
   signInWithEmailAndPassword,
   AuthErrorCodes,
 } from 'firebase/auth'
-import { auth } from '@/firebase'
 import { FirebaseError } from 'firebase/app' // TODO: re-export from other file
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
+
+import { auth } from '@/firebase'
+
 import Button from '@/components/button'
 import {
   Discord as DiscordIcon,
@@ -80,6 +83,7 @@ const useStyles = makeStyles({
   signUpButton: {
     marginTop: '1rem !important',
     '& > *': {
+      justifyContent: 'center',
       width: '100%', // button inside anchor screws it up
     },
   },
@@ -364,7 +368,9 @@ const Form = ({
       <Button
         size="large"
         url={isSignUp ? routes.login : routes.signUp}
-        className={classes.signUpButton}>
+        className={classes.signUpButton}
+        icon={<PersonAddIcon />}
+        switchIconSide>
         {isSignUp ? 'Login' : 'Sign Up'}
       </Button>
     </div>
