@@ -47,8 +47,8 @@ const useStyles = makeStyles({
   },
 })
 
-const CANVAS_WIDTH = 128
-const CANVAS_HEIGHT = 128
+const CANVAS_WIDTH = 256
+const CANVAS_HEIGHT = 256
 
 const render = (canvas: HTMLCanvasElement, dots: WhiteboardDot[]): void => {
   console.debug(`render`, { canvas, dots })

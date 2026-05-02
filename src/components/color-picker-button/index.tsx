@@ -47,7 +47,7 @@ const ColorPickerButton = ({
   return (
     <>
       {isOpen && (
-        <Dialog>
+        <Dialog onClose={onClickDone}>
           <Heading variant="h1">Color Picker</Heading>
           <p>Pick a color:</p>
           <Sketch
