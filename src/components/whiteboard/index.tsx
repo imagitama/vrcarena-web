@@ -176,6 +176,7 @@ const Whiteboard = () => {
           g: newColorRgbaRef.current.g,
           b: newColorRgbaRef.current.b,
           a: newColorRgbaRef.current.a,
+          t: Date.now(),
         }
         myDots.push(newDot)
         renderNewDot(canvas, newDot)
@@ -226,6 +227,8 @@ const Whiteboard = () => {
       (dots, record) => dots.concat(record.dots),
       []
     )
+
+    dotsToRender.sort((dotA, dotB) => dotA.t - dotB.t)
 
     render(canvas, dotsToRender)
   }, [

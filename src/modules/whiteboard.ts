@@ -5,6 +5,7 @@ export interface WhiteboardDot {
   g: number
   b: number
   a: number
+  t: number // Date.now()
 }
 
 export interface WhiteboardRecordForUser extends Record<string, any> {
