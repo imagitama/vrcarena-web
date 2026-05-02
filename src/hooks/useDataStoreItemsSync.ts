@@ -10,13 +10,15 @@ import {
   RealtimeChannel,
   RealtimePostgresDeletePayload,
   RealtimePostgresInsertPayload,
+  RealtimePostgresUpdatePayload,
 } from '@supabase/supabase-js'
 import useSupabaseClient from './useSupabaseClient'
 import { QueryOptions as BaseQueryOptions } from './useDataStoreItems'
 
 interface QueryOptions<TItem> extends BaseQueryOptions<TItem> {
   // WARNING: replaces setState for performance
-  onRecordReplacement?: (newRecord: TItem) => void
+  onInsertInstead?: (insertedRecord: TItem) => void
+  onUpdateInstead?: (updatedRecord: TItem) => void
   // onDeleteReplacement?: (deletedRecord: DeletedRecord) => void
 }
 
@@ -73,14 +75,35 @@ export default <TItem extends Record<string, any>>(
 
         const createdRecord = payload.new as TItem
 
-        if (options.onRecordReplacement) {
-          options.onRecordReplacement(createdRecord)
+        if (options.onInsertInstead) {
+          options.onInsertInstead(createdRecord)
         } else {
           setCreatedRecords((currentItems) =>
             currentItems === null
               ? [createdRecord]
               : currentItems.concat([createdRecord])
           )
+        }
+      }
+
+      const onUpdate = (payload: RealtimePostgresUpdatePayload<TItem>) => {
+        console.debug(
+          `useDataStoreItemsSync :: ${options.queryName} :: ${collectionName} :: onUpdate`,
+          {
+            payload,
+          }
+        )
+
+        if (isUnmountedRef.current) {
+          return
+        }
+
+        const createdRecord = payload.new as TItem
+
+        if (options.onUpdateInstead) {
+          options.onUpdateInstead(createdRecord)
+        } else {
+          // TODO
         }
       }
 
@@ -119,6 +142,16 @@ export default <TItem extends Record<string, any>>(
             // filter,
           },
           onInsert
+        )
+        .on(
+          REALTIME_LISTEN_TYPES.POSTGRES_CHANGES,
+          {
+            event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.UPDATE,
+            schema: 'public',
+            table: collectionName,
+            // filter,
+          },
+          onUpdate
         )
         //  .on(
         //   REALTIME_LISTEN_TYPES.POSTGRES_CHANGES,

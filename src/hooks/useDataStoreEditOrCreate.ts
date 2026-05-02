@@ -11,6 +11,10 @@ import useSupabaseClient from './useSupabaseClient'
 
 type ClearFn = () => void
 
+/**
+ * Wrapper around Supabase .upsert()
+ * Does NOT perform a .select() after (is a TODO)
+ */
 const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
   collectionName: string,
   id: string | false,
@@ -51,15 +55,18 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
         return
       }
 
-      if (fields.id) {
-        console.warn(`property "id" found in fields - removing as unnecessary`)
-        delete fields.id
-      }
-
       const fieldsForUpdate = mapFieldsForDatabase(fields) as TRecord
 
+      const idFieldName = Array.isArray(options.idField)
+        ? options.idField[0]
+        : options.idField
+        ? options.idField
+        : 'id'
+      // @ts-ignore investigate
+      fieldsForUpdate[idFieldName] = id
+
       console.debug(
-        `useDataStoreEdit :: ${
+        `useDataStoreEditOrCreate :: ${
           options.queryName || '(unnamed)'
         } :: update ${collectionName} ${id}...`,
         fieldsForUpdate
@@ -69,57 +76,45 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
       setLastErrorCode(null)
       setIsEditing(true)
 
-      let query = supabase.from(collectionName).update<TRecord>(fieldsForUpdate)
+      // let query = supabase.from(collectionName).update<TRecord>(fieldsForUpdate)
 
-      if (Array.isArray(options.idField)) {
-        console.debug(`is array of ID fields`, options.idField)
-        for (const idField of options.idField) {
-          query = query.eq(idField, fields[idField])
-        }
+      // if (Array.isArray(options.idField)) {
+      //   console.debug(`is array of ID fields`, options.idField)
+      //   for (const idField of options.idField) {
+      //     query = query.eq(idField, fields[idField])
+      //   }
+      // } else {
+      //   query = query.eq(options.idField || 'id', id)
+      // }
+
+      const createResult = await supabase
+        .from(collectionName)
+        .upsert<TRecord>(fieldsForUpdate)
+
+      // TODO: finish
+      // if (selectAfter) {
+      //   .select<string, TRecord>(options.select || '*')
+      // }
+
+      if (createResult.error) {
+        console.error(createResult.error)
+
+        throw new DataStoreError(
+          'useDataStoreEditOrCreate create failed',
+          createResult.error
+        )
       }
 
-      let { data, error } = await query.select<string, TRecord>(
-        options.select || '*'
-      )
+      // if (!createResult.data || !createResult.data.length) {
+      //   throw new DataStoreError(
+      //     'useDataStoreEditOrCreate data null or invalid length'
+      //   )
+      // }
 
-      if (error) {
-        console.error(error)
-        throw new DataStoreError('useDataStoreEdit edit failed', error)
-      }
-
-      if (!data) {
-        throw new DataStoreError('useDataStoreEdit data null')
-      }
-
-      if (data.length === 0) {
-        console.debug(`record did not exist, trying insert...`)
-
-        const createResult = await supabase
-          .from(collectionName)
-          // TODO: Verify providing "id" column
-          .insert<TRecord>(fieldsForUpdate)
-          .select<string, TRecord>(options.select || '*')
-
-        if (createResult.error) {
-          console.error(createResult.error)
-
-          throw new DataStoreError(
-            'useDataStoreEdit create failed',
-            createResult.error
-          )
-        }
-
-        if (!createResult.data || !createResult.data.length) {
-          throw new DataStoreError(
-            'useDataStoreEdit data null or invalid length'
-          )
-        }
-
-        data = createResult.data
-      }
+      // data = createResult.data
 
       console.debug(
-        `useDataStoreEdit :: ${
+        `useDataStoreEditOrCreate :: ${
           options.queryName || '(unnamed)'
         } :: ${collectionName} :: success`
       )
@@ -127,9 +122,9 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
       setIsEditing(false)
       setIsSuccess(true)
       setLastErrorCode(null)
-      setUpdatedRecord(data[0])
+      // setUpdatedRecord(data[0])
 
-      return data[0]
+      // return data[0]
     } catch (err) {
       setIsEditing(false)
       setIsSuccess(false)

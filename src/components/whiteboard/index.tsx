@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles'
 import {
   CollectionNames,
   WhiteboardDot,
-  WhiteboardDotFields,
+  WhiteboardRecordForUser,
 } from '@/modules/whiteboard'
 
 import useDataStoreItems from '@/hooks/useDataStoreItems'
@@ -12,7 +12,6 @@ import useDataStoreItemsSync from '@/hooks/useDataStoreItemsSync'
 
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
-import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import ColorPickerButton, { Color, PURE_WHITE } from '../color-picker-button'
 import useStorage from '@/hooks/useStorage'
 import useUserId from '@/hooks/useUserId'
@@ -21,10 +20,18 @@ import Button from '../button'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import { User, CollectionNames as UsersCollectionNames } from '@/modules/users'
 import WarningMessage from '../warning-message'
-import { insertRecords, deleteRecordsByUser } from '@/data-store'
-import useSupabaseClient from '@/hooks/useSupabaseClient'
-import { FormControl } from '@mui/material'
 import FormControls from '../form-controls'
+import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
+import {
+  bresenham,
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  getCanvasCoords,
+  getColorFromStr,
+  render,
+  renderNewDot,
+  renderNewDots,
+} from './utils'
 
 const useStyles = makeStyles({
   root: {
@@ -46,49 +53,6 @@ const useStyles = makeStyles({
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
 })
-
-const CANVAS_WIDTH = 256
-const CANVAS_HEIGHT = 256
-
-const render = (canvas: HTMLCanvasElement, dots: WhiteboardDot[]): void => {
-  console.debug(`render`, { canvas, dots })
-
-  const ctx = canvas.getContext('2d')
-  ctx!.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
-
-  const imageData = ctx!.createImageData(CANVAS_WIDTH, CANVAS_HEIGHT)
-  const data = imageData.data
-
-  for (const { x, y, r, g, b, a } of dots) {
-    if (x < 0 || x >= CANVAS_WIDTH || y < 0 || y >= CANVAS_HEIGHT) continue
-    const idx = (y * CANVAS_WIDTH + x) * 4
-    data[idx] = r
-    data[idx + 1] = g
-    data[idx + 2] = b
-    data[idx + 3] = Math.round(a * 255)
-  }
-
-  ctx!.putImageData(imageData, 0, 0)
-}
-
-const renderNewDot = (
-  canvas: HTMLCanvasElement,
-  { x, y, r, g, b, a }: WhiteboardDotFields
-) => {
-  console.debug(`renderNewDot`, { canvas, dot: { x, y, r, g, b, a } })
-
-  const ctx = canvas.getContext('2d')
-  const imageData = ctx!.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
-  const data = imageData.data
-
-  const idx = (y * CANVAS_WIDTH + x) * 4
-  data[idx] = r
-  data[idx + 1] = g
-  data[idx + 2] = b
-  data[idx + 3] = Math.round(a * 255)
-
-  ctx!.putImageData(imageData, 0, 0)
-}
 
 const KEY_COLOR = 'whiteboard'
 
@@ -117,69 +81,61 @@ const UsernameCheckbox = ({
 let lastX: number | null = null
 let lastY: number | null = null
 
-function bresenham(
-  x0: number,
-  y0: number,
-  x1: number,
-  y1: number,
-  cb: (x: number, y: number) => void
-) {
-  const dx = Math.abs(x1 - x0)
-  const dy = Math.abs(y1 - y0)
-  const sx = x0 < x1 ? 1 : -1
-  const sy = y0 < y1 ? 1 : -1
-  let err = dx - dy
-
-  while (true) {
-    cb(x0, y0)
-    if (x0 === x1 && y0 === y1) break
-    const e2 = 2 * err
-    if (e2 > -dy) {
-      err -= dy
-      x0 += sx
-    }
-    if (e2 < dx) {
-      err += dx
-      y0 += sy
-    }
-  }
-}
-
-function getCanvasCoords(canvas: HTMLCanvasElement, e: MouseEvent) {
-  const scaleX = canvas.width / canvas.offsetWidth
-  const scaleY = canvas.height / canvas.offsetHeight
-  return {
-    x: Math.floor(e.offsetX * scaleX),
-    y: Math.floor(e.offsetY * scaleY),
-  }
-}
-
 const Whiteboard = () => {
   const classes = useStyles()
-  const [isLoading, lastErrorCode, dots, , hydrate] =
-    useDataStoreItems<WhiteboardDot>(CollectionNames.Whiteboard, undefined, {
-      limit: Number.MAX_SAFE_INTEGER,
-    })
-  const myUserId = useUserId()
+  const [isLoading, lastErrorCode, whiteboardRecordsForUsers, , hydrate] =
+    useDataStoreItems<WhiteboardRecordForUser>(
+      CollectionNames.Whiteboard,
+      undefined
+    )
+  const myUserId = useUserId()!
+
+  const myRecord =
+    whiteboardRecordsForUsers?.find((record) => record.id === myUserId) || null
+  const myDots = myRecord ? myRecord.dots : []
+
   const [isLoadingSync, lastErrorCodeSync, newDots] =
-    useDataStoreItemsSync<WhiteboardDot>(CollectionNames.Whiteboard, {
-      onRecordReplacement: (newDot) => {
+    useDataStoreItemsSync<WhiteboardRecordForUser>(CollectionNames.Whiteboard, {
+      onUpdateInstead: (updatedRecord) => {
         const canvas = canvasRef.current
         if (canvas === null) return
-        if (newDot.createdby === myUserId) return
-        renderNewDot(canvas, newDot)
+        if (updatedRecord.id === myUserId) return
+
+        if (updatedRecord.dots.length === 0) {
+          hydrate()
+        } else {
+          const existingDots =
+            whiteboardRecordsForUsers?.find(
+              (record) => record.id === updatedRecord.id
+            )?.dots || null
+          const newDots =
+            existingDots !== null
+              ? updatedRecord.dots.slice(existingDots.length)
+              : updatedRecord.dots
+
+          renderNewDots(canvas, newDots)
+        }
+      },
+      onInsertInstead: (newRecord) => {
+        const canvas = canvasRef.current
+        if (canvas === null) return
+        if (newRecord.id === myUserId) return
+
+        hydrate()
       },
     })
-  const [, , , createDot] = useDataStoreCreate<WhiteboardDot>(
-    CollectionNames.Whiteboard
-  )
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [persistedData, setPersistedData] = useStorage<StorageValue>(KEY_COLOR)
   const newColorRgbaRef = useRef<Color>(
-    persistedData ? persistedData.color : PURE_WHITE
+    persistedData ? persistedData.color : getColorFromStr(myUserId)
   )
   const [enabledUserIds, setEnabledUserIds] = useState<string[] | false>(false)
   const [isAttemptingClear, setIsAttemptingClear] = useState(false)
+  const [isSaving, isSuccess, lastErrorCodeSaving, save] =
+    useDataStoreEditOrCreate<WhiteboardRecordForUser>(
+      CollectionNames.Whiteboard,
+      myUserId
+    )
 
   const onColorPicked = (newRgba: Color) => {
     newColorRgbaRef.current = newRgba
@@ -197,7 +153,6 @@ const Whiteboard = () => {
     if (canvas === null) return
 
     let isDrawing = false
-    let queuedDots: WhiteboardDotFields[] = []
 
     const onMouseDown = (e: MouseEvent) => {
       isDrawing = true
@@ -214,7 +169,7 @@ const Whiteboard = () => {
       const { x, y } = getCanvasCoords(canvas, e)
 
       bresenham(lastX!, lastY!, x, y, (x, y) => {
-        const newDot: WhiteboardDotFields = {
+        const newDot: WhiteboardDot = {
           x,
           y,
           r: newColorRgbaRef.current.r,
@@ -222,7 +177,7 @@ const Whiteboard = () => {
           b: newColorRgbaRef.current.b,
           a: newColorRgbaRef.current.a,
         }
-        queuedDots.push(newDot)
+        myDots.push(newDot)
         renderNewDot(canvas, newDot)
       })
       lastX = x
@@ -230,22 +185,14 @@ const Whiteboard = () => {
     }
     canvas.addEventListener('mousemove', onMouseMove)
 
-    const createQueuedDots = async () => {
-      console.debug(`creating queued dots...`)
-
-      await insertRecords(
-        supabaseClient,
-        CollectionNames.Whiteboard,
-        queuedDots
-      )
-
-      console.debug('created dots!')
-      queuedDots = []
-    }
-
     const onMouseUp = () => {
       isDrawing = false
-      createQueuedDots()
+
+      save({
+        dots: myDots,
+        lastmodifiedat: new Date().toISOString(),
+        lastmodifiedby: myUserId,
+      })
     }
     canvas.addEventListener('mouseup', onMouseUp)
 
@@ -260,44 +207,48 @@ const Whiteboard = () => {
       canvas.removeEventListener('mouseup', onMouseUp)
       canvas.removeEventListener('mouseleave', onMouseLeave)
     }
-  }, [Array.isArray(dots), isLoading])
+  }, [Array.isArray(whiteboardRecordsForUsers), isLoading])
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (canvas === null) return
 
-    if (!Array.isArray(dots)) return
+    if (!Array.isArray(whiteboardRecordsForUsers)) return
 
-    let dotsToUse = dots
+    let recordsToUse = whiteboardRecordsForUsers
 
     if (enabledUserIds !== false)
-      dotsToUse = dotsToUse.filter((dot) =>
-        enabledUserIds.includes(dot.createdby)
+      recordsToUse = recordsToUse.filter((record) =>
+        enabledUserIds.includes(record.id)
       )
 
-    render(canvas, dotsToUse)
-  }, [Array.isArray(dots) ? dots.length : null, isLoading])
+    const dotsToRender = recordsToUse.reduce<WhiteboardDot[]>(
+      (dots, record) => dots.concat(record.dots),
+      []
+    )
 
-  const userIds = Array.isArray(dots)
-    ? dots.reduce<string[]>(
-        (userIds, dot) =>
-          userIds.includes(dot.createdby)
-            ? userIds
-            : userIds.concat([dot.createdby]),
+    render(canvas, dotsToRender)
+  }, [
+    Array.isArray(whiteboardRecordsForUsers)
+      ? whiteboardRecordsForUsers.length
+      : null,
+    isLoading,
+  ])
+
+  const userIds = Array.isArray(whiteboardRecordsForUsers)
+    ? whiteboardRecordsForUsers.reduce<string[]>(
+        (userIds, record) =>
+          userIds.includes(record.id) ? userIds : userIds.concat([record.id]),
         []
       )
     : []
 
-  const supabaseClient = useSupabaseClient()
-
   const clearMyPen = async () => {
     console.debug('clearing my pen...')
 
-    await deleteRecordsByUser(
-      supabaseClient,
-      CollectionNames.Whiteboard,
-      myUserId!
-    )
+    await save({
+      dots: [],
+    })
 
     hydrate()
   }
@@ -317,7 +268,9 @@ const Whiteboard = () => {
           Failed to subscribe to dots (code {lastErrorCodeSync})
         </ErrorMessage>
       )}
-      {!Array.isArray(dots) && <LoadingIndicator message="Loading dots..." />}
+      {!Array.isArray(whiteboardRecordsForUsers) && (
+        <LoadingIndicator message="Loading dots..." />
+      )}
       {!Array.isArray(newDots) && (
         <LoadingIndicator message="Loading subscribed dots..." />
       )}
@@ -338,7 +291,7 @@ const Whiteboard = () => {
           onChange={(newVal) =>
             setEnabledUserIds((currentIds) =>
               currentIds === false
-                ? []
+                ? userIds.filter((id) => id !== userId)
                 : newVal
                 ? currentIds.concat([userId])
                 : currentIds.filter((id) => id !== userId)
@@ -355,11 +308,6 @@ const Whiteboard = () => {
       {isAttemptingClear && (
         <WarningMessage>
           Are you sure you want to clear your pen?
-          <br />
-          <br />
-          <strong>
-            Other people must refresh their page to unsee your pen!
-          </strong>
           <FormControls>
             <Button
               onClick={() => {

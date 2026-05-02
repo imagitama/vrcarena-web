@@ -1,4 +1,4 @@
-export interface WhiteboardDotFields extends Record<string, any> {
+export interface WhiteboardDot {
   x: number
   y: number
   r: number
@@ -7,8 +7,11 @@ export interface WhiteboardDotFields extends Record<string, any> {
   a: number
 }
 
-export interface WhiteboardDot extends WhiteboardDotFields {
-  id: string // uuidv4
+export interface WhiteboardRecordForUser extends Record<string, any> {
+  id: string // userId
+  dots: WhiteboardDot[]
+  lastmodifiedby: string
+  lastmodifiedat: string // date
   createdby: string
   createdat: string // date
 }
