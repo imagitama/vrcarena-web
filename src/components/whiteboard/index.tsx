@@ -81,6 +81,16 @@ const UsernameCheckbox = ({
 let lastX: number | null = null
 let lastY: number | null = null
 
+/**
+ * Each user gets their own record in the whiteboard table.
+ * Renders ALL dots once on load.
+ * Then uses Supabase's realtime API to subscribe to INSERTs and UPDATEs on the table,
+ * and adds new dots (or forces a re-render on clear).
+ *
+ * TODO:
+ * - do not store every single pixel ever: replace existing dots instead
+ *    -> change each item in dots array to correspond to a coordinate
+ */
 const Whiteboard = () => {
   const classes = useStyles()
   const [isLoading, lastErrorCode, whiteboardRecordsForUsers, , hydrate] =

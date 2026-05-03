@@ -7,6 +7,7 @@ import { Login as LoginIcon } from '@/icons'
 import { auth } from '@/firebase'
 import { handleError } from '@/error-handling'
 import { getIsEmailAddress } from '@/utils/email'
+import { mediaQueryForMobiles } from '@/media-queries'
 
 import useFirebaseFunction from '@/hooks/useFirebaseFunction'
 
@@ -30,6 +31,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
   },
   form: {
+    width: '100%',
     marginBottom: '2rem',
   },
   loginButton: {
@@ -38,6 +40,10 @@ const useStyles = makeStyles({
   loginWithEmailForm: {
     width: '500px',
     marginBottom: '2rem',
+    maxWidth: '100%',
+    [mediaQueryForMobiles]: {
+      width: '100%',
+    },
   },
   spacer: {
     height: '1rem',

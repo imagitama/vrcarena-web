@@ -23,6 +23,7 @@ import {
 import { DISCORD_URL, EMAIL } from '@/config'
 import { handleError } from '@/error-handling'
 import { routes } from '@/routes'
+import { mediaQueryForMobiles } from '@/media-queries'
 
 import LoginWithDiscord from '@/components/login-with-discord'
 import LoadingIndicator from '@/components/loading-indicator'
@@ -49,6 +50,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
   },
   form: {
+    width: '100%',
     marginBottom: '2rem',
   },
   loginButton: {
@@ -57,6 +59,10 @@ const useStyles = makeStyles({
   loginWithEmailForm: {
     width: '500px',
     marginBottom: '2rem',
+    maxWidth: '100%',
+    [mediaQueryForMobiles]: {
+      width: '100%',
+    },
   },
   discord: {
     backgroundColor: '#7289da !important',
