@@ -7,6 +7,7 @@ import { getUserId } from '@/supabase'
 import * as routes from '@/routes'
 import { getLabelForNotification, getLinkUrl } from '@/notifications'
 import {
+  FullNotification,
   CollectionNames as NotificationsCollectionNames,
   ViewNames,
 } from '@/modules/notifications'
@@ -63,20 +64,6 @@ export const cart = async (
     handleError(err)
     return []
   }
-}
-
-interface Notification {
-  id: string
-  recipient: string
-  message: string
-  parent: string
-  parenttable: string
-  data: Object
-  createdat: Date
-}
-
-interface FullNotification extends Notification {
-  parentdata: Object
 }
 
 export const notifications = async (

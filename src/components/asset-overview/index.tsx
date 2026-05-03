@@ -783,7 +783,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                   {asset.tags
                     .sort((a, b) => a.localeCompare(b))
                     .map((tag, i) => {
-                      const stats = asset.tagscount.find(
+                      const stats = asset.tagscount?.find(
                         (stats) => stats.tag === tag
                       )
                       return (

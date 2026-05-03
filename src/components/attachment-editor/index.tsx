@@ -163,9 +163,10 @@ const AttachmentEditor = ({
   const [fields, setFields] = useState<AttachmentFields>(
     existingAttachment || emptyRecord
   )
-  const [isSaving, isSaveSuccess, isSaveFailed, saveOrCreate] = attachmentId
-    ? useDataStoreEdit<Attachment>(CollectionNames.Attachments, attachmentId)
-    : useDataStoreCreate<Attachment>(CollectionNames.Attachments)
+  const [isSaving, isSaveSuccess, lastErrorCodeSaving, saveOrCreate] =
+    attachmentId
+      ? useDataStoreEdit<Attachment>(CollectionNames.Attachments, attachmentId)
+      : useDataStoreCreate<Attachment>(CollectionNames.Attachments)
   const classes = useStyles()
   const [newUrl, setNewUrl] = useState('')
   const [isExpanded, setIsExpanded] = useState(isPreExpanded)
@@ -235,9 +236,11 @@ const AttachmentEditor = ({
     )
   }
 
-  if (isSaveFailed) {
+  if (lastErrorCodeSaving !== null) {
     return (
-      <ErrorMessage>Failed to save attachment - internal error</ErrorMessage>
+      <ErrorMessage>
+        Failed to save attachment (code {lastErrorCodeSaving})
+      </ErrorMessage>
     )
   }
 
