@@ -33,7 +33,7 @@ import {
   AssetSyncQueueItem,
   AssetSyncQueueItemFields,
   CollectionNames,
-  AssetSyncStatus,
+  QueueStatus,
   FullAssetSyncQueueItem,
 } from '@/modules/assetsyncqueue'
 import { Asset, FullAsset, ViewNames } from '@/modules/assets'
@@ -81,17 +81,17 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
 }))
 
 const getClassForStatus = (
-  status: AssetSyncStatus,
+  status: QueueStatus,
   classes: ReturnType<typeof useStyles>
 ): string => {
   switch (status) {
-    case AssetSyncStatus.Failed:
+    case QueueStatus.Failed:
       return classes.failed
-    case AssetSyncStatus.Processing:
+    case QueueStatus.Processing:
       return classes.processing
-    case AssetSyncStatus.Success:
+    case QueueStatus.Processed:
       return classes.success
-    case AssetSyncStatus.Waiting:
+    case QueueStatus.Queued:
       return classes.waiting
     default:
       return ''
@@ -103,7 +103,7 @@ const twentyFourHours = Date.now() - 24 * 60 * 60 * 1000
 const getIsQueuedItemTakingTooLong = (
   queuedItem: AssetSyncQueueItem
 ): boolean =>
-  queuedItem.status === AssetSyncStatus.Waiting &&
+  queuedItem.status === QueueStatus.Queued &&
   new Date(queuedItem.createdat).getTime() < twentyFourHours
 
 const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
@@ -129,7 +129,7 @@ const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
                 {getFriendlyDate(new Date(queuedItem.lastmodifiedat))}
               </>
             ) : null}
-            {queuedItem.status === AssetSyncStatus.Failed &&
+            {queuedItem.status === QueueStatus.Failed &&
             queuedItem.failedreason ? (
               <>
                 <br />
@@ -181,9 +181,7 @@ const DeleteButton = ({
         onClick={onClickDelete}
         title="Remove asset from queue"
         isDisabled={
-          isBusy ||
-          isDeleting ||
-          queuedItem.status === AssetSyncStatus.Processing
+          isBusy || isDeleting || queuedItem.status === QueueStatus.Processing
         }
       />
       {isSuccess ? (
@@ -309,7 +307,7 @@ const QueuedItemRow = ({
     try {
       console.log('Retrying...')
 
-      if (queuedItem.status === AssetSyncStatus.Waiting) {
+      if (queuedItem.status === QueueStatus.Queued) {
         console.debug(
           'Status already "waiting" so forcing it by failing it then resetting back'
         )
@@ -321,7 +319,7 @@ const QueuedItemRow = ({
             CollectionNames.AssetSyncQueue,
             queuedItem.id,
             {
-              status: AssetSyncStatus.Failed,
+              status: QueueStatus.Failed,
             }
           )
         )
@@ -342,7 +340,7 @@ const QueuedItemRow = ({
           CollectionNames.AssetSyncQueue,
           queuedItem.id,
           {
-            status: AssetSyncStatus.Waiting,
+            status: QueueStatus.Queued,
           }
         )
       )
@@ -372,7 +370,7 @@ const QueuedItemRow = ({
         </TableCell>
         <TableCell>
           <QueuedStatus queuedItem={queuedItem} />
-          {queuedItem.status === AssetSyncStatus.Success ? (
+          {queuedItem.status === QueueStatus.Processed ? (
             <>
               <br />
               {queuedItem.syncedfields && queuedItem.syncedfields.length ? (

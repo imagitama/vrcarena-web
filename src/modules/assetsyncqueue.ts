@@ -1,9 +1,6 @@
-export enum AssetSyncStatus {
-  Waiting = 'waiting',
-  Processing = 'processing',
-  Failed = 'failed',
-  Success = 'success',
-}
+import { QueueStatus } from './common'
+
+export { QueueStatus }
 
 export interface AssetSyncQueueItemFields extends Record<string, unknown> {
   sourceurl: string
@@ -11,7 +8,7 @@ export interface AssetSyncQueueItemFields extends Record<string, unknown> {
 
 export interface AssetSyncQueueItem extends AssetSyncQueueItemFields {
   id: string
-  status: AssetSyncStatus
+  status: QueueStatus
   failedreason: string
   syncedfields: string[] | null
   createdassetid: string
@@ -28,9 +25,4 @@ export interface FullAssetSyncQueueItem extends AssetSyncQueueItem {
 
 export enum CollectionNames {
   AssetSyncQueue = 'assetsyncqueue',
-}
-
-export enum ViewNames {
-  GetMyAssetSyncQueuedItems = 'getmyassetsyncqueueditems',
-  GetFullMyAssetSyncQueuedItems = 'getfullassetsyncqueueditems',
 }

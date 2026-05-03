@@ -9,12 +9,22 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import * as routes from '@/routes'
 import { insertRecord } from '@/data-store'
 import { handleError } from '@/error-handling'
-import { CollectionNames, Asset, FullAsset } from '@/modules/assets'
-import { AssetSyncQueueItem, ViewNames } from '@/modules/assetsyncqueue'
+import {
+  CollectionNames as AssetsCollectionNames,
+  Asset,
+  FullAsset,
+} from '@/modules/assets'
+import {
+  AssetSyncQueueItem,
+  CollectionNames as AssetsSyncQueueCollectionNames,
+} from '@/modules/assetsyncqueue'
 
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
+  PossibleWhereClauses,
+  WhereClause,
+  WhereOperators,
 } from '@/hooks/useDatabaseQuery'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 import useHistory from '@/hooks/useHistory'
@@ -34,6 +44,7 @@ import Heading from '@/components/heading'
 import InfoMessage from '@/components/info-message'
 import PlatformSyncAssertion from './components/platform-sync-assertion'
 import ErrorBoundary from '@/components/error-boundary'
+import useUserId from '@/hooks/useUserId'
 
 // TODO: move to component
 const useStyles = makeStyles({
@@ -86,7 +97,7 @@ const ManualCreateView = () => {
 
       const newDraftRecord = await insertRecord<{ title: string }, Asset>(
         supabase,
-        CollectionNames.Assets,
+        AssetsCollectionNames.Assets,
         {
           title: 'My draft asset',
         },
@@ -185,12 +196,19 @@ const View = () => {
   const [isCreatingManually, setIsCreatingManually] = useState(false)
   const [showRules, setShowRules] = useState(true)
   const [isOldItemsShown, setIsOldItemsShown] = useState(false)
+  const myUserId = useUserId()!
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<AssetSyncQueueItem>(
-      ViewNames.GetMyAssetSyncQueuedItems,
-      isOldItemsShown
-        ? []
-        : [['createdat', Operators.GREATER_THAN, oneWeekAgo.toISOString()]],
+      AssetsSyncQueueCollectionNames.AssetSyncQueue,
+      (
+        [
+          ['createdby', Operators.EQUALS, myUserId],
+        ] as WhereClause<AssetSyncQueueItem>[]
+      ).concat(
+        isOldItemsShown
+          ? []
+          : [['createdat', Operators.GREATER_THAN, oneWeekAgo.toISOString()]]
+      ),
       {
         queryName: 'get-my-asset-sync-queued-items',
         orderBy: ['createdat', OrderDirections.DESC],

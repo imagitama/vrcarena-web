@@ -107,7 +107,7 @@ interface OptionsMap<TRecord> {
   subscribe?: boolean // not supported in supabase (without setup)
 }
 
-type PossibleWhereClauses<TRecord> =
+export type PossibleWhereClauses<TRecord> =
   | (WhereClause<TRecord> | WhereOperators.OR)[]
   | false
 

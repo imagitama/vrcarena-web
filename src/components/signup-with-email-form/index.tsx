@@ -33,6 +33,8 @@ const useStyles = makeStyles({
   form: {
     width: '100%',
     marginBottom: '2rem',
+    display: 'flex',
+    justifyContent: 'center',
   },
   loginButton: {
     margin: '0.25rem 0 !important',
