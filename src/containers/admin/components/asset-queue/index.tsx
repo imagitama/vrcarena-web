@@ -7,7 +7,7 @@ import {
 } from '@/modules/assetsyncqueue'
 import AssetSyncQueue from '@/components/asset-sync-queue'
 import PaginatedView, { RendererProps } from '@/components/paginated-view'
-import { FilterType, MultichoiceFilter } from '@/filters'
+import { FilterSubType, FilterType, MultichoiceFilter } from '@/filters'
 import useUserId from '@/hooks/useUserId'
 
 const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => (
@@ -19,12 +19,17 @@ const AdminAssetSyncQueue = () => {
   return (
     <PaginatedView<AssetSyncQueueItem>
       viewName={CollectionNames.AssetSyncQueue}
-      whereClauses={[['createdby', Operators.EQUALS, myUserId]]}
       defaultFieldName="createdat"
       defaultDirection={OrderDirections.DESC}
       // max limit of realtime connections
       limit={100}
       filters={[
+        {
+          fieldName: 'createdby',
+          label: 'User',
+          type: FilterType.Equal,
+          subType: FilterSubType.UserId,
+        },
         {
           fieldName: 'status',
           type: FilterType.Multichoice,
