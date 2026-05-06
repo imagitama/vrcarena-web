@@ -283,10 +283,8 @@ const AdminAssets = () => {
           break
 
         case SubView.Declined:
-          query = query
-            .eq('publishstatus', PublishStatus.Draft)
-            .eq('approvalstatus', ApprovalStatus.Declined)
-            .eq('accessstatus', AccessStatus.Public)
+          query = query.eq('approvalstatus', ApprovalStatus.Declined)
+          break
 
         default:
           query = query.neq('publishstatus', PublishStatus.Draft)

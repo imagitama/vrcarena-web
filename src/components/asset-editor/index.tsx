@@ -13,12 +13,14 @@ import NoResultsMessage from '@/components/no-results-message'
 const AssetEditor = ({
   assetId,
   onDone,
+  onAttemptSave, // scroll to top of assets
   // amendments
   overrideFields,
   onFieldChanged,
 }: {
   assetId: string | null // null for amendment editor
   onDone?: () => void
+  onAttemptSave?: () => void
   // amendments
   overrideFields?: Asset
   onFieldChanged?: (fieldName: string, fieldValue: any) => void
@@ -63,6 +65,7 @@ const AssetEditor = ({
         itemTypeSingular="Asset"
         showTopSaveBtn
         scrollDisabled
+        onAttemptSave={onAttemptSave}
         // amendments
         overrideFields={overrideFields}
         onFieldChanged={onFieldChanged}

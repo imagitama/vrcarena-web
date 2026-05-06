@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
 import AssetEditor from '@/components/asset-editor'
+import { scrollToTop } from '@/utils'
 
 export default () => {
   const { assetId } = useParams<{ assetId: string }>()
@@ -16,7 +17,7 @@ export default () => {
           content="Edit all of the fields of an asset."
         />
       </Helmet>
-      <AssetEditor assetId={assetId} />
+      <AssetEditor assetId={assetId} onAttemptSave={scrollToTop} />
     </>
   )
 }

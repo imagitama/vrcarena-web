@@ -131,8 +131,9 @@ const GenericEditor = ({
   onDone = undefined,
   itemTypeSingular = '',
   showTopSaveBtn = false,
-  scrollToTopOfEditor,
+  scrollToTopOfEditor = false,
   scrollDisabled = false,
+  onAttemptSave = undefined,
 }: {
   fields?: EditableField<any>[]
   collectionName: string
@@ -155,6 +156,7 @@ const GenericEditor = ({
   showTopSaveBtn?: boolean
   scrollToTopOfEditor?: boolean
   scrollDisabled?: boolean
+  onAttemptSave?: () => void
 }) => {
   if (!fields && !(collectionName in editableFields)) {
     throw new Error(`Collection name ${collectionName} not in editable fields`)
@@ -247,6 +249,10 @@ const GenericEditor = ({
         } else {
           scrollToTop()
         }
+      }
+
+      if (onAttemptSave) {
+        onAttemptSave()
       }
 
       const newValidationIssues = getValidationIssues(

@@ -19,6 +19,15 @@ import Button from '@/components/button'
 import ErrorMessage from '@/components/error-message'
 import ButtonDropdown from '@/components/button-dropdown'
 
+function fullDiff<T>(prev: T[], next: T[]) {
+  const prevSet = new Set(prev)
+  const nextSet = new Set(next)
+  return {
+    added: next.filter((x) => !prevSet.has(x)),
+    removed: prev.filter((x) => !nextSet.has(x)),
+  }
+}
+
 const ApproveButton = ({
   id,
   metaCollectionName,
@@ -197,12 +206,14 @@ const ApproveButton = ({
         isDisabled={approvalStatus === ApprovalStatus.Declined}>
         Decline{isAsset ? ' & Draft' : ''}
       </Button>
-      {isAsset &&
-        existingDeclinedReasons &&
-        !getAreArraysSame(existingDeclinedReasons, selectedReasons) && (
-          <Button onClick={onClickUpdate} size="small">
-            Update Reason
-          </Button>
+      {existingDeclinedReasons &&
+        !getAreArraysSame(selectedReasons, existingDeclinedReasons) && (
+          <>
+            <Button onClick={onClickUpdate} size="small" color="secondary">
+              Save Reasons
+            </Button>
+            {selectedReasons.join(', ')}
+          </>
         )}
     </>
   )
