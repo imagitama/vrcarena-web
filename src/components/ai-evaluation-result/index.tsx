@@ -7,6 +7,7 @@ import MessageIcon from '@mui/icons-material/Message'
 import InfoIcon from '@mui/icons-material/Info'
 import CloseIcon from '@mui/icons-material/Close'
 import CheckIcon from '@mui/icons-material/Check'
+import AspectRatioIcon from '@mui/icons-material/AspectRatio'
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -44,9 +45,11 @@ import Dialog from '@/components/dialog'
 
 const useStyles = makeStyles({
   root: {
+    position: 'relative',
+  },
+  box: {
     borderRadius: '5px',
     border: '1px solid rgba(255,255,255,0.25)',
-    padding: '0.5rem',
     cursor: 'default',
     '& a': {
       cursor: 'pointer',
@@ -200,6 +203,22 @@ const useStyles = makeStyles({
     marginLeft: '0.25rem',
   },
   primaryCell: {},
+  openInDialogIcon: {
+    position: 'absolute',
+    width: '20px',
+    height: '20px',
+    bottom: 0,
+    right: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0.25rem',
+    transition: '100ms all',
+    '&:hover': {
+      cursor: 'pointer',
+      background: 'rgba(255,255,255,0.5)',
+    },
+  },
 })
 
 const getPositivityForStatus = (status: AiEvaluateQueuedItemStatus): number => {
@@ -583,7 +602,7 @@ const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor }) => {
   if (isDialog) {
     return (
       <Dialog title="AI Evaluation" onClose={() => setIsDialog(false)}>
-        <div style={{ height: 20 }} />
+        <div style={{ height: 15 }} />
         <AiEvaluationsListForAsset asset={asset} />
       </Dialog>
     )
@@ -591,26 +610,32 @@ const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor }) => {
 
   return (
     <ExperimentalArea>
-      <div
-        className={`${classes.root} ${isShowingMore ? '' : classes.clickable}`}
-        onClick={() => setIsShowingMore(true)}>
-        {isShowingMore ? (
-          <AiEvaluationsListForAsset asset={asset} />
-        ) : (
-          <>
-            {asset.aievaluation ? (
-              <AiEvaluationOutput queuedItem={asset.aievaluation} isMain />
-            ) : (
-              <NoResultsMessage message="No AI evaluation found" />
-            )}
-          </>
-        )}
-        <Button
-          size="small"
-          color="secondary"
-          onClick={() => setIsDialog(true)}>
-          Open Dialog
-        </Button>
+      <div className={classes.root}>
+        <div
+          className={`${classes.box} ${isShowingMore ? '' : classes.clickable}`}
+          onClick={() => setIsShowingMore(true)}>
+          {isShowingMore ? (
+            <AiEvaluationsListForAsset asset={asset} />
+          ) : (
+            <>
+              {asset.aievaluation ? (
+                <AiEvaluationOutput queuedItem={asset.aievaluation} isMain />
+              ) : (
+                <NoResultsMessage message="No AI evaluation found" />
+              )}
+            </>
+          )}
+        </div>
+        <div
+          className={classes.openInDialogIcon}
+          onClick={(e) => {
+            setIsDialog(true)
+            e.stopPropagation()
+            e.preventDefault()
+            return false
+          }}>
+          <AspectRatioIcon />
+        </div>
       </div>
     </ExperimentalArea>
   )
