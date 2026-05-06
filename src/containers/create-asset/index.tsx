@@ -278,6 +278,13 @@ export default () => {
         asset is not on one of those sites (or you must log in to see it like{' '}
         <em>some</em> Jinxxy products) you can create it manually.
       </InfoMessage>
+      <InfoMessage hideId="extra-sources">
+        Is your asset on multiple platforms? Please sync one product{' '}
+        <span style={{ textDecoration: 'underline', fontWeight: 'bold' }}>
+          ONLY
+        </span>{' '}
+        then add the extra sources to it.
+      </InfoMessage>
       <View />
     </>
   )
