@@ -10,7 +10,12 @@ import CloseIcon from '@mui/icons-material/Close'
 import defaultThumbnailUrl from '@/assets/images/default-thumbnail.webp'
 import { colorPalette } from '@/config'
 import categoryMetas from '@/category-meta'
-import { AssetCategory, CollectionNames, FullAsset } from '@/modules/assets'
+import {
+  AssetCategory,
+  CollectionNames,
+  FullAsset,
+  FullAsset_Editor,
+} from '@/modules/assets'
 
 import useIsEditor from '@/hooks/useIsEditor'
 
@@ -20,6 +25,8 @@ import EditorRecordManager from '@/components/editor-record-manager'
 import Message from '@/components/message'
 import Columns from '@/components/columns'
 import Column from '@/components/column'
+import ErrorBoundary from '@/components/error-boundary'
+import AiEvaluationResult from '@/components/ai-evaluation-result'
 
 const useStyles = makeStyles({
   pass: {
@@ -221,6 +228,9 @@ const QueuedAssetInfo = ({
               onDone={hydrate}
               showStatuses
             />
+            <ErrorBoundary>
+              <AiEvaluationResult asset={asset as FullAsset_Editor} />
+            </ErrorBoundary>
           </Column>
         ) : null}
       </Columns>
