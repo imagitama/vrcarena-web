@@ -31,7 +31,6 @@ const View = () => {
         id={pageName}
         analyticsCategory={'EditPage'}
         saveBtnAction="Click save button"
-        viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.pagesWithParentAndPageVar
           .replace(':parentName', parentName)

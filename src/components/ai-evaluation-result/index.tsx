@@ -395,6 +395,17 @@ const AiEvaluationOutput = ({
     </Tooltip>
   )
 
+  const tagsToDisplay: string[] | null =
+    Array.isArray(queuedItem.tags) && queuedItem.tags.length
+      ? queuedItem.tags
+      : queuedItem.convos !== null
+      ? queuedItem.convos.reduce<string[]>(
+          (newTags, convo) =>
+            convo.tags !== null ? newTags.concat(convo.tags) : newTags,
+          []
+        )
+      : null
+
   return (
     <div className={`${classes.item} ${onClick ? classes.clickable : ''}`}>
       {isLoading && <LoadingIndicator message="Subscribing..." />}
@@ -462,9 +473,7 @@ const AiEvaluationOutput = ({
         </div>
       </div>
       <div>
-        {Array.isArray(queuedItem.tags) && (
-          <Tags tags={queuedItem.tags} isMain={isMain} />
-        )}
+        {tagsToDisplay && <Tags tags={tagsToDisplay} isMain={isMain} />}
       </div>
       {isExpanded ? (
         <div className={classes.convos}>
