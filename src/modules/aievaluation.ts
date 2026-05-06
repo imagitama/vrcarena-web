@@ -1,5 +1,21 @@
 import { QueueStatus as AiEvaluateQueuedItemStatus } from './common'
 
+export interface GeminiAssetEvaluationFunctionResult {
+  evaluation: GeminiAssetEvaluation
+}
+
+export interface GeminiAssetEvaluationResult {
+  evaluation: GeminiAssetEvaluation
+  modelName: string
+  messages: string[]
+}
+
+export interface GeminiAssetEvaluation {
+  score: number
+  score_reason: string
+  score_reason_tags: string[]
+}
+
 export interface AiEvaluateConvo {
   model: string
   score: number

@@ -31,6 +31,7 @@ import useStorage from '@/hooks/useStorage'
 import QueuedAssetInfo from '@/components/queued-asset-info'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import AssetResultsItem from '@/components/asset-results-item'
+import ErrorBoundary from '@/components/error-boundary'
 
 const useStyles = makeStyles({
   pass: {
@@ -116,8 +117,9 @@ function AssetsTable({
                       onDone={hydrate ? () => hydrate() : undefined}
                       callOnDoneOnEditorNotes={false}
                     />
-                    <br />
-                    <AiEvaluationResult asset={asset as FullAsset_Editor} />
+                    <ErrorBoundary>
+                      <AiEvaluationResult asset={asset as FullAsset_Editor} />
+                    </ErrorBoundary>
                   </TableCell>
                 </TableRow>
               )

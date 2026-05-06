@@ -4,6 +4,7 @@ import TabContext from '../../context'
 import Control from '../control'
 import { CollectionNames, FullAsset_Editor } from '@/modules/assets'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
+import ErrorBoundary from '@/components/error-boundary'
 
 export default () => {
   const { assetId, asset, isLoading, hydrate } = useContext(TabContext)
@@ -34,7 +35,9 @@ export default () => {
         showArchiveButton
       />
       <br />
-      <AiEvaluationResult asset={asset as FullAsset_Editor} />
+      <ErrorBoundary>
+        <AiEvaluationResult asset={asset as FullAsset_Editor} />
+      </ErrorBoundary>
     </Control>
   )
 }

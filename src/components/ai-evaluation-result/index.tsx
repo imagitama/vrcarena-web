@@ -8,6 +8,10 @@ import InfoIcon from '@mui/icons-material/Info'
 import CloseIcon from '@mui/icons-material/Close'
 import CheckIcon from '@mui/icons-material/Check'
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableRow from '@mui/material/TableRow'
 
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 import useDatabaseQuery, {
@@ -19,6 +23,7 @@ import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import {
   AiEvaluateQueuedItemStatus,
   CollectionNames as AiEvaluationCollectionNames,
+  GeminiAssetEvaluation,
   type AiEvaluateConvo,
   type AiEvaluateQueuedItem,
 } from '@/modules/aievaluation'
@@ -35,6 +40,7 @@ import FormattedDate from '@/components/formatted-date'
 import CopyThing from '@/components/copy-thing'
 import ExperimentalArea from '@/components/experimental-area'
 import SuccessMessage from '@/components/success-message'
+import Dialog from '@/components/dialog'
 
 const useStyles = makeStyles({
   root: {
@@ -129,12 +135,17 @@ const useStyles = makeStyles({
   convoDesc: { paddingBottom: '0.5rem' },
   controls: {},
   messages: {
+    '&, & li': {
+      margin: 0,
+      padding: 0,
+      listStyle: 'none',
+    },
     fontSize: '75%',
     lineHeight: 1.5,
-    '& li': {
-      '&:nth-child(even)': {
-        fontStyle: 'italic',
-      },
+  },
+  message: {
+    '&:nth-child(even)': {
+      // fontStyle: 'italic',
     },
   },
   button: {
@@ -224,9 +235,6 @@ const Score = styled.span`
   color: ${({ value }: { value: number }) => getColor(value)};
 `
 
-const capitalize = (text: string) =>
-  `${text.substring(0, 1).toUpperCase()}${text.substring(1)}`
-
 const Tags = ({
   tags,
   queuedItemTags,
@@ -273,6 +281,49 @@ const getStatusPastTense = (status: AiEvaluateQueuedItemStatus): string => {
 
 const getScoreAsPercentage = (score: number) => 100 * score
 
+interface AssetEvaluationFunctionResult {
+  evaluation: GeminiAssetEvaluation
+}
+
+interface GeminiFuncResult {
+  args: AssetEvaluationFunctionResult
+  id: string
+  name: string
+}
+
+const AiMessage = ({ messageJson }: { messageJson: string }) => {
+  const geminiFuncResults = JSON.parse(messageJson) as GeminiFuncResult[]
+
+  console.debug('message', geminiFuncResults)
+
+  const firstResult = geminiFuncResults[0].args.evaluation
+
+  const score: null | number = 'score' in firstResult ? firstResult.score : null
+  const tags: null | string[] =
+    'score_reason_tags' in firstResult ? firstResult.score_reason_tags : []
+  const reason: null | string =
+    'score_reason' in firstResult ? firstResult.score_reason : ''
+
+  return (
+    <Table size="small">
+      <TableBody>
+        <TableRow>
+          <TableCell>Score</TableCell>
+          <TableCell>{score || '(no score)'}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Tags</TableCell>
+          <TableCell>{tags.length ? tags.join(', ') : '(no tags)'}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Reason</TableCell>
+          <TableCell>{reason || '(no reason)'}</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  )
+}
+
 const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
   const [showConvo, setShowConvo] = useState(false)
   const classes = useStyles()
@@ -298,7 +349,16 @@ const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
         {showConvo ? (
           <ul className={classes.messages}>
             {convo.messages?.map((msg, i) => (
-              <li>{msg}</li>
+              <li className={classes.message}>
+                {i === 1 ? (
+                  <AiMessage messageJson={msg} />
+                ) : (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: msg.replace('\n', '<br />'),
+                    }}></div>
+                )}
+              </li>
             ))}
           </ul>
         ) : null}
@@ -450,11 +510,11 @@ const AiEvaluationsListForAsset = ({ asset }: { asset: FullAsset_Editor }) => {
   return (
     <>
       {queuedItems && queuedItems.length > 0 ? (
-        <ul>
+        <div>
           {queuedItems?.map((queuedItem) => (
             <AiEvaluationOutput key={queuedItem.id} queuedItem={queuedItem} />
           ))}
-        </ul>
+        </div>
       ) : queuedItems && queuedItems.length == 0 ? (
         <NoResultsMessage message="No queued items" />
       ) : null}
@@ -509,6 +569,17 @@ const RequeueButton = ({ assetId }: { assetId: string }) => {
 const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor }) => {
   const classes = useStyles()
   const [isShowingMore, setIsShowingMore] = useState(false)
+  const [isDialog, setIsDialog] = useState(false)
+
+  if (isDialog) {
+    return (
+      <Dialog title="AI Evaluation" onClose={() => setIsDialog(false)}>
+        <div style={{ height: 20 }} />
+        <AiEvaluationsListForAsset asset={asset} />
+      </Dialog>
+    )
+  }
+
   return (
     <ExperimentalArea>
       <div
@@ -525,6 +596,12 @@ const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor }) => {
             )}
           </>
         )}
+        <Button
+          size="small"
+          color="secondary"
+          onClick={() => setIsDialog(true)}>
+          Open Dialog
+        </Button>
       </div>
     </ExperimentalArea>
   )
