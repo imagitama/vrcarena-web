@@ -18,8 +18,7 @@ export const getIsFullAsset = (asset: any): asset is FullAsset =>
 
 export const getIsAssetWaitingForApproval = (asset: AssetMeta): boolean =>
   asset.publishstatus == PublishStatus.Published &&
-  (asset.approvalstatus == ApprovalStatus.Waiting ||
-    asset.approvalstatus == ApprovalStatus.AutoApproved) &&
+  asset.approvalstatus == ApprovalStatus.Waiting &&
   asset.accessstatus == AccessStatus.Public
 
 export const getIsAssetVisibleToEveryone = (asset: AssetMeta): boolean =>
@@ -29,9 +28,7 @@ export const getIsAssetVisibleToEveryone = (asset: AssetMeta): boolean =>
   asset.publishstatus === PublishStatus.Published
 
 export const getIsAssetDeclined = (asset: AssetMeta): boolean =>
-  asset.accessstatus === AccessStatus.Public &&
-  asset.approvalstatus === ApprovalStatus.Declined &&
-  asset.publishstatus === PublishStatus.Draft
+  asset.approvalstatus === ApprovalStatus.Declined
 
 export const getIsAssetADraft = (asset: AssetMeta): boolean =>
   asset.publishstatus === PublishStatus.Draft
