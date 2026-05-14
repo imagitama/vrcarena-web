@@ -18,7 +18,7 @@ import {
   FullAsset,
   CollectionNames as AssetsCollectionNames,
   ViewNames,
-  FullAsset_Editor,
+  FullAsset_Editor_ForList,
 } from '@/modules/assets'
 import { EqualActiveFilter, FilterSubType, FilterType } from '@/filters'
 import { colorPalette } from '@/config'
@@ -124,21 +124,9 @@ function AssetsTable({
                       <AiArea
                         title="Evaluation"
                         tooltip="The site has asked AI to evaluate the asset to determine if it can be auto-approved.">
-                        <AiEvaluationResult asset={asset as FullAsset_Editor} />
-                      </AiArea>
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                      <AiArea
-                        title="Suggestions"
-                        tooltip="The site has asked AI to suggest fields for the asset.">
-                        <AiSuggestResult assetId={asset.id} />
-                      </AiArea>
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                      <AiArea
-                        title="Similar Assets"
-                        tooltip="The site has asked AI what assets are similar to this one.">
-                        <AiSimilarResult asset={asset as FullAsset_Editor} />
+                        <AiEvaluationResult
+                          asset={asset as FullAsset_Editor_ForList}
+                        />
                       </AiArea>
                     </ErrorBoundary>
                   </TableCell>
@@ -266,11 +254,13 @@ const AdminAssets = () => {
     StorageKeys.View,
     View.List
   )
-  const getQuery = useCallback<GetQueryFn<FullAsset, SubView, typeof filters>>(
+  const getQuery = useCallback<
+    GetQueryFn<FullAsset_Editor_ForList, SubView, typeof filters>
+  >(
     (query, selectedSubView, activeFilters) => {
       const userIdFilter = activeFilters.find(
         (filter) => filter.fieldName === 'createdby'
-      ) as EqualActiveFilter<FullAsset>
+      ) as EqualActiveFilter<FullAsset_Editor_ForList>
 
       if (userIdFilter && userIdFilter.value) {
         query = query.eq('createdby', userIdFilter.value)
@@ -319,10 +309,10 @@ const AdminAssets = () => {
   )
 
   return (
-    <PaginatedView<FullAsset>
+    <PaginatedView<FullAsset_Editor_ForList>
       // cannot re-use other paginated views because "publishedat" field does not exist for them
       name="view-admin-assets"
-      viewName={ViewNames.GetFullAssets_Editor}
+      viewName={ViewNames.GetEditorAssetsForList}
       getQuery={getQuery}
       sortOptions={[
         {

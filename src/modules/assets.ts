@@ -238,8 +238,11 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   tagscount: TagStats[] // different to tagsdata as that returns null if tag already in database
 }
 
-export interface FullAsset_Editor extends FullAsset {
+export interface FullAsset_Editor_ForList extends FullAsset {
   aievaluation: AiEvaluateQueuedItem | null
+}
+
+export interface FullAsset_Editor extends FullAsset_Editor_ForList {
   aisimilarities: AiSimilarQueuedItem | null
   aisimilaritiesdata: Asset[]
 }
@@ -280,6 +283,7 @@ export enum ViewNames {
   GetEndorsementAssetResults = 'getendorsementassetresults',
   GetWishlistAssetResults = 'getwishlistassetresults',
   GetDraftAssets = 'getdraftassets',
+  GetEditorAssetsForList = 'geteditorassetsforlist' // for admin-assets
 }
 
 export enum FunctionNames {

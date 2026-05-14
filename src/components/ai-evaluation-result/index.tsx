@@ -31,6 +31,7 @@ import {
 import {
   FullAsset_Editor,
   CollectionNames as AssetsCollectionNames,
+  FullAsset_Editor_ForList,
 } from '@/modules/assets'
 
 import StatusText from '@/components/status-text'
@@ -466,7 +467,11 @@ const AiEvaluationOutput = ({
   )
 }
 
-const AiEvaluationsListForAsset = ({ asset }: { asset: FullAsset_Editor }) => {
+const AiEvaluationsListForAsset = ({
+  asset,
+}: {
+  asset: FullAsset_Editor_ForList
+}) => {
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<AiEvaluateQueuedItem>(
       AiEvaluationCollectionNames.AiEvaluateQueue,
@@ -555,7 +560,7 @@ const RequeueButton = ({ assetId }: { assetId: string }) => {
   )
 }
 
-const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor }) => {
+const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor_ForList }) => {
   const classes = useStyles()
   const [isShowingMore, setIsShowingMore] = useState(false)
   const [isDialog, setIsDialog] = useState(false)
