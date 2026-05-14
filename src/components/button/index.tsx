@@ -20,8 +20,8 @@ export interface ButtonProps {
   switchIconSide?: boolean
   isLoading?: boolean
   size?: 'small' | 'medium' | 'large'
-  // tertiary does not exist
-  color?: 'inherit' | 'primary' | 'secondary' | undefined | 'tertiary'
+  // everything after undefined is not standard
+  color?: 'inherit' | 'primary' | 'secondary' | undefined | 'tertiary' | 'ai'
   title?: string
   iconOnly?: boolean
   checked?: boolean
@@ -72,6 +72,21 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     },
   },
   tertiary: {
+    color: '#FFF',
+    // @ts-ignore
+    backgroundColor: theme.palette.tertiary
+      ? // @ts-ignore
+        theme.palette.tertiary.main
+      : '#000',
+    '&:hover': {
+      // @ts-ignore
+      backgroundColor: theme.palette.tertiary
+        ? // @ts-ignore
+          theme.palette.tertiary.dark
+        : '#111',
+    },
+  },
+  ai: {
     color: '#FFF',
     // @ts-ignore
     backgroundColor: theme.palette.tertiary
@@ -153,12 +168,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <MaterialButton
         ref={ref}
         variant="contained"
+        // @ts-ignore
         color="primary"
         onClick={onClick}
         disabled={isDisabled}
         className={classnames({
           [classes.root]: true,
           [classes.tertiary]: props.color === 'tertiary',
+          [classes.ai]: props.color === 'ai',
           [classes.iconOnly]: iconOnly,
           [classes.hollow]: props.hollow,
           [classes.small]: props.size === 'small',

@@ -1,5 +1,11 @@
 import React from 'react'
-import { Asset, CollectionNames, FullAsset, ViewNames } from '@/modules/assets'
+import {
+  Asset,
+  CollectionNames,
+  FullAsset,
+  FullAsset_Editor,
+  ViewNames,
+} from '@/modules/assets'
 import { getCanAssetBePublished } from '@/utils/assets'
 
 import GenericEditor from '@/components/generic-editor'
@@ -9,6 +15,12 @@ import useDataStoreItem from '@/hooks/useDataStoreItem'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import NoResultsMessage from '@/components/no-results-message'
+import useIsEditor from '@/hooks/useIsEditor'
+import AiArea from '../ai-area'
+import AiSuggestForm from '../ai-suggest-form'
+import ErrorBoundary from '../error-boundary'
+import Columns from '../columns'
+import Column from '../column'
 
 const AssetEditor = ({
   assetId,
@@ -25,10 +37,9 @@ const AssetEditor = ({
   overrideFields?: Asset
   onFieldChanged?: (fieldName: string, fieldValue: any) => void
 }) => {
-  const [isLoading, lastErrorCode, asset] = useDataStoreItem<FullAsset>(
-    ViewNames.GetFullAssets,
-    assetId || false
-  )
+  const [isLoading, lastErrorCode, asset, hydrate] =
+    useDataStoreItem<FullAsset>(ViewNames.GetFullAssets, assetId || false)
+  const isEditor = useIsEditor()
 
   if (assetId && (isLoading || asset === null)) {
     return <LoadingIndicator message="Loading asset..." />
@@ -46,16 +57,35 @@ const AssetEditor = ({
 
   return (
     <>
-      {assetId && asset && (
-        <FormControls>
-          <PublishAssetButton
-            assetId={assetId}
-            asset={asset}
-            enableRedirect={false}
-            isDisabled={!getCanAssetBePublished(asset)}
-          />
-        </FormControls>
-      )}
+      <Columns>
+        {assetId && asset && (
+          <Column>
+            <FormControls>
+              <PublishAssetButton
+                assetId={assetId}
+                asset={asset}
+                enableRedirect={false}
+                isDisabled={!getCanAssetBePublished(asset)}
+              />
+            </FormControls>
+          </Column>
+        )}
+        {isEditor && assetId && asset && (
+          <Column>
+            <AiArea
+              title="AI Suggestion"
+              tooltip="The site asks AI to suggest missing or better fields for this asset.">
+              <ErrorBoundary>
+                <AiSuggestForm
+                  assetId={assetId}
+                  asset={asset as FullAsset_Editor}
+                  onDone={hydrate}
+                />
+              </ErrorBoundary>
+            </AiArea>
+          </Column>
+        )}
+      </Columns>
       <GenericEditor
         isAccordion
         startExpanded

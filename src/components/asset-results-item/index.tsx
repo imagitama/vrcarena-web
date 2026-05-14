@@ -34,6 +34,7 @@ import DefaultThumbnail from '@/components/default-thumbnail'
 import Price from '@/components/price'
 import LoadingShimmer from '@/components/loading-shimmer'
 import Tooltip from '@/components/tooltip'
+import classNames from 'classnames'
 
 const useStyles = makeStyles({
   root: {
@@ -245,7 +246,7 @@ const SpeciesOutput = ({
     return null
   }
 
-  if ('speciesnames' in asset) {
+  if ('speciesnames' in asset && asset.speciesnames !== null) {
     return (
       <>
         {divider} {(asset as FullAsset).speciesnames.join(', ')}
@@ -273,6 +274,7 @@ const AssetResultsItem = ({
   toggleEditMode = undefined,
   showState = false,
   showMoreInfo = undefined,
+  className,
 }: {
   asset?: Asset | PublicAsset | FullAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
@@ -284,6 +286,7 @@ const AssetResultsItem = ({
   toggleEditMode?: () => void
   showState?: boolean
   showMoreInfo?: boolean
+  className?: string
 }) => {
   const classes = useStyles()
   const [, , prefs] = useUserPreferences()
@@ -292,9 +295,15 @@ const AssetResultsItem = ({
 
   return (
     <Card
-      className={`${classes.root} ${isSelected ? classes.selected : ''} ${
-        isDimmed ? classes.dimmed : ''
-      } ${isTiny ? classes.tiny : ''}`}>
+      className={classNames(
+        classes.root,
+        {
+          [classes.selected]: isSelected,
+          [classes.dimmed]: isDimmed,
+          [classes.tiny]: isTiny,
+        },
+        className
+      )}>
       <CardActionArea className={classes.button}>
         <Link
           to={

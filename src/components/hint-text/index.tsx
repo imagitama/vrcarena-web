@@ -1,9 +1,10 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
+import { colorGreyedOut } from '@/themes'
 
 const useStyles = makeStyles({
   root: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: colorGreyedOut,
   },
   small: {
     fontSize: '75%',

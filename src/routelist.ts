@@ -17,6 +17,7 @@ export const myAccountWithTabNameVarAndPageNumberVar =
   '/my-account/:tabName/page/:pageNumber'
 // help
 export const privacyPolicy = '/help/privacy-policy'
+export const aiPolicy = '/help/ai-policy'
 export const termsOfService = '/help/terms-of-service'
 export const takedownPolicy = '/help/takedown-policy'
 export const prices = '/help/prices'

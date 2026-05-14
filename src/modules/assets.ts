@@ -8,6 +8,7 @@ import {
   PublishStatus,
 } from './common'
 import { Tag, TagStats } from './tags'
+import { AiSimilarQueuedItem } from './aisimilar'
 
 // TODO: Better func here as technically FullAsset has speciesnames
 export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
@@ -99,8 +100,8 @@ interface DeprecatedAssetFields {
 
 export interface AssetFields
   extends DeprecatedAssetFields,
-    CoreAssetFields,
-    Record<string, unknown> {
+  CoreAssetFields,
+  Record<string, unknown> {
   sourceurl: string
   description: string
   vrchatclonableavatarids: string[]
@@ -134,7 +135,7 @@ export interface VrcFuryPrefabInfo {
   discordserverdata?: DiscordServerData | null
 }
 
-export interface TutorialStep {}
+export interface TutorialStep { }
 
 export interface DiscordServerData {
   id: string
@@ -144,7 +145,7 @@ export interface DiscordServerData {
   patreonurl?: string
 }
 
-export interface VrchatWorld {}
+export interface VrchatWorld { }
 
 export enum DeletionReason {
   author_request = 'author_request',
@@ -239,6 +240,8 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
 
 export interface FullAsset_Editor extends FullAsset {
   aievaluation: AiEvaluateQueuedItem | null
+  aisimilarities: AiSimilarQueuedItem | null
+  aisimilaritiesdata: Asset[]
 }
 
 export interface SmallAsset extends Asset, AssetMeta {

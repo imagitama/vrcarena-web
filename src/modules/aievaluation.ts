@@ -1,5 +1,12 @@
 import { QueueStatus as AiEvaluateQueuedItemStatus } from './common'
 
+// used by AI evaluation only (newer code just dumps args)
+export interface GeminiFuncResult<TArgs> {
+  args: TArgs
+  id: string
+  name: string
+}
+
 export interface GeminiAssetEvaluationFunctionResult {
   evaluation: GeminiAssetEvaluation
 }

@@ -7,7 +7,11 @@ export const colorBrandLight = '#9E85C4'
 export const colorEditor = '#a67250'
 export const colorEditorDark = '#6e4c35'
 
+export const colorGreyedOut = 'rgb(180, 180, 180)'
+
 export const colorFree = 'rgb(100, 150, 100)'
+export const colorAiDark = 'rgb(65, 130, 165)'
+export const colorAiLight = 'rgb(88, 178, 226)'
 
 export type VRCArenaTheme = Theme
 
@@ -31,6 +35,12 @@ export const darkTheme: VRCArenaTheme = createTheme({
       light: colorEditor,
       main: colorEditor,
       dark: colorEditorDark,
+    },
+    // @ts-ignore
+    ai: {
+      light: colorAiDark,
+      main: colorAiDark,
+      dark: colorAiDark,
     },
     background: {
       default: '#282828',
@@ -117,7 +127,19 @@ export const darkTheme: VRCArenaTheme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: 'rgb(50, 50, 50)',
+          backgroundColor: 'rgb(100, 100, 100)',
+        },
+        arrow: {
+          color: 'rgb(100, 100, 100)',
+        }
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          '&.Mui-checked': {
+            color: colorBrandLight
+          },
         },
       },
     },

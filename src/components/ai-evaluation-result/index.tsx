@@ -1,7 +1,6 @@
 import { makeStyles } from '@mui/styles'
 import styled from '@emotion/styled'
 import React, { useState } from 'react'
-import { Tooltip } from '@mui/material'
 import { Chip } from '@mui/material'
 import MessageIcon from '@mui/icons-material/Message'
 import InfoIcon from '@mui/icons-material/Info'
@@ -25,6 +24,7 @@ import {
   AiEvaluateQueuedItemStatus,
   CollectionNames as AiEvaluationCollectionNames,
   GeminiAssetEvaluation,
+  GeminiFuncResult,
   type AiEvaluateConvo,
   type AiEvaluateQueuedItem,
 } from '@/modules/aievaluation'
@@ -42,6 +42,14 @@ import CopyThing from '@/components/copy-thing'
 import ExperimentalArea from '@/components/experimental-area'
 import SuccessMessage from '@/components/success-message'
 import Dialog from '@/components/dialog'
+import Tooltip from '../tooltip'
+import {
+  getIconForStatus,
+  getPositivityForStatus,
+  getScoreAsPercentage,
+  getStatusPastTense,
+  Score,
+} from '../ai-result'
 
 const useStyles = makeStyles({
   root: {
@@ -49,7 +57,7 @@ const useStyles = makeStyles({
   },
   box: {
     borderRadius: '5px',
-    border: '1px solid rgba(255,255,255,0.25)',
+    // border: '1px solid rgba(255,255,255,0.25)',
     cursor: 'default',
     '& a': {
       cursor: 'pointer',
@@ -127,7 +135,7 @@ const useStyles = makeStyles({
     cursor: 'pointer',
   },
   convos: {
-    marginTop: '0.5rem',
+    // marginTop: '0.5rem',
   },
   convo: {
     display: 'flex',
@@ -219,40 +227,10 @@ const useStyles = makeStyles({
       background: 'rgba(255,255,255,0.5)',
     },
   },
+  clickableIcon: {
+    cursor: 'pointer',
+  },
 })
-
-const getPositivityForStatus = (status: AiEvaluateQueuedItemStatus): number => {
-  switch (status) {
-    case AiEvaluateQueuedItemStatus.Failed:
-      return -1
-    case AiEvaluateQueuedItemStatus.Processed:
-      return 1
-    case AiEvaluateQueuedItemStatus.Processing:
-      return 0
-    case AiEvaluateQueuedItemStatus.Queued:
-      return 0
-  }
-}
-
-const getIconForStatus = (status: AiEvaluateQueuedItemStatus) => {
-  switch (status) {
-    case AiEvaluateQueuedItemStatus.Failed:
-      return <CloseIcon />
-    case AiEvaluateQueuedItemStatus.Processed:
-      return <CheckIcon />
-    case AiEvaluateQueuedItemStatus.Processing:
-      return <HourglassEmptyIcon />
-    case AiEvaluateQueuedItemStatus.Queued:
-      return null
-  }
-}
-
-const getColor = (value: number) => `hsl(${value * 120}, 100%, 40%)`
-
-const Score = styled.span`
-  display: inline-flex;
-  color: ${({ value }: { value: number }) => getColor(value)};
-`
 
 const Tags = ({
   tags,
@@ -283,35 +261,14 @@ const Tags = ({
   )
 }
 
-const getStatusPastTense = (status: AiEvaluateQueuedItemStatus): string => {
-  switch (status) {
-    case AiEvaluateQueuedItemStatus.Processed:
-      return 'Completed'
-    case AiEvaluateQueuedItemStatus.Failed:
-      return 'Failed'
-    case AiEvaluateQueuedItemStatus.Processing:
-      return 'Processing'
-    case AiEvaluateQueuedItemStatus.Queued:
-      return 'Queued'
-    default:
-      return status
-  }
-}
-
-const getScoreAsPercentage = (score: number) => 100 * score
-
 interface AssetEvaluationFunctionResult {
   evaluation: GeminiAssetEvaluation
 }
 
-interface GeminiFuncResult {
-  args: AssetEvaluationFunctionResult
-  id: string
-  name: string
-}
-
 const AiMessage = ({ messageJson }: { messageJson: string }) => {
-  const geminiFuncResults = JSON.parse(messageJson) as GeminiFuncResult[]
+  const geminiFuncResults = JSON.parse(
+    messageJson
+  ) as GeminiFuncResult<AssetEvaluationFunctionResult>[]
 
   console.debug('message', geminiFuncResults)
 
@@ -332,7 +289,9 @@ const AiMessage = ({ messageJson }: { messageJson: string }) => {
         </TableRow>
         <TableRow>
           <TableCell>Tags</TableCell>
-          <TableCell>{tags.length ? tags.join(', ') : '(no tags)'}</TableCell>
+          <TableCell>
+            {tags && tags.length ? tags.join(', ') : '(no tags)'}
+          </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Reason</TableCell>
@@ -361,7 +320,10 @@ const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
           </div>
         )}
         <Tooltip title="Show AI conversation">
-          <MessageIcon onClick={() => setShowConvo((val) => !val)} />
+          <MessageIcon
+            onClick={() => setShowConvo((val) => !val)}
+            className={classes.clickableIcon}
+          />
         </Tooltip>
       </div>
       <div>
@@ -401,17 +363,14 @@ const AiEvaluationOutput = ({
       AiEvaluationCollectionNames.AiEvaluateQueue,
       staleQueuedItem.id
     )
-  //   const [isExpanded, setIsExpanded] = useState(false);
   const isExpanded = !isMain
 
   const queuedItem = lastResult || staleQueuedItem
 
   const InfoIconWithTooltip = () => (
-    <Tooltip title="Click to copy ID">
-      <CopyThing text={queuedItem.id}>
-        <InfoIcon />
-      </CopyThing>
-    </Tooltip>
+    <CopyThing text={queuedItem.id} title="Click to copy ID">
+      <InfoIcon />
+    </CopyThing>
   )
 
   const tagsToDisplay: string[] | null =
@@ -445,7 +404,9 @@ const AiEvaluationOutput = ({
                 </StatusText>
               ) : null}
               <div className={classes.date}>
-                <FormattedDate date={queuedItem.createdat} />
+                <FormattedDate
+                  date={queuedItem.lastmodifiedat || queuedItem.createdat}
+                />
               </div>
             </>
           )}
@@ -543,7 +504,7 @@ const AiEvaluationsListForAsset = ({ asset }: { asset: FullAsset_Editor }) => {
             <AiEvaluationOutput key={queuedItem.id} queuedItem={queuedItem} />
           ))}
         </div>
-      ) : queuedItems && queuedItems.length == 0 ? (
+      ) : queuedItems && queuedItems.length === 0 ? (
         <NoResultsMessage message="No queued items" />
       ) : null}
       <div className={classes.controls}>
@@ -562,7 +523,7 @@ const NoResultsMessage = ({ message }: { message: string }) => {
 }
 
 const RequeueButton = ({ assetId }: { assetId: string }) => {
-  const [isLoading, isSuccess, lastErrorCode, create, lastResult] =
+  const [isLoading, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<AiEvaluateQueuedItem>(
       AiEvaluationCollectionNames.AiEvaluateQueue
     )
@@ -609,35 +570,33 @@ const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor }) => {
   }
 
   return (
-    <ExperimentalArea>
-      <div className={classes.root}>
-        <div
-          className={`${classes.box} ${isShowingMore ? '' : classes.clickable}`}
-          onClick={() => setIsShowingMore(true)}>
-          {isShowingMore ? (
-            <AiEvaluationsListForAsset asset={asset} />
-          ) : (
-            <>
-              {asset.aievaluation ? (
-                <AiEvaluationOutput queuedItem={asset.aievaluation} isMain />
-              ) : (
-                <NoResultsMessage message="No AI evaluation found" />
-              )}
-            </>
-          )}
-        </div>
-        <div
-          className={classes.openInDialogIcon}
-          onClick={(e) => {
-            setIsDialog(true)
-            e.stopPropagation()
-            e.preventDefault()
-            return false
-          }}>
-          <AspectRatioIcon />
-        </div>
+    <div className={classes.root}>
+      <div
+        className={`${classes.box} ${isShowingMore ? '' : classes.clickable}`}
+        onClick={() => setIsShowingMore(true)}>
+        {isShowingMore ? (
+          <AiEvaluationsListForAsset asset={asset} />
+        ) : (
+          <>
+            {asset.aievaluation ? (
+              <AiEvaluationOutput queuedItem={asset.aievaluation} isMain />
+            ) : (
+              <NoResultsMessage message="No AI evaluation yet" />
+            )}
+          </>
+        )}
       </div>
-    </ExperimentalArea>
+      <div
+        className={classes.openInDialogIcon}
+        onClick={(e) => {
+          setIsDialog(true)
+          e.stopPropagation()
+          e.preventDefault()
+          return false
+        }}>
+        <AspectRatioIcon />
+      </div>
+    </div>
   )
 }
 

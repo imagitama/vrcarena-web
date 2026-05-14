@@ -32,6 +32,9 @@ import QueuedAssetInfo from '@/components/queued-asset-info'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import AssetResultsItem from '@/components/asset-results-item'
 import ErrorBoundary from '@/components/error-boundary'
+import AiSuggestResult from '../ai-suggest-result'
+import AiSimilarResult from '../ai-similar-result'
+import AiArea from '../ai-area'
 
 const useStyles = makeStyles({
   pass: {
@@ -118,7 +121,25 @@ function AssetsTable({
                       callOnDoneOnEditorNotes={false}
                     />
                     <ErrorBoundary>
-                      <AiEvaluationResult asset={asset as FullAsset_Editor} />
+                      <AiArea
+                        title="Evaluation"
+                        tooltip="The site has asked AI to evaluate the asset to determine if it can be auto-approved.">
+                        <AiEvaluationResult asset={asset as FullAsset_Editor} />
+                      </AiArea>
+                    </ErrorBoundary>
+                    <ErrorBoundary>
+                      <AiArea
+                        title="Suggestions"
+                        tooltip="The site has asked AI to suggest fields for the asset.">
+                        <AiSuggestResult assetId={asset.id} />
+                      </AiArea>
+                    </ErrorBoundary>
+                    <ErrorBoundary>
+                      <AiArea
+                        title="Similar Assets"
+                        tooltip="The site has asked AI what assets are similar to this one.">
+                        <AiSimilarResult asset={asset as FullAsset_Editor} />
+                      </AiArea>
                     </ErrorBoundary>
                   </TableCell>
                 </TableRow>

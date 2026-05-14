@@ -5,14 +5,16 @@ import { getFriendlyDate } from '@/utils/dates'
 export default ({
   date,
   isRelative = true,
+  className,
 }: {
   date: Date | string
   isRelative?: boolean
+  className?: string
 }) =>
   date ? (
-    <span title={moment(date).toString()}>
+    <span className={className} title={moment(date).toString()}>
       {getFriendlyDate(date, isRelative)}
     </span>
   ) : (
-    <span>(no date)</span>
+    <span className={className}>(no date)</span>
   )

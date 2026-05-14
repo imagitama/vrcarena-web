@@ -27,6 +27,7 @@ import Columns from '@/components/columns'
 import Column from '@/components/column'
 import ErrorBoundary from '@/components/error-boundary'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
+import AiArea from '../ai-area'
 
 const useStyles = makeStyles({
   pass: {
@@ -229,7 +230,9 @@ const QueuedAssetInfo = ({
               showStatuses
             />
             <ErrorBoundary>
-              <AiEvaluationResult asset={asset as FullAsset_Editor} />
+              <AiArea>
+                <AiEvaluationResult asset={asset as FullAsset_Editor} />
+              </AiArea>
             </ErrorBoundary>
           </Column>
         ) : null}
