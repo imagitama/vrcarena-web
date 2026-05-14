@@ -87,6 +87,10 @@ const footerLinks = [
     url: routes.transparency,
     label: 'Transparency',
   },
+  {
+    url: routes.aiPolicy,
+    label: 'AI Policy',
+  },
 ]
 
 function DevelopmentTools() {
