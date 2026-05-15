@@ -16,44 +16,49 @@ import {
   CollectionNames as AssetsCollectionNames,
 } from '@/modules/assets'
 import assetEditableFields from '@/editable-fields/assets'
-
-import Button from '../button'
-import Dialog from '../dialog'
-import FormControls from '../form-controls'
 import {
   AiFieldSuggestion,
   AiFieldSuggestions,
   AiSuggestQueuedItem,
   CollectionNames,
+  FunctionNames,
 } from '@/modules/aisuggest'
-import CheckboxInput from '../checkbox-input'
+import { QueueStatus } from '@/modules/common'
+import { DataStoreErrorCode } from '@/data-store'
+import { fieldTypes } from '@/generic-forms'
+import { getCategoryMeta } from '@/category-meta'
+import { capitalize } from '@/utils'
+import { getHasFieldChanged } from '@/utils/equality'
+import { colorGreyedOut } from '@/themes'
+
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
 } from '@/hooks/useDatabaseQuery'
-import NoResultsMessage from '../no-results-message'
-import { DataStoreErrorCode } from '@/data-store'
-import Heading from '../heading'
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
-import LoadingIndicator from '../loading-indicator'
-import SuccessMessage from '../success-message'
-import ErrorMessage from '../error-message'
-import { fieldTypes } from '@/generic-forms'
-import TagDiff from '../tag-diff'
-import { QueueStatus } from '@/modules/common'
-import TagChips from '../tag-chips'
-import { getCategoryMeta } from '@/category-meta'
-import { capitalize } from '@/utils'
-import HintText from '../hint-text'
-import { getScoreAsPercentage, Score } from '../ai-result'
-import Tooltip from '../tooltip'
-import { getHasFieldChanged } from '@/utils/equality'
-import { colorGreyedOut } from '@/themes'
+import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
+import useDataStoreFunction, { ErrorCode } from '@/hooks/useDataStoreFunction'
+import { HydrateFn } from '@/hooks/useDataStore'
+
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import CheckboxInput from '@/components/checkbox-input'
+import NoResultsMessage from '@/components/no-results-message'
+import Heading from '@/components/heading'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import ErrorMessage from '@/components/error-message'
+import TagDiff from '@/components/tag-diff'
+import TagChips from '@/components/tag-chips'
+import { getScoreAsPercentage, Score } from '@/components/ai-result'
+import Tooltip from '@/components/tooltip'
+import AiDialog from '@/components/ai-dialog'
 
 const useStyles = makeStyles({
   title: {
     fontSize: '125%',
     textAlign: 'center',
+    fontWeight: '100',
   },
   divider: {},
   fieldDiff: {
@@ -67,6 +72,13 @@ const useStyles = makeStyles({
   },
   noValue: {
     color: colorGreyedOut,
+  },
+  heading: {
+    display: 'flex',
+    alignItems: 'center',
+    '& svg': {
+      marginRight: '0.5rem',
+    },
   },
 })
 
@@ -128,7 +140,6 @@ const FieldDiff = <TValue,>({
           <InfoIcon />
         </Tooltip>
         <br />
-        <br />
         <FieldDiffValue fieldName={fieldName} value={after} />
       </>
     )
@@ -185,6 +196,7 @@ const Form = ({
   suggestions: AiFieldSuggestions
   onDone: () => void
 }) => {
+  const classes = useStyles()
   const [finalChanges, setFinalChanges] = useState<Partial<Asset>>({})
   const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<Asset>(
     AssetsCollectionNames.Assets,
@@ -219,23 +231,16 @@ const Form = ({
 
   const hasChanges = Object.keys(finalChanges).length > 0
 
-  const suggestionsArr = Object.entries(suggestions)
-    // .filter(([fieldName, suggestion]) =>
-    //   getHasFieldChanged(asset[fieldName], suggestion.suggestedValue)
-    // )
-    // .filter(([fieldName, suggestion]) =>
-    //   getShouldRenderSuggestion(fieldName, suggestion)
-    // )
-    .sort(([a], [b]) => {
-      const ai = assetEditableFields.findIndex((f) => f.name === a)
-      const bi = assetEditableFields.findIndex((f) => f.name === b)
-      return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
-    })
+  const suggestionsArr = Object.entries(suggestions).sort(([a], [b]) => {
+    const ai = assetEditableFields.findIndex((f) => f.name === a)
+    const bi = assetEditableFields.findIndex((f) => f.name === b)
+    return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
+  })
 
   return (
     <>
-      <Heading variant="h2" noMargin>
-        Suggested Fields
+      <Heading variant="h2" noMargin className={classes.heading}>
+        <AutoAwesomeIcon /> Suggested Fields
       </Heading>
       <Table size="small">
         <TableBody>
@@ -311,7 +316,9 @@ const Form = ({
           )}
         </TableBody>
       </Table>
-      <Heading variant="h2">Changes To Apply</Heading>
+      <Heading variant="h2" noTopMargin>
+        Changes To Apply
+      </Heading>
       {hasChanges ? (
         <Table size="small">
           <TableBody>
@@ -368,8 +375,13 @@ const Form = ({
 
 const useAiSuggestion = (
   assetId: string
-): [boolean, DataStoreErrorCode | null, AiSuggestQueuedItem | null] => {
-  const [isLoading, lastErrorCode, lastResults] =
+): [
+  boolean,
+  DataStoreErrorCode | null,
+  AiSuggestQueuedItem | null,
+  HydrateFn
+] => {
+  const [isLoading, lastErrorCode, lastStaleResults, hydrate] =
     useDatabaseQuery<AiSuggestQueuedItem>(
       CollectionNames.AiSuggestQueue,
       [
@@ -381,12 +393,56 @@ const useAiSuggestion = (
       }
     )
 
+  const lastStaleResult: AiSuggestQueuedItem | null =
+    lastStaleResults !== null && lastStaleResults.length > 0
+      ? lastStaleResults[0]
+      : null
+
+  const [isSubscribing, lastErrorCodeSync, lastSyncResult] =
+    useDataStoreItemSync<AiSuggestQueuedItem>(
+      CollectionNames.AiSuggestQueue,
+      lastStaleResult !== null ? lastStaleResult.id : false
+    )
+
+  const queuedItem: AiSuggestQueuedItem | null =
+    lastSyncResult !== null && lastSyncResult !== false
+      ? lastSyncResult
+      : lastStaleResult
+
   return [
     isLoading,
-    lastErrorCode,
-    Array.isArray(lastResults) && lastResults.length > 0
-      ? lastResults[0]
+    lastErrorCode !== null
+      ? lastErrorCode
+      : lastErrorCodeSync !== null
+      ? lastErrorCodeSync
       : null,
+    queuedItem,
+    hydrate,
+  ]
+}
+
+const useAiSuggestionRequest = (
+  assetId: string
+): [boolean, ErrorCode | null, null | string, () => Promise<string | null>] => {
+  const [isCalling, lastErrorCode, lastFunctionResult, callFunc] =
+    useDataStoreFunction<{ assetid: string }, string>(
+      FunctionNames.RequestAiSuggestion
+    )
+  const requestAiSuggestion = async () => {
+    const result = await callFunc({ assetid: assetId })
+
+    if (result !== null) {
+      return result[0]
+    }
+
+    return null
+  }
+
+  return [
+    isCalling,
+    lastErrorCode,
+    lastFunctionResult !== null ? lastFunctionResult[0] : null,
+    requestAiSuggestion,
   ]
 }
 
@@ -400,8 +456,24 @@ const AiSuggestForm = ({
   onDone: () => void
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [isLoading, lastErrorCode, lastQueuedItem] = useAiSuggestion(assetId)
+  const [isLoading, lastErrorCode, lastQueuedItem, hydrate] =
+    useAiSuggestion(assetId)
   const classes = useStyles()
+  const [
+    isCalling,
+    lastErrorCodeFunction,
+    lastFunctionResult,
+    requestAiSuggestion,
+  ] = useAiSuggestionRequest(assetId)
+
+  const onClickRequest = async () => {
+    console.debug(`onClickRequest`)
+    const queuedItemId = await requestAiSuggestion()
+    console.debug(`onClickRequest.done`, { queuedItemId })
+    if (queuedItemId !== null) {
+      hydrate()
+    }
+  }
 
   // this isn't a critical form so silently hide it
   if (isLoading || lastErrorCode !== null) {
@@ -415,7 +487,7 @@ const AiSuggestForm = ({
     <>
       {isAiSuggestionReady ? (
         <div>
-          <div className={classes.title}>The AI suggestion is ready!</div>
+          <div className={classes.title}>The AI suggestion is ready! 🎉</div>
           <FormControls>
             <Button
               onClick={() => setIsOpen(true)}
@@ -427,14 +499,50 @@ const AiSuggestForm = ({
           </FormControls>
         </div>
       ) : lastQueuedItem !== null ? (
-        <div>The AI suggestion is "{lastQueuedItem.status}"</div>
+        <div>
+          {(() => {
+            switch (lastQueuedItem.status) {
+              case QueueStatus.Processed:
+                return (
+                  <SuccessMessage>
+                    Processed! This message should disappear
+                  </SuccessMessage>
+                )
+              case QueueStatus.Processing:
+                return (
+                  <LoadingIndicator message="Working on your suggestions..." />
+                )
+              case QueueStatus.Queued:
+                return (
+                  <LoadingIndicator message="Waiting to work on your suggestions..." />
+                )
+              case QueueStatus.Failed:
+              default:
+                return `Unknown status: ${lastQueuedItem.status}`
+            }
+          })()}
+        </div>
       ) : (
         <div>
-          No AI suggestion has been queued yet (it should happen automatically)
+          {lastErrorCodeFunction !== null && (
+            <ErrorMessage>
+              Failed to request suggestions (code {lastErrorCodeFunction})
+            </ErrorMessage>
+          )}
+          <div className={classes.title}>Use AI to suggest fields</div>
+          <FormControls>
+            <Button
+              onClick={onClickRequest}
+              isDisabled={isCalling}
+              color="ai"
+              icon={<AutoAwesomeIcon />}>
+              Request Suggestion
+            </Button>
+          </FormControls>
         </div>
       )}
       {isOpen && (
-        <Dialog onClose={() => setIsOpen(false)}>
+        <AiDialog onClose={() => setIsOpen(false)}>
           {lastQueuedItem ? (
             <Form
               asset={asset}
@@ -447,7 +555,7 @@ const AiSuggestForm = ({
           ) : (
             <NoResultsMessage>No queued item</NoResultsMessage>
           )}
-        </Dialog>
+        </AiDialog>
       )}
     </>
   )

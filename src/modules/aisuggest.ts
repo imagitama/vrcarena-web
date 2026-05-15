@@ -34,4 +34,8 @@ export enum CollectionNames {
   AiSuggestQueue = 'aisuggestqueue',
 }
 
+export enum FunctionNames {
+  RequestAiSuggestion = 'request_ai_suggestion'
+}
+
 export { AiSuggestQueuedItemStatus }

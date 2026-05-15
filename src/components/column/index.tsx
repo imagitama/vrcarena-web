@@ -4,9 +4,10 @@ import { mediaQueryForMobiles } from '@/media-queries'
 
 const useStyles = makeStyles({
   column: {
-    width: '50%',
+    flex: '1 1 50%', // grow, shrink, basis of 50%
+    minWidth: 0, // prevents flex blowout with long content
     [mediaQueryForMobiles]: {
-      width: '100%',
+      flex: '1 1 100%', // full width on mobile
     },
   },
   withPadding: {

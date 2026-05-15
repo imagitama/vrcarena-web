@@ -1,30 +1,39 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
-import Tooltip from '../tooltip'
-import Link from '../link'
+import InfoIcon from '@mui/icons-material/Info'
+
 import { routes } from '@/routes'
 import { colorAiDark, colorAiLight } from '@/themes'
+
+import Tooltip from '@/components/tooltip'
+import Link from '@/components/link'
+import {
+  mediaQueryForMobiles,
+  mediaQueryForTabletsOrBelow,
+} from '@/media-queries'
 
 const useStyles = makeStyles({
   root: {
     position: 'relative',
-  },
-  box: {
     padding: '1rem',
     border: `1px dashed ${colorAiLight}`,
-    position: 'relative',
     overflow: 'hidden',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: '75%',
-    color: colorAiLight,
-    marginTop: '0.1rem',
-    cursor: 'default',
-    '& svg': {
-      marginRight: '0.2rem',
+    [mediaQueryForTabletsOrBelow]: {
+      padding: '0.5rem',
     },
+    [mediaQueryForMobiles]: {
+      padding: '0.25rem',
+    },
+  },
+  infoIconWrapper: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 100,
+    padding: '0.2rem',
+    color: colorAiLight,
+    cursor: 'default',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'right',
@@ -57,19 +66,17 @@ const AiArea = ({
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      <div className={classes.box}>
-        <AutoAwesomeIcon className={classes.bg} />
-        {children}
-      </div>
-      <div className={classes.title}>
-        <Tooltip title={<>{tooltip} Click the text to visit our AI policy.</>}>
+      <div className={classes.infoIconWrapper}>
+        <Tooltip title={<>{tooltip} Click to visit our AI policy.</>}>
           <span>
             <Link to={routes.aiPolicy}>
-              <AutoAwesomeIcon /> {title}
+              <InfoIcon />
             </Link>
           </span>
         </Tooltip>
       </div>
+      <AutoAwesomeIcon className={classes.bg} />
+      {children}
     </div>
   )
 }

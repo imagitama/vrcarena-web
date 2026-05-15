@@ -1,9 +1,33 @@
 import { useCallback, useEffect, useState } from 'react'
 import useSupabaseClient from './useSupabaseClient'
 import { handleError } from '@/error-handling'
+import { PostgrestError } from '@supabase/supabase-js'
 
-enum ErrorCode {
+export enum ErrorCode {
   Unknown = 0,
+  UserNotVerified = 1,
+  AlreadyInQueue
+}
+
+enum RpcErrorCode {
+  USER_NOT_VERIFIED = 'USER_NOT_VERIFIED',
+  ALREADY_IN_QUEUE = 'ALREADY_IN_QUEUE'
+}
+
+const getErrorCodeFromSupabaseError = (err: PostgrestError): ErrorCode => {
+  if (err.code === 'P0001') {
+    switch (err.hint) {
+      case RpcErrorCode.ALREADY_IN_QUEUE:
+        return ErrorCode.AlreadyInQueue
+      case RpcErrorCode.USER_NOT_VERIFIED:
+        return ErrorCode.UserNotVerified
+      default:
+        return ErrorCode.Unknown
+    }
+  } else {
+    // TODO: re-use other error code stuff
+    return ErrorCode.Unknown
+  }
 }
 
 const useDataStoreFunction = <TPayload extends object, TRecord>(
@@ -11,11 +35,11 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
   autoCall: boolean = false,
   autoCallPayload?: TPayload
 ): [
-  boolean,
-  null | ErrorCode,
-  null | TRecord[],
-  (payload?: TPayload) => Promise<null | TRecord[]>
-] => {
+    boolean,
+    null | ErrorCode,
+    null | TRecord[],
+    (payload?: TPayload) => Promise<null | TRecord[]>
+  ] => {
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
   const [lastResult, setLastResult] = useState<null | TRecord[]>(null)
@@ -38,11 +62,15 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
 
       if (error) {
         console.error(
-          `Failed to use data store function "${name}": ${error.message}`
+          `Failed to use data store function "${name}": ${error.message} ${error.hint}`
         )
         handleError(error)
-        setLastErrorCode(ErrorCode.Unknown)
+        setLastErrorCode(getErrorCodeFromSupabaseError(error))
         return null
+      }
+
+      if (!data) {
+        throw new Error('Data is null')
       }
 
       setLastResult(data)

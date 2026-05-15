@@ -21,6 +21,9 @@ import AiSuggestForm from '../ai-suggest-form'
 import ErrorBoundary from '../error-boundary'
 import Columns from '../columns'
 import Column from '../column'
+import useExperimentalFeature, {
+  FeatureName,
+} from '@/hooks/useExperimentalFeature'
 
 const AssetEditor = ({
   assetId,
@@ -40,6 +43,9 @@ const AssetEditor = ({
   const [isLoading, lastErrorCode, asset, hydrate] =
     useDataStoreItem<FullAsset>(ViewNames.GetFullAssets, assetId || false)
   const isEditor = useIsEditor()
+  const [isExperimentalFeatureEnabled] = useExperimentalFeature(
+    FeatureName.AiSuggestions
+  )
 
   if (assetId && (isLoading || asset === null)) {
     return <LoadingIndicator message="Loading asset..." />
@@ -70,21 +76,23 @@ const AssetEditor = ({
             </FormControls>
           </Column>
         )}
-        {isEditor && assetId && asset && (
-          <Column>
-            <AiArea
-              title="AI Suggestion"
-              tooltip="The site asks AI to suggest missing or better fields for this asset.">
-              <ErrorBoundary>
-                <AiSuggestForm
-                  assetId={assetId}
-                  asset={asset as FullAsset_Editor}
-                  onDone={hydrate}
-                />
-              </ErrorBoundary>
-            </AiArea>
-          </Column>
-        )}
+        {assetId &&
+          asset &&
+          (isEditor === true || isExperimentalFeatureEnabled) && (
+            <Column>
+              <AiArea
+                title="AI Suggestion"
+                tooltip="The site asks AI to suggest missing or better fields for this asset.">
+                <ErrorBoundary>
+                  <AiSuggestForm
+                    assetId={assetId}
+                    asset={asset as FullAsset_Editor}
+                    onDone={hydrate}
+                  />
+                </ErrorBoundary>
+              </AiArea>
+            </Column>
+          )}
       </Columns>
       <GenericEditor
         isAccordion

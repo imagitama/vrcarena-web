@@ -39,6 +39,8 @@ import MyUserOverview from '@/components/my-user-overview'
 import MySupportTickets from './components/my-support-tickets'
 import Button from '@/components/button'
 
+import ExperimentalFeatures from './components/experimental-features'
+
 const analyticsCategoryName = 'MyAccount'
 
 const View = () => {
@@ -139,6 +141,8 @@ const View = () => {
                 <ShowMoreInfoToggle
                   analyticsCategoryName={analyticsCategoryName}
                 />
+                <Heading variant="h3">Experimental Features</Heading>
+                <ExperimentalFeatures />
                 {/* <Heading variant="h2">Tag Blacklist</Heading>
                 <TagBlacklistEditor /> */}
                 <Heading variant="h3">Notifications</Heading>

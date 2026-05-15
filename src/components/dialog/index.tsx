@@ -1,7 +1,10 @@
 import React, { forwardRef } from 'react'
-import MaterialDialog, { DialogProps } from '@mui/material/Dialog'
-import CloseIcon from '@mui/icons-material/Close'
 import { makeStyles } from '@mui/styles'
+import MaterialDialog, {
+  DialogProps as MaterialDialogProps,
+} from '@mui/material/Dialog'
+import CloseIcon from '@mui/icons-material/Close'
+
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const useStyles = makeStyles({
@@ -37,19 +40,19 @@ const useStyles = makeStyles({
   },
 })
 
-interface MyDialogProps extends Omit<DialogProps, 'open'> {}
+export interface DialogProps extends Omit<MaterialDialogProps, 'open'> {}
 
-const Dialog = forwardRef<HTMLDivElement, MyDialogProps>((props, ref) => {
+const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
   const classes = useStyles()
 
   // TODO: Default close button
   return (
     <MaterialDialog
       open
-      PaperProps={{
-        className: classes.paper,
-      }}
       {...props}
+      PaperProps={{
+        className: `${classes.paper} ${props.PaperProps?.className}`,
+      }}
       ref={ref}>
       {props.onClose && (
         <div

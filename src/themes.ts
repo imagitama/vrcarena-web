@@ -61,6 +61,10 @@ export const darkTheme: VRCArenaTheme = createTheme({
           fontSize: '1.25rem',
           margin: '2rem 0 1rem',
         },
+        h4: {
+          fontSize: '1.1rem',
+          margin: '1rem 0 0.5rem',
+        },
       },
     },
     MuiPaper: {
@@ -139,6 +143,15 @@ export const darkTheme: VRCArenaTheme = createTheme({
         root: {
           '&.Mui-checked': {
             color: colorBrandLight
+          },
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          'tr:last-child &': {
+            borderBottom: 'none',
           },
         },
       },
