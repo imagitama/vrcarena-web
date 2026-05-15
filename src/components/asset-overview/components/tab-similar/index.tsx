@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 
+import { PublicAsset } from '@/modules/assets'
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
 
 import AssetResults from '@/components/asset-results'
@@ -15,11 +16,19 @@ export default () => {
     return null
   }
 
-  const { similarassets: rawSimilarAssets } = asset
+  const {
+    similarassets: nonAiSims,
+    aisimilarities: aiSims,
+    aisimilaritiesdata: aiSimsData,
+  } = asset
+
+  console.debug('ASSET', { nonAiSims, aiSims, aiSimsData })
+
+  const sims: PublicAsset[] = aiSimsData !== null ? aiSimsData : nonAiSims
 
   const similarAssets = isAdultContentEnabled
-    ? rawSimilarAssets
-    : rawSimilarAssets.filter((similarAsset) => similarAsset.isadult !== true)
+    ? sims
+    : sims.filter((similarAsset) => similarAsset.isadult !== true)
 
   if (!similarAssets.length) {
     return <NoResultsMessage>No similar assets found</NoResultsMessage>

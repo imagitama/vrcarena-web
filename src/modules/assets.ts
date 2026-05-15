@@ -229,13 +229,15 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   discordserverdata: DiscordServerData | null
   clonableworlddata: VrchatWorld | null
   relationsdata: Asset[]
-  similarassets: Asset[]
+  similarassets: PublicAsset[]
   approvedbyusername: string
   tagsdata: Tag[]
   attachmentsdata: FullAttachment[] | null
   publishedbyusername: string
   publishedbyreputation: number
   tagscount: TagStats[] // different to tagsdata as that returns null if tag already in database
+  aisimilarities: AiSimilarQueuedItem | null
+  aisimilaritiesdata: PublicAsset[]
 }
 
 export interface FullAsset_Editor_ForList extends FullAsset {
@@ -243,8 +245,6 @@ export interface FullAsset_Editor_ForList extends FullAsset {
 }
 
 export interface FullAsset_Editor extends FullAsset_Editor_ForList {
-  aisimilarities: AiSimilarQueuedItem | null
-  aisimilaritiesdata: Asset[]
 }
 
 export interface SmallAsset extends Asset, AssetMeta {

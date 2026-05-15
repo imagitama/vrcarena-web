@@ -717,7 +717,10 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                     <Relations relations={asset.relations} />
                   </Area>
                 ) : null}
-                {asset && asset.similarassets && asset.similarassets.length ? (
+                {asset &&
+                (asset.aisimilarities !== null ||
+                  (asset.similarassets !== null &&
+                    asset.similarassets.length)) ? (
                   <Area name="similar" label="Similar Assets">
                     <TabSimilar />
                   </Area>
