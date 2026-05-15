@@ -262,7 +262,19 @@ const Form = ({
                     {!getShouldRenderSuggestion(fieldName, suggestion) ? (
                       <NoValueText>
                         (no suitable value){' '}
-                        <Tooltip title="The AI decided on a new value but we decided it was not good enough">
+                        <Tooltip
+                          title={
+                            <>
+                              The AI decided on a new value but we decided it
+                              was not good enough:
+                              <br />
+                              <br />
+                              <FieldDiffValue
+                                fieldName={fieldName}
+                                value={suggestion.suggestedValue}
+                              />
+                            </>
+                          }>
                           <InfoIcon />
                         </Tooltip>
                       </NoValueText>
