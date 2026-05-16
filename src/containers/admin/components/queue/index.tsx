@@ -96,95 +96,6 @@ const ConnectionIcon = styled(CircleIcon)`
       : colorGreyedOut};
 `
 
-// const AssetSyncQueueCellRow = ({
-//   item: staleItem,
-//   index,
-// }: {
-//   item: AssetSyncQueueItem
-//   index: number
-// }) => {
-//   const [isSubscribing, isSubscribed, lastSubscribeErrorCode, liveQueuedItem] =
-//     useDataStoreItemSync<AssetSyncQueueItem>(
-//       AssetsSyncQueueCollectionNames.AssetSyncQueue,
-//       staleItem.id,
-//       `admin-asset-sync-queue-item_${staleItem.id}`
-//     )
-
-//   const item = liveQueuedItem || staleItem
-
-//   return (
-//     <TableRow>
-//       <TableCell>
-//         <CopyThing text={item.id} title={item.id}>
-//           <ConnectionIcon
-//             positivity={
-//               lastSubscribeErrorCode !== null
-//                 ? -1
-//                 : isSubscribed
-//                 ? 1
-//                 : isSubscribing
-//                 ? 0
-//                 : null
-//             }
-//           />
-//           {item.id.substring(0, 4)}
-//         </CopyThing>
-//       </TableCell>
-//       <TableCell>
-//         <FormattedDate date={item.createdat} />
-//         {item.lastmodifiedat && (
-//           <>
-//             <br />
-//             Edited <FormattedDate date={item.createdat} />
-//           </>
-//         )}
-//       </TableCell>
-//       <TableCell></TableCell>
-//     </TableRow>
-//   )
-// }
-
-// const AssetSyncQueue = ({
-//   items,
-//   isLoading,
-// }: {
-//   items: AssetSyncQueueItem[]
-//   isLoading: boolean
-// }) => {
-//   return (
-//     <Table size="small">
-//       <TableHead>
-//         <TableRow>
-//           <TableCell></TableCell>
-//           <TableCell>Queued At</TableCell>
-//           <TableCell>Status</TableCell>
-//           <TableCell>Result</TableCell>
-//           <TableCell></TableCell>
-//         </TableRow>
-//       </TableHead>
-//       <TableBody>
-//         {items.length ? (
-//           items.map((item, i) => (
-//             <AssetSyncQueueCellRow key={item.id} item={item} index={i} />
-//           ))
-//         ) : isLoading ? (
-//           <>
-//             <LoadingRow />
-//             <LoadingRow />
-//             <LoadingRow />
-//           </>
-//         ) : (
-//           <TableRow>
-//             <TableCell colSpan={999}>
-//               <NoResultsMessage noMargin>No queued items</NoResultsMessage>
-//             </TableCell>
-//           </TableRow>
-//         )}
-//       </TableBody>
-//     </Table>
-//   )
-// }
-
 const AssetSyncQueueRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
   if (item.syncedfields === null)
     return <NoValueLabel>(no synced fields)</NoValueLabel>
@@ -293,6 +204,7 @@ const QueueTable = <TItem extends Record<string, any>>({
           <TableCell>Date</TableCell>
           <TableCell>Status</TableCell>
           <TableCell>Result</TableCell>
+          <TableCell>Notes</TableCell>
           <TableCell></TableCell>
         </TableRow>
       </TableHead>
@@ -424,6 +336,7 @@ const QueueTableRow = <TItem extends Record<string, any>>({
           <Renderer item={item as any} index={index} />{' '}
           <KeyboardArrowUpIcon onClick={toggleExpanded} />
         </TableCell>
+        <TableCell>{item.notes || ''}</TableCell>
         <TableCell></TableCell>
       </TableRow>
       {isExpanded && (
