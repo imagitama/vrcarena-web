@@ -358,7 +358,7 @@ export const Convo = ({
   )
 }
 
-export const getScoreAsPercentage = (score: number) => 100 * score
+export const getScoreAsPercentage = (score: number) => Math.floor(100 * score)
 
 export interface RendererProps {
   queuedItem: QueuedItem

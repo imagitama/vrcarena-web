@@ -11,6 +11,7 @@ export enum Operators {
   EQUALS = 'eq',
   NOT_EQUALS = '!=',
   GREATER_THAN = '>',
+  LESS_THAN = '>',
   ARRAY_CONTAINS = 'array-contains',
 }
 
@@ -122,13 +123,13 @@ export default <TRecord>(
   subscribe = true,
   startAfter = undefined
 ): [
-  boolean,
-  null | DataStoreErrorCode,
-  TRecord[] | null,
-  HydrateFn,
-  number | null,
-  ClearFn
-] => {
+    boolean,
+    null | DataStoreErrorCode,
+    TRecord[] | null,
+    HydrateFn,
+    number | null,
+    ClearFn
+  ] => {
   const [records, setRecords] = useState<TRecord[] | null>(null)
   const [count, setCount] = useState<null | number>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -155,8 +156,7 @@ export default <TRecord>(
   async function doIt(initiallyLoading = true) {
     try {
       console.debug(
-        `useDatabaseQuery :: ${
-          options.queryName || '(unnamed)'
+        `useDatabaseQuery :: ${options.queryName || '(unnamed)'
         } :: ${collectionName} :: where=${whereClausesAsString} limit=${limitAsString} order=${orderByAsString} startAfter=${startAfterAsString}`
       )
 
@@ -191,8 +191,8 @@ export default <TRecord>(
             orStatement,
             options.supabase
               ? {
-                  foreignTable: options.supabase.foreignTable,
-                }
+                foreignTable: options.supabase.foreignTable,
+              }
               : {}
           )
         } else {
@@ -211,6 +211,10 @@ export default <TRecord>(
               case Operators.GREATER_THAN:
                 // @ts-ignore
                 queryChain = queryChain.gt(field, value)
+                break
+              case Operators.LESS_THAN:
+                // @ts-ignore
+                queryChain = queryChain.lt(field, value)
                 break
               case Operators.ARRAY_CONTAINS:
                 const valueToUse = Array.isArray(value) ? value : [value]
@@ -247,16 +251,14 @@ export default <TRecord>(
       const result = await queryChain
 
       console.debug(
-        `useDatabaseQuery :: ${
-          options.queryName || '(unnamed)'
+        `useDatabaseQuery :: ${options.queryName || '(unnamed)'
         } :: ${collectionName} :: query complete`,
         result
       )
 
       if (isUnmountedRef.current) {
         console.debug(
-          `useDatabaseQuery :: ${
-            options.queryName || '(unnamed)'
+          `useDatabaseQuery :: ${options.queryName || '(unnamed)'
           } :: ${collectionName} :: query complete but component has unmounted, skipping re-render...`
         )
         return

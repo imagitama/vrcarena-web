@@ -104,7 +104,7 @@ const Whiteboard = () => {
     whiteboardRecordsForUsers?.find((record) => record.id === myUserId) || null
   const myDots = myRecord ? myRecord.dots : []
 
-  const [isLoadingSync, lastErrorCodeSync, newDots] =
+  const [isLoadingSync, isSubscribing, lastErrorCodeSync, newDots] =
     useDataStoreItemsSync<WhiteboardRecordForUser>(CollectionNames.Whiteboard, {
       onUpdateInstead: (updatedRecord) => {
         const canvas = canvasRef.current

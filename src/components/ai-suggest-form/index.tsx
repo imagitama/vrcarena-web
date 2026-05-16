@@ -517,7 +517,7 @@ const useAiSuggestion = (
       ? lastStaleResults[0]
       : null
 
-  const [isSubscribing, lastErrorCodeSync, lastSyncResult] =
+  const [isSubscribing, isSubscribed, lastErrorCodeSync, lastSyncResult] =
     useDataStoreItemSync<AiSuggestQueuedItem>(
       AiSuggestCollectionNames.AiSuggestQueue,
       lastStaleResult !== null ? lastStaleResult.id : false

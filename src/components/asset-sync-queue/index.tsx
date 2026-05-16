@@ -278,7 +278,7 @@ const QueuedItemRow = ({
   isBusy: boolean
   showMoreInfo?: boolean
 }) => {
-  const [isSubscribing, lastSubscribeErrorCode, liveQueuedItem] =
+  const [isSubscribing, isSubscribed, lastSubscribeErrorCode, liveQueuedItem] =
     useDataStoreItemSync<AssetSyncQueueItem>(
       CollectionNames.AssetSyncQueue,
       originalQueuedItem.id,

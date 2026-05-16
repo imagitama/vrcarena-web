@@ -7,6 +7,7 @@ import {
 import {
   REALTIME_LISTEN_TYPES,
   REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
+  REALTIME_SUBSCRIBE_STATES,
   RealtimeChannel,
   RealtimePostgresDeletePayload,
   RealtimePostgresInsertPayload,
@@ -34,9 +35,10 @@ export default <TItem extends Record<string, any>>(
   options: QueryOptions<TItem> = {
     queryName: '',
   }
-): [boolean, null | DataStoreErrorCode, TItem[] | null] => {
+): [boolean, boolean, null | DataStoreErrorCode, TItem[] | null] => {
   const [createdRecords, setCreatedRecords] = useState<null | TItem[]>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSubscribing, setIsSubscribing] = useState(false)
+  const [isSubscribed, setIsSubscribed] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
     null
   )
@@ -58,7 +60,7 @@ export default <TItem extends Record<string, any>>(
         { collectionName }
       )
 
-      setIsLoading(true)
+      setIsSubscribing(true)
       setLastErrorCode(null)
 
       const onInsert = (payload: RealtimePostgresInsertPayload<TItem>) => {
@@ -163,14 +165,42 @@ export default <TItem extends Record<string, any>>(
         //   },
         //   onDelete
         // )
+        // .subscribe((status, err) => {
+        //   console.debug(
+        //     `useDataStoreItemsSync :: ${options.queryName} :: ${collectionName} :: Status '${status}'`
+        //   )
+        //   if (status === REALTIME_SUBSCRIBE_STATES.SUBSCRIBED) {
+        //     // TODO: set this to false on fail
+        //     setIsSubscribed(true)
+        //   }
+        //   if (err) {
+        //     console.error(err)
+        //     handleError(err)
+        //     setIsSubscribed(false)
+        //     setLastErrorCode(DataStoreErrorCode.ChannelError)
+        //   }
+        // })
         .subscribe((status, err) => {
           console.debug(
-            `useDataStoreItemsSync :: ${options.queryName} :: ${collectionName} :: Status '${status}'`
+            `useDataStoreItemsSync :: ${options.queryName} :: Status '${status}'`
           )
-          if (err) {
-            console.error(err)
-            handleError(err)
-            setLastErrorCode(DataStoreErrorCode.ChannelError)
+
+          switch (status) {
+            case REALTIME_SUBSCRIBE_STATES.SUBSCRIBED:
+              setIsSubscribed(true)
+              break
+
+            case REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR:
+            case REALTIME_SUBSCRIBE_STATES.TIMED_OUT:
+            case REALTIME_SUBSCRIBE_STATES.CLOSED:
+              if (err) {
+                console.error(err)
+                handleError(err)
+              }
+
+              setLastErrorCode(DataStoreErrorCode.ChannelError)
+              setIsSubscribed(false)
+              break
           }
         })
 
@@ -184,12 +214,13 @@ export default <TItem extends Record<string, any>>(
       }
 
       setCreatedRecords([]) // initialize with empty array to signal we are ready
-      setIsLoading(false)
+      setIsSubscribing(false)
       setLastErrorCode(null)
     } catch (err) {
       console.error(err)
       handleError(err)
-      setIsLoading(false)
+      setIsSubscribing(false)
+      setIsSubscribed(false)
       setLastErrorCode(getDataStoreErrorCodeFromError(err))
     }
   }
@@ -209,5 +240,5 @@ export default <TItem extends Record<string, any>>(
     }
   }, [collectionName])
 
-  return [isLoading, lastErrorCode, createdRecords]
+  return [isSubscribing, isSubscribed, lastErrorCode, createdRecords]
 }

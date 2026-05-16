@@ -349,7 +349,7 @@ const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
   )
 }
 
-const AiEvaluationOutput = ({
+export const Renderer = ({
   queuedItem: staleQueuedItem,
   onClick,
   isMain = false,
@@ -359,7 +359,7 @@ const AiEvaluationOutput = ({
   isMain?: boolean
 }) => {
   const classes = useStyles()
-  const [isLoading, lastErrorCode, lastResult] =
+  const [isSubscribing, isSubscribed, lastErrorCode, lastResult] =
     useDataStoreItemSync<AiEvaluateQueuedItem>(
       AiEvaluationCollectionNames.AiEvaluateQueue,
       staleQueuedItem.id
@@ -387,7 +387,7 @@ const AiEvaluationOutput = ({
 
   return (
     <div className={`${classes.item} ${onClick ? classes.clickable : ''}`}>
-      {isLoading && <LoadingIndicator message="Subscribing..." />}
+      {isSubscribing && <LoadingIndicator message="Subscribing..." />}
       {lastErrorCode && (
         <ErrorMessage>Failed to subscribe: {lastErrorCode}</ErrorMessage>
       )}
@@ -494,7 +494,7 @@ const AiEvaluationsListForAsset = ({
     return (
       <>
         {asset.aievaluation && (
-          <AiEvaluationOutput queuedItem={asset.aievaluation} isMain />
+          <Renderer queuedItem={asset.aievaluation} isMain />
         )}
         <div>Loading...</div>
       </>
@@ -506,7 +506,7 @@ const AiEvaluationsListForAsset = ({
       {queuedItems && queuedItems.length > 0 ? (
         <div>
           {queuedItems?.map((queuedItem) => (
-            <AiEvaluationOutput key={queuedItem.id} queuedItem={queuedItem} />
+            <Renderer key={queuedItem.id} queuedItem={queuedItem} />
           ))}
         </div>
       ) : queuedItems && queuedItems.length === 0 ? (
@@ -584,7 +584,7 @@ const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor_ForList }) => {
         ) : (
           <>
             {asset.aievaluation ? (
-              <AiEvaluationOutput queuedItem={asset.aievaluation} isMain />
+              <Renderer queuedItem={asset.aievaluation} isMain />
             ) : (
               <NoResultsMessage message="No AI evaluation yet" />
             )}

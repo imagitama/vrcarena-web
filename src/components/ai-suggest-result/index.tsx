@@ -179,7 +179,7 @@ const ConvoRenderer = ({
   }
 }
 
-const Renderer = ({
+export const Renderer = ({
   queuedItem: staleQueuedItem,
   onClick,
   isMain = false,
@@ -189,7 +189,7 @@ const Renderer = ({
   isMain?: boolean
 }) => {
   const classes = useStyles()
-  const [isLoading, lastErrorCode, lastResult] =
+  const [isSubscribing, isSubscribed, lastErrorCode, lastResult] =
     useDataStoreItemSync<AiSuggestQueuedItem>(
       CollectionNames.AiSuggestQueue,
       staleQueuedItem.id
@@ -208,7 +208,7 @@ const Renderer = ({
 
   return (
     <div className={`${classes.item} ${onClick ? classes.clickable : ''}`}>
-      {isLoading && <LoadingIndicator message="Subscribing..." />}
+      {isSubscribing && <LoadingIndicator message="Subscribing..." />}
       {lastErrorCode && (
         <ErrorMessage>Failed to subscribe: {lastErrorCode}</ErrorMessage>
       )}

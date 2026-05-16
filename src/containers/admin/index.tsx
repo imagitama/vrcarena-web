@@ -23,7 +23,7 @@ import AdminHome from './components/home'
 import History from './components/history'
 import AdminSupportTickets from './components/support-tickets'
 import Link from '@/components/link'
-import AdminAssetSyncQueue from './components/asset-queue'
+import Queue from './components/queue'
 import AdminAudit from './components/audit'
 import AdminDupes from './components/dupes'
 import AdminReputation from './components/reputation'
@@ -178,22 +178,16 @@ const View = () => {
             contents: <AdminComments />,
           },
           {
-            name: 'asset-sync-queue',
-            label: 'Asset Sync Queue',
+            name: 'queue',
+            label: 'Queues',
             contents: (
               <>
-                <InfoMessage
-                  title="How The Asset Sync Queue Works"
-                  hideId="admin-asset-sync-queue-info">
-                  Users can add a source URL to the asset queue. When they do,
-                  the site automatically grabs the data from Gumroad, Booth,
-                  Itch or Jinxxy and creates an asset for them.
-                  <br />
-                  <br />
-                  Sometimes this system fails so you can see the queue here and
-                  manually re-trigger the grabbing.
+                <InfoMessage title="How Queues Work" hideId="queues-info">
+                  The site talks to many 3rd parties. Do track all of this back
+                  and forth, we use a queue mechanism. Each 3rd party service
+                  has its own queue - shown here.
                 </InfoMessage>
-                <AdminAssetSyncQueue />
+                <Queue />
               </>
             ),
           },

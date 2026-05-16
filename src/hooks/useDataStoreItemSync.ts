@@ -7,6 +7,7 @@ import {
 import {
   REALTIME_LISTEN_TYPES,
   REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
+  REALTIME_SUBSCRIBE_STATES,
   RealtimeChannel,
   RealtimePostgresChangesPayload,
 } from '@supabase/supabase-js'
@@ -20,9 +21,10 @@ export default <TResult extends { [key: string]: any }>(
   id: string | false,
   queryName: string = 'unnamed',
   select: string = '*'
-): [boolean, null | DataStoreErrorCode, null | TResult | false] => {
+): [boolean, boolean, null | DataStoreErrorCode, null | TResult | false] => {
   const [result, setResult] = useState<null | TResult | false>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSubscribing, setIsSubscribing] = useState(false)
+  const [isSubscribed, setIsSubscribed] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
     null
   )
@@ -46,7 +48,7 @@ export default <TResult extends { [key: string]: any }>(
         { collectionName, filter }
       )
 
-      setIsLoading(true)
+      setIsSubscribing(true)
       setLastErrorCode(null)
 
       const onData = (payload: RealtimePostgresChangesPayload<TResult>) => {
@@ -86,12 +88,26 @@ export default <TResult extends { [key: string]: any }>(
           console.debug(
             `useDataStoreItemSync :: ${queryName} :: Status '${status}'`
           )
-          if (err) {
-            console.error(err)
-            handleError(err)
-            setLastErrorCode(DataStoreErrorCode.ChannelError)
+
+          switch (status) {
+            case REALTIME_SUBSCRIBE_STATES.SUBSCRIBED:
+              setIsSubscribed(true)
+              break
+
+            case REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR:
+            case REALTIME_SUBSCRIBE_STATES.TIMED_OUT:
+            case REALTIME_SUBSCRIBE_STATES.CLOSED:
+              if (err) {
+                console.error(err)
+                handleError(err)
+              }
+
+              setLastErrorCode(DataStoreErrorCode.ChannelError)
+              setIsSubscribed(false)
+              break
           }
         })
+
 
       channelRef.current = channel
 
@@ -102,12 +118,13 @@ export default <TResult extends { [key: string]: any }>(
         return
       }
 
-      setIsLoading(false)
+      setIsSubscribing(false)
       setLastErrorCode(null)
     } catch (err) {
       console.error(err)
       handleError(err)
-      setIsLoading(false)
+      setIsSubscribing(false)
+      setIsSubscribed(false)
       setLastErrorCode(getDataStoreErrorCodeFromError(err))
     }
   }
@@ -127,5 +144,5 @@ export default <TResult extends { [key: string]: any }>(
     }
   }, [collectionName, id])
 
-  return [isLoading, lastErrorCode, result]
+  return [isSubscribing, isSubscribed, lastErrorCode, result]
 }

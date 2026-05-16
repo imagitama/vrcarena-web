@@ -230,7 +230,9 @@ const QueuedAssetInfo = ({
               showStatuses
             />
             <ErrorBoundary>
-              <AiArea>
+              <AiArea
+                title="Evaluation"
+                tooltip="We use AI to evaluate our assets for auto-approval.">
                 <AiEvaluationResult asset={asset as FullAsset_Editor} />
               </AiArea>
             </ErrorBoundary>

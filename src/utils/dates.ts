@@ -27,3 +27,20 @@ export const getFriendlyDate = (
 
 export const getFormattedDate = (date: Date | string, format: string): string =>
   moment(date).format(format)
+
+export const getFriendlyDuration = (before: Date | string, after: Date | string): string => {
+  const diffMs = moment(after).diff(moment(before))
+  const duration = moment.duration(Math.abs(diffMs))
+
+  const hours = Math.floor(duration.asHours())
+  const mins = duration.minutes()
+  const secs = duration.seconds()
+
+  const parts: string[] = []
+
+  if (hours > 0) parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`)
+  if (mins > 0) parts.push(`${mins} ${mins === 1 ? 'min' : 'mins'}`)
+  if (secs > 0 || parts.length === 0) parts.push(`${secs} ${secs === 1 ? 'second' : 'seconds'}`)
+
+  return parts.join(' ')
+}
