@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import styled from '@emotion/styled'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import LaunchIcon from '@mui/icons-material/Launch'
 
 import CircleIcon from '@mui/icons-material/Circle'
 import RefreshIcon from '@mui/icons-material/Refresh'
@@ -61,6 +62,8 @@ import TagChips from '@/components/tag-chips'
 import { Renderer as AiSuggestRenderer } from '@/components/ai-suggest-result'
 import { Renderer as AiSimilarRenderer } from '@/components/ai-similar-result'
 import { Renderer as AiEvaluateRenderer } from '@/components/ai-evaluation-result'
+import Link from '@/components/link'
+import { routes } from '@/routes'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -97,19 +100,40 @@ const ConnectionIcon = styled(CircleIcon)`
 `
 
 const AssetSyncQueueRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
-  if (item.syncedfields === null)
-    return <NoValueLabel>(no synced fields)</NoValueLabel>
-
-  return `${item.syncedfields.length} synced fields`
+  return (
+    <>
+      <a href={item.sourceurl} target="_blank" rel="noopener noreferrer">
+        {item.sourceurl} <LaunchIcon />
+      </a>
+      <br />
+      {item.syncedfields === null ? (
+        <NoValueLabel>(no synced fields)</NoValueLabel>
+      ) : (
+        <>
+          Created asset{' '}
+          <Link
+            to={routes.viewAssetWithVar.replace(
+              ':assetId',
+              item.createdassetid
+            )}>
+            {item.createdassetid}
+          </Link>
+          <br />
+          {item.syncedfields.length} synced fields
+        </>
+      )}
+    </>
+  )
 }
 
 const AssetSyncQueueFullRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
   if (item.syncedfields === null) return null
   return (
     <>
-      Created asset {item.createdassetid || '(none)'}
-      <br />
-      {item.syncedfields.length} synced fields
+      Synced:
+      {item.syncedfields.map((fieldName) => (
+        <div>{fieldName}</div>
+      ))}
     </>
   )
 }
