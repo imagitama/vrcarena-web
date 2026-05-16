@@ -20,7 +20,7 @@ import {
   AiFieldSuggestion,
   AiFieldSuggestions,
   AiSuggestQueuedItem,
-  CollectionNames,
+  CollectionNames as AiSuggestCollectionNames,
   FunctionNames,
 } from '@/modules/aisuggest'
 import { QueueStatus } from '@/modules/common'
@@ -39,6 +39,7 @@ import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 import useDataStoreFunction, { ErrorCode } from '@/hooks/useDataStoreFunction'
 import { HydrateFn } from '@/hooks/useDataStore'
+import useIsEditor from '@/hooks/useIsEditor'
 
 import Button from '@/components/button'
 import FormControls from '@/components/form-controls'
@@ -50,9 +51,14 @@ import SuccessMessage from '@/components/success-message'
 import ErrorMessage from '@/components/error-message'
 import TagDiff from '@/components/tag-diff'
 import TagChips from '@/components/tag-chips'
-import { getScoreAsPercentage, Score } from '@/components/ai-result'
+import {
+  getScoreAsPercentage,
+  RequeueButton,
+  Score,
+} from '@/components/ai-result'
 import Tooltip from '@/components/tooltip'
 import AiDialog from '@/components/ai-dialog'
+import FormattedDate from '../formatted-date'
 
 const useStyles = makeStyles({
   title: {
@@ -79,6 +85,12 @@ const useStyles = makeStyles({
     '& svg': {
       marginRight: '0.5rem',
     },
+  },
+  date: {
+    fontSize: '75%',
+  },
+  icon: {
+    fontSize: '200% !important',
   },
 })
 
@@ -189,11 +201,11 @@ const getShouldRenderSuggestion = (
 
 const Form = ({
   asset,
-  suggestions,
+  queuedItem,
   onDone,
 }: {
   asset: FullAsset_Editor
-  suggestions: AiFieldSuggestions
+  queuedItem: AiSuggestQueuedItem
   onDone: () => void
 }) => {
   const classes = useStyles()
@@ -202,6 +214,7 @@ const Form = ({
     AssetsCollectionNames.Assets,
     asset.id
   )
+  const isEditor = useIsEditor()
 
   const onClickSave = async () => {
     console.debug(`saving the asset...`)
@@ -223,7 +236,7 @@ const Form = ({
         // Add the field from suggestions
         return {
           ...current,
-          [fieldName]: suggestions[fieldName].suggestedValue,
+          [fieldName]: queuedItem.suggestions[fieldName].suggestedValue,
         }
       }
     })
@@ -231,17 +244,28 @@ const Form = ({
 
   const hasChanges = Object.keys(finalChanges).length > 0
 
-  const suggestionsArr = Object.entries(suggestions).sort(([a], [b]) => {
-    const ai = assetEditableFields.findIndex((f) => f.name === a)
-    const bi = assetEditableFields.findIndex((f) => f.name === b)
-    return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
-  })
+  const suggestionsArr = Object.entries(queuedItem.suggestions).sort(
+    ([a], [b]) => {
+      const ai = assetEditableFields.findIndex((f) => f.name === a)
+      const bi = assetEditableFields.findIndex((f) => f.name === b)
+      return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
+    }
+  )
 
   return (
     <>
-      <Heading variant="h2" noMargin className={classes.heading}>
-        <AutoAwesomeIcon /> Suggested Fields
-      </Heading>
+      <div className={classes.heading}>
+        <AutoAwesomeIcon className={classes.icon} />
+        <div>
+          <Heading variant="h2" noMargin>
+            Suggested Fields
+          </Heading>
+          <FormattedDate
+            date={queuedItem.lastmodifiedat || queuedItem.createdat}
+            className={classes.date}
+          />
+        </div>
+      </div>
       <Table size="small">
         <TableBody>
           {suggestionsArr.length ? (
@@ -380,6 +404,12 @@ const Form = ({
         <Button onClick={onDone} color="secondary">
           Cancel
         </Button>
+        {isEditor && (
+          <RequeueButton
+            queueCollectionName={AiSuggestCollectionNames.AiSuggestQueue}
+            assetId={asset.id}
+          />
+        )}
       </FormControls>
     </>
   )
@@ -395,7 +425,7 @@ const useAiSuggestion = (
 ] => {
   const [isLoading, lastErrorCode, lastStaleResults, hydrate] =
     useDatabaseQuery<AiSuggestQueuedItem>(
-      CollectionNames.AiSuggestQueue,
+      AiSuggestCollectionNames.AiSuggestQueue,
       [
         ['recordtable', Operators.EQUALS, AssetsCollectionNames.Assets],
         ['recordid', Operators.EQUALS, assetId],
@@ -412,7 +442,7 @@ const useAiSuggestion = (
 
   const [isSubscribing, lastErrorCodeSync, lastSyncResult] =
     useDataStoreItemSync<AiSuggestQueuedItem>(
-      CollectionNames.AiSuggestQueue,
+      AiSuggestCollectionNames.AiSuggestQueue,
       lastStaleResult !== null ? lastStaleResult.id : false
     )
 
@@ -558,11 +588,11 @@ const AiSuggestForm = ({
           {lastQueuedItem ? (
             <Form
               asset={asset}
-              suggestions={lastQueuedItem.suggestions}
               onDone={() => {
                 setIsOpen(false)
                 onDone()
               }}
+              queuedItem={lastQueuedItem}
             />
           ) : (
             <NoResultsMessage>No queued item</NoResultsMessage>

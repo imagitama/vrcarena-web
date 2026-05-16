@@ -429,14 +429,14 @@ const NoResultsMessage = ({ message }: { message: string }) => {
   return <div className={classes.noResultsMessage}>{message}</div>
 }
 
-const RequeueButton = ({
+export const RequeueButton = ({
   queueCollectionName,
   assetId,
 }: {
   queueCollectionName: string
   assetId: string
 }) => {
-  const [isLoading, isSuccess, lastErrorCode, create, lastResult] =
+  const [isLoading, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<QueuedItem>(queueCollectionName)
 
   const onRequeue = async () => {
