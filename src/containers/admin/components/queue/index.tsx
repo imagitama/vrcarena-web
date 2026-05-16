@@ -13,6 +13,13 @@ import CircleIcon from '@mui/icons-material/Circle'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
 import {
+  CollectionNames as AssetsCollectionNames,
+  ViewNames as AssetsViewNames,
+  Asset,
+  FullAsset,
+  PublicAsset,
+} from '@/modules/assets'
+import {
   CollectionNames as AssetsSyncQueueCollectionNames,
   AssetSyncQueueItem,
 } from '@/modules/assetsyncqueue'
@@ -64,6 +71,9 @@ import { Renderer as AiSimilarRenderer } from '@/components/ai-similar-result'
 import { Renderer as AiEvaluateRenderer } from '@/components/ai-evaluation-result'
 import Link from '@/components/link'
 import { routes } from '@/routes'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import AssetResultsItem from '@/components/asset-results-item'
+import LoadingIndicator from '@/components/loading-indicator'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -99,7 +109,7 @@ const ConnectionIcon = styled(CircleIcon)`
       : colorGreyedOut};
 `
 
-const AssetSyncQueueRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
+const AssetSyncQueueCellRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
   return (
     <>
       <a href={item.sourceurl} target="_blank" rel="noopener noreferrer">
@@ -138,31 +148,84 @@ const AssetSyncQueueFullRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
   )
 }
 
-const AiSuggestResultCellValue = ({ item }: { item: AiSuggestQueuedItem }) => {
+const AssetSyncQueueParentRenderer = ({
+  item,
+}: {
+  item: AssetSyncQueueItem
+}) => {
+  const [isLoading, lastErrorCode, asset] = useDataStoreItem<FullAsset>(
+    AssetsViewNames.GetFullAssets,
+    item.createdassetid || false
+  )
+  if (lastErrorCode !== null)
+    return <ErrorMessage>Failed to load asset ({lastErrorCode})</ErrorMessage>
+  if (isLoading || asset === null)
+    return <NoValueLabel>Loading asset...</NoValueLabel>
+  if (asset === false)
+    return (
+      <NoResultsMessage>
+        Parent asset does not exist ({item.createdassetid})
+      </NoResultsMessage>
+    )
+
+  return (
+    <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
+      {asset.title}
+    </Link>
+  )
+
+  // return <AssetResultsItem asset={asset} />
+}
+
+const AiSuggestCellRenderer = ({ item }: { item: AiSuggestQueuedItem }) => {
   if (item.suggestions === null)
     return <NoValueLabel>(no suggestions)</NoValueLabel>
 
   return `${Object.keys(item.suggestions).length} suggestions`
 }
 
-const AiSuggestResultFull = ({ item }: { item: AiSuggestQueuedItem }) => {
+const AiSuggestFullRenderer = ({ item }: { item: AiSuggestQueuedItem }) => {
   if (item.suggestions === null) return null
   return <AiSuggestRenderer queuedItem={item} />
 }
 
-const AiSimilarResultCellValue = ({ item }: { item: AiSimilarQueuedItem }) => {
+const AssetParentRenderer = ({ item }: { item: QueuedItem }) => {
+  const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
+    item.recordtable,
+    item.recordid
+  )
+  if (lastErrorCode !== null)
+    return (
+      <ErrorMessage>Failed to load parent (code {lastErrorCode})</ErrorMessage>
+    )
+  if (isLoading || asset === null)
+    return <LoadingIndicator message="Loading asset..." />
+  if (asset === false)
+    return <NoResultsMessage>Parent does not exist</NoResultsMessage>
+
+  return (
+    <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
+      {asset.title}
+    </Link>
+  )
+
+  // TODO: support other parent types
+  // return <AssetResultsItem asset={asset as Asset} />
+}
+
+const AiSimilarCellRenderer = ({ item }: { item: AiSimilarQueuedItem }) => {
   if (item.similarities === null)
     return <NoValueLabel>(no similarities)</NoValueLabel>
 
   return `${Object.keys(item.similarities).length} similarities`
 }
 
-const AiSimilarResultFull = ({ item }: { item: AiSimilarQueuedItem }) => {
+const AiSimilarFullRenderer = ({ item }: { item: AiSimilarQueuedItem }) => {
   if (item.similarities === null) return null
   return <AiSimilarRenderer queuedItem={item} />
 }
 
-const AiEvaluateResultCellValue = ({
+const AiEvaluateResultCellRenderer = ({
   item,
 }: {
   item: AiEvaluateQueuedItem
@@ -198,6 +261,7 @@ const QueueTable = <TItem extends Record<string, any>>({
   isLoading,
   renderer: Renderer,
   fullRenderer: FullRenderer,
+  parentRenderer: ParentRenderer,
 }: {
   collectionName: string
   items: TItem[]
@@ -205,6 +269,7 @@ const QueueTable = <TItem extends Record<string, any>>({
   isLoading: boolean
   renderer: React.ComponentType<RowProps<TItem>>
   fullRenderer: React.ComponentType<RowProps<TItem>>
+  parentRenderer: React.ComponentType<RowProps<TItem>>
 }) => {
   if (isLoading) {
     return (
@@ -225,6 +290,7 @@ const QueueTable = <TItem extends Record<string, any>>({
       <TableHead>
         <TableRow>
           <TableCell></TableCell>
+          <TableCell>Parent</TableCell>
           <TableCell>Date</TableCell>
           <TableCell>Status</TableCell>
           <TableCell>Result</TableCell>
@@ -242,6 +308,7 @@ const QueueTable = <TItem extends Record<string, any>>({
                 index={i}
                 renderer={Renderer}
                 fullRenderer={FullRenderer}
+                parentRenderer={ParentRenderer}
                 isNew
               />
             ))
@@ -255,6 +322,7 @@ const QueueTable = <TItem extends Record<string, any>>({
               index={i}
               renderer={Renderer}
               fullRenderer={FullRenderer}
+              parentRenderer={ParentRenderer}
             />
           ))
         ) : (
@@ -274,6 +342,7 @@ const QueueTableRow = <TItem extends Record<string, any>>({
   item: staleItem,
   index,
   isNew,
+  parentRenderer: ParentRenderer,
   renderer: Renderer,
   fullRenderer: FullRenderer,
 }: {
@@ -281,6 +350,7 @@ const QueueTableRow = <TItem extends Record<string, any>>({
   item: TItem
   index: number
   isNew?: boolean
+  parentRenderer: React.ComponentType<RowProps<TItem>>
   renderer: React.ComponentType<RowProps<TItem>>
   fullRenderer: React.ComponentType<RowProps<TItem>>
 }) => {
@@ -327,6 +397,9 @@ const QueueTableRow = <TItem extends Record<string, any>>({
           </CopyThing>
         </TableCell>
         <TableCell>
+          <ParentRenderer item={item as any} index={index} />
+        </TableCell>
+        <TableCell>
           {item.lastmodifiedat ? (
             <Tooltip
               title={
@@ -362,7 +435,7 @@ const QueueTableRow = <TItem extends Record<string, any>>({
         </TableCell>
         <TableCell>
           {item.failedreason ? `Reason: ${item.failedreason}` : ''}
-          {item.notes || ''}
+          {item.notes || '-'}
         </TableCell>
         <TableCell></TableCell>
       </TableRow>
@@ -423,8 +496,9 @@ const AssetSyncQueueCell = ({ fiveMinsAgo }: { fiveMinsAgo: Date }) => {
         items={items}
         newItems={liveResults}
         isLoading={isLoading}
-        renderer={AssetSyncQueueRenderer}
+        renderer={AssetSyncQueueCellRenderer}
         fullRenderer={AssetSyncQueueFullRenderer}
+        parentRenderer={AssetSyncQueueParentRenderer}
       />
     </Paper>
   )
@@ -524,8 +598,9 @@ const AiSuggestQueueCell = () => {
         items={items}
         newItems={liveResults}
         isLoading={isLoading}
-        renderer={AiSuggestResultCellValue}
-        fullRenderer={AiSuggestResultFull}
+        renderer={AiSuggestCellRenderer}
+        fullRenderer={AiSuggestFullRenderer}
+        parentRenderer={AssetParentRenderer}
       />
     </Paper>
   )
@@ -572,8 +647,9 @@ const AiSimilarQueueCell = () => {
         items={items}
         newItems={liveResults}
         isLoading={isLoading}
-        renderer={AiSimilarResultCellValue}
-        fullRenderer={AiSimilarResultFull}
+        renderer={AiSimilarCellRenderer}
+        fullRenderer={AiSimilarFullRenderer}
+        parentRenderer={AssetParentRenderer}
       />
     </Paper>
   )
@@ -620,8 +696,9 @@ const AiEvaluateQueueCell = () => {
         items={items}
         newItems={liveResults}
         isLoading={isLoading}
-        renderer={AiEvaluateResultCellValue}
-        fullRenderer={AiEvaluateResultFull}
+        renderer={AiEvaluateResultCellRenderer}
+        fullRenderer={AssetParentRenderer}
+        parentRenderer={AssetParentRenderer}
       />
     </Paper>
   )
