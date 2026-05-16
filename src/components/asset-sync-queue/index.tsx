@@ -72,7 +72,6 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   waiting: {},
   failedFieldsRoot: {
     margin: '0.5rem 0 0.25rem',
-    fontSize: '75%',
     borderRadius: theme.shape.borderRadius,
   },
   deletedRow: {
@@ -247,24 +246,26 @@ const MissingFields = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
 
   return (
     <div className={classes.failedFieldsRoot}>
-      <WarningIcon /> These fields could not be synced:
-      <ul>
-        {importantFields
-          .filter(
-            (fieldInfo) =>
-              syncedFieldNames.find(
-                (syncedFieldName) => syncedFieldName === fieldInfo.name
-              ) === undefined
-          )
-          .map((fieldInfo) => (
-            <li key={fieldInfo.name}>{fieldInfo.description}</li>
-          ))}
-        {queuedItem.syncedfields?.includes('vrchatclonableavatarids') ? (
-          <li>
-            VRChat avatar URLs were detected but need to be manually synced
-          </li>
-        ) : null}
-      </ul>
+      <small>
+        <WarningIcon /> These fields could not be synced:
+        <ul>
+          {importantFields
+            .filter(
+              (fieldInfo) =>
+                syncedFieldNames.find(
+                  (syncedFieldName) => syncedFieldName === fieldInfo.name
+                ) === undefined
+            )
+            .map((fieldInfo) => (
+              <li key={fieldInfo.name}>{fieldInfo.description}</li>
+            ))}
+          {queuedItem.syncedfields?.includes('vrchatclonableavatarids') ? (
+            <li>
+              VRChat avatar URLs were detected but need to be manually synced
+            </li>
+          ) : null}
+        </ul>
+      </small>
     </div>
   )
 }
@@ -374,8 +375,11 @@ const QueuedItemRow = ({
           <QueuedStatus queuedItem={queuedItem} />
           {queuedItem.status === QueueStatus.Processed ? (
             <>
-              <WarningIcon /> You must submit your asset for approval (by
-              editing it below)
+              <br />
+              <small>
+                <WarningIcon /> You must submit your asset for approval (by
+                editing it below)
+              </small>
               <br />
               {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
                 <MissingFields queuedItem={queuedItem} />
