@@ -360,7 +360,10 @@ const QueueTableRow = <TItem extends Record<string, any>>({
           <Renderer item={item as any} index={index} />{' '}
           <KeyboardArrowUpIcon onClick={toggleExpanded} />
         </TableCell>
-        <TableCell>{item.notes || ''}</TableCell>
+        <TableCell>
+          {item.failedreason ? `Reason: ${item.failedreason}` : ''}
+          {item.notes || ''}
+        </TableCell>
         <TableCell></TableCell>
       </TableRow>
       {isExpanded && (
