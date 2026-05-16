@@ -273,10 +273,12 @@ const QueuedItemRow = ({
   queuedItem: originalQueuedItem,
   isBusy,
   showMoreInfo,
+  hydrate,
 }: {
   queuedItem: AssetSyncQueueItem | FullAssetSyncQueueItem
   isBusy: boolean
   showMoreInfo?: boolean
+  hydrate?: () => void
 }) => {
   const [isSubscribing, isSubscribed, lastSubscribeErrorCode, liveQueuedItem] =
     useDataStoreItemSync<AssetSyncQueueItem>(
@@ -372,6 +374,8 @@ const QueuedItemRow = ({
           <QueuedStatus queuedItem={queuedItem} />
           {queuedItem.status === QueueStatus.Processed ? (
             <>
+              <WarningIcon /> You must submit your asset for approval (by
+              editing it below)
               <br />
               {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
                 <MissingFields queuedItem={queuedItem} />
@@ -394,10 +398,10 @@ const QueuedItemRow = ({
               )}
             </>
           ) : null}
-          {lastSubscribeErrorCode !== null ? (
-            <ErrorMessage>
-              Failed to subscribe: {lastSubscribeErrorCode}
-            </ErrorMessage>
+          {lastSubscribeErrorCode !== null && hydrate ? (
+            <Button size="small" color="secondary" onClick={hydrate}>
+              Refresh
+            </Button>
           ) : null}
           {showMoreInfo && queuedItem.createdbyusername ? (
             <>
@@ -592,6 +596,7 @@ const AssetSyncQueue = ({
                 queuedItem={queuedItem}
                 isBusy={isBusy}
                 showMoreInfo={showMoreInfo}
+                hydrate={hydrate}
               />
             ))
           ) : (
