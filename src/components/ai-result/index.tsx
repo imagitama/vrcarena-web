@@ -20,7 +20,7 @@ import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
 import ErrorMessage from '@/components/error-message'
-import Button from '@/components/button'
+import Button, { ButtonProps } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import Dialog from '@/components/dialog'
@@ -432,10 +432,11 @@ const NoResultsMessage = ({ message }: { message: string }) => {
 export const RequeueButton = ({
   queueCollectionName,
   assetId,
+  ...props
 }: {
   queueCollectionName: string
   assetId: string
-}) => {
+} & ButtonProps) => {
   const [isLoading, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<QueuedItem>(queueCollectionName)
 
@@ -460,7 +461,8 @@ export const RequeueButton = ({
         isDisabled={isBusy}
         size="small"
         color="secondary"
-        hollow>
+        hollow
+        {...props}>
         Re-Queue
       </Button>
     </>

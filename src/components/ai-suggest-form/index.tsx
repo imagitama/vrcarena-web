@@ -408,6 +408,8 @@ const Form = ({
           <RequeueButton
             queueCollectionName={AiSuggestCollectionNames.AiSuggestQueue}
             assetId={asset.id}
+            color="tertiary"
+            hollow={false}
           />
         )}
       </FormControls>
