@@ -41,6 +41,7 @@ import LoadingIndicator from '@/components/loading-indicator'
 import NoResultsMessage from '@/components/no-results-message'
 import ErrorMessage from '@/components/error-message'
 import VisitSourceButton from '@/components/visit-source-button'
+import NoValueLabel from '../no-value-label'
 
 const useStyles = makeStyles({
   output: {
@@ -94,9 +95,6 @@ const useStyles = makeStyles({
       maxHeight: '150px',
     },
   },
-  noValue: {
-    opacity: '0.5',
-  },
   linkedAssets: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -149,11 +147,6 @@ function Value({ value }: { value: any }) {
       {label === noValueLabel ? <NoValueLabel>{label}</NoValueLabel> : label}
     </div>
   )
-}
-
-function NoValueLabel({ children }: { children: React.ReactNode }) {
-  const classes = useStyles()
-  return <div className={classes.noValue}>{children}</div>
 }
 
 export function Field({

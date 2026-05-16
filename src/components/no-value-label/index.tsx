@@ -1,28 +1,15 @@
-import React from 'react'
-import { makeStyles } from '@mui/styles'
+import styled from '@emotion/styled'
+import { css } from '@emotion/react'
+import { colorGreyedOut } from '@/themes'
 
-const useStyles = makeStyles({
-  root: {
-    color: 'rgba(255, 255, 255, 0.5)',
-  },
-  small: {
-    fontSize: '75%',
-  },
-})
-
-const NoValueLabel = ({
-  children,
-  small,
-}: {
-  children: React.ReactNode
-  small?: boolean
-}) => {
-  const classes = useStyles()
-  return (
-    <span className={`${classes.root} ${small ? classes.small : ''}`}>
-      {children}
-    </span>
-  )
-}
+const NoValueLabel = styled.span<{ small?: boolean }>`
+  color: ${colorGreyedOut};
+  cursor: default;
+  ${({ small }) =>
+    small &&
+    css`
+      font-size: 75%;
+    `}
+`
 
 export default NoValueLabel

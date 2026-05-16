@@ -18,7 +18,6 @@ import {
 import assetEditableFields from '@/editable-fields/assets'
 import {
   AiFieldSuggestion,
-  AiFieldSuggestions,
   AiSuggestQueuedItem,
   CollectionNames as AiSuggestCollectionNames,
   FunctionNames,
@@ -49,7 +48,6 @@ import Heading from '@/components/heading'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import ErrorMessage from '@/components/error-message'
-import TagDiff from '@/components/tag-diff'
 import TagChips from '@/components/tag-chips'
 import {
   getScoreAsPercentage,
@@ -58,7 +56,10 @@ import {
 } from '@/components/ai-result'
 import Tooltip from '@/components/tooltip'
 import AiDialog from '@/components/ai-dialog'
-import FormattedDate from '../formatted-date'
+import FormattedDate from '@/components/formatted-date'
+import TagChip from '@/components/tag-chip'
+import TagDiff, { TagDiffMode } from '@/components/tag-diff'
+import NoValueLabel from '@/components/no-value-label'
 
 const useStyles = makeStyles({
   title: {
@@ -97,9 +98,11 @@ const useStyles = makeStyles({
 const FieldDiffValue = ({
   fieldName,
   value,
+  oldValue,
 }: {
   fieldName: string
   value: any
+  oldValue?: any
 }) => {
   const editableField = assetEditableFields.find(
     (field) => field.name === fieldName
@@ -115,10 +118,12 @@ const FieldDiffValue = ({
         ? 'No'
         : `Unknown checkbox value: ${value}`
     case fieldTypes.tags:
-      return <TagChips tags={value} />
+      return (
+        <TagDiff newTags={value} oldTags={oldValue} mode={TagDiffMode.Chips} />
+      )
     default:
       if (Array.isArray(value)) {
-        if (value.length === 0) return <NoValueText>(no values)</NoValueText>
+        if (value.length === 0) return <NoValueLabel>(no values)</NoValueLabel>
         return value.join(', ')
       } else if (fieldName === 'category') {
         const category = getCategoryMeta(value)
@@ -127,6 +132,60 @@ const FieldDiffValue = ({
         return value.toString()
       }
   }
+}
+
+const TagsEditor = ({
+  existingTags,
+  suggestedTags,
+  selectedTags,
+  onChange,
+}: {
+  existingTags: string[]
+  suggestedTags: string[]
+  selectedTags: string[] | null
+  onChange: (newTags: string[]) => void
+}) => {
+  const setTag = (tagName: string, newVal: boolean) => {
+    let newTags = selectedTags !== null ? selectedTags : existingTags
+
+    if (newVal) {
+      newTags = newTags.concat([tagName])
+    } else {
+      newTags = newTags.filter((t) => t !== tagName)
+    }
+
+    onChange(newTags)
+  }
+
+  const tagsToRender = suggestedTags.filter(
+    (tagName) => !existingTags.includes(tagName)
+  )
+
+  if (tagsToRender.length === 0) {
+    return (
+      <>
+        <NoValueLabel>(no change)</NoValueLabel>
+        <br />
+        <br />
+        <TagChips tags={suggestedTags} />
+      </>
+    )
+  }
+
+  return (
+    <div>
+      {tagsToRender.map((tagName) => (
+        <div key={tagName}>
+          <TagChip tagName={tagName} />
+          <CheckboxInput
+            value={(selectedTags || []).includes(tagName)}
+            onChange={(newVal) => setTag(tagName, newVal)}
+            isDisabled={existingTags.includes(tagName)}
+          />
+        </div>
+      ))}
+    </div>
+  )
 }
 
 const FieldDiff = <TValue,>({
@@ -185,10 +244,6 @@ const Divider = () => {
   )
 }
 
-const NoValueText = styled.span`
-  color: ${colorGreyedOut};
-`
-
 const getShouldRenderSuggestion = (
   fieldName: string,
   suggestion: AiFieldSuggestion
@@ -224,19 +279,22 @@ const Form = ({
     })
   }
 
-  const updateFinalChanges = (fieldName: string, val: boolean) => {
+  const updateFinalChanges = (
+    fieldName: string,
+    val: boolean,
+    overrideValue?: any
+  ) => {
     setFinalChanges((currentVal) => {
       const current = currentVal ?? {}
 
-      if (fieldName in current) {
-        // Remove the field
+      if (!val) {
         const { [fieldName]: _, ...rest } = current
         return rest
       } else {
-        // Add the field from suggestions
         return {
           ...current,
-          [fieldName]: queuedItem.suggestions[fieldName].suggestedValue,
+          [fieldName]:
+            overrideValue || queuedItem.suggestions[fieldName].suggestedValue,
         }
       }
     })
@@ -284,7 +342,7 @@ const Form = ({
                   </TableCell>
                   <TableCell>
                     {!getShouldRenderSuggestion(fieldName, suggestion) ? (
-                      <NoValueText>
+                      <NoValueLabel>
                         (no suitable value){' '}
                         <Tooltip
                           title={
@@ -301,7 +359,17 @@ const Form = ({
                           }>
                           <InfoIcon />
                         </Tooltip>
-                      </NoValueText>
+                      </NoValueLabel>
+                    ) : // TODO: something less fragile
+                    fieldName === 'tags' ? (
+                      <TagsEditor
+                        existingTags={asset.tags}
+                        suggestedTags={suggestedValue}
+                        selectedTags={finalChanges.tags || null}
+                        onChange={(newTags) =>
+                          updateFinalChanges(fieldName, true, newTags)
+                        }
+                      />
                     ) : getHasFieldChanged(
                         asset[fieldName],
                         suggestion.suggestedValue
@@ -312,7 +380,7 @@ const Form = ({
                         after={suggestedValue}
                       />
                     ) : (
-                      <NoValueText>(no change)</NoValueText>
+                      <NoValueLabel>(no change)</NoValueLabel>
                     )}
                   </TableCell>
                   <TableCell>
@@ -323,24 +391,27 @@ const Form = ({
                     </Tooltip>
                   </TableCell>
                   <TableCell>
-                    <CheckboxInput
-                      value={
-                        finalChanges !== null
-                          ? fieldName in finalChanges
-                          : false
-                      }
-                      onChange={(newVal) =>
-                        updateFinalChanges(fieldName, newVal)
-                      }
-                      isDisabled={
-                        editableField === undefined ||
-                        !getShouldRenderSuggestion(fieldName, suggestion) ||
-                        !getHasFieldChanged(
-                          asset[fieldName],
-                          suggestion.suggestedValue
-                        )
-                      }
-                    />
+                    {/* TODO: something less fragile */}
+                    {fieldName !== 'tags' && (
+                      <CheckboxInput
+                        value={
+                          finalChanges !== null
+                            ? fieldName in finalChanges
+                            : false
+                        }
+                        onChange={(newVal) =>
+                          updateFinalChanges(fieldName, newVal)
+                        }
+                        isDisabled={
+                          editableField === undefined ||
+                          !getShouldRenderSuggestion(fieldName, suggestion) ||
+                          !getHasFieldChanged(
+                            asset[fieldName],
+                            suggestion.suggestedValue
+                          )
+                        }
+                      />
+                    )}
                   </TableCell>
                 </TableRow>
               )
@@ -375,7 +446,11 @@ const Form = ({
                 <TableRow>
                   <TableCell>{editableField.label}</TableCell>
                   <TableCell>
-                    <FieldDiffValue fieldName={fieldName} value={fieldVal} />
+                    <FieldDiffValue
+                      fieldName={fieldName}
+                      value={fieldVal}
+                      oldValue={asset[fieldName]}
+                    />
                   </TableCell>
                 </TableRow>
               )

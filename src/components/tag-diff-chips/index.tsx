@@ -5,6 +5,9 @@ import RemoveIcon from '@mui/icons-material/Remove'
 
 import TagChip from '@/components/tag-chip'
 
+const colorGood = '#83cc83'
+const colorBad = '#d57f7f'
+
 const useStyles = makeStyles({
   chip: {
     '&:hover': {
@@ -13,13 +16,19 @@ const useStyles = makeStyles({
     },
   },
   removed: {
-    backgroundColor: 'rgb(100, 50, 50)',
+    '&&': {
+      color: colorBad,
+      borderColor: `${colorBad} !important`, // TODO: remove !important
+    },
   },
   unchanged: {
     // backgroundColor: '#FF0000'
   },
   added: {
-    backgroundColor: 'rgb(50, 100, 50)',
+    '&&': {
+      color: colorGood,
+      borderColor: `${colorGood} !important`, // TODO: remove !important
+    },
   },
 })
 
