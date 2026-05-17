@@ -1,5 +1,6 @@
 import { AiConvoMessage } from '@/ai'
-import { QueueStatus as AiSuggestQueuedItemStatus, QueuedItem } from './common'
+import { QueueStatus as AiSuggestQueuedItemStatus } from './common'
+import { QueuedItem } from '@/queues'
 
 export interface FuncResult {
   suggestions: AiFieldSuggestions
@@ -26,8 +27,6 @@ export interface AiSuggestQueuedItem extends QueuedItem {
   recordid: string
   convogroups: null | AiSuggestConvo[][]
   suggestions: AiFieldSuggestions
-  notes: string | null // TODO: move to QueuedItem (after verifying)
-  lastmodifiedat: string | null // date TODO: move to QueuedItem (after verifying)
 }
 
 export enum CollectionNames {

@@ -1,3 +1,4 @@
+import { QueuedItem } from '@/queues'
 import { QueueStatus as AiEvaluateQueuedItemStatus } from './common'
 
 // used by AI evaluation only (newer code just dumps args)
@@ -30,17 +31,12 @@ export interface AiEvaluateConvo {
   tags: null | string[]
 }
 
-export interface AiEvaluateQueuedItem extends Record<string, any> {
-  id: string
+export interface AiEvaluateQueuedItem extends QueuedItem {
   recordtable: string
   recordid: string
-  status: AiEvaluateQueuedItemStatus
   convos: null | AiEvaluateConvo[]
   score: number | null
   tags: null | string[]
-  notes: string | null
-  lastmodifiedat: string | null // date
-  createdat: string // date
 }
 
 export enum CollectionNames {

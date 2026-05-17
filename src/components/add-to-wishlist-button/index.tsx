@@ -109,7 +109,7 @@ export default ({
     useDataStoreItem<WishlistForUser>(
       CollectionNames.WishlistsForUsers,
       userId || false,
-      'add-to-wishlist-button'
+      { queryName: 'add-to-wishlist-button' }
     )
   const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] = myWishlist
     ? useDataStoreEdit<WishlistForUser>(

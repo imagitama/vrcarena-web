@@ -11,7 +11,7 @@ export enum Operators {
   EQUALS = 'eq',
   NOT_EQUALS = '!=',
   GREATER_THAN = '>',
-  LESS_THAN = '>',
+  LESS_THAN = '<',
   ARRAY_CONTAINS = 'array-contains',
 }
 

@@ -4,7 +4,10 @@ import {
   CollectionNames as AssetsCollectionNames,
   SourceInfo,
 } from './assets'
+import { QueuedItem } from '@/queues'
+import { QueueStatus } from './common'
 
+// TODO: use strings
 export enum AuditResultResult {
   Success,
   Unavailable,
@@ -28,28 +31,15 @@ export interface AuditResult {
   code?: AuditErrorCode
 }
 
-export enum QueueStatus {
-  Queued = 'queued',
-  Processing = 'processing',
-  Processed = 'processed',
-  Failed = 'failed',
-}
-
-export interface AuditQueueItem extends Record<string, unknown> {
-  id: string
-  status: QueueStatus
+export interface AuditQueueItem extends QueuedItem {
   parent: string
   parenttable: AssetsCollectionNames.Assets
   url: string
   result: AuditResult | null
-  failedreason: string | null
-  lastmodifiedat: string // date
-  queuedat: string // date
-  queuedby: string | null
 }
 
 export interface FullAuditQueueItem extends AuditQueueItem {
-  applystatus: QueueStatus | null
+  applystatus: QueueStatus | null // from view
   old: Partial<Asset | SourceInfo> | null
   new: Partial<Asset | SourceInfo> | null
 }
@@ -68,3 +58,5 @@ export enum ViewNames {
 export enum CollectionNames {
   AuditQueue = 'auditqueue',
 }
+
+export { QueueStatus }

@@ -1,5 +1,6 @@
 import { AiConvoMessage } from '@/ai'
-import { QueueStatus as AiSimilarQueuedItemStatus, QueuedItem } from './common'
+import { QueueStatus as AiSimilarQueuedItemStatus } from './common'
+import { QueuedItem } from '@/queues'
 
 export type AiSimilarFuncResult = {
   similarities: AssetSimilarity[]
@@ -24,8 +25,6 @@ export interface AiSimilarQueuedItem extends QueuedItem {
   recordid: string
   convogroups: null | AiSimilarConvo[][]
   similarities: AssetSimilarity[] | null
-  notes: string | null // TODO: move to QueuedItem (after verifying)
-  lastmodifiedat: string | null // date TODO: move to QueuedItem (after verifying)
 }
 
 export enum CollectionNames {

@@ -43,15 +43,3 @@ export interface MetaRecord extends Record<string, unknown> {
   approvedat: string | null // Date
   approvedby: string | null // id
 }
-
-export interface QueuedItem extends Record<string, unknown> {
-  id: string
-  recordtable: string
-  recordid: string
-  notes: string | null
-  status: QueueStatus
-  lastmodifiedat: null | string // date
-  lastmodifiedby: null | string // user ID
-  createdat: string // date
-  createdby: string // user ID
-}

@@ -55,6 +55,7 @@ import LoadingShimmer from '@/components/loading-shimmer'
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import Button from '@/components/button'
+import FailureInfoOutput from '../failure-info-output'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   queuedStatus: {
@@ -129,10 +130,10 @@ const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
               </>
             ) : null}
             {queuedItem.status === QueueStatus.Failed &&
-            queuedItem.failedreason ? (
+            queuedItem.failureinfo ? (
               <>
                 <br />
-                Failed: {queuedItem.failedreason}
+                Failed: {JSON.stringify(queuedItem.failureinfo)}
               </>
             ) : (
               ''
@@ -141,6 +142,10 @@ const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
         }>
         <InfoIcon />
       </CopyThing>
+      {queuedItem.status === QueueStatus.Failed &&
+        queuedItem.failureinfo !== null && (
+          <FailureInfoOutput failureInfo={queuedItem.failureinfo} />
+        )}
       {getIsQueuedItemTakingTooLong(queuedItem) ? (
         <WarningMessage title="Something went wrong">
           This item has been waiting for more than 24 hours. Please open a
@@ -178,10 +183,11 @@ const DeleteButton = ({
         icon={<DeleteIcon className="test" />}
         iconOnly
         onClick={onClickDelete}
-        title="Remove asset from queue"
+        title="Remove asset from queue (does not delete any asset drafts)"
         isDisabled={
           isBusy || isDeleting || queuedItem.status === QueueStatus.Processing
         }
+        hollow
       />
       {isSuccess ? (
         <SuccessMessage>Item removed from queue</SuccessMessage>
@@ -196,13 +202,13 @@ const DeleteButton = ({
 
 const LoadingRow = () => (
   <TableRow>
-    <TableCell>
+    <TableCell width="60%">
       <LoadingShimmer width="100%" height="15px" />
     </TableCell>
-    <TableCell>
+    <TableCell width="20%">
       <LoadingShimmer width="100%" height="15px" />
     </TableCell>
-    <TableCell>
+    <TableCell width="20%">
       <LoadingShimmer width="100%" height="15px" />
     </TableCell>
   </TableRow>
@@ -355,7 +361,7 @@ const QueuedItemRow = ({
   return (
     <>
       <TableRow className={`${isDeleted ? classes.deletedRow : ''}`}>
-        <TableCell>
+        <TableCell width="60%">
           <strong>{queuedItem.sourceurl}</strong>{' '}
           <a
             href={queuedItem.sourceurl}
@@ -363,6 +369,12 @@ const QueuedItemRow = ({
             rel="noopener noreferrer">
             <LaunchIcon />
           </a>
+          <br />
+          <small>
+            <FormattedDate
+              date={queuedItem.lastmodifiedat || queuedItem.createdat}
+            />
+          </small>
           {fullAsset ? (
             <>
               <br />
@@ -371,7 +383,7 @@ const QueuedItemRow = ({
             </>
           ) : null}
         </TableCell>
-        <TableCell>
+        <TableCell width="20%">
           <QueuedStatus queuedItem={queuedItem} />
           {queuedItem.status === QueueStatus.Processed ? (
             <>
@@ -407,7 +419,9 @@ const QueuedItemRow = ({
               Refresh
             </Button>
           ) : null}
-          {showMoreInfo && queuedItem.createdbyusername ? (
+          {showMoreInfo &&
+          queuedItem.createdby &&
+          queuedItem.createdbyusername ? (
             <>
               <br />
               Queued by{' '}
@@ -421,7 +435,7 @@ const QueuedItemRow = ({
             </>
           ) : null}
         </TableCell>
-        <TableCell>
+        <TableCell width="20%">
           <DeleteButton
             queuedItem={queuedItem}
             isBusy={isBusy}
@@ -524,7 +538,7 @@ const AssetSyncQueue = ({
 
   const processItems = async () => {
     try {
-      const records: AssetSyncQueueItemFields[] = []
+      const records: Partial<AssetSyncQueueItemFields>[] = []
 
       for (const url of validSourceUrls) {
         const cleanedUrl = cleanupSourceUrl(url)
@@ -579,13 +593,13 @@ const AssetSyncQueue = ({
   return (
     <>
       <Table>
-        <TableHead>
+        {/* <TableHead>
           <TableRow>
             <TableCell width="60%">Source</TableCell>
             <TableCell width="20%"></TableCell>
             <TableCell width="20%">Controls</TableCell>
           </TableRow>
-        </TableHead>
+        </TableHead> */}
         <TableBody>
           {isLoading ? (
             <>
@@ -654,6 +668,7 @@ const AssetSyncQueue = ({
                     onClick={() => removeSourceUrl(i)}
                     isDisabled={isBusy}
                     title="Remove source"
+                    hollow
                   />
                 </TableCell>
               </TableRow>

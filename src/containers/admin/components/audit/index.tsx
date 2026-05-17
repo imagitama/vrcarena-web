@@ -51,7 +51,7 @@ import NoValueLabel from '@/components/no-value-label'
 import Tooltip from '@/components/tooltip'
 import LoadingMessage from '@/components/loading-message'
 
-const getPositivityForResult = (result: AuditResultResult) => {
+export const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
     case AuditResultResult.Failed:
       return -1
@@ -66,7 +66,7 @@ const getPositivityForResult = (result: AuditResultResult) => {
   }
 }
 
-const getLabelForResult = (result: AuditResultResult) => {
+export const getLabelForResult = (result: AuditResultResult) => {
   switch (result) {
     case AuditResultResult.Failed:
       return 'Failed To Audit'

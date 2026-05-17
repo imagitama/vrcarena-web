@@ -1,5 +1,3 @@
-import Column from '@/components/column'
-import Columns from '@/components/columns'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -8,16 +6,15 @@ import TableRow from '@mui/material/TableRow'
 import styled from '@emotion/styled'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import LaunchIcon from '@mui/icons-material/Launch'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 
 import CircleIcon from '@mui/icons-material/Circle'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
 import {
-  CollectionNames as AssetsCollectionNames,
   ViewNames as AssetsViewNames,
   Asset,
   FullAsset,
-  PublicAsset,
 } from '@/modules/assets'
 import {
   CollectionNames as AssetsSyncQueueCollectionNames,
@@ -35,13 +32,18 @@ import {
   AiEvaluateQueuedItem,
   CollectionNames as AiEvaluateCollectionNames,
 } from '@/modules/aievaluation'
+import {
+  CollectionNames as AuditQueueCollectionNames,
+  AuditQueueItem,
+} from '@/modules/auditqueue'
+import {
+  CollectionNames as AuditApplyQueueCollectionNames,
+  AuditApplyQueueItem,
+} from '@/modules/auditapplyqueue'
 import { colorPalette } from '@/config'
 import { colorGreyedOut } from '@/themes'
 
-import useDatabaseQuery, {
-  Operators,
-  OrderDirections,
-} from '@/hooks/useDatabaseQuery'
+import useDatabaseQuery, { OrderDirections } from '@/hooks/useDatabaseQuery'
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 import useDataStoreItemsSync from '@/hooks/useDataStoreItemsSync'
 
@@ -64,16 +66,15 @@ import {
 } from '@/components/ai-result'
 import NoValueLabel from '@/components/no-value-label'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
-import { QueuedItem } from '@/modules/common'
 import TagChips from '@/components/tag-chips'
 import { Renderer as AiSuggestRenderer } from '@/components/ai-suggest-result'
 import { Renderer as AiSimilarRenderer } from '@/components/ai-similar-result'
-import { Renderer as AiEvaluateRenderer } from '@/components/ai-evaluation-result'
 import Link from '@/components/link'
 import { routes } from '@/routes'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
-import AssetResultsItem from '@/components/asset-results-item'
 import LoadingIndicator from '@/components/loading-indicator'
+import { QueuedItem, QueuedItemForRecord } from '@/queues'
+import { getLabelForResult, getPositivityForResult } from '../audit'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -173,8 +174,6 @@ const AssetSyncQueueParentRenderer = ({
       {asset.title}
     </Link>
   )
-
-  // return <AssetResultsItem asset={asset} />
 }
 
 const AiSuggestCellRenderer = ({ item }: { item: AiSuggestQueuedItem }) => {
@@ -189,7 +188,7 @@ const AiSuggestFullRenderer = ({ item }: { item: AiSuggestQueuedItem }) => {
   return <AiSuggestRenderer queuedItem={item} />
 }
 
-const AssetParentRenderer = ({ item }: { item: QueuedItem }) => {
+const AssetParentRenderer = ({ item }: { item: QueuedItemForRecord }) => {
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
     item.recordtable,
     item.recordid
@@ -208,9 +207,6 @@ const AssetParentRenderer = ({ item }: { item: QueuedItem }) => {
       {asset.title}
     </Link>
   )
-
-  // TODO: support other parent types
-  // return <AssetResultsItem asset={asset as Asset} />
 }
 
 const AiSimilarCellRenderer = ({ item }: { item: AiSimilarQueuedItem }) => {
@@ -225,11 +221,7 @@ const AiSimilarFullRenderer = ({ item }: { item: AiSimilarQueuedItem }) => {
   return <AiSimilarRenderer queuedItem={item} />
 }
 
-const AiEvaluateResultCellRenderer = ({
-  item,
-}: {
-  item: AiEvaluateQueuedItem
-}) => {
+const AiEvaluateCellRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
   if (item.score === null || item.tags === null)
     return <NoValueLabel>(no score)</NoValueLabel>
 
@@ -241,10 +233,29 @@ const AiEvaluateResultCellRenderer = ({
   )
 }
 
-const AiEvaluateResultFull = ({ item }: { item: AiEvaluateQueuedItem }) => {
-  if (item.score === null || item.tags === null) return null
+const AssetAuditCellRenderer = ({ item }: { item: AuditQueueItem }) => {
+  if (item.result === null) {
+    return <NoValueLabel>(no result)</NoValueLabel>
+  }
 
-  return <AiEvaluateRenderer queuedItem={item} />
+  return (
+    <>
+      <StatusText positivity={getPositivityForResult(item.result.result)}>
+        {getLabelForResult(item.result.result)}
+      </StatusText>
+      <br />
+      Error: {item.result.code || 'none'}
+    </>
+  )
+}
+
+const AssetAuditApplyCellRenderer = ({
+  item,
+}: {
+  item: AuditApplyQueueItem<Asset>
+}) => {
+  // TODO: render something but not sure what
+  return null
 }
 
 const colorNew = `rgba(100,100,100)`
@@ -268,8 +279,8 @@ const QueueTable = <TItem extends Record<string, any>>({
   newItems: TItem[] | null
   isLoading: boolean
   renderer: React.ComponentType<RowProps<TItem>>
-  fullRenderer: React.ComponentType<RowProps<TItem>>
-  parentRenderer: React.ComponentType<RowProps<TItem>>
+  fullRenderer?: React.ComponentType<RowProps<TItem>>
+  parentRenderer?: React.ComponentType<RowProps<TItem>>
 }) => {
   if (isLoading) {
     return (
@@ -291,7 +302,9 @@ const QueueTable = <TItem extends Record<string, any>>({
         <TableRow>
           <TableCell></TableCell>
           <TableCell>Parent</TableCell>
-          <TableCell>Date</TableCell>
+          <TableCell style={{ display: 'flex', alignItems: 'center' }}>
+            Date <KeyboardArrowDownIcon />
+          </TableCell>
           <TableCell>Status</TableCell>
           <TableCell>Result</TableCell>
           <TableCell>Notes</TableCell>
@@ -307,8 +320,8 @@ const QueueTable = <TItem extends Record<string, any>>({
                 item={item}
                 index={i}
                 renderer={Renderer}
-                fullRenderer={FullRenderer}
-                parentRenderer={ParentRenderer}
+                fullRenderer={FullRenderer || Renderer}
+                parentRenderer={ParentRenderer || Renderer}
                 isNew
               />
             ))
@@ -321,8 +334,8 @@ const QueueTable = <TItem extends Record<string, any>>({
               item={item}
               index={i}
               renderer={Renderer}
-              fullRenderer={FullRenderer}
-              parentRenderer={ParentRenderer}
+              fullRenderer={FullRenderer || Renderer}
+              parentRenderer={ParentRenderer || Renderer}
             />
           ))
         ) : (
@@ -457,7 +470,6 @@ const AssetSyncQueueCell = ({ fiveMinsAgo }: { fiveMinsAgo: Date }) => {
     useDatabaseQuery<AssetSyncQueueItem>(
       AssetsSyncQueueCollectionNames.AssetSyncQueue,
       [],
-      // [['createdat', Operators.GREATER_THAN, fiveMinsAgo.toISOString()]],
       {
         queryName: 'asset-sync-queue-cell',
         orderBy: ['createdat', OrderDirections.DESC],
@@ -562,7 +574,6 @@ const AiSuggestQueueCell = () => {
     useDatabaseQuery<AiSuggestQueuedItem>(
       AiSuggestCollectionNames.AiSuggestQueue,
       [],
-      // [['createdat', Operators.LESS_THAN, getFiveMinsAgo().toISOString()]],
       {
         queryName: 'ai-suggest-queue',
         orderBy: ['createdat', OrderDirections.DESC],
@@ -611,7 +622,6 @@ const AiSimilarQueueCell = () => {
     useDatabaseQuery<AiSimilarQueuedItem>(
       AiSimilarCollectionNames.AiSimilarQueue,
       [],
-      // [['createdat', Operators.GREATER_THAN, getFiveMinsAgo().toISOString()]],
       {
         queryName: 'ai-suggest-queue',
         orderBy: ['createdat', OrderDirections.DESC],
@@ -660,7 +670,6 @@ const AiEvaluateQueueCell = () => {
     useDatabaseQuery<AiEvaluateQueuedItem>(
       AiEvaluateCollectionNames.AiEvaluateQueue,
       [],
-      // [['createdat', Operators.GREATER_THAN, getFiveMinsAgo().toISOString()]],
       {
         queryName: 'ai-suggest-queue',
         orderBy: ['createdat', OrderDirections.DESC],
@@ -696,7 +705,7 @@ const AiEvaluateQueueCell = () => {
         items={items}
         newItems={liveResults}
         isLoading={isLoading}
-        renderer={AiEvaluateResultCellRenderer}
+        renderer={AiEvaluateCellRenderer}
         fullRenderer={AssetParentRenderer}
         parentRenderer={AssetParentRenderer}
       />
@@ -704,24 +713,117 @@ const AiEvaluateQueueCell = () => {
   )
 }
 
+const AssetAuditQueueCell = () => {
+  const [isLoading, lastErrorCode, items, hydrate] =
+    useDatabaseQuery<AuditQueueItem>(AuditQueueCollectionNames.AuditQueue, [], {
+      queryName: 'audit-queue',
+      orderBy: ['createdat', OrderDirections.DESC],
+      limit: DEFAULT_LIMIT,
+    })
+
+  const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
+    useDataStoreItemsSync<AuditQueueItem>(AuditQueueCollectionNames.AuditQueue)
+
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
+  if (items === null) return null
+
+  return (
+    <Paper>
+      <CellHeading
+        isLoadingStale={isLoading}
+        isSubscribing={isSubscribing}
+        isSubscribed={isSubscribed}
+        lastErrorCode={lastErrorCodeSync}
+        onRefresh={hydrate}>
+        Asset Audit
+      </CellHeading>
+      <QueueTable<AuditQueueItem>
+        collectionName={AuditQueueCollectionNames.AuditQueue}
+        items={items}
+        newItems={liveResults}
+        isLoading={isLoading}
+        renderer={AssetAuditCellRenderer}
+      />
+    </Paper>
+  )
+}
+
+const AssetAuditApplyQueueCell = () => {
+  const [isLoading, lastErrorCode, items, hydrate] = useDatabaseQuery<
+    AuditApplyQueueItem<Asset>
+  >(AuditApplyQueueCollectionNames.AuditApplyQueue, [], {
+    queryName: 'audit-queue',
+    orderBy: ['createdat', OrderDirections.DESC],
+    limit: DEFAULT_LIMIT,
+  })
+
+  const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
+    useDataStoreItemsSync<AuditApplyQueueItem<Asset>>(
+      AuditApplyQueueCollectionNames.AuditApplyQueue
+    )
+
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
+  if (items === null) return null
+
+  return (
+    <Paper>
+      <CellHeading
+        isLoadingStale={isLoading}
+        isSubscribing={isSubscribing}
+        isSubscribed={isSubscribed}
+        lastErrorCode={lastErrorCodeSync}
+        onRefresh={hydrate}>
+        Asset Audit Apply
+      </CellHeading>
+      <QueueTable<AuditApplyQueueItem<Asset>>
+        collectionName={AuditApplyQueueCollectionNames.AuditApplyQueue}
+        items={items}
+        newItems={liveResults}
+        isLoading={isLoading}
+        renderer={AssetAuditApplyCellRenderer}
+      />
+    </Paper>
+  )
+}
+
+const Cell = styled.div`
+  margin-bottom: 0.5rem;
+`
+
 const Queue = () => {
   const fiveMinsAgoRef = useRef<Date>(getFiveMinsAgo())
   const fiveMinsAgo = fiveMinsAgoRef.current
   return (
-    <div>
-      <div style={{ marginBottom: '0.5rem' }}>
+    <>
+      <Cell>
         <AssetSyncQueueCell fiveMinsAgo={fiveMinsAgo} />
-      </div>
-      <div style={{ marginBottom: '0.5rem' }}>
+      </Cell>
+      <Cell>
         <AiSuggestQueueCell />
-      </div>
-      <div style={{ marginBottom: '0.5rem' }}>
+      </Cell>
+      <Cell>
         <AiSimilarQueueCell />
-      </div>
-      <div style={{ marginBottom: '0.5rem' }}>
+      </Cell>
+      <Cell>
         <AiEvaluateQueueCell />
-      </div>
-    </div>
+      </Cell>
+      <Cell>
+        <AssetAuditQueueCell />
+      </Cell>
+      <Cell>
+        <AssetAuditApplyQueueCell />
+      </Cell>
+    </>
   )
 }
 
