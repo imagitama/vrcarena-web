@@ -7,9 +7,17 @@ import styled from '@emotion/styled'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import LaunchIcon from '@mui/icons-material/Launch'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { keyframes } from '@mui/system'
 
 import CircleIcon from '@mui/icons-material/Circle'
 import RefreshIcon from '@mui/icons-material/Refresh'
+
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+import { colorPalette } from '@/config'
+import { colorGreyedOut } from '@/themes'
+import { routes } from '@/routes'
+import { QueuedItem, QueuedItemForRecord } from '@/queues'
+import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
 
 import {
   ViewNames as AssetsViewNames,
@@ -40,12 +48,10 @@ import {
   CollectionNames as AuditApplyQueueCollectionNames,
   AuditApplyQueueItem,
 } from '@/modules/auditapplyqueue'
-import { colorPalette } from '@/config'
-import { colorGreyedOut } from '@/themes'
 
 import useDatabaseQuery, { OrderDirections } from '@/hooks/useDatabaseQuery'
-import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 import useDataStoreItemsSync from '@/hooks/useDataStoreItemsSync'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
 import LoadingShimmer from '@/components/loading-shimmer'
 import ErrorMessage from '@/components/error-message'
@@ -65,16 +71,15 @@ import {
   Score,
 } from '@/components/ai-result'
 import NoValueLabel from '@/components/no-value-label'
-import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
 import TagChips from '@/components/tag-chips'
 import { Renderer as AiSuggestRenderer } from '@/components/ai-suggest-result'
 import { Renderer as AiSimilarRenderer } from '@/components/ai-similar-result'
 import Link from '@/components/link'
-import { routes } from '@/routes'
-import useDataStoreItem from '@/hooks/useDataStoreItem'
-import LoadingIndicator from '@/components/loading-indicator'
-import { QueuedItem, QueuedItemForRecord } from '@/queues'
+
 import { getLabelForResult, getPositivityForResult } from '../audit'
+import { Renderer as AssetAuditResultRenderer } from '@/components/asset-audit-result'
+import ErrorBoundary from '@/components/error-boundary'
+import ShortDiff from '@/components/short-diff'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -160,8 +165,8 @@ const AssetSyncQueueParentRenderer = ({
   )
   if (lastErrorCode !== null)
     return <ErrorMessage>Failed to load asset ({lastErrorCode})</ErrorMessage>
-  if (isLoading || asset === null)
-    return <NoValueLabel>Loading asset...</NoValueLabel>
+  if (isLoading) return <NoValueLabel>Loading asset...</NoValueLabel>
+  if (asset === null) return '-'
   if (asset === false)
     return (
       <NoResultsMessage>
@@ -198,7 +203,7 @@ const AssetParentRenderer = ({ item }: { item: QueuedItemForRecord }) => {
       <ErrorMessage>Failed to load parent (code {lastErrorCode})</ErrorMessage>
     )
   if (isLoading || asset === null)
-    return <LoadingIndicator message="Loading asset..." />
+    return <NoValueLabel>Loading asset...</NoValueLabel>
   if (asset === false)
     return <NoResultsMessage>Parent does not exist</NoResultsMessage>
 
@@ -243,10 +248,18 @@ const AssetAuditCellRenderer = ({ item }: { item: AuditQueueItem }) => {
       <StatusText positivity={getPositivityForResult(item.result.result)}>
         {getLabelForResult(item.result.result)}
       </StatusText>
-      <br />
-      Error: {item.result.code || 'none'}
+      {item.result.code && (
+        <>
+          <br />
+          Error code: {item.result.code || 'none'}
+        </>
+      )}
     </>
   )
+}
+
+const AssetAuditCellFullRenderer = ({ item }: { item: AuditQueueItem }) => {
+  return <AssetAuditResultRenderer queuedItem={item} />
 }
 
 const AssetAuditApplyCellRenderer = ({
@@ -254,9 +267,95 @@ const AssetAuditApplyCellRenderer = ({
 }: {
   item: AuditApplyQueueItem<Asset>
 }) => {
-  // TODO: render something but not sure what
-  return null
+  if (!item.new) return <NoValueLabel>(nothing applied yet)</NoValueLabel>
+  return `${Object.keys(item.new).length} fields`
 }
+
+const AssetAuditApplyFullRenderer = ({
+  item,
+}: {
+  item: AuditApplyQueueItem<Asset>
+}) => {
+  return (
+    <ShortDiff
+      type="assets"
+      oldFields={item.old}
+      newFields={item.new}
+      onlyNewFields={item.new}
+    />
+  )
+}
+
+const AssetAuditApplyParentRenderer = ({
+  item,
+}: {
+  item: AuditApplyQueueItem<Asset>
+}) => {
+  if (!item.auditqueueitem) throw new Error('Need a parent ID')
+
+  const [isLoading, lastErrorCode, auditQueueItem] =
+    useDataStoreItem<AuditQueueItem>(
+      AuditQueueCollectionNames.AuditQueue,
+      item.auditqueueitem,
+      {
+        queryName: `asset-audit-apply_${item.id}_${item.auditqueueitem}`,
+      }
+    )
+
+  if (auditQueueItem === null || auditQueueItem === false) return null
+
+  return (
+    <AssetParentRenderer
+      item={{
+        ...auditQueueItem,
+        recordid: auditQueueItem.parent,
+        recordtable: auditQueueItem.parenttable,
+      }}
+    />
+  )
+}
+
+//   const [isLoadingAsset, lastErrorCodeAsset, asset] = useDataStoreItem<Asset>(
+//     AssetsCollectionNames.Assets,
+//     auditQueueItem
+//     {
+//       queryName: `asset-audit-apply_${item.id}_${item.auditqueueitem}_asset`,
+//     }
+//   )
+
+//   // console.debug(
+//   //   'RENDER!!!!',
+//   //   item.auditqueueitem,
+//   //   auditQueueItem !== null && auditQueueItem !== false
+//   //     ? auditQueueItem.createdassetid
+//   //     : false
+//   // )
+
+//   if (lastErrorCode !== null)
+//     return (
+//       <ErrorMessage>Failed to load parent (code {lastErrorCode})</ErrorMessage>
+//     )
+//   if (lastErrorCodeAsset !== null)
+//     return (
+//       <ErrorMessage>
+//         Failed to load asset (code {lastErrorCodeAsset})
+//       </ErrorMessage>
+//     )
+//   if (isLoading || auditQueueItem === null)
+//     return <NoValueLabel>Loading parent...</NoValueLabel>
+//   if (auditQueueItem === false)
+//     return <NoResultsMessage>Parent does not exist</NoResultsMessage>
+//   if (isLoadingAsset || asset === null)
+//     return <NoValueLabel>Loading asset...</NoValueLabel>
+//   if (asset === false)
+//     return <NoResultsMessage>Asset does not exist</NoResultsMessage>
+
+//   return (
+//     <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
+//       {asset.title}
+//     </Link>
+//   )
+// }
 
 const colorNew = `rgba(100,100,100)`
 
@@ -266,7 +365,6 @@ interface RowProps<TItem extends Record<string, any>> {
 }
 
 const QueueTable = <TItem extends Record<string, any>>({
-  collectionName,
   items,
   newItems,
   isLoading,
@@ -280,7 +378,7 @@ const QueueTable = <TItem extends Record<string, any>>({
   isLoading: boolean
   renderer: React.ComponentType<RowProps<TItem>>
   fullRenderer?: React.ComponentType<RowProps<TItem>>
-  parentRenderer?: React.ComponentType<RowProps<TItem>>
+  parentRenderer: React.ComponentType<RowProps<TItem>>
 }) => {
   if (isLoading) {
     return (
@@ -316,12 +414,11 @@ const QueueTable = <TItem extends Record<string, any>>({
           ? newItems.map((item, i) => (
               <QueueTableRow
                 key={item.id}
-                collectionName={collectionName}
                 item={item}
                 index={i}
                 renderer={Renderer}
                 fullRenderer={FullRenderer || Renderer}
-                parentRenderer={ParentRenderer || Renderer}
+                parentRenderer={ParentRenderer}
                 isNew
               />
             ))
@@ -330,12 +427,11 @@ const QueueTable = <TItem extends Record<string, any>>({
           items.map((item, i) => (
             <QueueTableRow
               key={item.id}
-              collectionName={collectionName}
               item={item}
               index={i}
               renderer={Renderer}
               fullRenderer={FullRenderer || Renderer}
-              parentRenderer={ParentRenderer || Renderer}
+              parentRenderer={ParentRenderer}
             />
           ))
         ) : (
@@ -350,16 +446,20 @@ const QueueTable = <TItem extends Record<string, any>>({
   )
 }
 
+const fadeBackground = (color: string) => keyframes`
+  0% { background-color: ${color}; }
+  50% { background-color: ${color}; }
+  100%   { background-color: transparent; }
+`
+
 const QueueTableRow = <TItem extends Record<string, any>>({
-  collectionName,
-  item: staleItem,
+  item,
   index,
   isNew,
   parentRenderer: ParentRenderer,
   renderer: Renderer,
   fullRenderer: FullRenderer,
 }: {
-  collectionName: string
   item: TItem
   index: number
   isNew?: boolean
@@ -367,44 +467,21 @@ const QueueTableRow = <TItem extends Record<string, any>>({
   renderer: React.ComponentType<RowProps<TItem>>
   fullRenderer: React.ComponentType<RowProps<TItem>>
 }) => {
-  const [isSubscribing, isSubscribed, lastErrorCode, liveQueuedItem] =
-    useDataStoreItemSync<TItem>(
-      collectionName,
-      staleItem.id,
-      `${collectionName}_${staleItem.id}_synced`
-    )
   const [isExpanded, setIsExpanded] = useState(false)
-
-  const item: TItem = liveQueuedItem || staleItem
 
   const toggleExpanded = () => setIsExpanded((currentVal) => !currentVal)
 
   return (
     <>
-      <TableRow style={{ backgroundColor: isNew ? colorNew : undefined }}>
-        <TableCell>
-          <Tooltip
-            title={
-              <>
-                Subscribing: {isSubscribing ? 'True' : 'False'}
-                <br />
-                Subscribed: {isSubscribed ? 'True' : 'False'}
-                <br />
-                Error: {lastErrorCode !== null ? lastErrorCode : 'None'}
-              </>
-            }>
-            <ConnectionIcon
-              positivity={
-                lastErrorCode !== null
-                  ? -1
-                  : isSubscribed
-                  ? 1
-                  : isSubscribing
-                  ? 0
-                  : null
+      <TableRow
+        sx={
+          isNew
+            ? {
+                animation: `${fadeBackground(colorNew)} 4s ease-out forwards`,
               }
-            />
-          </Tooltip>{' '}
+            : undefined
+        }>
+        <TableCell>
           <CopyThing text={item.id} title={item.id}>
             {item.id.substring(0, 4)}
           </CopyThing>
@@ -716,13 +793,16 @@ const AiEvaluateQueueCell = () => {
 const AssetAuditQueueCell = () => {
   const [isLoading, lastErrorCode, items, hydrate] =
     useDatabaseQuery<AuditQueueItem>(AuditQueueCollectionNames.AuditQueue, [], {
-      queryName: 'audit-queue',
+      queryName: 'asset-audit-queue-cell',
       orderBy: ['createdat', OrderDirections.DESC],
       limit: DEFAULT_LIMIT,
     })
 
   const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
-    useDataStoreItemsSync<AuditQueueItem>(AuditQueueCollectionNames.AuditQueue)
+    useDataStoreItemsSync<AuditQueueItem>(
+      AuditQueueCollectionNames.AuditQueue,
+      { queryName: 'asset-audit-queue-cell_synced' }
+    )
 
   if (lastErrorCode !== null) {
     return (
@@ -748,6 +828,16 @@ const AssetAuditQueueCell = () => {
         newItems={liveResults}
         isLoading={isLoading}
         renderer={AssetAuditCellRenderer}
+        fullRenderer={AssetAuditCellFullRenderer}
+        parentRenderer={({ item }) => (
+          <AssetParentRenderer
+            item={{
+              ...item,
+              recordid: item.parent,
+              recordtable: item.parenttable,
+            }}
+          />
+        )}
       />
     </Paper>
   )
@@ -791,6 +881,8 @@ const AssetAuditApplyQueueCell = () => {
         newItems={liveResults}
         isLoading={isLoading}
         renderer={AssetAuditApplyCellRenderer}
+        fullRenderer={AssetAuditApplyFullRenderer}
+        parentRenderer={AssetAuditApplyParentRenderer}
       />
     </Paper>
   )
@@ -806,22 +898,34 @@ const Queue = () => {
   return (
     <>
       <Cell>
-        <AssetSyncQueueCell fiveMinsAgo={fiveMinsAgo} />
+        <ErrorBoundary>
+          <AssetSyncQueueCell fiveMinsAgo={fiveMinsAgo} />
+        </ErrorBoundary>
       </Cell>
       <Cell>
-        <AiSuggestQueueCell />
+        <ErrorBoundary>
+          <AiSuggestQueueCell />
+        </ErrorBoundary>
       </Cell>
       <Cell>
-        <AiSimilarQueueCell />
+        <ErrorBoundary>
+          <AiSimilarQueueCell />
+        </ErrorBoundary>
       </Cell>
       <Cell>
-        <AiEvaluateQueueCell />
+        <ErrorBoundary>
+          <AiEvaluateQueueCell />
+        </ErrorBoundary>
       </Cell>
       <Cell>
-        <AssetAuditQueueCell />
+        <ErrorBoundary>
+          <AssetAuditQueueCell />
+        </ErrorBoundary>
       </Cell>
       <Cell>
-        <AssetAuditApplyQueueCell />
+        <ErrorBoundary>
+          <AssetAuditApplyQueueCell />
+        </ErrorBoundary>
       </Cell>
     </>
   )

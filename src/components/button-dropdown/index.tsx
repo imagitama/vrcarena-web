@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   },
 })
 
-interface DropdownOption {
+export interface DropdownOption {
   id: string
   label: string
 }

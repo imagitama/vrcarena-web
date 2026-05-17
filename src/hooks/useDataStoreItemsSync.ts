@@ -9,7 +9,6 @@ import {
   REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
   REALTIME_SUBSCRIBE_STATES,
   RealtimeChannel,
-  RealtimePostgresDeletePayload,
   RealtimePostgresInsertPayload,
   RealtimePostgresUpdatePayload,
 } from '@supabase/supabase-js'
@@ -20,15 +19,11 @@ interface QueryOptions<TItem> extends BaseQueryOptions<TItem> {
   // WARNING: replaces setState for performance
   onInsertInstead?: (insertedRecord: TItem) => void
   onUpdateInstead?: (updatedRecord: TItem) => void
-  // onDeleteReplacement?: (deletedRecord: DeletedRecord) => void
-}
-
-interface DeletedRecord {
-  id: string // assumes PK is "id"
+  only?: string[]
 }
 
 /**
- * Subscribes to all INSERTs and DELETEs in a collection.
+ * Subscribes to all INSERTs and UPDATEs in a collection.
  */
 export default <TItem extends Record<string, any>>(
   collectionName: string,
@@ -36,7 +31,7 @@ export default <TItem extends Record<string, any>>(
     queryName: '',
   }
 ): [boolean, boolean, null | DataStoreErrorCode, TItem[] | null] => {
-  const [createdRecords, setCreatedRecords] = useState<null | TItem[]>(null)
+  const [records, setRecords] = useState<null | TItem[]>(null)
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | DataStoreErrorCode>(
@@ -80,7 +75,7 @@ export default <TItem extends Record<string, any>>(
         if (options.onInsertInstead) {
           options.onInsertInstead(createdRecord)
         } else {
-          setCreatedRecords((currentItems) =>
+          setRecords((currentItems) =>
             currentItems === null
               ? [createdRecord]
               : currentItems.concat([createdRecord])
@@ -105,33 +100,15 @@ export default <TItem extends Record<string, any>>(
         if (options.onUpdateInstead) {
           options.onUpdateInstead(createdRecord)
         } else {
-          // TODO
+          setRecords((currentItems) => {
+            if (currentItems === null) return [createdRecord];
+            const exists = currentItems.some((item) => item.id === createdRecord.id);
+            return exists
+              ? currentItems.map((item) => item.id === createdRecord.id ? createdRecord : item)
+              : [...currentItems, createdRecord];
+          })
         }
       }
-
-      // TODO: finish this sometime
-      // the issue is after a bulk delete (like clearing a whiteboard pen) it sends an event per record so spams us
-      // for now other users need to refresh the entire component
-      // const onDelete = (payload: RealtimePostgresDeletePayload<TItem>) => {
-      //   console.debug(
-      //     `useDataStoreItemsSync :: ${options.queryName} :: ${collectionName} :: onDelete`,
-      //     {
-      //       payload,
-      //     }
-      //   )
-
-      //   if (isUnmountedRef.current) {
-      //     return
-      //   }
-
-      //   const deletedRecord = payload.old as unknown as DeletedRecord // DELETE only provides PK
-
-      //   if (options.onDeleteReplacement) {
-      //     options.onDeleteReplacement(deletedRecord)
-      //   } else {
-      //     // TODO
-      //   }
-      // }
 
       const channel = supabase
         .channel(`${collectionName}`)
@@ -141,7 +118,7 @@ export default <TItem extends Record<string, any>>(
             event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT,
             schema: 'public',
             table: collectionName,
-            // filter,
+            // filter
           },
           onInsert
         )
@@ -151,35 +128,10 @@ export default <TItem extends Record<string, any>>(
             event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.UPDATE,
             schema: 'public',
             table: collectionName,
-            // filter,
+            // filter
           },
           onUpdate
         )
-        //  .on(
-        //   REALTIME_LISTEN_TYPES.POSTGRES_CHANGES,
-        //   {
-        //     event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.DELETE,
-        //     schema: 'public',
-        //     table: collectionName,
-        //     // filter,
-        //   },
-        //   onDelete
-        // )
-        // .subscribe((status, err) => {
-        //   console.debug(
-        //     `useDataStoreItemsSync :: ${options.queryName} :: ${collectionName} :: Status '${status}'`
-        //   )
-        //   if (status === REALTIME_SUBSCRIBE_STATES.SUBSCRIBED) {
-        //     // TODO: set this to false on fail
-        //     setIsSubscribed(true)
-        //   }
-        //   if (err) {
-        //     console.error(err)
-        //     handleError(err)
-        //     setIsSubscribed(false)
-        //     setLastErrorCode(DataStoreErrorCode.ChannelError)
-        //   }
-        // })
         .subscribe((status, err) => {
           console.debug(
             `useDataStoreItemsSync :: ${options.queryName} :: Status '${status}'`
@@ -213,7 +165,7 @@ export default <TItem extends Record<string, any>>(
         return
       }
 
-      setCreatedRecords([]) // initialize with empty array to signal we are ready
+      setRecords([]) // initialize with empty array to signal we are ready
       setIsSubscribing(false)
       setLastErrorCode(null)
     } catch (err) {
@@ -240,5 +192,5 @@ export default <TItem extends Record<string, any>>(
     }
   }, [collectionName])
 
-  return [isSubscribing, isSubscribed, lastErrorCode, createdRecords]
+  return [isSubscribing, isSubscribed, lastErrorCode, records]
 }

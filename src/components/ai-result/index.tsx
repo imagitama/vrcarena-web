@@ -24,9 +24,10 @@ import Button, { ButtonProps } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import Dialog from '@/components/dialog'
-import { QueuedItem, QueueStatus } from '@/modules/common'
+import { QueueStatus } from '@/modules/common'
 import ChatMessage from '../chat-message'
 import { AiConvoBase, AiConvoMessage } from '@/ai'
+import { QueuedItem } from '@/queues'
 
 const useStyles = makeStyles({
   root: {
