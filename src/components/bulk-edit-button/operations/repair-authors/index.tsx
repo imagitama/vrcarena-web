@@ -1,6 +1,11 @@
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 
 import { RootState } from '@/modules'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
@@ -32,6 +37,8 @@ import { handleError } from '@/error-handling'
 import useSupabaseClient from '@/hooks/useSupabaseClient'
 import { AccessStatus } from '@/modules/common'
 import SuccessMessage from '@/components/success-message'
+import NoResultsMessage from '@/components/no-results-message'
+import FieldOutput from '@/components/field-output'
 
 const Authors = ({
   assets,
@@ -48,7 +55,11 @@ const Authors = ({
   finalFields: FinalFields
   toggleFinalField: (authorId: string, fieldName: string, val: any) => void
 }) => {
-  const authorIds = assets.map((a) => a.author).filter((id) => id !== null)
+  const authorIds: string[] = assets
+    .map((a) => a.author)
+    .filter(
+      (id, i, arr) => id !== null && arr.findIndex((x) => x === id) === i
+    ) as string[]
 
   return (
     <Items>
@@ -71,43 +82,55 @@ const Authors = ({
                   author={author}
                   isSelected={authorId === primaryAuthorId}
                 />
-                {authorEditableFields
-                  .filter((field) => {
-                    const authorVal = author[field.name]
-                    return (
-                      authorVal !== null &&
-                      authorVal !== '' &&
-                      (Array.isArray(authorVal) ? authorVal.length > 0 : true)
-                    )
-                  })
-                  // .filter(
-                  //   ([fieldName, val]) =>
-                  //     val !== null &&
-                  //     val !== '' &&
-                  //     (Array.isArray(val) ? val.length > 0 : true)
-                  // )
-                  .map((field) => {
-                    const fieldName = field.name
-                    const authorVal = author[fieldName]
-                    const isSelected =
-                      fieldName in finalFields &&
-                      finalFields[fieldName].sourceAuthorId === author.id
-                    return (
-                      <li key={fieldName}>
-                        {field.label} "{authorVal as any}"{' '}
-                        <CheckboxInput
-                          value={isSelected}
-                          onClick={() =>
-                            toggleFinalField(
-                              author.id,
-                              fieldName as string,
-                              authorVal
-                            )
-                          }
-                        />
-                      </li>
-                    )
-                  })}
+                <Table size="small">
+                  <TableBody>
+                    {authorEditableFields
+                      .filter((field) => {
+                        const authorVal = author[field.name]
+                        return (
+                          authorVal !== null &&
+                          authorVal !== '' &&
+                          (Array.isArray(authorVal)
+                            ? authorVal.length > 0
+                            : true)
+                        )
+                      })
+                      .map((field) => {
+                        const fieldName = field.name
+                        const authorVal = author[fieldName]
+                        const isSelected =
+                          fieldName in finalFields &&
+                          finalFields[fieldName].sourceAuthorId === author.id
+                        return (
+                          <TableRow key={fieldName}>
+                            <TableCell>
+                              <strong>{field.label}</strong>
+                            </TableCell>
+                            <TableCell>
+                              <FieldOutput
+                                editableField={authorEditableFields.find(
+                                  (field) => field.name === fieldName
+                                )}>
+                                {authorVal}
+                              </FieldOutput>
+                            </TableCell>
+                            <TableCell>
+                              <CheckboxInput
+                                value={isSelected}
+                                onClick={() =>
+                                  toggleFinalField(
+                                    author.id,
+                                    fieldName as string,
+                                    authorVal
+                                  )
+                                }
+                              />
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                  </TableBody>
+                </Table>
               </>
             ) : (
               <ErrorMessage>Failed to load author</ErrorMessage>
@@ -136,8 +159,12 @@ const RepairAuthorsOperation = () => {
   const [isLoadingAssets, lastErrorCodeAssets, assets] =
     useDataStoreItems<Asset>(AssetsCollectionNames.Assets, assetIds)
 
-  const authorIds = assets
-    ? assets.map((a) => a.author).filter((id) => id !== null)
+  let authorIds: string[] = assets
+    ? (assets
+        .map((a) => a.author)
+        .filter(
+          (id, i, arr) => id !== null && arr.findIndex((x) => x === id) === i
+        ) as string[])
     : []
 
   const [isLoadingAuthors, lastErrorCodeAuthors, authors] =
@@ -145,6 +172,7 @@ const RepairAuthorsOperation = () => {
       AuthorsCollectionNames.Authors,
       authorIds.length > 0 ? authorIds : false
     )
+
   const [primaryAuthorId, setPrimaryAuthorId] = useState<null | string>(null)
   const [finalFields, setFinalFields] = useState<FinalFields>({})
   const client = useSupabaseClient()
@@ -292,77 +320,103 @@ const RepairAuthorsOperation = () => {
       <Heading variant="h3" noMargin>
         Result
       </Heading>
-      <ol>
-        <li>
-          These assets will have their author set to{' '}
-          {primaryAuthor
-            ? `"${primaryAuthor.name}" (${primaryAuthor.id.substring(
-                0,
-                shortIdLength
-              )})`
-            : ''}
-          :
-          <ul>
-            {assets.map((asset) => (
-              <li key={asset.id}>{asset.title}</li>
-            ))}
-          </ul>
-        </li>
-        <li>
-          That author will be edited with these fields:
-          <ul>
-            {primaryAuthor ? (
-              Object.entries(finalFields).map(([fieldName, info]) => {
-                const editableField = authorEditableFields.find(
-                  (field) => field.name === fieldName
-                )!
-                return (
-                  <li key={fieldName}>
-                    <strong>{editableField.label}</strong>
-                    <br />
-                    {primaryAuthor[fieldName]} {'=>'} {info.value}
-                  </li>
-                )
-              })
-            ) : (
-              <li>(no primary author selected)</li>
-            )}
-          </ul>
-        </li>
-        <li>
-          These authors will be deleted:
-          <ul>
-            {authorIdsToDelete.length ? (
-              authorIdsToDelete.map((authorId) => {
-                const author = authors.find((a) => a.id === authorId)
+      {canPerform ? (
+        <>
+          <ol>
+            <li>
+              These assets will have their author set to{' '}
+              {primaryAuthor
+                ? `"${primaryAuthor.name}" (${primaryAuthor.id.substring(
+                    0,
+                    shortIdLength
+                  )})`
+                : ''}
+              :
+              <ul>
+                {assets.map((asset) => (
+                  <li key={asset.id}>{asset.title}</li>
+                ))}
+              </ul>
+            </li>
+            <li>
+              That author will be edited with these fields:
+              <Table size="small">
+                <TableBody>
+                  {primaryAuthor ? (
+                    Object.entries(finalFields).length ? (
+                      Object.entries(finalFields).map(([fieldName, info]) => {
+                        const editableField = authorEditableFields.find(
+                          (field) => field.name === fieldName
+                        )!
+                        return (
+                          <TableRow key={fieldName}>
+                            <TableCell>
+                              <strong>{editableField.label}</strong>
+                            </TableCell>
+                            <TableCell>
+                              <FieldOutput editableField={editableField}>
+                                {primaryAuthor[fieldName]}
+                              </FieldOutput>
+                            </TableCell>
+                            <TableCell>
+                              <FieldOutput>{info.value}</FieldOutput>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })
+                    ) : (
+                      <TableRow>
+                        <TableCell>(no fields will be changed)</TableCell>
+                      </TableRow>
+                    )
+                  ) : (
+                    <TableRow>
+                      <TableCell>(no primary author selected)</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </li>
+            <li>
+              These authors will be deleted:
+              <ul>
+                {authorIdsToDelete.length ? (
+                  authorIdsToDelete.map((authorId) => {
+                    const author = authors.find((a) => a.id === authorId)
 
-                if (!author) {
-                  return (
-                    <ErrorMessage key={authorId}>
-                      Failed to find author "{authorId}"
-                    </ErrorMessage>
-                  )
-                }
+                    if (!author) {
+                      return (
+                        <ErrorMessage key={authorId}>
+                          Failed to find author "{authorId}"
+                        </ErrorMessage>
+                      )
+                    }
 
-                return (
-                  <li key={authorId}>
-                    {author.name} ({author.id.substring(0, shortIdLength)})
-                  </li>
-                )
-              })
-            ) : (
-              <li>(no authors will be deleted)</li>
-            )}
-          </ul>
-        </li>
-      </ol>
-      <WarningMessage>
-        These actions cannot be (automatically) reversed.
-        <br />
-        <br />
-        No data will actually be deleted and all changes are recorded for
-        history.
-      </WarningMessage>
+                    return (
+                      <li key={authorId}>
+                        {author.name} ({author.id.substring(0, shortIdLength)})
+                      </li>
+                    )
+                  })
+                ) : (
+                  <li>(no authors will be deleted)</li>
+                )}
+              </ul>
+            </li>
+          </ol>
+          <WarningMessage>
+            These actions cannot be (automatically) reversed.
+            <br />
+            <br />
+            No data will actually be deleted and all changes are recorded for
+            history.
+          </WarningMessage>
+        </>
+      ) : (
+        <NoResultsMessage>
+          You must pick a primary author first
+        </NoResultsMessage>
+      )}
       {isSavingPrimaryAuthor && (
         <LoadingIndicator message="Saving primary author..." />
       )}
