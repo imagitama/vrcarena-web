@@ -1,5 +1,6 @@
 import { QueuedItem } from '@/queues'
 import { QueueStatus as AiEvaluateQueuedItemStatus } from './common'
+import { AiConvoMessage } from '@/ai'
 
 // used by AI evaluation only (newer code just dumps args)
 export interface GeminiFuncResult<TArgs> {
@@ -27,7 +28,7 @@ export interface GeminiAssetEvaluation {
 export interface AiEvaluateConvo {
   model: string
   score: number
-  messages: null | string[]
+  messages: null | AiConvoMessage<any, any>[]
   tags: null | string[]
 }
 

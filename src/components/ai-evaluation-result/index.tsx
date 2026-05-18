@@ -9,6 +9,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import AspectRatioIcon from '@mui/icons-material/AspectRatio'
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import Table from '@mui/material/Table'
+import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
@@ -24,6 +25,7 @@ import {
   AiEvaluateQueuedItemStatus,
   CollectionNames as AiEvaluationCollectionNames,
   GeminiAssetEvaluation,
+  GeminiAssetEvaluationFunctionResult,
   GeminiFuncResult,
   type AiEvaluateConvo,
   type AiEvaluateQueuedItem,
@@ -50,7 +52,9 @@ import {
   getScoreAsPercentage,
   getStatusPastTense,
   Score,
+  Convo as ConvoExpanded,
 } from '../ai-result'
+import { AiConvoMessage, MessageType } from '@/ai'
 
 const useStyles = makeStyles({
   root: {
@@ -261,45 +265,66 @@ const Tags = ({
   )
 }
 
-interface AssetEvaluationFunctionResult {
-  evaluation: GeminiAssetEvaluation
-}
+const ConvoRenderer = ({
+  message,
+}: {
+  message: AiConvoMessage<any, GeminiAssetEvaluationFunctionResult>
+}) => {
+  switch (message.type) {
+    case MessageType.String:
+      return (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: message.contents.replace('\n', '<br />'),
+          }}
+        />
+      )
 
-const AiMessage = ({ messageJson }: { messageJson: string }) => {
-  const geminiFuncResults = JSON.parse(
-    messageJson
-  ) as GeminiFuncResult<AssetEvaluationFunctionResult>[]
+    case MessageType.FuncResult:
+      const { score, score_reason, score_reason_tags } =
+        message.contents.evaluation
+      return (
+        <Table size="small">
+          <TableBody>
+            <TableRow>
+              <TableCell>Score</TableCell>
+              <TableCell>{score}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Tags</TableCell>
+              <TableCell>{score_reason_tags.join(',')}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Reason</TableCell>
+              <TableCell>{score_reason || '(no reason)'}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      )
 
-  console.debug('message', geminiFuncResults)
+    case MessageType.PromptFeedback:
+      return (
+        <ul>
+          <li>Block reason: {message.contents.blockReason || 'none'}</li>
+          <li>
+            Safety ratings:{' '}
+            {message.contents.safetyRatings
+              ? message.contents.safetyRatings.join(',')
+              : 'none'}
+          </li>
+        </ul>
+      )
 
-  const firstResult = geminiFuncResults[0].args.evaluation
-
-  const score: null | number = 'score' in firstResult ? firstResult.score : null
-  const tags: null | string[] =
-    'score_reason_tags' in firstResult ? firstResult.score_reason_tags : []
-  const reason: null | string =
-    'score_reason' in firstResult ? firstResult.score_reason : ''
-
-  return (
-    <Table size="small">
-      <TableBody>
-        <TableRow>
-          <TableCell>Score</TableCell>
-          <TableCell>{score || '(no score)'}</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>Tags</TableCell>
-          <TableCell>
-            {tags && tags.length ? tags.join(', ') : '(no tags)'}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>Reason</TableCell>
-          <TableCell>{reason || '(no reason)'}</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  )
+    default:
+      return (
+        <>
+          <ErrorMessage>
+            Unknown message type: {(message as any).type}
+          </ErrorMessage>
+          {JSON.stringify(message, null, '  ')}
+        </>
+      )
+  }
 }
 
 const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
@@ -328,20 +353,10 @@ const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
       </div>
       <div>
         {showConvo ? (
-          <ul className={classes.messages}>
-            {convo.messages?.map((msg, i) => (
-              <li className={classes.message}>
-                {i === 1 ? (
-                  <AiMessage messageJson={msg} />
-                ) : (
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: msg.replace('\n', '<br />'),
-                    }}></div>
-                )}
-              </li>
-            ))}
-          </ul>
+          <ConvoExpanded
+            convo={{ modelName: convo.model, messages: convo.messages }}
+            renderer={ConvoRenderer}
+          />
         ) : null}
       </div>
     </div>
@@ -430,6 +445,8 @@ export const Renderer = ({
                       ? 'No AI models asked yet'
                       : null}
                     <br />
+                    0% scores and outliers are ignored
+                    <br />
                     Click for more info
                   </>
                 }>
@@ -512,7 +529,7 @@ const AiEvaluationsListForAsset = ({
         <NoResultsMessage message="No queued items" />
       ) : null}
       <div className={classes.controls}>
-        <Button onClick={hydrate} size="small" color="secondary">
+        <Button onClick={hydrate} size="small" color="secondary" hollow>
           Refresh
         </Button>{' '}
         <RequeueButton assetId={asset.id} />
@@ -552,7 +569,8 @@ const RequeueButton = ({ assetId }: { assetId: string }) => {
         onClick={onRequeue}
         isDisabled={isBusy}
         size="small"
-        color="secondary">
+        color="secondary"
+        hollow>
         Re-Queue
       </Button>
     </>

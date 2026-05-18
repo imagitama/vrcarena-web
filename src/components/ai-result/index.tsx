@@ -26,7 +26,7 @@ import SuccessMessage from '@/components/success-message'
 import Dialog from '@/components/dialog'
 import { QueueStatus } from '@/modules/common'
 import ChatMessage from '../chat-message'
-import { AiConvoBase, AiConvoMessage } from '@/ai'
+import { AiConvo, AiConvoMessage } from '@/ai'
 import { QueuedItem } from '@/queues'
 
 const useStyles = makeStyles({
@@ -304,7 +304,7 @@ export const Convo = ({
   convo,
   renderer: Renderer,
 }: {
-  convo: AiConvoBase
+  convo: AiConvo
   renderer: React.ComponentType<ConvoProps>
 }) => {
   const [showConvo, setShowConvo] = useState(false)
@@ -343,15 +343,6 @@ export const Convo = ({
                 <Renderer message={msg} />
               </ChatMessage>
             ))}
-            {/* {convo.messages === null ||
-              (getDoesConvoActuallyHaveResults(convo.messages) === false && (
-                <li>
-                  <NoResultsMessage noMargin>
-                    This conversation looks like it ended early (something must
-                    have failed)
-                  </NoResultsMessage>
-                </li>
-              ))} */}
           </div>
         ) : null}
       </div>
@@ -474,7 +465,7 @@ export const ConvoGroup = ({
   convoGroup,
   renderer: ConvoRenderer,
 }: {
-  convoGroup: AiConvoBase[]
+  convoGroup: AiConvo[]
   renderer: React.ComponentType<ConvoProps>
 }) => {
   const classes = useStyles()
