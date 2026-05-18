@@ -13,6 +13,7 @@ import LoadingIndicator from '@/components/loading-indicator'
 import NoResultsMessage from '@/components/no-results-message'
 import StatusText from '@/components/status-text'
 import FormattedDate from '@/components/formatted-date'
+import { shortIdLength } from '@/config'
 
 const RepChangeForUser = ({ userId }: { userId: string }) => {
   const [isLoading, lastErrorCode, repChanges] =
@@ -48,7 +49,7 @@ const RepChangeForUser = ({ userId }: { userId: string }) => {
           repChanges.map((repChange) => (
             <TableRow key={repChange.id}>
               <TableCell title={repChange.id}>
-                {repChange.id.substring(0, 5)}...
+                {repChange.id.substring(0, shortIdLength)}
               </TableCell>
               <TableCell>
                 {repChange.reason}

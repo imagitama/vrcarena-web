@@ -46,7 +46,7 @@ function getInitialSearchTerm() {
   return ''
 }
 
-interface SearchFilter {}
+interface SearchFilter { }
 
 export interface AppState {
   isMenuOpen: boolean
@@ -68,7 +68,7 @@ const initialState: AppState = {
   searchFilters: [],
   searchCount: 0,
   isSearching: false,
-  bulkEditIds: null,
+  bulkEditIds: process.env.NODE_ENV === 'development' ? ['5f920f00-429b-4af2-a083-3a07e3cad0fb', '3e4abf2e-7643-4949-8f8b-f8eae3d527f9'] : null,
   isSelectingAll: false,
   bulkEditAssetDatas: [],
   userPrefs: null,
@@ -177,8 +177,8 @@ export default (
         ...state,
         bulkEditIds: state.bulkEditIds.includes(action.payload.id)
           ? state.bulkEditIds.filter(
-              (idToCheck) => idToCheck !== action.payload.id
-            )
+            (idToCheck) => idToCheck !== action.payload.id
+          )
           : state.bulkEditIds.concat([action.payload.id]),
         bulkEditAssetDatas: action.payload.asset
           ? state.bulkEditAssetDatas.concat([action.payload.asset])
@@ -236,14 +236,14 @@ export const closeMenu = () => (dispatch: Dispatch) => {
 
 export const changeSearchTerm =
   (searchTerm = '') =>
-  (dispatch: Dispatch) => {
-    dispatch({
-      type: CHANGE_SEARCH_TERM,
-      payload: {
-        searchTerm,
-      },
-    })
-  }
+    (dispatch: Dispatch) => {
+      dispatch({
+        type: CHANGE_SEARCH_TERM,
+        payload: {
+          searchTerm,
+        },
+      })
+    }
 
 export const changeSearchTableName =
   (newTableName: string) => (dispatch: Dispatch) => {

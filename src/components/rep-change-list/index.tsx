@@ -10,6 +10,7 @@ import NoResultsMessage from '@/components/no-results-message'
 import StatusText from '@/components/status-text'
 import FormattedDate from '@/components/formatted-date'
 import UsernameLink from '@/components/username-link'
+import { shortIdLength } from '@/config'
 
 const RepChangeList = ({ repChanges }: { repChanges: FullRepChange[] }) => {
   return (
@@ -29,7 +30,7 @@ const RepChangeList = ({ repChanges }: { repChanges: FullRepChange[] }) => {
           repChanges.map((repChange) => (
             <TableRow key={repChange.id}>
               <TableCell title={repChange.id}>
-                {repChange.id.substring(0, 5)}...
+                {repChange.id.substring(0, shortIdLength)}
               </TableCell>
               <TableCell>
                 <UsernameLink

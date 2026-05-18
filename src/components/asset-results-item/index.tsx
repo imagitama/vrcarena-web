@@ -35,6 +35,11 @@ import Price from '@/components/price'
 import LoadingShimmer from '@/components/loading-shimmer'
 import Tooltip from '@/components/tooltip'
 import classNames from 'classnames'
+import useIsEditor from '@/hooks/useIsEditor'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppState, toggleBulkEditId } from '@/modules/app'
+import CheckboxInput from '../checkbox-input'
+import useBulkEdit from '@/hooks/useBulkEdit'
 
 const useStyles = makeStyles({
   root: {
@@ -292,6 +297,7 @@ const AssetResultsItem = ({
   const [, , prefs] = useUserPreferences()
   const actuallyShowMoreInfo =
     (prefs && prefs.showmoreinfo) || showMoreInfo === true
+  const { ids, toggleId } = useBulkEdit()
 
   return (
     <Card
@@ -378,6 +384,17 @@ const AssetResultsItem = ({
                     )}
                   </>
                 ) : null}
+                {ids && asset && (
+                  <CheckboxInput
+                    value={ids.includes(asset.id)}
+                    onClick={(e) => {
+                      toggleId(asset.id)
+                      e.stopPropagation()
+                      e.preventDefault()
+                      return false
+                    }}
+                  />
+                )}
               </div>
               {actuallyShowMoreInfo &&
               asset &&

@@ -19,6 +19,7 @@ import useIsBanned from '@/hooks/useIsBanned'
 
 import Button from '@/components/button'
 import BulkEditButton from '@/components/bulk-edit-button'
+import ErrorBoundary from '../error-boundary'
 
 const useStyles = makeStyles({
   footer: {
@@ -153,12 +154,13 @@ function DevelopmentTools() {
 export default () => {
   const uid = useUserId()
   const classes = useStyles()
+  const isEditor = useIsEditor()
 
   return (
-    <>
+    <ErrorBoundary>
       {process.env.NODE_ENV === 'development' && <DevelopmentTools />}
       <ScrollToTopBtn />
-      <BulkEditButton />
+      {isEditor && <BulkEditButton />}
       <footer className={classes.footer}>
         <div className={classes.col}>
           {uid ? (
@@ -178,6 +180,6 @@ export default () => {
           ))}
         </div>
       </footer>
-    </>
+    </ErrorBoundary>
   )
 }

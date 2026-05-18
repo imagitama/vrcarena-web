@@ -8,9 +8,7 @@ import useSupabaseClient from './useSupabaseClient'
 
 const useUserRecord = (): [boolean, boolean, FullUser | null, () => void] => {
   const userId = useSupabaseUserId()
-  const isLoading = useSelector(({ user }: RootState) => user.isLoading)
-  const isErrored = useSelector(({ user }: RootState) => user.isErrored)
-  const record = useSelector(({ user }: RootState) => user.user)
+  const { isLoading, isErrored, record } = useSelector(({ user }: RootState) => ({ record: user.user, isLoading: user.isLoading, isErrored: user.isErrored }))
   const supabase = useSupabaseClient()
 
   const hydrate = () => loadUserIntoStore(supabase, userId, false)

@@ -43,12 +43,7 @@ export const readRecord = async <TRecord>(
 
   const { error, data } = await query
 
-  if (error) {
-    console.error(error)
-    throw new Error(
-      `Could not get record in table ${tableName} by id ${id}: ${error.code} ${error.message} (${error.hint})`
-    )
-  }
+  if (error) throw error
 
   if (data.length === 0 && defaultVal) {
     return defaultVal
@@ -75,14 +70,7 @@ export const readRecordsById = async <TRecord>(
 
   const { error, data } = await query
 
-  if (error) {
-    console.error(error)
-    throw new Error(
-      `Could not get records in table ${tableName} by ids ${ids.join(', ')}: ${
-        error.code
-      } ${error.message} (${error.hint})`
-    )
-  }
+  if (error) throw error
 
   return data
 }
@@ -93,12 +81,7 @@ export const readAllRecords = async <TRecord>(
 ): Promise<TRecord[]> => {
   const { error, data } = await supabase.from(tableName).select('*')
 
-  if (error) {
-    console.error(error)
-    throw new Error(
-      `Could not read all records from table ${tableName}: ${error.code} ${error.message} (${error.hint})`
-    )
-  }
+  if (error) throw error
 
   return data
 }
@@ -126,12 +109,7 @@ export const simpleSearchRecords = async <TRecord>(
 
   const { error, data } = await query
 
-  if (error) {
-    console.error(error)
-    throw new Error(
-      `Could not simple search records in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
-    )
-  }
+  if (error) throw error
 
   return data
 }
@@ -149,25 +127,7 @@ export const updateRecord = async <TFields>(
 
   console.debug(`updateRecord`, tableName, id, data, error)
 
-  // returns an error per record (which is 1)
-  if (error) {
-    let errorToReport
-
-    if (Array.isArray(error)) {
-      if (error.length > 0) {
-        console.error(error)
-        errorToReport = error[0]
-      } else {
-        return true
-      }
-    } else {
-      errorToReport = error
-    }
-
-    throw new Error(
-      `Could not update record in table ${tableName} by id ${id}: ${errorToReport.code} ${errorToReport.message} (${errorToReport.hint})`
-    )
-  }
+  if (error) throw error
 
   return true
 }
@@ -176,8 +136,8 @@ export const updateRecords = async <TFields>(
   supabase: SupabaseClient,
   tableName: string,
   ids: string[],
-  newVal: TFields
-): Promise<true> => {
+  newVal: Partial<TFields>
+): Promise<void> => {
   const { error, data } = await supabase
     .from(tableName)
     .update(newVal)
@@ -185,26 +145,7 @@ export const updateRecords = async <TFields>(
 
   console.debug(`updateRecords`, tableName, ids, data, error)
 
-  if (error) {
-    let errorToReport
-
-    if (Array.isArray(error)) {
-      if (error.length > 0) {
-        console.error(error)
-        errorToReport = error[0]
-      } else {
-        return true
-      }
-    } else {
-      errorToReport = error
-    }
-
-    throw new Error(
-      `Could not update records in table ${tableName} by ids: ${errorToReport.code} ${errorToReport.message} (${errorToReport.hint})`
-    )
-  }
-
-  return true
+  if (error) throw error
 }
 
 export const insertRecord = async <TFields, TReturnVal>(
@@ -226,18 +167,7 @@ export const insertRecord = async <TFields, TReturnVal>(
 
   console.debug(`insertRecord`, tableName, data, error)
 
-  // returns an error per record (which is 1)
-  if (error && Array.isArray(error) && error.length > 0) {
-    console.error(error)
-    const firstError = error[0]
-    throw new Error(
-      `Could not insert record in table ${tableName}: ${firstError.code} ${firstError.message} (${firstError.hint})`
-    )
-  } else if (error) {
-    throw new Error(
-      `Could not insert record in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
-    )
-  }
+  if (error) throw error
 
   if (data) {
     return data[0]
@@ -263,18 +193,7 @@ export const insertRecords = async <TFields, TReturnVal>(
 
   console.debug(`insertRecords`, tableName, data, error)
 
-  // returns an error per record (which is 1)
-  if (error && Array.isArray(error) && error.length > 0) {
-    console.error(error)
-    const firstError = error[0]
-    throw new Error(
-      `Could not insert records in table ${tableName}: ${firstError.code} ${firstError.message} (${firstError.hint})`
-    )
-  } else if (error) {
-    throw new Error(
-      `Could not insert records in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
-    )
-  }
+  if (error) throw error
 
   if (data) {
     return data
@@ -290,18 +209,7 @@ export const deleteRecord = async (
 
   console.debug(`deleteRecord`, tableName, id, data, error)
 
-  // returns an error per record (which is 1)
-  if (error && Array.isArray(error) && error.length > 0) {
-    console.error(error)
-    const firstError = error[0]
-    throw new Error(
-      `Could not delete record in table ${tableName}: ${firstError.code} ${firstError.message} (${firstError.hint})`
-    )
-  } else if (error) {
-    throw new Error(
-      `Could not delete record in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
-    )
-  }
+  if (error) throw error
 }
 
 export const deleteRecordsByUser = async (
@@ -316,18 +224,7 @@ export const deleteRecordsByUser = async (
 
   console.debug(`deleteRecordsByUser`, tableName, userId, data, error)
 
-  // returns an error per record (which is 1)
-  if (error && Array.isArray(error) && error.length > 0) {
-    console.error(error)
-    const firstError = error[0]
-    throw new Error(
-      `Could not delete record in table ${tableName}: ${firstError.code} ${firstError.message} (${firstError.hint})`
-    )
-  } else if (error) {
-    throw new Error(
-      `Could not delete record in table ${tableName}: ${error.code} ${error.message} (${error.hint})`
-    )
-  }
+  if (error) throw error
 }
 
 // hooks should extend from this
@@ -359,7 +256,7 @@ export class DataStoreError extends Error {
 }
 
 // handle a PATCH but postgres returns success with 0 results which is confusing
-export class DataStoreUpdateError extends DataStoreError {}
+export class DataStoreUpdateError extends DataStoreError { }
 
 // Source: https://docs.postgrest.org/en/v12/references/errors.html
 // NOTE: cannot have numeric keys so standard postgres errors prefixed with "PG" (vs "PGRST" for Postgrest)

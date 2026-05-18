@@ -25,7 +25,7 @@ const CheckboxInput = ({
   value: boolean
   isDisabled?: boolean
   fullWidth?: boolean
-  onClick?: () => void
+  onClick?: (e: React.MouseEvent<HTMLLabelElement, MouseEvent>) => void
 }) => {
   const classes = useStyles()
   return (

@@ -132,3 +132,5 @@ export const messages = {
 }
 
 export const loginWithDiscordUrl = `https://discord.com/api/oauth2/authorize?client_id=${process.env.REACT_APP_DISCORD_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_DISCORD_REDIRECT_URI}&response_type=code&scope=identify%20email&prompt=none`
+
+export const shortIdLength = 4

@@ -21,6 +21,12 @@ const useStyles = makeStyles({
       width: '100%',
     },
   },
+  fullWidth: {
+    '&&': {
+      maxWidth: '100%',
+      width: '100%',
+    },
+  },
   hideBtn: {
     width: '30px',
     height: '30px',
@@ -51,7 +57,9 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
       open
       {...props}
       PaperProps={{
-        className: `${classes.paper} ${props.PaperProps?.className}`,
+        className: `${classes.paper} ${
+          props.fullWidth ? classes.fullWidth : ''
+        } ${props.PaperProps?.className}`,
       }}
       ref={ref}>
       {props.onClose && (

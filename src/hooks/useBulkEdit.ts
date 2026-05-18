@@ -3,6 +3,8 @@ import {
   toggleBulkEditId as toggleBulkEditIdAction,
   selectBulkEditId as selectBulkEditIdAction,
   setSelectingAll as setSelectingAllAction,
+  enterBulkEditMode,
+  leaveBulkEditMode,
 } from '@/modules/app'
 import { Asset } from '@/modules/assets'
 import { RootState } from '@/modules'
@@ -16,6 +18,8 @@ const useBulkEdit = (): {
   selectAsset: (asset: Asset) => void
   isSelectingAll: boolean
   setSelectingAll: (newValue: boolean) => void
+  enter: () => void
+  leave: () => void
 } => {
   const ids = useSelector(({ app }: RootState) => app.bulkEditIds)
   const isSelectingAll = useSelector(({ app }: RootState) => app.isSelectingAll)
@@ -46,6 +50,9 @@ const useBulkEdit = (): {
     dispatch(setSelectingAllAction(newValue))
   }
 
+  const enter = () => dispatch(enterBulkEditMode())
+  const leave = () => dispatch(leaveBulkEditMode())
+
   return {
     ids,
     assetDatas,
@@ -55,6 +62,8 @@ const useBulkEdit = (): {
     selectAsset,
     isSelectingAll,
     setSelectingAll,
+    enter,
+    leave
   }
 }
 

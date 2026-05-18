@@ -12,7 +12,7 @@ import { keyframes } from '@mui/system'
 import CircleIcon from '@mui/icons-material/Circle'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-import { colorPalette } from '@/config'
+import { colorPalette, shortIdLength } from '@/config'
 import { colorGreyedOut } from '@/themes'
 import { routes } from '@/routes'
 import { QueuedItem, QueuedItemForRecord } from '@/queues'
@@ -440,7 +440,7 @@ const QueueTableRow = <TItem extends Record<string, any>>({
         }>
         <TableCell>
           <CopyThing text={item.id} title={item.id}>
-            {item.id.substring(0, 4)}
+            {item.id.substring(0, shortIdLength)}
           </CopyThing>
         </TableCell>
         <TableCell>
