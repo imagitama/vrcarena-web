@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
+import styled from '@emotion/styled'
 
 import useDatabaseQuery, {
   OrderDirections,
@@ -9,17 +10,30 @@ import useNotices from '@/hooks/useNotices'
 import { ViewNames, FullNotice } from '@/modules/notices'
 import { mediaQueryForMobiles } from '@/media-queries'
 
-import Notice from '@/components/notice'
 import ErrorMessage from '@/components/error-message'
+import Message from '../message'
+import FormattedDate from '../formatted-date'
+import Markdown from '../markdown'
 
 const useStyles = makeStyles({
   notice: {
-    marginBottom: '1rem',
+    marginBottom: '0.5rem',
+    '&:last-child': {
+      marginBottom: 0,
+    },
     [mediaQueryForMobiles]: {
       marginBottom: '0.5rem',
     },
   },
 })
+
+const Date = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  opacity: 0.5;
+  padding: 0.2rem 0.5rem;
+`
 
 const Notices = () => {
   const [isLoading, lastErrorCode, results] = useDatabaseQuery<FullNotice>(
@@ -29,7 +43,7 @@ const Notices = () => {
     ['orderby', OrderDirections.ASC]
   )
   const classes = useStyles()
-  const [hiddenNotices, hideNoticeById] = useNotices()
+  const [hiddenNotices] = useNotices()
 
   if (lastErrorCode !== null) {
     return (
@@ -53,7 +67,14 @@ const Notices = () => {
     <>
       {noticesToShow.map((notice) => (
         <div className={classes.notice} key={notice.id}>
-          <Notice {...notice} hide={() => hideNoticeById(notice.hideid)} />
+          <Message {...notice} hideId={notice.hideid}>
+            <Markdown source={notice.message} />
+            <Date>
+              <small>
+                <FormattedDate date={notice.createdat} />
+              </small>
+            </Date>
+          </Message>
         </div>
       ))}
     </>

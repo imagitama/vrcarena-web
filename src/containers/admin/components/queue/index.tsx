@@ -12,7 +12,6 @@ import { keyframes } from '@mui/system'
 import CircleIcon from '@mui/icons-material/Circle'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 import { colorPalette } from '@/config'
 import { colorGreyedOut } from '@/themes'
 import { routes } from '@/routes'
@@ -314,48 +313,6 @@ const AssetAuditApplyParentRenderer = ({
     />
   )
 }
-
-//   const [isLoadingAsset, lastErrorCodeAsset, asset] = useDataStoreItem<Asset>(
-//     AssetsCollectionNames.Assets,
-//     auditQueueItem
-//     {
-//       queryName: `asset-audit-apply_${item.id}_${item.auditqueueitem}_asset`,
-//     }
-//   )
-
-//   // console.debug(
-//   //   'RENDER!!!!',
-//   //   item.auditqueueitem,
-//   //   auditQueueItem !== null && auditQueueItem !== false
-//   //     ? auditQueueItem.createdassetid
-//   //     : false
-//   // )
-
-//   if (lastErrorCode !== null)
-//     return (
-//       <ErrorMessage>Failed to load parent (code {lastErrorCode})</ErrorMessage>
-//     )
-//   if (lastErrorCodeAsset !== null)
-//     return (
-//       <ErrorMessage>
-//         Failed to load asset (code {lastErrorCodeAsset})
-//       </ErrorMessage>
-//     )
-//   if (isLoading || auditQueueItem === null)
-//     return <NoValueLabel>Loading parent...</NoValueLabel>
-//   if (auditQueueItem === false)
-//     return <NoResultsMessage>Parent does not exist</NoResultsMessage>
-//   if (isLoadingAsset || asset === null)
-//     return <NoValueLabel>Loading asset...</NoValueLabel>
-//   if (asset === false)
-//     return <NoResultsMessage>Asset does not exist</NoResultsMessage>
-
-//   return (
-//     <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
-//       {asset.title}
-//     </Link>
-//   )
-// }
 
 const colorNew = `rgba(100,100,100)`
 
