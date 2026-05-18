@@ -79,6 +79,7 @@ import { getLabelForResult, getPositivityForResult } from '../audit'
 import { Renderer as AssetAuditResultRenderer } from '@/components/asset-audit-result'
 import ErrorBoundary from '@/components/error-boundary'
 import ShortDiff from '@/components/short-diff'
+import FailureInfoOutput from '@/components/failure-info-output'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -316,12 +317,12 @@ const AssetAuditApplyParentRenderer = ({
 
 const colorNew = `rgba(100,100,100)`
 
-interface RowProps<TItem extends Record<string, any>> {
+interface RowProps<TItem extends QueuedItem> {
   item: TItem & QueuedItem
   index: number
 }
 
-const QueueTable = <TItem extends Record<string, any>>({
+const QueueTable = <TItem extends QueuedItem>({
   items,
   newItems,
   isLoading,
@@ -409,7 +410,7 @@ const fadeBackground = (color: string) => keyframes`
   100%   { background-color: transparent; }
 `
 
-const QueueTableRow = <TItem extends Record<string, any>>({
+const QueueTableRow = <TItem extends QueuedItem>({
   item,
   index,
   isNew,
@@ -475,15 +476,15 @@ const QueueTableRow = <TItem extends Record<string, any>>({
           <StatusText positivity={getPositivityForStatus(item.status)}>
             {getStatusPastTense(item.status)}
           </StatusText>
+          {item.failureinfo && (
+            <FailureInfoOutput failureInfo={item.failureinfo} />
+          )}
         </TableCell>
         <TableCell>
           <Renderer item={item as any} index={index} />{' '}
           <KeyboardArrowUpIcon onClick={toggleExpanded} />
         </TableCell>
-        <TableCell>
-          {item.failedreason ? `Reason: ${item.failedreason}` : ''}
-          {item.notes || '-'}
-        </TableCell>
+        <TableCell>{item.notes || '-'}</TableCell>
         <TableCell></TableCell>
       </TableRow>
       {isExpanded && (
