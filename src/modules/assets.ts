@@ -212,12 +212,12 @@ export interface AssetStats {
   reviewcount: number
 }
 
-export interface PublicAsset extends Asset {
+export interface AssetForList extends Asset {
   authorname: string
   speciesnames: string[]
-  // meta
-  createdat: string
 }
+
+export type PublicAsset = AssetForList
 
 export interface FullAsset extends Asset, AssetMeta, AssetStats {
   authorname: string
@@ -272,10 +272,11 @@ export enum CollectionNames {
 }
 
 export enum ViewNames {
+  GetAssetsForList = 'getassetsforlist', // AssetForList[]
+  GetPublicAssets = 'getpublicassets', // PublicAsset[] - identical to GetAssetsForList except with WHERE clause
   GetFullAssets = 'getfullassets', // FullAsset[]
   GetFullAssets_Editor = 'getfullassets_editor', // FullAsset_Editor[]
   GetFullAssetsCache = 'getfullassetscache',
-  GetPublicAssets = 'getpublicassets', // PublicAsset[]
   RelatedAssets = 'relatedassets', // RelatedAssetsResult[]
   GetNewPublicAssets = 'getnewpublicassets', // PublicAsset[]-like
   GetAssetTimeline = 'getassettimeline',

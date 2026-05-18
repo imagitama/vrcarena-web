@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 
 import useUserId from '@/hooks/useUserId'
 import * as routes from '@/routes'
-import { Asset, ViewNames } from '@/modules/assets'
+import { Asset, AssetForList, ViewNames } from '@/modules/assets'
 import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
 
 import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
@@ -21,7 +21,7 @@ enum SubView {
 
 const MyUploads = () => {
   const userId = useUserId()
-  const getQuery = useCallback<GetQueryFn<Asset, SubView>>(
+  const getQuery = useCallback<GetQueryFn<AssetForList, SubView>>(
     (query, selectedSubView) => {
       query = query.eq('createdby', userId)
 
@@ -61,8 +61,8 @@ const MyUploads = () => {
   )
 
   return (
-    <PaginatedView<Asset>
-      viewName={ViewNames.GetFullAssets}
+    <PaginatedView<AssetForList>
+      viewName={ViewNames.GetAssetsForList}
       getQuery={getQuery}
       name="my-assets"
       sortOptions={[
