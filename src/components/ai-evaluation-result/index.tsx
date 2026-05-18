@@ -58,7 +58,6 @@ const useStyles = makeStyles({
   },
   box: {
     borderRadius: '5px',
-    // border: '1px solid rgba(255,255,255,0.25)',
     cursor: 'default',
     '& a': {
       cursor: 'pointer',
@@ -388,7 +387,7 @@ export const Renderer = ({
   return (
     <div className={`${classes.item} ${onClick ? classes.clickable : ''}`}>
       {isSubscribing && <LoadingIndicator message="Subscribing..." />}
-      {lastErrorCode && (
+      {lastErrorCode !== null && (
         <ErrorMessage>Failed to subscribe: {lastErrorCode}</ErrorMessage>
       )}
       <div className={classes.cells}>

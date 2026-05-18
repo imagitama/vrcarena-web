@@ -89,19 +89,22 @@ export default <TResult extends { [key: string]: any }>(
             `useDataStoreItemSync :: ${queryName} :: Status '${status}'`
           )
 
+          if (err) {
+            console.error(err)
+            handleError(err)
+          }
+
           switch (status) {
             case REALTIME_SUBSCRIBE_STATES.SUBSCRIBED:
               setIsSubscribed(true)
               break
 
+            case REALTIME_SUBSCRIBE_STATES.CLOSED:
+              setIsSubscribed(false)
+              break
+
             case REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR:
             case REALTIME_SUBSCRIBE_STATES.TIMED_OUT:
-            case REALTIME_SUBSCRIBE_STATES.CLOSED:
-              if (err) {
-                console.error(err)
-                handleError(err)
-              }
-
               setLastErrorCode(DataStoreErrorCode.ChannelError)
               setIsSubscribed(false)
               break

@@ -128,7 +128,6 @@ const ArchiveButton = ({
     <>
       {isAsset && (
         <ButtonDropdown
-          color="secondary"
           options={archivedReasonMeta
             .map((meta) => ({
               id: meta.reason as string,
@@ -147,6 +146,8 @@ const ArchiveButton = ({
           closeOnSelect={true}
           size="small"
           iconOnly
+          hollow
+          label="Reasons"
         />
       )}
       <Button

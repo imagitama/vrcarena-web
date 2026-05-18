@@ -129,7 +129,6 @@ const DeleteButton = ({
     <>
       {isAsset && (
         <ButtonDropdown
-          color="secondary"
           options={deletionReasonMeta
             .map((meta) => ({
               id: meta.reason as string,
@@ -148,6 +147,8 @@ const DeleteButton = ({
           closeOnSelect={true}
           size="small"
           iconOnly
+          hollow
+          label="Reasons"
         />
       )}
       <Button

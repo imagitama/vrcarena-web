@@ -1,17 +1,18 @@
 import React, { useRef, useState } from 'react'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import ButtonGroup from '@mui/material/ButtonGroup'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import CheckIcon from '@mui/icons-material/Check'
 import { makeStyles } from '@mui/styles'
 
 import Button, { ButtonProps } from '@/components/button'
 
-const useStyles = makeStyles({
-  root: {
-    display: 'inline-flex',
-  },
-})
+// const useStyles = makeStyles({
+//   root: {
+//     display: 'inline-flex',
+//   },
+// })
 
 export interface DropdownOption {
   id: string
@@ -25,6 +26,7 @@ const ButtonDropdown = ({
   selectedIds = [],
   closeOnSelect = true,
   onSelect,
+  children,
   ...buttonProps
 }: {
   options: DropdownOption[]
@@ -34,8 +36,7 @@ const ButtonDropdown = ({
   closeOnSelect?: boolean
   onSelect: (newId: string) => void
 } & ButtonProps) => {
-  const classes = useStyles()
-  const buttonRef = useRef<HTMLElement | null>(null)
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const onMainBtnClick = () => {
@@ -55,8 +56,8 @@ const ButtonDropdown = ({
   }
 
   return (
-    <div className={classes.root}>
-      <span ref={buttonRef}>
+    <>
+      <ButtonGroup>
         <Button
           {...buttonProps}
           icon={buttonProps.icon || <KeyboardArrowDownIcon />}
@@ -66,10 +67,12 @@ const ButtonDropdown = ({
             if (buttonProps.onClick) {
               buttonProps.onClick(e)
             }
-          }}>
+          }}
+          ref={buttonRef}>
           {label}
         </Button>
-      </span>
+        {children}
+      </ButtonGroup>
       {isDropdownOpen && (
         <Menu
           anchorEl={buttonRef.current}
@@ -96,7 +99,7 @@ const ButtonDropdown = ({
           ))}
         </Menu>
       )}
-    </div>
+    </>
   )
 }
 

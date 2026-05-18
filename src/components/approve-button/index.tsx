@@ -180,7 +180,6 @@ const ApproveButton = ({
       <div style={{ marginTop: '0.25rem' }} />
       {isAsset && (
         <ButtonDropdown
-          color="secondary"
           options={declinedReasonMeta.map((meta) => ({
             id: meta.reason,
             label: meta.label,
@@ -196,6 +195,8 @@ const ApproveButton = ({
           closeOnSelect={false}
           size="small"
           iconOnly
+          hollow
+          label="Reasons"
         />
       )}
       <Button
@@ -208,12 +209,17 @@ const ApproveButton = ({
       </Button>
       {existingDeclinedReasons &&
         !getAreArraysSame(selectedReasons, existingDeclinedReasons) && (
-          <>
+          <div style={{ marginTop: '0.25rem' }}>
+            New reasons:
+            <ul>
+              {selectedReasons.map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
+            </ul>
             <Button onClick={onClickUpdate} size="small" color="secondary">
-              Save Reasons
+              Save
             </Button>
-            {selectedReasons.join(', ')}
-          </>
+          </div>
         )}
     </>
   )

@@ -1,3 +1,5 @@
+import styled from '@emotion/styled'
+
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
@@ -60,8 +62,21 @@ const AuditedAsset = ({ result }: { result: AuditResult }) => {
   )
 }
 
+const Item = styled.div`
+  width: 100%;
+  padding: 0.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  &:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+  &:last-child {
+    padding-bottom: 0;
+  }
+`
+
 export const Renderer = ({ queuedItem }: { queuedItem: AuditQueueItem }) => (
-  <div key={queuedItem.id} style={{ marginBottom: '0.5rem' }}>
+  <Item key={queuedItem.id}>
     <StatusText positivity={getPositivityForStatus(queuedItem.status)}>
       {getStatusPastTense(queuedItem.status)}
     </StatusText>
@@ -71,7 +86,7 @@ export const Renderer = ({ queuedItem }: { queuedItem: AuditQueueItem }) => (
     </small>
     <br />
     {queuedItem.result !== null && <AuditedAsset result={queuedItem.result} />}
-  </div>
+  </Item>
 )
 
 const AssetAuditResult = ({ asset }: { asset: FullAsset }) => {
@@ -85,6 +100,7 @@ const AssetAuditResult = ({ asset }: { asset: FullAsset }) => {
       {
         queryName: `asset-audit-result_${asset.id}`,
         orderBy: ['createdat', OrderDirections.DESC],
+        limit: 2,
       }
     )
   const [isCreating, isSuccess, lastErrorCodeCreating, create] =
@@ -131,6 +147,9 @@ const AssetAuditResult = ({ asset }: { asset: FullAsset }) => {
 
   return (
     <div>
+      <strong style={{ marginBottom: '0.5rem' }}>
+        Most recent 2 asset audits:
+      </strong>
       {results === null || results.length === 0 ? (
         <NoResultsMessage>Nothing in the queue</NoResultsMessage>
       ) : (
@@ -149,10 +168,11 @@ const AssetAuditResult = ({ asset }: { asset: FullAsset }) => {
         label="Source URL"
         size="small"
         color="secondary"
-      />
-      <Button onClick={onRequeue} size="small" hollow>
-        Re-Queue
-      </Button>
+        hollow>
+        <Button onClick={onRequeue} size="small" hollow>
+          Re-Queue
+        </Button>
+      </ButtonDropdown>
     </div>
   )
 }

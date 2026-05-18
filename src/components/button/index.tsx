@@ -131,6 +131,9 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
         backgroundColor: 'rgba(255,255,255,0.15)',
       },
     },
+    '&&:hover': {
+      borderRightColor: 'rgba(255,255,255,0.25) !important', // tried overriding but failed
+    },
   },
 }))
 
