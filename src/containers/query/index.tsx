@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@mui/styles'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 import * as routes from '@/routes'

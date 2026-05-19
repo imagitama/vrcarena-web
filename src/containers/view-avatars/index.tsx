@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import PetsIcon from '@mui/icons-material/Pets'
 
 import { GetQuery } from '@/data-store'

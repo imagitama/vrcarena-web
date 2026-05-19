@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import LinkIcon from '@mui/icons-material/Link'
 import InfoIcon from '@mui/icons-material/Info'

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import { makeStyles } from '@mui/styles'
 
 import * as routes from '@/routes'

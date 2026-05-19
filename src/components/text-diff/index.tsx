@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactTextDiff, { DiffMethod } from 'react-diff-viewer'
+import ReactTextDiff, { DiffMethod } from 'react-diff-viewer-continued'
 
 const TextDiff = ({
   oldValue,

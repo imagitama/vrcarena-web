@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactTextDiff, { DiffMethod } from 'react-diff-viewer'
+import ReactTextDiff, { DiffMethod } from 'react-diff-viewer-continued'
 import TagDiffChips from '../tag-diff-chips'
 
 const tagsToStringForDiff = (tags: string[]): string => tags.sort().join('\n')

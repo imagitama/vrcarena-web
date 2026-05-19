@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import LazyLoad from 'react-lazyload'
+import LazyLoad from '@/components/lazy-load'
 import Link from '@/components/link'
 import { getIsUrlAbsolute } from '@/utils'
 import {

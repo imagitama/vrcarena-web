@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import AddIcon from '@mui/icons-material/Add'
 
 import * as routes from '@/routes'

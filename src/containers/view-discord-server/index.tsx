@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import LaunchIcon from '@mui/icons-material/Launch'
 import SyncIcon from '@mui/icons-material/Sync'
 import EditIcon from '@mui/icons-material/Edit'

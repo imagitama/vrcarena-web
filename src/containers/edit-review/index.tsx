@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 
 import { Asset } from '@/modules/assets'
 import * as routes from '@/routes'

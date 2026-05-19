@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import { useHistory, useParams } from 'react-router'
 import EditIcon from '@mui/icons-material/Edit'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'

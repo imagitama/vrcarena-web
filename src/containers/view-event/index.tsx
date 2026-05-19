@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import LaunchIcon from '@mui/icons-material/Launch'
 import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'

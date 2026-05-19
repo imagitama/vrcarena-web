@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 
 import * as routes from '@/routes'
 import { CollectionNames, editableFields } from '@/modules/tags'

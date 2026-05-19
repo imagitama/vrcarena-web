@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux'
-import { connectRouter } from 'connected-react-router'
 import { History } from 'history'
 import user, { UserState } from './user'
 import app, { AppState } from './app'
@@ -9,7 +8,6 @@ export interface RootState {
   user: UserState
   app: AppState
   firebase: FirebaseState
-  router: ReturnType<typeof connectRouter>
 }
 
 const createRootReducer = (history: History) =>
@@ -17,8 +15,6 @@ const createRootReducer = (history: History) =>
     user,
     app,
     firebase,
-    // @ts-ignore cbf fixing
-    router: connectRouter(history),
   })
 
 export default createRootReducer

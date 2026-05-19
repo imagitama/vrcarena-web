@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import LazyLoad from 'react-lazyload'
+import LazyLoad from '@/components/lazy-load'
 import LoadingIndicator from '@/components/loading-indicator'
 import DefaultAvatar from '@/components/default-avatar'
 import { ReactComponent as ChristmasHat } from '@/assets/images/christmas-hat.svg'

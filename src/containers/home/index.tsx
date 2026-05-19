@@ -1,5 +1,5 @@
-import React from 'react'
-import { Helmet } from 'react-helmet'
+import React, { useEffect } from 'react'
+import { Helmet } from '@unhead/react/helmet'
 import { makeStyles } from '@mui/styles'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 

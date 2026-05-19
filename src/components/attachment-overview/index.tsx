@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import {

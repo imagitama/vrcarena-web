@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import { makeStyles } from '@mui/styles'
 import Container from '@mui/material/Container'
 

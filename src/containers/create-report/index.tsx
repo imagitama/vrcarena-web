@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import { useParams } from 'react-router'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'

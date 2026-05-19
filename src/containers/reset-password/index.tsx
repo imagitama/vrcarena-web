@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 
 import ResetPasswordForm from '@/components/reset-password-form'
 import Heading from '@/components/heading'

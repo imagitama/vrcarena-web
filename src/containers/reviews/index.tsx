@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 
 import { PublicReview, ViewNames } from '@/modules/reviews'
 import { routes } from '@/routes'

@@ -1,9 +1,9 @@
 import React, { Fragment, useCallback } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import { Link, useParams } from 'react-router-dom'
 import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'
-import LazyLoad from 'react-lazyload'
+import LazyLoad from '@/components/lazy-load'
 
 import * as routes from '@/routes'
 import categoryMeta from '@/category-meta'

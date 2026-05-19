@@ -60,7 +60,7 @@ const useStyles = makeStyles({
       transform: 'scale(1.1)',
     },
   },
-  mobileButton: {
+  mobileBtn: {
     width: '100%',
     marginRight: 0,
     marginBottom: '0.5rem',
@@ -75,6 +75,9 @@ const useStyles = makeStyles({
     fontWeight: 'bold',
   },
   submitBtn: {
+    '&&': {
+      marginRight: '1rem',
+    },
     '& svg': {
       marginLeft: '-4px',
     },
@@ -279,19 +282,17 @@ export default ({
   return (
     <div className={classes.root}>
       {isLoggedIn ? (
-        <div className={classes.items}>
-          <Button
-            url={routes.createAsset}
-            className={`${classes.item} ${classes.submitBtn} ${
-              isMobile ? classes.mobileButton : ''
-            }`}
-            onClick={closeAllDropdowns}
-            icon={<ChevronRightIcon />}
-            color="secondary"
-            hollow>
-            Submit
-          </Button>
-        </div>
+        <Button
+          url={routes.createAsset}
+          className={classNames(classes.submitBtn, {
+            [classes.mobileBtn]: isMobile,
+          })}
+          onClick={closeAllDropdowns}
+          icon={<ChevronRightIcon />}
+          color="secondary"
+          hollow>
+          Submit
+        </Button>
       ) : null}
       <div className={classes.items}>
         {Object.entries(menu)

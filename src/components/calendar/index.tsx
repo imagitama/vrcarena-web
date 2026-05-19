@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react'
 import ReactCalendar from 'react-calendar'
+import { View } from 'react-calendar/dist/shared/types'
 import { makeStyles } from '@mui/styles'
-import { View } from 'react-calendar/dist/cjs/shared/types'
 import Chip from '@mui/material/Chip'
 
 import Paper from '@/components/paper'

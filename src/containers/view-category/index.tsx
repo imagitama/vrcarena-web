@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import { useLocation, useParams } from 'react-router'
 
 import { getCategoryMeta } from '@/category-meta'

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 
 import TextInput from '@/components/text-input'
 import Button from '@/components/button'

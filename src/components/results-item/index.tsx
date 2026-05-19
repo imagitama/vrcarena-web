@@ -4,7 +4,7 @@ import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
-import LazyLoad from 'react-lazyload'
+import LazyLoad from '@/components/lazy-load'
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
 
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'

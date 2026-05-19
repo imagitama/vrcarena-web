@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 import { useParams } from 'react-router'
 
 import AssetEditor from '@/components/asset-editor'

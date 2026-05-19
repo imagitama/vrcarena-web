@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 
 import * as routes from '@/routes'
 import { Author, ViewNames } from '@/modules/authors'

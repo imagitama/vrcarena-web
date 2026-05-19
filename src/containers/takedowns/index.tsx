@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from '@unhead/react/helmet'
 
 import Markdown from '@/components/markdown'
 import { EMAIL } from '@/config'

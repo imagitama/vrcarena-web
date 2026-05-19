@@ -1,7 +1,6 @@
-import React, { ImgHTMLAttributes, useState } from 'react'
+import React, { ImgHTMLAttributes } from 'react'
 import { makeStyles } from '@mui/styles'
-import LazyLoad from 'react-lazyload'
-import Lightbox from 'react-image-lightbox-custom'
+import LazyLoad from '@/components/lazy-load'
 
 const useStyles = makeStyles({
   root: {
@@ -27,20 +26,13 @@ export default ({
   caption: string
 } & ImgHTMLAttributes<HTMLImageElement>) => {
   const classes = useStyles()
-  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <div className={classes.root}>
       <LazyLoad>
-        <img {...props} onClick={() => setIsOpen(true)} />
+        <img {...props} />
       </LazyLoad>
       <div className={classes.caption}>{caption || props.alt}</div>
-      {isOpen ? (
-        <Lightbox
-          mainSrc={props.src!}
-          onCloseRequest={() => setIsOpen(false)}
-        />
-      ) : null}
     </div>
   )
 }
