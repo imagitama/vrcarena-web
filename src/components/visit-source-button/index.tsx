@@ -59,7 +59,9 @@ const useStyles = makeStyles({
     opacity: 0.5, // same as "HintText"
   },
   hint: {
+    display: 'block',
     marginLeft: '0.25rem',
+    marginTop: '0.1rem',
   },
 })
 
@@ -187,38 +189,40 @@ const VisitSourceButton = ({
 
   return (
     <div className={classes.root}>
-      <Button
-        color={!isExtraSource ? 'primary' : 'secondary'}
-        url={sourceInfo ? addReferrerToUrl(sourceInfo.url) : undefined}
-        icon={<LaunchIcon />}
-        onClick={onBtnClick}
-        size="large"
-        className={`${classes.button} ${
-          isExtraSource ? classes.extraSource : ''
-        } ${sourceInfo?.price ? classes.buttonWithPrice : ''}`}
-        isLoading={isAssetLoading}>
-        {hasPrice ? (
-          <Price
-            price={sourceInfo.price!}
-            priceCurrency={sourceInfo?.pricecurrency!}
-            isGreyscale
-            className={classes.price}
-            small
-          />
-        ) : null}
-        {sourceInfo && sourceInfo.url
-          ? getButtonLabel(sourceInfo.url)
-          : 'Loading...'}
-      </Button>
+      <div>
+        <Button
+          color={!isExtraSource ? 'primary' : 'secondary'}
+          url={sourceInfo ? addReferrerToUrl(sourceInfo.url) : undefined}
+          icon={<LaunchIcon />}
+          onClick={onBtnClick}
+          size="large"
+          className={`${classes.button} ${
+            isExtraSource ? classes.extraSource : ''
+          } ${sourceInfo?.price ? classes.buttonWithPrice : ''}`}
+          isLoading={isAssetLoading}>
+          {hasPrice ? (
+            <Price
+              price={sourceInfo.price!}
+              priceCurrency={sourceInfo?.pricecurrency!}
+              isGreyscale
+              className={classes.price}
+              small
+            />
+          ) : null}
+          {sourceInfo && sourceInfo.url
+            ? getButtonLabel(sourceInfo.url)
+            : 'Loading...'}
+        </Button>
+        {hasPrice && (
+          <HintText small className={classes.hint}>
+            *prices are an indication only and may be outdated
+          </HintText>
+        )}
+      </div>
       {sourceInfo?.comments && (
         <Tooltip title={sourceInfo?.comments}>
           <HelpIcon className={classes.icon} />
         </Tooltip>
-      )}
-      {hasPrice && (
-        <HintText small className={classes.hint}>
-          *prices are an indication only and may be outdated
-        </HintText>
       )}
     </div>
   )
