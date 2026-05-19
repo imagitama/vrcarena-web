@@ -33,6 +33,7 @@ import AiEvaluationResult from '@/components/ai-evaluation-result'
 import AssetResultsItem from '@/components/asset-results-item'
 import ErrorBoundary from '@/components/error-boundary'
 import AiArea from '../ai-area'
+import { Intent } from '@/modules/aievaluation'
 
 const useStyles = makeStyles({
   pass: {
@@ -125,6 +126,7 @@ function AssetsTable({
                         <AiEvaluationResult
                           parentCollectionName={AssetsCollectionNames.Assets}
                           parent={asset as FullAsset_Editor_ForList}
+                          intent={Intent.AutoApprove}
                           mostRecentQueuedItem={
                             (asset as FullAsset_Editor_ForList).aievaluation
                           }

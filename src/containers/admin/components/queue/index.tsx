@@ -241,6 +241,7 @@ const AutoApproveFullRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
       <AiEvaluationResult
         parentCollectionName={AssetsCollectionNames.Assets}
         parent={asset}
+        intent={Intent.AutoApprove}
         mostRecentQueuedItem={item}
       />
     </>
@@ -290,6 +291,7 @@ const BotScoreFullRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
       <AiEvaluationResult
         parentCollectionName={UsersCollectionNames.Users}
         parent={user}
+        intent={Intent.BotScore}
         mostRecentQueuedItem={item}
       />
     </>

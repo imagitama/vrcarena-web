@@ -13,6 +13,7 @@ import EditorBox from '@/components/editor-box'
 import AssetAuditResult from '@/components/asset-audit-result'
 
 import TabContext from '../../context'
+import { Intent } from '@/modules/aievaluation'
 
 export default () => {
   const { assetId, asset, isLoading, hydrate } = useContext(TabContext)
@@ -50,6 +51,7 @@ export default () => {
           <AiEvaluationResult
             parentCollectionName={AssetsCollectionNames.Assets}
             parent={asset as FullAsset_Editor}
+            intent={Intent.AutoApprove}
             mostRecentQueuedItem={(asset as FullAsset_Editor).aievaluation}
           />
         </AiArea>

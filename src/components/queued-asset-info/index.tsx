@@ -28,6 +28,7 @@ import Column from '@/components/column'
 import ErrorBoundary from '@/components/error-boundary'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import AiArea from '../ai-area'
+import { Intent } from '@/modules/aievaluation'
 
 const useStyles = makeStyles({
   pass: {
@@ -233,7 +234,14 @@ const QueuedAssetInfo = ({
               <AiArea
                 title="Evaluation"
                 tooltip="We use AI to evaluate our assets for auto-approval.">
-                <AiEvaluationResult asset={asset as FullAsset_Editor} />
+                <AiEvaluationResult
+                  parentCollectionName={CollectionNames.Assets}
+                  parent={asset as FullAsset_Editor}
+                  intent={Intent.AutoApprove}
+                  mostRecentQueuedItem={
+                    (asset as FullAsset_Editor).aievaluation
+                  }
+                />
               </AiArea>
             </ErrorBoundary>
           </Column>

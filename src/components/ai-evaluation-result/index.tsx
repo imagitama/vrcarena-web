@@ -20,6 +20,7 @@ import {
   AiEvaluateQueuedItemStatus,
   CollectionNames as AiEvaluationCollectionNames,
   GeminiAssetEvaluationFunctionResult,
+  Intent,
   type AiEvaluateConvo,
   type AiEvaluateQueuedItem,
 } from '@/modules/aievaluation'
@@ -473,10 +474,12 @@ export const Renderer = ({
 const AiEvaluationsList = <TParent,>({
   parentCollectionName,
   parent,
+  intent,
   mostRecentQueuedItem,
 }: {
   parentCollectionName: string
   parent: TParent
+  intent: Intent
   mostRecentQueuedItem: AiEvaluateQueuedItem | null
 }) => {
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
@@ -485,7 +488,6 @@ const AiEvaluationsList = <TParent,>({
       [
         ['recordtable', Operators.EQUALS, parentCollectionName],
         ['recordid', Operators.EQUALS, (parent as Record<string, any>).id],
-        // TODO: check intent
       ],
       {
         orderBy: ['createdat', OrderDirections.DESC],
@@ -527,6 +529,7 @@ const AiEvaluationsList = <TParent,>({
         <RequeueButton
           parentCollectionName={parentCollectionName}
           parentId={(parent as Record<string, any>).id}
+          intent={intent}
         />
       </div>
     </>
@@ -541,9 +544,11 @@ const NoResultsMessage = ({ message }: { message: string }) => {
 const RequeueButton = ({
   parentCollectionName,
   parentId,
+  intent,
 }: {
   parentCollectionName: string
   parentId: string
+  intent: Intent
 }) => {
   const [isLoading, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<AiEvaluateQueuedItem>(
@@ -554,6 +559,7 @@ const RequeueButton = ({
     await create({
       recordtable: parentCollectionName,
       recordid: parentId,
+      intent,
     })
   }
 
@@ -581,10 +587,12 @@ const RequeueButton = ({
 const AiEvaluationResult = <TRecord,>({
   parentCollectionName,
   parent,
+  intent,
   mostRecentQueuedItem,
 }: {
   parentCollectionName: string
   parent: TRecord | null
+  intent: Intent
   mostRecentQueuedItem: AiEvaluateQueuedItem | null
 }) => {
   const classes = useStyles()
@@ -599,6 +607,7 @@ const AiEvaluationResult = <TRecord,>({
           parentCollectionName={parentCollectionName}
           parent={parent}
           mostRecentQueuedItem={mostRecentQueuedItem}
+          intent={intent}
         />
       </Dialog>
     )
@@ -613,6 +622,7 @@ const AiEvaluationResult = <TRecord,>({
           <AiEvaluationsList
             parentCollectionName={parentCollectionName}
             parent={parent}
+            intent={intent}
             mostRecentQueuedItem={mostRecentQueuedItem}
           />
         ) : (
