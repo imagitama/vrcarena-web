@@ -265,36 +265,6 @@ export const Score = styled.span`
   color: ${({ value }: { value: number }) => getColor(value)};
 `
 
-// const Tags = ({
-//   tags,
-//   queuedItemTags,
-//   isMain = false,
-// }: {
-//   tags: string[]
-//   queuedItemTags?: string[]
-//   isMain?: boolean
-// }) => {
-//   const classes = useStyles()
-//   return (
-//     <div className={classes.tags}>
-//       {tags.map((tag) => (
-//         <Chip
-//           key={tag}
-//           color="secondary"
-//           size="small"
-//           label={tag}
-//           classes={{
-//             root: classes.chip,
-//           }}
-//           className={`${
-//             isMain || queuedItemTags?.includes(tag) ? classes.commonTag : ''
-//           }`}
-//         />
-//       ))}
-//     </div>
-//   )
-// }
-
 interface ConvoProps {
   message: AiConvoMessage<any, any>
 }
@@ -355,21 +325,66 @@ export interface RendererProps {
   queuedItem: QueuedItem
 }
 
-const ListForAsset = ({
+export const RequeueButton = <TRecord,>({
+  queueCollectionName,
+  parentCollectionName,
+  parentId,
+  extraFields = {},
+}: {
+  queueCollectionName: string
+  parentCollectionName: string
+  parentId: string
+  extraFields?: Partial<TRecord>
+}) => {
+  const [isLoading, isSuccess, lastErrorCode, create] =
+    useDataStoreCreate<QueuedItem>(queueCollectionName)
+
+  const onRequeue = async () => {
+    await create({
+      recordtable: parentCollectionName,
+      recordid: parentId,
+      ...extraFields,
+    })
+  }
+
+  const isBusy = isLoading
+
+  return (
+    <>
+      {isSuccess && <SuccessMessage>Added to queue</SuccessMessage>}
+      {isLoading && <LoadingIndicator message="Adding to queue..." />}
+      {lastErrorCode !== null && (
+        <ErrorMessage>Failed: {lastErrorCode}</ErrorMessage>
+      )}
+      <Button
+        onClick={onRequeue}
+        isDisabled={isBusy}
+        size="small"
+        color="secondary"
+        hollow>
+        Re-Queue
+      </Button>
+    </>
+  )
+}
+
+const QueuedItemsList = ({
   queueCollectionName,
   renderer: Renderer,
-  assetId,
+  parentCollectionName,
+  parentId,
 }: {
   queueCollectionName: string
   renderer: React.ComponentType<RendererProps>
-  assetId: string
+  parentCollectionName: string
+  parentId: string
 }) => {
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<QueuedItem>(
       queueCollectionName,
       [
-        ['recordtable', Operators.EQUALS, AssetsCollectionNames.Assets],
-        ['recordid', Operators.EQUALS, assetId],
+        ['recordtable', Operators.EQUALS, parentCollectionName],
+        ['recordid', Operators.EQUALS, parentId],
       ],
       {
         orderBy: ['createdat', OrderDirections.DESC],
@@ -408,7 +423,8 @@ const ListForAsset = ({
         </Button>{' '}
         <RequeueButton
           queueCollectionName={queueCollectionName}
-          assetId={assetId}
+          parentCollectionName={parentCollectionName}
+          parentId={parentId}
         />
       </div>
     </>
@@ -418,46 +434,6 @@ const ListForAsset = ({
 const NoResultsMessage = ({ message }: { message: string }) => {
   const classes = useStyles()
   return <div className={classes.noResultsMessage}>{message}</div>
-}
-
-export const RequeueButton = ({
-  queueCollectionName,
-  assetId,
-  ...props
-}: {
-  queueCollectionName: string
-  assetId: string
-} & ButtonProps) => {
-  const [isLoading, isSuccess, lastErrorCode, create] =
-    useDataStoreCreate<QueuedItem>(queueCollectionName)
-
-  const onRequeue = async () => {
-    await create({
-      recordtable: AssetsCollectionNames.Assets,
-      recordid: assetId,
-    })
-  }
-
-  const isBusy = isLoading
-
-  return (
-    <>
-      {isSuccess && <SuccessMessage>Added to queue</SuccessMessage>}
-      {isLoading && <LoadingIndicator message="Adding to queue..." />}
-      {lastErrorCode !== null && (
-        <ErrorMessage>Failed: {lastErrorCode}</ErrorMessage>
-      )}
-      <Button
-        onClick={onRequeue}
-        isDisabled={isBusy}
-        size="small"
-        color="secondary"
-        hollow
-        {...props}>
-        Re-Queue
-      </Button>
-    </>
-  )
 }
 
 export const ConvoGroup = ({
@@ -507,10 +483,12 @@ const AiResult = <TQueuedItem extends QueuedItem>({
     return (
       <Dialog title={title} onClose={() => setIsDialog(false)}>
         <div style={{ height: 15 }} />
-        <ListForAsset
+        <QueuedItemsList
           queueCollectionName={queueCollectionName}
           renderer={Renderer}
-          assetId={assetId}
+          // TODO: move
+          parentCollectionName={AssetsCollectionNames.Assets}
+          parentId={assetId}
         />
       </Dialog>
     )
@@ -522,10 +500,11 @@ const AiResult = <TQueuedItem extends QueuedItem>({
         className={`${classes.box} ${isShowingMore ? '' : classes.clickable}`}
         onClick={() => setIsShowingMore(true)}>
         {isShowingMore ? (
-          <ListForAsset
+          <QueuedItemsList
             queueCollectionName={queueCollectionName}
             renderer={Renderer}
-            assetId={assetId}
+            parentCollectionName={AssetsCollectionNames.Assets}
+            parentId={assetId}
           />
         ) : (
           <>

@@ -541,7 +541,7 @@ const NoResultsMessage = ({ message }: { message: string }) => {
   return <div className={classes.noResultsMessage}>{message}</div>
 }
 
-const RequeueButton = ({
+export const RequeueButton = ({
   parentCollectionName,
   parentId,
   intent,
