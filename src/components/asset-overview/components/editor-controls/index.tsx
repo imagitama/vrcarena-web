@@ -1,13 +1,18 @@
 import React, { useContext } from 'react'
+
+import {
+  CollectionNames as AssetsCollectionNames,
+  FullAsset_Editor,
+} from '@/modules/assets'
+
 import EditorRecordManager from '@/components/editor-record-manager'
-import TabContext from '../../context'
-import Control from '../control'
-import { CollectionNames, FullAsset_Editor } from '@/modules/assets'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import ErrorBoundary from '@/components/error-boundary'
 import AiArea from '@/components/ai-area'
 import EditorBox from '@/components/editor-box'
 import AssetAuditResult from '@/components/asset-audit-result'
+
+import TabContext from '../../context'
 
 export default () => {
   const { assetId, asset, isLoading, hydrate } = useContext(TabContext)
@@ -17,11 +22,11 @@ export default () => {
   }
 
   return (
-    <Control>
+    <>
       <EditorRecordManager
         id={assetId}
-        collectionName={CollectionNames.Assets}
-        metaCollectionName={CollectionNames.AssetsMeta}
+        collectionName={AssetsCollectionNames.Assets}
+        metaCollectionName={AssetsCollectionNames.AssetsMeta}
         existingApprovalStatus={asset.approvalstatus}
         existingPublishStatus={asset.publishstatus}
         existingAccessStatus={asset.accessstatus}
@@ -42,7 +47,11 @@ export default () => {
         <AiArea
           title="Evaluation"
           tooltip="The site has asked AI to evaluate the asset to determine if it can be auto-approved.">
-          <AiEvaluationResult asset={asset as FullAsset_Editor} />
+          <AiEvaluationResult
+            parentCollectionName={AssetsCollectionNames.Assets}
+            parent={asset as FullAsset_Editor}
+            mostRecentQueuedItem={(asset as FullAsset_Editor).aievaluation}
+          />
         </AiArea>
       </ErrorBoundary>
       <br />
@@ -51,6 +60,6 @@ export default () => {
           <AssetAuditResult asset={asset} />
         </EditorBox>
       </ErrorBoundary>
-    </Control>
+    </>
   )
 }

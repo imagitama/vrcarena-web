@@ -3,19 +3,20 @@ import ReportIcon from '@mui/icons-material/Report'
 
 import { trackAction } from '@/analytics'
 import * as routes from '@/routes'
-import Button from '@/components/button'
+import Button, { ButtonProps } from '@/components/button'
 
-export default ({
+const ReportButton = ({
   type,
   id,
   small = false,
   analyticsCategoryName,
+  ...buttonProps
 }: {
   type: string
   id: string
   small?: boolean
   analyticsCategoryName?: string
-}) => {
+} & ButtonProps) => {
   const onBtnClick = () => {
     if (analyticsCategoryName) {
       trackAction(analyticsCategoryName, 'Click report button', {
@@ -35,8 +36,11 @@ export default ({
         .replace(':parentId', id)}
       size={small ? 'small' : undefined}
       title="Report"
-      iconOnly={small}>
+      iconOnly={small}
+      {...buttonProps}>
       {small ? '' : 'Report'}
     </Button>
   )
 }
+
+export default ReportButton

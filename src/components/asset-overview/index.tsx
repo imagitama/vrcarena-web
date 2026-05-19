@@ -3,6 +3,8 @@ import { makeStyles } from '@mui/styles'
 import { Helmet } from 'react-helmet'
 import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import LinkIcon from '@mui/icons-material/Link'
+import InfoIcon from '@mui/icons-material/Info'
+import styled from '@emotion/styled'
 
 import { Warning as WarningIcon } from '@/icons'
 import {
@@ -66,7 +68,6 @@ import AddToCollectionButton from '@/components/add-to-collection-button'
 import useAssetOverview from './useAssetOverview'
 import AssetOverviewContext from './context'
 import Messages from './components/messages'
-import Control from './components/control'
 import TabDescription from './components/tab-description'
 import TabReviews from './components/tab-reviews'
 import TabComments from './components/tab-comments'
@@ -85,6 +86,9 @@ import RequiresVerificationNotice from '@/components/requires-verification-notic
 import LoadingIndicator from '@/components/loading-indicator'
 import PrimaryImage from './components/primary-image'
 import TagChip from '@/components/tag-chip'
+import Tooltip from '../tooltip'
+import { getFriendlyDate } from '@/utils/dates'
+import { colorGreyedOut } from '@/themes'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -206,10 +210,6 @@ const useStyles = makeStyles({
       marginTop: '0.25rem',
     },
   },
-  // controls
-  controlGroup: {
-    marginBottom: '1rem',
-  },
   // parent
   parent: {
     margin: '2rem 0',
@@ -278,10 +278,21 @@ const ParentControlGroup = () => {
   )
 }
 
-const ControlGroup = ({ children }: { children: React.ReactNode }) => {
-  const classes = useStyles()
-  return <div className={classes.controlGroup}>{children}</div>
-}
+const ControlGroup = styled.div<{ greyed?: boolean }>`
+  margin-bottom: 0.5rem;
+  color: ${({ greyed }) => (greyed ? colorGreyedOut : 'inherit')};
+  &:last-child {
+    margin-bottom: 0;
+  }
+`
+
+const Control = styled.div<{ small?: boolean }>`
+  margin-bottom: 0.25rem;
+  font-size: ${({ small }) => (small ? '75%' : 'inherit')};
+  &:last-child {
+    margin-bottom: 0;
+  }
+`
 
 const NsfwIcon = () => {
   const { asset, isLoading } = useAssetOverview()
@@ -455,7 +466,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
       : undefined
   const hasPrimaryImage = nonMediaAttachments.length > 0
 
-  const visitSourceButtons = asset ? (
+  const VisitSourceButtons = asset ? (
     <>
       {asset?.relations?.find((relation) => relation.requiresVerification) ? (
         <Control>
@@ -643,7 +654,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
         </div>
         <div className={classes.cols}>
           <div className={classes.leftCol}>
-            {isMobile && visitSourceButtons}
+            {isMobile && VisitSourceButtons}
             <TabDescription />
             {nonMediaAttachments.length > 3 && (
               <Area name="extra-attached-images" label="Images">
@@ -753,7 +764,7 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
             ) : null}
             {isAssetLoaded ? (
               <ControlGroup>
-                {!isMobile && visitSourceButtons}
+                {!isMobile && VisitSourceButtons}
                 <Control>
                   <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
                 </Control>
@@ -778,6 +789,49 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                 </Control>
               </ControlGroup>
             )}
+
+            {asset && asset.publishedby && asset.publishedbyusername ? (
+              <ControlGroup greyed>
+                <Control small>
+                  Submitted by{' '}
+                  <UsernameLink
+                    id={asset.publishedby}
+                    username={asset.publishedbyusername}
+                  />{' '}
+                  {asset.approvedby ? (
+                    <>
+                      approved by{' '}
+                      <UsernameLink
+                        id={asset.approvedby}
+                        username={asset.approvedbyusername}
+                      />
+                    </>
+                  ) : null}
+                  <Tooltip
+                    title={
+                      <>
+                        Every asset on this website was (hopefully) submitted by
+                        a human.
+                        <br />
+                        <br />
+                        Published{' '}
+                        {asset.publishedat
+                          ? getFriendlyDate(asset.publishedat)
+                          : '(no date)'}{' '}
+                        by {asset.publishedbyusername || '(no name)'}
+                        <br />
+                        Approved{' '}
+                        {asset.approvedat
+                          ? getFriendlyDate(asset.approvedat)
+                          : '(no date)'}{' '}
+                        by {asset.approvedbyusername || '(no name)'}
+                      </>
+                    }>
+                    <InfoIcon />
+                  </Tooltip>
+                </Control>
+              </ControlGroup>
+            ) : null}
             <ParentControlGroup />
             <ControlGroup>
               {asset && (

@@ -32,8 +32,6 @@ import QueuedAssetInfo from '@/components/queued-asset-info'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import AssetResultsItem from '@/components/asset-results-item'
 import ErrorBoundary from '@/components/error-boundary'
-import AiSuggestResult from '../ai-suggest-result'
-import AiSimilarResult from '../ai-similar-result'
 import AiArea from '../ai-area'
 
 const useStyles = makeStyles({
@@ -125,7 +123,11 @@ function AssetsTable({
                         title="Evaluation"
                         tooltip="The site has asked AI to evaluate the asset to determine if it can be auto-approved.">
                         <AiEvaluationResult
-                          asset={asset as FullAsset_Editor_ForList}
+                          parentCollectionName={AssetsCollectionNames.Assets}
+                          parent={asset as FullAsset_Editor_ForList}
+                          mostRecentQueuedItem={
+                            (asset as FullAsset_Editor_ForList).aievaluation
+                          }
                         />
                       </AiArea>
                     </ErrorBoundary>

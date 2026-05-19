@@ -19,7 +19,7 @@ interface QueryOptions<TItem> extends BaseQueryOptions<TItem> {
   // WARNING: replaces setState for performance
   onInsertInstead?: (insertedRecord: TItem) => void
   onUpdateInstead?: (updatedRecord: TItem) => void
-  only?: string[]
+  filter?: (record: TItem) => boolean
 }
 
 /**
@@ -72,6 +72,10 @@ export default <TItem extends Record<string, any>>(
 
         const createdRecord = payload.new as TItem
 
+        if (options.filter && !options.filter(createdRecord)) {
+          return
+        }
+
         if (options.onInsertInstead) {
           options.onInsertInstead(createdRecord)
         } else {
@@ -95,17 +99,21 @@ export default <TItem extends Record<string, any>>(
           return
         }
 
-        const createdRecord = payload.new as TItem
+        const updatedRecord = payload.new as TItem
+
+        if (options.filter && !options.filter(updatedRecord)) {
+          return
+        }
 
         if (options.onUpdateInstead) {
-          options.onUpdateInstead(createdRecord)
+          options.onUpdateInstead(updatedRecord)
         } else {
           setRecords((currentItems) => {
-            if (currentItems === null) return [createdRecord];
-            const exists = currentItems.some((item) => item.id === createdRecord.id);
+            if (currentItems === null) return [updatedRecord];
+            const exists = currentItems.some((item) => item.id === updatedRecord.id);
             return exists
-              ? currentItems.map((item) => item.id === createdRecord.id ? createdRecord : item)
-              : [...currentItems, createdRecord];
+              ? currentItems.map((item) => item.id === updatedRecord.id ? updatedRecord : item)
+              : [...currentItems, updatedRecord];
           })
         }
       }

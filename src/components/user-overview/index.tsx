@@ -15,7 +15,12 @@ import {
   getPrefersBritishSpelling,
 } from '@/utils'
 import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
-import { BanStatus, FullUser, UserRoles } from '@/modules/users'
+import {
+  BanStatus,
+  FullUser,
+  FullUser_Editor,
+  UserRoles,
+} from '@/modules/users'
 import { AccessStatus } from '@/modules/common'
 import {
   mediaQueryForMobiles,
@@ -54,6 +59,7 @@ import TabEndorsements from './components/tab-endorsements'
 import TabHistory from './components/tab-history'
 import useUserRecord from '@/hooks/useUserRecord'
 import AwardRepButton from '../award-rep-button'
+import { getScoreAsPercentage, Score } from '../ai-result'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   cols: {
@@ -407,6 +413,41 @@ const UserOverview = ({
                       <StatusText positivity={user.reputation > 0 ? 1 : -1}>
                         {user.reputation}
                       </StatusText>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Bot Score</TableCell>
+                    <TableCell>
+                      {(user as unknown as FullUser_Editor).botscore !==
+                      null ? (
+                        <Score
+                          value={
+                            (user as unknown as FullUser_Editor).botscore!
+                          }>
+                          {getScoreAsPercentage(
+                            (user as unknown as FullUser_Editor).botscore!
+                          )}
+                          %
+                        </Score>
+                      ) : (
+                        '(none yet)'
+                      )}
+                      <Tooltip
+                        title={
+                          <>
+                            We use AI to try and determine if a new user is a
+                            bot or not to combat spam.
+                            <br />
+                            <br />
+                            The AI gives us a score of how confident it is they
+                            are a real human and not a bot.
+                            <br />
+                            <br />
+                            See our AI policy in the footer.
+                          </>
+                        }>
+                        <InfoIcon />
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                   <TableRow>

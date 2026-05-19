@@ -69,6 +69,10 @@ export interface FullUser extends User, UserMeta, UserAdminMeta {
   favoritespeciesdata: Species
 }
 
+export interface FullUser_Editor {
+  botscore: number | null
+}
+
 export enum CollectionNames {
   Users = 'users',
   UsersMeta = 'usermeta',
@@ -78,6 +82,7 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullUsers = 'getfullusers',
+  GetFullUsers_Editor = 'getfullusers_editor',
   GetStaffUsers = 'getstaffusers',
 }
 

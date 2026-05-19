@@ -19,6 +19,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     borderRadius: theme.shape.borderRadius,
     border: '1px solid rgba(255,255,255,0.25)',
     padding: '0.15rem 0.3rem',
+    lineBreak: 'anywhere', // TODO: do this better (to fix it running outside the viewport)
   },
   avatar: {
     borderRadius: theme.shape.borderRadius,

@@ -1,15 +1,10 @@
 import { makeStyles } from '@mui/styles'
-import styled from '@emotion/styled'
 import React, { useState } from 'react'
 import { Chip } from '@mui/material'
 import MessageIcon from '@mui/icons-material/Message'
 import InfoIcon from '@mui/icons-material/Info'
-import CloseIcon from '@mui/icons-material/Close'
-import CheckIcon from '@mui/icons-material/Check'
 import AspectRatioIcon from '@mui/icons-material/AspectRatio'
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import Table from '@mui/material/Table'
-import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
@@ -24,17 +19,11 @@ import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import {
   AiEvaluateQueuedItemStatus,
   CollectionNames as AiEvaluationCollectionNames,
-  GeminiAssetEvaluation,
   GeminiAssetEvaluationFunctionResult,
-  GeminiFuncResult,
   type AiEvaluateConvo,
   type AiEvaluateQueuedItem,
 } from '@/modules/aievaluation'
-import {
-  FullAsset_Editor,
-  CollectionNames as AssetsCollectionNames,
-  FullAsset_Editor_ForList,
-} from '@/modules/assets'
+import { AiConvoMessage, MessageType } from '@/ai'
 
 import StatusText from '@/components/status-text'
 import ErrorMessage from '@/components/error-message'
@@ -42,10 +31,9 @@ import Button from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import FormattedDate from '@/components/formatted-date'
 import CopyThing from '@/components/copy-thing'
-import ExperimentalArea from '@/components/experimental-area'
 import SuccessMessage from '@/components/success-message'
 import Dialog from '@/components/dialog'
-import Tooltip from '../tooltip'
+import Tooltip from '@/components/tooltip'
 import {
   getIconForStatus,
   getPositivityForStatus,
@@ -53,8 +41,7 @@ import {
   getStatusPastTense,
   Score,
   Convo as ConvoExpanded,
-} from '../ai-result'
-import { AiConvoMessage, MessageType } from '@/ai'
+} from '@/components/ai-result'
 
 const useStyles = makeStyles({
   root: {
@@ -483,17 +470,22 @@ export const Renderer = ({
   )
 }
 
-const AiEvaluationsListForAsset = ({
-  asset,
+const AiEvaluationsList = <TParent,>({
+  parentCollectionName,
+  parent,
+  mostRecentQueuedItem,
 }: {
-  asset: FullAsset_Editor_ForList
+  parentCollectionName: string
+  parent: TParent
+  mostRecentQueuedItem: AiEvaluateQueuedItem | null
 }) => {
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<AiEvaluateQueuedItem>(
       AiEvaluationCollectionNames.AiEvaluateQueue,
       [
-        ['recordtable', Operators.EQUALS, AssetsCollectionNames.Assets],
-        ['recordid', Operators.EQUALS, asset.id],
+        ['recordtable', Operators.EQUALS, parentCollectionName],
+        ['recordid', Operators.EQUALS, (parent as Record<string, any>).id],
+        // TODO: check intent
       ],
       {
         orderBy: ['createdat', OrderDirections.DESC],
@@ -509,8 +501,8 @@ const AiEvaluationsListForAsset = ({
   if (isLoading) {
     return (
       <>
-        {asset.aievaluation && (
-          <Renderer queuedItem={asset.aievaluation} isMain />
+        {mostRecentQueuedItem && (
+          <Renderer queuedItem={mostRecentQueuedItem} isMain />
         )}
         <div>Loading...</div>
       </>
@@ -532,7 +524,10 @@ const AiEvaluationsListForAsset = ({
         <Button onClick={hydrate} size="small" color="secondary" hollow>
           Refresh
         </Button>{' '}
-        <RequeueButton assetId={asset.id} />
+        <RequeueButton
+          parentCollectionName={parentCollectionName}
+          parentId={(parent as Record<string, any>).id}
+        />
       </div>
     </>
   )
@@ -543,7 +538,13 @@ const NoResultsMessage = ({ message }: { message: string }) => {
   return <div className={classes.noResultsMessage}>{message}</div>
 }
 
-const RequeueButton = ({ assetId }: { assetId: string }) => {
+const RequeueButton = ({
+  parentCollectionName,
+  parentId,
+}: {
+  parentCollectionName: string
+  parentId: string
+}) => {
   const [isLoading, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<AiEvaluateQueuedItem>(
       AiEvaluationCollectionNames.AiEvaluateQueue
@@ -551,8 +552,8 @@ const RequeueButton = ({ assetId }: { assetId: string }) => {
 
   const onRequeue = async () => {
     await create({
-      recordtable: AssetsCollectionNames.Assets,
-      recordid: assetId,
+      recordtable: parentCollectionName,
+      recordid: parentId,
     })
   }
 
@@ -577,7 +578,15 @@ const RequeueButton = ({ assetId }: { assetId: string }) => {
   )
 }
 
-const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor_ForList }) => {
+const AiEvaluationResult = <TRecord,>({
+  parentCollectionName,
+  parent,
+  mostRecentQueuedItem,
+}: {
+  parentCollectionName: string
+  parent: TRecord | null
+  mostRecentQueuedItem: AiEvaluateQueuedItem | null
+}) => {
   const classes = useStyles()
   const [isShowingMore, setIsShowingMore] = useState(false)
   const [isDialog, setIsDialog] = useState(false)
@@ -586,7 +595,11 @@ const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor_ForList }) => {
     return (
       <Dialog title="AI Evaluation" onClose={() => setIsDialog(false)}>
         <div style={{ height: 15 }} />
-        <AiEvaluationsListForAsset asset={asset} />
+        <AiEvaluationsList
+          parentCollectionName={parentCollectionName}
+          parent={parent}
+          mostRecentQueuedItem={mostRecentQueuedItem}
+        />
       </Dialog>
     )
   }
@@ -597,11 +610,15 @@ const AiEvaluationResult = ({ asset }: { asset: FullAsset_Editor_ForList }) => {
         className={`${classes.box} ${isShowingMore ? '' : classes.clickable}`}
         onClick={() => setIsShowingMore(true)}>
         {isShowingMore ? (
-          <AiEvaluationsListForAsset asset={asset} />
+          <AiEvaluationsList
+            parentCollectionName={parentCollectionName}
+            parent={parent}
+            mostRecentQueuedItem={mostRecentQueuedItem}
+          />
         ) : (
           <>
-            {asset.aievaluation ? (
-              <Renderer queuedItem={asset.aievaluation} isMain />
+            {mostRecentQueuedItem ? (
+              <Renderer queuedItem={mostRecentQueuedItem} isMain />
             ) : (
               <NoResultsMessage message="No AI evaluation yet" />
             )}

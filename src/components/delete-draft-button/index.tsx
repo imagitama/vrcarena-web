@@ -6,7 +6,7 @@ import { FirebaseFunctionNames } from '@/modules/assets'
 
 import useFirebaseFunction from '@/hooks/useFirebaseFunction'
 
-import Button from '@/components/button'
+import Button, { ButtonProps } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import Dialog from '@/components/dialog'
 import ErrorMessage from '@/components/error-message'
@@ -19,10 +19,11 @@ enum ErrorCode {
 const DeleteDraftButton = ({
   assetId,
   onDone = undefined,
+  ...buttonProps
 }: {
   assetId: string
   onDone?: () => void
-}) => {
+} & ButtonProps) => {
   const [isConfirming, setIsConfirming] = useState(false)
   const [isCalling, lastErrorCodeCalling, lastResult, call, clear] =
     useFirebaseFunction<
@@ -76,7 +77,11 @@ const DeleteDraftButton = ({
           </Button>
         </Dialog>
       )}
-      <Button onClick={onClickTry} icon={<DeleteIcon />} color="secondary">
+      <Button
+        onClick={onClickTry}
+        icon={<DeleteIcon />}
+        color="secondary"
+        {...buttonProps}>
         Delete Your Draft
       </Button>
     </>

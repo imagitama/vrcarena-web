@@ -14,7 +14,6 @@ import ReportButton from '@/components/report-button'
 import DeleteDraftButton from '@/components/delete-draft-button'
 
 import TabContext from '../../context'
-import Control from '../control'
 
 export default () => {
   const { assetId, asset, isLoading, analyticsCategoryName, hydrate } =
@@ -29,27 +28,23 @@ export default () => {
 
   return (
     <>
-      <Control>
-        <ReportButton
-          type={CollectionNames.Assets}
-          id={assetId}
-          analyticsCategoryName={analyticsCategoryName}
-        />
-      </Control>
-      <Control>
-        <Button
-          url={routes.createAmendmentWithVar
-            .replace(':parentTable', CollectionNames.Assets)
-            .replace(':parentId', assetId)}
-          color="secondary"
-          icon={<EditIcon />}>
-          Suggest Edit
-        </Button>
-      </Control>
+      <ReportButton
+        type={CollectionNames.Assets}
+        id={assetId}
+        analyticsCategoryName={analyticsCategoryName}
+        margin
+      />
+      <Button
+        url={routes.createAmendmentWithVar
+          .replace(':parentTable', CollectionNames.Assets)
+          .replace(':parentId', assetId)}
+        color="secondary"
+        icon={<EditIcon />}
+        margin>
+        Suggest Edit
+      </Button>
       {isCreator && getIsAssetADraft(asset) && !getIsAssetDeleted(asset) ? (
-        <Control>
-          <DeleteDraftButton assetId={assetId} onDone={hydrate} />
-        </Control>
+        <DeleteDraftButton assetId={assetId} onDone={hydrate} margin />
       ) : null}
     </>
   )

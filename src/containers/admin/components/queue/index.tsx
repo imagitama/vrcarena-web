@@ -18,7 +18,9 @@ import { routes } from '@/routes'
 import { QueuedItem, QueuedItemForRecord } from '@/queues'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
 
+import { CollectionNames as UsersCollectionNames } from '@/modules/users'
 import {
+  CollectionNames as AssetsCollectionNames,
   ViewNames as AssetsViewNames,
   Asset,
   FullAsset,
@@ -38,6 +40,7 @@ import {
 import {
   AiEvaluateQueuedItem,
   CollectionNames as AiEvaluateCollectionNames,
+  Intent,
 } from '@/modules/aievaluation'
 import {
   CollectionNames as AuditQueueCollectionNames,
@@ -48,7 +51,10 @@ import {
   AuditApplyQueueItem,
 } from '@/modules/auditapplyqueue'
 
-import useDatabaseQuery, { OrderDirections } from '@/hooks/useDatabaseQuery'
+import useDatabaseQuery, {
+  Operators,
+  OrderDirections,
+} from '@/hooks/useDatabaseQuery'
 import useDataStoreItemsSync from '@/hooks/useDataStoreItemsSync'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 
@@ -80,6 +86,8 @@ import { Renderer as AssetAuditResultRenderer } from '@/components/asset-audit-r
 import ErrorBoundary from '@/components/error-boundary'
 import ShortDiff from '@/components/short-diff'
 import FailureInfoOutput from '@/components/failure-info-output'
+import { User } from '@/modules/users'
+import AiEvaluationResult from '@/components/ai-evaluation-result'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -200,17 +208,91 @@ const AssetParentRenderer = ({ item }: { item: QueuedItemForRecord }) => {
   )
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to load parent (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
     )
   if (isLoading || asset === null)
     return <NoValueLabel>Loading asset...</NoValueLabel>
   if (asset === false)
-    return <NoResultsMessage>Parent does not exist</NoResultsMessage>
+    return <NoResultsMessage>Asset does not exist</NoResultsMessage>
 
   return (
     <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
       {asset.title}
     </Link>
+  )
+}
+
+const AutoApproveFullRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
+  const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
+    item.recordtable,
+    item.recordid
+  )
+  if (lastErrorCode !== null)
+    return (
+      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+    )
+  if (isLoading || asset === null)
+    return <NoValueLabel>Loading asset...</NoValueLabel>
+  if (asset === false)
+    return <NoResultsMessage>Asset does not exist</NoResultsMessage>
+
+  return (
+    <>
+      <AiEvaluationResult
+        parentCollectionName={AssetsCollectionNames.Assets}
+        parent={asset}
+        mostRecentQueuedItem={item}
+      />
+    </>
+  )
+}
+
+const UserParentRenderer = ({ item }: { item: QueuedItemForRecord }) => {
+  const [isLoading, lastErrorCode, user] = useDataStoreItem<User>(
+    item.recordtable,
+    item.recordid
+  )
+  if (lastErrorCode !== null)
+    return (
+      <ErrorMessage>Failed to load user (code {lastErrorCode})</ErrorMessage>
+    )
+  if (isLoading || user === null)
+    return <NoValueLabel>Loading asset...</NoValueLabel>
+  if (user === false)
+    return <NoResultsMessage>User does not exist</NoResultsMessage>
+
+  return (
+    <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
+      {user.username}
+    </Link>
+  )
+}
+
+const BotScoreFullRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
+  const [isLoading, lastErrorCode, user] = useDataStoreItem<User>(
+    item.recordtable,
+    item.recordid
+  )
+  if (lastErrorCode !== null)
+    return (
+      <ErrorMessage>Failed to load user (code {lastErrorCode})</ErrorMessage>
+    )
+  if (isLoading || user === null)
+    return <NoValueLabel>Loading asset...</NoValueLabel>
+  if (user === false)
+    return <NoResultsMessage>User does not exist</NoResultsMessage>
+
+  return (
+    <>
+      {/* <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
+        {user.username}
+      </Link> */}
+      <AiEvaluationResult
+        parentCollectionName={UsersCollectionNames.Users}
+        parent={user}
+        mostRecentQueuedItem={item}
+      />
+    </>
   )
 }
 
@@ -480,9 +562,15 @@ const QueueTableRow = <TItem extends QueuedItem>({
             <FailureInfoOutput failureInfo={item.failureinfo} />
           )}
         </TableCell>
-        <TableCell>
+        <TableCell style={{ display: 'flex', alignItems: 'center' }}>
           <Renderer item={item as any} index={index} />{' '}
-          <KeyboardArrowUpIcon onClick={toggleExpanded} />
+          <KeyboardArrowUpIcon
+            onClick={toggleExpanded}
+            style={{
+              cursor: 'pointer',
+              transform: isExpanded ? 'rotate(180deg)' : undefined,
+            }}
+          />
         </TableCell>
         <TableCell>{item.notes || '-'}</TableCell>
         <TableCell></TableCell>
@@ -700,13 +788,13 @@ const AiSimilarQueueCell = () => {
   )
 }
 
-const AiEvaluateQueueCell = () => {
+const AiEvaluateAutoApproveQueueCell = () => {
   const [isLoading, lastErrorCode, items, hydrate] =
     useDatabaseQuery<AiEvaluateQueuedItem>(
       AiEvaluateCollectionNames.AiEvaluateQueue,
-      [],
+      [['intent', Operators.EQUALS, Intent.AutoApprove]],
       {
-        queryName: 'ai-suggest-queue',
+        queryName: 'ai-suggest-queue_autoapprove',
         orderBy: ['createdat', OrderDirections.DESC],
         limit: DEFAULT_LIMIT,
       }
@@ -714,7 +802,11 @@ const AiEvaluateQueueCell = () => {
 
   const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
     useDataStoreItemsSync<AiEvaluateQueuedItem>(
-      AiEvaluateCollectionNames.AiEvaluateQueue
+      AiEvaluateCollectionNames.AiEvaluateQueue,
+      {
+        queryName: 'ai-suggest-queue_autoapprove_synced',
+        filter: (record) => record.intent === Intent.AutoApprove,
+      }
     )
 
   if (lastErrorCode !== null) {
@@ -733,7 +825,7 @@ const AiEvaluateQueueCell = () => {
         isSubscribed={isSubscribed}
         lastErrorCode={lastErrorCodeSync}
         onRefresh={hydrate}>
-        AI Evaluate
+        AI Auto-Approval Evaluation
       </CellHeading>
       <QueueTable<AiEvaluateQueuedItem>
         collectionName={AiEvaluateCollectionNames.AiEvaluateQueue}
@@ -741,8 +833,60 @@ const AiEvaluateQueueCell = () => {
         newItems={liveResults}
         isLoading={isLoading}
         renderer={AiEvaluateCellRenderer}
-        fullRenderer={AssetParentRenderer}
+        fullRenderer={AutoApproveFullRenderer}
         parentRenderer={AssetParentRenderer}
+      />
+    </Paper>
+  )
+}
+
+const AiEvaluateBotScoreQueueCell = () => {
+  const [isLoading, lastErrorCode, items, hydrate] =
+    useDatabaseQuery<AiEvaluateQueuedItem>(
+      AiEvaluateCollectionNames.AiEvaluateQueue,
+      [['intent', Operators.EQUALS, Intent.BotScore]],
+      {
+        queryName: 'ai-suggest-queue_botscore',
+        orderBy: ['createdat', OrderDirections.DESC],
+        limit: DEFAULT_LIMIT,
+      }
+    )
+
+  const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
+    useDataStoreItemsSync<AiEvaluateQueuedItem>(
+      AiEvaluateCollectionNames.AiEvaluateQueue,
+      {
+        queryName: 'ai-suggest-queue_botscore_synced',
+        filter: (record) => record.intent === Intent.BotScore,
+      }
+    )
+
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
+    )
+  }
+
+  if (items === null) return null
+
+  return (
+    <Paper>
+      <CellHeading
+        isLoadingStale={isLoading}
+        isSubscribing={isSubscribing}
+        isSubscribed={isSubscribed}
+        lastErrorCode={lastErrorCodeSync}
+        onRefresh={hydrate}>
+        AI Bot Evaluation
+      </CellHeading>
+      <QueueTable<AiEvaluateQueuedItem>
+        collectionName={AiEvaluateCollectionNames.AiEvaluateQueue}
+        items={items}
+        newItems={liveResults}
+        isLoading={isLoading}
+        renderer={AiEvaluateCellRenderer}
+        fullRenderer={BotScoreFullRenderer}
+        parentRenderer={UserParentRenderer}
       />
     </Paper>
   )
@@ -872,7 +1016,12 @@ const Queue = () => {
       </Cell>
       <Cell>
         <ErrorBoundary>
-          <AiEvaluateQueueCell />
+          <AiEvaluateAutoApproveQueueCell />
+        </ErrorBoundary>
+      </Cell>
+      <Cell>
+        <ErrorBoundary>
+          <AiEvaluateBotScoreQueueCell />
         </ErrorBoundary>
       </Cell>
       <Cell>

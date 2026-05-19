@@ -1,6 +1,8 @@
 import React, { SyntheticEvent, forwardRef } from 'react'
 import Link from '@/components/link'
-import MaterialButton from '@mui/material/Button'
+import MaterialButton, {
+  ButtonProps as MaterialButtonProps,
+} from '@mui/material/Button'
 import { makeStyles } from '@mui/styles'
 import classnames from 'classnames'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
@@ -16,7 +18,6 @@ export interface ButtonProps {
   icon?: React.ReactElement
   isDisabled?: boolean
   className?: string
-  openInNewTab?: boolean
   switchIconSide?: boolean
   isLoading?: boolean
   size?: 'small' | 'medium' | 'large'
@@ -26,6 +27,7 @@ export interface ButtonProps {
   iconOnly?: boolean
   checked?: boolean
   hollow?: boolean
+  margin?: boolean // mainly for asset overview
 }
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
@@ -135,7 +137,31 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       borderRightColor: 'rgba(255,255,255,0.25) !important', // tried overriding but failed
     },
   },
+  margin: {
+    '&&': {
+      margin: '0 0.25rem 0.25rem 0',
+    },
+  },
 }))
+
+// when provided as LinkComponent is given all props the Button root element would usually get (no type for it)
+const Anchor = ({
+  href: url,
+  children,
+  ...props
+}: {
+  href: string
+  children: React.ReactNode
+}) =>
+  url.startsWith('/') ? (
+    <Link to={url} {...props}>
+      {children}
+    </Link>
+  ) : (
+    <a href={url} target="_blank" rel="noopener noreferrer" {...props}>
+      {children}
+    </a>
+  )
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -146,7 +172,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       icon = undefined,
       isDisabled = false,
       className = '',
-      openInNewTab = true,
       switchIconSide = false,
       isLoading = false,
       title,
@@ -170,6 +195,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const contents = (
       <MaterialButton
         ref={ref}
+        LinkComponent={Anchor}
         variant="contained"
         // @ts-ignore
         color="primary"
@@ -183,8 +209,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           [classes.hollow]: props.hollow,
           [classes.small]: props.size === 'small',
           [classes.large]: props.size === 'large',
+          [classes.margin]: props.margin,
           [className]: true,
         })}
+        href={url}
         {...props}>
         <span
           className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
@@ -210,27 +238,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ) : (
       contents
     )
-
-    if (url) {
-      if (url.substring(0, 1) === '/') {
-        return (
-          <Link to={url} className={className}>
-            {contentsWithTitle}
-          </Link>
-        )
-      } else {
-        return (
-          <a
-            href={url}
-            className={className}
-            {...(openInNewTab
-              ? { target: '_blank', rel: 'noopener noreferrer' }
-              : {})}>
-            {contentsWithTitle}
-          </a>
-        )
-      }
-    }
 
     return contentsWithTitle
   }

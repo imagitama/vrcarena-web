@@ -2,6 +2,11 @@ import { QueuedItem } from '@/queues'
 import { QueueStatus as AiEvaluateQueuedItemStatus } from './common'
 import { AiConvoMessage } from '@/ai'
 
+export enum Intent {
+  AutoApprove = 'autoapprove',
+  BotScore = 'botscore'
+}
+
 // used by AI evaluation only (newer code just dumps args)
 export interface GeminiFuncResult<TArgs> {
   args: TArgs
@@ -35,6 +40,7 @@ export interface AiEvaluateConvo {
 export interface AiEvaluateQueuedItem extends QueuedItem {
   recordtable: string
   recordid: string
+  intent: Intent
   convos: null | AiEvaluateConvo[]
   score: number | null
   tags: null | string[]

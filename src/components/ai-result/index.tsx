@@ -124,7 +124,6 @@ const useStyles = makeStyles({
       padding: 0,
       listStyle: 'none',
     },
-    fontSize: '75%',
     lineHeight: 1.5,
   },
   message: {

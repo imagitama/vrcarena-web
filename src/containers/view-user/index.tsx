@@ -13,11 +13,15 @@ import ErrorMessage from '@/components/error-message'
 
 export default () => {
   const { userId } = useParams<{ userId: string }>()
-  const [isLoadingUser, lastErrorCodeLoadingUser, user] =
-    useDataStoreItem<FullUser>(ViewNames.GetFullUsers, userId, {
-      queryName: 'user-overview',
-    })
   const isEditor = useIsEditor()
+  const [isLoadingUser, lastErrorCodeLoadingUser, user] =
+    useDataStoreItem<FullUser>(
+      isEditor ? ViewNames.GetFullUsers_Editor : ViewNames.GetFullUsers,
+      userId,
+      {
+        queryName: 'user-overview',
+      }
+    )
 
   if (isLoadingUser) {
     return <LoadingIndicator message="Loading user profile..." />
