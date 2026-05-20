@@ -146,9 +146,11 @@ const SpeciesResultItem = ({
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <Tooltip
       title={
-        isSelectable && onClick
-          ? ''
-          : 'You cannot select this (you may have children or a parent already selected)'
+        isSelectable
+          ? onClick
+            ? ''
+            : 'You cannot select this (you may have children or a parent already selected)'
+          : ''
       }>
       {onClick && speciesItem ? (
         <div
