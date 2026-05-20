@@ -329,6 +329,7 @@ const View = () => {
               .replace(':parentTable', CollectionNames.Authors)
               .replace(':parentId', authorId)}
             color="secondary"
+            hollow={false}
             icon={<EditIcon />}>
             Suggest Edit
           </Button>{' '}

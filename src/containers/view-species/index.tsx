@@ -78,6 +78,8 @@ const RegenerateThumbnailButton = ({
         }
       }}
       color="secondary"
+      hollow
+      size="small"
       isDisabled={isUpdatingThumbnail}
       title="Randomly picks a public asset with this species and uses its thumbnail">
       Regenerate Thumbnail

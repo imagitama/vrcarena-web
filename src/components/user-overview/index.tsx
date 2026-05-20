@@ -1,12 +1,6 @@
 import React from 'react'
 import Link from '@/components/link'
 import makeStyles from '@mui/styles/makeStyles'
-import EditIcon from '@mui/icons-material/Edit'
-import CommentIcon from '@mui/icons-material/Comment'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
 import InfoIcon from '@mui/icons-material/Info'
 
 import * as routes from '@/routes'
@@ -15,18 +9,7 @@ import {
   getPrefersBritishSpelling,
 } from '@/utils'
 import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
-import {
-  BanStatus,
-  CollectionNames,
-  FullUser,
-  FullUser_Editor,
-  UserRoles,
-} from '@/modules/users'
-import {
-  AiEvaluateQueuedItem,
-  CollectionNames as AiEvaluationCollectionNames,
-  Intent,
-} from '@/modules/aievaluation'
+import { BanStatus, FullUser, UserRoles } from '@/modules/users'
 import { AccessStatus } from '@/modules/common'
 import {
   mediaQueryForMobiles,
@@ -40,27 +23,15 @@ import Tabs from '@/components/tabs'
 import ErrorMessage from '@/components/error-message'
 import Heading from '@/components/heading'
 import SocialMediaList from '@/components/social-media-list'
-import Button from '@/components/button'
 import Avatar, { AvatarSize } from '@/components/avatar'
 import Markdown from '@/components/markdown'
 import StaffBadge from '@/components/staff-badge'
 import Tooltip from '@/components/tooltip'
 import Image from '@/components/image'
-import ViewControls from '@/components/view-controls'
 import BannedBadge from '@/components/banned-badge'
 import DeletedBadge from '@/components/deleted-badge'
 import RepChangeForUser from '@/components/rep-change-for-user'
 import StatusText from '@/components/status-text'
-import EditorBox from '@/components/editor-box'
-import FormattedDate from '@/components/formatted-date'
-import AwardRepButton from '@/components/award-rep-button'
-import {
-  getScoreAsPercentage,
-  RequeueButton,
-  Score,
-} from '@/components/ai-result'
-
-import useUserRecord from '@/hooks/useUserRecord'
 
 import Context from './context'
 import TabComments from './components/tab-comments'
@@ -71,6 +42,10 @@ import TabAssets from './components/tab-assets'
 import TabAttachments from './components/tab-attachments'
 import TabEndorsements from './components/tab-endorsements'
 import TabHistory from './components/tab-history'
+
+const UserEditorControls = React.lazy(
+  () => import('./components/editor-controls')
+)
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   cols: {
@@ -185,11 +160,6 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
 }))
 
-const useIsAdmin = (): boolean => {
-  const [, , user] = useUserRecord()
-  return user ? user.role === UserRoles.Admin : false
-}
-
 const UserOverview = ({
   user,
   small = false,
@@ -199,7 +169,6 @@ const UserOverview = ({
 }) => {
   const classes = useStyles()
   const isEditor = useIsEditor()
-  const isAdmin = useIsAdmin()
 
   const {
     username,
@@ -404,114 +373,7 @@ const UserOverview = ({
             </div>
           )}
         </div>
-        {isEditor && (
-          <ViewControls>
-            <EditorBox>
-              <Heading variant="h3" noTopMargin>
-                User Info
-              </Heading>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Signed up</TableCell>
-                    <TableCell>
-                      <FormattedDate date={user.createdat} />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Reputation</TableCell>
-                    <TableCell>
-                      <StatusText positivity={user.reputation > 0 ? 1 : -1}>
-                        {user.reputation}
-                      </StatusText>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Bot Score</TableCell>
-                    <TableCell>
-                      <div>
-                        {(user as unknown as FullUser_Editor).botscore !==
-                        null ? (
-                          <Score
-                            value={
-                              (user as unknown as FullUser_Editor).botscore!
-                            }>
-                            {getScoreAsPercentage(
-                              (user as unknown as FullUser_Editor).botscore!
-                            )}
-                            %
-                          </Score>
-                        ) : (
-                          '(none yet)'
-                        )}
-                        <Tooltip
-                          title={
-                            <>
-                              We use AI to try and determine if a new user is a
-                              bot or not to combat spam.
-                              <br />
-                              <br />
-                              The AI gives us a score of how confident it is
-                              they are a real human and not a bot.
-                              <br />
-                              <br />
-                              See our AI policy in the footer.
-                            </>
-                          }>
-                          <InfoIcon />
-                        </Tooltip>
-                      </div>
-                      <RequeueButton<AiEvaluateQueuedItem>
-                        queueCollectionName={
-                          AiEvaluationCollectionNames.AiEvaluateQueue
-                        }
-                        parentCollectionName={CollectionNames.Users}
-                        parentId={user.id}
-                        extraFields={{ intent: Intent.BotScore }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Patreon</TableCell>
-                    <TableCell>
-                      {user.patreonstatus || 'Not Patron'} (
-                      {user.patreonrewardids?.length
-                        ? user.patreonrewardids.join(',')
-                        : 'no rewards'}
-                      )
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>VRChat ID</TableCell>
-                    <TableCell>
-                      {user.linkedvrchatuserid || 'Not Linked'}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Discord ID</TableCell>
-                    <TableCell>{user.discorduserid || 'No ID'}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              <Button
-                icon={<EditIcon />}
-                color="secondary"
-                url={routes.editUserWithVar.replace(':userId', user.id)}>
-                Edit User
-              </Button>{' '}
-              <Button
-                icon={<CommentIcon />}
-                color="secondary"
-                url={`${routes.adminWithTabNameVar.replace(
-                  ':tabName',
-                  'users'
-                )}?userId=${user.id}`}>
-                View Comments
-              </Button>{' '}
-              {isAdmin && <AwardRepButton userId={user.id} />}
-            </EditorBox>
-          </ViewControls>
-        )}
+        {isEditor && <UserEditorControls />}
       </Context.Provider>
     </>
   )

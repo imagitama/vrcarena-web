@@ -55,7 +55,7 @@ const PagesNavigation = ({
 
           <div className={classes.control}>
             <Button
-              color="secondary"
+              color="primary"
               onClick={() => onClickWithPageNumber(currentPageNumber - 1)}
               size="small"
               icon={<ChevronLeftIcon />}
@@ -75,7 +75,7 @@ const PagesNavigation = ({
           </div>
           <div className={classes.control}>
             <Button
-              color="secondary"
+              color="primary"
               onClick={() => onClickWithPageNumber(currentPageNumber + 1)}
               size="small"
               icon={<ChevronRightIcon />}
@@ -95,6 +95,7 @@ const PagesNavigation = ({
               placeholder="Page number"
               onKeyDown={(e) => (e.key === 'Enter' ? onGoToPage() : undefined)}
               button={<Button onClick={() => onGoToPage()}>Go To Page</Button>}
+              size="small"
             />
           </div>
         </>

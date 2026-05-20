@@ -13,7 +13,10 @@ import {
   AssetSimilarity,
   CollectionNames,
 } from '@/modules/aisimilar'
-import { FullAsset_Editor } from '@/modules/assets'
+import {
+  FullAsset_Editor,
+  CollectionNames as AssetsCollectionNames,
+} from '@/modules/assets'
 import { QueueStatus } from '@/modules/common'
 
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
@@ -24,6 +27,7 @@ import StatusText from '../status-text'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import AiResult, {
+  ConfidenceScore,
   Convo,
   ConvoGroup,
   getIconForStatus,
@@ -140,9 +144,11 @@ const ConvoRenderer = ({
                   <HintText>{assetSim.reason}</HintText>
                 </TableCell>
                 <TableCell>
-                  <Score value={assetSim.confidence}>
-                    {getScoreAsPercentage(assetSim.confidence)}%
-                  </Score>
+                  <ConfidenceScore
+                    score={assetSim.confidence}
+                    title={assetSim.reason}
+                    small
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -177,14 +183,6 @@ export const Renderer = ({
   const isExpanded = !isMain
 
   const queuedItem = lastResult || staleQueuedItem
-
-  // const InfoIconWithTooltip = () => (
-  //   <Tooltip title="Click to copy ID">
-  //     <CopyThing text={queuedItem.id}>
-  //       <InfoIcon />
-  //     </CopyThing>
-  //   </Tooltip>
-  // )
 
   return (
     <div className={`${classes.item} ${onClick ? classes.clickable : ''}`}>
@@ -284,10 +282,13 @@ const AiSimilarResult = ({ asset }: { asset: FullAsset_Editor }) => {
     <AiResult
       noResultMessage="No similar assets yet"
       title="AI Similar Asset Detection"
-      assetId={asset.id}
-      initialValue={asset.aisimilarities}
+      parentCollectionName={AssetsCollectionNames.Assets}
+      parentId={asset.id}
+      mostRecentQueuedItem={asset.aisimilarities}
       queueCollectionName={CollectionNames.AiSimilarQueue}
-      renderer={Renderer as React.ComponentType<RendererProps>}
+      renderer={
+        Renderer as React.ComponentType<RendererProps<AiSimilarQueuedItem>>
+      }
     />
   )
 }

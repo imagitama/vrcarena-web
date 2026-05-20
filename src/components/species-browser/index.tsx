@@ -129,7 +129,8 @@ const CreateButton = () => {
         }
         color="secondary"
         size="small"
-        switchIconSide>
+        switchIconSide
+        hollow>
         Create
       </Button>
     </>
@@ -315,7 +316,8 @@ const SpeciesBrowser = ({
                 color="secondary"
                 onClick={() => toggleSetting('grid')}
                 checked={speciesContainerSettings?.grid}
-                size="small">
+                size="small"
+                hollow>
                 Grid
               </Button>
               &nbsp;
@@ -323,7 +325,8 @@ const SpeciesBrowser = ({
                 color="secondary"
                 onClick={() => toggleSetting('groupChildren')}
                 checked={speciesContainerSettings?.groupChildren}
-                size="small">
+                size="small"
+                hollow>
                 Group Children
               </Button>
               <CreateButton />

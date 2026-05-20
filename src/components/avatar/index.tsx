@@ -102,9 +102,7 @@ const Avatar = ({
   return (
     <div className={`${classes.root} ${classes[size]} ${className}`}>
       {lazy ? (
-        <LazyLoad placeholder={<LoadingIndicator />} once>
-          {elem}
-        </LazyLoad>
+        <LazyLoad placeholder={<LoadingIndicator />}>{elem}</LazyLoad>
       ) : (
         elem
       )}

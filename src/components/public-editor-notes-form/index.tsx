@@ -120,6 +120,7 @@ const PublicEditorNotesForm = ({
           onClick={onSaveBtnClick}
           size="small"
           color="secondary"
+          hollow={false}
           icon={<SaveIcon />}>
           Save Notes
         </Button>

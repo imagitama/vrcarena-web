@@ -22,6 +22,7 @@ export default () => {
       <Button
         onClick={() => setIsQuickEditing((currentVal) => !currentVal)}
         color="secondary"
+        hollow={false}
         icon={<EditIcon />}>
         Edit Asset
       </Button>

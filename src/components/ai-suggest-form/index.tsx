@@ -50,6 +50,7 @@ import SuccessMessage from '@/components/success-message'
 import ErrorMessage from '@/components/error-message'
 import TagChips from '@/components/tag-chips'
 import {
+  ConfidenceScore,
   getScoreAsPercentage,
   RequeueButton,
   Score,
@@ -384,11 +385,11 @@ const Form = ({
                     )}
                   </TableCell>
                   <TableCell>
-                    <Tooltip title={suggestion.reason}>
-                      <Score value={suggestion.confidence}>
-                        {getScoreAsPercentage(suggestion.confidence)}%
-                      </Score>
-                    </Tooltip>
+                    <ConfidenceScore
+                      score={suggestion.confidence}
+                      title={suggestion.reason}
+                      small
+                    />
                   </TableCell>
                   <TableCell>
                     {/* TODO: something less fragile */}
@@ -482,7 +483,8 @@ const Form = ({
         {isEditor && (
           <RequeueButton
             queueCollectionName={AiSuggestCollectionNames.AiSuggestQueue}
-            assetId={asset.id}
+            parentCollectionName={AssetsCollectionNames.Assets}
+            parentId={asset.id}
             color="tertiary"
             hollow={false}
           />

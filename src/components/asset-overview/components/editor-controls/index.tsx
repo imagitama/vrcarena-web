@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 
 import {
+  Asset,
   CollectionNames as AssetsCollectionNames,
   FullAsset_Editor,
 } from '@/modules/assets'
@@ -13,7 +14,12 @@ import EditorBox from '@/components/editor-box'
 import AssetAuditResult from '@/components/asset-audit-result'
 
 import TabContext from '../../context'
-import { Intent } from '@/modules/aievaluation'
+import {
+  Intent,
+  CollectionNames as AiEvaluationCollectionNames,
+  AiEvaluateQueuedItem,
+} from '@/modules/aievaluation'
+import AiResult from '@/components/ai-result'
 
 export default () => {
   const { assetId, asset, isLoading, hydrate } = useContext(TabContext)
@@ -48,11 +54,16 @@ export default () => {
         <AiArea
           title="Evaluation"
           tooltip="The site has asked AI to evaluate the asset to determine if it can be auto-approved.">
-          <AiEvaluationResult
+          <AiResult<AiEvaluateQueuedItem, Asset>
+            title="AI Evaluation"
+            queueCollectionName={AiEvaluationCollectionNames.AiEvaluateQueue}
             parentCollectionName={AssetsCollectionNames.Assets}
-            parent={asset as FullAsset_Editor}
-            intent={Intent.AutoApprove}
+            parentId={asset.id}
             mostRecentQueuedItem={(asset as FullAsset_Editor).aievaluation}
+            renderer={AiEvaluationResult}
+            extraFields={{
+              intent: Intent.AutoApprove,
+            }}
           />
         </AiArea>
       </ErrorBoundary>

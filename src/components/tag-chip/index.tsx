@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
 })
 
-interface Props {
+interface ChipWithTooltipProps {
   tagName: string
   description?: string
   isFilled?: boolean
@@ -28,7 +28,7 @@ interface Props {
   onClick?: () => void
   icon?: React.ReactElement
   isLoading?: boolean
-  label?: string
+  label?: React.ReactNode
   onDelete?: () => void
   noLink?: boolean
   className?: string
@@ -48,7 +48,7 @@ const ChipWithTooltip = ({
   onDelete = undefined,
   className = undefined,
   visualOnly = false,
-}: Props) => {
+}: ChipWithTooltipProps) => {
   const classes = useStyles()
   const [isOpen, setIsOpen] = useState(false)
   const onClickToUse = () => {
@@ -96,7 +96,7 @@ const ChipWithTooltip = ({
   )
 }
 
-export default (props: Props) => {
+export default (props: ChipWithTooltipProps) => {
   return props.onClick ||
     props.isDisabled ||
     props.noLink ||

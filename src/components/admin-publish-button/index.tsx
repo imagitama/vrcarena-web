@@ -128,6 +128,7 @@ const AdminPublishButton = ({
       size="small"
       isDisabled={!canDoSomething}
       color="secondary"
+      hollow={false}
       title={
         existingPublishStatus === PublishStatus.Draft
           ? 'Notifies staff it needs approval'

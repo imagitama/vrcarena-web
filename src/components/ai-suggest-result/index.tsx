@@ -15,6 +15,10 @@ import {
   FuncResult,
 } from '@/modules/aisuggest'
 import { QueueStatus } from '@/modules/common'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+} from '@/modules/assets'
 
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 
@@ -25,6 +29,7 @@ import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import CopyThing from '../copy-thing'
 import AiResult, {
+  ConfidenceScore,
   Convo,
   ConvoGroup,
   getIconForStatus,
@@ -159,9 +164,11 @@ const ConvoRenderer = ({
                     <HintText>{suggestion.reason}</HintText>
                   </TableCell>
                   <TableCell>
-                    <Score value={suggestion.confidence}>
-                      {getScoreAsPercentage(suggestion.confidence)}%
-                    </Score>
+                    <ConfidenceScore
+                      score={suggestion.confidence}
+                      title={suggestion.reason}
+                      small
+                    />
                   </TableCell>
                 </TableRow>
               )
@@ -302,9 +309,12 @@ const AiSuggestResult = ({
     <AiResult
       noResultMessage="Click to view AI suggestions"
       title="AI Suggestion"
-      assetId={assetId}
+      parentCollectionName={AssetsCollectionNames.Assets}
+      parentId={assetId}
       queueCollectionName={CollectionNames.AiSuggestQueue}
-      renderer={Renderer as React.ComponentType<RendererProps>}
+      renderer={
+        Renderer as React.ComponentType<RendererProps<AiSuggestQueuedItem>>
+      }
       startExpanded={startExpanded}
     />
   )

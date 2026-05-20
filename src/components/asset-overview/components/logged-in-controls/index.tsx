@@ -39,6 +39,7 @@ export default () => {
           .replace(':parentTable', CollectionNames.Assets)
           .replace(':parentId', assetId)}
         color="secondary"
+        hollow={false}
         icon={<EditIcon />}
         margin>
         Suggest Edit

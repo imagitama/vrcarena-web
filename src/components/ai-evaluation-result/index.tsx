@@ -3,24 +3,17 @@ import React, { useState } from 'react'
 import { Chip } from '@mui/material'
 import MessageIcon from '@mui/icons-material/Message'
 import InfoIcon from '@mui/icons-material/Info'
-import AspectRatioIcon from '@mui/icons-material/AspectRatio'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
-import useDatabaseQuery, {
-  Operators,
-  OrderDirections,
-} from '@/hooks/useDatabaseQuery'
-import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
 import {
   AiEvaluateQueuedItemStatus,
   CollectionNames as AiEvaluationCollectionNames,
   GeminiAssetEvaluationFunctionResult,
-  Intent,
   type AiEvaluateConvo,
   type AiEvaluateQueuedItem,
 } from '@/modules/aievaluation'
@@ -28,21 +21,18 @@ import { AiConvoMessage, MessageType } from '@/ai'
 
 import StatusText from '@/components/status-text'
 import ErrorMessage from '@/components/error-message'
-import Button from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import FormattedDate from '@/components/formatted-date'
 import CopyThing from '@/components/copy-thing'
-import SuccessMessage from '@/components/success-message'
-import Dialog from '@/components/dialog'
 import Tooltip from '@/components/tooltip'
 import {
   getIconForStatus,
   getPositivityForStatus,
-  getScoreAsPercentage,
   getStatusPastTense,
-  Score,
   Convo as ConvoExpanded,
+  ConfidenceScore,
 } from '@/components/ai-result'
+import NoResultsMessage from '@/components/no-results-message'
 
 const useStyles = makeStyles({
   root: {
@@ -119,10 +109,7 @@ const useStyles = makeStyles({
     marginLeft: 'auto',
     userSelect: 'none',
   },
-  date: {
-    // width: '30%',
-    // wordWrap: 'none',
-  },
+  date: {},
   hydrateBtn: {
     cursor: 'pointer',
   },
@@ -159,21 +146,14 @@ const useStyles = makeStyles({
     },
   },
   modelName: {
-    marginBottom: '-0.25rem',
+    fontFamily: 'monospace',
+    fontWeight: 'bold',
   },
   tags: {},
-  // tag: {
-  //   margin: '0 0.1rem 0.1rem 0',
-  //   cursor: 'default',
-  //   backgroundColor: 'none !important',
-  //   fontWeight: 'normal',
-  //   opacity: 0.5,
-  // },
   chip: {
     margin: '0 0.25rem 0.25rem 0',
     backgroundColor: 'rgba(255,255,255,0.1) !important',
     color: 'rgba(255,255,255,0.75) !important',
-    // border: '1px solid rgba(255,255,255,0.75) !important',
     opacity: 0.5,
     fontSize: '80% !important',
   },
@@ -321,23 +301,29 @@ const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
   return (
     <div className={classes.convo}>
       <div className={classes.row}>
-        <div>
+        <div className={classes.cell} style={{ width: '40%' }}>
           <div className={classes.modelName}>{convo.model}</div>
-          <Score value={convo.score}>
-            {getScoreAsPercentage(convo.score)}%
-          </Score>
         </div>
-        {convo.tags && (
-          <div className={classes.cell}>
+        <div className={classes.cell}>
+          {convo.tags ? (
             <Tags tags={convo.tags} queuedItemTags={tags} />
-          </div>
-        )}
-        <Tooltip title="Show AI conversation">
-          <MessageIcon
-            onClick={() => setShowConvo((val) => !val)}
-            className={classes.clickableIcon}
+          ) : (
+            '(no tags)'
+          )}
+          <ConfidenceScore
+            score={convo.score}
+            title="This model was asked to give this score and reasons (if it is below 100%)."
+            small
           />
-        </Tooltip>
+        </div>
+        <div className={classes.cell}>
+          <Tooltip title="Show AI conversation">
+            <MessageIcon
+              onClick={() => setShowConvo((val) => !val)}
+              className={classes.clickableIcon}
+            />
+          </Tooltip>
+        </div>
       </div>
       <div>
         {showConvo ? (
@@ -351,7 +337,7 @@ const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
   )
 }
 
-export const Renderer = ({
+const AiEvaluationResult = ({
   queuedItem: staleQueuedItem,
   onClick,
   isMain = false,
@@ -370,11 +356,12 @@ export const Renderer = ({
 
   const queuedItem = lastResult || staleQueuedItem
 
-  const InfoIconWithTooltip = () => (
-    <CopyThing text={queuedItem.id} title="Click to copy ID">
-      <InfoIcon />
-    </CopyThing>
-  )
+  // TODO: place this somewhere
+  // const CopyIdIcon = () => (
+  //   <CopyThing text={queuedItem.id} title="Click to copy ID">
+  //     <InfoIcon />
+  //   </CopyThing>
+  // )
 
   const tagsToDisplay: string[] | null =
     Array.isArray(queuedItem.tags) && queuedItem.tags.length
@@ -416,45 +403,31 @@ export const Renderer = ({
         </div>
         <div className={classes.cell}>
           {queuedItem.score !== null ? (
-            <>
-              <Tooltip
-                title={
-                  <>
-                    These AI models were asked to evaluate this asset:{' '}
-                    {queuedItem.convos
-                      ? queuedItem.convos.map((convo, i) => (
-                          <>
-                            {i !== 0 && <br />}
-                            {convo.model} ({convo.score})
-                          </>
-                        ))
-                      : queuedItem.status ===
-                        AiEvaluateQueuedItemStatus.Processed
-                      ? 'No AI models asked yet'
-                      : null}
-                    <br />
-                    0% scores and outliers are ignored
-                    <br />
-                    Click for more info
-                  </>
-                }>
-                <span className={classes.score}>
-                  <Score value={queuedItem.score}>
-                    {getScoreAsPercentage(queuedItem.score)}%
-                  </Score>
-                  <span className={classes.confidence}>
-                    confidence <InfoIconWithTooltip />
-                  </span>
-                </span>
-              </Tooltip>
-            </>
+            <ConfidenceScore
+              score={queuedItem.score}
+              title={
+                <>
+                  These AI models were asked to evaluate this asset:{' '}
+                  {queuedItem.convos
+                    ? queuedItem.convos.map((convo, i) => (
+                        <>
+                          {i !== 0 && <br />}
+                          {convo.model} ({convo.score})
+                        </>
+                      ))
+                    : queuedItem.status === AiEvaluateQueuedItemStatus.Processed
+                    ? 'No AI models asked yet'
+                    : null}
+                  <br />
+                  0% scores and outliers are ignored
+                  <br />
+                  Click for more info
+                </>
+              }
+            />
           ) : queuedItem.status === AiEvaluateQueuedItemStatus.Processed ? (
-            <>
-              No score found <InfoIconWithTooltip />
-            </>
-          ) : (
-            <InfoIconWithTooltip />
-          )}
+            <>No score found</>
+          ) : null}
         </div>
       </div>
       <div>
@@ -464,187 +437,9 @@ export const Renderer = ({
         <div className={classes.convos}>
           {queuedItem.convos?.map((convo) => (
             <Convo convo={convo} tags={queuedItem.tags!} />
-          )) || <NoResultsMessage message="No AI models talked to yet" />}
+          )) || <NoResultsMessage>No AI models talked to yet</NoResultsMessage>}
         </div>
       ) : null}
-    </div>
-  )
-}
-
-const AiEvaluationsList = <TParent,>({
-  parentCollectionName,
-  parent,
-  intent,
-  mostRecentQueuedItem,
-}: {
-  parentCollectionName: string
-  parent: TParent
-  intent: Intent
-  mostRecentQueuedItem: AiEvaluateQueuedItem | null
-}) => {
-  const [isLoading, lastErrorCode, queuedItems, hydrate] =
-    useDatabaseQuery<AiEvaluateQueuedItem>(
-      AiEvaluationCollectionNames.AiEvaluateQueue,
-      [
-        ['recordtable', Operators.EQUALS, parentCollectionName],
-        ['recordid', Operators.EQUALS, (parent as Record<string, any>).id],
-      ],
-      {
-        orderBy: ['createdat', OrderDirections.DESC],
-      }
-    )
-  const classes = useStyles()
-
-  if (lastErrorCode !== null)
-    return (
-      <ErrorMessage>Failed to query the queue: {lastErrorCode}</ErrorMessage>
-    )
-
-  if (isLoading) {
-    return (
-      <>
-        {mostRecentQueuedItem && (
-          <Renderer queuedItem={mostRecentQueuedItem} isMain />
-        )}
-        <div>Loading...</div>
-      </>
-    )
-  }
-
-  return (
-    <>
-      {queuedItems && queuedItems.length > 0 ? (
-        <div>
-          {queuedItems?.map((queuedItem) => (
-            <Renderer key={queuedItem.id} queuedItem={queuedItem} />
-          ))}
-        </div>
-      ) : queuedItems && queuedItems.length === 0 ? (
-        <NoResultsMessage message="No queued items" />
-      ) : null}
-      <div className={classes.controls}>
-        <Button onClick={hydrate} size="small" color="secondary" hollow>
-          Refresh
-        </Button>{' '}
-        <RequeueButton
-          parentCollectionName={parentCollectionName}
-          parentId={(parent as Record<string, any>).id}
-          intent={intent}
-        />
-      </div>
-    </>
-  )
-}
-
-const NoResultsMessage = ({ message }: { message: string }) => {
-  const classes = useStyles()
-  return <div className={classes.noResultsMessage}>{message}</div>
-}
-
-export const RequeueButton = ({
-  parentCollectionName,
-  parentId,
-  intent,
-}: {
-  parentCollectionName: string
-  parentId: string
-  intent: Intent
-}) => {
-  const [isLoading, isSuccess, lastErrorCode, create] =
-    useDataStoreCreate<AiEvaluateQueuedItem>(
-      AiEvaluationCollectionNames.AiEvaluateQueue
-    )
-
-  const onRequeue = async () => {
-    await create({
-      recordtable: parentCollectionName,
-      recordid: parentId,
-      intent,
-    })
-  }
-
-  const isBusy = isLoading
-
-  return (
-    <>
-      {isSuccess && <SuccessMessage>Added to queue</SuccessMessage>}
-      {isLoading && <LoadingIndicator message="Adding to queue..." />}
-      {lastErrorCode !== null && (
-        <ErrorMessage>Failed: {lastErrorCode}</ErrorMessage>
-      )}
-      <Button
-        onClick={onRequeue}
-        isDisabled={isBusy}
-        size="small"
-        color="secondary"
-        hollow>
-        Re-Queue
-      </Button>
-    </>
-  )
-}
-
-const AiEvaluationResult = <TRecord,>({
-  parentCollectionName,
-  parent,
-  intent,
-  mostRecentQueuedItem,
-}: {
-  parentCollectionName: string
-  parent: TRecord | null
-  intent: Intent
-  mostRecentQueuedItem: AiEvaluateQueuedItem | null
-}) => {
-  const classes = useStyles()
-  const [isShowingMore, setIsShowingMore] = useState(false)
-  const [isDialog, setIsDialog] = useState(false)
-
-  if (isDialog) {
-    return (
-      <Dialog title="AI Evaluation" onClose={() => setIsDialog(false)}>
-        <div style={{ height: 15 }} />
-        <AiEvaluationsList
-          parentCollectionName={parentCollectionName}
-          parent={parent}
-          mostRecentQueuedItem={mostRecentQueuedItem}
-          intent={intent}
-        />
-      </Dialog>
-    )
-  }
-
-  return (
-    <div className={classes.root}>
-      <div
-        className={`${classes.box} ${isShowingMore ? '' : classes.clickable}`}
-        onClick={() => setIsShowingMore(true)}>
-        {isShowingMore ? (
-          <AiEvaluationsList
-            parentCollectionName={parentCollectionName}
-            parent={parent}
-            intent={intent}
-            mostRecentQueuedItem={mostRecentQueuedItem}
-          />
-        ) : (
-          <>
-            {mostRecentQueuedItem ? (
-              <Renderer queuedItem={mostRecentQueuedItem} isMain />
-            ) : (
-              <NoResultsMessage message="No AI evaluation yet" />
-            )}
-          </>
-        )}
-      </div>
-      <div
-        className={classes.openInDialogIcon}
-        onClick={(e) => {
-          setIsDialog(true)
-          e.stopPropagation()
-          e.preventDefault()
-          return false
-        }}>
-        <AspectRatioIcon />
-      </div>
     </div>
   )
 }

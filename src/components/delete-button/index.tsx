@@ -13,7 +13,7 @@ import {
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 
-import Button from '@/components/button'
+import Button, { ButtonProps } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import ButtonDropdown from '@/components/button-dropdown'
 
@@ -24,6 +24,7 @@ const DeleteButton = ({
   existingDeletionReason = undefined,
   onClick = undefined,
   onDone = undefined,
+  ...buttonProps
 }: {
   id: string
   metaCollectionName: string
@@ -31,7 +32,7 @@ const DeleteButton = ({
   existingDeletionReason?: DeletionReason | null
   onClick?: ({ newValue }: { newValue: AccessStatus }) => void
   onDone?: () => void
-}) => {
+} & ButtonProps) => {
   const [isLoading, lastErrorCodeLoading, metaRecord] =
     useDataStoreItem<MetaRecord>(
       metaCollectionName,
@@ -158,6 +159,7 @@ const DeleteButton = ({
         iconOnly
         color="secondary"
         title={accessStatus === AccessStatus.Deleted ? 'Un-delete' : 'Delete'}
+        {...buttonProps}
       />
       {isAsset &&
         existingDeletionReason !== undefined &&

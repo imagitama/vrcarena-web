@@ -411,6 +411,7 @@ const AddToCollectionButton = ({
         icon={<PlaylistAddIcon />}
         onClick={onClickMainButton}
         color="secondary"
+        hollow={false}
         isLoading={isAssetLoading}>
         {isLoggedIn ? 'Add To Collection...' : 'Log in to add to collection'}
       </Button>

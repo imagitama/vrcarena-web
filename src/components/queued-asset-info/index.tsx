@@ -12,7 +12,7 @@ import { colorPalette } from '@/config'
 import categoryMetas from '@/category-meta'
 import {
   AssetCategory,
-  CollectionNames,
+  CollectionNames as AssetsCollectionNames,
   FullAsset,
   FullAsset_Editor,
 } from '@/modules/assets'
@@ -28,7 +28,12 @@ import Column from '@/components/column'
 import ErrorBoundary from '@/components/error-boundary'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import AiArea from '../ai-area'
-import { Intent } from '@/modules/aievaluation'
+import {
+  AiEvaluateQueuedItem,
+  Intent,
+  CollectionNames as AiEvaluateCollectionNames,
+} from '@/modules/aievaluation'
+import AiResult from '../ai-result'
 
 const useStyles = makeStyles({
   pass: {
@@ -221,8 +226,8 @@ const QueuedAssetInfo = ({
           <Column>
             <EditorRecordManager
               id={asset.id}
-              collectionName={CollectionNames.Assets}
-              metaCollectionName={CollectionNames.AssetsMeta}
+              collectionName={AssetsCollectionNames.Assets}
+              metaCollectionName={AssetsCollectionNames.AssetsMeta}
               existingApprovalStatus={asset.approvalstatus}
               existingPublishStatus={asset.publishstatus}
               existingAccessStatus={asset.accessstatus}
@@ -234,10 +239,17 @@ const QueuedAssetInfo = ({
               <AiArea
                 title="Evaluation"
                 tooltip="We use AI to evaluate our assets for auto-approval.">
-                <AiEvaluationResult
-                  parentCollectionName={CollectionNames.Assets}
-                  parent={asset as FullAsset_Editor}
-                  intent={Intent.AutoApprove}
+                <AiResult<AiEvaluateQueuedItem, FullAsset_Editor>
+                  title="AI Evaluation"
+                  renderer={AiEvaluationResult}
+                  queueCollectionName={
+                    AiEvaluateCollectionNames.AiEvaluateQueue
+                  }
+                  parentCollectionName={AssetsCollectionNames.Assets}
+                  parentId={asset.id}
+                  extraFields={{
+                    intent: Intent.AutoApprove,
+                  }}
                   mostRecentQueuedItem={
                     (asset as FullAsset_Editor).aievaluation
                   }

@@ -174,6 +174,7 @@ const ApproveButton = ({
         icon={<CheckCircleIcon />}
         size="small"
         color="secondary"
+        hollow={false}
         isDisabled={approvalStatus === ApprovalStatus.Approved}>
         Approve
       </Button>
@@ -204,6 +205,7 @@ const ApproveButton = ({
         icon={<CancelIcon />}
         size="small"
         color="secondary"
+        hollow={false}
         isDisabled={approvalStatus === ApprovalStatus.Declined}>
         Decline{isAsset ? ' & Draft' : ''}
       </Button>

@@ -13,14 +13,12 @@ import CircleIcon from '@mui/icons-material/Circle'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
 import { colorPalette, shortIdLength } from '@/config'
-import { colorGreyedOut } from '@/themes'
+import { colorGreyedOut, VRCArenaTheme } from '@/themes'
 import { routes } from '@/routes'
 import { QueuedItem, QueuedItemForRecord } from '@/queues'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
 
-import { CollectionNames as UsersCollectionNames } from '@/modules/users'
 import {
-  CollectionNames as AssetsCollectionNames,
   ViewNames as AssetsViewNames,
   Asset,
   FullAsset,
@@ -70,6 +68,7 @@ import React, { useRef, useState } from 'react'
 import Button from '@/components/button'
 import StatusText from '@/components/status-text'
 import {
+  ConfidenceScore,
   getPositivityForStatus,
   getScoreAsPercentage,
   getStatusPastTense,
@@ -236,16 +235,7 @@ const AutoApproveFullRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
   if (asset === false)
     return <NoResultsMessage>Asset does not exist</NoResultsMessage>
 
-  return (
-    <>
-      <AiEvaluationResult
-        parentCollectionName={AssetsCollectionNames.Assets}
-        parent={asset}
-        intent={Intent.AutoApprove}
-        mostRecentQueuedItem={item}
-      />
-    </>
-  )
+  return <AiEvaluationResult queuedItem={item} />
 }
 
 const UserParentRenderer = ({ item }: { item: QueuedItemForRecord }) => {
@@ -283,19 +273,7 @@ const BotScoreFullRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
   if (user === false)
     return <NoResultsMessage>User does not exist</NoResultsMessage>
 
-  return (
-    <>
-      {/* <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
-        {user.username}
-      </Link> */}
-      <AiEvaluationResult
-        parentCollectionName={UsersCollectionNames.Users}
-        parent={user}
-        intent={Intent.BotScore}
-        mostRecentQueuedItem={item}
-      />
-    </>
-  )
+  return <AiEvaluationResult queuedItem={item} />
 }
 
 const AiSimilarCellRenderer = ({ item }: { item: AiSimilarQueuedItem }) => {
@@ -317,7 +295,7 @@ const AiEvaluateCellRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
   return (
     <>
       <TagChips tags={item.tags} />
-      <Score value={item.score}>{getScoreAsPercentage(item.score)}%</Score>
+      <ConfidenceScore score={item.score} title="AI evaluation score." />
     </>
   )
 }
@@ -360,13 +338,15 @@ const AssetAuditApplyFullRenderer = ({
 }: {
   item: AuditApplyQueueItem<Asset>
 }) => {
-  return (
+  return item.old && item.new ? (
     <ShortDiff
       type="assets"
       oldFields={item.old}
       newFields={item.new}
       onlyNewFields={item.new}
     />
+  ) : (
+    <NoValueLabel>Nothing yet</NoValueLabel>
   )
 }
 
@@ -494,6 +474,12 @@ const fadeBackground = (color: string) => keyframes`
   100%   { background-color: transparent; }
 `
 
+const Box = styled.div`
+  padding: 0.25rem;
+  border: 1px solid rgb(100, 100, 100);
+  border-radius: ${({ theme }) => (theme as VRCArenaTheme).shape.borderRadius};
+`
+
 const QueueTableRow = <TItem extends QueuedItem>({
   item,
   index,
@@ -580,7 +566,9 @@ const QueueTableRow = <TItem extends QueuedItem>({
       {isExpanded && (
         <TableRow>
           <TableCell colSpan={999}>
-            <FullRenderer item={item as any} index={index} />
+            <Box>
+              <FullRenderer item={item as any} index={index} />
+            </Box>
           </TableCell>
         </TableRow>
       )}

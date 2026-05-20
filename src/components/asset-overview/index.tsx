@@ -244,6 +244,11 @@ const useStyles = makeStyles({
     fontSize: '150%',
     marginBottom: '0.25rem',
   },
+  count: {
+    marginLeft: '0.5rem',
+    fontSize: '75%',
+    color: colorGreyedOut,
+  },
 })
 
 const ParentControlGroup = () => {
@@ -823,8 +828,8 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                         Approved{' '}
                         {asset.approvedat
                           ? getFriendlyDate(asset.approvedat)
-                          : '(no date)'}{' '}
-                        by {asset.approvedbyusername || '(no name)'}
+                          : ''}{' '}
+                        by {asset.approvedbyusername || 'our automated system'}
                       </>
                     }>
                     <InfoIcon />
@@ -846,7 +851,16 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                         <div key={tag}>
                           <TagChip
                             tagName={tag}
-                            label={`${tag}${stats ? ` (${stats.count})` : ''}`}
+                            label={
+                              <>
+                                {tag}
+                                {stats ? (
+                                  <span className={classes.count}>
+                                    {stats.count}
+                                  </span>
+                                ) : null}
+                              </>
+                            }
                             isFilled
                           />
                         </div>

@@ -1,7 +1,6 @@
 import { makeStyles } from '@mui/styles'
 import styled from '@emotion/styled'
 import React, { useState } from 'react'
-import { Tooltip } from '@mui/material'
 import MessageIcon from '@mui/icons-material/Message'
 import CloseIcon from '@mui/icons-material/Close'
 import CheckIcon from '@mui/icons-material/Check'
@@ -10,24 +9,28 @@ import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
 import PersonIcon from '@mui/icons-material/Person'
 import AccountTreeIcon from '@mui/icons-material/AccountTree'
+import Chip from '@mui/material/Chip'
+import InfoIcon from '@mui/icons-material/Info'
 
+import { AiConvo, AiConvoMessage } from '@/ai'
+import { QueuedItem } from '@/queues'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
+import { QueueStatus } from '@/modules/common'
+
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
 } from '@/hooks/useDatabaseQuery'
-import useDataStoreCreate from '@/hooks/useDataStoreCreate'
-
-import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
 import ErrorMessage from '@/components/error-message'
 import Button, { ButtonProps } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import Dialog from '@/components/dialog'
-import { QueueStatus } from '@/modules/common'
-import ChatMessage from '../chat-message'
-import { AiConvo, AiConvoMessage } from '@/ai'
-import { QueuedItem } from '@/queues'
+import ChatMessage from '@/components/chat-message'
+import Tooltip from '../tooltip'
+import { colorAiDark, colorAiLight } from '@/themes'
 
 const useStyles = makeStyles({
   root: {
@@ -256,14 +259,51 @@ export const getStatusPastTense = (status: QueueStatus): string => {
   }
 }
 
-const getColor = (value: number) => `hsl(${value * 120}, 100%, 40%)`
+const getColorForScore = (value: number, lightness: number = 60) =>
+  `hsl(${value * 120}, 100%, ${lightness}%)`
 
 export const Score = styled.span`
   display: inline-flex;
   font-weight: bold;
   cursor: default;
-  color: ${({ value }: { value: number }) => getColor(value)};
+  color: ${({ score }: { score: number }) => getColorForScore(score)};
 `
+
+const ConfidenceScoreChip = styled(Chip)`
+  outline: 1px solid
+    ${({ score }: { score: number }) => getColorForScore(score, 40)};
+`
+
+const ConfidenceLabel = styled.span`
+  font-size: 75%;
+  font-weight: 200;
+`
+
+export const ConfidenceScore = ({
+  score,
+  title,
+  small,
+  onClick,
+}: {
+  score: number
+  title: React.ReactNode
+  small?: boolean
+  onClick?: () => void
+}) => (
+  <Tooltip title={title}>
+    <ConfidenceScoreChip
+      score={score}
+      label={
+        <>
+          <Score score={score}>{getScoreAsPercentage(score)}%</Score>{' '}
+          <ConfidenceLabel>confidence</ConfidenceLabel>
+        </>
+      }
+      size={small ? 'small' : undefined}
+      onClick={onClick}
+    />
+  </Tooltip>
+)
 
 interface ConvoProps {
   message: AiConvoMessage<any, any>
@@ -321,8 +361,8 @@ export const Convo = ({
 
 export const getScoreAsPercentage = (score: number) => Math.floor(100 * score)
 
-export interface RendererProps {
-  queuedItem: QueuedItem
+export interface RendererProps<TQueuedItem> {
+  queuedItem: TQueuedItem
 }
 
 export const RequeueButton = <TRecord,>({
@@ -330,12 +370,13 @@ export const RequeueButton = <TRecord,>({
   parentCollectionName,
   parentId,
   extraFields = {},
+  ...buttonProps
 }: {
   queueCollectionName: string
   parentCollectionName: string
   parentId: string
   extraFields?: Partial<TRecord>
-}) => {
+} & ButtonProps) => {
   const [isLoading, isSuccess, lastErrorCode, create] =
     useDataStoreCreate<QueuedItem>(queueCollectionName)
 
@@ -361,23 +402,29 @@ export const RequeueButton = <TRecord,>({
         isDisabled={isBusy}
         size="small"
         color="secondary"
-        hollow>
+        hollow
+        {...buttonProps}>
         Re-Queue
       </Button>
     </>
   )
 }
 
-const QueuedItemsList = ({
+const QueuedItemsList = <
+  TQueuedItem extends QueuedItem,
+  TParent extends Record<string, any>
+>({
   queueCollectionName,
   renderer: Renderer,
   parentCollectionName,
   parentId,
+  extraFields = {},
 }: {
   queueCollectionName: string
-  renderer: React.ComponentType<RendererProps>
+  renderer: React.ComponentType<RendererProps<TQueuedItem>>
   parentCollectionName: string
   parentId: string
+  extraFields?: Partial<TParent>
 }) => {
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<QueuedItem>(
@@ -411,7 +458,10 @@ const QueuedItemsList = ({
       {queuedItems && queuedItems.length > 0 ? (
         <div>
           {queuedItems?.map((queuedItem) => (
-            <Renderer key={queuedItem.id} queuedItem={queuedItem} />
+            <Renderer
+              key={queuedItem.id}
+              queuedItem={queuedItem as TQueuedItem}
+            />
           ))}
         </div>
       ) : queuedItems && queuedItems.length == 0 ? (
@@ -425,6 +475,7 @@ const QueuedItemsList = ({
           queueCollectionName={queueCollectionName}
           parentCollectionName={parentCollectionName}
           parentId={parentId}
+          extraFields={extraFields}
         />
       </div>
     </>
@@ -458,22 +509,29 @@ export const ConvoGroup = ({
   )
 }
 
-const AiResult = <TQueuedItem extends QueuedItem>({
+const AiResult = <
+  TQueuedItem extends QueuedItem,
+  TParent extends Record<string, any>
+>({
   title,
-  assetId,
+  parentCollectionName,
+  parentId,
   queueCollectionName,
   renderer: Renderer,
-  noResultMessage,
-  initialValue,
+  noResultMessage = 'No results yet',
+  mostRecentQueuedItem,
   startExpanded = false,
+  extraFields = {},
 }: {
   title: string
-  assetId: string
+  parentCollectionName: string
+  parentId: string
   queueCollectionName: string
-  renderer: React.ComponentType<RendererProps>
-  noResultMessage: string
-  initialValue?: TQueuedItem | null
+  renderer: React.ComponentType<RendererProps<TQueuedItem>>
+  noResultMessage?: string
+  mostRecentQueuedItem?: TQueuedItem | null
   startExpanded?: boolean
+  extraFields?: Partial<TParent>
 }) => {
   const classes = useStyles()
   const [isShowingMore, setIsShowingMore] = useState(startExpanded)
@@ -486,9 +544,9 @@ const AiResult = <TQueuedItem extends QueuedItem>({
         <QueuedItemsList
           queueCollectionName={queueCollectionName}
           renderer={Renderer}
-          // TODO: move
-          parentCollectionName={AssetsCollectionNames.Assets}
-          parentId={assetId}
+          parentCollectionName={parentCollectionName}
+          parentId={parentId}
+          extraFields={extraFields}
         />
       </Dialog>
     )
@@ -504,12 +562,13 @@ const AiResult = <TQueuedItem extends QueuedItem>({
             queueCollectionName={queueCollectionName}
             renderer={Renderer}
             parentCollectionName={AssetsCollectionNames.Assets}
-            parentId={assetId}
+            parentId={parentId}
+            extraFields={extraFields}
           />
         ) : (
           <>
-            {initialValue ? (
-              <Renderer queuedItem={initialValue} />
+            {mostRecentQueuedItem ? (
+              <Renderer queuedItem={mostRecentQueuedItem} />
             ) : (
               <NoResultsMessage message={noResultMessage} />
             )}

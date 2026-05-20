@@ -152,6 +152,7 @@ export default ({
   return (
     <Button
       color="secondary"
+      hollow={false}
       icon={getIcon(
         isLoggedIn,
         isLoadingWishlist,

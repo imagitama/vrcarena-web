@@ -7,6 +7,7 @@ import { makeStyles } from '@mui/styles'
 import classnames from 'classnames'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined'
 
 import Tooltip from '@/components/tooltip'
 import { VRCArenaTheme } from '@/themes'
@@ -70,7 +71,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     marginLeft: 0,
     marginRight: '0.5rem',
     '&$small': {
-      marginRight: '0.25rem',
+      marginRight: 0,
     },
   },
   tertiary: {
@@ -177,15 +178,22 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       title,
       iconOnly,
       checked,
+      hollow,
       ...props
     }: ButtonProps,
     ref
   ) => {
     const classes = useStyles(props)
+    const isHollow =
+      hollow === true || (props.color === 'secondary' && hollow === undefined)
 
     const iconToUse =
       checked === true ? (
-        <CheckBoxIcon />
+        isHollow ? (
+          <CheckBoxOutlinedIcon />
+        ) : (
+          <CheckBoxIcon />
+        )
       ) : checked === false ? (
         <CheckBoxOutlineBlankIcon />
       ) : (
@@ -206,7 +214,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           [classes.tertiary]: props.color === 'tertiary',
           [classes.ai]: props.color === 'ai',
           [classes.iconOnly]: iconOnly,
-          [classes.hollow]: props.hollow,
+          [classes.hollow]: isHollow,
           [classes.small]: props.size === 'small',
           [classes.large]: props.size === 'large',
           [classes.margin]: props.margin,

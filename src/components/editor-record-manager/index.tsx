@@ -76,6 +76,7 @@ const EditorRecordManager = ({
   callOnDoneOnEditorNotes = true,
   showBox = true,
   comments,
+  small = false,
 }: {
   id: string
   metaCollectionName: string
@@ -102,6 +103,7 @@ const EditorRecordManager = ({
   callOnDoneOnEditorNotes?: boolean
   showBox?: boolean
   comments?: string
+  small?: boolean
 }) => {
   const classes = useStyles()
   return (
@@ -188,6 +190,7 @@ const EditorRecordManager = ({
                     existingAccessStatus={existingAccessStatus}
                     existingDeletionReason={existingDeletionReason}
                     onDone={onDone}
+                    hollow={small === true}
                   />
                   {showArchiveButton ? (
                     <>

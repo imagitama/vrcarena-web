@@ -221,7 +221,12 @@ export default ({
             </div>
           )}
           {showControls && isLoggedIn && id ? (
-            <ReportButton id={id} type={CollectionNames.Comments} small />
+            <ReportButton
+              id={id}
+              type={CollectionNames.Comments}
+              small
+              hollow
+            />
           ) : null}
           {showControls && !shimmer && isEditor && id && (
             <div className={classes.controls}>
@@ -236,6 +241,7 @@ export default ({
                   showEditorNotes={false}
                   onDone={hydrate ? () => hydrate() : undefined}
                   showBox={false}
+                  small
                 />
               </div>
             </div>

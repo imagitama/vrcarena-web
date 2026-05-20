@@ -22,6 +22,10 @@ import {
 } from '@/modules/assets'
 import { EqualActiveFilter, FilterSubType, FilterType } from '@/filters'
 import { colorPalette } from '@/config'
+import {
+  CollectionNames as AiEvaluateCollectionNames,
+  AiEvaluateQueuedItem,
+} from '@/modules/aievaluation'
 
 import Button from '@/components/button'
 import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
@@ -34,6 +38,7 @@ import AssetResultsItem from '@/components/asset-results-item'
 import ErrorBoundary from '@/components/error-boundary'
 import AiArea from '../ai-area'
 import { Intent } from '@/modules/aievaluation'
+import AiResult from '../ai-result'
 
 const useStyles = makeStyles({
   pass: {
@@ -123,10 +128,20 @@ function AssetsTable({
                       <AiArea
                         title="Evaluation"
                         tooltip="The site has asked AI to evaluate the asset to determine if it can be auto-approved.">
-                        <AiEvaluationResult
+                        <AiResult<
+                          AiEvaluateQueuedItem,
+                          FullAsset_Editor_ForList
+                        >
+                          title="AI Evaluation"
+                          renderer={AiEvaluationResult}
+                          queueCollectionName={
+                            AiEvaluateCollectionNames.AiEvaluateQueue
+                          }
                           parentCollectionName={AssetsCollectionNames.Assets}
-                          parent={asset as FullAsset_Editor_ForList}
-                          intent={Intent.AutoApprove}
+                          parentId={asset.id}
+                          extraFields={{
+                            intent: Intent.AutoApprove,
+                          }}
                           mostRecentQueuedItem={
                             (asset as FullAsset_Editor_ForList).aievaluation
                           }

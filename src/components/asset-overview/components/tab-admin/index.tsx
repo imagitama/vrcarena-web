@@ -17,7 +17,11 @@ import Button from '@/components/button'
 import AssetResultsItem from '@/components/asset-results-item'
 
 import TabContext from '../../context'
-import { getScoreAsPercentage, Score } from '@/components/ai-result'
+import {
+  ConfidenceScore,
+  getScoreAsPercentage,
+  Score,
+} from '@/components/ai-result'
 
 const useStyles = makeStyles({
   assets: {
@@ -43,14 +47,7 @@ const AssetSims = ({
         <AssetResultsItem
           asset={assets.find((asset) => asset.id === sim.id)}
           controls={() => (
-            <div>
-              <Score value={sim.confidence}>
-                {getScoreAsPercentage(sim.confidence)}%
-              </Score>{' '}
-              confidence
-              <br />
-              {sim.reason}
-            </div>
+            <ConfidenceScore score={sim.confidence} title={sim.reason} small />
           )}
           className={classes.asset}
         />

@@ -154,7 +154,8 @@ const ArchiveButton = ({
         onClick={onClickButton}
         icon={<BusinessCenterIcon />}
         size="small"
-        color="secondary">
+        color="secondary"
+        hollow={false}>
         {accessStatus === AccessStatus.Archived ? 'Un-archive' : 'Archive'}
       </Button>
       {existingArchivedReason !== undefined &&
