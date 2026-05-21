@@ -144,7 +144,9 @@ const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
       </CopyThing>
       {queuedItem.status === QueueStatus.Failed &&
         queuedItem.failureinfo !== null && (
-          <FailureInfoOutput failureInfo={queuedItem.failureinfo} />
+          <div>
+            <FailureInfoOutput failureInfo={queuedItem.failureinfo} />
+          </div>
         )}
       {getIsQueuedItemTakingTooLong(queuedItem) ? (
         <WarningMessage title="Something went wrong">

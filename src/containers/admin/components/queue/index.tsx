@@ -548,7 +548,9 @@ const QueueTableRow = <TItem extends QueuedItem>({
             {getStatusPastTense(item.status)}
           </StatusText>
           {item.failureinfo && (
-            <FailureInfoOutput failureInfo={item.failureinfo} />
+            <div>
+              <FailureInfoOutput failureInfo={item.failureinfo} />
+            </div>
           )}
         </TableCell>
         <TableCell style={{ display: 'flex', alignItems: 'center' }}>
