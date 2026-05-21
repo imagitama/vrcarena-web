@@ -87,6 +87,7 @@ import ShortDiff from '@/components/short-diff'
 import FailureInfoOutput from '@/components/failure-info-output'
 import { User } from '@/modules/users'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
+import PaginatedView, { RendererProps } from '@/components/paginated-view'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -631,18 +632,18 @@ const AssetSyncQueueCell = ({ fiveMinsAgo }: { fiveMinsAgo: Date }) => {
 
 const CellHeading = ({
   children,
-  isLoadingStale,
+  isLoadingStale = false,
   isSubscribing,
   isSubscribed,
   lastErrorCode,
-  onRefresh,
+  onRefresh = undefined,
 }: {
   children: React.ReactNode
-  isLoadingStale: boolean
+  isLoadingStale?: boolean
   isSubscribing: boolean
   isSubscribed: boolean
   lastErrorCode: any | null
-  onRefresh: () => void
+  onRefresh?: () => void
 }) => (
   <Heading noMargin variant="h2">
     <Tooltip
@@ -670,14 +671,16 @@ const CellHeading = ({
       />
     </Tooltip>{' '}
     {children}{' '}
-    <Button
-      size="small"
-      color="secondary"
-      icon={<RefreshIcon />}
-      onClick={onRefresh}
-      iconOnly
-      hollow
-    />
+    {onRefresh && (
+      <Button
+        size="small"
+        color="secondary"
+        icon={<RefreshIcon />}
+        onClick={onRefresh}
+        iconOnly
+        hollow
+      />
+    )}
     {isLoadingStale && <RefreshIcon />}
   </Heading>
 )
@@ -830,54 +833,65 @@ const AiEvaluateAutoApproveQueueCell = () => {
   )
 }
 
+const BotScoreRenderer = ({
+  items,
+  liveResults,
+}: {
+  liveResults: AiEvaluateQueuedItem[] | null
+} & RendererProps<AiEvaluateQueuedItem>) =>
+  items ? (
+    <QueueTable<AiEvaluateQueuedItem>
+      collectionName={AiEvaluateCollectionNames.AiEvaluateQueue}
+      items={items}
+      newItems={liveResults}
+      // isLoading={isLoading}
+      isLoading={false}
+      renderer={AiEvaluateCellRenderer}
+      fullRenderer={BotScoreFullRenderer}
+      parentRenderer={UserParentRenderer}
+    />
+  ) : (
+    <>No items</>
+  )
+
 const AiEvaluateBotScoreQueueCell = () => {
-  const [isLoading, lastErrorCode, items, hydrate] =
-    useDatabaseQuery<AiEvaluateQueuedItem>(
-      AiEvaluateCollectionNames.AiEvaluateQueue,
-      [['intent', Operators.EQUALS, Intent.BotScore]],
-      {
-        queryName: 'ai-suggest-queue_botscore',
-        orderBy: ['createdat', OrderDirections.DESC],
-        limit: DEFAULT_LIMIT,
-      }
-    )
-
-  const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
-    useDataStoreItemsSync<AiEvaluateQueuedItem>(
-      AiEvaluateCollectionNames.AiEvaluateQueue,
-      {
-        queryName: 'ai-suggest-queue_botscore_synced',
-        filter: (record) => record.intent === Intent.BotScore,
-      }
-    )
-
-  if (lastErrorCode !== null) {
-    return (
-      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
-    )
-  }
-
-  if (items === null) return null
+  const [
+    isSubscribing,
+    isSubscribed,
+    lastErrorCodeSync,
+    liveResults,
+    clearLiveResults,
+  ] = useDataStoreItemsSync<AiEvaluateQueuedItem>(
+    AiEvaluateCollectionNames.AiEvaluateQueue,
+    {
+      queryName: 'ai-suggest-queue_botscore_synced',
+      filter: (record) => record.intent === Intent.BotScore,
+    }
+  )
 
   return (
     <Paper>
       <CellHeading
-        isLoadingStale={isLoading}
         isSubscribing={isSubscribing}
         isSubscribed={isSubscribed}
-        lastErrorCode={lastErrorCodeSync}
-        onRefresh={hydrate}>
+        lastErrorCode={lastErrorCodeSync}>
         AI Bot Evaluation
       </CellHeading>
-      <QueueTable<AiEvaluateQueuedItem>
+      <PaginatedView<AiEvaluateQueuedItem>
         collectionName={AiEvaluateCollectionNames.AiEvaluateQueue}
-        items={items}
-        newItems={liveResults}
-        isLoading={isLoading}
-        renderer={AiEvaluateCellRenderer}
-        fullRenderer={BotScoreFullRenderer}
-        parentRenderer={UserParentRenderer}
-      />
+        whereClauses={[['intent', Operators.EQUALS, Intent.BotScore]]}
+        name="ai-evaluate-bot-score-queue"
+        sortOptions={[
+          {
+            label: 'Created at',
+            fieldName: 'createdat',
+          },
+        ]}
+        defaultFieldName="createdat"
+        onRefresh={() => clearLiveResults()}>
+        {/* @ts-ignore */}
+        <BotScoreRenderer liveResults={liveResults} />
+      </PaginatedView>
     </Paper>
   )
 }

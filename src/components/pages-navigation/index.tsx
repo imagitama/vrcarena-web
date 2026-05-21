@@ -67,6 +67,7 @@ const PagesNavigation = ({
           <div className={classes.control}>
             <Button
               color="secondary"
+              hollow={false}
               onClick={() => onClickWithPageNumber(currentPageNumber)}
               size="small"
               className={classes.button}>
@@ -94,7 +95,14 @@ const PagesNavigation = ({
               onChange={(e) => setTextInput(e.target.value)}
               placeholder="Page number"
               onKeyDown={(e) => (e.key === 'Enter' ? onGoToPage() : undefined)}
-              button={<Button onClick={() => onGoToPage()}>Go To Page</Button>}
+              button={
+                <Button
+                  onClick={() => onGoToPage()}
+                  color="secondary"
+                  hollow={false}>
+                  Go To Page
+                </Button>
+              }
               size="small"
             />
           </div>

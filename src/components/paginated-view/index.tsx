@@ -144,6 +144,7 @@ interface PaginatedViewData<TRecord extends Record<string, any>> {
   whereClauses?: WhereClause<TRecord>[]
   isRendererForLoading?: boolean
   itemNamePlural?: string
+  onRefresh?: () => void
 }
 
 // @ts-ignore
@@ -183,6 +184,7 @@ const Page = () => {
     whereClauses,
     isRendererForLoading,
     itemNamePlural,
+    onRefresh,
   } = usePaginatedView()
   const keyPrefix = name || viewName || collectionName
   const currentPageNumber = internalPageNumber || parseInt(pageNumber)
@@ -473,7 +475,13 @@ const Page = () => {
         />
       ) : null}
       <Suspense>
-        <RefreshIcon className={classes.hydrateIcon} onClick={hydrate} />
+        <RefreshIcon
+          className={classes.hydrateIcon}
+          onClick={() => {
+            hydrate()
+            if (onRefresh) onRefresh()
+          }}
+        />
       </Suspense>
       {getQueryString ? (
         <Button url={getPathForQueryString(getQueryString())} color="secondary">
@@ -562,6 +570,7 @@ export interface PaginatedViewProps<TRecord extends Record<string, any>> {
   isRendererForLoading?: boolean // items will be null
   allowRandomSort?: boolean
   itemNamePlural?: string
+  onRefresh?: () => void
 }
 
 const PaginatedView = <TRecord extends Record<string, any>>({
@@ -588,6 +597,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
   isRendererForLoading,
   allowRandomSort = false,
   itemNamePlural,
+  onRefresh,
 }: PaginatedViewProps<TRecord>) => {
   if (!children) {
     throw new Error('Cannot render cached view without a renderer!')
@@ -649,6 +659,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
           whereClauses,
           isRendererForLoading,
           itemNamePlural,
+          onRefresh,
         }}>
         <div className={classes.root}>
           <div className={classes.controls}>

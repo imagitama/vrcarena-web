@@ -22,6 +22,8 @@ interface QueryOptions<TItem> extends BaseQueryOptions<TItem> {
   filter?: (record: TItem) => boolean
 }
 
+type ClearFn = () => void
+
 /**
  * Subscribes to all INSERTs and UPDATEs in a collection.
  */
@@ -30,7 +32,7 @@ export default <TItem extends Record<string, any>>(
   options: QueryOptions<TItem> = {
     queryName: '',
   }
-): [boolean, boolean, null | DataStoreErrorCode, TItem[] | null] => {
+): [boolean, boolean, null | DataStoreErrorCode, TItem[] | null, ClearFn] => {
   const [records, setRecords] = useState<null | TItem[]>(null)
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [isSubscribed, setIsSubscribed] = useState(false)
@@ -203,5 +205,7 @@ export default <TItem extends Record<string, any>>(
     }
   }, [collectionName])
 
-  return [isSubscribing, isSubscribed, lastErrorCode, records]
+  const clearFn = () => setRecords(null)
+
+  return [isSubscribing, isSubscribed, lastErrorCode, records, clearFn]
 }
