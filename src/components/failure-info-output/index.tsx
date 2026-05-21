@@ -20,10 +20,12 @@ const getFriendlyMessageFromFailureInfo = (
     case AssetSyncFailureInfoCode.InvalidProductUrl:
       return `The platform has told us the URL is invalid: ${failureInfo.data.url}`
     default:
+      // TODO: use error codes for these
       switch (failureInfo.error) {
-        // TODO: use error code
         case 'AutoSyncErrorAssetAlreadyExists':
           return `An asset with that source URL already exists`
+        case 'ScrapeErrorRequestNotOk':
+          return 'We failed to visit the URL (are you sure it exists?)'
       }
       return `Error: ${failureInfo.error}`
   }
