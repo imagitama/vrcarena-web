@@ -63,13 +63,13 @@ const EditorRecordManager = ({
   // callbacks
   onDone = undefined,
   // visibility
-  showStatuses = false,
+  showStatuses = true, // this data is very important so ensure
   showApprovalButtons = true,
   showAccessButtons = true,
   showEditorNotes = true,
   showArchiveButton = false,
   showFeatureButtons = false,
-  showPublishButtons = false,
+  showPublishButtons = true, // true so we can see publishstatus
   // hooks
   beforeApprove = undefined,
   // other

@@ -98,6 +98,7 @@ function AssetsTable({
                 publishstatus,
                 accessstatus,
               } = asset
+              console.debug('ASSET', asset)
               return (
                 <TableRow key={id}>
                   <TableCell>
@@ -113,6 +114,7 @@ function AssetsTable({
                   <TableCell>
                     <EditorRecordManager
                       id={id}
+                      showStatuses
                       collectionName={AssetsCollectionNames.Assets}
                       metaCollectionName={AssetsCollectionNames.AssetsMeta}
                       existingApprovalStatus={approvalstatus}

@@ -226,11 +226,13 @@ export type PublicAsset = AssetForList
 export interface AssetForList_Editor extends AssetForList {
   aievaluation: AiEvaluateQueuedItem | null
 
+  // basic publisher data
   publishedby: string | null
   publishedat: string | null // date
   publishedbyusername: string | null
   publishedbyreputation: number | null
 
+  // extra metadata for admin assets view
   editornotes: string
 }
 
