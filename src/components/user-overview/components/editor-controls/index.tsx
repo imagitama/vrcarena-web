@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 import CommentIcon from '@mui/icons-material/Comment'
 import Table from '@mui/material/Table'
@@ -6,79 +7,61 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
 import useIsEditor from '@/hooks/useIsEditor'
+import useUserRecord from '@/hooks/useUserRecord'
 
 import {
   CollectionNames as UsersCollectionNames,
   FullUser_Editor,
   UserRoles,
+  User,
 } from '@/modules/users'
-
 import {
   AiEvaluateQueuedItem,
   CollectionNames as AiEvaluationCollectionNames,
   Intent,
 } from '@/modules/aievaluation'
+import { routes } from '@/routes'
 
 import Button from '@/components/button'
 import ViewControls from '@/components/view-controls'
 import EditorBox from '@/components/editor-box'
 import FormattedDate from '@/components/formatted-date'
 import AwardRepButton from '@/components/award-rep-button'
-import { ConfidenceScore, RequeueButton } from '@/components/ai-result'
+import AiResult, { ConfidenceScore } from '@/components/ai-result'
 import Heading from '@/components/heading'
-import useUserOverview from '../../useUserOverview'
 import StatusText from '@/components/status-text'
-import { routes } from '@/routes'
-import useUserRecord from '@/hooks/useUserRecord'
-import { useState } from 'react'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
-import useDatabaseQuery, {
-  Operators,
-  OrderDirections,
-} from '@/hooks/useDatabaseQuery'
-import LoadingIndicator from '@/components/loading-indicator'
-import ErrorMessage from '@/components/error-message'
+import ErrorBoundary from '@/components/error-boundary'
+import AiArea from '@/components/ai-area'
+
+import useUserOverview from '../../useUserOverview'
+import NoValueLabel from '@/components/no-value-label'
 
 const useIsAdmin = (): boolean => {
   const [, , user] = useUserRecord()
   return user ? user.role === UserRoles.Admin : false
 }
 
-const BotScoreInfo = ({ userId }: { userId: string }) => {
-  const [isLoading, lastErrorCode, queuedItems, hydrate] =
-    useDatabaseQuery<AiEvaluateQueuedItem>(
-      AiEvaluationCollectionNames.AiEvaluateQueue,
-      [
-        ['recordtable', Operators.EQUALS, UsersCollectionNames.Users],
-        ['recordid', Operators.EQUALS, userId],
-      ],
-      {
-        orderBy: ['createdat', OrderDirections.DESC],
-        limit: 1,
-      }
-    )
-
-  if (isLoading) {
-    return <LoadingIndicator message="Loading queued item..." />
-  }
-
-  if (lastErrorCode !== null) {
-    return (
-      <ErrorMessage>
-        Failed to load queued item (code {lastErrorCode})
-      </ErrorMessage>
-    )
-  }
-
-  if (queuedItems === null || queuedItems.length < 1) return null
-
+const BotScoreInfo = ({ user }: { user: FullUser_Editor }) => {
+  console.log('SCORE???', (user as FullUser_Editor).aievaluation)
   return (
-    <>
-      <AiEvaluationResult queuedItem={queuedItems[0]} />
-      <Button size="small" color="secondary" hollow onClick={hydrate}>
-        Refresh
-      </Button>
-    </>
+    <ErrorBoundary>
+      <AiArea
+        title="Evaluation"
+        tooltip="The site has asked AI to evaluate the user to determine if they are a bot or not.">
+        <AiResult<AiEvaluateQueuedItem, User>
+          title="AI Evaluation"
+          queueCollectionName={AiEvaluationCollectionNames.AiEvaluateQueue}
+          parentCollectionName={UsersCollectionNames.Users}
+          parentId={user.id}
+          mostRecentQueuedItem={(user as FullUser_Editor).aievaluation}
+          renderer={AiEvaluationResult}
+          extraFields={{
+            intent: Intent.BotScore,
+          }}
+        />
+      </AiArea>
+    </ErrorBoundary>
   )
 }
 
@@ -113,39 +96,36 @@ const UserEditorControls = () => {
             <TableRow>
               <TableCell>Bot Score</TableCell>
               <TableCell>
-                {(user as unknown as FullUser_Editor).botscore !== null ? (
-                  isBotScoreExpanded ? (
-                    <BotScoreInfo userId={user.id} />
-                  ) : (
-                    <ConfidenceScore
-                      score={(user as unknown as FullUser_Editor).botscore!}
-                      title={
-                        <>
-                          We use AI to try and determine if a new user is a bot
-                          or not to combat spam.
-                          <br />
-                          <br />
-                          The AI gives us a score of how confident it is they
-                          are a real human and not a bot.
-                          <br />
-                          <br />
-                          See our AI policy in the footer.
-                        </>
-                      }
-                      onClick={() => setIsBotScoreExpanded(true)}
-                    />
-                  )
-                ) : (
-                  '(none yet)'
+                {(user as unknown as FullUser_Editor).botscore !== null && (
+                  <ConfidenceScore
+                    score={(user as unknown as FullUser_Editor).botscore!}
+                    title={
+                      <>
+                        We use AI to try and determine if a new user is a bot or
+                        not to combat spam.
+                        <br />
+                        <br />
+                        The AI gives us a score of how confident it is they are
+                        a real human and not a bot.
+                        <br />
+                        <br />
+                        See our AI policy in the footer.
+                      </>
+                    }
+                    onClick={() => setIsBotScoreExpanded(true)}
+                  />
                 )}
-                <RequeueButton<AiEvaluateQueuedItem>
-                  queueCollectionName={
-                    AiEvaluationCollectionNames.AiEvaluateQueue
-                  }
-                  parentCollectionName={UsersCollectionNames.Users}
-                  parentId={user.id}
-                  extraFields={{ intent: Intent.BotScore }}
-                />
+                {isBotScoreExpanded ? (
+                  <BotScoreInfo user={user as FullUser_Editor} />
+                ) : (
+                  <Button
+                    size="small"
+                    color="secondary"
+                    hollow
+                    onClick={() => setIsBotScoreExpanded(true)}>
+                    Expand
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
             <TableRow>

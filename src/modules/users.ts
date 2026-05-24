@@ -1,3 +1,4 @@
+import { AiEvaluateQueuedItem } from './aievaluation'
 import { AccessStatus } from './common'
 import { Species } from './species'
 
@@ -69,8 +70,9 @@ export interface FullUser extends User, UserMeta, UserAdminMeta {
   favoritespeciesdata: Species
 }
 
-export interface FullUser_Editor {
+export interface FullUser_Editor extends FullUser {
   botscore: number | null
+  aievaluation: AiEvaluateQueuedItem | null
 }
 
 export enum CollectionNames {
