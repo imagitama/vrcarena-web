@@ -15,10 +15,9 @@ import { PublishStatus, ApprovalStatus, AccessStatus } from '@/modules/common'
 import * as routes from '@/routes'
 import { trackAction } from '@/analytics'
 import {
-  FullAsset,
   CollectionNames as AssetsCollectionNames,
   ViewNames,
-  FullAsset_Editor_ForList,
+  AssetForList_Editor,
 } from '@/modules/assets'
 import { EqualActiveFilter, FilterSubType, FilterType } from '@/filters'
 import { colorPalette } from '@/config'
@@ -76,7 +75,7 @@ function AssetsTable({
   assets,
   hydrate,
 }: {
-  assets?: FullAsset[]
+  assets?: AssetForList_Editor[]
   hydrate?: () => void
 }) {
   return (
@@ -128,10 +127,7 @@ function AssetsTable({
                       <AiArea
                         title="Evaluation"
                         tooltip="The site has asked AI to evaluate the asset to determine if it can be auto-approved.">
-                        <AiResult<
-                          AiEvaluateQueuedItem,
-                          FullAsset_Editor_ForList
-                        >
+                        <AiResult<AiEvaluateQueuedItem, AssetForList_Editor>
                           title="AI Evaluation"
                           renderer={AiEvaluationResult}
                           queueCollectionName={
@@ -143,7 +139,7 @@ function AssetsTable({
                             intent: Intent.AutoApprove,
                           }}
                           mostRecentQueuedItem={
-                            (asset as FullAsset_Editor_ForList).aievaluation
+                            (asset as AssetForList_Editor).aievaluation
                           }
                         />
                       </AiArea>
@@ -173,7 +169,7 @@ const Renderer = ({
   hydrate,
   selectedView,
 }: {
-  items?: FullAsset[]
+  items?: AssetForList_Editor[]
   hydrate?: () => void
   selectedView: View | null
 }) => {
@@ -204,7 +200,7 @@ const Queue = ({
   assets,
   hydrate,
 }: {
-  assets?: FullAsset[]
+  assets?: AssetForList_Editor[]
   hydrate: () => void
 }) => {
   const [currentAssetId, setCurrentAssetId] = useState('')
@@ -274,12 +270,12 @@ const AdminAssets = () => {
     View.List
   )
   const getQuery = useCallback<
-    GetQueryFn<FullAsset_Editor_ForList, SubView, typeof filters>
+    GetQueryFn<AssetForList_Editor, SubView, typeof filters>
   >(
     (query, selectedSubView, activeFilters) => {
       const userIdFilter = activeFilters.find(
         (filter) => filter.fieldName === 'createdby'
-      ) as EqualActiveFilter<FullAsset_Editor_ForList>
+      ) as EqualActiveFilter<AssetForList_Editor>
 
       if (userIdFilter && userIdFilter.value) {
         query = query.eq('createdby', userIdFilter.value)
@@ -328,10 +324,10 @@ const AdminAssets = () => {
   )
 
   return (
-    <PaginatedView<FullAsset_Editor_ForList>
+    <PaginatedView<AssetForList_Editor>
       // cannot re-use other paginated views because "publishedat" field does not exist for them
       name="view-admin-assets"
-      viewName={ViewNames.GetEditorAssetsForList}
+      viewName={ViewNames.GetAssetsForList_Editor}
       getQuery={getQuery}
       sortOptions={[
         {

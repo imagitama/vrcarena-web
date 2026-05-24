@@ -12,6 +12,7 @@ import { colorPalette } from '@/config'
 import categoryMetas from '@/category-meta'
 import {
   AssetCategory,
+  AssetForList_Editor,
   CollectionNames as AssetsCollectionNames,
   FullAsset,
   FullAsset_Editor,
@@ -106,7 +107,7 @@ const QueuedAssetInfo = ({
   hydrate,
   showEditorControls = true,
 }: {
-  asset: FullAsset
+  asset: FullAsset | AssetForList_Editor
   hydrate?: () => void
   showEditorControls?: boolean
 }) => {
@@ -115,11 +116,11 @@ const QueuedAssetInfo = ({
   return (
     <Message title="Queued Asset">
       Published by{' '}
-      {asset.publishedby ? (
+      {asset.publishedby !== null ? (
         <UsernameLink
           id={asset.publishedby}
-          username={asset.publishedbyusername}
-          reputation={asset.publishedbyreputation}
+          username={asset.publishedbyusername || undefined}
+          reputation={asset.publishedbyreputation!}
         />
       ) : (
         '(unknown)'

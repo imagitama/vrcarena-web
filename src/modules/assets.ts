@@ -215,9 +215,24 @@ export interface AssetStats {
 export interface AssetForList extends Asset {
   authorname: string
   speciesnames: string[]
+  // basic metadata
+  approvalstatus: ApprovalStatus
+  publishstatus: PublishStatus
+  accessstatus: AccessStatus
 }
 
 export type PublicAsset = AssetForList
+
+export interface AssetForList_Editor extends AssetForList {
+  aievaluation: AiEvaluateQueuedItem | null
+
+  publishedby: string | null
+  publishedat: string | null // date
+  publishedbyusername: string | null
+  publishedbyreputation: number | null
+
+  editornotes: string
+}
 
 export interface FullAsset extends Asset, AssetMeta, AssetStats {
   authorname: string
@@ -233,18 +248,15 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   approvedbyusername: string
   tagsdata: Tag[]
   attachmentsdata: FullAttachment[] | null
-  publishedbyusername: string
+  publishedbyusername: string | null
   publishedbyreputation: number
   tagscount: TagStats[] // different to tagsdata as that returns null if tag already in database
   aisimilarities: AiSimilarQueuedItem | null
   aisimilaritiesdata: PublicAsset[]
 }
 
-export interface FullAsset_Editor_ForList extends FullAsset {
+export interface FullAsset_Editor extends FullAsset {
   aievaluation: AiEvaluateQueuedItem | null
-}
-
-export interface FullAsset_Editor extends FullAsset_Editor_ForList {
 }
 
 export interface SmallAsset extends Asset, AssetMeta {
@@ -284,7 +296,7 @@ export enum ViewNames {
   GetEndorsementAssetResults = 'getendorsementassetresults',
   GetWishlistAssetResults = 'getwishlistassetresults',
   GetDraftAssets = 'getdraftassets',
-  GetEditorAssetsForList = 'geteditorassetsforlist' // for admin-assets
+  GetAssetsForList_Editor = 'getassetsforlist_editor' // for admin assets
 }
 
 export enum FunctionNames {

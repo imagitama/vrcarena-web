@@ -43,7 +43,6 @@ const useIsAdmin = (): boolean => {
 }
 
 const BotScoreInfo = ({ user }: { user: FullUser_Editor }) => {
-  console.log('SCORE???', (user as FullUser_Editor).aievaluation)
   return (
     <ErrorBoundary>
       <AiArea
