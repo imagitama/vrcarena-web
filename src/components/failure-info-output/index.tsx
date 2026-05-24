@@ -9,16 +9,30 @@ enum AssetSyncFailureInfoCode {
   InvalidProductUrl = 'InvalidProductUrl',
 }
 
+enum AiErrorCode {
+  AiOverloaded = 'AiOverloaded',
+  AiQuotaExceeded = 'AiQuotaExceeded',
+  PromptBlocked = 'PromptBlocked',
+  PromptEndedEarly = 'PromptEndedEarly',
+  Unknown = 'unknown',
+}
+
 const getFriendlyMessageFromFailureInfo = (
   failureInfo: QueuedItemFailureInfo<any>
 ): string => {
+  // TODO: better type-safety for data
+
   switch (failureInfo.code) {
     case AssetSyncFailureInfoCode.ElementNotFound:
       return 'We found the product but the page was missing some required data'
     case AssetSyncFailureInfoCode.ScrapeOther:
       return 'We found the product but something stopped us from getting any data'
     case AssetSyncFailureInfoCode.InvalidProductUrl:
-      return `The platform has told us the URL is invalid: ${failureInfo.data.url}`
+      return `The platform told us the URL is invalid: ${failureInfo.data.url}`
+    case AiErrorCode.PromptBlocked:
+      return `The AI blocked our prompt: ${failureInfo.data.reason}`
+    case AiErrorCode.PromptEndedEarly:
+      return `The AI ended their response early: ${failureInfo.data.finishReason}`
     default:
       // TODO: use error codes for these
       switch (failureInfo.error) {

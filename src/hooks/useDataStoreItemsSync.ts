@@ -14,6 +14,7 @@ import {
 } from '@supabase/supabase-js'
 import useSupabaseClient from './useSupabaseClient'
 import { QueryOptions as BaseQueryOptions } from './useDataStoreItems'
+import { refreshJwtParallel } from '@/supabase'
 
 interface QueryOptions<TItem> extends BaseQueryOptions<TItem> {
   // WARNING: replaces setState for performance
@@ -42,6 +43,33 @@ export default <TItem extends Record<string, any>>(
   const isUnmountedRef = useRef(false)
   const channelRef = useRef<null | RealtimeChannel>(null)
   const supabase = useSupabaseClient()
+
+  // supabase realtime doesn't emit any signals for JWT expiry so we have to catch their uncaught error
+  useEffect(() => {
+    const handler = (event: PromiseRejectionEvent) => {
+      if (typeof event.reason === 'string' && event.reason.includes('InvalidJWTToken')) {
+        console.error(event)
+        event.preventDefault();
+
+        (async () => {
+          try {
+            console.debug(`JWT invalid/expired, refreshing and re-subscribing...`)
+
+            await refreshJwtParallel()
+            await doIt()
+
+            console.debug(`JWT refresh and re-subscribe done`)
+          } catch (err) {
+            console.error(err)
+            handleError(err)
+          }
+        })()
+      }
+    }
+
+    window.addEventListener('unhandledrejection', handler)
+    return () => window.removeEventListener('unhandledrejection', handler)
+  }, [])
 
   const doIt = async () => {
     try {
@@ -144,7 +172,7 @@ export default <TItem extends Record<string, any>>(
         )
         .subscribe((status, err) => {
           console.debug(
-            `useDataStoreItemsSync :: ${options.queryName} :: Status '${status}'`
+            `useDataStoreItemsSync :: ${options.queryName} :: Status '${status}'${err ? ` :: Error '${err.message}'` : ''}`
           )
 
           if (err) {
@@ -163,9 +191,29 @@ export default <TItem extends Record<string, any>>(
 
             case REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR:
             case REALTIME_SUBSCRIBE_STATES.TIMED_OUT:
+              if (err?.message?.includes('InvalidJWTToken')) {
+                (async () => {
+                  try {
+                    console.debug(`JWT expired, refreshing and re-subscribing...`)
+
+                    await refreshJwtParallel()
+                    await doIt()
+
+                    console.debug(`JWT refresh and re-subscribe done`)
+                  } catch (err) {
+                    console.error(err)
+                    handleError(err)
+                  }
+                })()
+                return
+              }
+
               setLastErrorCode(DataStoreErrorCode.ChannelError)
               setIsSubscribed(false)
               break
+
+            default:
+              console.warn(`Unknown status "${status}"`)
           }
         })
 
@@ -182,7 +230,7 @@ export default <TItem extends Record<string, any>>(
       setIsSubscribing(false)
       setLastErrorCode(null)
     } catch (err) {
-      console.error(err)
+      console.error(`Failed to do it:`, err)
       handleError(err)
       setIsSubscribing(false)
       setIsSubscribed(false)

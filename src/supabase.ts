@@ -47,11 +47,34 @@ enum FunctionNames {
   GetSupabaseJwt = 'getSupabaseJwt',
 }
 
-export const refreshJwt = async () => {
-  console.debug(`Refreshing JWT...`)
+interface RefreshJwtResult { errorCode?: string }
+
+let refreshJwtPromise: Promise<RefreshJwtResult> | null = null
+
+export const refreshJwtParallel = async (): Promise<RefreshJwtResult> => {
+  if (refreshJwtPromise !== null) {
+    console.debug(`already refreshing JWT, chaining...`)
+    return await refreshJwtPromise
+  }
+
+  console.debug(`not already refreshing JWT, starting...`)
+
+  refreshJwtPromise = refreshJwt()
+
+  const result = await refreshJwtPromise
+
+  refreshJwtPromise = null
+
+  console.debug(`parallel JWT all done`)
+
+  return result
+}
+
+export const refreshJwt = async (): Promise<RefreshJwtResult> => {
+  console.debug(`refreshing JWT...`)
 
   const {
-    data: { token, expiryTimestamp, errorCode },
+    data: { token, expiryTimestamp: expiryTimestampSec, errorCode },
   } = await callFunction<void, GetSupabaseJwtResult>(
     FunctionNames.GetSupabaseJwt
   )
@@ -62,16 +85,18 @@ export const refreshJwt = async () => {
   }
 
   if (!token) {
-    throw new Error(`Could not set Supabase user ID: no JWT`)
+    throw new Error(`No token in result`)
   }
 
-  nextJwtExpiryDate = new Date(expiryTimestamp * 1000)
+  nextJwtExpiryDate = new Date(expiryTimestampSec)
 
   console.debug(`token: ${token}
 expires: ${nextJwtExpiryDate}
 currently: ${new Date()}`)
 
   activeJwt = token
+
+  client.realtime.setAuth(token)
 
   // let our React hooks (like useSupabaseUserId()) know
   onJwtTokenChangedCallbacks.forEach((cb) => cb(activeJwt))

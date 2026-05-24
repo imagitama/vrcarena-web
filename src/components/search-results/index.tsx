@@ -36,6 +36,7 @@ import UserList from '@/components/user-list'
 import SearchFilters from '@/components/search-filters'
 import WarningMessage from '@/components/warning-message'
 import LoadingIndicator from '@/components/loading-indicator'
+import { RootState } from '@/modules'
 
 const useStyles = makeStyles({
   tableButton: {
@@ -235,8 +236,10 @@ const PoweredByAlgoliaLogo = () => {
 }
 
 function IndexFilters() {
-  // @ts-ignore
-  const { searchTableName } = useSelector(({ app: { searchTableName } }) => ({
+  const { searchTableName } = useSelector<
+    RootState,
+    { searchTableName: string }
+  >(({ app: { searchTableName } }) => ({
     searchTableName,
   }))
   const dispatch = useDispatch()
@@ -416,14 +419,21 @@ const useAppSearch = (): {
   searchCount: number
 } => {
   const { searchTerm, searchTableName, searchFilters, searchCount } =
-    useSelector(
+    useSelector<
+      RootState,
+      {
+        searchTerm: string
+        searchTableName: string
+        searchFilters: string[]
+        searchCount: number
+      }
+    >(
       ({
-        // @ts-ignore
         app: { searchTerm, searchTableName, searchFilters, searchCount },
       }) => ({
         searchTerm,
         searchTableName,
-        searchFilters,
+        searchFilters: searchFilters as string[],
         searchCount,
       })
     )
@@ -543,13 +553,13 @@ const NonAssetSearch = () => {
 }
 
 export default () => {
-  const { searchTerm, searchTableName } = useSelector(
-    // @ts-ignore
-    ({ app: { searchTerm, searchTableName } }) => ({
-      searchTerm,
-      searchTableName,
-    })
-  )
+  const { searchTerm, searchTableName } = useSelector<
+    RootState,
+    { searchTerm: string; searchTableName: string }
+  >(({ app: { searchTerm, searchTableName } }) => ({
+    searchTerm,
+    searchTableName,
+  }))
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const classes = useStyles()
 

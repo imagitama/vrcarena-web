@@ -46,7 +46,7 @@ function getInitialSearchTerm() {
   return ''
 }
 
-interface SearchFilter { }
+export interface SearchFilter { }
 
 export interface AppState {
   isMenuOpen: boolean

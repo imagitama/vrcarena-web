@@ -19,6 +19,7 @@ import { trackAction } from '@/analytics'
 import useUserPreferences from '@/hooks/useUserPreferences'
 
 import AccountMenu from '@/components/account-menu'
+import { RootState } from '@/modules'
 
 const useStyles = makeStyles({
   content: {
@@ -90,8 +91,9 @@ export default () => {
   const classes = useStyles()
   const [, , user] = useUserRecord()
   const [, , userPreferences] = useUserPreferences()
-  // @ts-ignore
-  const isMenuOpen = useSelector(({ app }) => app.isMenuOpen)
+  const isMenuOpen = useSelector<RootState, boolean>(
+    ({ app }) => app.isMenuOpen
+  )
   const dispatch = useDispatch()
 
   const dispatchCloseMenu = () => dispatch(closeMenu())

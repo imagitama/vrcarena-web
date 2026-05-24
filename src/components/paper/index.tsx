@@ -13,7 +13,7 @@ interface Props {
 }
 
 const Paper = styled(MaterialPaper)<Props>`
-  padding: ${({ noPadding }) => (noPadding ? '0' : '1rem 0')};
+  padding: ${({ noPadding }) => (noPadding ? '0' : '1rem')};
   transition: all 100ms;
   margin: ${({ noMargin }) => (noMargin ? '0' : '1rem 0')};
 `
