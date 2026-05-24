@@ -18,13 +18,13 @@ import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
 import NoResultsMessage from '../no-results-message'
 import StatusText from '../status-text'
-import { getPositivityForStatus, getStatusPastTense } from '../ai-result'
 import Button from '../button'
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import SuccessMessage from '../success-message'
 import { useState } from 'react'
 import ButtonDropdown, { DropdownOption } from '../button-dropdown'
 import FormattedDate from '../formatted-date'
+import QueueStatusLabel from '../queue-status-label'
 
 const getLabelForStatus = (status: AuditResultResult): string => {
   switch (status) {
@@ -77,9 +77,7 @@ const Item = styled.div`
 
 export const Renderer = ({ queuedItem }: { queuedItem: AuditQueueItem }) => (
   <Item key={queuedItem.id}>
-    <StatusText positivity={getPositivityForStatus(queuedItem.status)}>
-      {getStatusPastTense(queuedItem.status)}
-    </StatusText>
+    <QueueStatusLabel id={queuedItem.id} status={queuedItem.status} />
     <br />
     <small>
       <FormattedDate date={queuedItem.createdat} />

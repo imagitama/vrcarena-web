@@ -67,13 +67,7 @@ import Tooltip from '@/components/tooltip'
 import React, { useRef, useState } from 'react'
 import Button from '@/components/button'
 import StatusText from '@/components/status-text'
-import {
-  ConfidenceScore,
-  getPositivityForStatus,
-  getScoreAsPercentage,
-  getStatusPastTense,
-  Score,
-} from '@/components/ai-result'
+import { ConfidenceScore } from '@/components/ai-result'
 import NoValueLabel from '@/components/no-value-label'
 import TagChips from '@/components/tag-chips'
 import { Renderer as AiSuggestRenderer } from '@/components/ai-suggest-result'
@@ -88,6 +82,7 @@ import FailureInfoOutput from '@/components/failure-info-output'
 import { User } from '@/modules/users'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import PaginatedView, { RendererProps } from '@/components/paginated-view'
+import QueueStatusLabel from '@/components/queue-status-label'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -544,9 +539,7 @@ const QueueTableRow = <TItem extends QueuedItem>({
           )}
         </TableCell>
         <TableCell>
-          <StatusText positivity={getPositivityForStatus(item.status)}>
-            {getStatusPastTense(item.status)}
-          </StatusText>
+          <QueueStatusLabel id={item.id} status={item.status} />
           {item.failureinfo && (
             <div>
               <FailureInfoOutput failureInfo={item.failureinfo} />

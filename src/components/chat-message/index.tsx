@@ -1,11 +1,11 @@
-import { VRCArenaTheme } from '@/themes'
+import { createElement } from 'react'
 import { makeStyles } from '@mui/styles'
-import { cloneElement, createElement } from 'react'
+import styled from '@emotion/styled'
+import { VRCArenaTheme } from '@/themes'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     display: 'flex',
-    // alignItems: 'flex-end',
   },
   flip: {
     flexDirection: 'row-reverse',
@@ -13,13 +13,6 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       marginLeft: '0.2rem',
       marginRight: 0,
     },
-  },
-  chatBubble: {
-    width: '100%',
-    borderRadius: theme.shape.borderRadius,
-    border: '1px solid rgba(255,255,255,0.25)',
-    padding: '0.15rem 0.3rem',
-    lineBreak: 'anywhere', // TODO: do this better (to fix it running outside the viewport)
   },
   avatar: {
     borderRadius: theme.shape.borderRadius,
@@ -51,25 +44,32 @@ export interface ChatMessageInfo {
   senderavatar?: React.ComponentType<{}>
 }
 
-const ChatBubble = ({
-  children,
-}: {
-  children: React.ReactNode | React.ReactNode[]
-}) => {
-  const classes = useStyles()
-  return <div className={classes.chatBubble}>{children}</div>
-}
+const ChatBubble = styled.div`
+  width: 100%;
+  margin: 0;
+  border-radius: ${({ theme }) => (theme as VRCArenaTheme).shape.borderRadius};
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.15rem 0.3rem;
+  overflow-y: auto;
+`
+
+export const ChatBubbleSource = styled.pre`
+  white-space: pre-wrap;
+  word-break: break-all;
+`
 
 const ChatMessage = ({
   message,
   children,
   className,
   flip,
+  title,
 }: {
   message: ChatMessageInfo
   children: React.ReactNode | React.ReactNode[]
   className?: string
   flip?: boolean
+  title?: string
 }) => {
   const classes = useStyles()
   return (
@@ -86,7 +86,19 @@ const ChatMessage = ({
         </div>
         <div className={classes.username}>{message.senderusername}</div>
       </div>
-      <ChatBubble>{children || message.message}</ChatBubble>
+      <ChatBubble>
+        {title && (
+          <>
+            {title}
+            <br />
+          </>
+        )}
+        {children ? (
+          children
+        ) : (
+          <ChatBubbleSource>{message.message}</ChatBubbleSource>
+        )}
+      </ChatBubble>
     </div>
   )
 }

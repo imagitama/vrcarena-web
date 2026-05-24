@@ -30,19 +30,15 @@ import LoadingIndicator from '../loading-indicator'
 import CopyThing from '../copy-thing'
 import AiResult, {
   ConfidenceScore,
-  Convo,
   ConvoGroup,
-  getIconForStatus,
-  getPositivityForStatus,
-  getScoreAsPercentage,
-  getStatusPastTense,
   RendererProps,
-  Score,
 } from '../ai-result'
 import Tooltip from '../tooltip'
 import HintText from '../hint-text'
 import { AiConvoMessage, MessageType } from '@/ai'
 import FieldOutput from '../field-output'
+import { ChatBubbleSource } from '../chat-message'
+import QueueStatusLabel from '../queue-status-label'
 
 const useStyles = makeStyles({
   score: {
@@ -93,7 +89,7 @@ const useStyles = makeStyles({
   },
 })
 
-const ConvoRenderer = ({
+export const ConvoRenderer = ({
   message,
 }: {
   message: AiConvoMessage<AiFieldSuggestions, FuncResult>
@@ -101,7 +97,7 @@ const ConvoRenderer = ({
   switch (message.type) {
     case MessageType.String:
       return (
-        <div
+        <ChatBubbleSource
           dangerouslySetInnerHTML={{
             __html: message.contents.replace('\n', '<br />'),
           }}
@@ -111,7 +107,7 @@ const ConvoRenderer = ({
     case MessageType.Candidates:
       const entries = Object.entries(message.contents)
       return (
-        <Table>
+        <Table size="small">
           <TableBody>
             <TableRow>
               <TableCell>Candidates</TableCell>
@@ -226,11 +222,10 @@ export const Renderer = ({
           ) : (
             <>
               {isMain === false || isExpanded ? (
-                <StatusText
-                  positivity={getPositivityForStatus(queuedItem.status)}>
-                  {getStatusPastTense(queuedItem.status)}{' '}
-                  {getIconForStatus(queuedItem.status)}
-                </StatusText>
+                <QueueStatusLabel
+                  id={queuedItem.id}
+                  status={queuedItem.status}
+                />
               ) : null}
 
               <FormattedDate

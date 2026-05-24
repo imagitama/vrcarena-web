@@ -20,6 +20,10 @@ const useStyles = makeStyles({
   paper: {
     '&&': {
       backgroundColor: dialogBg,
+      minHeight: '80%',
+      maxHeight: '80%',
+      minWidth: '80%',
+      maxWidth: '80%',
     },
   },
 })

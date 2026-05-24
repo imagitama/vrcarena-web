@@ -15,10 +15,13 @@ const CopyThing = ({
   const [hasCopied, setHasCopied] = useState(false)
   const startTimer = useTimer(() => setHasCopied(false), 2000)
 
-  const onClick = () => {
+  const onClick = (e: React.MouseEvent) => {
     copyTextToClipboard(text)
     setHasCopied(true)
     startTimer()
+    e.preventDefault()
+    e.stopPropagation()
+    return false
   }
 
   const child = (
@@ -35,7 +38,7 @@ const CopyThing = ({
     )
   }
 
-  return <Tooltip title={title || ''}>{child}</Tooltip>
+  return <Tooltip title={title || 'Click here to copy'}>{child}</Tooltip>
 }
 
 export default CopyThing

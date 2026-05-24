@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import styled from '@emotion/styled'
 import { makeStyles } from '@mui/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -51,9 +50,8 @@ import ErrorMessage from '@/components/error-message'
 import TagChips from '@/components/tag-chips'
 import {
   ConfidenceScore,
-  getScoreAsPercentage,
+  ConvoGroup,
   RequeueButton,
-  Score,
 } from '@/components/ai-result'
 import Tooltip from '@/components/tooltip'
 import AiDialog from '@/components/ai-dialog'
@@ -61,6 +59,9 @@ import FormattedDate from '@/components/formatted-date'
 import TagChip from '@/components/tag-chip'
 import TagDiff, { TagDiffMode } from '@/components/tag-diff'
 import NoValueLabel from '@/components/no-value-label'
+import Tabs from '../tabs'
+import { ConvoRenderer } from '../ai-suggest-result'
+import Paper from '../paper'
 
 const useStyles = makeStyles({
   title: {
@@ -312,185 +313,227 @@ const Form = ({
   )
 
   return (
-    <>
-      <div className={classes.heading}>
-        <AutoAwesomeIcon className={classes.icon} />
-        <div>
-          <Heading variant="h2" noMargin>
-            Suggested Fields
-          </Heading>
-          <FormattedDate
-            date={queuedItem.lastmodifiedat || queuedItem.createdat}
-            className={classes.date}
-          />
-        </div>
-      </div>
-      <Table size="small">
-        <TableBody>
-          {suggestionsArr.length ? (
-            suggestionsArr.map(([fieldName, suggestion]) => {
-              const oldValue = asset[fieldName]
-              const suggestedValue = suggestion.suggestedValue
-              const editableField = assetEditableFields.find(
-                (field) => field.name === fieldName
-              )
-              return (
-                <TableRow key={fieldName}>
-                  <TableCell>
-                    {editableField
-                      ? editableField.label
-                      : capitalize(fieldName)}
-                  </TableCell>
-                  <TableCell>
-                    {!getShouldRenderSuggestion(fieldName, suggestion) ? (
-                      <NoValueLabel>
-                        (no suitable value){' '}
-                        <Tooltip
-                          title={
-                            <>
-                              The AI decided on a new value but we decided it
-                              was not good enough:
-                              <br />
-                              <br />
-                              <FieldDiffValue
-                                fieldName={fieldName}
-                                value={suggestion.suggestedValue}
+    <Tabs
+      items={[
+        {
+          name: 'suggestions',
+          label: 'Suggestions',
+          contents: (
+            <>
+              <div className={classes.heading}>
+                <AutoAwesomeIcon className={classes.icon} />
+                <div>
+                  <Heading variant="h2" noMargin>
+                    Suggested Fields
+                  </Heading>
+                  <FormattedDate
+                    date={queuedItem.lastmodifiedat || queuedItem.createdat}
+                    className={classes.date}
+                  />
+                </div>
+              </div>
+              <Paper noPadding>
+                <Table size="small">
+                  <TableBody>
+                    {suggestionsArr.length ? (
+                      suggestionsArr.map(([fieldName, suggestion]) => {
+                        const oldValue = asset[fieldName]
+                        const suggestedValue = suggestion.suggestedValue
+                        const editableField = assetEditableFields.find(
+                          (field) => field.name === fieldName
+                        )
+                        return (
+                          <TableRow key={fieldName}>
+                            <TableCell>
+                              {editableField
+                                ? editableField.label
+                                : capitalize(fieldName)}
+                            </TableCell>
+                            <TableCell>
+                              {!getShouldRenderSuggestion(
+                                fieldName,
+                                suggestion
+                              ) ? (
+                                <NoValueLabel>
+                                  (no suitable value){' '}
+                                  <Tooltip
+                                    title={
+                                      <>
+                                        The AI decided on a new value but we
+                                        decided it was not good enough:
+                                        <br />
+                                        <br />
+                                        <FieldDiffValue
+                                          fieldName={fieldName}
+                                          value={suggestion.suggestedValue}
+                                        />
+                                      </>
+                                    }>
+                                    <InfoIcon />
+                                  </Tooltip>
+                                </NoValueLabel>
+                              ) : // TODO: something less fragile
+                              fieldName === 'tags' ? (
+                                <TagsEditor
+                                  existingTags={asset.tags}
+                                  suggestedTags={suggestedValue}
+                                  selectedTags={finalChanges.tags || null}
+                                  onChange={(newTags) =>
+                                    updateFinalChanges(fieldName, true, newTags)
+                                  }
+                                />
+                              ) : getHasFieldChanged(
+                                  asset[fieldName],
+                                  suggestion.suggestedValue
+                                ) ? (
+                                <FieldDiff
+                                  fieldName={fieldName}
+                                  before={oldValue}
+                                  after={suggestedValue}
+                                />
+                              ) : (
+                                <NoValueLabel>(no change)</NoValueLabel>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <ConfidenceScore
+                                score={suggestion.confidence}
+                                title={suggestion.reason}
+                                small
                               />
-                            </>
-                          }>
-                          <InfoIcon />
-                        </Tooltip>
-                      </NoValueLabel>
-                    ) : // TODO: something less fragile
-                    fieldName === 'tags' ? (
-                      <TagsEditor
-                        existingTags={asset.tags}
-                        suggestedTags={suggestedValue}
-                        selectedTags={finalChanges.tags || null}
-                        onChange={(newTags) =>
-                          updateFinalChanges(fieldName, true, newTags)
-                        }
-                      />
-                    ) : getHasFieldChanged(
-                        asset[fieldName],
-                        suggestion.suggestedValue
-                      ) ? (
-                      <FieldDiff
-                        fieldName={fieldName}
-                        before={oldValue}
-                        after={suggestedValue}
-                      />
+                            </TableCell>
+                            <TableCell>
+                              {/* TODO: something less fragile */}
+                              {fieldName !== 'tags' && (
+                                <CheckboxInput
+                                  value={
+                                    finalChanges !== null
+                                      ? fieldName in finalChanges
+                                      : false
+                                  }
+                                  onChange={(newVal) =>
+                                    updateFinalChanges(fieldName, newVal)
+                                  }
+                                  isDisabled={
+                                    editableField === undefined ||
+                                    !getShouldRenderSuggestion(
+                                      fieldName,
+                                      suggestion
+                                    ) ||
+                                    !getHasFieldChanged(
+                                      asset[fieldName],
+                                      suggestion.suggestedValue
+                                    )
+                                  }
+                                />
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })
                     ) : (
-                      <NoValueLabel>(no change)</NoValueLabel>
+                      <NoResultsMessage>
+                        The AI could not suggest any better tags! Nice!
+                      </NoResultsMessage>
                     )}
-                  </TableCell>
-                  <TableCell>
-                    <ConfidenceScore
-                      score={suggestion.confidence}
-                      title={suggestion.reason}
-                      small
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {/* TODO: something less fragile */}
-                    {fieldName !== 'tags' && (
-                      <CheckboxInput
-                        value={
-                          finalChanges !== null
-                            ? fieldName in finalChanges
-                            : false
-                        }
-                        onChange={(newVal) =>
-                          updateFinalChanges(fieldName, newVal)
-                        }
-                        isDisabled={
-                          editableField === undefined ||
-                          !getShouldRenderSuggestion(fieldName, suggestion) ||
-                          !getHasFieldChanged(
-                            asset[fieldName],
-                            suggestion.suggestedValue
+                  </TableBody>
+                </Table>
+              </Paper>
+              <Heading variant="h2">Changes To Apply</Heading>
+              {hasChanges ? (
+                <Paper noPadding>
+                  <Table size="small">
+                    <TableBody>
+                      {Object.entries(finalChanges).map(
+                        ([fieldName, fieldVal]) => {
+                          const editableField = assetEditableFields.find(
+                            (field) => field.name === fieldName
+                          )
+
+                          if (!editableField) {
+                            return (
+                              <ErrorMessage>
+                                No editable field found for "{fieldName}"
+                              </ErrorMessage>
+                            )
+                          }
+
+                          return (
+                            <TableRow>
+                              <TableCell>{editableField.label}</TableCell>
+                              <TableCell>
+                                <FieldDiffValue
+                                  fieldName={fieldName}
+                                  value={fieldVal}
+                                  oldValue={asset[fieldName]}
+                                />
+                              </TableCell>
+                            </TableRow>
                           )
                         }
-                      />
-                    )}
-                  </TableCell>
-                </TableRow>
-              )
-            })
-          ) : (
-            <NoResultsMessage>
-              The AI could not suggest any better tags! Nice!
-            </NoResultsMessage>
-          )}
-        </TableBody>
-      </Table>
-      <Heading variant="h2" noTopMargin>
-        Changes To Apply
-      </Heading>
-      {hasChanges ? (
-        <Table size="small">
-          <TableBody>
-            {Object.entries(finalChanges).map(([fieldName, fieldVal]) => {
-              const editableField = assetEditableFields.find(
-                (field) => field.name === fieldName
-              )
-
-              if (!editableField) {
-                return (
-                  <ErrorMessage>
-                    No editable field found for "{fieldName}"
-                  </ErrorMessage>
-                )
-              }
-
-              return (
-                <TableRow>
-                  <TableCell>{editableField.label}</TableCell>
-                  <TableCell>
-                    <FieldDiffValue
-                      fieldName={fieldName}
-                      value={fieldVal}
-                      oldValue={asset[fieldName]}
-                    />
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      ) : (
-        <NoResultsMessage>No changes to apply</NoResultsMessage>
-      )}
-      {isSaving && <LoadingIndicator message="Saving asset..." />}
-      {isSuccess && (
-        <SuccessMessage onOkay={() => onDone()}>
-          Asset saved successfully
-        </SuccessMessage>
-      )}
-      {lastErrorCode !== null && (
-        <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
-      )}
-      <FormControls>
-        <Button
-          onClick={onClickSave}
-          icon={<SaveIcon />}
-          isDisabled={!hasChanges}>
-          Save Asset
-        </Button>
-        <Button onClick={onDone} color="secondary">
-          Cancel
-        </Button>
-        {isEditor && (
-          <RequeueButton
-            queueCollectionName={AiSuggestCollectionNames.AiSuggestQueue}
-            parentCollectionName={AssetsCollectionNames.Assets}
-            parentId={asset.id}
-            color="tertiary"
-            hollow={false}
-          />
-        )}
-      </FormControls>
-    </>
+                      )}
+                    </TableBody>
+                  </Table>
+                </Paper>
+              ) : (
+                <NoResultsMessage>No changes to apply</NoResultsMessage>
+              )}
+              {isSaving && <LoadingIndicator message="Saving asset..." />}
+              {isSuccess && (
+                <SuccessMessage onOkay={() => onDone()}>
+                  Asset saved successfully
+                </SuccessMessage>
+              )}
+              {lastErrorCode !== null && (
+                <ErrorMessage>
+                  Failed to save asset (code {lastErrorCode})
+                </ErrorMessage>
+              )}
+              <FormControls>
+                <Button
+                  onClick={onClickSave}
+                  icon={<SaveIcon />}
+                  isDisabled={!hasChanges}>
+                  Save Asset
+                </Button>
+                <Button onClick={onDone} color="secondary">
+                  Cancel
+                </Button>
+                {isEditor && (
+                  <RequeueButton
+                    queueCollectionName={
+                      AiSuggestCollectionNames.AiSuggestQueue
+                    }
+                    parentCollectionName={AssetsCollectionNames.Assets}
+                    parentId={asset.id}
+                    color="tertiary"
+                    hollow={false}
+                  />
+                )}
+              </FormControls>
+            </>
+          ),
+        },
+        {
+          name: 'convo',
+          label: 'Conversation',
+          contents: (
+            <>
+              {queuedItem.convogroups ? (
+                queuedItem.convogroups.map((convoGroup) => (
+                  <ConvoGroup
+                    convoGroup={convoGroup}
+                    renderer={ConvoRenderer}
+                  />
+                ))
+              ) : (
+                <NoResultsMessage>No convos yet</NoResultsMessage>
+              )}
+            </>
+          ),
+        },
+      ]}
+    />
   )
 }
 
@@ -631,7 +674,7 @@ const AiSuggestForm = ({
                 )
               case QueueStatus.Processing:
                 return (
-                  <LoadingIndicator message="Working on your suggestions..." />
+                  <LoadingIndicator message="Your suggestions are queued up (should take a few seconds)..." />
                 )
               case QueueStatus.Queued:
                 return (

@@ -1,7 +1,6 @@
 import React from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 
-import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -34,6 +33,7 @@ import GenericOutputLabel from '@/components/generic-output-label'
 import FormControls from '@/components/form-controls'
 import Whiteboard from '@/components/whiteboard'
 import ErrorBoundary from '@/components/error-boundary'
+import Paper from '@/components/paper'
 
 const parentName = 'admin'
 const pageName = 'notepad'

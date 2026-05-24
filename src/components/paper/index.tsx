@@ -1,39 +1,21 @@
 import React from 'react'
-import Paper from '@mui/material/Paper'
-import { makeStyles } from '@mui/styles'
-import { VRCArenaTheme } from '@/themes'
+import styled from '@emotion/styled'
 
-const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
-  root: {
-    padding: '1rem',
-    transition: 'all 100ms',
-    margin: '1rem 0',
-  },
-  noMargin: {
-    margin: '0',
-  },
-}))
+import MaterialPaper from '@mui/material/Paper'
 
-export default ({
-  children,
-  hover = false,
-  selected = false,
-  margin = false,
-  className = '',
-}: {
+interface Props {
   children: React.ReactNode
   hover?: boolean
   selected?: boolean
-  margin?: boolean
+  noPadding?: boolean
+  noMargin?: boolean
   className?: string
-}) => {
-  const classes = useStyles()
-  return (
-    <Paper
-      className={`${classes.root} ${hover ? classes.hover : ''} ${
-        selected ? classes.selected : ''
-      } ${className} ${margin ? '' : classes.noMargin}`}>
-      {children}
-    </Paper>
-  )
 }
+
+const Paper = styled(MaterialPaper)<Props>`
+  padding: ${({ noPadding }) => (noPadding ? '0' : '1rem 0')};
+  transition: all 100ms;
+  margin: ${({ noMargin }) => (noMargin ? '0' : '1rem 0')};
+`
+
+export default Paper

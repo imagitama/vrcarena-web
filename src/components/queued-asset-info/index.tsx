@@ -235,6 +235,7 @@ const QueuedAssetInfo = ({
               onDone={hydrate}
               showStatuses
             />
+            <br />
             <ErrorBoundary>
               <AiArea
                 title="Evaluation"

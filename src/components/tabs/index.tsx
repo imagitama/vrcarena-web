@@ -109,12 +109,12 @@ export interface TabItem {
 }
 
 const Tabs = ({
-  items,
+  items = [],
   urlWithTabNameVar = '',
   horizontal = false,
   children,
 }: {
-  items: TabItem[]
+  items?: TabItem[]
   urlWithTabNameVar?: string
   horizontal?: boolean
   children?: React.ReactNode

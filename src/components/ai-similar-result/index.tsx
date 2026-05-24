@@ -28,18 +28,14 @@ import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import AiResult, {
   ConfidenceScore,
-  Convo,
   ConvoGroup,
-  getIconForStatus,
-  getPositivityForStatus,
-  getScoreAsPercentage,
-  getStatusPastTense,
   RendererProps,
-  Score,
 } from '../ai-result'
 import Tooltip from '../tooltip'
 import { AiConvoMessage, MessageType } from '@/ai'
 import HintText from '../hint-text'
+import { ChatBubbleSource } from '../chat-message'
+import QueueStatusLabel from '../queue-status-label'
 
 const useStyles = makeStyles({
   score: {
@@ -102,7 +98,7 @@ const ConvoRenderer = ({
   switch (message.type) {
     case MessageType.String:
       return (
-        <div
+        <ChatBubbleSource
           dangerouslySetInnerHTML={{
             __html: message.contents.replace('\n', '<br />'),
           }}
@@ -197,11 +193,10 @@ export const Renderer = ({
           ) : (
             <>
               {isMain === false || isExpanded ? (
-                <StatusText
-                  positivity={getPositivityForStatus(queuedItem.status)}>
-                  {getStatusPastTense(queuedItem.status)}{' '}
-                  {getIconForStatus(queuedItem.status)}
-                </StatusText>
+                <QueueStatusLabel
+                  id={queuedItem.id}
+                  status={queuedItem.status}
+                />
               ) : null}
 
               <FormattedDate

@@ -2,20 +2,15 @@ import { makeStyles } from '@mui/styles'
 import styled from '@emotion/styled'
 import React, { useState } from 'react'
 import MessageIcon from '@mui/icons-material/Message'
-import CloseIcon from '@mui/icons-material/Close'
-import CheckIcon from '@mui/icons-material/Check'
 import AspectRatioIcon from '@mui/icons-material/AspectRatio'
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
 import PersonIcon from '@mui/icons-material/Person'
 import AccountTreeIcon from '@mui/icons-material/AccountTree'
 import Chip from '@mui/material/Chip'
-import InfoIcon from '@mui/icons-material/Info'
 
-import { AiConvo, AiConvoMessage } from '@/ai'
+import { AiConvo, AiConvoMessage, MessageType } from '@/ai'
 import { QueuedItem } from '@/queues'
 import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
-import { QueueStatus } from '@/modules/common'
 
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import useDatabaseQuery, {
@@ -30,7 +25,6 @@ import SuccessMessage from '@/components/success-message'
 import Dialog from '@/components/dialog'
 import ChatMessage from '@/components/chat-message'
 import Tooltip from '../tooltip'
-import { colorAiDark, colorAiLight } from '@/themes'
 
 const useStyles = makeStyles({
   root: {
@@ -218,60 +212,21 @@ const useStyles = makeStyles({
   },
 })
 
-export const getPositivityForStatus = (status: QueueStatus): number => {
-  switch (status) {
-    case QueueStatus.Failed:
-      return -1
-    case QueueStatus.Processed:
-      return 1
-    case QueueStatus.Processing:
-      return 0
-    case QueueStatus.Queued:
-      return 0
-  }
-}
-
-export const getIconForStatus = (status: QueueStatus) => {
-  switch (status) {
-    case QueueStatus.Failed:
-      return <CloseIcon />
-    case QueueStatus.Processed:
-      return <CheckIcon />
-    case QueueStatus.Processing:
-      return <HourglassEmptyIcon />
-    case QueueStatus.Queued:
-      return null
-  }
-}
-
-export const getStatusPastTense = (status: QueueStatus): string => {
-  switch (status) {
-    case QueueStatus.Processed:
-      return 'Completed'
-    case QueueStatus.Failed:
-      return 'Failed'
-    case QueueStatus.Processing:
-      return 'Processing'
-    case QueueStatus.Queued:
-      return 'Queued'
-    default:
-      return status
-  }
-}
-
 const getColorForScore = (value: number, lightness: number = 60) =>
   `hsl(${value * 120}, 100%, ${lightness}%)`
 
 export const Score = styled.span`
   display: inline-flex;
   font-weight: bold;
-  cursor: default;
-  color: ${({ score }: { score: number }) => getColorForScore(score)};
+  color: ${({ score, small }: { score: number; small?: boolean }) =>
+    getColorForScore(score, small ? 40 : undefined)};
 `
 
 const ConfidenceScoreChip = styled(Chip)`
   outline: 1px solid
-    ${({ score }: { score: number }) => getColorForScore(score, 40)};
+    ${({ score, small }: { score: number; small?: boolean }) =>
+      small ? 'transparent' : getColorForScore(score)};
+  cursor: default;
 `
 
 const ConfidenceLabel = styled.span`
@@ -295,11 +250,14 @@ export const ConfidenceScore = ({
       score={score}
       label={
         <>
-          <Score score={score}>{getScoreAsPercentage(score)}%</Score>{' '}
+          <Score score={score} small={small}>
+            {getScoreAsPercentage(score)}%
+          </Score>{' '}
           <ConfidenceLabel>confidence</ConfidenceLabel>
         </>
       }
       size={small ? 'small' : undefined}
+      small={small}
       onClick={onClick}
     />
   </Tooltip>
@@ -348,7 +306,12 @@ export const Convo = ({
                   ),
                 }}
                 className={classes.message}
-                flip={msg.from === 'model'}>
+                flip={msg.from === 'model'}
+                title={
+                  msg.type === MessageType.String && msg.promptVersion
+                    ? `Prompt version: ${msg.promptVersion}`
+                    : undefined
+                }>
                 <Renderer message={msg} />
               </ChatMessage>
             ))}

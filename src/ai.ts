@@ -15,6 +15,7 @@ export interface BaseAiConvoMessage<T> {
 export interface AiConvoStringMessage extends BaseAiConvoMessage<string> {
   type: MessageType.String
   contents: string
+  promptVersion?: string
 }
 
 export interface AiConvoStringsMessage extends BaseAiConvoMessage<string[]> {

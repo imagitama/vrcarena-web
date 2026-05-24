@@ -12,6 +12,7 @@ export const colorGreyedOut = 'rgb(180, 180, 180)'
 export const colorFree = 'rgb(100, 150, 100)'
 export const colorAiDark = 'rgb(65, 130, 165)'
 export const colorAiLight = 'rgb(88, 178, 226)'
+export const colorAiVeryDark = 'rgb(29, 60, 76)'
 
 export type VRCArenaTheme = Theme
 

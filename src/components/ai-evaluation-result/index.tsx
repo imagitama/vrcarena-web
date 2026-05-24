@@ -19,20 +19,14 @@ import {
 } from '@/modules/aievaluation'
 import { AiConvoMessage, MessageType } from '@/ai'
 
-import StatusText from '@/components/status-text'
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import FormattedDate from '@/components/formatted-date'
-import CopyThing from '@/components/copy-thing'
 import Tooltip from '@/components/tooltip'
-import {
-  getIconForStatus,
-  getPositivityForStatus,
-  getStatusPastTense,
-  Convo as ConvoExpanded,
-  ConfidenceScore,
-} from '@/components/ai-result'
+import { Convo as ConvoExpanded, ConfidenceScore } from '@/components/ai-result'
 import NoResultsMessage from '@/components/no-results-message'
+import { ChatBubbleSource } from '../chat-message'
+import QueueStatusLabel from '../queue-status-label'
 
 const useStyles = makeStyles({
   root: {
@@ -173,7 +167,6 @@ const useStyles = makeStyles({
     },
   },
   cell: {
-    width: '100%',
     '&:last-child': {
       textAlign: 'right',
     },
@@ -241,7 +234,7 @@ const ConvoRenderer = ({
   switch (message.type) {
     case MessageType.String:
       return (
-        <div
+        <ChatBubbleSource
           dangerouslySetInnerHTML={{
             __html: message.contents.replace('\n', '<br />'),
           }}
@@ -301,22 +294,8 @@ const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
   return (
     <div className={classes.convo}>
       <div className={classes.row}>
-        <div className={classes.cell} style={{ width: '40%' }}>
-          <div className={classes.modelName}>{convo.model}</div>
-        </div>
-        <div className={classes.cell}>
-          {convo.tags ? (
-            <Tags tags={convo.tags} queuedItemTags={tags} />
-          ) : (
-            '(no tags)'
-          )}
-          <ConfidenceScore
-            score={convo.score}
-            title="This model was asked to give this score and reasons (if it is below 100%)."
-            small
-          />
-        </div>
-        <div className={classes.cell}>
+        <div className={classes.cell} style={{ width: '100%' }}>
+          <span className={classes.modelName}>{convo.model}</span>{' '}
           <Tooltip title="Show AI conversation">
             <MessageIcon
               onClick={() => setShowConvo((val) => !val)}
@@ -324,11 +303,28 @@ const Convo = ({ convo, tags }: { convo: AiEvaluateConvo; tags: string[] }) => {
             />
           </Tooltip>
         </div>
+        <div className={classes.cell}>
+          {convo.tags ? (
+            <Tags tags={convo.tags} queuedItemTags={tags} />
+          ) : (
+            '(no tags)'
+          )}
+        </div>
+        <div className={classes.cell}>
+          <ConfidenceScore
+            score={convo.score}
+            title="This model was asked to give this score and reasons (if it is below 100%)."
+            small
+          />
+        </div>
       </div>
       <div>
         {showConvo ? (
           <ConvoExpanded
-            convo={{ modelName: convo.model, messages: convo.messages }}
+            convo={{
+              modelName: convo.model,
+              messages: convo.messages,
+            }}
             renderer={ConvoRenderer}
           />
         ) : null}
@@ -381,17 +377,16 @@ const AiEvaluationResult = ({
         <ErrorMessage>Failed to subscribe: {lastErrorCode}</ErrorMessage>
       )}
       <div className={classes.cells}>
-        <div className={classes.cell}>
+        <div className={classes.cell} style={{ width: '100%' }}>
           {isMain && isExpanded !== true ? (
             <div>AI Evaluation</div>
           ) : (
             <>
               {isMain === false || isExpanded ? (
-                <StatusText
-                  positivity={getPositivityForStatus(queuedItem.status)}>
-                  {getStatusPastTense(queuedItem.status)}{' '}
-                  {getIconForStatus(queuedItem.status)}
-                </StatusText>
+                <QueueStatusLabel
+                  id={queuedItem.id}
+                  status={queuedItem.status}
+                />
               ) : null}
               <div className={classes.date}>
                 <FormattedDate

@@ -4,7 +4,12 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
 import InfoIcon from '@mui/icons-material/Info'
 
 import { routes } from '@/routes'
-import { colorAiDark, colorAiLight } from '@/themes'
+import {
+  colorAiDark,
+  colorAiLight,
+  colorAiVeryDark,
+  VRCArenaTheme,
+} from '@/themes'
 
 import Tooltip from '@/components/tooltip'
 import Link from '@/components/link'
@@ -13,12 +18,13 @@ import {
   mediaQueryForTabletsOrBelow,
 } from '@/media-queries'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     position: 'relative',
     padding: '1rem',
-    border: `1px dashed ${colorAiLight}`,
     overflow: 'hidden',
+    background: colorAiVeryDark,
+    borderRadius: theme.shape.borderRadius,
     [mediaQueryForTabletsOrBelow]: {
       padding: '0.5rem',
     },
@@ -52,7 +58,7 @@ const useStyles = makeStyles({
     right: 0,
     color: colorAiDark,
   },
-})
+}))
 
 const AiArea = ({
   children,

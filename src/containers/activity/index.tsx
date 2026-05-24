@@ -35,7 +35,7 @@ const Results = ({ results }: { results: FullActivityEntry[] }) => {
           createdby: createdBy,
           createdbyusername: createdByUsername,
         }) => (
-          <Paper key={id} margin className={classes.item}>
+          <Paper key={id} className={classes.item}>
             <ActivityItemLabel
               message={message}
               parent={parent}

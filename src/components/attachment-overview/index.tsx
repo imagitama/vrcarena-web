@@ -152,7 +152,7 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
           <Markdown source={attachment.description} />
         </Paper>
       ) : null}
-      <Paper margin={!!attachment.description}>
+      <Paper noMargin={!attachment.description}>
         Posted <FormattedDate date={attachment.createdat} /> by{' '}
         <Link
           to={routes.viewUserWithVar.replace(':userId', attachment.createdby)}>
