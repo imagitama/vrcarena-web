@@ -128,6 +128,8 @@ const Form = ({ assetFields, onDone }: Props) => {
   const hasNothing =
     !isLoading && Array.isArray(queuedItems) && queuedItems.length === 0
 
+  const canUseFields = hasNothing !== true
+
   const toggleField = (fieldName: string, fieldValue: any) =>
     setNewFields((currentFields) => {
       if (fieldName in currentFields) {
@@ -241,7 +243,10 @@ const Form = ({ assetFields, onDone }: Props) => {
         </Table>
       )}
       <FormControls>
-        <Button color="primary" onClick={onClickDone} isDisabled={hasNothing}>
+        <Button
+          color="primary"
+          onClick={onClickDone}
+          isDisabled={!canUseFields}>
           Use These Fields
         </Button>
         <Button

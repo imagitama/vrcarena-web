@@ -40,6 +40,8 @@ const getFriendlyMessageFromFailureInfo = (
           return `An asset with that source URL already exists`
         case 'ScrapeErrorRequestNotOk':
           return 'We failed to visit the URL (are you sure it exists?)'
+        case 'AutoSyncErrorFailedToProcessImages':
+          return 'Something failed with downloading images (the platform probably detected our attempt and blocked it)'
       }
       return `Error: ${failureInfo.error}`
   }
