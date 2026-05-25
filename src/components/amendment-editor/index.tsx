@@ -86,13 +86,15 @@ const ParentEditor = ({
   id,
   fields,
   onFieldChanged,
-  insertExtraFields,
-}: {
+  onFieldsChanged,
+}: // storeFieldsForOutput,
+{
   type?: string
   id?: string
   fields: any
   onFieldChanged: (fieldName: string, value: any) => void
-  insertExtraFields: (extraFields: { [fieldName: string]: any }) => void
+  onFieldsChanged: (fields: { [fieldName: string]: any }) => void
+  // storeFieldsForOutput: (extraFields: { [fieldName: string]: any }) => void
 }) => {
   switch (type) {
     case AssetsCollectionNames.Assets:
@@ -101,6 +103,7 @@ const ParentEditor = ({
           assetId={null}
           overrideFields={fields}
           onFieldChanged={onFieldChanged}
+          onFieldsChanged={onFieldsChanged}
         />
       )
     case AuthorsCollectionNames.Authors:
@@ -261,23 +264,39 @@ const AmendmentEditor = ({
     }))
   }
 
-  const insertExtraFields = (extraFields: { [fieldName: string]: any }) => {
-    console.debug(`AmendmentEditor.insertExtraFields`, { extraFields })
+  const onFieldsChanged = async (fieldsToMerge: {
+    [fieldName: string]: any
+  }) => {
+    console.debug(`AmendmentEditor.onFieldsChanged`, fieldsToMerge)
+
+    setNewFieldsForSaving((currentFields) => ({
+      ...currentFields,
+      ...fieldsToMerge,
+    }))
+
+    setNewFieldsForOutput((currentFields) => ({
+      ...currentFields,
+      ...fieldsToMerge,
+    }))
+  }
+
+  const storeFieldsForOutput = (fields: { [fieldName: string]: any }) => {
+    console.debug(`AmendmentEditor.storeFieldsForOutput`, { fields })
 
     // TODO: do this in generic way (quick fix)
-    if (extraFields.attachmentsdata) {
+    if (fields.attachmentsdata) {
       setNewFieldsForOutput((currentVal) => ({
         ...currentVal,
         attachmentsdata: currentVal.attachmentsdata
-          ? currentVal.attachmentsdata.concat(extraFields.attachmentsdata)
-          : extraFields.attachmentsdata,
+          ? currentVal.attachmentsdata.concat(fields.attachmentsdata)
+          : fields.attachmentsdata,
       }))
       return
     }
 
     setNewFieldsForOutput((currentVal) => ({
       ...currentVal,
-      ...extraFields,
+      ...fields,
     }))
   }
 
@@ -344,7 +363,7 @@ const AmendmentEditor = ({
           id={parentId}
           fields={parentWithFieldsForOutput}
           onFieldChanged={onFieldChanged}
-          insertExtraFields={insertExtraFields}
+          onFieldsChanged={onFieldsChanged}
         />
       </>
     )

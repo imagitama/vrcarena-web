@@ -17,18 +17,22 @@ const useStyles = makeStyles({
 
 const Column = ({
   children,
-  width: overrideWidth,
+  widthPerc: overrideWidthPerc,
   padding = false,
 }: {
   children: React.ReactNode
-  width?: number
+  widthPerc?: number
   padding?: boolean
 }) => {
   const classes = useStyles()
   return (
     <div
       className={`${classes.column} ${padding ? classes.withPadding : ''}`}
-      style={overrideWidth ? { width: `${overrideWidth}%` } : {}}>
+      style={
+        overrideWidthPerc
+          ? { width: `${overrideWidthPerc}%`, flex: 'auto' }
+          : {}
+      }>
       {children}
     </div>
   )

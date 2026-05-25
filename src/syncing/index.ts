@@ -40,6 +40,26 @@ export const getSyncPlatformNameFromUrl = (
   return undefined
 }
 
+export const getSyncPlatformLabelFromUrl = (url: string): string | undefined => {
+  const platformName = getSyncPlatformNameFromUrl(url)
+  switch (platformName) {
+    case SyncPlatformName.Gumroad:
+      return 'Gumroad'
+    case SyncPlatformName.Booth:
+      return 'Booth'
+    case SyncPlatformName.Itch:
+      return 'Itch'
+    case SyncPlatformName.Jinxxy:
+      return 'Jinxxy'
+    case SyncPlatformName.Kofi:
+      return 'Kofi'
+    case SyncPlatformName.PayHip:
+      return 'PayHip'
+    default:
+      return undefined
+  }
+}
+
 export const getCanSync = (url: string): boolean =>
   getSyncPlatformNameFromUrl(url) !== undefined
 
@@ -127,9 +147,8 @@ export interface SyncAttachment {
 export const cleanupSourceUrl = (url: string): string => {
   try {
     const parsedUrl = new URL(url)
-    return `${parsedUrl.origin}${
-      parsedUrl.pathname !== '/' ? parsedUrl.pathname : ''
-    }`
+    return `${parsedUrl.origin}${parsedUrl.pathname !== '/' ? parsedUrl.pathname : ''
+      }`
   } catch (error) {
     return ''
   }

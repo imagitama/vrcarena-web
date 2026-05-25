@@ -265,14 +265,7 @@ export default <TRecord>(
       }
 
       if (result.error) {
-        if (result.error.message.includes('JWT expired')) {
-          setIsLoading(false)
-          setLastErrorCode(DataStoreErrorCode.AuthExpired)
-        } else {
-          throw new Error(
-            `Failed to query database: ${result.error.code}: ${result.error.message}`
-          )
-        }
+        throw result.error
       } else {
         // weird timing issue where loading=false but users=null so set it before the other flags
         setRecords(result.data)

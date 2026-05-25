@@ -36,19 +36,23 @@ import DropdownInput from './components/dropdown-input'
 import ItemInput from './components/item-input'
 import DateInput from './components/date-input'
 
-export type GenericInputProps = {
+export type GenericInputProps<TRecord extends Record<string, any>> = {
   editableField: EditableField<any>
   value: any
   onChange: (newVal: any) => void
   extraFormData: any
-  setFieldsValues: (updates: Record<string, any>) => void
+  setFieldsValues: (updates: Partial<TRecord>) => void
   databaseResult: any
   formFields: any
 }
 
-type GenericInput = (props: GenericInputProps) => JSX.Element
+type GenericInput<TRecord extends Record<string, any>> = (
+  props: GenericInputProps<TRecord>
+) => JSX.Element
 
-function getInputForFieldType(type: keyof typeof fieldTypes): GenericInput {
+function getInputForFieldType<TRecord extends Record<string, any>>(
+  type: keyof typeof fieldTypes
+): GenericInput<TRecord> {
   switch (type) {
     case fieldTypes.text:
       // @ts-ignore
@@ -110,7 +114,7 @@ const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
   )
 }
 
-const GenericEditor = ({
+const GenericEditor = <TRecord extends Record<string, any>>({
   fields = undefined,
   collectionName,
   viewName = '',
@@ -125,6 +129,7 @@ const GenericEditor = ({
   // amendments
   overrideFields = null,
   onFieldChanged = undefined,
+  onFieldsChanged = undefined,
   // asset editor mini
   isAccordion = false,
   startExpanded = false,
@@ -146,8 +151,9 @@ const GenericEditor = ({
   cancelUrl?: string
   extraFormData?: Object
   getSuccessUrl?: (newId: string | null) => string
-  overrideFields?: Record<string, any> | null
+  overrideFields?: TRecord | null
   onFieldChanged?: (fieldName: string, newValue: any) => void
+  onFieldsChanged?: (fields: TRecord) => void
   // asset editor mini
   isAccordion?: boolean
   startExpanded?: boolean
@@ -164,14 +170,16 @@ const GenericEditor = ({
 
   const editableFieldsToUse = fields || editableFields[collectionName]
 
-  const [isLoading, lastErrorCode, rawRecord] = useDataStoreItem<
-    Record<string, any>
-  >(viewName || collectionName, id || false, {
-    queryName: `generic-editor-${viewName || collectionName}`,
-  })
+  const [isLoading, lastErrorCode, rawRecord] = useDataStoreItem<TRecord>(
+    viewName || collectionName,
+    id || false,
+    {
+      queryName: `generic-editor-${viewName || collectionName}`,
+    }
+  )
   const [isSaving, isSuccess, lastErrorCodeSaving, save, , updatedRecord] =
-    useDataStoreEdit<Record<string, any>>(collectionName, id || false)
-  const [formFields, setFormFields] = useState<null | Record<string, any>>(
+    useDataStoreEdit<TRecord>(collectionName, id || false)
+  const [formFields, setFormFields] = useState<null | TRecord>(
     overrideFields
       ? overrideFields
       : id
@@ -181,7 +189,7 @@ const GenericEditor = ({
             ...newFormFields,
             [fieldConfig.name]: fieldConfig.default,
           }
-        }, {})
+        }, {} as TRecord)
   )
   const [validationIssues, setValidationIssues] = useState<ValidationIssue[]>(
     []
@@ -204,7 +212,7 @@ const GenericEditor = ({
               ? rawRecord[fieldConfig.name as string]
               : fieldConfig.default,
         }
-      }, {})
+      }, {} as TRecord)
     )
   }, [rawRecord === null])
 
@@ -225,7 +233,7 @@ const GenericEditor = ({
     })
   }
 
-  const onFieldsChange = (updates: Record<string, any>) => {
+  const onFieldsChange = (updates: TRecord) => {
     setFormFields({
       ...formFields,
       ...updates,
@@ -330,7 +338,9 @@ const GenericEditor = ({
             onFieldChange(editableField.name as string, newVal)
           }
           extraFormData={extraFormData}
-          setFieldsValues={onFieldsChange}
+          setFieldsValues={
+            onFieldsChange as (updates: Partial<Record<string, any>>) => void
+          }
           databaseResult={rawRecord}
           // for mini editor
           formFields={formFields}

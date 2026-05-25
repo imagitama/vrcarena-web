@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+
 import {
   Asset,
   CollectionNames,
@@ -7,23 +8,26 @@ import {
   ViewNames,
 } from '@/modules/assets'
 import { getCanAssetBePublished } from '@/utils/assets'
+import useExperimentalFeature, {
+  FeatureName,
+} from '@/hooks/useExperimentalFeature'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useIsEditor from '@/hooks/useIsEditor'
 
 import GenericEditor from '@/components/generic-editor'
 import FormControls from '@/components/form-controls'
 import PublishAssetButton from '@/components/publish-asset-button'
-import useDataStoreItem from '@/hooks/useDataStoreItem'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import NoResultsMessage from '@/components/no-results-message'
-import useIsEditor from '@/hooks/useIsEditor'
-import AiArea from '../ai-area'
-import AiSuggestForm from '../ai-suggest-form'
-import ErrorBoundary from '../error-boundary'
-import Columns from '../columns'
-import Column from '../column'
-import useExperimentalFeature, {
-  FeatureName,
-} from '@/hooks/useExperimentalFeature'
+import AiArea from '@/components/ai-area'
+import AiSuggestForm from '@/components/ai-suggest-form'
+import ErrorBoundary from '@/components/error-boundary'
+import Columns from '@/components/columns'
+import Column from '@/components/column'
+import PopulateFromAssetSyncForm from '@/components/populate-from-asset-sync-form'
+import Paper from '@/components/paper'
+import ExperimentalArea from '../experimental-area'
 
 const AssetEditor = ({
   assetId,
@@ -32,6 +36,7 @@ const AssetEditor = ({
   // amendments
   overrideFields,
   onFieldChanged,
+  onFieldsChanged,
 }: {
   assetId: string | null // null for amendment editor
   onDone?: () => void
@@ -39,13 +44,23 @@ const AssetEditor = ({
   // amendments
   overrideFields?: Asset
   onFieldChanged?: (fieldName: string, fieldValue: any) => void
+  onFieldsChanged?: (fields: Partial<Asset>) => void
 }) => {
   const [isLoading, lastErrorCode, asset, hydrate] =
     useDataStoreItem<FullAsset>(ViewNames.GetFullAssets, assetId || false)
   const isEditor = useIsEditor()
-  const [isExperimentalFeatureEnabled] = useExperimentalFeature(
+  const [isAiSuggestionEnabledByUser] = useExperimentalFeature(
     FeatureName.AiSuggestions
   )
+  const [reRenderKey, setReRenderKey] = useState(0)
+
+  const onAssetSyncDone = (fields: Partial<Asset>) => {
+    if (!onFieldsChanged) return
+    onFieldsChanged(fields)
+    setReRenderKey((i) => i + 1)
+  }
+
+  console.debug(`AssetEditor.render`, { reRenderKey, overrideFields })
 
   if (assetId && (isLoading || asset === null)) {
     return <LoadingIndicator message="Loading asset..." />
@@ -76,9 +91,25 @@ const AssetEditor = ({
             </FormControls>
           </Column>
         )}
+        {overrideFields && onFieldsChanged && overrideFields.sourceurl && (
+          <Column>
+            <ExperimentalArea>
+              This feature is new and experimental. If it does not work please
+              report this in our Discord server to help us make it better.
+              <br />
+              <Paper>
+                <PopulateFromAssetSyncForm
+                  assetFields={overrideFields}
+                  onDone={(newFields) => onAssetSyncDone(newFields)}
+                />
+              </Paper>
+            </ExperimentalArea>
+            <br />
+          </Column>
+        )}
         {assetId &&
           asset &&
-          (isEditor === true || isExperimentalFeatureEnabled) && (
+          (isEditor === true || isAiSuggestionEnabledByUser) && (
             <Column>
               <AiArea
                 title="AI Suggestion"
@@ -95,6 +126,7 @@ const AssetEditor = ({
           )}
       </Columns>
       <GenericEditor
+        key={reRenderKey} // force re-render after sync
         isAccordion
         startExpanded
         collectionName={CollectionNames.Assets}
@@ -107,6 +139,7 @@ const AssetEditor = ({
         // amendments
         overrideFields={overrideFields}
         onFieldChanged={onFieldChanged}
+        onFieldsChanged={onFieldsChanged}
       />
     </>
   )

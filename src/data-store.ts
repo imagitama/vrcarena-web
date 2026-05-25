@@ -265,6 +265,7 @@ export enum PostgresErrorCode {
   PGRST103 = 'PGRST103',
   // code: "23505", details: null, hint: null, message: 'duplicate key value violates unique constraint "users_username_key"'
   'PG23505' = '23505',
+  'PGRST303' = 'PGRST303' // code 'PGRST303' message 'JWT expired'
 }
 
 // we should never store complex objects in state (hard to persist, reference issues, etc.)
@@ -288,6 +289,8 @@ export const getDataStoreErrorCodeFromPostgrestError = (
       return DataStoreErrorCode.BadRange
     case PostgresErrorCode.PG23505:
       return DataStoreErrorCode.ViolateUniqueConstraint
+    case PostgresErrorCode.PGRST303:
+      return DataStoreErrorCode.AuthExpired
   }
 
   return DataStoreErrorCode.Unknown
@@ -303,6 +306,10 @@ export const getDataStoreErrorCodeFromError = (
   // must be 2nd as above error extends from it
   if (errorThing instanceof DataStoreError) {
     return getDataStoreErrorCodeFromPostgrestError(errorThing.postgrestError!)
+  }
+
+  if (errorThing instanceof PostgrestError) {
+    return getDataStoreErrorCodeFromPostgrestError(errorThing)
   }
 
   return DataStoreErrorCode.Unknown

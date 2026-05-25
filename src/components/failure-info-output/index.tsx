@@ -52,7 +52,7 @@ const FailureInfoOutput = ({
 }) => {
   return (
     <Tooltip title={JSON.stringify(failureInfo, null, '  ')}>
-      <small>{getFriendlyMessageFromFailureInfo(failureInfo)}</small>
+      <span>{getFriendlyMessageFromFailureInfo(failureInfo)}</span>
     </Tooltip>
   )
 }

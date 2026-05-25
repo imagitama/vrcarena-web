@@ -35,6 +35,7 @@ import {
   CollectionNames,
   QueueStatus,
   FullAssetSyncQueueItem,
+  Intent,
 } from '@/modules/assetsyncqueue'
 import { Asset, FullAsset, ViewNames } from '@/modules/assets'
 import { DataStoreErrorCode, updateRecord } from '@/data-store'
@@ -388,33 +389,35 @@ const QueuedItemRow = ({
         <TableCell width="20%">
           <QueuedStatus queuedItem={queuedItem} />
           {queuedItem.status === QueueStatus.Processed ? (
-            <>
-              <br />
-              <small>
-                <WarningIcon /> You must submit your asset for approval (by
-                editing it below)
-              </small>
-              <br />
-              {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
-                <MissingFields queuedItem={queuedItem} />
-              ) : null}
-              <Button
-                onClick={onClickToggleEdit}
-                icon={<EditIcon />}
-                size="small"
-                color="secondary">
-                Edit Asset
-              </Button>
-              {isEditingAsset && (
-                <AssetEditorDialog
-                  onClose={() => {
-                    hydrateAsset()
-                    setIsEditingAsset(false)
-                  }}
-                  assetId={queuedItem.createdassetid}
-                />
-              )}
-            </>
+            queuedItem.createdassetid ? (
+              <>
+                <br />
+                <small>
+                  <WarningIcon /> You must submit your asset for approval (by
+                  editing it below)
+                </small>
+                <br />
+                {queuedItem.syncedfields && queuedItem.syncedfields.length ? (
+                  <MissingFields queuedItem={queuedItem} />
+                ) : null}
+                <Button
+                  onClick={onClickToggleEdit}
+                  icon={<EditIcon />}
+                  size="small"
+                  color="secondary">
+                  Edit Asset
+                </Button>
+                {isEditingAsset && (
+                  <AssetEditorDialog
+                    onClose={() => {
+                      hydrateAsset()
+                      setIsEditingAsset(false)
+                    }}
+                    assetId={queuedItem.createdassetid}
+                  />
+                )}
+              </>
+            ) : null
           ) : null}
           {lastSubscribeErrorCode !== null && hydrate ? (
             <Button size="small" color="secondary" onClick={hydrate}>
@@ -556,6 +559,7 @@ const AssetSyncQueue = ({
 
         records.push({
           sourceurl: cleanedUrl,
+          intent: Intent.CreateAsset,
         })
       }
 

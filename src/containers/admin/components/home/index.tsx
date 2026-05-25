@@ -221,13 +221,13 @@ export default () => {
   return (
     <>
       <Columns padding>
-        <Column width={50} padding>
+        <Column widthPerc={50} padding>
           <Heading variant="h2">Queue Overview</Heading>
           <ErrorBoundary>
             <AdminQueue />
           </ErrorBoundary>
         </Column>
-        <Column width={50} padding>
+        <Column widthPerc={50} padding>
           <Heading variant="h2">Notepad</Heading>
           <ErrorBoundary>
             <Whiteboard />
