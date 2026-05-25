@@ -128,7 +128,7 @@ const Form = ({ assetFields, onDone }: Props) => {
   const hasNothing =
     !isLoading && Array.isArray(queuedItems) && queuedItems.length === 0
 
-  const canUseFields = hasNothing !== true
+  const canUseFields = lastQueuedItem !== null && lastQueuedItem.result !== null
 
   const toggleField = (fieldName: string, fieldValue: any) =>
     setNewFields((currentFields) => {
