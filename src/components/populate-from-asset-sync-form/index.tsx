@@ -142,12 +142,13 @@ const Form = ({ assetFields, onDone }: Props) => {
       }
     })
 
-  const onClickSync = () => {
+  const onClickSync = async () => {
     if (!assetFields.sourceurl) throw new Error('Need source URL')
-    create({
+    await create({
       sourceurl: assetFields.sourceurl,
       intent: Intent.EditAsset,
     })
+    hydrate()
   }
 
   const onClickRetry = () => onClickSync()
@@ -188,7 +189,13 @@ const Form = ({ assetFields, onDone }: Props) => {
           Added to queue (should take a few seconds)
         </SuccessMessage>
       )}
-      {hasNothing && <Button onClick={onClickSync}>Perform Sync</Button>}
+      {hasNothing && (
+        <FormControls>
+          <Button onClick={onClickSync} icon={<SyncIcon />}>
+            Request Sync
+          </Button>
+        </FormControls>
+      )}
       {lastQueuedItem !== null && (
         <Table size="small">
           <TableBody>
@@ -234,10 +241,13 @@ const Form = ({ assetFields, onDone }: Props) => {
         </Table>
       )}
       <FormControls>
-        <Button color="primary" onClick={onClickDone}>
+        <Button color="primary" onClick={onClickDone} isDisabled={hasNothing}>
           Use These Fields
         </Button>
-        <Button color="secondary" onClick={onClickRetry}>
+        <Button
+          color="secondary"
+          onClick={onClickRetry}
+          isDisabled={hasNothing}>
           Retry
         </Button>
       </FormControls>
