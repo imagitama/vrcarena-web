@@ -9,22 +9,16 @@ import TableHead from '@mui/material/TableHead'
 
 import {
   AiFieldSuggestions,
-  AiSuggestConvo,
   AiSuggestQueuedItem,
   CollectionNames,
   FuncResult,
 } from '@/modules/aisuggest'
 import { QueueStatus } from '@/modules/common'
-import {
-  Asset,
-  CollectionNames as AssetsCollectionNames,
-} from '@/modules/assets'
+import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 
 import NoResultsMessage from '../no-results-message'
-import FormattedDate from '../formatted-date'
-import StatusText from '../status-text'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import CopyThing from '../copy-thing'
@@ -38,7 +32,8 @@ import HintText from '../hint-text'
 import { AiConvoMessage, MessageType } from '@/ai'
 import FieldOutput from '../field-output'
 import { ChatBubbleSource } from '../chat-message'
-import QueueStatusLabel from '../queue-status-label'
+import AiResultSummary from '../ai-result-summary'
+import { getConnectionStatusFromHookResult } from '../connection-indicator'
 
 const useStyles = makeStyles({
   score: {
@@ -83,9 +78,6 @@ const useStyles = makeStyles({
     '& > *': {
       display: 'block',
     },
-  },
-  date: {
-    fontSize: '75%',
   },
 })
 
@@ -220,23 +212,14 @@ export const Renderer = ({
           {isMain && isExpanded !== true ? (
             <div>AI Evaluation</div>
           ) : (
-            <>
-              {isMain === false || isExpanded ? (
-                <QueueStatusLabel
-                  id={queuedItem.id}
-                  status={queuedItem.status}
-                />
-              ) : null}
-
-              <FormattedDate
-                date={queuedItem.lastmodifiedat || queuedItem.createdat}
-                className={classes.date}
-              />
-
-              {queuedItem.status === QueueStatus.Failed
-                ? `Notes: ${queuedItem.notes}`
-                : null}
-            </>
+            <AiResultSummary
+              queuedItem={queuedItem}
+              connectionStatus={getConnectionStatusFromHookResult(
+                isSubscribing,
+                isSubscribed,
+                lastErrorCode
+              )}
+            />
           )}
         </div>
         <div className={classes.cell}>

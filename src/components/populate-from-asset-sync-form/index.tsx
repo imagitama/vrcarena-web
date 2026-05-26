@@ -31,9 +31,14 @@ import NoResultsMessage from '@/components/no-results-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import Heading from '@/components/heading'
-import QueueStatusLabel from '@/components/queue-status-label'
 import FormattedDate from '@/components/formatted-date'
 import FailureInfoOutput from '@/components/failure-info-output'
+import {
+  ConnectionStatus,
+  getConnectionStatusFromHookResult,
+} from '../connection-indicator'
+import AiResultSummary from '../ai-result-summary'
+import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 
 interface Props {
   assetFields: Partial<Asset>
@@ -75,21 +80,18 @@ const PopulateFromAssetSyncForm = (props: Props) => {
 
 const QueuedItem = ({
   queuedItem,
+  connectionStatus,
   onRefresh,
 }: {
   queuedItem: AssetSyncQueueItem
+  connectionStatus: ConnectionStatus
   onRefresh: () => void
 }) => (
   <>
-    <QueueStatusLabel id={queuedItem.id} status={queuedItem.status} />
-    <br />
-    <FormattedDate date={queuedItem.lastmodifiedat || queuedItem.createdat} />
-    {queuedItem.failureinfo && (
-      <>
-        <br />
-        Failed: <FailureInfoOutput failureInfo={queuedItem.failureinfo} />
-      </>
-    )}
+    <AiResultSummary
+      queuedItem={queuedItem}
+      connectionStatus={connectionStatus}
+    />
     <Button color="secondary" onClick={onRefresh} size="small" hollow>
       Refresh
     </Button>
@@ -109,6 +111,7 @@ const Form = ({ assetFields, onDone }: Props) => {
         orderBy: ['createdat', OrderDirections.DESC],
       }
     )
+
   const [isCreating, isSuccess, lastErrorCodeSaving, create] =
     useDataStoreCreate<AssetSyncQueueItem>(
       AssetSyncQueueCollectionNames.AssetSyncQueue,
@@ -122,13 +125,28 @@ const Form = ({ assetFields, onDone }: Props) => {
     onDone(newFields)
   }
 
-  const lastQueuedItem: null | AssetSyncQueueItem =
+  const lastQueuedItemStale: null | AssetSyncQueueItem =
     Array.isArray(queuedItems) && queuedItems.length ? queuedItems[0] : null
+
+  const [isSubscribing, isSubscribed, lastErrorCodeSync, lastQueuedItemLive] =
+    useDataStoreItemSync<AssetSyncQueueItem>(
+      AssetSyncQueueCollectionNames.AssetSyncQueue,
+      lastQueuedItemStale ? lastQueuedItemStale.id : false,
+      {
+        queryName: `populate_assetsyncqueue_${
+          lastQueuedItemStale ? lastQueuedItemStale.id : 'false'
+        }_sync`,
+      }
+    )
+
+  const lastQueuedItem: AssetSyncQueueItem | null =
+    lastQueuedItemLive || lastQueuedItemStale
 
   const hasNothing =
     !isLoading && Array.isArray(queuedItems) && queuedItems.length === 0
 
-  const canUseFields = lastQueuedItem !== null && lastQueuedItem.result !== null
+  const canUseFields =
+    lastQueuedItemStale !== null && lastQueuedItemStale.result !== null
 
   const toggleField = (fieldName: string, fieldValue: any) =>
     setNewFields((currentFields) => {
@@ -175,7 +193,15 @@ const Form = ({ assetFields, onDone }: Props) => {
   return (
     <>
       {lastQueuedItem ? (
-        <QueuedItem queuedItem={lastQueuedItem} onRefresh={hydrate} />
+        <QueuedItem
+          queuedItem={lastQueuedItem}
+          connectionStatus={getConnectionStatusFromHookResult(
+            isSubscribing,
+            isSubscribed,
+            lastErrorCodeSync
+          )}
+          onRefresh={hydrate}
+        />
       ) : null}
       {lastErrorCode !== null && (
         <ErrorMessage>Failed to get sync (code {lastErrorCode})</ErrorMessage>

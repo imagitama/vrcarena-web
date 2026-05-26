@@ -7,7 +7,6 @@ import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
 
 import {
-  AiSimilarConvo,
   AiSimilarFuncResult,
   AiSimilarQueuedItem,
   AssetSimilarity,
@@ -22,8 +21,6 @@ import { QueueStatus } from '@/modules/common'
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 
 import NoResultsMessage from '../no-results-message'
-import FormattedDate from '../formatted-date'
-import StatusText from '../status-text'
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
 import AiResult, {
@@ -35,7 +32,8 @@ import Tooltip from '../tooltip'
 import { AiConvoMessage, MessageType } from '@/ai'
 import HintText from '../hint-text'
 import { ChatBubbleSource } from '../chat-message'
-import QueueStatusLabel from '../queue-status-label'
+import AiResultSummary from '../ai-result-summary'
+import { getConnectionStatusFromHookResult } from '../connection-indicator'
 
 const useStyles = makeStyles({
   score: {
@@ -191,23 +189,14 @@ export const Renderer = ({
           {isMain && isExpanded !== true ? (
             <div>AI Similarites</div>
           ) : (
-            <>
-              {isMain === false || isExpanded ? (
-                <QueueStatusLabel
-                  id={queuedItem.id}
-                  status={queuedItem.status}
-                />
-              ) : null}
-
-              <FormattedDate
-                date={queuedItem.lastmodifiedat || queuedItem.createdat}
-                className={classes.date}
-              />
-
-              {queuedItem.status === QueueStatus.Failed
-                ? `Notes: ${queuedItem.notes}`
-                : null}
-            </>
+            <AiResultSummary
+              queuedItem={queuedItem}
+              connectionStatus={getConnectionStatusFromHookResult(
+                isSubscribing,
+                isSubscribed,
+                lastErrorCode
+              )}
+            />
           )}
         </div>
         <div className={classes.cell}>

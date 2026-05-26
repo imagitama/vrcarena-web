@@ -79,9 +79,6 @@ const useStyles = makeStyles({
       textAlign: 'center',
     },
   },
-  noValue: {
-    color: colorGreyedOut,
-  },
   heading: {
     display: 'flex',
     alignItems: 'center',
@@ -569,9 +566,7 @@ const useAiSuggestion = (
     )
 
   const queuedItem: AiSuggestQueuedItem | null =
-    lastSyncResult !== null && lastSyncResult !== false
-      ? lastSyncResult
-      : lastStaleResult
+    lastSyncResult !== null ? lastSyncResult : lastStaleResult
 
   return [
     isLoading,

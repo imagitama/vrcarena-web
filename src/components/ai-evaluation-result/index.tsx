@@ -20,12 +20,14 @@ import { AiConvoMessage, MessageType } from '@/ai'
 
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
-import FormattedDate from '@/components/formatted-date'
 import Tooltip from '@/components/tooltip'
 import { Convo as ConvoExpanded, ConfidenceScore } from '@/components/ai-result'
 import NoResultsMessage from '@/components/no-results-message'
 import { ChatBubbleSource } from '../chat-message'
-import QueueStatusLabel from '../queue-status-label'
+import AiResultSummary from '../ai-result-summary'
+import { getConnectionStatusFromHookResult } from '../connection-indicator'
+import Expander from '../expander'
+import Button from '../button'
 
 const useStyles = makeStyles({
   root: {
@@ -230,14 +232,35 @@ const ConvoRenderer = ({
 }: {
   message: AiConvoMessage<any, GeminiAssetEvaluationFunctionResult>
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
   switch (message.type) {
     case MessageType.String:
       return (
-        <ChatBubbleSource
-          dangerouslySetInnerHTML={{
-            __html: message.contents.replace('\n', '<br />'),
-          }}
-        />
+        <>
+          <ChatBubbleSource
+            dangerouslySetInnerHTML={{
+              __html: message.contents.replace('\n', '<br />'),
+            }}
+          />
+          {message.image ? (
+            isExpanded ? (
+              <>
+                <img src={message.image.url} />
+                <br />
+                Mime Type: {message.image.mimeType}
+                <br />
+                Length: {message.image.base64Length}
+              </>
+            ) : (
+              <Button
+                size="small"
+                color="secondary"
+                onClick={() => setIsExpanded(true)}>
+                Show image info
+              </Button>
+            )
+          ) : null}
+        </>
       )
 
     case MessageType.FuncResult:
@@ -351,13 +374,6 @@ const AiEvaluationResult = ({
 
   const queuedItem = lastResult || staleQueuedItem
 
-  // TODO: place this somewhere
-  // const CopyIdIcon = () => (
-  //   <CopyThing text={queuedItem.id} title="Click to copy ID">
-  //     <InfoIcon />
-  //   </CopyThing>
-  // )
-
   const tagsToDisplay: string[] | null =
     Array.isArray(queuedItem.tags) && queuedItem.tags.length
       ? queuedItem.tags
@@ -380,19 +396,14 @@ const AiEvaluationResult = ({
           {isMain && isExpanded !== true ? (
             <div>AI Evaluation</div>
           ) : (
-            <>
-              {isMain === false || isExpanded ? (
-                <QueueStatusLabel
-                  id={queuedItem.id}
-                  status={queuedItem.status}
-                />
-              ) : null}
-              <div className={classes.date}>
-                <FormattedDate
-                  date={queuedItem.lastmodifiedat || queuedItem.createdat}
-                />
-              </div>
-            </>
+            <AiResultSummary
+              queuedItem={queuedItem}
+              connectionStatus={getConnectionStatusFromHookResult(
+                isSubscribing,
+                isSubscribed,
+                lastErrorCode
+              )}
+            />
           )}
         </div>
         <div className={classes.cell}>

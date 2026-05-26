@@ -10,6 +10,11 @@ export interface BaseAiConvoMessage<T> {
   from: 'user' | 'model' // copied from "role"
   type: MessageType
   contents: T
+  image?: {
+    url: string,
+    mimeType: string
+    base64Length: number
+  }
 }
 
 export interface AiConvoStringMessage extends BaseAiConvoMessage<string> {

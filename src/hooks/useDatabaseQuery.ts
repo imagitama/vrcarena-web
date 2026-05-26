@@ -3,8 +3,10 @@ import { handleError } from '@/error-handling'
 import {
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
+  PostgresErrorCode,
 } from '@/data-store'
 import useSupabaseClient from './useSupabaseClient'
+import { refreshJwtParallel } from '@/supabase'
 
 export enum Operators {
   IS = 'IS', // works for NULL vals
@@ -265,6 +267,12 @@ export default <TRecord>(
       }
 
       if (result.error) {
+        // a little bit hacky but I want to avoid JWT expiry errors
+        if (result.error.code === PostgresErrorCode.PGRST303) {
+          await refreshJwtParallel()
+          await doIt()
+        }
+
         throw result.error
       } else {
         // weird timing issue where loading=false but users=null so set it before the other flags

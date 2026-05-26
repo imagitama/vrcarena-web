@@ -9,11 +9,10 @@ import LaunchIcon from '@mui/icons-material/Launch'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { keyframes } from '@mui/system'
 
-import CircleIcon from '@mui/icons-material/Circle'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-import { colorPalette, shortIdLength } from '@/config'
-import { colorGreyedOut, VRCArenaTheme } from '@/themes'
+import { shortIdLength } from '@/config'
+import { VRCArenaTheme } from '@/themes'
 import { routes } from '@/routes'
 import { QueuedItem, QueuedItemForRecord } from '@/queues'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
@@ -82,7 +81,11 @@ import FailureInfoOutput from '@/components/failure-info-output'
 import { User } from '@/modules/users'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import PaginatedView, { RendererProps } from '@/components/paginated-view'
-import QueueStatusLabel from '@/components/queue-status-label'
+import ConnectionIndicator, {
+  ConnectionStatus,
+  getConnectionStatusFromHookResult,
+} from '@/components/connection-indicator'
+import AiResultSummary from '@/components/ai-result-summary'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -105,19 +108,6 @@ const LoadingRow = () => (
   </TableRow>
 )
 
-const ConnectionIcon = styled(CircleIcon)`
-  margin: 0 0.25rem;
-  font-size: 50% !important;
-  color: ${({ positivity }: { positivity: number | null }) =>
-    positivity === 1
-      ? colorPalette.positive
-      : positivity === -1
-      ? colorPalette.negative
-      : positivity === 0
-      ? colorPalette.warning
-      : colorGreyedOut};
-`
-
 const AssetSyncQueueCellRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
   return (
     <>
@@ -127,7 +117,7 @@ const AssetSyncQueueCellRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
       <br />
       {item.syncedfields === null ? (
         <NoValueLabel>(no synced fields)</NoValueLabel>
-      ) : (
+      ) : item.createdassetid ? (
         <>
           Created asset{' '}
           <Link
@@ -140,7 +130,7 @@ const AssetSyncQueueCellRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
           <br />
           {item.syncedfields.length} synced fields
         </>
-      )}
+      ) : null}
     </>
   )
 }
@@ -483,6 +473,7 @@ const QueueTableRow = <TItem extends QueuedItem>({
   parentRenderer: ParentRenderer,
   renderer: Renderer,
   fullRenderer: FullRenderer,
+  connectionStatus,
 }: {
   item: TItem
   index: number
@@ -490,6 +481,7 @@ const QueueTableRow = <TItem extends QueuedItem>({
   parentRenderer: React.ComponentType<RowProps<TItem>>
   renderer: React.ComponentType<RowProps<TItem>>
   fullRenderer: React.ComponentType<RowProps<TItem>>
+  connectionStatus?: ConnectionStatus
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -539,12 +531,10 @@ const QueueTableRow = <TItem extends QueuedItem>({
           )}
         </TableCell>
         <TableCell>
-          <QueueStatusLabel id={item.id} status={item.status} />
-          {item.failureinfo && (
-            <div>
-              <FailureInfoOutput failureInfo={item.failureinfo} />
-            </div>
-          )}
+          <AiResultSummary
+            queuedItem={item}
+            connectionStatus={connectionStatus}
+          />
         </TableCell>
         <TableCell style={{ display: 'flex', alignItems: 'center' }}>
           <Renderer item={item as any} index={index} />{' '}
@@ -653,16 +643,12 @@ const CellHeading = ({
           Error: {lastErrorCode !== null ? lastErrorCode : 'None'}
         </>
       }>
-      <ConnectionIcon
-        positivity={
-          lastErrorCode !== null
-            ? -1
-            : isSubscribed
-            ? 1
-            : isSubscribing
-            ? 0
-            : null
-        }
+      <ConnectionIndicator
+        status={getConnectionStatusFromHookResult(
+          isSubscribing,
+          isSubscribed,
+          lastErrorCode
+        )}
       />
     </Tooltip>{' '}
     {children}{' '}

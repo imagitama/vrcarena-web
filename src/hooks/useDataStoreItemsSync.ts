@@ -1,9 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { handleError } from '@/error-handling'
-import {
-  DataStoreErrorCode,
-  getDataStoreErrorCodeFromError,
-} from '@/data-store'
 import {
   REALTIME_LISTEN_TYPES,
   REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
@@ -12,14 +7,21 @@ import {
   RealtimePostgresInsertPayload,
   RealtimePostgresUpdatePayload,
 } from '@supabase/supabase-js'
+
+import { handleError } from '@/error-handling'
+import {
+  DataStoreErrorCode,
+  getDataStoreErrorCodeFromError,
+} from '@/data-store'
+import { refreshJwtParallel } from '@/supabase'
 import useSupabaseClient from './useSupabaseClient'
 import { QueryOptions as BaseQueryOptions } from './useDataStoreItems'
-import { refreshJwtParallel } from '@/supabase'
 
-interface QueryOptions<TItem> extends BaseQueryOptions<TItem> {
+export interface QueryOptions<TItem> extends BaseQueryOptions<TItem> {
   // WARNING: replaces setState for performance
   onInsertInstead?: (insertedRecord: TItem) => void
   onUpdateInstead?: (updatedRecord: TItem) => void
+  id?: string
   filter?: (record: TItem) => boolean
 }
 
@@ -148,6 +150,8 @@ export default <TItem extends Record<string, any>>(
         }
       }
 
+      const filter = options.id ? `id=eq.${options.id}` : undefined
+
       const channel = supabase
         .channel(`${collectionName}`)
         .on(
@@ -156,7 +160,7 @@ export default <TItem extends Record<string, any>>(
             event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT,
             schema: 'public',
             table: collectionName,
-            // filter
+            filter
           },
           onInsert
         )
@@ -166,7 +170,7 @@ export default <TItem extends Record<string, any>>(
             event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.UPDATE,
             schema: 'public',
             table: collectionName,
-            // filter
+            filter
           },
           onUpdate
         )
