@@ -95,35 +95,39 @@ const UserEditorControls = () => {
             <TableRow>
               <TableCell>Bot Score</TableCell>
               <TableCell>
-                {(user as unknown as FullUser_Editor).botscore !== null && (
-                  <ConfidenceScore
-                    score={(user as unknown as FullUser_Editor).botscore!}
-                    title={
-                      <>
-                        We use AI to try and determine if a new user is a bot or
-                        not to combat spam.
-                        <br />
-                        <br />
-                        The AI gives us a score of how confident it is they are
-                        a real human and not a bot.
-                        <br />
-                        <br />
-                        See our AI policy in the footer.
-                      </>
-                    }
-                    onClick={() => setIsBotScoreExpanded(true)}
-                  />
-                )}
                 {isBotScoreExpanded ? (
                   <BotScoreInfo user={user as FullUser_Editor} />
                 ) : (
-                  <Button
-                    size="small"
-                    color="secondary"
-                    hollow
-                    onClick={() => setIsBotScoreExpanded(true)}>
-                    Expand
-                  </Button>
+                  <>
+                    {(user as unknown as FullUser_Editor).botscore !== null ? (
+                      <ConfidenceScore
+                        score={(user as unknown as FullUser_Editor).botscore!}
+                        title={
+                          <>
+                            We use AI to try and determine if a new user is a
+                            bot or not to combat spam.
+                            <br />
+                            <br />
+                            The AI gives us a score of how confident it is they
+                            are a real human and not a bot.
+                            <br />
+                            <br />
+                            See our AI policy in the footer.
+                          </>
+                        }
+                        onClick={() => setIsBotScoreExpanded(true)}
+                      />
+                    ) : (
+                      <NoValueLabel>No score yet</NoValueLabel>
+                    )}
+                    <Button
+                      size="small"
+                      color="secondary"
+                      hollow
+                      onClick={() => setIsBotScoreExpanded(true)}>
+                      Expand
+                    </Button>
+                  </>
                 )}
               </TableCell>
             </TableRow>

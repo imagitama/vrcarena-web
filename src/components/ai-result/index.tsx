@@ -10,7 +10,6 @@ import Chip from '@mui/material/Chip'
 
 import { AiConvo, AiConvoMessage, MessageType } from '@/ai'
 import { QueuedItem } from '@/queues'
-import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import useDatabaseQuery, {
@@ -408,12 +407,7 @@ const QueuedItemsList = <
     )
 
   if (isLoading) {
-    return (
-      <>
-        {/* {asset.aievaluation && <Renderer queuedItem={asset.aievaluation} />} */}
-        <div>Loading...</div>
-      </>
-    )
+    return <>Loading...</>
   }
 
   return (
@@ -524,7 +518,7 @@ const AiResult = <
           <QueuedItemsList
             queueCollectionName={queueCollectionName}
             renderer={Renderer}
-            parentCollectionName={AssetsCollectionNames.Assets}
+            parentCollectionName={parentCollectionName}
             parentId={parentId}
             extraFields={extraFields}
           />
