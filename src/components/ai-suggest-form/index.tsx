@@ -19,7 +19,6 @@ import {
   AiFieldSuggestion,
   AiSuggestQueuedItem,
   CollectionNames as AiSuggestCollectionNames,
-  FunctionNames,
 } from '@/modules/aisuggest'
 import { QueueStatus } from '@/modules/common'
 import { DataStoreErrorCode } from '@/data-store'
@@ -27,7 +26,6 @@ import { fieldTypes } from '@/generic-forms'
 import { getCategoryMeta } from '@/category-meta'
 import { capitalize } from '@/utils'
 import { getHasFieldChanged } from '@/utils/equality'
-import { colorGreyedOut } from '@/themes'
 
 import useDatabaseQuery, {
   Operators,
@@ -35,7 +33,6 @@ import useDatabaseQuery, {
 } from '@/hooks/useDatabaseQuery'
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
-import useDataStoreFunction, { ErrorCode } from '@/hooks/useDataStoreFunction'
 import { HydrateFn } from '@/hooks/useDataStore'
 import useIsEditor from '@/hooks/useIsEditor'
 
@@ -63,6 +60,7 @@ import Tabs from '../tabs'
 import { ConvoRenderer } from '../ai-suggest-result'
 import Paper from '../paper'
 import FailureInfoOutput from '../failure-info-output'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
 const useStyles = makeStyles({
   title: {
@@ -294,7 +292,7 @@ const Form = ({
         return {
           ...current,
           [fieldName]:
-            overrideValue || queuedItem.suggestions[fieldName].suggestedValue,
+            overrideValue || queuedItem.suggestions![fieldName].suggestedValue,
         }
       }
     })
@@ -302,13 +300,13 @@ const Form = ({
 
   const hasChanges = Object.keys(finalChanges).length > 0
 
-  const suggestionsArr = Object.entries(queuedItem.suggestions).sort(
-    ([a], [b]) => {
-      const ai = assetEditableFields.findIndex((f) => f.name === a)
-      const bi = assetEditableFields.findIndex((f) => f.name === b)
-      return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
-    }
-  )
+  const suggestionsArr = queuedItem.suggestions
+    ? Object.entries(queuedItem.suggestions).sort(([a], [b]) => {
+        const ai = assetEditableFields.findIndex((f) => f.name === a)
+        const bi = assetEditableFields.findIndex((f) => f.name === b)
+        return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
+      })
+    : []
 
   return (
     <Tabs
@@ -430,9 +428,7 @@ const Form = ({
                         )
                       })
                     ) : (
-                      <NoResultsMessage>
-                        The AI could not suggest any better tags! Nice!
-                      </NoResultsMessage>
+                      <NoResultsMessage>No suggestions yet...</NoResultsMessage>
                     )}
                   </TableBody>
                 </Table>
@@ -581,31 +577,6 @@ const useAiSuggestion = (
   ]
 }
 
-const useAiSuggestionRequest = (
-  assetId: string
-): [boolean, ErrorCode | null, null | string, () => Promise<string | null>] => {
-  const [isCalling, lastErrorCode, lastFunctionResult, callFunc] =
-    useDataStoreFunction<{ assetid: string }, string>(
-      FunctionNames.RequestAiSuggestion
-    )
-  const requestAiSuggestion = async () => {
-    const result = await callFunc({ assetid: assetId })
-
-    if (result !== null) {
-      return result[0]
-    }
-
-    return null
-  }
-
-  return [
-    isCalling,
-    lastErrorCode,
-    lastFunctionResult !== null ? lastFunctionResult[0] : null,
-    requestAiSuggestion,
-  ]
-}
-
 const AiSuggestForm = ({
   assetId,
   asset,
@@ -621,16 +592,23 @@ const AiSuggestForm = ({
   const classes = useStyles()
   const [
     isCalling,
+    isSuccess,
     lastErrorCodeFunction,
-    lastFunctionResult,
     requestAiSuggestion,
-  ] = useAiSuggestionRequest(assetId)
+    clear,
+    createdItem,
+  ] = useDataStoreCreate<AiSuggestQueuedItem>(
+    AiSuggestCollectionNames.AiSuggestQueue
+  )
 
   const onClickRequest = async () => {
     console.debug(`onClickRequest`)
-    const queuedItemId = await requestAiSuggestion()
-    console.debug(`onClickRequest.done`, { queuedItemId })
-    if (queuedItemId !== null) {
+    const createdRecord = await requestAiSuggestion({
+      recordtable: AssetsCollectionNames.Assets,
+      recordid: assetId,
+    })
+    console.debug(`onClickRequest.done`, { createdRecord })
+    if (createdRecord !== null) {
       hydrate()
     }
   }

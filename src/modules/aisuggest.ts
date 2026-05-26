@@ -26,7 +26,7 @@ export interface AiSuggestQueuedItem extends QueuedItem {
   recordtable: string
   recordid: string
   convogroups: null | AiSuggestConvo[][]
-  suggestions: AiFieldSuggestions
+  suggestions: null | AiFieldSuggestions
 }
 
 export enum CollectionNames {
