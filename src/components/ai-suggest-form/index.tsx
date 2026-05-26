@@ -62,6 +62,7 @@ import NoValueLabel from '@/components/no-value-label'
 import Tabs from '../tabs'
 import { ConvoRenderer } from '../ai-suggest-result'
 import Paper from '../paper'
+import FailureInfoOutput from '../failure-info-output'
 
 const useStyles = makeStyles({
   title: {
@@ -667,15 +668,38 @@ const AiSuggestForm = ({
                     Processed! This message should disappear
                   </SuccessMessage>
                 )
+
               case QueueStatus.Processing:
                 return (
                   <LoadingIndicator message="Your suggestions are queued up (should take a few seconds)..." />
                 )
+
               case QueueStatus.Queued:
                 return (
                   <LoadingIndicator message="Waiting to work on your suggestions..." />
                 )
+
               case QueueStatus.Failed:
+                return (
+                  <ErrorMessage>
+                    We failed to get your suggestions. Please try again later.
+                    <br />
+                    <br />
+                    {lastQueuedItem.failureinfo ? (
+                      <FailureInfoOutput
+                        failureInfo={lastQueuedItem.failureinfo}
+                      />
+                    ) : null}
+                    <br />
+                    <br />
+                    <Button
+                      onClick={onClickRequest}
+                      size="small"
+                      color="secondary">
+                      Retry
+                    </Button>
+                  </ErrorMessage>
+                )
               default:
                 return `Unknown status: ${lastQueuedItem.status}`
             }
