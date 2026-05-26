@@ -36,7 +36,7 @@ import { getHasPermissionForRecord } from '@/permissions'
 import { DataStoreErrorCode } from '@/data-store'
 import { alreadyOver18Key } from '@/config'
 import { AttachmentType } from '@/modules/attachments'
-import { AccessStatus } from '@/modules/common'
+import { AccessStatus, ApprovalStatus } from '@/modules/common'
 import { tagVrcFuryReady } from '@/vrcfury'
 
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
@@ -824,12 +824,19 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                           ? getFriendlyDate(asset.publishedat)
                           : '(no date)'}{' '}
                         by {asset.publishedbyusername || '(no name)'}
-                        <br />
-                        Approved{' '}
-                        {asset.approvedat
-                          ? getFriendlyDate(asset.approvedat)
-                          : ''}{' '}
-                        by {asset.approvedbyusername || 'our automated system'}
+                        {(asset.approvalstatus === ApprovalStatus.Approved ||
+                          asset.approvalstatus ===
+                            ApprovalStatus.AutoApproved) && (
+                          <>
+                            <br />
+                            Approved{' '}
+                            {asset.approvedat
+                              ? getFriendlyDate(asset.approvedat)
+                              : ''}{' '}
+                            by{' '}
+                            {asset.approvedbyusername || 'our automated system'}
+                          </>
+                        )}
                       </>
                     }>
                     <InfoIcon />

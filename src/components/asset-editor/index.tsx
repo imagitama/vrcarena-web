@@ -28,6 +28,7 @@ import Column from '@/components/column'
 import PopulateFromAssetSyncForm from '@/components/populate-from-asset-sync-form'
 import Paper from '@/components/paper'
 import ExperimentalArea from '../experimental-area'
+import { getCanSync } from '@/syncing'
 
 const AssetEditor = ({
   assetId,
@@ -91,22 +92,24 @@ const AssetEditor = ({
             </FormControls>
           </Column>
         )}
-        {overrideFields && onFieldsChanged && overrideFields.sourceurl && (
-          <Column>
-            <ExperimentalArea>
-              This feature is new and experimental. If it does not work please
-              report this in our Discord server to help us make it better.
+        {overrideFields &&
+          onFieldsChanged &&
+          getCanSync(overrideFields.sourceurl) && (
+            <Column>
+              <ExperimentalArea>
+                This feature is new and experimental. If it does not work please
+                report this in our Discord server to help us make it better.
+                <br />
+                <Paper>
+                  <PopulateFromAssetSyncForm
+                    assetFields={overrideFields}
+                    onDone={(newFields) => onAssetSyncDone(newFields)}
+                  />
+                </Paper>
+              </ExperimentalArea>
               <br />
-              <Paper>
-                <PopulateFromAssetSyncForm
-                  assetFields={overrideFields}
-                  onDone={(newFields) => onAssetSyncDone(newFields)}
-                />
-              </Paper>
-            </ExperimentalArea>
-            <br />
-          </Column>
-        )}
+            </Column>
+          )}
         {assetId &&
           asset &&
           (isEditor === true || isAiSuggestionEnabledByUser) && (
