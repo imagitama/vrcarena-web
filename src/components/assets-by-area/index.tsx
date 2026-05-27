@@ -86,7 +86,7 @@ const AssetsByArea = ({
                 )}
               </span>
             </Heading>
-            <AssetResults assets={assets} hydrate={hydrate} />
+            <AssetResults assets={assets} />
           </div>
         ))}
     </div>

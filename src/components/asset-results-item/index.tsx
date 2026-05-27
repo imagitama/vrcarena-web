@@ -13,6 +13,7 @@ import Chip from '@mui/material/Chip'
 import * as routes from '@/routes'
 import {
   Asset,
+  AssetForList,
   FullAsset,
   PublicAsset,
   Relation,
@@ -165,7 +166,7 @@ const useStyles = makeStyles({
 
 const divider = '/'
 
-const AssetState = ({ asset }: { asset: FullAsset }) => {
+const AssetState = ({ asset }: { asset: AssetForList | FullAsset }) => {
   const classes = useStyles()
 
   if (asset.accessstatus === AccessStatus.Deleted) {
@@ -297,7 +298,7 @@ const AssetResultsItem = ({
   const [, , prefs] = useUserPreferences()
   const actuallyShowMoreInfo =
     (prefs && prefs.showmoreinfo) || showMoreInfo === true
-  const { ids, toggleId } = useBulkEdit()
+  const { isInMode, ids, toggleId } = useBulkEdit()
 
   return (
     <Card
@@ -321,9 +322,7 @@ const AssetResultsItem = ({
               : ''
           }
           onClick={onClick}>
-          <LazyLoad
-            height={isTiny ? 100 : 200}
-            placeholder={<DefaultThumbnail isTiny={isTiny} />}>
+          <LazyLoad placeholder={<DefaultThumbnail isTiny={isTiny} />}>
             <CardMedia
               className={classes.cardMedia}
               image={asset && asset.thumbnailurl ? asset.thumbnailurl : ''}
@@ -384,9 +383,9 @@ const AssetResultsItem = ({
                     )}
                   </>
                 ) : null}
-                {ids && asset && (
+                {isInMode && asset && (
                   <CheckboxInput
-                    value={ids.includes(asset.id)}
+                    value={ids!.includes(asset.id)}
                     onClick={(e) => {
                       toggleId(asset.id)
                       e.stopPropagation()
@@ -408,8 +407,8 @@ const AssetResultsItem = ({
                   />
                 ) : null
               ) : null}
-              {showState && getIsFullAsset(asset) && (
-                <AssetState asset={asset} />
+              {showState && asset && 'accessstatus' in asset && (
+                <AssetState asset={asset as AssetForList} />
               )}
             </div>
           </CardContent>{' '}

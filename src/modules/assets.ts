@@ -17,24 +17,24 @@ export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
 export const getIsFullAsset = (asset: any): asset is FullAsset =>
   asset && 'createdbyusername' in asset
 
-export const getIsAssetWaitingForApproval = (asset: AssetMeta): boolean =>
+export const getIsAssetWaitingForApproval = (asset: AssetBasicMetadata): boolean =>
   asset.publishstatus == PublishStatus.Published &&
   asset.approvalstatus == ApprovalStatus.Waiting &&
   asset.accessstatus == AccessStatus.Public
 
-export const getIsAssetVisibleToEveryone = (asset: AssetMeta): boolean =>
+export const getIsAssetVisibleToEveryone = (asset: AssetBasicMetadata): boolean =>
   asset.accessstatus === AccessStatus.Public &&
   (asset.approvalstatus === ApprovalStatus.Approved ||
     asset.approvalstatus === ApprovalStatus.AutoApproved) &&
   asset.publishstatus === PublishStatus.Published
 
-export const getIsAssetDeclined = (asset: AssetMeta): boolean =>
+export const getIsAssetDeclined = (asset: AssetBasicMetadata): boolean =>
   asset.approvalstatus === ApprovalStatus.Declined
 
-export const getIsAssetADraft = (asset: AssetMeta): boolean =>
+export const getIsAssetADraft = (asset: AssetBasicMetadata): boolean =>
   asset.publishstatus === PublishStatus.Draft
 
-export const getIsAssetDeleted = (asset: AssetMeta): boolean =>
+export const getIsAssetDeleted = (asset: AssetBasicMetadata): boolean =>
   asset.accessstatus == AccessStatus.Deleted
 
 export enum RelationType {
@@ -212,13 +212,15 @@ export interface AssetStats {
   reviewcount: number
 }
 
-export interface AssetForList extends Asset {
-  authorname: string
-  speciesnames: string[]
-  // basic metadata
+export interface AssetBasicMetadata {
   approvalstatus: ApprovalStatus
   publishstatus: PublishStatus
   accessstatus: AccessStatus
+}
+
+export interface AssetForList extends Asset, AssetBasicMetadata {
+  authorname: string
+  speciesnames: string[]
 }
 
 export type PublicAsset = AssetForList

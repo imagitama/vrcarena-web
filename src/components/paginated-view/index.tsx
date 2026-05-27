@@ -539,10 +539,11 @@ const CommonMetaControl = ({
   )
 }
 
-const subViewConfigAll: SubViewConfig[] = [
+const defaultSubViewConfigs: SubViewConfig[] = [
   {
     label: 'All',
     id: 'all',
+    defaultActive: true,
   },
 ]
 
@@ -605,8 +606,9 @@ const PaginatedView = <TRecord extends Record<string, any>>({
 
   const keyPrefix = name || viewName || collectionName
 
-  const defaultSubView =
-    subViews && subViews.find((subViewConfig) => subViewConfig.defaultActive)
+  const defaultSubView = defaultSubViewConfigs
+    .concat(subViews || [])
+    .find((subViewConfig) => subViewConfig.defaultActive)
 
   const [selectedSubView, setSelectedSubView] = useStorage<string | null>(
     `${keyPrefix}_subview`,
@@ -667,7 +669,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
               <div className={classes.controlsLeft}>
                 {subViews ? (
                   <ControlGroup>
-                    {subViewConfigAll
+                    {defaultSubViewConfigs
                       .concat(subViews)
                       .map(({ label, id }, idx) => (
                         <Fragment key={id}>

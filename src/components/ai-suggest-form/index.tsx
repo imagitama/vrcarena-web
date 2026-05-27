@@ -19,6 +19,7 @@ import {
   AiFieldSuggestion,
   AiSuggestQueuedItem,
   CollectionNames as AiSuggestCollectionNames,
+  FunctionNames,
 } from '@/modules/aisuggest'
 import { QueueStatus } from '@/modules/common'
 import { DataStoreErrorCode } from '@/data-store'
@@ -61,6 +62,7 @@ import { ConvoRenderer } from '../ai-suggest-result'
 import Paper from '../paper'
 import FailureInfoOutput from '../failure-info-output'
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import useDataStoreFunction from '@/hooks/useDataStoreFunction'
 
 const useStyles = makeStyles({
   title: {
@@ -577,6 +579,10 @@ const useAiSuggestion = (
   ]
 }
 
+interface RequestAiSuggestionPayload {
+  assetid: string
+}
+
 const AiSuggestForm = ({
   assetId,
   asset,
@@ -590,25 +596,20 @@ const AiSuggestForm = ({
   const [isLoading, lastErrorCode, lastQueuedItem, hydrate] =
     useAiSuggestion(assetId)
   const classes = useStyles()
-  const [
-    isCalling,
-    isSuccess,
-    lastErrorCodeFunction,
-    requestAiSuggestion,
-    clear,
-    createdItem,
-  ] = useDataStoreCreate<AiSuggestQueuedItem>(
-    AiSuggestCollectionNames.AiSuggestQueue
-  )
+  const [isCalling, lastErrorCodeFunction, lastResult, requestAiSuggestion] =
+    useDataStoreFunction<RequestAiSuggestionPayload, string>(
+      FunctionNames.RequestAiSuggestion
+    )
 
   const onClickRequest = async () => {
     console.debug(`onClickRequest`)
-    const createdRecord = await requestAiSuggestion({
-      recordtable: AssetsCollectionNames.Assets,
-      recordid: assetId,
+    const createdIds = await requestAiSuggestion({
+      assetid: assetId,
     })
-    console.debug(`onClickRequest.done`, { createdRecord })
-    if (createdRecord !== null) {
+    if (!createdIds) throw new Error('Result is null')
+    const createdId = createdIds[0]
+    console.debug(`onClickRequest.done`, { createdId })
+    if (createdId !== null) {
       hydrate()
     }
   }

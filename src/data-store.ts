@@ -263,6 +263,7 @@ export class DataStoreUpdateError extends DataStoreError { }
 export enum PostgresErrorCode {
   // code: "PGRST103", details: "An offset of 200 was requested, but there are only 33 rows.", hint: null, message: "Requested range not satisfiable"
   PGRST103 = 'PGRST103',
+  'PGRST301' = 'PGRST301', // JWT expired
   // code: "23505", details: null, hint: null, message: 'duplicate key value violates unique constraint "users_username_key"'
   'PG23505' = '23505',
   'PGRST303' = 'PGRST303' // code 'PGRST303' message 'JWT expired'

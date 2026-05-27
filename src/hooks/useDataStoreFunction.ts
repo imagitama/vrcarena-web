@@ -42,11 +42,11 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
   ] => {
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
-  const [lastResult, setLastResult] = useState<null | TRecord[]>(null)
+  const [lastResults, setLastResults] = useState<null | TRecord[]>(null)
   const supabase = useSupabaseClient()
 
   const callFunction = useCallback(
-    async (payload?: TPayload) => {
+    async (payload?: TPayload): Promise<TRecord[] | null> => {
       if (name === false) {
         return null
       }
@@ -73,7 +73,7 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
         throw new Error('Data is null')
       }
 
-      setLastResult(data)
+      setLastResults(data)
       setIsLoading(false)
       setLastErrorCode(null)
 
@@ -90,7 +90,7 @@ const useDataStoreFunction = <TPayload extends object, TRecord>(
     callFunction(autoCallPayload)
   }, [autoCall, JSON.stringify(autoCallPayload)])
 
-  return [isLoading, lastErrorCode, lastResult, callFunction]
+  return [isLoading, lastErrorCode, lastResults, callFunction]
 }
 
 export default useDataStoreFunction

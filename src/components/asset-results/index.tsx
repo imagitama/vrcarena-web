@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { makeStyles } from '@mui/styles'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import AssetResultsItem from '@/components/asset-results-item'
-import { Asset, PublicAsset } from '@/modules/assets'
-import AssetEditorDialog from '@/components/asset-editor-dialog'
+import { Asset, AssetForList } from '@/modules/assets'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -22,38 +21,20 @@ const AssetResults = ({
   onClickWithEventAndAsset = undefined,
   shimmer = false,
   shimmerCount = 3,
-  hydrate = undefined,
   showStates = false,
 }: {
-  assets?: (Asset | PublicAsset)[]
+  assets?: (AssetForList | Asset)[]
   selectedAssetIds?: string[]
   dimUnselected?: boolean
   onClickWithEventAndAsset?: (
     event: React.SyntheticEvent<HTMLElement>,
-    asset: Asset | PublicAsset
+    asset: AssetForList | Asset
   ) => void
   shimmer?: boolean
   shimmerCount?: number
-  hydrate?: () => void
   showStates?: boolean
 }) => {
   const classes = useStyles()
-  const [assetIdToEdit, setAssetIdToEdit] = useState<null | string>(null)
-
-  const toggleEditMode = (assetId: string) => {
-    setAssetIdToEdit((currentAssetId) =>
-      currentAssetId === assetId ? null : assetId
-    )
-    return false
-  }
-
-  const onEditDone = () => {
-    if (hydrate) {
-      hydrate()
-    }
-    setAssetIdToEdit(null)
-  }
-
   return (
     <div className={classes.root}>
       {shimmer
@@ -80,16 +61,10 @@ const AssetResults = ({
                         onClickWithEventAndAsset(e, asset)
                     : undefined
                 }
-                toggleEditMode={
-                  hydrate ? () => toggleEditMode(asset.id) : undefined
-                }
                 showState={showStates}
               />
             </div>
           ))}
-      {assetIdToEdit && hydrate ? (
-        <AssetEditorDialog assetId={assetIdToEdit} onClose={onEditDone} />
-      ) : null}
     </div>
   )
 }

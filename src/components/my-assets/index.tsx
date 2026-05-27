@@ -8,7 +8,7 @@ import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
 import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
 import AssetResults from '@/components/asset-results'
 
-const Renderer = ({ items }: { items?: Asset[] }) => (
+const Renderer = ({ items }: { items?: AssetForList[] }) => (
   <AssetResults assets={items} showStates />
 )
 

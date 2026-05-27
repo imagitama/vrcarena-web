@@ -39,7 +39,7 @@ const Renderer = ({
       />
     )
   } else {
-    return <AssetResults assets={items} hydrate={hydrate} />
+    return <AssetResults assets={items} />
   }
 }
 

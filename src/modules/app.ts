@@ -68,7 +68,7 @@ const initialState: AppState = {
   searchFilters: [],
   searchCount: 0,
   isSearching: false,
-  bulkEditIds: process.env.NODE_ENV === 'development' ? ['5f920f00-429b-4af2-a083-3a07e3cad0fb', '3e4abf2e-7643-4949-8f8b-f8eae3d527f9'] : null,
+  bulkEditIds: null,
   isSelectingAll: false,
   bulkEditAssetDatas: [],
   userPrefs: null,

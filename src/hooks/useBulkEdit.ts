@@ -18,6 +18,7 @@ const useBulkEdit = (): {
   selectAsset: (asset: Asset) => void
   isSelectingAll: boolean
   setSelectingAll: (newValue: boolean) => void
+  isInMode: boolean
   enter: () => void
   leave: () => void
 } => {
@@ -50,6 +51,7 @@ const useBulkEdit = (): {
     dispatch(setSelectingAllAction(newValue))
   }
 
+  const isInMode = ids !== null
   const enter = () => dispatch(enterBulkEditMode())
   const leave = () => dispatch(leaveBulkEditMode())
 
@@ -62,6 +64,7 @@ const useBulkEdit = (): {
     selectAsset,
     isSelectingAll,
     setSelectingAll,
+    isInMode,
     enter,
     leave
   }

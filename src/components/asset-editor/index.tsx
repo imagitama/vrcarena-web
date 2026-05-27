@@ -47,7 +47,6 @@ const AssetEditor = ({
 }) => {
   const [isLoading, lastErrorCode, asset, hydrate] =
     useDataStoreItem<FullAsset>(ViewNames.GetFullAssets, assetId || false)
-  const isEditor = useIsEditor()
   const [isAiFeaureEnabled] = useFeature(FeatureName.Ai)
   const [reRenderKey, setReRenderKey] = useState(0)
 

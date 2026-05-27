@@ -268,7 +268,7 @@ export default <TRecord>(
 
       if (result.error) {
         // a little bit hacky but I want to avoid JWT expiry errors
-        if (result.error.code === PostgresErrorCode.PGRST303) {
+        if (result.error.code === PostgresErrorCode.PGRST303 || result.error.code === PostgresErrorCode.PGRST301) {
           await refreshJwtParallel()
           await doIt()
         }
