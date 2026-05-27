@@ -8,9 +8,7 @@ import {
   ViewNames,
 } from '@/modules/assets'
 import { getCanAssetBePublished } from '@/utils/assets'
-import useExperimentalFeature, {
-  FeatureName,
-} from '@/hooks/useExperimentalFeature'
+import useFeature, { FeatureName } from '@/hooks/useFeature'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useIsEditor from '@/hooks/useIsEditor'
 
@@ -50,9 +48,7 @@ const AssetEditor = ({
   const [isLoading, lastErrorCode, asset, hydrate] =
     useDataStoreItem<FullAsset>(ViewNames.GetFullAssets, assetId || false)
   const isEditor = useIsEditor()
-  const [isAiSuggestionEnabledByUser] = useExperimentalFeature(
-    FeatureName.AiSuggestions
-  )
+  const [isAiFeaureEnabled] = useFeature(FeatureName.Ai)
   const [reRenderKey, setReRenderKey] = useState(0)
 
   const onAssetSyncDone = (fields: Partial<Asset>) => {
@@ -110,13 +106,13 @@ const AssetEditor = ({
               <br />
             </Column>
           )}
-        {assetId &&
-          asset &&
-          (isEditor === true || isAiSuggestionEnabledByUser) && (
-            <Column>
+        {assetId && asset && isAiFeaureEnabled && (
+          <Column>
+            <ExperimentalArea>
               <AiArea
                 title="AI Suggestion"
-                tooltip="The site asks AI to suggest missing or better fields for this asset.">
+                tooltip="The site asks AI to suggest missing or better fields for this asset."
+                showFeatureToggle>
                 <ErrorBoundary>
                   <AiSuggestForm
                     assetId={assetId}
@@ -125,8 +121,9 @@ const AssetEditor = ({
                   />
                 </ErrorBoundary>
               </AiArea>
-            </Column>
-          )}
+            </ExperimentalArea>
+          </Column>
+        )}
       </Columns>
       <GenericEditor
         key={reRenderKey} // force re-render after sync
