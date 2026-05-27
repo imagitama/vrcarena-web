@@ -176,7 +176,7 @@ export default ({
   }
 
   return (
-    <>
+    <div>
       <Button
         size="large"
         icon={<OpenExternalLinkIcon />}
@@ -186,6 +186,6 @@ export default ({
       </Button>
       <br />
       <HintText>Opens Discord in a new tab</HintText>
-    </>
+    </div>
   )
 }
