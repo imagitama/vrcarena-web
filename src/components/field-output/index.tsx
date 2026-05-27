@@ -33,6 +33,10 @@ const FieldOutput = ({
     }
   }
 
+  if (children === null) {
+    return '(nothing)'
+  }
+
   return children.toString()
 }
 
