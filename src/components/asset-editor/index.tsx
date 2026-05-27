@@ -111,8 +111,7 @@ const AssetEditor = ({
             <ExperimentalArea>
               <AiArea
                 title="AI Suggestion"
-                tooltip="The site asks AI to suggest missing or better fields for this asset."
-                showFeatureToggle>
+                tooltip="The site asks AI to suggest missing or better fields for this asset.">
                 <ErrorBoundary>
                   <AiSuggestForm
                     assetId={assetId}

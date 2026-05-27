@@ -20,7 +20,6 @@ import {
   Google as GoogleIcon,
   Login as LoginIcon,
 } from '@/icons'
-import { DISCORD_URL, EMAIL } from '@/config'
 import { handleError } from '@/error-handling'
 import { routes } from '@/routes'
 import { mediaQueryForMobiles } from '@/media-queries'
@@ -33,7 +32,6 @@ import ErrorMessage from '@/components/error-message'
 import FormControls from '@/components/form-controls'
 import Center from '@/components/center'
 import SignUpWithEmailForm from '@/components/signup-with-email-form'
-import Message from '@/components/message'
 
 import { signinWithProvider } from './utils'
 
@@ -401,11 +399,6 @@ const LoginForm = ({
 
   return (
     <div className={classes.root}>
-      <Message hideId="new-login-mar-2026" title="March 2026">
-        To combat increasing spam we have created a new login form with added
-        new spam protection. If you cannot sign up or login, please join our{' '}
-        <a href={DISCORD_URL}>Discord server</a> or email us at {EMAIL}
-      </Message>
       <Form
         onSuccess={onSuccess}
         isSignUp={isSignUp}

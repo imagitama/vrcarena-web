@@ -64,12 +64,10 @@ const AiArea = ({
   children,
   title,
   tooltip,
-  showFeatureToggle = false,
 }: {
   children: React.ReactNode | React.ReactNode[]
   title: string
   tooltip: React.ReactNode | string
-  showFeatureToggle?: boolean
 }) => {
   const classes = useStyles()
   return (
