@@ -1,6 +1,9 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import BubbleChartIcon from '@mui/icons-material/BubbleChart'
+import InfoIcon from '@mui/icons-material/Info'
+
+import Tooltip from '../tooltip'
 
 const useStyles = makeStyles({
   root: {
@@ -11,7 +14,7 @@ const useStyles = makeStyles({
   },
   title: {
     fontSize: '75%',
-    color: 'rgba(0, 255, 0, 0.25)',
+    color: 'rgba(0, 255, 0, 0.5)',
     position: 'absolute',
     display: 'flex',
     alignItems: 'center',
@@ -30,19 +33,27 @@ const useStyles = makeStyles({
 
 const ExperimentalArea = ({
   children,
+  title,
 }: {
   children: React.ReactNode | React.ReactNode[]
+  title?: string
 }) => {
   const classes = useStyles()
+  const Title = (
+    <div className={classes.title}>
+      <BubbleChartIcon /> Experimental{' '}
+      {title && (
+        <Tooltip title={title}>
+          <InfoIcon />
+        </Tooltip>
+      )}
+    </div>
+  )
   return (
     <div className={classes.root}>
-      <div className={classes.title}>
-        <BubbleChartIcon /> Experimental
-      </div>
+      {Title}
       {children}
-      <div className={classes.title}>
-        <BubbleChartIcon /> Experimental
-      </div>
+      {Title}
     </div>
   )
 }

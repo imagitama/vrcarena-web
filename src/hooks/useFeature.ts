@@ -19,7 +19,7 @@ export const featureDetails: { [featureName: string]: FeatureDetail } = {
 const STORAGE_KEY = 'features'
 
 export const useFeatures = () => useStorage<{ [featureName: string]: boolean }>(STORAGE_KEY, {
-  [FeatureName.Ai]: false // until kinks worked out
+  [FeatureName.Ai]: true
 })
 
 const useFeature = (featureName: FeatureName): [boolean, (newVal: boolean) => void] => {

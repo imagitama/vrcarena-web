@@ -91,10 +91,7 @@ const AssetEditor = ({
           onFieldsChanged &&
           getCanSync(overrideFields.sourceurl) && (
             <Column>
-              <ExperimentalArea>
-                This feature is new and experimental. If it does not work please
-                report this in our Discord server to help us make it better.
-                <br />
+              <ExperimentalArea title="Syncing with platforms like Gumroad and Jinxxy is complicated and fragile. If it does not work please report it in our Discord server.">
                 <Paper>
                   <PopulateFromAssetSyncForm
                     assetFields={overrideFields}
@@ -107,7 +104,7 @@ const AssetEditor = ({
           )}
         {assetId && asset && isAiFeaureEnabled && (
           <Column>
-            <ExperimentalArea>
+            <ExperimentalArea title="We are experimenting with AI to see what works and what doesn't. It is complicated and fragile. If it does not work please report it in our Discord server.">
               <AiArea
                 title="AI Suggestion"
                 tooltip="The site asks AI to suggest missing or better fields for this asset.">
