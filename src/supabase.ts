@@ -88,10 +88,10 @@ export const refreshJwt = async (): Promise<RefreshJwtResult> => {
     throw new Error(`No token in result`)
   }
 
-  nextJwtExpiryDate = new Date(expiryTimestampSec)
+  nextJwtExpiryDate = new Date(expiryTimestampSec * 1000)
 
   console.debug(`token: ${token}
-expires: ${nextJwtExpiryDate}
+expires: ${nextJwtExpiryDate} (${expiryTimestampSec})
 currently: ${new Date()}`)
 
   activeJwt = token
@@ -118,6 +118,10 @@ const queueRefreshJwt = () => {
   // should equal the estimated roundtrip for getting a new JWT (2 sec?)
   const delayMs =
     nextJwtExpiryDate.getTime() - new Date().getTime() - gapBeforeCheckingMs
+
+  if (delayMs < 10000) {
+    throw new Error(`Cannot queue: delay is way too small: ${nextJwtExpiryDate.getTime()} - ${new Date().getTime()} - ${gapBeforeCheckingMs} = ${delayMs})`)
+  }
 
   console.debug(`Refreshing JWT in ${delayMs / 1000} seconds...`)
 
