@@ -6,7 +6,7 @@ export interface Page extends Record<string, unknown> {
   content: string
 }
 
-export const CollectionNames = {
-  Pages: 'pages',
-  PageParents: 'pageparents',
+export enum CollectionNames {
+  Pages = 'pages',
+  PageParents = 'pageparents',
 }

@@ -52,7 +52,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>{isCreating ? 'Create' : 'Edit'} an author | VRCArena</title>
+        <title>{isCreating ? 'Create' : 'Edit'} an author</title>
         <meta
           name="description"
           content={`Use this form to ${

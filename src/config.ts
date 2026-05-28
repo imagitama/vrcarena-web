@@ -1,7 +1,7 @@
 import otherSpeciesThumbnailUrl from './assets/images/other-species.webp'
 import { SpeciesFields } from './modules/species'
 
-export const BUSINESS_NAME = 'VRCArena' // privacy policy, TOS, DMCA, etc.
+export const BUSINESS_NAME = 'The VRCArena Project' // privacy policy, TOS, DMCA, etc.
 export const WEBSITE_FULL_URL = 'https://www.vrcarena.com'
 export const TWITTER_URL = 'https://twitter.com/VRCArena'
 export const DISCORD_URL = 'https://discord.gg/UVs9V58'
@@ -12,6 +12,7 @@ export const FURALITY_URL = `https://furality.org/?referrer=${encodeURIComponent
   WEBSITE_FULL_URL
 )}`
 export const GITHUB_REPO_URL = 'https://github.com/imagitama/vrcarena-web'
+export const DEFAULT_PAGE_DESC = ''
 
 export const BANNER_WIDTH = 1280
 export const BANNER_HEIGHT = 300

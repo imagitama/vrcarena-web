@@ -9,7 +9,7 @@ const description =
 export default () => (
   <>
     <Helmet>
-      <title>View all species | VRCArena</title>
+      <title>View all species</title>
       <meta name="description" content={description} />
     </Helmet>
     <SpeciesBrowser />

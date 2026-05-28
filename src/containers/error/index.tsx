@@ -10,7 +10,7 @@ import Button from '@/components/button'
 export default ({ code, message }: { code: number; message: string }) => (
   <>
     <Helmet>
-      <title>Error {code || ''} | VRCArena</title>
+      <title>Error {code || ''}</title>
       <meta name="description" content={message || 'An error has occurred.'} />
     </Helmet>
     <Heading variant="h1">{code}</Heading>

@@ -108,8 +108,11 @@ const AdultAssetsView = () => {
   return (
     <>
       <Helmet>
-        <title>View adult assets | VRCArena</title>
-        <meta name="description" content="View a list of adult assets" />
+        <title>NSFW Content</title>
+        <meta
+          name="description"
+          content="We permit some NSFW content on the site but you must be logged in and indicate you are over the age of 18 to be able to see it."
+        />
       </Helmet>
       <Heading variant="h1">
         <Link to={routes.nsfw}>NSFW Content</Link>

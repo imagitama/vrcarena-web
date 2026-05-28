@@ -62,7 +62,7 @@ const PatreonStatus = () => {
 export default () => (
   <>
     <Helmet>
-      <title>Transparency | VRCArena</title>
+      <title>Transparency</title>
       <meta
         name="description"
         content={`An explanation of costs for the site and anything to improve transparency for the community.`}

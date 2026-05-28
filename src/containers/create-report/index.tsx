@@ -218,7 +218,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>{`Create a new report | VRCArena`}</title>
+      <title>Create a new report</title>
       <meta
         name="description"
         content="Use this form to create a new report."

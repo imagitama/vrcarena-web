@@ -56,7 +56,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>Create an amendment | VRCArena</title>
+      <title>Create an amendment</title>
       <meta
         name="description"
         content="Complete and submit the amendment form to amend an existing item with changes."

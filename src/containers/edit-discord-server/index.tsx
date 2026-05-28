@@ -35,7 +35,6 @@ const View = () => {
           isCreating ? 'CreateDiscordServer' : 'EditDiscordServer'
         }
         saveBtnAction="Click save button"
-        viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewDiscordServerWithVar.replace(
           ':discordServerId',
@@ -67,9 +66,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>
-          {isCreating ? 'Create' : 'Edit'} a Discord server | VRCArena
-        </title>
+        <title>{isCreating ? 'Create' : 'Edit'} a Discord server</title>
         <meta
           name="description"
           content={`Use this form to ${

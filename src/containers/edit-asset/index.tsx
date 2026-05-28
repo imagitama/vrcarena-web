@@ -11,7 +11,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>Edit asset | VRCArena</title>
+        <title>Edit asset</title>
         <meta
           name="description"
           content="Edit all of the fields of an asset."

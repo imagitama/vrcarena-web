@@ -62,7 +62,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>View tag {tag} | VRCArena</title>
+        <title>View tag {tag}</title>
         <meta
           name="description"
           content={`View more info about the tag ${tag} including stats.`}

@@ -249,7 +249,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>View amendment | VRCArena</title>
+      <title>View amendment</title>
       <meta
         name="description"
         content="View a specific amendment for an asset, author or something else."

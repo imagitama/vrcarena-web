@@ -191,7 +191,7 @@ const View = () => {
   return (
     <>
       <Helmet>
-        <title>View assets created by author {name} | VRCArena</title>
+        <title>View assets created by author {name}</title>
         <meta
           name="description"
           content={`Browse all of the assets that have been uploaded for the author ${name}.`}
@@ -351,7 +351,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>View author | VRCArena</title>
+      <title>View author</title>
       <meta name="description" content="View an author on the site." />
     </Helmet>
     <View />

@@ -265,7 +265,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>Upload a new asset to the site | VRCArena</title>
+        <title>Upload a new asset to the site</title>
         <meta
           name="description"
           content="Complete the form, submit it for approval and your asset will be visible on the site."

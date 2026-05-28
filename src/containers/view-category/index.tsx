@@ -41,7 +41,7 @@ const ViewCategoryView = () => {
       <Helmet>
         <title>
           {getDisplayNameByCategoryName(categoryName)} |{' '}
-          {getDescriptionByCategoryName(categoryName)} | VRCArena
+          {getDescriptionByCategoryName(categoryName)}
         </title>
         <meta
           name="description"

@@ -127,7 +127,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>View all events | VRCArena</title>
+        <title>View all events</title>
         <meta
           name="description"
           content="Browse the events that are being hosted in or about VRChat and other VR social games."

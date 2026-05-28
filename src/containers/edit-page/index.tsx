@@ -47,7 +47,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>Edit a page | VRCArena</title>
+        <title>Edit a page</title>
         <meta name="description" content={`Use this form to edit a page`} />
       </Helmet>
       <View />

@@ -7,17 +7,20 @@ import * as routes from '@/routes'
 import { trackAction } from '@/analytics'
 import { PATREON_BECOME_PATRON_URL } from '@/config'
 import patreonLogoUrl from '@/assets/images/patreon-logo.png'
+import { Patreon as PatreonIcon } from '@/icons'
 
 import Link from '@/components/link'
 import Heading from '@/components/heading'
 import Button from '@/components/button'
 
 const useStyles = makeStyles({
-  logo: {
-    '& a': {
-      display: 'block',
-      textAlign: 'center',
-    },
+  link: {
+    display: 'block',
+    textAlign: 'center',
+  },
+  button: {
+    display: 'flex',
+    justifyContent: 'center',
   },
 })
 
@@ -27,26 +30,31 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>View the Patreon supporters of the site | VRCArena</title>
+        <title>View the Patreon supporters of the site</title>
         <meta
           name="description"
           content={`Become a patron of our Patreon to support the costs in maintaining the site and building new features.`}
         />
       </Helmet>
       <Container maxWidth="md">
-        <p className={classes.logo}>
+        <p>
           <a
             href={PATREON_BECOME_PATRON_URL}
-            onClick={() => trackAction('Patreon', 'Click Patreon logo')}>
+            onClick={() => trackAction('Patreon', 'Click Patreon logo')}
+            className={classes.link}>
             <img src={patreonLogoUrl} alt="Patreon logo" width="50%" />
           </a>
-          <Button
-            url={PATREON_BECOME_PATRON_URL}
-            onClick={() =>
-              trackAction('Patreon', 'Click become patron button')
-            }>
-            Become a patron and support VRCArena!
-          </Button>
+          <div className={classes.button}>
+            <Button
+              url={PATREON_BECOME_PATRON_URL}
+              size="large"
+              icon={<PatreonIcon />}
+              onClick={() =>
+                trackAction('Patreon', 'Click become patron button')
+              }>
+              Become a patron and support VRCArena!
+            </Button>
+          </div>
         </p>
 
         <Heading variant="h2">Connect your VRCArena account</Heading>

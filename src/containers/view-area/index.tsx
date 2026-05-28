@@ -58,7 +58,7 @@ const ViewAreaView = () => {
       <Helmet>
         <title>
           {getDisplayName(categoryName, areaName)} | Browse accessories that are
-          in this area | VRCArena
+          in this area
         </title>
         <meta
           name="description"

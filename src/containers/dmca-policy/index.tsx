@@ -28,7 +28,7 @@ ${BUSINESS_NAME} may request additional information before removing any allegedl
 export default () => (
   <>
     <Helmet>
-      <title>View our DMCA policy | VRCArena</title>
+      <title>View our DMCA policy</title>
       <meta name="description" content="View the policy." />
     </Helmet>
     <Markdown source={content} />

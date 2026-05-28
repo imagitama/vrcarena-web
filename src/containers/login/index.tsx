@@ -34,7 +34,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>Login to manage your account | VRCArena</title>
+        <title>Login to manage your account</title>
         <meta
           name="description"
           content="Login to upload and manage your assets, change your account and more."

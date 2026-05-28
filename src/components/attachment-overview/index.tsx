@@ -119,12 +119,14 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
     <>
       <Helmet>
         <title>
-          {attachment.title || `Tutorial by ${attachment.createdbyusername}`} |
-          VRCArena
+          {attachment.title || `Attachment by ${attachment.createdbyusername}`}
         </title>
         <meta
           name="description"
-          content={attachment.description || 'View this tutorial.'}
+          content={
+            attachment.description ||
+            'An attachment for an asset or other thing.'
+          }
         />
       </Helmet>
       {attachment.editornotes && (

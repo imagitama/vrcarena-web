@@ -250,7 +250,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>Admin Area | VRCArena</title>
+      <title>Admin Area</title>
       <meta name="description" content="Top secret" />
     </Helmet>
     <View />

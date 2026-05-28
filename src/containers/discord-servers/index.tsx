@@ -18,7 +18,7 @@ const DiscordServersView = () => {
   return (
     <>
       <Helmet>
-        <title>View Discord servers | VRCArena</title>
+        <title>View Discord servers</title>
         <meta
           name="description"
           content="Browse Discord servers that are related to the assets and species of the site."

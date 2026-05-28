@@ -290,7 +290,7 @@ const View = () => {
     <>
       <Helmet>
         <title>
-          {species.pluralname} | {species.shortdescription} | VRCArena
+          {species.pluralname} | {species.shortdescription}
         </title>
         <meta
           name="description"
@@ -361,7 +361,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>View category for species | VRCArena</title>
+      <title>View category for species</title>
       <meta
         name="description"
         content="Browse assets inside a category filtered by a species."

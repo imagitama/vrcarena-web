@@ -6,28 +6,19 @@ import Markdown from '@/components/markdown'
 
 import { ReactComponent as Logo } from './assets/logo-v1/logo-v1.svg'
 import avatarUrl from './assets/logo-v1/avatar.png'
+import { DEFAULT_PAGE_DESC } from '@/config'
 
-const rules = `# VRCArena Brand Guide
+const rules = `# Our Brand Guide
 
-This guide explains what VRCArena is and how it appears for the purposes of branding and marketing.
+This guide explains what The VRCArena Project is and how it appears for the purposes of branding and marketing.
 
 ## Naming
 
-The website is called "VRCArena" (without a space). Not "VRC Arena" or "Vrc Arena" or anything else.
+The website is called "The VRCArena Project" (without a space). Not "VRC Arena" or "Vrc Arena" or anything else.
 
 ## Description
 
-### Short (97)
-
-"A website that has info about avatars, accessories, tutorials and tools for VR games like VRChat."
-
-### Medium (146)
-
-"A website that provides info about avatars, accessories, tutorials and tools separated by species for VR games like VRChat, Resonite and ChilloutVR."
-
-### Long (291)
-
-"A website that provides in-depth information about avatars, accessories, tutorials, tools for VR social games such as VRChat, Resonite and ChilloutVR. Every asset is organised into a species to help people find assets they want. Every asset is reviewed and approved by staff to ensure quality."
+"${DEFAULT_PAGE_DESC}"
 
 ## Logo
 
@@ -71,7 +62,7 @@ The background is a linear gradient from Brand (0% bottom left) to Brand Very Da
 export default () => (
   <>
     <Helmet>
-      <title>View our brand | VRCArena</title>
+      <title>View our brand</title>
       <meta
         name="description"
         content="Read about what the VRCArena brand is including our colors, logo, fonts and more."

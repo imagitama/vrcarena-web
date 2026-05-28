@@ -35,7 +35,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>Setup your profile | VRCArena</title>
+      <title>Setup your profile</title>
       <meta
         name="description"
         content="Use this form to setup your profile with basic settings."

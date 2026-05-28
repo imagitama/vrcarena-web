@@ -239,7 +239,7 @@ const View = () => {
   return (
     <>
       <Helmet>
-        <title>{`${name || '(unnamed)'} | VRCArena`}</title>
+        <title>{`${name || '(unnamed)'}`}</title>
         {description ? <meta name="description" content={description} /> : null}
       </Helmet>
       <DeprecationNotice>
@@ -346,7 +346,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>View an event | VRCArena</title>
+      <title>View an event</title>
       <meta
         name="description"
         content="View more details about an event posted on the site."

@@ -21,7 +21,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>Sign up to create an account | VRCArena</title>
+        <title>Sign up to create an account</title>
         <meta
           name="description"
           content="Create an account on the site to upload and manage assets, comment and more."

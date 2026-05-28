@@ -45,7 +45,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>Logout of your account | VRCArena</title>
+        <title>Logout of your account</title>
         <meta name="description" content="Logout of your account." />
       </Helmet>
       <SuccessMessage>You are now logged out. Redirecting...</SuccessMessage>

@@ -614,7 +614,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>Execute a query | VRCArena</title>
+        <title>Execute a query</title>
         <meta
           name="description"
           content={`Use our booru-style query language to find the assets you want. Include or exclude tags, filter by author name and sort by different dates.`}

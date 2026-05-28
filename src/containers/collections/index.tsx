@@ -28,7 +28,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>View all collections | VRCArena</title>
+        <title>View all collections</title>
         <meta name="description" content={description} />
       </Helmet>
       <Heading variant="h1">

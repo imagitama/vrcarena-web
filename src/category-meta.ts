@@ -50,7 +50,7 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     id: AssetCategory.Avatar,
     name: 'Avatars',
     nameSingular: 'Avatar',
-    shortDescription: `Discover new avatars for you to use in your favorite VR game.`,
+    shortDescription: `Find new avatars for you to use in your favorite VR game.`,
     optimizedImageUrl: avatarOptimizedImageUrl,
     icon: AccessibilityIcon,
   },

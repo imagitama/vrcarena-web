@@ -53,7 +53,7 @@ const EditAttachmentContainer = () => {
   return (
     <>
       <Helmet>
-        <title>{isCreating ? 'Create' : 'Edit'} an attachment | VRCArena</title>
+        <title>{isCreating ? 'Create' : 'Edit'} an attachment</title>
         <meta
           name="description"
           content={`Use this form to ${

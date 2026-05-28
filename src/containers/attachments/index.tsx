@@ -16,10 +16,10 @@ const NewAssetsView = () => {
   return (
     <>
       <Helmet>
-        <title>View all attachments | VRCArena</title>
+        <title>View all attachments</title>
         <meta
           name="description"
-          content="Here is a list of assets that have been posted on the site and recently approved."
+          content="Here is a list of attachments that have been posted on the site and recently approved."
         />
       </Helmet>
       <div>

@@ -18,10 +18,10 @@ const AuthorsView = () => {
   return (
     <>
       <Helmet>
-        <title>View all authors | VRCArena</title>
+        <title>View all authors</title>
         <meta
           name="description"
-          content="Browse all of the authors who have assets on the site."
+          content="Browse the authors of assets on the site, created by our users."
         />
       </Helmet>
       <Heading variant="h1">

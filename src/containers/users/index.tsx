@@ -53,9 +53,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>
-          View a list of users that are signed up on the site | VRCArena
-        </title>
+        <title>View a list of users that are signed up on the site</title>
         <meta
           name="description"
           content={`Find every user that has signed up to VRCArena.`}

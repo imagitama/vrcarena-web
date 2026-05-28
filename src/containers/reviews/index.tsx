@@ -30,7 +30,7 @@ const ReviewsView = () => {
   return (
     <>
       <Helmet>
-        <title>Browse reviews of assets | VRCArena</title>
+        <title>Browse reviews of assets</title>
         <meta
           name="description"
           content="A list of user reviews of our avatars, accessories, etc."

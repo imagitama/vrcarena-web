@@ -97,7 +97,7 @@ const View = () => {
   return (
     <>
       <Helmet>
-        <title>Support ticket #{supportTicketId} | VRCArena</title>
+        <title>Support ticket #{supportTicketId}</title>
         <meta
           name="description"
           content={`Read more information about support ticket #${supportTicketId} on the site.`}
@@ -197,7 +197,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>View a support ticket | VRCArena</title>
+      <title>View a support ticket</title>
       <meta
         name="description"
         content="Read more information about a support ticket on the site."

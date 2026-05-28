@@ -231,7 +231,9 @@ export default () => {
   return (
     <header className={classes.root}>
       <div className={classes.logoWrapper}>
-        <Link to={routes.home} title="Go to the homepage of VRCArena">
+        <Link
+          to={routes.home}
+          title="Go to the homepage of The VRCArena Project">
           <Logo className={classes.logo} />
         </Link>
         <div className={classes.socialMediaRows}>

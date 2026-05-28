@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import * as Sentry from '@sentry/browser'
 import { ThemeProvider } from '@mui/material/styles'
+import { Router } from 'react-router'
+import { createHead, UnheadProvider } from '@unhead/react/client'
+
 import { store, history } from './store'
 import App from './App'
 import { inDevelopment } from './environment'
@@ -12,7 +15,6 @@ import './global.css'
 import SupabaseClientContext from './contexts/SupabaseClient'
 import { client as supabaseClient } from './supabase'
 import { darkTheme } from './themes'
-import { Router } from 'react-router'
 
 if (!inDevelopment()) {
   Sentry.init({
@@ -25,6 +27,8 @@ history.listen(() => {
   store.dispatch(changeSearchTerm())
 })
 
+const head = createHead()
+
 const domNode = document.getElementById('root')
 const root = createRoot(domNode!)
 
@@ -33,7 +37,9 @@ root.render(
     <Provider store={store}>
       <Router history={history}>
         <ThemeProvider theme={darkTheme}>
-          <App />
+          <UnheadProvider head={head}>
+            <App />
+          </UnheadProvider>
         </ThemeProvider>
       </Router>
     </Provider>

@@ -306,7 +306,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>Manage your account | VRCArena</title>
+      <title>Manage your account</title>
       <meta
         name="description"
         content="Change your personal details and settings for your account."

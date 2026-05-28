@@ -16,9 +16,7 @@ const NewAssetsView = () => {
   return (
     <>
       <Helmet>
-        <title>
-          Browse the newly approved assets posted on the site | VRCArena
-        </title>
+        <title>Browse the newly approved assets posted on the site</title>
         <meta
           name="description"
           content="Here is a list of assets that have been posted on the site and recently approved."

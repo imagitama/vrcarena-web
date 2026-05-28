@@ -543,14 +543,13 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
         }}>
         {!isAssetLoaded || !hasLoadedAndExists ? (
           <Helmet>
-            <title>Loading asset... | VRCArena</title>
+            <title>Loading asset...</title>
           </Helmet>
         ) : (
           <Helmet>
             <title>
               {asset.title || '(no title)'}{' '}
-              {asset.authorname ? ` | By ${asset.authorname} | ` : ' | '}
-              VRCArena
+              {asset.authorname ? ` | By ${asset.authorname}` : ''}
             </title>
             <meta
               name="description"

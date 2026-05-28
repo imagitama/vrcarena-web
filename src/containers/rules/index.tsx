@@ -49,7 +49,7 @@ No. You should contact the platform directly. Then if anything is done about it,
 export default () => (
   <>
     <Helmet>
-      <title>Rules | VRCArena</title>
+      <title>Rules</title>
       <meta
         name="description"
         content="Rules for posting assets and using the site."

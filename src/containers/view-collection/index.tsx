@@ -68,7 +68,7 @@ const View = () => {
   return (
     <>
       <Helmet>
-        <title>{`View collection "${title}" | VRCArena`}</title>
+        <title>{`View collection "${title}"`}</title>
         <meta
           name="description"
           content={`View the collection called ${title}: ${description}`}
@@ -126,7 +126,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>View a collection | VRCArena</title>
+      <title>View a collection</title>
       <meta
         name="description"
         content="View more details about a collection."

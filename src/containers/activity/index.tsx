@@ -62,7 +62,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>View the recent activity around the site | VRCArena</title>
+        <title>View the recent activity around the site</title>
         <meta
           name="description"
           content="Take a look at the actions performed by users on the site including editing assets, profiles and more."

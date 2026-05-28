@@ -302,10 +302,10 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>{`Create a new support ticket | VRCArena`}</title>
+      <title>Create a support ticket</title>
       <meta
         name="description"
-        content="Use this form to create a new support ticket."
+        content="Use this form to create a support ticket to ask for help with the site."
       />
     </Helmet>
     <View />

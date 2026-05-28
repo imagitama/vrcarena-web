@@ -45,7 +45,7 @@ export default () => {
   return (
     <>
       <Helmet>
-        <title>View {user.username}'s profile | VRCArena</title>
+        <title>View {user.username}'s profile</title>
         <meta
           name="description"
           content={`View the user profile of ${user.username}.`}

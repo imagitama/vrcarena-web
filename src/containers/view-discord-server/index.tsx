@@ -108,7 +108,7 @@ const View = () => {
   return (
     <>
       <Helmet>
-        <title>View Discord server {name} | VRCArena</title>
+        <title>View Discord server {name}</title>
         <meta
           name="description"
           content={`View the Discord server named ${name}`}
@@ -219,7 +219,7 @@ const View = () => {
 const ViewDiscordServerView = () => (
   <>
     <Helmet>
-      <title>View a Discord server | VRCArena</title>
+      <title>View a Discord server</title>
       <meta
         name="description"
         content="View more details about a Discord server."

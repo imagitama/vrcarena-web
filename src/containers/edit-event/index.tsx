@@ -53,7 +53,7 @@ export default () => {
     <>
       <HowToPromoteMessage isLoggedIn={true} />
       <Helmet>
-        <title>{isCreating ? 'Create' : 'Edit'} an event | VRCArena</title>
+        <title>{isCreating ? 'Create' : 'Edit'} an event</title>
         <meta
           name="description"
           content={`Use this form to ${
@@ -68,7 +68,6 @@ export default () => {
         id={eventId}
         analyticsCategory={`${eventId ? 'Edit' : 'Create'}Event`}
         saveBtnAction="Click save button"
-        viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         getSuccessUrl={(newId) =>
           newId

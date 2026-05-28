@@ -1,79 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Helmet } from '@unhead/react/helmet'
-import { makeStyles } from '@mui/styles'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-
-import { mediaQueryForMobiles } from '@/media-queries'
-import * as routes from '@/routes'
 
 import useSearchTerm from '@/hooks/useSearchTerm'
-
-import Button from '@/components/button'
 import SpeciesBrowser from '@/components/species-browser'
-
-const contentMaxWidth = '900px'
-
-const useStyles = makeStyles({
-  contentBlock: {
-    fontWeight: 200, // 100 for message titles, 400 for body
-    width: 'calc(100% - 2rem)',
-    padding: '2rem 0.5rem',
-    borderRadius: '0.5rem',
-    background: '#202020',
-    fontSize: '120%',
-    margin: '0 auto',
-    '& p:first-of-type': {
-      marginTop: 0,
-    },
-    '& p:last-of-type': {
-      marginBottom: 0,
-    },
-    '& > div': {
-      margin: '0 auto',
-      maxWidth: contentMaxWidth,
-    },
-    '& .controls': {
-      marginTop: '2rem',
-    },
-    [mediaQueryForMobiles]: {
-      width: '100%',
-      padding: '1rem',
-      '& .controls': {
-        marginTop: '1rem',
-      },
-    },
-  },
-  controls: {
-    width: '100%',
-    marginTop: '1rem',
-    display: 'flex',
-    justifyContent: 'right',
-  },
-})
-
-const ContentBlock = ({
-  buttonUrl,
-  buttonLabel,
-  children,
-}: {
-  buttonUrl: string
-  buttonLabel: string
-  children: React.ReactNode
-}) => {
-  const classes = useStyles()
-  return (
-    <div className={classes.contentBlock}>
-      <div>
-        {children}
-        <div className={classes.controls}>
-          <Button url={buttonUrl} icon={<ChevronRightIcon />} color="secondary">
-            {buttonLabel}
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
+import { DEFAULT_PAGE_DESC } from '@/config'
 
 export default () => {
   const searchTerm = useSearchTerm()
@@ -86,25 +16,12 @@ export default () => {
     <>
       <Helmet>
         <title>
-          Browse avatars, accessories, shaders and more for games VR games like
-          VRChat | VRCArena
+          An open-source, not-for-profit community project to document, tag and
+          categorize every asset for VR social games such as VRChat, ChilloutVR
+          and Resonite.
         </title>
-        <meta
-          name="description"
-          content="A website that has info about avatars, accessories, tutorials and tools for VR games like VRChat."
-        />
+        <meta name="description" content={DEFAULT_PAGE_DESC} />
       </Helmet>
-      <ContentBlock buttonUrl={routes.about} buttonLabel="Learn More">
-        <p>
-          A wiki-style collection of avatars, accessories and other assets for
-          VR social games such as VRChat.
-        </p>
-        <p>
-          All assets have been posted by humans (we hope) and approved by our
-          volunteer team since May 2020.
-        </p>
-      </ContentBlock>
-      <br />
       <SpeciesBrowser />
     </>
   )

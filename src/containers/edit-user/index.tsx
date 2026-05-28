@@ -55,7 +55,7 @@ const View = () => {
 export default () => (
   <>
     <Helmet>
-      <title>Edit a user | VRCArena</title>
+      <title>Edit a user</title>
       <meta name="description" content="Use this form to edit a user." />
     </Helmet>
     <View />

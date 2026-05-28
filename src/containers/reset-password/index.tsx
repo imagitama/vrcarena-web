@@ -8,7 +8,7 @@ import BodyText from '@/components/body-text'
 export default () => (
   <>
     <Helmet>
-      <title>Reset password | VRCArena</title>
+      <title>Reset password</title>
       <meta
         name="description"
         content="Use this form to reset your password."

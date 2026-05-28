@@ -34,7 +34,7 @@ You can forward any and all questions about this policy to the website owner and
 export default () => (
   <>
     <Helmet>
-      <title>View takedown policy | VRCArena</title>
+      <title>View takedown policy</title>
       <meta
         name="description"
         content="Read our policy on taking down assets from the site."
