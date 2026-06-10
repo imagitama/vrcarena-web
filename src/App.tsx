@@ -48,8 +48,10 @@ import AccountVerificationMessage from './components/account-verification-messag
 import Message from './components/message'
 import Button from './components/button'
 import Link from './components/link'
-import FormControls from './components/form-controls'
 import Tooltip from './components/tooltip'
+import useNotice from './hooks/useNotice'
+
+import peanutbuddhaAvatarUrl from './assets/images/peanutbuddha_june2026.webp'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -93,6 +95,33 @@ const useStyles = makeStyles({
   },
   welcomeMessageControls: {
     textAlign: 'right',
+  },
+  welcomeMessageEnding: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarImage: {
+    width: '2rem',
+    height: '2rem',
+    borderRadius: '100%',
+    animation: '4s $spin infinite',
+    animationDelay: '5s',
+    marginLeft: '0.25rem',
+  },
+  '@keyframes spin': {
+    '0%': {
+      transform: 'rotate(0deg)',
+    },
+    '50%': {
+      transform: 'rotate(0deg) scale(1)',
+    },
+    '80%': {
+      transform: 'rotate(360deg) scale(2)',
+    },
+    '100%': {
+      transform: 'rotate(0deg) scale(1)',
+    },
   },
 })
 
@@ -640,56 +669,64 @@ const MainContent = () => {
   )
 }
 
-const CREATOR_USER_ID = '04D3yeAUxTMWo8MxscQImHJwtLV2'
 const WELCOME_MESSAGE_HIDE_ID = 'welcome_may2026'
 
 const Controls = styled.div`
   text-align: right;
 `
 
-const WelcomeMessage = () => (
-  <Message hideId={WELCOME_MESSAGE_HIDE_ID}>
-    <p>
-      An open-source, not-for-profit community project to document, tag and
-      categorize every asset for VR social games such as VRChat, ChilloutVR and
-      Resonite.
-    </p>
-    <p>
-      Any human can submit and amend any asset on the site. No automated
-      scraping of products
-      <Tooltip
-        title={
-          <>
-            We use scraping to help humans add their assets to the site.
-            <br />
-            <br />
-            We use AI to help humans add their assets to the site, and for some
-            basic tasks. See our <Link to={routes.aiPolicy}>AI policy</Link>.
-          </>
-        }>
-        <span>*</span>
-      </Tooltip>
-      .
-    </p>
-    <p>
-      All content is moderated by our awesome{' '}
-      <Link to={routes.staffUsers}>volunteer team</Link> and created by a{' '}
-      <Link to={routes.viewUserWithVar.replace(':userId', CREATOR_USER_ID)}>
-        solo developer
-      </Link>{' '}
-      since 2020.
-    </p>
-    <p>
-      Thank you to our <Link to={routes.patreon}>Patreon supporters</Link> and
-      everyone who has submitted assets and amendments to our site.
-    </p>
-    <Controls>
-      <Button url={routes.about} icon={<ChevronRightIcon />}>
-        Read More
-      </Button>
-    </Controls>
-  </Message>
-)
+const WelcomeMessage = () => {
+  const [, hideMessage] = useNotice(WELCOME_MESSAGE_HIDE_ID)
+  const classes = useStyles()
+  return (
+    <Message hideId={WELCOME_MESSAGE_HIDE_ID}>
+      <p>
+        An open-source, not-for-profit community project to document, tag and
+        categorize every asset for VR social games such as VRChat, ChilloutVR
+        and Resonite.
+      </p>
+      <p>
+        Anyone can submit and amend any asset on the site. No automated scraping
+        of products
+        <Tooltip
+          title={
+            <>
+              We use scraping to help humans add their assets to the site.
+              <br />
+              <br />
+              We use AI to help humans add their assets to the site, and for
+              some basic tasks. See our{' '}
+              <Link to={routes.aiPolicy}>AI policy</Link>.
+            </>
+          }>
+          <span>*</span>
+        </Tooltip>
+        .
+      </p>
+      <p>
+        The site was created in 2020 and is moderated by our awesome{' '}
+        <Link to={routes.staffUsers}>volunteer team</Link> and funded entirely
+        by our <Link to={routes.patreon}>Patreon supporters</Link>.
+      </p>
+      <div className={classes.welcomeMessageEnding}>
+        <strong>Thanks to all of your support! -PeanutBuddha </strong>
+        <img
+          src={peanutbuddhaAvatarUrl}
+          alt="PeanutBuddha Avatar"
+          className={classes.avatarImage}
+        />
+      </div>
+      <Controls>
+        <Button color="secondary" hollow={false} onClick={() => hideMessage()}>
+          Close
+        </Button>{' '}
+        <Button url={routes.about} icon={<ChevronRightIcon />}>
+          Read More
+        </Button>
+      </Controls>
+    </Message>
+  )
+}
 
 export default () => {
   const classes = useStyles()
