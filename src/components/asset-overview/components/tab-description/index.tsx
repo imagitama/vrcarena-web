@@ -51,12 +51,11 @@ export default () => {
     </div>
   )
 
-  if (isMobile)
-    return (
-      <Expander isLoaded={asset !== null} message="Tap to expand description">
-        {content}
-      </Expander>
-    )
-
-  return content
+  return (
+    <Expander
+      isLoaded={asset !== null}
+      message={`${isMobile ? 'Tap' : 'Click'} to expand description`}>
+      {content}
+    </Expander>
+  )
 }
