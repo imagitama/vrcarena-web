@@ -179,24 +179,21 @@ const QueuedAssetInfo = ({
                     : ''
                 }
               />
-              <AssetApprovalChecklistItem
-                label="Description"
-                isValid={
-                  typeof asset.description === 'string' &&
-                  asset.description !== '' &&
-                  asset.description.length > 10
-                }
-                validLabel={
-                  asset.description
-                    ? `Length: ${asset.description.length} (>10)`
-                    : ''
-                }
-                invalidLabel={
-                  typeof asset.description === 'string'
-                    ? `Only ${asset.description.length} characters`
-                    : 'No description at all'
-                }
-              />
+              {/* new SQL view does not return this */}
+              {typeof asset.description === 'string' ? (
+                <AssetApprovalChecklistItem
+                  label="Description"
+                  isValid={
+                    asset.description !== '' && asset.description.length > 10
+                  }
+                  validLabel={
+                    asset.description
+                      ? `Length: ${asset.description.length} (>10)`
+                      : ''
+                  }
+                  invalidLabel={'Description too short (<10)'}
+                />
+              ) : null}
               <AssetApprovalChecklistItem
                 label="Tags"
                 isValid={Array.isArray(asset.tags) && asset.tags.length > 0}
