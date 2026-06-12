@@ -52,6 +52,7 @@ import Tooltip from './components/tooltip'
 import useNotice from './hooks/useNotice'
 
 import peanutbuddhaAvatarUrl from './assets/images/peanutbuddha_june2026.webp'
+import { DEFAULT_PAGE_DESC } from './config'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -731,7 +732,8 @@ const WelcomeMessage = () => {
 export default () => {
   const classes = useStyles()
   useHead({
-    titleTemplate: '%s | The VRCArena Project',
+    titleTemplate: (title) =>
+      `${title || DEFAULT_PAGE_DESC} | The VRCArena Project`,
   })
   return (
     <ErrorBoundary>

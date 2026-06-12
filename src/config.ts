@@ -12,7 +12,7 @@ export const FURALITY_URL = `https://furality.org/?referrer=${encodeURIComponent
   WEBSITE_FULL_URL
 )}`
 export const GITHUB_REPO_URL = 'https://github.com/imagitama/vrcarena-web'
-export const DEFAULT_PAGE_DESC = ''
+export const DEFAULT_PAGE_DESC = 'An open-source, not-for-profit community project to document, tag and categorize every asset for VR social games such as VRChat, ChilloutVR and Resonite.'
 
 export const BANNER_WIDTH = 1280
 export const BANNER_HEIGHT = 300
