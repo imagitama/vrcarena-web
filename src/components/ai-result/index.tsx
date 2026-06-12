@@ -238,11 +238,13 @@ export const ConfidenceScore = ({
   title,
   small,
   onClick,
+  label,
 }: {
   score: number
   title: React.ReactNode
   small?: boolean
   onClick?: () => void
+  label?: string
 }) => (
   <Tooltip title={title}>
     <ConfidenceScoreChip
@@ -252,7 +254,7 @@ export const ConfidenceScore = ({
           <Score score={score} small={small}>
             {getScoreAsPercentage(score)}%
           </Score>{' '}
-          <ConfidenceLabel>confidence</ConfidenceLabel>
+          <ConfidenceLabel>{label || 'confidence'}</ConfidenceLabel>
         </>
       }
       size={small ? 'small' : undefined}

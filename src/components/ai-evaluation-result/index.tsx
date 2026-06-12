@@ -13,6 +13,7 @@ import {
   AiEvaluateQueuedItemStatus,
   CollectionNames as AiEvaluationCollectionNames,
   GeminiAssetEvaluationFunctionResult,
+  Intent,
   type AiEvaluateConvo,
   type AiEvaluateQueuedItem,
 } from '@/modules/aievaluation'
@@ -409,6 +410,7 @@ const AiEvaluationResult = ({
         <div className={classes.cell}>
           {queuedItem.score !== null ? (
             <ConfidenceScore
+              label={queuedItem.intent === Intent.BotScore ? 'bot' : undefined}
               score={queuedItem.score}
               title={
                 <>
