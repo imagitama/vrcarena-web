@@ -38,6 +38,7 @@ import ErrorBoundary from '@/components/error-boundary'
 import AiArea from '../ai-area'
 import { Intent } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
+import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles({
   pass: {
@@ -169,16 +170,28 @@ const Renderer = ({
   items,
   hydrate,
   selectedView,
+  selectedSubView,
 }: {
   items?: AssetForList_Editor[]
   hydrate?: () => void
   selectedView: View | null
+  selectedSubView?: SubView | null
 }) => {
   if (selectedView === View.Queue) {
     return <Queue assets={items} hydrate={hydrate!} />
   }
 
-  return <AssetsTable assets={items} hydrate={hydrate} />
+  return (
+    <>
+      {selectedSubView === SubView.Approved && (
+        <WarningMessage>
+          Old assets without a "published date" will not show up here (I need to
+          repair them...)
+        </WarningMessage>
+      )}
+      <AssetsTable assets={items} hydrate={hydrate} />
+    </>
+  )
 }
 
 enum SubView {
@@ -327,80 +340,82 @@ const AdminAssets = () => {
   )
 
   return (
-    <PaginatedView<AssetForList_Editor>
-      // cannot re-use other paginated views because "publishedat" field does not exist for them
-      name="view-admin-assets"
-      viewName={ViewNames.GetAssetsForList_Editor}
-      getQuery={getQuery}
-      sortOptions={[
-        {
-          label: 'Publish date',
-          fieldName: 'publishedat',
-        },
-        {
-          label: 'Submission date',
-          fieldName: 'createdat',
-        },
-        {
-          label: 'Title',
-          fieldName: 'title',
-        },
-      ]}
-      defaultFieldName={'publishedat'}
-      urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
-        ':tabName',
-        'assets'
-      )}
-      subViews={[
-        {
-          id: SubView.Pending,
-          label: 'Pending',
-          defaultActive: true,
-        },
-        {
-          id: SubView.Approved,
-          label: 'Auto/Approved',
-        },
-        {
-          id: SubView.Deleted,
-          label: 'Deleted',
-        },
-        {
-          id: SubView.Declined,
-          label: 'Declined',
-        },
-        {
-          id: SubView.Visible,
-          label: 'Visible',
-        },
-        {
-          id: SubView.Archived,
-          label: 'Archived',
-        },
-      ]}
-      filters={filters}
-      extraControlsLeft={[
-        <Button
-          icon={
-            selectedView === View.Queue ? (
-              <CheckBoxIcon />
-            ) : (
-              <CheckBoxOutlineBlankIcon />
-            )
-          }
-          onClick={() => {
-            setSelectedView(
-              selectedView === View.Queue ? View.List : View.Queue
-            )
-            trackAction(analyticsCategoryName, 'Click toggle view')
-          }}
-          color="secondary"
-          size="small">
-          Queue Mode
-        </Button>,
-      ]}>
-      <Renderer selectedView={selectedView} />
-    </PaginatedView>
+    <>
+      <PaginatedView<AssetForList_Editor>
+        // cannot re-use other paginated views because "publishedat" field does not exist for them
+        name="view-admin-assets"
+        viewName={ViewNames.GetAssetsForList_Editor}
+        getQuery={getQuery}
+        sortOptions={[
+          {
+            label: 'Publish date',
+            fieldName: 'publishedat',
+          },
+          {
+            label: 'Submission date',
+            fieldName: 'createdat',
+          },
+          {
+            label: 'Title',
+            fieldName: 'title',
+          },
+        ]}
+        defaultFieldName={'publishedat'}
+        urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+          ':tabName',
+          'assets'
+        )}
+        subViews={[
+          {
+            id: SubView.Pending,
+            label: 'Pending',
+            defaultActive: true,
+          },
+          {
+            id: SubView.Approved,
+            label: 'Auto/Approved',
+          },
+          {
+            id: SubView.Deleted,
+            label: 'Deleted',
+          },
+          {
+            id: SubView.Declined,
+            label: 'Declined',
+          },
+          {
+            id: SubView.Visible,
+            label: 'Visible',
+          },
+          {
+            id: SubView.Archived,
+            label: 'Archived',
+          },
+        ]}
+        filters={filters}
+        extraControlsLeft={[
+          <Button
+            icon={
+              selectedView === View.Queue ? (
+                <CheckBoxIcon />
+              ) : (
+                <CheckBoxOutlineBlankIcon />
+              )
+            }
+            onClick={() => {
+              setSelectedView(
+                selectedView === View.Queue ? View.List : View.Queue
+              )
+              trackAction(analyticsCategoryName, 'Click toggle view')
+            }}
+            color="secondary"
+            size="small">
+            Queue Mode
+          </Button>,
+        ]}>
+        <Renderer selectedView={selectedView} />
+      </PaginatedView>
+    </>
   )
 }
 
