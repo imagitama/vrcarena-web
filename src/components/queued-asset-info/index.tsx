@@ -187,12 +187,14 @@ const QueuedAssetInfo = ({
                   asset.description.length > 10
                 }
                 validLabel={
-                  asset.description ? `Length: ${asset.description.length}` : ''
+                  asset.description
+                    ? `Length: ${asset.description.length} (>10)`
+                    : ''
                 }
                 invalidLabel={
                   typeof asset.description === 'string'
                     ? `Only ${asset.description.length} characters`
-                    : undefined
+                    : 'No description at all'
                 }
               />
               <AssetApprovalChecklistItem

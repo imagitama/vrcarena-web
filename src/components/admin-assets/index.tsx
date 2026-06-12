@@ -98,7 +98,6 @@ function AssetsTable({
                 publishstatus,
                 accessstatus,
               } = asset
-              console.debug('ASSET', asset)
               return (
                 <TableRow key={id}>
                   <TableCell>
@@ -285,9 +284,11 @@ const AdminAssets = () => {
 
       switch (selectedSubView) {
         case SubView.Approved:
-          query = query.or(
-            `approvalstatus.eq.${ApprovalStatus.Approved},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
-          )
+          query = query
+            .or(
+              `approvalstatus.eq.${ApprovalStatus.Approved},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
+            )
+            .not('publishedat', 'is', null) // TODO: repair assets that don't have this
           break
 
         case SubView.Pending:
