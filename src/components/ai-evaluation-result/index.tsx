@@ -410,7 +410,9 @@ const AiEvaluationResult = ({
         <div className={classes.cell}>
           {queuedItem.score !== null ? (
             <ConfidenceScore
-              label={queuedItem.intent === Intent.BotScore ? 'bot' : undefined}
+              label={
+                queuedItem.intent === Intent.BotScore ? 'human' : undefined
+              }
               score={queuedItem.score}
               title={
                 <>
