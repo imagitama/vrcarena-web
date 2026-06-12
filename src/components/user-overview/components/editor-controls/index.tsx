@@ -116,7 +116,7 @@ const UserEditorControls = () => {
                           </>
                         }
                         onClick={() => setIsBotScoreExpanded(true)}
-                        label="bot"
+                        label="human"
                       />
                     ) : (
                       <NoValueLabel>No score yet</NoValueLabel>
