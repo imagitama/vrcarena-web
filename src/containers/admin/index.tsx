@@ -27,6 +27,7 @@ import Queue from './components/queue'
 import AdminAudit from './components/audit'
 import AdminDupes from './components/dupes'
 import AdminReputation from './components/reputation'
+import Analytics from './components/analytics'
 
 const View = () => {
   const [isLoading, isErrored, user] = useUserRecord()
@@ -238,6 +239,26 @@ const View = () => {
                   etc.
                 </InfoMessage>
                 <AdminReputation />
+              </>
+            ),
+          },
+          {
+            name: 'analytics',
+            label: 'Analytics',
+            contents: (
+              <>
+                <InfoMessage
+                  title="How Analytics Works"
+                  hideId="admin-analytics-info">
+                  <p>
+                    I use Google Analytics for tracking visitors to the site.
+                  </p>
+                  <p>
+                    I also track whenever a user clicks the "Visit Source"
+                    button of an asset (since Nov 2021).
+                  </p>
+                </InfoMessage>
+                <Analytics />
               </>
             ),
           },
