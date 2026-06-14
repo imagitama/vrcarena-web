@@ -29,6 +29,8 @@ import MobileMenu from '@/components/mobile-menu'
 import AccountMenu from '@/components/account-menu'
 import Searchbar from '@/components/searchbar'
 import DesktopMenu from '@/components/desktop-menu'
+import VrchatGroupButton from '../vrchat-group-button'
+import store from '@/store'
 
 // when the navigation starts obstructing the logo
 const mediaQueryForMenuLogoCollision = '@media (max-width: 1280px)'
@@ -95,7 +97,7 @@ const useStyles = makeStyles({
       alignItems: 'center',
       padding: '0 0.25rem',
       opacity: '0.75',
-      transition: 'all 100ms',
+      transition: 'opacity 200ms',
       '&:hover': {
         opacity: 1,
       },
@@ -176,7 +178,7 @@ const useStyles = makeStyles({
     top: '100%',
   },
   socialMediaRows: {
-    [mediaQueryForTabletsOrBelow]: {
+    [mediaQueryForMobiles]: {
       display: 'flex',
     },
   },
@@ -187,6 +189,16 @@ const useStyles = makeStyles({
       width: '100%',
       margin: '0.5rem auto 0',
       padding: 0,
+    },
+  },
+  vrchatGroupButton: {
+    fontSize: '0.5rem',
+    margin: '0.5rem 0 0 0.5rem',
+    [mediaQueryForMobiles]: { margin: 0 },
+    opacity: '0.75',
+    transition: 'opacity 200ms',
+    '&:hover': {
+      opacity: 1,
     },
   },
 })
@@ -217,9 +229,11 @@ const SocialMediaIcons = () => {
   )
 }
 
+export const useAppDispatch = () => useDispatch<typeof store.dispatch>()
+
 export default () => {
   const classes = useStyles()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
   const isMobile = useMediaQuery({ query: queryForMobiles })
   const dispatchOpenMenu = () => dispatch(openMenu())
 
@@ -239,6 +253,9 @@ export default () => {
         <div className={classes.socialMediaRows}>
           <div>
             <SocialMediaIcons />
+          </div>
+          <div className={classes.vrchatGroupButton}>
+            <VrchatGroupButton />
           </div>
         </div>
       </div>

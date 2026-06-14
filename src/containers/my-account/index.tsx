@@ -40,6 +40,8 @@ import MySupportTickets from './components/my-support-tickets'
 import Button from '@/components/button'
 
 import Features from './components/features'
+import SupporterBadgeForm from '@/components/supporter-badge-form'
+import VrchatGroupButton from '@/components/vrchat-group-button'
 
 const analyticsCategoryName = 'MyAccount'
 
@@ -186,7 +188,10 @@ const View = () => {
             label: 'VRChat',
             contents: (
               <>
-                <Heading variant="h2">VRChat Account</Heading>
+                <Heading variant="h2">VRChat</Heading>
+                <Heading variant="h3">Group</Heading>
+                <VrchatGroupButton />
+                <Heading variant="h3">Link Account</Heading>
                 <LinkAccountWithVrchatForm />
               </>
             ),
@@ -197,7 +202,12 @@ const View = () => {
             contents: (
               <>
                 <Heading variant="h2">Patreon</Heading>
+                <Heading variant="h3">Link Account</Heading>
                 <PatreonConnectForm />
+                <Heading variant="h3">Badge</Heading>
+                <SupporterBadgeForm
+                  route={routes.viewUserWithVar.replace(':userId', user.id)}
+                />
                 <Heading variant="h3">My Featured Assets</Heading>
                 <InfoMessage title="How It Works">
                   A Patreon supporter can feature any asset on the site (even

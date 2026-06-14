@@ -24,7 +24,8 @@ const ClaimButton = <TData,>({
     <>
       <Button
         icon={<PanToolIcon />}
-        onClick={() => setIsOpen((currentVal) => !currentVal)}>
+        onClick={() => setIsOpen((currentVal) => !currentVal)}
+        color="secondary">
         Claim
       </Button>
       {isOpen ? (

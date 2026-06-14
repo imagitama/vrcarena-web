@@ -6,6 +6,10 @@ declare module '*.svg' {
   >
 }
 
+declare module '*.svg?raw' {
+  export default String()
+}
+
 declare module '*.png' {
   export default String()
 }

@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { Helmet } from '@unhead/react/helmet'
 import { Link, useParams } from 'react-router-dom'
 import { makeStyles } from '@mui/styles'
@@ -38,6 +38,7 @@ import AssetsPaginatedView from '@/components/assets-paginated-view'
 import { GetQueryFn } from '@/components/paginated-view'
 import ClaimButton from '@/components/claim-button'
 import UserList from '@/components/user-list'
+import SupporterBadgeForm from '@/components/supporter-badge-form'
 
 function AssetsByAuthor({ author }: { author: FullAuthor }) {
   const getQuery = useCallback<GetQueryFn<PublicAsset>>(
@@ -129,6 +130,24 @@ const Claims = ({ authorId }: { authorId: string }) => {
 }
 
 const analyticsCategory = 'ViewAuthor'
+
+const SupporterBadgeButton = ({ authorId }: { authorId: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  if (!isExpanded) {
+    return (
+      <Button onClick={() => setIsExpanded(true)} color="secondary">
+        Generate Supporter Badge
+      </Button>
+    )
+  }
+
+  return (
+    <SupporterBadgeForm
+      route={routes.viewAuthorWithVar.replace(':authorId', authorId)}
+    />
+  )
+}
 
 const View = () => {
   const { authorId } = useParams<{ authorId: string }>()
@@ -295,12 +314,14 @@ const View = () => {
       )}
 
       <Heading variant="h2">Meta</Heading>
-      <div>
-        Created by{' '}
-        <Link to={routes.viewUserWithVar.replace(':userId', createdBy)}>
-          {createdByUsername}
-        </Link>
-      </div>
+      {createdByUsername && (
+        <div>
+          Created by{' '}
+          <Link to={routes.viewUserWithVar.replace(':userId', createdBy)}>
+            {createdByUsername}
+          </Link>
+        </div>
+      )}
 
       {lastModifiedBy && (
         <div>
@@ -310,17 +331,6 @@ const View = () => {
           </Link>
         </div>
       )}
-
-      <br />
-
-      <Button
-        url={routes.authors}
-        onClick={() =>
-          trackAction('ViewAuthor', 'Click find more authors button')
-        }>
-        Find More Authors...
-      </Button>
-
       {isLoggedIn ? (
         <>
           {' '}
@@ -337,7 +347,8 @@ const View = () => {
             parentTable={CollectionNames.Authors}
             parentId={author.id}
             parentData={author}
-          />
+          />{' '}
+          <SupporterBadgeButton authorId={author.id} />
         </>
       ) : null}
 

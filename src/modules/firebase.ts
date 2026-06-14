@@ -7,10 +7,12 @@ export const FIREBASE_USER_IS_ERRORED = 'firebase/USER_IS_ERRORED'
 export const FIREBASE_USER_LOADED = 'firebase/USER_LOADED'
 export const FIREBASE_USER_UNLOADED = 'firebase/USER_UNLOADED'
 
+type FirebaseUserDetails = Pick<FirebaseUser, 'uid'>
+
 export interface FirebaseState {
   isLoading: boolean
   isErrored: boolean
-  user: FirebaseUser | null
+  user: FirebaseUserDetails | null
 }
 
 const initialState: FirebaseState = {

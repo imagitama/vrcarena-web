@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { makeStyles } from '@mui/styles'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
+import { ReactComponent as PatreonIcon } from '@/assets/images/icons/patreon.svg'
 import { handleError } from '@/error-handling'
 import { callFunction } from '@/firebase'
 import { UserMeta } from '@/modules/users'
@@ -198,7 +199,8 @@ const PatreonConnectForm = () => {
               Refresh with Patreon
             </Button>
           </p>
-          <Heading variant="h3">Rewards</Heading>
+          {/* June 2026 - these rewards are outdated */}
+          {/* <Heading variant="h3">Rewards</Heading>
           {metaResult && metaResult.patreonrewardids.length ? (
             metaResult.patreonrewardids
               .filter((rewardId) => rewardId in rewardMetaById)
@@ -210,7 +212,7 @@ const PatreonConnectForm = () => {
               ))
           ) : (
             <NoResultsMessage>No rewards found</NoResultsMessage>
-          )}
+          )} */}
         </>
       )
     } else {
@@ -241,7 +243,12 @@ const PatreonConnectForm = () => {
         account. Then depending on your pledge amount you will receive your
         benefits.
       </p>
-      <Button url={patreonOAuthUrl} openInNewTab={false}>
+      <Button
+        url={patreonOAuthUrl}
+        openInNewTab={false}
+        size="large"
+        icon={<PatreonIcon />}
+        switchIconSide>
         Connect with Patreon
       </Button>
     </div>

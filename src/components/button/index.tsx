@@ -29,6 +29,8 @@ export interface ButtonProps {
   checked?: boolean
   hollow?: boolean
   margin?: boolean // mainly for asset overview
+  openInNewTab?: boolean
+  downloadFilename?: string
 }
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
@@ -149,17 +151,26 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
 const Anchor = ({
   href: url,
   children,
+  openInNewTab = true,
+  downloadFilename,
   ...props
 }: {
   href: string
   children: React.ReactNode
+  openInNewTab?: boolean
+  downloadFilename?: string
 }) =>
   url.startsWith('/') ? (
     <Link to={url} {...props}>
       {children}
     </Link>
   ) : (
-    <a href={url} target="_blank" rel="noopener noreferrer" {...props}>
+    <a
+      href={url}
+      target={openInNewTab ? '_blank' : undefined}
+      rel="noopener noreferrer"
+      download={downloadFilename}
+      {...props}>
       {children}
     </a>
   )

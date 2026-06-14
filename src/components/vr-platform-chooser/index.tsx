@@ -29,6 +29,7 @@ import CheckboxInput from '@/components/checkbox-input'
 import resoniteImageUrl from './assets/images/resonite.webp'
 import chilloutVrImageUrl from './assets/images/chilloutvr.webp'
 import vrchatImageUrl from './assets/images/vrchat.webp'
+import VrchatGroupButton from '../vrchat-group-button'
 
 const useStyles = makeStyles({
   intro: {
@@ -349,6 +350,10 @@ export default ({
           icon={<SaveIcon />}>
           Save
         </Button>{' '}
+      </FormControls>
+      <br />
+      <FormControls>
+        <VrchatGroupButton />
       </FormControls>
     </div>
   )
