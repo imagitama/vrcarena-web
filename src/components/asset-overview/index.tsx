@@ -699,11 +699,12 @@ const AssetOverview = ({
         ) : (
           <div className={classes.cols}>
             <div className={classes.leftCol}>
-              {asset && (
-                <ErrorBoundary>
-                  <AssetTree activeAsset={asset} />
-                </ErrorBoundary>
-              )}
+              {asset &&
+                (asset.relations?.length || asset.mentionsdata?.length) && (
+                  <ErrorBoundary>
+                    <AssetTree activeAsset={asset} />
+                  </ErrorBoundary>
+                )}
               <PrimaryImage />
               {isMobile && VisitSourceButtons}
               <Area name="desc" label="Description">

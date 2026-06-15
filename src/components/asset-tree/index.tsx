@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
 import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
-import LinkIcon from '@mui/icons-material/Link'
 
 import {
   Asset,
@@ -26,6 +25,7 @@ import Link from '@/components/link'
 import { TabName } from '@/components/asset-overview/tabs'
 import Button from '@/components/button'
 import AssetsByArea from '@/components/assets-by-area'
+import NoResultsMessage from '../no-results-message'
 
 const Root = styled.div``
 const Items = styled.div`
@@ -33,27 +33,6 @@ const Items = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   position: relative;
-`
-
-// const HorizontalLine = styled.div`
-//   position: absolute;
-//   top: 0.5rem;
-//   left: calc(50px + 1rem);
-//   height: 2px;
-//   background-color: #737373;
-// `
-
-const VerticalLineWrapper = styled.div`
-  position: absolute;
-  top: 0px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  & span {
-    color: #737373;
-    text-transform: uppercase;
-    font-size: 75%;
-  }
 `
 
 const VerticalLine = styled.div`
@@ -69,24 +48,6 @@ const VerticalLine = styled.div`
   );
   ${({ bottom }: { bottom?: boolean }) =>
     bottom ? `top: auto; bottom: -1rem;` : undefined}
-`
-
-const Connector = styled.div`
-  flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
-  margin-left: ${({ flip }: { flip?: boolean }) => (flip ? `0` : '-1rem')};
-  border-radius: 0
-    ${({ theme }) => (theme as VRCArenaTheme).shape.borderRadius * 2}px 0 0;
-  z-index: -5;
-  position: absolute;
-  left: 50%;
-  top: 0;
-  border: 2px solid #737373;
-  border-bottom: none;
-  border-left: none;
-  ${({ flip }: { flip?: boolean }) =>
-    flip ? `transform: scaleX(-1);` : undefined}
 `
 
 const Item = styled.div`
@@ -163,7 +124,11 @@ export const FullAssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
   }
 
   if (isLoading || !results) {
-    return <LoadingIndicator message="Loading all relations..." />
+    return <LoadingIndicator message="Loading mentions..." />
+  }
+
+  if (!results.length) {
+    return <NoResultsMessage>No mentions found</NoResultsMessage>
   }
 
   return (
@@ -229,8 +194,6 @@ const AssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
     .filter((mention) => mention.relation.type === RelationType.Parent)
     .map<RelationAndAsset>((mention) => [mention.relation, mention.asset])
 
-  // const shownItemsCount = Math.min(nonParents.length, 5)
-
   return (
     <Root>
       {parents.length ? (
@@ -252,27 +215,8 @@ const AssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
       {nonParents.length ? (
         <Children>
           <Items>
-            {/* <HorizontalLine
-              style={{
-                width: `calc(${(shownItemsCount - 1) * 100}px + ${
-                  (shownItemsCount - 1) * 1
-                }rem - 1rem)`,
-              }}
-            /> */}
             {nonParents.slice(0, 5).map(([relation, asset], index) => (
               <Item key={relation.asset}>
-                {/* {index === 0 ? <Connector flip /> : null} */}
-                {/* {index === shownItemsCount - 1 ? (
-                  <Connector />
-                ) : index > 0 ? (
-                  <VerticalLine />
-                ) : null} */}
-                {/* <VerticalLineWrapper>
-                  <span>
-                    <LinkIcon /> {relation.type}
-                  </span>
-                  <VerticalLine />
-                </VerticalLineWrapper> */}
                 <VerticalLine />
                 <AssetResultsItem
                   asset={asset}
