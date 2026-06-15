@@ -17,12 +17,16 @@ export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
 export const getIsFullAsset = (asset: any): asset is FullAsset =>
   asset && 'createdbyusername' in asset
 
-export const getIsAssetWaitingForApproval = (asset: AssetBasicMetadata): boolean =>
+export const getIsAssetWaitingForApproval = (
+  asset: AssetBasicMetadata
+): boolean =>
   asset.publishstatus == PublishStatus.Published &&
   asset.approvalstatus == ApprovalStatus.Waiting &&
   asset.accessstatus == AccessStatus.Public
 
-export const getIsAssetVisibleToEveryone = (asset: AssetBasicMetadata): boolean =>
+export const getIsAssetVisibleToEveryone = (
+  asset: AssetBasicMetadata
+): boolean =>
   asset.accessstatus === AccessStatus.Public &&
   (asset.approvalstatus === ApprovalStatus.Approved ||
     asset.approvalstatus === ApprovalStatus.AutoApproved) &&
@@ -62,6 +66,7 @@ export interface Relation {
   type: string
   comments: string
   requiresVerification?: boolean
+  label?: string // for <AssetTree />
 }
 
 export interface SourceInfo {
@@ -100,13 +105,13 @@ interface DeprecatedAssetFields {
 
 export interface AssetFields
   extends DeprecatedAssetFields,
-  CoreAssetFields,
-  Record<string, unknown> {
+    CoreAssetFields,
+    Record<string, unknown> {
   sourceurl: string
   description: string
   vrchatclonableavatarids: string[]
   discordserver: string | null // id
-  relations: Relation[]
+  relations: Relation[] | null // TODO: always return array
   extradata: ExtraData
   attachmentids: string[]
   extrasources: SourceInfo[]
@@ -135,7 +140,7 @@ export interface VrcFuryPrefabInfo {
   discordserverdata?: DiscordServerData | null
 }
 
-export interface TutorialStep { }
+export interface TutorialStep {}
 
 export interface DiscordServerData {
   id: string
@@ -145,7 +150,7 @@ export interface DiscordServerData {
   patreonurl?: string
 }
 
-export interface VrchatWorld { }
+export interface VrchatWorld {}
 
 export enum DeletionReason {
   author_request = 'author_request',
@@ -238,6 +243,11 @@ export interface AssetForList_Editor extends AssetForList {
   editornotes: string
 }
 
+export type FullAssetMention = {
+  relation: Relation
+  asset: PublicAsset
+}
+
 export interface FullAsset extends Asset, AssetMeta, AssetStats {
   authorname: string
   speciesnames: string[]
@@ -257,6 +267,8 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   tagscount: TagStats[] // different to tagsdata as that returns null if tag already in database
   aisimilarities: AiSimilarQueuedItem | null
   aisimilaritiesdata: PublicAsset[]
+  mentionsdata: FullAssetMention[]
+  mentionstotal: number
 }
 
 export interface FullAsset_Editor extends FullAsset {
@@ -268,6 +280,18 @@ export interface SmallAsset extends Asset, AssetMeta {
   authorname: string
   speciesnames: string[]
   publishedbyusername: string
+}
+
+// <AssetTree />
+export interface Mention {
+  asset: PublicAsset
+  relation: Relation
+}
+
+export interface GetMentionsResult {
+  assetid: string
+  assetdata: PublicAsset
+  relation: Relation
 }
 
 export interface RelatedAssetsResult extends Record<string, unknown> {
@@ -300,12 +324,14 @@ export enum ViewNames {
   GetEndorsementAssetResults = 'getendorsementassetresults',
   GetWishlistAssetResults = 'getwishlistassetresults',
   GetDraftAssets = 'getdraftassets',
-  GetAssetsForList_Editor = 'getassetsforlist_editor' // for admin assets
+  GetAssetsForList_Editor = 'getassetsforlist_editor', // for admin assets
+  GetMentions = 'getMentions', // <AssetTree />
 }
 
 export enum FunctionNames {
   SearchAssets = 'searchassets',
   GetOrHydrateGetFullAssets = 'get_or_hydrate_getfullassets',
+  GetMentions = 'getmentions',
 }
 
 export enum FirebaseFunctionNames {

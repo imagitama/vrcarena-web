@@ -50,9 +50,9 @@ const DiscordServerMustJoinNotice = ({
       </div>
       <div className={classes.desc}>
         To visit this URL you must be a member of the Discord server "
-        {discordServerData && discordServerData.name}"
+        {discordServerData?.name || '(unnamed)'}"
         <br />
-        {discordServerData && discordServerData.requirespatreon ? (
+        {discordServerData?.requirespatreon ? (
           <div className={classes.buttonWrapper}>
             <div>You must be a Patreon: </div>
             <a
@@ -70,7 +70,7 @@ const DiscordServerMustJoinNotice = ({
               Join Here
             </a>
           </div>
-        ) : discordServerData && discordServerData.inviteurl ? (
+        ) : discordServerData?.inviteurl ? (
           <div className={classes.buttonWrapper}>
             <div>You must accept this invite: </div>
             <Button

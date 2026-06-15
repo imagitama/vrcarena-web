@@ -13,6 +13,7 @@ import Chip from '@mui/material/Chip'
 import * as routes from '@/routes'
 import {
   Asset,
+  AssetCategory,
   AssetForList,
   FullAsset,
   PublicAsset,
@@ -57,17 +58,17 @@ const useStyles = makeStyles({
     },
   },
   tiny: {
-    width: '100%',
+    width: '100px',
+    [mediaQueryForTabletsOrBelow]: {
+      width: '100px',
+    },
     fontSize: '75%',
-    '& .cardMedia': {
+    '& $cardMedia': {
       width: '100px',
       height: '100px',
     },
-    '& .cardContent': {
-      padding: '5px',
-    },
-    '& a': {
-      display: 'flex',
+    '& $cardContent': {
+      padding: '0.5rem',
     },
   },
   button: {
@@ -114,7 +115,7 @@ const useStyles = makeStyles({
     fontSize: '0.85em',
     textTransform: 'uppercase',
     lineHeight: '1.25',
-    height: '16px',
+    // height: '16px',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -226,16 +227,18 @@ const AssetState = ({ asset }: { asset: AssetForList | FullAsset }) => {
 const SpeciesOutput = ({
   asset,
   relation,
+  showDivider = true,
 }: {
   asset?: Asset | PublicAsset | AssetSearchResult
   relation?: Relation
+  showDivider?: boolean
 }) => {
   const classes = useStyles()
 
   if (relation) {
     return (
       <span className={classes.relation}>
-        {divider} {relation.type} <LinkIcon />
+        {showDivider && divider} {relation.label || relation.type} <LinkIcon />
       </span>
     )
   }
@@ -243,7 +246,7 @@ const SpeciesOutput = ({
   if (!asset) {
     return (
       <>
-        {divider} <LoadingShimmer width="40px" height="10px" />
+        {showDivider && divider} <LoadingShimmer width="40px" height="10px" />
       </>
     )
   }
@@ -255,14 +258,14 @@ const SpeciesOutput = ({
   if ('speciesnames' in asset && asset.speciesnames !== null) {
     return (
       <>
-        {divider} {(asset as FullAsset).speciesnames.join(', ')}
+        {showDivider && divider} {(asset as FullAsset).speciesnames.join(', ')}
       </>
     )
   }
 
   return (
     <>
-      {divider} {asset.species.length} species
+      {showDivider && divider} {asset.species.length} species
     </>
   )
 }
@@ -281,6 +284,7 @@ const AssetResultsItem = ({
   showState = false,
   showMoreInfo = undefined,
   className,
+  showCategory = true,
 }: {
   asset?: Asset | PublicAsset | FullAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
@@ -293,6 +297,7 @@ const AssetResultsItem = ({
   showState?: boolean
   showMoreInfo?: boolean
   className?: string
+  showCategory?: boolean // for <AssetTree />
 }) => {
   const classes = useStyles()
   const [, , prefs] = useUserPreferences()
@@ -347,70 +352,80 @@ const AssetResultsItem = ({
             </div>
             <div className={classes.author}>
               {asset ? (
-                getIsPublicAsset(asset) && asset.authorname ? (
-                  `by ${asset.authorname}`
-                ) : null
+                `by ${asset.authorname || '(unnamed)'}`
               ) : (
                 <LoadingShimmer width="80px" height="12px" marginTop={'2px'} />
               )}
             </div>
             <div className={classes.microText}>
-              <strong>
-                {asset ? (
-                  getCategoryMeta(asset.category).nameSingular
-                ) : (
-                  <LoadingShimmer width="80px" height="12px" />
-                )}
-              </strong>{' '}
-              <SpeciesOutput asset={asset} relation={relation} />
-            </div>
-            <div className={classes.moreInfo}>
-              <div className={classes.controls}>
-                {Controls ? (
-                  <Controls />
-                ) : Controls !== null ? (
-                  <>
-                    {toggleEditMode && (
-                      <div
-                        onClick={(e) => {
-                          toggleEditMode()
-                          e.preventDefault()
-                          e.stopPropagation()
-                        }}
-                        className={classes.control}>
-                        <EditIcon />
-                      </div>
-                    )}
-                  </>
-                ) : null}
-                {isInMode && asset && (
-                  <CheckboxInput
-                    value={ids!.includes(asset.id)}
-                    onClick={(e) => {
-                      toggleId(asset.id)
-                      e.stopPropagation()
-                      e.preventDefault()
-                      return false
-                    }}
+              {showCategory && (
+                <strong>
+                  {asset ? (
+                    getCategoryMeta(asset.category).nameSingular
+                  ) : (
+                    <LoadingShimmer width="80px" height="12px" />
+                  )}
+                </strong>
+              )}{' '}
+              {asset?.category === AssetCategory.Avatar ||
+                (relation && (
+                  <SpeciesOutput
+                    asset={asset}
+                    relation={relation}
+                    showDivider={showCategory !== false}
                   />
+                ))}
+            </div>
+            {Controls || actuallyShowMoreInfo ? (
+              <div className={classes.moreInfo}>
+                <div className={classes.controls}>
+                  {Controls ? (
+                    <Controls />
+                  ) : Controls !== null ? (
+                    <>
+                      {toggleEditMode && (
+                        <div
+                          onClick={(e) => {
+                            toggleEditMode()
+                            e.preventDefault()
+                            e.stopPropagation()
+                          }}
+                          className={classes.control}>
+                          <EditIcon />
+                        </div>
+                      )}
+                    </>
+                  ) : null}
+                  {isInMode && asset && (
+                    <CheckboxInput
+                      value={ids!.includes(asset.id)}
+                      onClick={(e) => {
+                        toggleId(asset.id)
+                        e.stopPropagation()
+                        e.preventDefault()
+                        return false
+                      }}
+                    />
+                  )}
+                </div>
+                {actuallyShowMoreInfo &&
+                asset &&
+                'price' in asset &&
+                asset.price ? (
+                  asset.price > 0 ||
+                  (getIsPublicAsset(asset) && asset.isfree) ? (
+                    <Price
+                      price={asset.price}
+                      priceCurrency={asset.pricecurrency}
+                      small
+                    />
+                  ) : null
+                ) : null}
+                {showState && asset && 'accessstatus' in asset && (
+                  <AssetState asset={asset as AssetForList} />
                 )}
               </div>
-              {actuallyShowMoreInfo &&
-              asset &&
-              'price' in asset &&
-              asset.price ? (
-                asset.price > 0 || (getIsPublicAsset(asset) && asset.isfree) ? (
-                  <Price
-                    price={asset.price}
-                    priceCurrency={asset.pricecurrency}
-                    small
-                  />
-                ) : null
-              ) : null}
-              {showState && asset && 'accessstatus' in asset && (
-                <AssetState asset={asset as AssetForList} />
-              )}
-            </div>
+            ) : null}
           </CardContent>{' '}
         </Link>
       </CardActionArea>

@@ -13,7 +13,6 @@ import { VRCArenaTheme } from '@/themes'
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     padding: '1rem',
-    marginBottom: '1rem',
     // backgroundColor: '#282828', // when rendered inside ExperimentalArea dont want big areas of green
     [mediaQueryForTabletsOrBelow]: {
       padding: '0.5rem',

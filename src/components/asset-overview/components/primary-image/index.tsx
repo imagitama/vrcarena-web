@@ -8,6 +8,7 @@ import { mediaQueryForMobiles } from '@/media-queries'
 import ImageGallery from '@/components/image-gallery'
 
 import useAssetOverview from '../../useAssetOverview'
+import ErrorMessage from '@/components/error-message'
 
 const useStyles = makeStyles({
   root: {
@@ -56,7 +57,7 @@ const PrimaryImage = () => {
   const { asset } = useAssetOverview()
   const classes = useStyles()
 
-  if (!asset || !asset.attachmentsdata) {
+  if (!asset) {
     return (
       <div className={classes.root}>
         <div className={`${classes.primary} ${classes.placeholder}`} />
@@ -64,19 +65,25 @@ const PrimaryImage = () => {
     )
   }
 
-  const bestImageAttachment = asset.attachmentsdata.find(
+  if (!asset.attachmentids.length) return null
+
+  const bestImageAttachment = asset.attachmentsdata?.find(
     (attachment) => attachment.type === AttachmentType.Image
   )
 
   if (!bestImageAttachment) {
-    return null
+    return (
+      <ErrorMessage>
+        No primary image found (IDs: {asset.attachmentids.join(',')})
+      </ErrorMessage>
+    )
   }
 
   if (isGalleryOpen) {
     return (
       <ImageGallery
         startSelected
-        images={asset.attachmentsdata.slice(0, 3).map((attachment) => ({
+        images={asset.attachmentsdata?.slice(0, 3).map((attachment) => ({
           url: cleanupAttachmentUrl(attachment.url),
         }))}
         onClickImage={() =>

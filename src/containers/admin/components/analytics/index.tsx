@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
 import ErrorMessage from '@/components/error-message'
@@ -34,8 +33,6 @@ const Analytics = () => {
       </ErrorMessage>
     )
   if (!entries) return <LoadingIndicator message="Waiting" />
-
-  console.debug('ENTRIES', entries)
 
   return (
     <>

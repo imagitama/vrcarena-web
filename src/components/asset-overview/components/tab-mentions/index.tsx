@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import { Asset } from '@/modules/assets'
+import { Asset, FunctionNames } from '@/modules/assets'
 
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
 import useDataStoreFunction from '@/hooks/useDataStoreFunction'
@@ -29,7 +29,7 @@ const Renderer = ({ items }: { items?: Asset[] }) => {
   return (
     <RelationsItems>
       {items.map((item) => {
-        const relation = item.relations.find(
+        const relation = item.relations?.find(
           (relation) => relation.asset === assetId
         )
 
@@ -53,11 +53,6 @@ const Renderer = ({ items }: { items?: Asset[] }) => {
       })}
     </RelationsItems>
   )
-}
-
-enum FunctionNames {
-  // TODO: only public assets
-  GetMentions = 'getmentions',
 }
 
 export default () => {

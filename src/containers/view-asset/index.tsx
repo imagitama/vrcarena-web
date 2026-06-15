@@ -4,6 +4,9 @@ import { useParams } from 'react-router-dom'
 import AssetOverview from '@/components/asset-overview'
 
 export default () => {
-  const { assetId } = useParams<{ assetId: string }>()
-  return <AssetOverview assetId={assetId} />
+  const { assetId, tabName } = useParams<{
+    assetId: string
+    tabName?: string
+  }>()
+  return <AssetOverview assetId={assetId} tabName={tabName} />
 }

@@ -22,8 +22,6 @@ export default () => {
     aisimilaritiesdata: aiSimsData,
   } = asset
 
-  console.debug('ASSET', { nonAiSims, aiSims, aiSimsData })
-
   const sims: PublicAsset[] = aiSimsData !== null ? aiSimsData : nonAiSims
 
   const similarAssets = isAdultContentEnabled

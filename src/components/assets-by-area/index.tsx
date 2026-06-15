@@ -39,7 +39,7 @@ const AssetsByArea = ({
 }) => {
   const classes = useStyles()
 
-  if (!assets) {
+  if (!assets || !assets.length) {
     return null
   }
 

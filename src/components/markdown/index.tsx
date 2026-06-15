@@ -30,6 +30,12 @@ type ReactMarkdownNode = any
 
 const useStyles = makeStyles({
   root: {
+    '& > *:first-child': {
+      marginTop: 0,
+    },
+    '& > *:last-child': {
+      marginBottom: 0,
+    },
     '& h2': {
       marginTop: '2rem',
     },

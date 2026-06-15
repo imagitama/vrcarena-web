@@ -5,6 +5,7 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import LinkIcon from '@mui/icons-material/Link'
 import InfoIcon from '@mui/icons-material/Info'
 import styled from '@emotion/styled'
+import Typography from '@mui/material/Typography'
 
 import { Warning as WarningIcon } from '@/icons'
 import {
@@ -21,6 +22,7 @@ import {
   isMobile,
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
+  mediaQueryForWideDesktops,
 } from '@/media-queries'
 import { getCategoryMeta } from '@/category-meta'
 import {
@@ -89,6 +91,9 @@ import TagChip from '@/components/tag-chip'
 import Tooltip from '../tooltip'
 import { getFriendlyDate } from '@/utils/dates'
 import { colorGreyedOut } from '@/themes'
+import AssetTree, { FullAssetTree } from '../asset-tree'
+import ErrorBoundary from '../error-boundary'
+import { TabName } from './tabs'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -127,14 +132,16 @@ const useStyles = makeStyles({
     },
   },
   leftCol: {
-    paddingTop: '1rem',
     width: '100%',
     minWidth: 0, // fix flex shrink issue
   },
   rightCol: {
-    maxWidth: '300px',
+    maxWidth: '200px',
     flexShrink: 0,
     marginLeft: '1rem',
+    [mediaQueryForWideDesktops]: {
+      maxWidth: '300px',
+    },
     [mediaQueryForMobiles]: {
       width: '100%',
       margin: '2rem 0 0',
@@ -164,7 +171,6 @@ const useStyles = makeStyles({
   },
   authorName: {
     fontSize: '50%',
-    fontWeight: '400',
     [mediaQueryForMobiles]: {
       marginTop: '0.25rem',
       display: 'block',
@@ -177,12 +183,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '1rem',
-
-    [mediaQueryForMobiles]: {
-      flexDirection: 'column',
-    },
+    marginBottom: '0.5rem',
   },
   primaryMetadataThumb: {
     marginRight: '1rem',
@@ -194,14 +195,40 @@ const useStyles = makeStyles({
     [mediaQueryForMobiles]: { width: '100%', height: 'auto' },
   },
   primaryMetadataText: {
+    fontSize: '300%',
+    display: 'flex',
+    alignItems: 'center',
     [mediaQueryForMobiles]: { width: '100%', marginTop: '0.5rem' },
+  },
+  category: {
+    '&&': {
+      margin: 0,
+      fontSize: '2rem', // match h1
+      marginRight: '0.5rem',
+    },
+    '& a': {
+      color: 'inherit',
+    },
+  },
+  categoryForAvatar: {
+    '&&': {
+      margin: 0,
+      fontSize: '100%', // match species
+    },
+    '& a': {
+      // color: 'inherit',
+    },
   },
   thumbnailWrapper: {
     display: 'flex',
     justifyContent: 'center',
   },
+  categoryAndSpecies: {
+    fontSize: '150%',
+    fontWeight: '300',
+  },
   titleAndAuthor: {
-    marginBottom: '0.5rem',
+    // fontSize: '300%',
   },
   subTitle: {
     fontSize: '1rem',
@@ -250,38 +277,6 @@ const useStyles = makeStyles({
     color: colorGreyedOut,
   },
 })
-
-const ParentControlGroup = () => {
-  const { asset } = useAssetOverview()
-  const classes = useStyles()
-
-  const relation =
-    asset &&
-    asset.relations &&
-    asset.relations.find((relation) => relation.type === RelationType.Parent)
-
-  if (!relation) {
-    return null
-  }
-
-  const parentData = asset.relationsdata.find(
-    (asset) => asset.id === relation.asset
-  )
-
-  if (!parentData) {
-    return null
-  }
-
-  return (
-    <ControlGroup>
-      <div className={classes.parent}>
-        <div className={classes.parentWrapper}>
-          <AssetResultsItem asset={parentData} relation={relation} />
-        </div>
-      </div>
-    </ControlGroup>
-  )
-}
 
 const ControlGroup = styled.div<{ greyed?: boolean }>`
   margin-bottom: 0.5rem;
@@ -382,7 +377,13 @@ const useSluggedAsset = (
   return [isLoading, lastErrorCode, result, hydrate]
 }
 
-const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
+const AssetOverview = ({
+  assetId: assetIdOrSlug,
+  tabName,
+}: {
+  assetId: string
+  tabName?: string
+}) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
   const [isLoadingAsset, lastErrorCode, asset, hydrate] =
@@ -584,65 +585,10 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
           </Suspense>
         ) : null}
         <Messages />
-        <PrimaryImage />
         <div className={classes.primaryMetadata}>
-          {isMobile && hasPrimaryImage ? null : (
-            <div className={classes.primaryMetadataThumb}>
-              {!isAssetLoaded ? (
-                <LoadingShimmer width={75} height={75} />
-              ) : (
-                <AssetThumbnail
-                  url={asset.thumbnailurl}
-                  size={isMobile && !hasPrimaryImage ? 'full' : 'micro'}
-                  alt="Asset thumbnail"
-                  className={classes.thumbnail}
-                />
-              )}
-            </div>
-          )}
-          <div className={classes.primaryMetadataText}>
-            <Heading variant="h1" noMargin className={classes.titleAndAuthor}>
-              {!isAssetLoaded ? (
-                <LoadingShimmer width={300} height={50} />
-              ) : (
-                <>
-                  <Link to={urlToAsset}>{asset.title}</Link>
-                  <NsfwIcon />
-                </>
-              )}
-              <span className={classes.authorName}>
-                {' '}
-                {!isAssetLoaded ? (
-                  <LoadingShimmer width={200} height={30} />
-                ) : (
-                  <>
-                    by{' '}
-                    <Link
-                      to={routes.viewAuthorWithVar.replace(
-                        ':authorId',
-                        asset.author || 'no-author'
-                      )}>
-                      {asset.authorname}
-                    </Link>
-                  </>
-                )}
-              </span>
-            </Heading>
-            {!isAssetLoaded ? (
-              <LoadingShimmer width={200} height={25} />
-            ) : (
-              <div className={classes.subTitle}>
-                {asset.category === AssetCategory.Avatar ? (
-                  <>
-                    <SpeciesList
-                      speciesIds={asset.species ? asset.species : []}
-                      speciesNames={
-                        asset.speciesnames ? asset.speciesnames : []
-                      }
-                    />
-                    {asset.species && asset.species.length ? ' / ' : ''}
-                  </>
-                ) : null}
+          <div>
+            <div className={classes.categoryAndSpecies}>
+              {/* {isAssetLoaded ? (
                 <Link
                   to={routes.viewCategoryWithVar.replace(
                     ':categoryName',
@@ -652,366 +598,465 @@ const AssetOverview = ({ assetId: assetIdOrSlug }: { assetId: string }) => {
                     ? getCategoryMeta(asset.category).nameSingular
                     : '(no category)'}
                 </Link>
-              </div>
-            )}
+              ) : (
+                <LoadingShimmer width={300} height={50} />
+              )}{' '} */}
+              {asset ? (
+                asset.category === AssetCategory.Avatar ? (
+                  <>
+                    <Typography
+                      variant="h1"
+                      component="span"
+                      className={classes.categoryForAvatar}>
+                      <Link
+                        to={routes.viewCategoryWithVar.replace(
+                          ':categoryName',
+                          asset.category
+                        )}>
+                        {asset.category
+                          ? getCategoryMeta(asset.category).nameSingular
+                          : '(no category)'}
+                      </Link>
+                    </Typography>
+                    {' / '}
+                    <SpeciesList
+                      speciesIds={asset.species ? asset.species : []}
+                      speciesNames={
+                        asset.speciesnames ? asset.speciesnames : []
+                      }
+                    />
+                  </>
+                ) : null
+              ) : (
+                <LoadingShimmer width={300} height={50} />
+              )}
+            </div>
+            <div className={classes.primaryMetadataText}>
+              {isAssetLoaded ? (
+                asset.category !== AssetCategory.Avatar ? (
+                  <Typography
+                    variant="h1"
+                    component="span"
+                    className={classes.category}>
+                    <Link
+                      to={routes.viewCategoryWithVar.replace(
+                        ':categoryName',
+                        asset.category
+                      )}>
+                      {asset.category
+                        ? getCategoryMeta(asset.category).nameSingular
+                        : '(no category)'}
+                      {': '}
+                    </Link>
+                  </Typography>
+                ) : null
+              ) : (
+                <LoadingShimmer width={300} height={50} />
+              )}{' '}
+              <Heading variant="h1" noMargin className={classes.titleAndAuthor}>
+                {!isAssetLoaded ? (
+                  <LoadingShimmer width={300} height={50} />
+                ) : (
+                  <>
+                    <Link to={urlToAsset}>{asset.title}</Link>
+                    <NsfwIcon />
+                  </>
+                )}
+                <span className={classes.authorName}>
+                  {' '}
+                  {!isAssetLoaded ? (
+                    <LoadingShimmer width={200} height={30} />
+                  ) : (
+                    <>
+                      by{' '}
+                      <Link
+                        to={routes.viewAuthorWithVar.replace(
+                          ':authorId',
+                          asset.author || 'no-author'
+                        )}>
+                        {asset.authorname || '(no author name)'}
+                      </Link>
+                    </>
+                  )}
+                </span>
+              </Heading>
+              {!isAssetLoaded ? (
+                <LoadingShimmer width={200} height={25} />
+              ) : (
+                <div className={classes.subTitle}></div>
+              )}
+            </div>
           </div>
         </div>
-        <div className={classes.cols}>
-          <div className={classes.leftCol}>
-            {isMobile && VisitSourceButtons}
-            <TabDescription />
-            {nonMediaAttachments.length > 3 && (
-              <Area name="extra-attached-images" label="Images">
-                <ImageGallery
-                  images={
-                    !isAssetLoaded
-                      ? []
-                      : nonMediaAttachments
-                          .slice(3)
-                          .map((attachment) => ({ url: attachment.url }))
-                  }
-                  onClickImage={() =>
-                    trackAction(
-                      analyticsCategoryName,
-                      'Click attached image thumbnail to open gallery'
-                    )
-                  }
-                  onMoveNext={() =>
-                    trackAction(
-                      analyticsCategoryName,
-                      'Click go next image in gallery'
-                    )
-                  }
-                  onMovePrev={() =>
-                    trackAction(
-                      analyticsCategoryName,
-                      'Click go prev image in gallery'
-                    )
-                  }
-                />
+        {tabName === TabName.Relations ? (
+          asset ? (
+            <ErrorBoundary>
+              <FullAssetTree activeAsset={asset} />
+            </ErrorBoundary>
+          ) : (
+            <LoadingIndicator message="Loading asset..." />
+          )
+        ) : (
+          <div className={classes.cols}>
+            <div className={classes.leftCol}>
+              {asset && (
+                <ErrorBoundary>
+                  <AssetTree activeAsset={asset} />
+                </ErrorBoundary>
+              )}
+              <PrimaryImage />
+              {isMobile && VisitSourceButtons}
+              <Area name="desc" label="Description">
+                <TabDescription />
               </Area>
-            )}
-            {asset ? (
-              <>
-                {asset &&
-                (asset.category === AssetCategory.Avatar ||
-                  (asset.vrchatclonableavatarids &&
-                    asset.vrchatclonableavatarids.length)) ? (
+              {nonMediaAttachments.length > 3 && (
+                <Area name="extra-attached-images" label="Images">
+                  <ImageGallery
+                    images={
+                      !isAssetLoaded
+                        ? []
+                        : nonMediaAttachments
+                            .slice(3)
+                            .map((attachment) => ({ url: attachment.url }))
+                    }
+                    onClickImage={() =>
+                      trackAction(
+                        analyticsCategoryName,
+                        'Click attached image thumbnail to open gallery'
+                      )
+                    }
+                    onMoveNext={() =>
+                      trackAction(
+                        analyticsCategoryName,
+                        'Click go next image in gallery'
+                      )
+                    }
+                    onMovePrev={() =>
+                      trackAction(
+                        analyticsCategoryName,
+                        'Click go prev image in gallery'
+                      )
+                    }
+                  />
+                </Area>
+              )}
+              {asset ? (
+                <>
+                  {asset &&
+                  (asset.category === AssetCategory.Avatar ||
+                    (asset.vrchatclonableavatarids &&
+                      asset.vrchatclonableavatarids.length)) ? (
+                    <Area
+                      name="avatars"
+                      label={`Avatars${
+                        asset &&
+                        asset.vrchatclonableavatarids !== null &&
+                        asset.vrchatclonableavatarids.length >= 0
+                          ? ` (${asset.vrchatclonableavatarids.length})`
+                          : ''
+                      }`}>
+                      <TabAvatars />
+                    </Area>
+                  ) : null}
                   <Area
-                    name="avatars"
-                    label={`Avatars${
-                      asset &&
-                      asset.vrchatclonableavatarids !== null &&
-                      asset.vrchatclonableavatarids.length >= 0
-                        ? ` (${asset.vrchatclonableavatarids.length})`
+                    name="comments"
+                    label={`Comments${
+                      asset && asset.commentcount >= 0
+                        ? ` (${asset.commentcount})`
                         : ''
                     }`}>
-                    <TabAvatars />
+                    <TabComments />
                   </Area>
-                ) : null}
-                <Area
-                  name="comments"
-                  label={`Comments${
-                    asset && asset.commentcount >= 0
-                      ? ` (${asset.commentcount})`
-                      : ''
-                  }`}>
-                  <TabComments />
-                </Area>
-                <Area
-                  name="reviews"
-                  label={`Reviews${
-                    asset && asset.reviewcount >= 0
-                      ? ` (${asset.reviewcount})`
-                      : ''
-                  }`}>
-                  <TabReviews />
-                </Area>
-                {asset && asset.relations && asset.relations.length ? (
-                  <Area name="relations">
-                    <Relations relations={asset.relations} />
+                  <Area
+                    name="reviews"
+                    label={`Reviews${
+                      asset && asset.reviewcount >= 0
+                        ? ` (${asset.reviewcount})`
+                        : ''
+                    }`}>
+                    <TabReviews />
                   </Area>
-                ) : null}
-                {asset &&
-                (asset.aisimilarities !== null ||
-                  (asset.similarassets !== null &&
-                    asset.similarassets.length)) ? (
-                  <Area name="similar" label="Similar Assets">
-                    <TabSimilar />
-                  </Area>
-                ) : null}
-                <Area name="mentions" label="Mentions">
-                  <TabMentions />
-                </Area>
-                {isEditor ? (
-                  <Area name="admin" label="Admin">
-                    <TabAdmin />
-                  </Area>
-                ) : null}
-              </>
-            ) : null}
-          </div>
-          <div className={classes.rightCol}>
-            {asset && asset.vccurl ? (
-              <ControlGroup>
-                <Control>
-                  <AddToVccButton vccUrl={asset.vccurl} />
-                </Control>
-              </ControlGroup>
-            ) : null}
-            {firstFileAttachment ? (
-              <ControlGroup>
-                <Control>
-                  <Button url={firstFileAttachment.url}>Download</Button>
-                </Control>
-              </ControlGroup>
-            ) : null}
-            {isAssetLoaded ? (
-              <ControlGroup>
-                {!isMobile && VisitSourceButtons}
-                <Control>
-                  <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
-                </Control>
-                <Control>
-                  {asset &&
-                    ((asset.extradata &&
-                      asset.extradata.vrcfury &&
-                      asset.extradata.vrcfury.prefabs.length) ||
-                      asset.tags.includes(tagVrcFuryReady)) && (
-                      <VrcFurySettings
-                        isVrcFuryReady={asset.tags.includes(tagVrcFuryReady)}
-                        prefabs={asset.extradata?.vrcfury?.prefabs}
-                        analyticsCategory={analyticsCategoryName}
-                      />
-                    )}
-                </Control>
-              </ControlGroup>
-            ) : (
-              <ControlGroup>
-                <Control>
-                  <VisitSourceButton isAssetLoading={true} />
-                </Control>
-              </ControlGroup>
-            )}
-
-            {asset && asset.publishedby && asset.publishedbyusername ? (
-              <ControlGroup greyed>
-                <Control small>
-                  Submitted by{' '}
-                  <UsernameLink
-                    id={asset.publishedby}
-                    username={asset.publishedbyusername}
-                  />{' '}
-                  {asset.approvedby ? (
-                    <>
-                      approved by{' '}
-                      <UsernameLink
-                        id={asset.approvedby}
-                        username={asset.approvedbyusername}
-                      />
-                    </>
+                  {asset && asset.relations && asset.relations.length ? (
+                    <Area name="relations">
+                      <Relations relations={asset.relations} />
+                    </Area>
                   ) : null}
-                  <Tooltip
-                    title={
-                      <>
-                        Every asset on this website was (hopefully) submitted by
-                        a human.
-                        <br />
-                        <br />
-                        Published{' '}
-                        {asset.publishedat
-                          ? getFriendlyDate(asset.publishedat)
-                          : '(no date)'}{' '}
-                        by {asset.publishedbyusername || '(no name)'}
-                        {(asset.approvalstatus === ApprovalStatus.Approved ||
-                          asset.approvalstatus ===
-                            ApprovalStatus.AutoApproved) && (
-                          <>
-                            <br />
-                            Approved{' '}
-                            {asset.approvedat
-                              ? getFriendlyDate(asset.approvedat)
-                              : ''}{' '}
-                            by{' '}
-                            {asset.approvedbyusername || 'our automated system'}
-                          </>
-                        )}
-                      </>
-                    }>
-                    <InfoIcon />
-                  </Tooltip>
-                </Control>
-              </ControlGroup>
-            ) : null}
-            <ParentControlGroup />
-            <ControlGroup>
-              {asset && (
+                  {asset &&
+                  (asset.aisimilarities !== null ||
+                    (asset.similarassets !== null &&
+                      asset.similarassets.length)) ? (
+                    <Area name="similar" label="Similar Assets">
+                      <TabSimilar />
+                    </Area>
+                  ) : null}
+                  <Area name="mentions" label="Mentions">
+                    <TabMentions />
+                  </Area>
+                  {isEditor ? (
+                    <Area name="admin" label="Admin">
+                      <TabAdmin />
+                    </Area>
+                  ) : null}
+                </>
+              ) : null}
+            </div>
+            <div className={classes.rightCol}>
+              {asset && asset.vccurl ? (
                 <ControlGroup>
-                  {asset.tags
-                    .sort((a, b) => a.localeCompare(b))
-                    .map((tag, i) => {
-                      const stats = asset.tagscount?.find(
-                        (stats) => stats.tag === tag
-                      )
-                      return (
-                        <div key={tag}>
-                          <TagChip
-                            tagName={tag}
-                            label={
-                              <>
-                                {tag}
-                                {stats ? (
-                                  <span className={classes.count}>
-                                    {stats.count}
-                                  </span>
-                                ) : null}
-                              </>
-                            }
-                            isFilled
-                          />
-                        </div>
-                      )
-                    })}
+                  <Control>
+                    <AddToVccButton vccUrl={asset.vccurl} />
+                  </Control>
+                </ControlGroup>
+              ) : null}
+              {firstFileAttachment ? (
+                <ControlGroup>
+                  <Control>
+                    <Button url={firstFileAttachment.url}>Download</Button>
+                  </Control>
+                </ControlGroup>
+              ) : null}
+              {isAssetLoaded ? (
+                <ControlGroup>
+                  {!isMobile && VisitSourceButtons}
+                  <Control>
+                    <RiskyFileNotice sourceUrl={asset ? asset.sourceurl : ''} />
+                  </Control>
+                  <Control>
+                    {asset &&
+                      ((asset.extradata &&
+                        asset.extradata.vrcfury &&
+                        asset.extradata.vrcfury.prefabs.length) ||
+                        asset.tags.includes(tagVrcFuryReady)) && (
+                        <VrcFurySettings
+                          isVrcFuryReady={asset.tags.includes(tagVrcFuryReady)}
+                          prefabs={asset.extradata?.vrcfury?.prefabs}
+                          analyticsCategory={analyticsCategoryName}
+                        />
+                      )}
+                  </Control>
+                </ControlGroup>
+              ) : (
+                <ControlGroup>
+                  <Control>
+                    <VisitSourceButton isAssetLoading={true} />
+                  </Control>
                 </ControlGroup>
               )}
-              <Control>
-                <EndorseAssetButton
-                  isAssetLoading={!isAssetLoaded}
-                  assetId={assetId}
-                  endorsementCount={
-                    asset ? asset.endorsementcount : 'Loading...'
-                  }
-                  onClick={({ newValue }) =>
-                    trackAction(
-                      analyticsCategoryName,
-                      newValue === true
-                        ? 'Click endorse button'
-                        : 'Click disendorse button',
-                      assetId
-                    )
-                  }
-                  onDone={() => {
-                    hydrate()
-                  }}
-                />
-              </Control>
-              <Control>
-                <AddToCollectionButton
-                  isAssetLoading={!isAssetLoaded}
-                  assetId={assetId}
-                  onClick={() =>
-                    trackAction(
-                      analyticsCategoryName,
-                      'Click add to collection button',
-                      assetId
-                    )
-                  }
-                />
-              </Control>
-              <Control>
-                <AddToWishlistButton
-                  isAssetLoading={!isAssetLoaded}
-                  assetId={assetId}
-                  onClick={({ newValue }) =>
-                    trackAction(
-                      analyticsCategoryName,
-                      newValue === true
-                        ? 'Click add to wishlist button'
-                        : 'Click remove from wishlist button',
-                      assetId
-                    )
-                  }
-                />
-              </Control>
-            </ControlGroup>
-            {isLoggedIn && (
+
+              {asset && asset.publishedby && asset.publishedbyusername ? (
+                <ControlGroup greyed>
+                  <Control small>
+                    Submitted by{' '}
+                    <UsernameLink
+                      id={asset.publishedby}
+                      username={asset.publishedbyusername}
+                    />{' '}
+                    {asset.approvedby ? (
+                      <>
+                        approved by{' '}
+                        <UsernameLink
+                          id={asset.approvedby}
+                          username={asset.approvedbyusername}
+                        />
+                      </>
+                    ) : null}
+                    <Tooltip
+                      title={
+                        <>
+                          Every asset on this website was (hopefully) submitted
+                          by a human.
+                          <br />
+                          <br />
+                          Published{' '}
+                          {asset.publishedat
+                            ? getFriendlyDate(asset.publishedat)
+                            : '(no date)'}{' '}
+                          by {asset.publishedbyusername || '(no name)'}
+                          {(asset.approvalstatus === ApprovalStatus.Approved ||
+                            asset.approvalstatus ===
+                              ApprovalStatus.AutoApproved) && (
+                            <>
+                              <br />
+                              Approved{' '}
+                              {asset.approvedat
+                                ? getFriendlyDate(asset.approvedat)
+                                : ''}{' '}
+                              by{' '}
+                              {asset.approvedbyusername ||
+                                'our automated system'}
+                            </>
+                          )}
+                        </>
+                      }>
+                      <InfoIcon />
+                    </Tooltip>
+                  </Control>
+                </ControlGroup>
+              ) : null}
               <ControlGroup>
-                <Suspense
-                  fallback={<LoadingIndicator message="Loading controls..." />}>
-                  <LoggedInControls />
-                </Suspense>
+                {asset && (
+                  <ControlGroup>
+                    {asset.tags
+                      .sort((a, b) => a.localeCompare(b))
+                      .map((tag, i) => {
+                        const stats = asset.tagscount?.find(
+                          (stats) => stats.tag === tag
+                        )
+                        return (
+                          <div key={tag}>
+                            <TagChip
+                              tagName={tag}
+                              label={
+                                <>
+                                  {tag}
+                                  {stats ? (
+                                    <span className={classes.count}>
+                                      {stats.count}
+                                    </span>
+                                  ) : null}
+                                </>
+                              }
+                              isFilled
+                            />
+                          </div>
+                        )
+                      })}
+                  </ControlGroup>
+                )}
+                <Control>
+                  <EndorseAssetButton
+                    isAssetLoading={!isAssetLoaded}
+                    assetId={assetId}
+                    endorsementCount={
+                      asset ? asset.endorsementcount : 'Loading...'
+                    }
+                    onClick={({ newValue }) =>
+                      trackAction(
+                        analyticsCategoryName,
+                        newValue === true
+                          ? 'Click endorse button'
+                          : 'Click disendorse button',
+                        assetId
+                      )
+                    }
+                    onDone={() => {
+                      hydrate()
+                    }}
+                  />
+                </Control>
+                <Control>
+                  <AddToCollectionButton
+                    isAssetLoading={!isAssetLoaded}
+                    assetId={assetId}
+                    onClick={() =>
+                      trackAction(
+                        analyticsCategoryName,
+                        'Click add to collection button',
+                        assetId
+                      )
+                    }
+                  />
+                </Control>
+                <Control>
+                  <AddToWishlistButton
+                    isAssetLoading={!isAssetLoaded}
+                    assetId={assetId}
+                    onClick={({ newValue }) =>
+                      trackAction(
+                        analyticsCategoryName,
+                        newValue === true
+                          ? 'Click add to wishlist button'
+                          : 'Click remove from wishlist button',
+                        assetId
+                      )
+                    }
+                  />
+                </Control>
               </ControlGroup>
-            )}
-            {asset &&
-            getHasPermissionForRecord<FullAsset>(
-              user,
-              asset,
-              getIsAssetADraft(asset)
-            ) ? (
-              <ControlGroup>
-                <Suspense
-                  fallback={<LoadingIndicator message="Loading controls..." />}>
-                  <CreatorControls />
-                </Suspense>
-              </ControlGroup>
-            ) : null}
-            {isEditor && (
-              <ControlGroup>
-                <Suspense
-                  fallback={<LoadingIndicator message="Loading controls..." />}>
-                  <EditorControls />
-                </Suspense>
-              </ControlGroup>
-            )}
-            {isEditor && (
-              <ControlGroup>
-                {asset && asset.createdat ? (
-                  <div>
-                    Uploaded <FormattedDate date={asset.createdat} /> by{' '}
-                    {asset.createdbyusername ? (
-                      <UsernameLink
-                        id={asset.createdby}
-                        username={asset.createdbyusername}
-                      />
-                    ) : (
-                      '(unknown)'
-                    )}
-                  </div>
-                ) : null}
-                {asset && asset.lastmodifiedby ? (
-                  <div>
-                    Last modified <FormattedDate date={asset.lastmodifiedat} />{' '}
-                    by{' '}
-                    {asset.lastmodifiedbyusername ? (
-                      <UsernameLink
-                        id={asset.lastmodifiedby}
-                        username={asset.lastmodifiedbyusername}
-                      />
-                    ) : (
-                      '(unknown)'
-                    )}
-                  </div>
-                ) : null}
-                {asset && asset.approvedat ? (
-                  <div>
-                    Approved <FormattedDate date={asset.approvedat} /> by{' '}
-                    {asset.approvedby && asset.approvedbyusername ? (
-                      <UsernameLink
-                        id={asset.approvedby}
-                        username={asset.approvedbyusername}
-                      />
-                    ) : asset.approvedby ? (
-                      asset.approvedby
-                    ) : (
-                      '(unknown)'
-                    )}
-                  </div>
-                ) : null}
-                {asset && asset.lastsyncedwithgumroadat ? (
-                  <div>
-                    Last synced with Gumroad{' '}
-                    <FormattedDate date={asset.lastsyncedwithgumroadat} />
-                  </div>
-                ) : null}
-                {/* {cachedRecord && (
-                  <>
-                    Cached <FormattedDate date={cachedRecord.updatedat} />
-                  </>
-                )} */}
-              </ControlGroup>
-            )}
+              {isLoggedIn && (
+                <ControlGroup>
+                  <Suspense
+                    fallback={
+                      <LoadingIndicator message="Loading controls..." />
+                    }>
+                    <LoggedInControls />
+                  </Suspense>
+                </ControlGroup>
+              )}
+              {asset &&
+              getHasPermissionForRecord<FullAsset>(
+                user,
+                asset,
+                getIsAssetADraft(asset)
+              ) ? (
+                <ControlGroup>
+                  <Suspense
+                    fallback={
+                      <LoadingIndicator message="Loading controls..." />
+                    }>
+                    <CreatorControls />
+                  </Suspense>
+                </ControlGroup>
+              ) : null}
+              {isEditor && (
+                <ControlGroup>
+                  <Suspense
+                    fallback={
+                      <LoadingIndicator message="Loading controls..." />
+                    }>
+                    <EditorControls />
+                  </Suspense>
+                </ControlGroup>
+              )}
+              {isEditor && (
+                <ControlGroup>
+                  {asset && asset.createdat ? (
+                    <div>
+                      Uploaded <FormattedDate date={asset.createdat} /> by{' '}
+                      {asset.createdbyusername ? (
+                        <UsernameLink
+                          id={asset.createdby}
+                          username={asset.createdbyusername}
+                        />
+                      ) : (
+                        '(unknown)'
+                      )}
+                    </div>
+                  ) : null}
+                  {asset && asset.lastmodifiedby ? (
+                    <div>
+                      Last modified{' '}
+                      <FormattedDate date={asset.lastmodifiedat} /> by{' '}
+                      {asset.lastmodifiedbyusername ? (
+                        <UsernameLink
+                          id={asset.lastmodifiedby}
+                          username={asset.lastmodifiedbyusername}
+                        />
+                      ) : (
+                        '(unknown)'
+                      )}
+                    </div>
+                  ) : null}
+                  {asset && asset.approvedat ? (
+                    <div>
+                      Approved <FormattedDate date={asset.approvedat} /> by{' '}
+                      {asset.approvedby && asset.approvedbyusername ? (
+                        <UsernameLink
+                          id={asset.approvedby}
+                          username={asset.approvedbyusername}
+                        />
+                      ) : asset.approvedby ? (
+                        asset.approvedby
+                      ) : (
+                        '(unknown)'
+                      )}
+                    </div>
+                  ) : null}
+                </ControlGroup>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </AssetOverviewContext.Provider>
     </>
   )

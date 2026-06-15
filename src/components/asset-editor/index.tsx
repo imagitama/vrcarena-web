@@ -56,8 +56,6 @@ const AssetEditor = ({
     setReRenderKey((i) => i + 1)
   }
 
-  console.debug(`AssetEditor.render`, { reRenderKey, overrideFields })
-
   if (assetId && (isLoading || asset === null)) {
     return <LoadingIndicator message="Loading asset..." />
   }

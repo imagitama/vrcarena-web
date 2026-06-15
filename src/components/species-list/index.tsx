@@ -10,7 +10,7 @@ export default ({
   speciesIds: string[]
   speciesNames: string[]
 }) => {
-  if (!speciesIds.length || !speciesNames.length) {
+  if (!speciesIds.length) {
     return null
   }
 
@@ -24,7 +24,7 @@ export default ({
               ':speciesIdOrSlug',
               speciesId
             )}>
-            {speciesNames[idx]}
+            {speciesNames[idx] || '(no species name)'}
           </Link>
         </Fragment>
       ))}

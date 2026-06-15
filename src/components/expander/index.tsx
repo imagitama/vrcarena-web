@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     top: 0,
     left: 0,
     zIndex: 10,
-    background: 'linear-gradient(rgba(0, 0, 0, 0) 0%, #282828 75%)',
+    background: 'linear-gradient(rgba(0, 0, 0, 0) 0%, #282828 100%)',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
@@ -26,9 +26,9 @@ const useStyles = makeStyles({
     '& span': {
       textShadow: '1px 1px 1px #000',
       textAlign: 'center',
-      fontWeight: 'bold',
       padding: '2rem',
-      background: 'rgba(0, 0, 0, 0.25)',
+      fontSize: '200%',
+      background: 'rgba(0, 0, 0, 0.5)',
     },
   },
 })
