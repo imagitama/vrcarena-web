@@ -15,6 +15,7 @@ import { AssetCategory } from '@/modules/assets'
 import { RootState } from '@/modules'
 
 import Button from '@/components/button'
+import store from '@/store'
 
 const analyticsCategoryName = 'SearchResults'
 
@@ -51,7 +52,7 @@ const SearchFilters = () => {
   >(({ app: { searchFilters } }) => ({
     searchFilters,
   }))
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
   const addFilter = (id: string) => dispatch(addSearchFilter(id))
   const removeFilter = (id: string) => dispatch(removeSearchFilter(id))
   const clearAllFilters = () => dispatch(clearSearchFilters())
@@ -94,7 +95,9 @@ const SearchFilters = () => {
         }}
         size="small"
         className={classes.availableFilter}
-        icon={<CloseIcon />}>
+        icon={<CloseIcon />}
+        color="secondary"
+        hollow={false}>
         Clear All
       </Button>
     </div>

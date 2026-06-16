@@ -24,6 +24,7 @@ import { useState } from 'react'
 import ButtonDropdown, { DropdownOption } from '../button-dropdown'
 import FormattedDate from '../formatted-date'
 import QueueStatusLabel from '../queue-status-label'
+import FailureInfoOutput from '../failure-info-output'
 
 const getLabelForStatus = (status: AuditResultResult): string => {
   switch (status) {
@@ -83,6 +84,9 @@ export const Renderer = ({ queuedItem }: { queuedItem: AuditQueueItem }) => (
     </small>
     <br />
     {queuedItem.result !== null && <AuditedAsset result={queuedItem.result} />}
+    {queuedItem.failureinfo !== null && (
+      <FailureInfoOutput failureInfo={queuedItem.failureinfo} />
+    )}
   </Item>
 )
 
@@ -103,6 +107,8 @@ const AssetAuditResult = ({ asset }: { asset: FullAsset }) => {
   const [isCreating, isSuccess, lastErrorCodeCreating, create] =
     useDataStoreCreate<AuditQueueItem>(CollectionNames.AuditQueue)
   const [selectedSourceUrl, setSelectedSourceUrl] = useState(asset.sourceurl)
+
+  // TODO: use subscription for live data
 
   if (isLoading) {
     return <LoadingIndicator message="Loading queue for asset..." />
@@ -145,7 +151,7 @@ const AssetAuditResult = ({ asset }: { asset: FullAsset }) => {
   return (
     <div>
       <strong style={{ marginBottom: '0.5rem' }}>
-        Most recent 2 asset audits:
+        <small>Latest 2 audits (manually refresh):</small>
       </strong>
       {results === null || results.length === 0 ? (
         <NoResultsMessage>Nothing in the queue</NoResultsMessage>
