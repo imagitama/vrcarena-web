@@ -137,14 +137,15 @@ export const FullAssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
         <ParentOverview>
           Viewing relations for
           <AssetResultsItem asset={activeAsset} isTiny />
-          <Button
-            url={routes.viewAssetWithVar.replace(':assetId', activeAsset.id)}
-            color="secondary"
-            hollow={false}>
-            Return To Asset
-          </Button>
         </ParentOverview>
       </ParentOverviewWrapper>
+      <Button
+        url={routes.viewAssetWithVar.replace(':assetId', activeAsset.id)}
+        color="secondary"
+        hollow={false}
+        size="large">
+        Return To Asset
+      </Button>
       {Object.values(AssetCategory).map((category) => (
         <>
           <AssetsByArea
@@ -159,6 +160,13 @@ export const FullAssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
           />
         </>
       ))}
+      <Button
+        url={routes.viewAssetWithVar.replace(':assetId', activeAsset.id)}
+        color="secondary"
+        hollow={false}
+        size="large">
+        Return To Asset
+      </Button>
     </>
   )
 }
@@ -240,7 +248,8 @@ const AssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
                       .replace(':assetId', activeAsset.id)
                       .replace(':tabName', TabName.Relations)}>
                     <ShowMoreCardActionArea>
-                      View {mentionsTotal - nonParents.length} more...
+                      View {mentionsTotal - nonParents.length} more related
+                      assets...
                     </ShowMoreCardActionArea>
                   </Link>
                 </ShowMoreCard>
