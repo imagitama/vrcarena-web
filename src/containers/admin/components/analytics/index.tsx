@@ -4,11 +4,9 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
-import ErrorMessage from '@/components/error-message'
-import LoadingIndicator from '@/components/loading-indicator'
-import useDatabaseQuery from '@/hooks/useDatabaseQuery'
 import { AnalyticsEntryForAsset, ViewNames } from '@/modules/analytics'
 import AssetResultsItem from '@/components/asset-results-item'
+import PaginatedView from '@/components/paginated-view'
 
 const Columns = styled.div`
   display: flex;
@@ -21,26 +19,13 @@ const Column = styled.div`
 `
 const Title = styled.span``
 
-const Analytics = () => {
-  const [isLoading, lastErrorCode, entries] =
-    useDatabaseQuery<AnalyticsEntryForAsset>(ViewNames.GetTopAssetAnalytics, [])
-
-  if (isLoading) return <LoadingIndicator message="Loading analytics..." />
-  if (lastErrorCode !== null)
-    return (
-      <ErrorMessage>
-        Failed to load analytics (code {lastErrorCode})
-      </ErrorMessage>
-    )
-  if (!entries) return <LoadingIndicator message="Waiting" />
-
+const Renderer = ({ items }: { items?: AnalyticsEntryForAsset[] }) => {
   return (
     <>
-      {entries.map((entry, idx) => (
+      {items?.map((entry, idx) => (
         <Columns key={entry.asset.id}>
           <Column>
-            <Title
-              style={{ fontSize: `${100 + 50 * (entries.length - idx)}%` }}>
+            <Title style={{ fontSize: `${100 + 50 * (items.length - idx)}%` }}>
               #{idx + 1}
             </Title>
           </Column>
@@ -64,5 +49,12 @@ const Analytics = () => {
     </>
   )
 }
+
+const Analytics = () => (
+  <PaginatedView<AnalyticsEntryForAsset>
+    viewName={ViewNames.GetTopAssetAnalytics}>
+    <Renderer />
+  </PaginatedView>
+)
 
 export default Analytics
