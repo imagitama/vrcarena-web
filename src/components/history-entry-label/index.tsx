@@ -44,7 +44,7 @@ const getLabelForApprovalStatus = (approvalStatus: ApprovalStatus): string => {
     case ApprovalStatus.AutoApproved:
       return 'auto-approved'
     default:
-      throw new Error(`Unknown approval status: ${approvalStatus}`)
+      return `${approvalStatus}*`
   }
 }
 
@@ -54,8 +54,10 @@ const getLabelForAccessStatus = (accessStatus: AccessStatus): string => {
       return 'moved to trash'
     case AccessStatus.Public:
       return 'moved out of trash'
+    case AccessStatus.Archived:
+      return 'archived'
     default:
-      throw new Error(`Unknown access status: ${accessStatus}`)
+      return `${accessStatus}*`
   }
 }
 
@@ -66,7 +68,7 @@ const getLabelForPublishStatus = (publishStatus: PublishStatus): string => {
     case PublishStatus.Published:
       return 'published for approval'
     default:
-      throw new Error(`Unknown publish status: ${publishStatus}`)
+      return `${publishStatus}*`
   }
 }
 
@@ -77,7 +79,7 @@ const getLabelForBanStatus = (banStatus: BanStatus): string => {
     case BanStatus.Unbanned:
       return 'unbanned'
     default:
-      throw new Error(`Unknown publish status: ${banStatus}`)
+      return `${banStatus}*`
   }
 }
 
@@ -90,7 +92,7 @@ const getLabelForResolutionStatus = (
     case ResolutionStatus.Resolved:
       return 'resolved'
     default:
-      throw new Error(`Unknown publish status: ${resolutionStatus}`)
+      return `${resolutionStatus}*`
   }
 }
 
