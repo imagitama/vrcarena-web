@@ -72,7 +72,11 @@ const useStyles = makeStyles({
     },
   },
   button: {
+    height: '100%',
     font: 'inherit',
+    '& > a': {
+      height: '100%',
+    },
   },
   selected: {
     backgroundColor: '#656565',

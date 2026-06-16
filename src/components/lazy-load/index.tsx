@@ -14,6 +14,10 @@ interface LazyLoadProps {
   placeholder?: ReactNode
   style?: CSSProperties
   className?: string
+  /**
+   * @deprecated Unused
+   */
+  height?: number
 }
 
 const isInViewport = (element: HTMLElement, rootMargin: string) => {

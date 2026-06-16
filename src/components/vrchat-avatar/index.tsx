@@ -55,6 +55,12 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       fontSize: '1rem',
     },
   },
+  button: {
+    height: '100%',
+    '& > a': {
+      height: '100%',
+    },
+  },
 }))
 
 const getDateFromVrchatApiDate = (vrchatApiDate: string): Date =>
@@ -141,7 +147,7 @@ export default ({
 
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea className={classes.button}>
         <a
           href={viewVrchatAvatarUrlWithVar.replace(':avatarId', avatarId)}
           target="_blank"
