@@ -136,6 +136,7 @@ const VisitSourceButton = ({
   analyticsCategoryName,
   analyticsEvent,
   isExtraSource = false,
+  showPriceWarning = true,
 }: {
   sourceInfo?: SourceInfo
   assetId?: string
@@ -144,6 +145,7 @@ const VisitSourceButton = ({
   isAssetLoading?: boolean
   onClick?: (payload: { assetId?: string; sourceUrl: string }) => void
   isExtraSource?: boolean
+  showPriceWarning?: boolean
 }) => {
   const classes = useStyles()
   const supabase = useSupabaseClient()
@@ -213,7 +215,7 @@ const VisitSourceButton = ({
             ? getButtonLabel(sourceInfo.url)
             : 'Loading...'}
         </Button>
-        {hasPrice && (
+        {hasPrice && showPriceWarning && (
           <HintText small className={classes.hint}>
             *prices are an indication only and may be outdated
           </HintText>

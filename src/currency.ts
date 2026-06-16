@@ -22,7 +22,7 @@ export type PopularCurrency = keyof typeof popularCurrencies
 export const defaultCurrency: PopularCurrency = 'USD'
 
 const currencySymbols: Record<PopularCurrency, string> = {
-  USD: '$',
+  USD: 'US$',
   EUR: '€',
   JPY: '¥',
   GBP: '£',

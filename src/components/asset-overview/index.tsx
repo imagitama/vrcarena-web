@@ -94,6 +94,7 @@ import { colorGreyedOut } from '@/themes'
 import AssetTree, { FullAssetTree } from '../asset-tree'
 import ErrorBoundary from '../error-boundary'
 import { TabName } from './tabs'
+import HintText from '../hint-text'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -472,6 +473,20 @@ const AssetOverview = ({
       : undefined
   const hasPrimaryImage = nonMediaAttachments.length > 0
 
+  const allSources = asset
+    ? [
+        {
+          url: asset.sourceurl,
+          price: asset.price,
+          pricecurrency: asset.pricecurrency,
+        } as SourceInfo,
+      ].concat(asset.extrasources || [])
+    : []
+  const hasPriceAboveZero =
+    allSources.find(
+      (sourceInfo) => sourceInfo.price !== null && sourceInfo.price > 0
+    ) !== undefined
+
   const VisitSourceButtons = asset ? (
     <>
       {asset?.relations?.find((relation) => relation.requiresVerification) ? (
@@ -499,14 +514,7 @@ const AssetOverview = ({
           />
         </Control>
       ) : null}
-      {[
-        {
-          url: asset.sourceurl,
-          price: asset.price,
-          pricecurrency: asset.pricecurrency,
-        } as SourceInfo,
-      ]
-        .concat(asset.extrasources || []) // TODO: Ensure data is always empty array
+      {allSources // TODO: Ensure data is always empty array
         .map((sourceInfo) => (
           <Control key={sourceInfo.url}>
             <VisitSourceButton
@@ -514,9 +522,15 @@ const AssetOverview = ({
               // analytics
               analyticsCategoryName={analyticsCategoryName}
               assetId={assetId}
+              showPriceWarning={false}
             />
           </Control>
         ))}
+      {hasPriceAboveZero && (
+        <HintText small>
+          *prices are an indication only and may be outdated
+        </HintText>
+      )}
     </>
   ) : (
     <Control>
