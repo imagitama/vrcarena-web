@@ -24,17 +24,17 @@ const chipMargin = '0.25rem'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
-    width: '200px',
+    width: '150px',
     margin: '0.5rem',
     position: 'relative',
     [mediaQueryForTabletsOrBelow]: {
-      width: '160px',
+      width: '100px',
       margin: '0.25rem',
     },
     overflow: 'visible',
   },
   media: {
-    height: '200px',
+    height: '100px',
   },
   chips: {
     position: 'absolute',
@@ -58,8 +58,12 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   button: {
     height: '100%',
     '& > a': {
+      display: 'block',
       height: '100%',
     },
+  },
+  title: {
+    fontSize: '1rem',
   },
 }))
 
@@ -160,14 +164,14 @@ export default ({
               <Chip label="PC" className={classes.chip} />
             )}
           </div>
-          <LazyLoad height={200}>
+          <LazyLoad height={100}>
             <CardMedia
               image={imageUrl || defaultAvatarImageUrl}
               className={classes.media}
             />
           </LazyLoad>
           <CardContent>
-            <Typography variant="h5" component="h2">
+            <Typography variant="h5" component="h2" className={classes.title}>
               {name || avatarId}{' '}
               <span className={classes.icon}>
                 <OpenInNewIcon />
@@ -178,14 +182,15 @@ export default ({
                 <FormattedDate date={getDateFromVrchatApiDate(created_at)} />
               </div>
             )}
-            <Typography variant="body2" color="textSecondary" component="p">
+            {/* jun 2026 disabled as trying to squeeze more avatars - need better solution */}
+            {/* <Typography variant="body2" color="textSecondary" component="p">
               {description}
               {isLoading ? 'Fetching...' : ''}
               {lastError ? lastError.message : ''}
               {allowFetch && !avatarData ? (
                 <Button onClick={fetchData}>Fetch</Button>
               ) : null}
-            </Typography>
+            </Typography> */}
           </CardContent>
         </a>
       </CardActionArea>

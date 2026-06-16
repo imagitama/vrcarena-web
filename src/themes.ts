@@ -115,10 +115,17 @@ export const darkTheme: VRCArenaTheme = createTheme({
         },
       },
     },
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'inherit',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
-          padding: '4px 10px', // Your custom padding
+          padding: '4px 10px',
         },
       },
     },
@@ -136,14 +143,14 @@ export const darkTheme: VRCArenaTheme = createTheme({
         },
         arrow: {
           color: 'rgb(100, 100, 100)',
-        }
+        },
       },
     },
     MuiCheckbox: {
       styleOverrides: {
         root: {
           '&.Mui-checked': {
-            color: colorBrandLight
+            color: colorBrandLight,
           },
         },
       },
