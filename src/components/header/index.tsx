@@ -229,8 +229,6 @@ const SocialMediaIcons = () => {
   )
 }
 
-export const useAppDispatch = () => useDispatch<typeof store.dispatch>()
-
 export default () => {
   const classes = useStyles()
   const dispatch = useDispatch<typeof store.dispatch>()

@@ -37,6 +37,7 @@ import SearchFilters from '@/components/search-filters'
 import WarningMessage from '@/components/warning-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import { RootState } from '@/modules'
+import store from '@/store'
 
 const useStyles = makeStyles({
   tableButton: {
@@ -94,7 +95,7 @@ function Results({
   isLoading: boolean
   lastErrorCode: ErrorCode | DataStoreErrorCode | null
   tableName: string
-  hits: any[]
+  hits: any[] | null
 }) {
   const { searchFilters } = useAppSearch()
   const classes = useStyles()
@@ -107,7 +108,7 @@ function Results({
     )
   }
 
-  if (isLoading) {
+  if (isLoading || !hits) {
     return (
       <div className={classes.waitingForResultsMsg}>
         <LoadingIndicator message="Searching..." />
@@ -242,7 +243,7 @@ function IndexFilters() {
   >(({ app: { searchTableName } }) => ({
     searchTableName,
   }))
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
   const classes = useStyles()
 
   const onClickWithTableName = (newTableName: string) => {
@@ -484,7 +485,7 @@ const AssetSearch = () => {
         isLoading={isLoading}
         lastErrorCode={lastErrorCode}
         tableName={AssetsCollectionNames.Assets}
-        hits={hits || []}
+        hits={hits}
       />
     </>
   )
@@ -547,7 +548,7 @@ const NonAssetSearch = () => {
       isLoading={isLoading}
       lastErrorCode={lastErrorCode}
       tableName={searchTableName}
-      hits={hits || []}
+      hits={hits}
     />
   )
 }
