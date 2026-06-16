@@ -478,7 +478,7 @@ const AssetOverview = ({
         <Control>
           <RequiresVerificationNotice
             relations={asset.relations}
-            relationsData={asset.relationsdata}
+            relationsData={asset.relationsdata || []}
           />
         </Control>
       ) : null}

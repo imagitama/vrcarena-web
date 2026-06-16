@@ -178,7 +178,7 @@ const AssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
 
   const activeAssetRelationAssets: RelationAndAsset[] =
     activeAssetRelations?.reduce<RelationAndAsset[]>((children, relation) => {
-      const asset = relationsData.find((asset) => asset.id === relation.asset)
+      const asset = relationsData?.find((asset) => asset.id === relation.asset)
 
       if (asset) {
         return children.concat([[relation, asset]])
