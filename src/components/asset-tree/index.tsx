@@ -147,18 +147,17 @@ export const FullAssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
         Return To Asset
       </Button>
       {Object.values(AssetCategory).map((category) => (
-        <>
-          <AssetsByArea
-            assets={results
-              .filter((result) => result.assetdata.category === category)
-              .filter(
-                (result) =>
-                  result.assetdata.isadult !== true || isAdultContentEnabled
-              )
-              .map((result) => result.assetdata)}
-            categoryName={category}
-          />
-        </>
+        <AssetsByArea
+          key={category}
+          assets={results
+            .filter((result) => result.assetdata.category === category)
+            .filter(
+              (result) =>
+                result.assetdata.isadult !== true || isAdultContentEnabled
+            )
+            .map((result) => result.assetdata)}
+          categoryName={category}
+        />
       ))}
       <Button
         url={routes.viewAssetWithVar.replace(':assetId', activeAsset.id)}

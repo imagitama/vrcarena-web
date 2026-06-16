@@ -68,6 +68,7 @@ const AssetsByArea = ({
               <span className={classes.tags}>
                 {areaName in areas ? (
                   <>
+                    Tags:{' '}
                     {areas[areaName].tags.map((tag, idx) => (
                       <Fragment key={tag}>
                         {idx > 0 ? ', ' : ''}
