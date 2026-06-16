@@ -28,7 +28,6 @@ import { getCategoryMeta } from '@/category-meta'
 import {
   AssetCategory,
   FullAsset,
-  RelationType,
   SourceInfo,
   ViewNames,
   getIsAssetADraft,
@@ -40,6 +39,7 @@ import { alreadyOver18Key } from '@/config'
 import { AttachmentType } from '@/modules/attachments'
 import { AccessStatus, ApprovalStatus } from '@/modules/common'
 import { tagVrcFuryReady } from '@/vrcfury'
+import { colorGreyedOut } from '@/themes'
 
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
 import useStorage from '@/hooks/useStorage'
@@ -48,15 +48,14 @@ import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 import useIsEditor from '@/hooks/useIsEditor'
 import useUserRecord from '@/hooks/useUserRecord'
 import { HydrateFn } from '@/hooks/useDataStore'
+import { getFriendlyDate } from '@/utils/dates'
 
-import AssetThumbnail from '@/components/asset-thumbnail'
 import Heading from '@/components/heading'
 import ErrorMessage from '@/components/error-message'
 import LoadingShimmer from '@/components/loading-shimmer'
 import ImageGallery from '@/components/image-gallery'
 import TagChips from '@/components/tag-chips'
 import Button from '@/components/button'
-import AssetResultsItem from '@/components/asset-results-item'
 import FormattedDate from '@/components/formatted-date'
 import UsernameLink from '@/components/username-link'
 import GitHubReleases from '@/components/github-releases'
@@ -66,17 +65,6 @@ import VisitSourceButton from '@/components/visit-source-button'
 import EndorseAssetButton from '@/components/endorse-asset-button'
 import AddToWishlistButton from '@/components/add-to-wishlist-button'
 import AddToCollectionButton from '@/components/add-to-collection-button'
-
-import useAssetOverview from './useAssetOverview'
-import AssetOverviewContext from './context'
-import Messages from './components/messages'
-import TabDescription from './components/tab-description'
-import TabReviews from './components/tab-reviews'
-import TabComments from './components/tab-comments'
-import TabAvatars from './components/tab-avatars'
-import TabAdmin from './components/tab-admin'
-import TabSimilar from './components/tab-similar'
-
 import Relations from '@/components/relations'
 import TabMentions from './components/tab-mentions'
 import VrcFurySettings from '@/components/vrcfury-settings'
@@ -88,13 +76,21 @@ import RequiresVerificationNotice from '@/components/requires-verification-notic
 import LoadingIndicator from '@/components/loading-indicator'
 import PrimaryImage from './components/primary-image'
 import TagChip from '@/components/tag-chip'
-import Tooltip from '../tooltip'
-import { getFriendlyDate } from '@/utils/dates'
-import { colorGreyedOut } from '@/themes'
-import AssetTree, { FullAssetTree } from '../asset-tree'
-import ErrorBoundary from '../error-boundary'
+import Tooltip from '@/components/tooltip'
+import AssetTree, { FullAssetTree } from '@/components/asset-tree'
+import ErrorBoundary from '@/components/error-boundary'
+import HintText from '@/components/hint-text'
+
+import useAssetOverview from './useAssetOverview'
+import AssetOverviewContext from './context'
+import Messages from './components/messages'
+import TabDescription from './components/tab-description'
+import TabReviews from './components/tab-reviews'
+import TabComments from './components/tab-comments'
+import TabAvatars from './components/tab-avatars'
+import TabAdmin from './components/tab-admin'
+import TabSimilar from './components/tab-similar'
 import { TabName } from './tabs'
-import HintText from '../hint-text'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -714,11 +710,11 @@ const AssetOverview = ({
           <div className={classes.cols}>
             <div className={classes.leftCol}>
               {asset &&
-                (asset.relations?.length || asset.mentionsdata?.length) && (
-                  <ErrorBoundary>
-                    <AssetTree activeAsset={asset} />
-                  </ErrorBoundary>
-                )}
+              (asset.relations?.length || asset.mentionsdata?.length) ? (
+                <ErrorBoundary>
+                  <AssetTree activeAsset={asset} />
+                </ErrorBoundary>
+              ) : null}
               <PrimaryImage />
               {isMobile && VisitSourceButtons}
               <Area name="desc" label="Description">

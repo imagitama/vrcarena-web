@@ -28,21 +28,6 @@ Resonite."
       data-react-helmet="true"
     />
 
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-HY1WZK8BRB"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || []
-      function gtag() {
-        dataLayer.push(arguments)
-      }
-      gtag('js', new Date())
-
-      gtag('config', 'G-HY1WZK8BRB')
-    </script>
-
     <style>
       body {
         background-color: #282828;
@@ -394,7 +379,18 @@ Resonite."
             </g>
           </svg>
 
-          Loading...
+          <span id="loading-message"></span>
+          <script>
+            const items = [
+              'Reticulating splines...',
+              'Sharpening our spears...',
+              'Loading...',
+              'Loading...',
+              'Loading...',
+            ]
+            document.getElementById('loading-message').innerText =
+              items[Math.floor(Math.random() * items.length)]
+          </script>
         </div>
       </div>
     </div>

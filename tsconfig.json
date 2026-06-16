@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
-    "types": ["node", "jest", "webpack-env", "react"],
-    "target": "es2015",
+    "types": [
+      "node",
+      "jest",
+      "webpack-env",
+      "react"
+    ],
+    "target": "ES2018",
     "lib": [
       "dom",
       "dom.iterable",
@@ -13,19 +18,21 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
     "typeRoots": [
-      "./@types", "./node_modules/@types"
+      "./@types",
+      "./node_modules/@types"
     ],
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "baseUrl": "."
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
     "src"

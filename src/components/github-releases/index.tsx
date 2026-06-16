@@ -65,7 +65,7 @@ const ReleaseAsset = ({
       icon={<GetAppIcon />}
       onClick={() => trackAction('ViewAsset', 'Download GitHub asset', name)}
       className={classes.button}>
-      Download {getButtonLabelFromAssetName(name)}
+      Download {getButtonLabelFromAssetName(name)} from GitHub
     </Button>
   )
 }
