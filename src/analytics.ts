@@ -15,6 +15,11 @@ export const trackAction = (
   }
 
   // @ts-ignore
+  if (!window.gtag) {
+    return
+  }
+
+  // @ts-ignore
   window.gtag('event', action, {
     event_category: category,
     event_label: JSON.stringify(payload),
