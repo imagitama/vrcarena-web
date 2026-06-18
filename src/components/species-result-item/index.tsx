@@ -176,7 +176,9 @@ const SpeciesResultItem = ({
   )
 
   return (
-    <div className={`${classes.root} ${className || ''}`}>
+    <div
+      className={`${classes.root} ${className || ''}`}
+      data-species={speciesItem?.id}>
       {index !== undefined && index > 0 && <div className={classes.line} />}
       {indent > 0 && (
         <div
