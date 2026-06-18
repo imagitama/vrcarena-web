@@ -296,7 +296,7 @@ const AssetResultsItem = ({
   isTiny?: boolean // relation verification required
   isSelected?: boolean
   isDimmed?: boolean
-  controls?: React.FC | null
+  controls?: React.ReactElement | null
   toggleEditMode?: () => void
   showState?: boolean
   showMoreInfo?: boolean
@@ -307,7 +307,23 @@ const AssetResultsItem = ({
   const [, , prefs] = useUserPreferences()
   const actuallyShowMoreInfo =
     (prefs && prefs.showmoreinfo) || showMoreInfo === true
-  const { isInMode, ids, toggleId } = useBulkEdit()
+  const bulkEdit = useBulkEdit()
+
+  if (Controls === undefined && bulkEdit.isInMode && asset) {
+    Controls = (
+      <>
+        <CheckboxInput
+          value={bulkEdit.ids!.includes(asset.id)}
+          onClick={(e) => {
+            bulkEdit.toggleId(asset.id)
+            e.stopPropagation()
+            e.preventDefault()
+            return false
+          }}
+        />
+      </>
+    )
+  }
 
   return (
     <Card
@@ -384,7 +400,7 @@ const AssetResultsItem = ({
               <div className={classes.moreInfo}>
                 <div className={classes.controls}>
                   {Controls ? (
-                    <Controls />
+                    React.cloneElement(Controls)
                   ) : Controls !== null ? (
                     <>
                       {toggleEditMode && (
@@ -400,17 +416,6 @@ const AssetResultsItem = ({
                       )}
                     </>
                   ) : null}
-                  {isInMode && asset && (
-                    <CheckboxInput
-                      value={ids!.includes(asset.id)}
-                      onClick={(e) => {
-                        toggleId(asset.id)
-                        e.stopPropagation()
-                        e.preventDefault()
-                        return false
-                      }}
-                    />
-                  )}
                 </div>
                 {actuallyShowMoreInfo &&
                 asset &&

@@ -7,15 +7,19 @@ import Dialog from '@/components/dialog'
 import RepairAuthorsOperation from './operations/repair-authors'
 import useBulkEdit from '@/hooks/useBulkEdit'
 import FormControls from '../form-controls'
+import RepairAssetsOperation from './operations/repair-assets'
 
 enum Operation {
   RepairAuthors = 'RepairAuthors',
+  RepairAssets = 'RepairAssets',
 }
 
 const Form = ({ operation }: { operation: Operation }) => {
   switch (operation) {
     case Operation.RepairAuthors:
       return <RepairAuthorsOperation />
+    case Operation.RepairAssets:
+      return <RepairAssetsOperation />
     default:
       return <>Unknown operation "{operation}"</>
   }
@@ -64,6 +68,16 @@ const BulkEditButton = () => {
                   ) : undefined
                 }>
                 Repair Authors
+              </Button>{' '}
+              <Button
+                color="secondary"
+                onClick={() => toggleOperation(Operation.RepairAssets)}
+                icon={
+                  selectedOperation === Operation.RepairAssets ? (
+                    <CheckIcon />
+                  ) : undefined
+                }>
+                Repair Assets
               </Button>
             </div>
             <Heading variant="h2" noMargin>

@@ -24,12 +24,13 @@ import FileUploader from '@/components/file-uploader'
 import { bucketNames } from '@/file-uploading'
 import SurveyForm from '@/components/survey-form'
 import survey from '@/surveys/creating-asset'
-import { CollectionNames, FullAsset } from '@/modules/assets'
+import { CollectionNames, FullAsset, RelationType } from '@/modules/assets'
 import PerformanceEditor from '@/components/performance-editor'
 import SpeciesSelector from '@/components/species-selector'
 import DefaultAvatar from '@/components/default-avatar'
 import AssetResultsItem from '@/components/asset-results-item'
 import AssetResults from '@/components/asset-results'
+import AssetTree from '@/components/asset-tree'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -127,6 +128,73 @@ const PerformanceEditorDemo = () => {
 const loremIpsum =
   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
 
+const assetForTree: Partial<FullAsset> = {
+  id: 'abc',
+  title: 'My Awesome Asset',
+  authorname: 'My Awesome Author',
+  relations: [
+    {
+      asset: 'parent_abc',
+      type: RelationType.Parent,
+      comments: 'This is a parent',
+    },
+  ],
+  relationsdata: [
+    {
+      id: 'parent_abc',
+      title: 'Some Parent',
+      authorname: 'My Author',
+    } as FullAsset,
+  ],
+  mentionsdata: [],
+  mentionstotal: 999,
+}
+
+const mentionsLimit = 10
+const mentionData = {
+  relation: {
+    asset: 'mentioned_abc',
+    type: RelationType.Parent,
+    comments: 'You need this first!!!',
+  },
+  asset: {
+    id: 'mentioned_abc',
+    title: 'Some Asset That Mentioned It',
+    authorname: 'Another Author',
+  } as FullAsset,
+}
+
+const AssetTreeDemo = () => {
+  const [mentionsCount, setMentionsCount] = useState(1)
+
+  const onClickAddMention = () =>
+    setMentionsCount((i) => (i === mentionsLimit ? 0 : i + 1))
+  const onClickRemoveMention = () =>
+    setMentionsCount((i) => (i === 0 ? i : i - 1))
+
+  const assetForTreeModified: Partial<FullAsset> = {
+    ...assetForTree,
+    mentionsdata: Array.from({ length: mentionsCount }).map((i) => mentionData),
+  }
+
+  return (
+    <>
+      <Button onClick={onClickRemoveMention}>
+        Remove Mention ({mentionsCount})
+      </Button>
+      <Button onClick={onClickAddMention}>Add Mention ({mentionsCount})</Button>
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '100%' }}>
+          <AssetTree activeAsset={assetForTreeModified as FullAsset} />
+        </div>
+        <div style={{ width: '300px' }}>
+          <Button>Visit Source</Button>
+        </div>
+      </div>
+    </>
+  )
+}
+
 export default () => {
   return (
     <>
@@ -136,7 +204,9 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
-        <h2>Asset Results Item</h2>
+        <h2>Asset Tree</h2>
+        <AssetTreeDemo />
+        {/* <h2>Asset Results Item</h2>
         <AssetResultsItem />{' '}
         <AssetResultsItem
           isSelected
@@ -220,7 +290,7 @@ export default () => {
         <WarningMessage>This is a warning message.</WarningMessage>
         <h2>No Permission Message</h2>
         {/* @ts-ignore */}
-        <NoPermissionMessage message="This is a no permission message." />
+        {/* <NoPermissionMessage message="This is a no permission message." />
         <h2>Success Message</h2>
         <SuccessMessage>This is a success message.</SuccessMessage>
         <SuccessMessage title="Some Title">
@@ -264,10 +334,9 @@ export default () => {
         <h2>Markdown Editor</h2>
         <MarkdownEditorWrapper />
         <h2>Setup Profile</h2>
-        {/* @ts-ignore */}
         <SetupProfile initialStepIdx={2} />
         <h2>File Upload</h2>
-        <FileUploaderDemo />
+        <FileUploaderDemo /> */}
       </div>
     </>
   )

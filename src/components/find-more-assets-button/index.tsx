@@ -8,6 +8,7 @@ import Link from '@/components/link'
 const useStyles = makeStyles({
   root: {
     margin: '1rem 0.5rem 0.5rem',
+    minHeight: '200px',
   },
   cardActionArea: {
     height: '100%',
