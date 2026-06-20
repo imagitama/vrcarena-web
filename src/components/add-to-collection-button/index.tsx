@@ -4,6 +4,7 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import MenuItem from '@mui/material/MenuItem'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
 import {
   CollectionNames,
@@ -34,6 +35,7 @@ import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import NoResultsMessage from '@/components/no-results-message'
 import { routes } from '@/routes'
+import Link from '../link'
 
 const useStyles = makeStyles({
   root: {
@@ -333,14 +335,12 @@ const CollectionsList = ({
         <OwnedAssetsCollectionListItem assetId={assetId} onDone={onDone} />
       </div>
       <Heading variant="h2" noMargin>
-        Custom Collections{collections ? ` (${collections.length})` : null}
+        Custom Collections{collections ? ` (${collections.length})` : null}{' '}
+        <Link
+          to={routes.myAccountWithTabNameVar.replace(':tabName', 'collection')}>
+          <OpenInNewIcon />
+        </Link>
       </Heading>
-      <Button
-        url={routes.myAccountWithTabNameVar.replace(':tabName', 'collection')}
-        size="small"
-        color="secondary">
-        View My Collections (redirects)
-      </Button>
       <div className={classes.items}>
         {collections ? (
           collections.length ? (
@@ -376,10 +376,12 @@ const AddToCollectionButton = ({
   assetId,
   isAssetLoading,
   onClick,
+  onDone,
 }: {
   assetId: string
   isAssetLoading: boolean
   onClick: () => void
+  onDone: () => void
 }) => {
   if (!assetId) {
     throw new Error('Need asset id')
@@ -401,8 +403,9 @@ const AddToCollectionButton = ({
     onClick()
   }
 
-  const onDone = () => {
+  const onDoneEditing = () => {
     closeAfterDelay()
+    onDone()
   }
 
   return (
@@ -417,7 +420,7 @@ const AddToCollectionButton = ({
       </Button>
       {isOpen && (
         <Dialog onClose={close}>
-          <CollectionsList assetId={assetId} onDone={onDone} />
+          <CollectionsList assetId={assetId} onDone={onDoneEditing} />
         </Dialog>
       )}
     </ErrorBoundary>

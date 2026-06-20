@@ -311,7 +311,6 @@ const getImageInfo = async (file: File): Promise<ImageInfo> => {
 export interface ImageUploaderConfig {
   bucketName: string
   directoryPath?: string
-  generateThumbnail?: boolean
   requiredWidth?: number
   requiredHeight?: number
   allowedMimeTypes?: string[]

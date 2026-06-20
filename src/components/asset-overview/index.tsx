@@ -91,6 +91,7 @@ import TabAvatars from './components/tab-avatars'
 import TabAdmin from './components/tab-admin'
 import TabSimilar from './components/tab-similar'
 import { TabName } from './tabs'
+import AddToMyCollectionButton from '../add-to-my-collection-button'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -956,6 +957,20 @@ const AssetOverview = ({
                   />
                 </Control>
                 <Control>
+                  <AddToMyCollectionButton
+                    isAssetLoading={!isAssetLoaded}
+                    assetId={assetId}
+                    onClick={() =>
+                      trackAction(
+                        analyticsCategoryName,
+                        'Click add to collection button',
+                        assetId
+                      )
+                    }
+                    onDone={hydrate} // tell other collection button it has changed
+                  />
+                </Control>
+                <Control>
                   <AddToCollectionButton
                     isAssetLoading={!isAssetLoaded}
                     assetId={assetId}
@@ -966,6 +981,7 @@ const AssetOverview = ({
                         assetId
                       )
                     }
+                    onDone={hydrate} // tell other collection button it has changed
                   />
                 </Control>
                 <Control>
