@@ -77,6 +77,7 @@ const useStyles = makeStyles({
   submitBtn: {
     '&&': {
       marginRight: '1rem',
+      paddingRight: '0.25rem',
     },
     '& svg': {
       marginLeft: '-4px',
