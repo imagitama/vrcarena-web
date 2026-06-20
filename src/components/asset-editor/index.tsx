@@ -128,7 +128,10 @@ const AssetEditor = ({
         itemTypeSingular="Asset"
         showTopSaveBtn
         scrollDisabled
-        onAttemptSave={onAttemptSave}
+        onAttemptSave={() => {
+          hydrate()
+          if (onAttemptSave) onAttemptSave()
+        }}
         // amendments
         overrideFields={overrideFields}
         onFieldChanged={onFieldChanged}
