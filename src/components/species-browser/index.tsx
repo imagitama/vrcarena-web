@@ -51,6 +51,7 @@ const useStyles = makeStyles({
   controls: {
     display: 'flex',
     flexWrap: 'wrap',
+    marginBottom: '0.25rem',
   },
   controlsLeft: {
     display: 'flex',

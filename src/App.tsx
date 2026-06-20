@@ -9,8 +9,6 @@ import {
 import { makeStyles } from '@mui/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { useHead } from '@unhead/react'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import styled from '@emotion/styled'
 
 import * as routes from './routes'
 
@@ -45,14 +43,8 @@ import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
 import DeprecatedRouteView from './containers/deprecated-route'
 import AccountVerificationMessage from './components/account-verification-message'
-import Message from './components/message'
-import Button from './components/button'
-import Link from './components/link'
-import Tooltip from './components/tooltip'
-import useNotice from './hooks/useNotice'
-
-import peanutbuddhaAvatarUrl from './assets/images/peanutbuddha_june2026.webp'
 import { DEFAULT_PAGE_DESC } from './config'
+import WelcomeMessage from './components/welcome-message'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -68,13 +60,14 @@ const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
 
 const useStyles = makeStyles({
   mainContainer: {
-    padding: '2rem',
+    padding: '0 2rem 2rem',
     [mediaQueryForTabletsOrBelow]: {
       maxWidth: '100vw',
+      padding: '0 1rem 1rem',
       overflow: 'hidden',
     },
     [mediaQueryForMobiles]: {
-      padding: '0.5rem',
+      padding: '0 0.5rem 0.5rem',
     },
   },
   homeNotices: {
@@ -93,36 +86,6 @@ const useStyles = makeStyles({
     padding: '2rem',
     background: 'rgba(0, 0, 0, 0.5)',
     zIndex: 999,
-  },
-  welcomeMessageControls: {
-    textAlign: 'right',
-  },
-  welcomeMessageEnding: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarImage: {
-    width: '2rem',
-    height: '2rem',
-    borderRadius: '100%',
-    animation: '4s $spin infinite',
-    animationDelay: '5s',
-    marginLeft: '0.25rem',
-  },
-  '@keyframes spin': {
-    '0%': {
-      transform: 'rotate(0deg)',
-    },
-    '50%': {
-      transform: 'rotate(0deg) scale(1)',
-    },
-    '80%': {
-      transform: 'rotate(360deg) scale(2)',
-    },
-    '100%': {
-      transform: 'rotate(0deg) scale(1)',
-    },
   },
 })
 
@@ -667,65 +630,6 @@ const MainContent = () => {
         />
       </Switch>
     </Suspense>
-  )
-}
-
-const WELCOME_MESSAGE_HIDE_ID = 'welcome_may2026'
-
-const Controls = styled.div`
-  text-align: right;
-`
-
-const WelcomeMessage = () => {
-  const [, hideMessage] = useNotice(WELCOME_MESSAGE_HIDE_ID)
-  const classes = useStyles()
-  return (
-    <Message hideId={WELCOME_MESSAGE_HIDE_ID}>
-      <p>
-        An open-source, not-for-profit community project to document, tag and
-        categorize every asset for VR social games such as VRChat, ChilloutVR
-        and Resonite.
-      </p>
-      <p>
-        Anyone can submit and amend any asset on the site. No automated scraping
-        of products
-        <Tooltip
-          title={
-            <>
-              We use scraping to help humans add their assets to the site.
-              <br />
-              <br />
-              We use AI to help humans add their assets to the site, and for
-              some basic tasks. See our{' '}
-              <Link to={routes.aiPolicy}>AI policy</Link>.
-            </>
-          }>
-          <span>*</span>
-        </Tooltip>
-        .
-      </p>
-      <p>
-        The site was created in 2020 and is moderated by our awesome{' '}
-        <Link to={routes.staffUsers}>volunteer team</Link> and funded entirely
-        by our <Link to={routes.patreon}>Patreon supporters</Link>.
-      </p>
-      <div className={classes.welcomeMessageEnding}>
-        <strong>Thanks to all of your support! -PeanutBuddha </strong>
-        <img
-          src={peanutbuddhaAvatarUrl}
-          alt="PeanutBuddha Avatar"
-          className={classes.avatarImage}
-        />
-      </div>
-      <Controls>
-        <Button color="secondary" hollow={false} onClick={() => hideMessage()}>
-          Close
-        </Button>{' '}
-        <Button url={routes.about} icon={<ChevronRightIcon />}>
-          Read More
-        </Button>
-      </Controls>
-    </Message>
   )
 }
 

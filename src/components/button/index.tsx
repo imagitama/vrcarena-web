@@ -39,6 +39,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     minWidth: 0,
     height: '34px',
     '&&': {
+      minWidth: 'auto',
       textTransform: 'none',
     },
   },
