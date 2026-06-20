@@ -61,7 +61,7 @@ const SpeechBubbleTriangle = styled.div`
 `
 
 const Avatar = styled.div`
-  margin-right: 0.5rem;
+  margin-right: 1rem;
   text-align: center;
   & img {
     width: 3rem;
@@ -74,7 +74,8 @@ const Avatar = styled.div`
 const Username = styled.span`
   display: block;
   width: 100%;
-  font-weight: bold;
+  font-weight: 300;
+  font-size: 75%;
 `
 
 const CloseButton = styled.div`
@@ -83,6 +84,17 @@ const CloseButton = styled.div`
   top: 0;
   right: 0;
   cursor: pointer;
+  transition: all 100ms;
+  &:hover {
+    transform: scale(1.1);
+  }
+`
+
+const ReadMoreButton = styled(Button)`
+  padding-right: 0.1rem !important;
+  & svg {
+    margin-left: -0.25rem;
+  }
 `
 
 const WelcomeMessage = () => {
@@ -132,14 +144,14 @@ const WelcomeMessage = () => {
           <Button onClick={hideNotice} size="small" color="secondary" hollow>
             Hide
           </Button>{' '}
-          <Button
+          <ReadMoreButton
             url={routes.about}
             icon={<ChevronRightIcon />}
             size="small"
             color="secondary"
             hollow>
             Read More
-          </Button>
+          </ReadMoreButton>
         </Controls>
       </SpeechBubble>
     </WelcomeMessageRoot>
