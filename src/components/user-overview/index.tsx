@@ -1,7 +1,6 @@
 import React from 'react'
 import Link from '@/components/link'
 import makeStyles from '@mui/styles/makeStyles'
-import InfoIcon from '@mui/icons-material/Info'
 
 import * as routes from '@/routes'
 import {
@@ -9,7 +8,7 @@ import {
   getPrefersBritishSpelling,
 } from '@/utils'
 import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
-import { BanStatus, FullUser, UserRoles } from '@/modules/users'
+import { BanStatus, FullUser } from '@/modules/users'
 import { AccessStatus } from '@/modules/common'
 import {
   mediaQueryForMobiles,
@@ -31,7 +30,6 @@ import Image from '@/components/image'
 import BannedBadge from '@/components/banned-badge'
 import DeletedBadge from '@/components/deleted-badge'
 import RepChangeForUser from '@/components/rep-change-for-user'
-import StatusText from '@/components/status-text'
 
 import Context from './context'
 import TabComments from './components/tab-comments'
@@ -42,6 +40,7 @@ import TabAssets from './components/tab-assets'
 import TabAttachments from './components/tab-attachments'
 import TabEndorsements from './components/tab-endorsements'
 import TabHistory from './components/tab-history'
+import Rep from '../rep'
 
 const UserEditorControls = React.lazy(
   () => import('./components/editor-controls')
@@ -128,7 +127,6 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       marginTop: '0.5rem',
     },
   },
-  repNumber: { fontSize: '200%', fontWeight: 'bold' },
   repText: {
     marginLeft: '0.25rem',
   },
@@ -263,24 +261,7 @@ const UserOverview = ({
             )}
             <Heading variant="h2">Reputation</Heading>
             <div className={classes.tile}>
-              <StatusText
-                positivity={user.reputation > 0 ? 1 : -1}
-                className={classes.repNumber}>
-                {user.reputation}
-              </StatusText>{' '}
-              <Tooltip
-                title={
-                  <>
-                    Users gain rep by performing actions on the site and by
-                    having an older account
-                    <br />
-                    <br />
-                    Higher rep means you are more trustworthy so your assets,
-                    amendments and other actions may be approved faster
-                  </>
-                }>
-                <InfoIcon />
-              </Tooltip>
+              <Rep reputation={user.reputation} />
             </div>
             {bio && (
               <>

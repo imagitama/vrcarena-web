@@ -14,12 +14,19 @@ import NoResultsMessage from '@/components/no-results-message'
 import StatusText from '@/components/status-text'
 import FormattedDate from '@/components/formatted-date'
 import { shortIdLength } from '@/config'
+import useIsEditor from '@/hooks/useIsEditor'
+
+const getReasonLabel = (reason: string): string =>
+  `${reason.substring(0, 1).toUpperCase()}${reason
+    .substring(1)
+    .replaceAll('_', ' ')}`
 
 const RepChangeForUser = ({ userId }: { userId: string }) => {
   const [isLoading, lastErrorCode, repChanges] =
     useDatabaseQuery<FullRepChange>(ViewNames.GetFullRepChanges, [
       ['userid', Operators.EQUALS, userId],
     ])
+  const isEditor = useIsEditor()
 
   if (isLoading || !repChanges) {
     return <LoadingIndicator message="Loading reputation..." />
@@ -34,14 +41,14 @@ const RepChangeForUser = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <Table>
+    <Table size="small">
       <TableHead>
         <TableRow>
           <TableCell>ID</TableCell>
           <TableCell>Reason</TableCell>
           <TableCell>Delta</TableCell>
-          <TableCell>Related Data</TableCell>
-          <TableCell> </TableCell>
+          {isEditor && <TableCell>Related Data</TableCell>}
+          <TableCell>Date</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -52,20 +59,22 @@ const RepChangeForUser = ({ userId }: { userId: string }) => {
                 {repChange.id.substring(0, shortIdLength)}
               </TableCell>
               <TableCell>
-                {repChange.reason}
+                {getReasonLabel(repChange.reason)}
                 <br />
                 <em>{repChange.reasoninfo.description}</em>
               </TableCell>
               <TableCell>
                 <StatusText positivity={repChange.delta > 0 ? 1 : -1}>
-                  {repChange.delta}
+                  +{repChange.delta}
                 </StatusText>
               </TableCell>
-              <TableCell>
-                {repChange.relateddata
-                  ? JSON.stringify(repChange.relateddata)
-                  : '-'}
-              </TableCell>
+              {isEditor && (
+                <TableCell>
+                  {repChange.relateddata
+                    ? JSON.stringify(repChange.relateddata)
+                    : '-'}
+                </TableCell>
+              )}
               <TableCell>
                 <FormattedDate date={repChange.createdat} />
                 {repChange.createdby ? (

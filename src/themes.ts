@@ -48,6 +48,14 @@ export const darkTheme: VRCArenaTheme = createTheme({
     },
   },
   components: {
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          color: 'green !important',
+          // color: `${colorGreyedOut} !important`, // TODO: dont use important
+        },
+      },
+    },
     MuiTypography: {
       styleOverrides: {
         h1: {
@@ -161,6 +169,9 @@ export const darkTheme: VRCArenaTheme = createTheme({
           'tr:last-child &': {
             borderBottom: 'none',
           },
+        },
+        head: {
+          color: colorGreyedOut,
         },
       },
     },

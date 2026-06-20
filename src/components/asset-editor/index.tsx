@@ -27,6 +27,7 @@ import PopulateFromAssetSyncForm from '@/components/populate-from-asset-sync-for
 import Paper from '@/components/paper'
 import ExperimentalArea from '../experimental-area'
 import { getCanSync } from '@/syncing'
+import useTimer from '@/hooks/useTimer'
 
 const AssetEditor = ({
   assetId,
@@ -49,6 +50,7 @@ const AssetEditor = ({
     useDataStoreItem<FullAsset>(ViewNames.GetFullAssets, assetId || false)
   const [isAiFeaureEnabled] = useFeature(FeatureName.Ai)
   const [reRenderKey, setReRenderKey] = useState(0)
+  const hydrateAfterDelay = useTimer(hydrate)
 
   const onAssetSyncDone = (fields: Partial<Asset>) => {
     if (!onFieldsChanged) return
@@ -129,7 +131,7 @@ const AssetEditor = ({
         showTopSaveBtn
         scrollDisabled
         onAttemptSave={() => {
-          hydrate()
+          hydrateAfterDelay()
           if (onAttemptSave) onAttemptSave()
         }}
         // amendments

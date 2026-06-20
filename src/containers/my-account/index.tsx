@@ -36,12 +36,13 @@ import MyClaims from '@/components/my-claims'
 import Discord from './components/discord'
 import InfoMessage from '@/components/info-message'
 import MyUserOverview from '@/components/my-user-overview'
-import MySupportTickets from './components/my-support-tickets'
+import SupporterBadgeForm from '@/components/supporter-badge-form'
+import VrchatGroupButton from '@/components/vrchat-group-button'
 import Button from '@/components/button'
 
 import Features from './components/features'
-import SupporterBadgeForm from '@/components/supporter-badge-form'
-import VrchatGroupButton from '@/components/vrchat-group-button'
+import MyRep from './components/my-rep'
+import MySupportTickets from './components/my-support-tickets'
 
 const analyticsCategoryName = 'MyAccount'
 
@@ -294,6 +295,16 @@ const View = () => {
               <>
                 <Heading variant="h2">My Claims</Heading>
                 <MyClaims />
+              </>
+            ),
+          },
+          {
+            name: 'reputation',
+            label: 'Reputation',
+            contents: (
+              <>
+                <Heading variant="h2">Reputation</Heading>
+                <MyRep />
               </>
             ),
           },
