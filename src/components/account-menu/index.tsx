@@ -296,15 +296,17 @@ export default ({
       ) : null}
       <div className={classes.items}>
         {Object.entries(menu)
-          .filter(([id, { hideIfNone, loggedInOnly }]) => {
-            if (loggedInOnly && !isLoggedIn) {
-              return false
+          .filter(
+            ([id, { hideIfNone, loggedInOnly }]: [string, MenuItemDetails]) => {
+              if (loggedInOnly && !isLoggedIn) {
+                return false
+              }
+              if (hideIfNone && (!menuItems[id] || !menuItems[id].length)) {
+                return false
+              }
+              return true
             }
-            if (hideIfNone && (!menuItems[id] || !menuItems[id].length)) {
-              return false
-            }
-            return true
-          })
+          )
           .map(([id, { label, icon: Icon, badge }]) => (
             <div
               key={id}

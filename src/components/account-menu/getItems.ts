@@ -79,7 +79,7 @@ export const notifications = async (
     // TODO: Use hook/abstraction
     const { data, error } = await supabase
       .from(ViewNames.GetFullNotification)
-      .select<string, FullNotification>(`*`)
+      .select<string, FullNotification<any, any>>(`*`)
       .eq('recipient', userId)
       .limit(25)
 

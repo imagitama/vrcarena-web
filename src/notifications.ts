@@ -7,14 +7,12 @@ import {
   Asset,
   CollectionNames as AssetsCollectionNames,
 } from './modules/assets'
-import {
-  Author,
-  CollectionNames as AuthorsCollectionNames,
-} from './modules/authors'
+import { Author } from './modules/authors'
 import { User, CollectionNames as UsersCollectionNames } from './modules/users'
 import { CollectionNames as AmendmentsCollectionNames } from './modules/amendments'
 import { CollectionNames as ReportsCollectionNames } from './modules/reports'
 import { CollectionNames as CommentsCollectionNames } from './modules/comments'
+import { FullNotification } from './modules/notifications'
 
 export const NotificationEvents = {
   ASSET_APPROVED: 'ASSET_APPROVED',
@@ -36,6 +34,7 @@ export const NotificationEvents = {
   DIGEST: 'DIGEST',
   SUBSCRIPTION_ALERT: 'SUBSCRIPTION_ALERT',
   REPORT_RESOLUTION_CHANGED: 'REPORT_RESOLUTION_CHANGED',
+  REP_AWARDED: 'REP_AWARDED', // only if repreason.shouldnotify=true (sent by SQL trigger)
 }
 
 export const NotificationMethods = {
@@ -63,6 +62,7 @@ export const defaultNotificationPrefs = {
     [NotificationEvents.DIGEST]: false,
     [NotificationEvents.SUBSCRIPTION_ALERT]: true,
     [NotificationEvents.REPORT_RESOLUTION_CHANGED]: true,
+    [NotificationEvents.REP_AWARDED]: true, // only if repreason.shouldnotify=true (sent by SQL trigger)
 
     // editors only
     [NotificationEvents.ASSET_NEEDS_APPROVAL]: true,
@@ -78,20 +78,18 @@ export const defaultNotificationPrefs = {
 export const getLabelForNotification = ({
   parentdata: parentData,
   parenttable: collectionName,
+  event,
   message,
   data,
-}: {
-  parentdata: any
-  parenttable: string
-  message: string
-  data: any
-}) => {
+}: FullNotification<any, any>) => {
+  if (message) return message
+
   // I screwed up the message field so temporary thing until those notifications are purged
-  if (message.indexOf('has created an amendment for your asset') !== -1) {
-    return message
+  if (event.indexOf('has created an amendment for your asset') !== -1) {
+    return event
   }
 
-  switch (message) {
+  switch (event) {
     case NotificationEvents.ASSET_APPROVED:
     case 'Approved asset':
       return `Your asset "${
@@ -180,25 +178,20 @@ export const getLabelForNotification = ({
     case NotificationEvents.REPORT_RESOLUTION_CHANGED:
       return `Your report has been updated`
     default:
-      console.log(`Unknown message for notification: ` + message)
-      return `Unknown message: ${message}`
+      console.log(`Unknown event for notification: ` + event)
+      return `Event: ${event}`
   }
 }
 
 export const getLinkUrl = ({
   parent: parentId,
   parenttable: collectionName,
-  message,
+  event,
   data,
-}: {
-  parent: string
-  parenttable: string
-  message: string
-  data: any
-}) => {
+}: FullNotification<any, any>): string | undefined => {
   const userId = getUserId()
   let actualParentId
-  switch (message) {
+  switch (event) {
     case NotificationEvents.REPORT_CREATED:
     case NotificationEvents.REPORT_RESOLUTION_CHANGED:
       return routes.viewReportWithVar.replace(':reportId', parentId)
@@ -252,6 +245,8 @@ export const getLinkUrl = ({
       return routes.viewAmendmentWithVar.replace(':amendmentId', parentId)
     case NotificationEvents.COMMENT_ON_REPORT:
       return routes.viewReportWithVar.replace(':reportId', parentId)
+    case NotificationEvents.REP_AWARDED:
+      return routes.myAccountWithTabNameVar.replace(':tabName', 'reputation')
   }
 
   switch (collectionName) {
