@@ -38,7 +38,6 @@ import ErrorBoundary from '@/components/error-boundary'
 import AiArea from '../ai-area'
 import { Intent } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
-import WarningMessage from '../warning-message'
 
 const useStyles = makeStyles({
   pass: {
@@ -181,17 +180,7 @@ const Renderer = ({
     return <Queue assets={items} hydrate={hydrate!} />
   }
 
-  return (
-    <>
-      {selectedSubView === SubView.Approved && (
-        <WarningMessage>
-          Old assets without a "published date" will not show up here (I need to
-          repair them...)
-        </WarningMessage>
-      )}
-      <AssetsTable assets={items} hydrate={hydrate} />
-    </>
-  )
+  return <AssetsTable assets={items} hydrate={hydrate} />
 }
 
 enum SubView {
