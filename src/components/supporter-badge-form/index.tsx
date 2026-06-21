@@ -1,15 +1,17 @@
-import useIsPatron from '@/hooks/useIsPatron'
-import Button from '../button'
 import { useEffect, useRef, useState } from 'react'
-import { create as createBadgeDownloadUrl } from './badge'
-import CheckboxInput from '../checkbox-input'
+
+import useIsPatron from '@/hooks/useIsPatron'
 import { WEBSITE_FULL_URL } from '@/config'
-import FormControls from '../form-controls'
-import ErrorMessage from '../error-message'
-import InfoMessage from '../info-message'
-import TextInput from '../text-input'
 import { routes } from '@/routes'
-import WarningMessage from '../warning-message'
+
+import Button from '@/components/button'
+import CheckboxInput from '@/components/checkbox-input'
+import ErrorMessage from '@/components/error-message'
+import InfoMessage from '@/components/info-message'
+import TextInput from '@/components/text-input'
+import WarningMessage from '@/components/warning-message'
+
+import { create as createBadgeDownloadUrl } from './badge'
 
 const BADGE_WIDTH = 280
 const BADGE_HEIGHT = 125
@@ -35,6 +37,7 @@ const SupporterBadgeForm = ({
   const [isPreviewingPatreonStyle, setIsPreviewingPatreonStyle] =
     useState(false)
   const [lastError, setLastError] = useState<null | Error>(null)
+  const [usingAlternateText, setUsingAlternateText] = useState(false)
 
   const onClickApplyOverrideUrl = () => setOverrideUrl(overrideUrlText.trim())
 
@@ -53,6 +56,7 @@ const SupporterBadgeForm = ({
       if (!qrCodeUrl) throw new Error('Need a URL or route')
 
       const createdUrl = await createBadgeDownloadUrl(qrCodeUrl, canvas, {
+        usingAlternateText,
         width: BADGE_WIDTH,
         height: BADGE_HEIGHT,
         patreon: isUsingPatreonStyle || isPreviewingPatreonStyle,
@@ -74,7 +78,13 @@ const SupporterBadgeForm = ({
     }
 
     onCanvas(canvasRef.current)
-  }, [isGenerating, isUsingPatreonStyle, isPreviewingPatreonStyle, overrideUrl])
+  }, [
+    isGenerating,
+    isUsingPatreonStyle,
+    isPreviewingPatreonStyle,
+    overrideUrl,
+    usingAlternateText,
+  ])
 
   const reset = () => {
     setLastError(null)
@@ -143,6 +153,11 @@ const SupporterBadgeForm = ({
         label="QR Code"
       /> */}
       <CheckboxInput
+        value={usingAlternateText}
+        onChange={(newVal) => setUsingAlternateText(newVal)}
+        label="Use alternate text"
+      />
+      <CheckboxInput
         value={isUsingPatreonStyle}
         onChange={(newVal) => setIsUsingPatreonStyle(newVal)}
         label="Patreon style"
@@ -155,10 +170,6 @@ const SupporterBadgeForm = ({
           label="Preview Patreon style"
         />
       )}
-
-      {/* <FormControls>
-        <Button onClick={onClickGen}>Generate Badge</Button>
-      </FormControls> */}
     </>
   )
 }

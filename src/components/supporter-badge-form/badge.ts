@@ -1,6 +1,7 @@
 // import { default as logoUrl } from '@/assets/images/logo.svg?raw'
 
 interface Options {
+  usingAlternateText?: boolean
   width?: number
   height?: number
   qrCode?: boolean
@@ -73,28 +74,34 @@ export const create = async (
   ctx.font = 'bold 24px "Roboto", sans-serif'
   const textPosX = textAreaWidth / 2
 
-  if (opts?.patreon === true) {
+  const textLines = opts?.usingAlternateText
+    ? ['View on', 'VRCArena']
+    : opts?.patreon
+    ? ['Patreon', 'Supporter']
+    : ['VRCArena', 'Supporter']
+
+  if (opts?.patreon) {
     const lineDistance = 30
     ctx.fillText(`VRCArena`, textPosX, canvasHeight / 2 - lineDistance)
     const shadowDistance = 2
     ctx.fillStyle = '#8b7f00'
     ctx.fillText(
-      `Patreon`,
+      textLines[0],
       textPosX + shadowDistance,
       canvasHeight / 2 + shadowDistance
     )
     ctx.fillText(
-      `Supporter`,
+      textLines[1],
       textPosX + shadowDistance,
       canvasHeight / 2 + lineDistance + shadowDistance
     )
     ctx.fillStyle = patreonGold
-    ctx.fillText(`Patreon`, textPosX, canvasHeight / 2)
-    ctx.fillText(`Supporter`, textPosX, canvasHeight / 2 + lineDistance)
+    ctx.fillText(textLines[0], textPosX, canvasHeight / 2)
+    ctx.fillText(textLines[1], textPosX, canvasHeight / 2 + lineDistance)
   } else {
     const lineDistance = 15
-    ctx.fillText(`VRCArena`, textPosX, canvasHeight / 2 - lineDistance)
-    ctx.fillText(`Supporter`, textPosX, canvasHeight / 2 + lineDistance)
+    ctx.fillText(textLines[0], textPosX, canvasHeight / 2 - lineDistance)
+    ctx.fillText(textLines[1], textPosX, canvasHeight / 2 + lineDistance)
   }
 
   const qrCodePosX =
