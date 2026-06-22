@@ -89,7 +89,6 @@ enum SignUpErrorCode {
   // EmailTaken = 1,
   RecaptchaInvalid = 2,
   // firebase codes
-  UnknownAuth = 10, // handle all firebase auth errors
   InvalidEmail = 11,
   InvalidPassword = 12,
   WeakPassword = 13,
@@ -127,7 +126,6 @@ const getLabelForSignUpErrorCode = (errorCode: SignUpErrorCode): string => {
       return 'weak password'
     case SignUpErrorCode.EmailAlreadyInUse:
       return 'email already in use'
-    case SignUpErrorCode.UnknownAuth:
     case SignUpErrorCode.Unknown:
     default:
       return 'something unusual happened'
