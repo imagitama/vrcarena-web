@@ -84,12 +84,6 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
             .from(collectionName)
             .insert<TRecord>(fieldsForUpdate)
             .select('*')
-      // const { data, error } = await supabase
-      //   .from(collectionName)
-      //   .upsert<TRecord>(fieldsForUpdate, {
-      //     onConflict: options.uniqueConstraintFields?.join(','),
-      //   })
-      //   .select('*')
 
       if (error) {
         console.error(error)

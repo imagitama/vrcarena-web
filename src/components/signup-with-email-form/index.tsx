@@ -88,6 +88,12 @@ enum SignUpErrorCode {
   Unknown = 0,
   // EmailTaken = 1,
   RecaptchaInvalid = 2,
+  // firebase codes
+  UnknownAuth = 10, // handle all firebase auth errors
+  InvalidEmail = 11,
+  InvalidPassword = 12,
+  WeakPassword = 13,
+  EmailAlreadyInUse = 14,
 }
 
 interface SignUpUserResult {
@@ -109,6 +115,25 @@ const getRecaptchaToken = async () => {
   return token
 }
 
+const getLabelForSignUpErrorCode = (errorCode: SignUpErrorCode): string => {
+  switch (errorCode) {
+    case SignUpErrorCode.RecaptchaInvalid:
+      return 'recaptcha failed'
+    case SignUpErrorCode.InvalidEmail:
+      return 'invalid email'
+    case SignUpErrorCode.InvalidPassword:
+      return 'invalid password'
+    case SignUpErrorCode.WeakPassword:
+      return 'weak password'
+    case SignUpErrorCode.EmailAlreadyInUse:
+      return 'email already in use'
+    case SignUpErrorCode.UnknownAuth:
+    case SignUpErrorCode.Unknown:
+    default:
+      return 'something unusual happened'
+  }
+}
+
 const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isWorking, setIsWorking] = useState(false)
   const [usernameVal, setUsernameVal] = useState('')
@@ -118,13 +143,15 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
     useFirebaseFunction<SignUpUserPayload, SignUpUserResult>(
       FunctionNames.SignUpWithEmail
     )
-
-  const isActuallyWorking = isWorking || isSigningUp
+  const [lastSignUpErrorCode, setLastSignUpErrorCode] =
+    useState<null | SignUpErrorCode>(null)
 
   const submit = async () => {
     try {
       if (!usernameVal || !passwordVal || !getIsEmailAddress(usernameVal))
         return
+
+      setLastSignUpErrorCode(null)
 
       console.debug(`signing in with email and password...`, {
         email: usernameVal,
@@ -147,7 +174,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       })
 
       if (code) {
-        console.error(`Got code: ${code}`)
+        setLastSignUpErrorCode(code)
         return
       }
 
@@ -207,6 +234,11 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         </div>
       </FormControls>
       {isWorking && <LoadingIndicator message="Signing up..." />}
+      {lastSignUpErrorCode !== null ? (
+        <ErrorMessage>
+          Failed to sign up: {getLabelForSignUpErrorCode(lastSignUpErrorCode)}
+        </ErrorMessage>
+      ) : null}
       {lastErrorCode !== null ? (
         <ErrorMessage>Failed to sign up (code {lastErrorCode})</ErrorMessage>
       ) : null}
