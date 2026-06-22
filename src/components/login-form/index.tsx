@@ -88,10 +88,6 @@ const useStyles = makeStyles({
   },
   signUpButton: {
     marginTop: '1rem !important',
-    '& > *': {
-      justifyContent: 'center',
-      width: '100%', // button inside anchor screws it up
-    },
   },
   cancelButton: {
     marginTop: '2rem !important',

@@ -135,7 +135,7 @@ const Price = ({
   // note do not fallback to default currency as sometimes scrape fails and only price is returned from booth etc.
 
   return (
-    <div>
+    <>
       <div
         className={`${classes.tag} ${small ? classes.small : ''} ${
           isGreyscale ? classes.greyscale : ''
@@ -161,7 +161,7 @@ const Price = ({
           </Link>
         </div>
       ) : null}
-    </div>
+    </>
   )
 }
 

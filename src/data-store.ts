@@ -239,6 +239,8 @@ export interface DataStoreOptions {
   // defaults to "id" but sometimes want to be quirky
   idField?: string | string[] // array of field names to .eq() on
   select?: string
+  // for upserts
+  uniqueConstraintFields?: string[]
 }
 
 /**
@@ -256,7 +258,7 @@ export class DataStoreError extends Error {
 }
 
 // handle a PATCH but postgres returns success with 0 results which is confusing
-export class DataStoreUpdateError extends DataStoreError { }
+export class DataStoreUpdateError extends DataStoreError {}
 
 // Source: https://docs.postgrest.org/en/v12/references/errors.html
 // NOTE: cannot have numeric keys so standard postgres errors prefixed with "PG" (vs "PGRST" for Postgrest)
@@ -266,7 +268,7 @@ export enum PostgresErrorCode {
   'PGRST301' = 'PGRST301', // JWT expired
   // code: "23505", details: null, hint: null, message: 'duplicate key value violates unique constraint "users_username_key"'
   'PG23505' = '23505',
-  'PGRST303' = 'PGRST303' // code 'PGRST303' message 'JWT expired'
+  'PGRST303' = 'PGRST303', // code 'PGRST303' message 'JWT expired'
 }
 
 // we should never store complex objects in state (hard to persist, reference issues, etc.)

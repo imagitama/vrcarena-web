@@ -3,55 +3,30 @@ import { useParams } from 'react-router'
 import { Helmet } from '@unhead/react/helmet'
 
 import * as routes from '@/routes'
-import * as config from '@/config'
-import { CollectionNames, EditableFields } from '@/modules/events'
-
+import { CollectionNames, EditableFields, Event } from '@/modules/events'
+import { addDays } from '@/utils/dates'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useQueryParam from '@/hooks/useQueryParam'
 
 import GenericEditor from '@/components/generic-editor'
 import Heading from '@/components/heading'
-import Message from '@/components/message'
-
-const HowToPromoteMessage = ({ isLoggedIn }: { isLoggedIn?: boolean }) => (
-  <Message>
-    <Heading variant="h1" noTopMargin>
-      How to promote your event
-    </Heading>
-    {isLoggedIn ? (
-      <></>
-    ) : (
-      <>
-        <p>1. Create an account on the site and log in</p>
-        <p>2. Visit this page again</p>
-      </>
-    )}
-    <p>
-      {isLoggedIn ? 'Just' : '3. Then'} submit the form, join our Discord (
-      <a href={config.DISCORD_URL} target="_blank" rel="noopener noreferrer">
-        {config.DISCORD_URL}
-      </a>
-      ) then in #general ask our team to feature your event (and paste a link to
-      the event you created)
-    </p>
-    <p>
-      Our team will review your event and decide if to feature the event (which
-      will probably happen).
-    </p>
-  </Message>
-)
+import NotLoggedInMessage from '@/components/not-logged-in-message'
 
 export default () => {
   const { eventId } = useParams<{ eventId?: string }>()
   const isCreating = !eventId || eventId === 'create'
   const isLoggedIn = useIsLoggedIn()
+  const providedDateIso = useQueryParam('date')
+  const providedDateIsoEnd = providedDateIso
+    ? addDays(new Date(providedDateIso), 1).toISOString()
+    : undefined
 
   if (!isLoggedIn) {
-    return <HowToPromoteMessage isLoggedIn={false} />
+    return <NotLoggedInMessage />
   }
 
   return (
     <>
-      <HowToPromoteMessage isLoggedIn={true} />
       <Helmet>
         <title>{isCreating ? 'Create' : 'Edit'} an event</title>
         <meta
@@ -62,7 +37,7 @@ export default () => {
         />
       </Helmet>
       <Heading variant="h1">{isCreating ? 'Create' : 'Edit'} Event</Heading>
-      <GenericEditor
+      <GenericEditor<Event>
         fields={EditableFields}
         collectionName={CollectionNames.Events}
         id={eventId}
@@ -78,6 +53,11 @@ export default () => {
           eventId
             ? routes.viewEventWithVar.replace(':eventId', eventId)
             : routes.events
+        }
+        overrideFields={
+          providedDateIso
+            ? { startsat: providedDateIso, endsat: providedDateIsoEnd }
+            : undefined
         }
       />
     </>

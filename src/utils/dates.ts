@@ -1,17 +1,17 @@
 import moment from 'moment'
 
-export const getIsDateInFuture = (date: Date): boolean =>
+export const getIsDateInFuture = (date: Date | string): boolean =>
   moment(date).isAfter(moment())
 
-export const getIsDateInPast = (date: Date): boolean =>
+export const getIsDateInPast = (date: Date | string): boolean =>
   moment(date).isBefore(moment())
 
-export const isDateOnSameDay = (date1: Date, date2: Date): boolean =>
+export const getIsDateOnSameDay = (date1: Date, date2: Date): boolean =>
   date1.getFullYear() === date2.getFullYear() &&
   date1.getMonth() === date2.getMonth() &&
   date1.getDate() === date2.getDate()
 
-export const isDateInbetweenTwoDates = (
+export const getIsDateInbetweenTwoDates = (
   dateToCheck: Date,
   startDate: Date,
   endDate: Date
@@ -19,16 +19,55 @@ export const isDateInbetweenTwoDates = (
 
 export const getFriendlyDate = (
   date: Date | string,
-  isRelative: boolean = true
-): string =>
-  isRelative
-    ? moment(date).fromNow()
-    : moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
+  isRelative: boolean = true,
+  showTimezone: boolean = false,
+  timezone?: string // falls back to system timezone
+): string => {
+  const d = typeof date === 'string' ? new Date(date) : date
+
+  if (isRelative) {
+    return moment(date).fromNow()
+  }
+
+  const formatted = new Intl.DateTimeFormat('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+    timeZone: timezone,
+    ...(showTimezone ? { timeZoneName: 'short' } : {}), // sometimes shows user's localised timezone eg. PDT for americans
+  }).format(d)
+
+  return addOrdinalSuffix(formatted)
+}
+
+const addOrdinalSuffix = (str: string): string =>
+  str.replace(/\b(\d{1,2})\b(?=,)/, (_, day) => {
+    const n = parseInt(day, 10)
+    const suffix =
+      n % 10 === 1 && n !== 11
+        ? 'st'
+        : n % 10 === 2 && n !== 12
+        ? 'nd'
+        : n % 10 === 3 && n !== 13
+        ? 'rd'
+        : 'th'
+    return `${n}${suffix}`
+  })
+
+export const formatWithoutTime = 'D MMMM YYYY'
 
 export const getFormattedDate = (date: Date | string, format: string): string =>
   moment(date).format(format)
 
-export const getFriendlyDuration = (before: Date | string, after: Date | string): string => {
+export const getFriendlyDuration = (
+  before: Date | string,
+  after: Date | string
+): string => {
   const diffMs = moment(after).diff(moment(before))
   const duration = moment.duration(Math.abs(diffMs))
 
@@ -40,7 +79,20 @@ export const getFriendlyDuration = (before: Date | string, after: Date | string)
 
   if (hours > 0) parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`)
   if (mins > 0) parts.push(`${mins} ${mins === 1 ? 'min' : 'mins'}`)
-  if (secs > 0 || parts.length === 0) parts.push(`${secs} ${secs === 1 ? 'second' : 'seconds'}`)
+  if (secs > 0 || parts.length === 0)
+    parts.push(`${secs} ${secs === 1 ? 'second' : 'seconds'}`)
 
   return parts.join(' ')
+}
+
+export const addDays = (date: Date, days: number): Date => {
+  const result = new Date(date)
+  result.setUTCDate(result.getUTCDate() + days)
+  return result
+}
+
+export const addHours = (date: Date, hours: number): Date => {
+  const result = new Date(date)
+  result.setUTCHours(result.getUTCHours() + hours)
+  return result
 }

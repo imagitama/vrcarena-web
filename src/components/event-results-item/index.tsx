@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 })
 
 const EventResultsItem = ({
-  event: { id, name, thumbnailurl: thumbnailUrl, startsat: startsAt },
+  event: { id, name, thumbnailurl: thumbnailUrl, startsat: startsAt, slug },
 }: {
   event: Event
 }) => {
@@ -51,7 +51,7 @@ const EventResultsItem = ({
     <div className={classes.root}>
       <Card>
         <CardActionArea>
-          <Link to={routes.viewEventWithVar.replace(':eventId', id)}>
+          <Link to={routes.viewEventWithVar.replace(':eventId', slug || id)}>
             <CardMedia
               className={classes.media}
               image={thumbnailUrl}

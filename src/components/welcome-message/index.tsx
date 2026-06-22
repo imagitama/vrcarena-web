@@ -1,4 +1,3 @@
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import CloseIcon from '@mui/icons-material/Close'
 import styled from '@emotion/styled'
 
@@ -6,7 +5,7 @@ import peanutbuddhaAvatarUrl from '@/assets/images/peanutbuddha_june2026.webp'
 import useNotice from '@/hooks/useNotice'
 import { routes } from '@/routes'
 
-import Button from '@/components/button'
+import Button, { GoToButton } from '@/components/button'
 import Link from '@/components/link'
 import Tooltip from '@/components/tooltip'
 
@@ -90,13 +89,6 @@ const CloseButton = styled.div`
   }
 `
 
-const ReadMoreButton = styled(Button)`
-  padding-right: 0.1rem !important;
-  & svg {
-    margin-left: -0.25rem;
-  }
-`
-
 const WelcomeMessage = () => {
   const [isHidden, hideNotice] = useNotice(WELCOME_MESSAGE_HIDE_ID)
   if (isHidden) return null
@@ -144,14 +136,9 @@ const WelcomeMessage = () => {
           <Button onClick={hideNotice} size="small" color="secondary" hollow>
             Hide
           </Button>{' '}
-          <ReadMoreButton
-            url={routes.about}
-            icon={<ChevronRightIcon />}
-            size="small"
-            color="secondary"
-            hollow>
+          <GoToButton url={routes.about} size="small">
             Read More
-          </ReadMoreButton>
+          </GoToButton>
         </Controls>
       </SpeechBubble>
     </WelcomeMessageRoot>

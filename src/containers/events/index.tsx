@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 import * as routes from '@/routes'
-import { Event, ViewNames } from '@/modules/events'
+import { Event, PublicEvent, ViewNames } from '@/modules/events'
 import { getIsDateInFuture, getIsDateInPast } from '@/utils/dates'
 
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
@@ -21,6 +21,7 @@ import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import NoResultsMessage from '@/components/no-results-message'
 import Calendar from '@/components/calendar'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
 
 // TODO: move to component
 const useStyles = makeStyles({
@@ -31,20 +32,11 @@ const useStyles = makeStyles({
 
 function Events() {
   const isAdultContentEnabled = useIsAdultContentEnabled()
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) => {
-      let query = supabase
-        .from(ViewNames.GetPublicEvents)
-        .select<any, Event>('*')
-      query =
-        isAdultContentEnabled === false ? query.is('isadult', false) : query
-      return query
-    },
-    [isAdultContentEnabled]
-  )
-  const [isLoading, lastErrorCode, events] = useDataStore<Event>(
-    getQuery,
-    'events'
+  const [isLoading, lastErrorCode, events] = useDatabaseQuery<PublicEvent>(
+    ViewNames.GetPublicEvents,
+    isAdultContentEnabled === false
+      ? [['isadult', Operators.EQUALS, false]]
+      : []
   )
 
   if (isLoading || !events) {
@@ -139,9 +131,12 @@ export default () => {
         </Heading>
         <BodyText>A list of all past, present and future events.</BodyText>
         {isLoggedIn && (
-          <Button url={routes.createEvent} icon={<AddIcon />}>
-            Create Event
-          </Button>
+          <>
+            <br />
+            <Button url={routes.createEvent} icon={<AddIcon />}>
+              Create Event
+            </Button>
+          </>
         )}
         <Events />
       </div>

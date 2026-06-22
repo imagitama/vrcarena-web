@@ -92,6 +92,11 @@ const items: MenuItem[] = [
         label: categoriesMeta[AssetCategory.Retexture].name,
       },
       {
+        id: 'events',
+        url: routes.events,
+        label: 'Events',
+      },
+      {
         id: 'collections',
         url: routes.viewCollections,
         label: 'Collections',

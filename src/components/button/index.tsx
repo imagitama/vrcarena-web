@@ -1,13 +1,13 @@
 import React, { SyntheticEvent, forwardRef } from 'react'
 import Link from '@/components/link'
-import MaterialButton, {
-  ButtonProps as MaterialButtonProps,
-} from '@mui/material/Button'
+import MaterialButton from '@mui/material/Button'
 import { makeStyles } from '@mui/styles'
 import classnames from 'classnames'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined'
+import AddIcon from '@mui/icons-material/Add'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 import Tooltip from '@/components/tooltip'
 import { VRCArenaTheme } from '@/themes'
@@ -19,12 +19,19 @@ export interface ButtonProps {
   icon?: React.ReactElement
   isDisabled?: boolean
   className?: string
+  iconSide?: 'left' | 'center' | 'right'
+  /**
+   * @deprecated use iconSide
+   */
   switchIconSide?: boolean
   isLoading?: boolean
   size?: 'small' | 'medium' | 'large'
   // everything after undefined is not standard
   color?: 'inherit' | 'primary' | 'secondary' | undefined | 'tertiary' | 'ai'
   title?: string
+  /**
+   * @deprecated Now checks if children undefined
+   */
   iconOnly?: boolean
   checked?: boolean
   hollow?: boolean
@@ -38,13 +45,34 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     whiteSpace: 'nowrap',
     minWidth: 0,
     height: '34px',
+    display: 'flex',
+    alignItems: 'center',
     '&&': {
       minWidth: 'auto',
       textTransform: 'none',
     },
   },
+  iconLeft: {
+    '& $icon': {
+      marginLeft: '-0.25rem',
+      marginRight: '0.25rem',
+    },
+  },
+  iconCenter: {
+    '& $icon': {},
+  },
+  iconRight: {
+    flexDirection: 'row-reverse',
+    '& $icon': {
+      marginLeft: '0.25rem',
+      marginRight: '0rem',
+    },
+    '&$small $icon': {
+      marginLeft: '0rem',
+      marginRight: '-0.4rem',
+    },
+  },
   icon: {
-    marginLeft: '0.25rem',
     display: 'flex', // fix line height issue
     '& svg': {
       fontSize: '150%',
@@ -107,15 +135,8 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
         : '#111',
     },
   },
-  label: {
-    display: 'flex',
-    alignItems: 'center',
-  },
   loading: {
     filter: 'blur(2px)',
-  },
-  noChildren: {
-    marginLeft: 0,
   },
   noMargin: {
     margin: 0,
@@ -188,9 +209,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       switchIconSide = false,
       isLoading = false,
       title,
-      iconOnly,
       checked,
       hollow,
+      iconSide = 'left',
       ...props
     }: ButtonProps,
     ref
@@ -199,18 +220,21 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const isHollow =
       hollow === true || (props.color === 'secondary' && hollow === undefined)
 
-    const iconToUse =
-      checked === true ? (
-        isHollow ? (
-          <CheckBoxOutlinedIcon />
+    const iconToUse = (
+      <span className={classes.icon}>
+        {checked === true ? (
+          isHollow ? (
+            <CheckBoxOutlinedIcon />
+          ) : (
+            <CheckBoxIcon />
+          )
+        ) : checked === false ? (
+          <CheckBoxOutlineBlankIcon />
         ) : (
-          <CheckBoxIcon />
-        )
-      ) : checked === false ? (
-        <CheckBoxOutlineBlankIcon />
-      ) : (
-        icon
-      )
+          icon
+        )}
+      </span>
+    )
 
     const contents = (
       <MaterialButton
@@ -225,30 +249,24 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           [classes.root]: true,
           [classes.tertiary]: props.color === 'tertiary',
           [classes.ai]: props.color === 'ai',
-          [classes.iconOnly]: iconOnly,
+          [classes.iconOnly]: children === undefined,
           [classes.hollow]: isHollow,
           [classes.small]: props.size === 'small',
           [classes.large]: props.size === 'large',
           [classes.margin]: props.margin,
+          [classes.iconLeft]: iconSide === 'left',
+          [classes.iconCenter]: iconSide === 'center',
+          [classes.iconRight]: iconSide === 'right',
+          [classes.isLoading]: isLoading,
           [className]: true,
         })}
         href={url}
         {...props}>
-        <span
-          className={`${classes.label} ${isLoading ? classes.loading : ''}`}>
-          {!switchIconSide && children ? <>{children} </> : null}
-          {iconToUse && (
-            <span
-              className={classnames({
-                [classes.icon]: true,
-                [classes.smallIcon]: props.size === 'small',
-                [classes.switchIconSide]: switchIconSide,
-                [classes.noChildren]: !children,
-              })}>
-              {iconToUse}
-            </span>
-          )}
-          {switchIconSide && children ? <>{children} </> : null}
+        {iconToUse}
+        <span>
+          {' '}
+          {/* wrap in span to support multiple children like visit source btn */}
+          {children}
         </span>
       </MaterialButton>
     )
@@ -261,6 +279,26 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     return contentsWithTitle
   }
+)
+
+export const CreateButton = (args: ButtonProps) => (
+  <Button
+    icon={<AddIcon />}
+    color="secondary"
+    hollow
+    iconSide="left"
+    {...args}
+  />
+)
+
+export const GoToButton = (args: ButtonProps) => (
+  <Button
+    icon={<ChevronRightIcon />}
+    color="secondary"
+    hollow
+    iconSide="right"
+    {...args}
+  />
 )
 
 export default Button

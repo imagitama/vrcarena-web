@@ -12,8 +12,10 @@ import useSupabaseClient from './useSupabaseClient'
 type ClearFn = () => void
 
 /**
- * Wrapper around Supabase .upsert()
- * Does NOT perform a .select() after (is a TODO)
+ * Edits an existing record or creates a new one.
+ * A light wrapper around supabase .upsert()
+ *
+ * If you dont specify an ID column it is assumed it is 'id'
  */
 const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
   collectionName: string,
@@ -25,12 +27,12 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
   boolean,
   boolean,
   null | DataStoreErrorCode,
-  (fields: Partial<TRecord>) => Promise<TRecord>,
+  (fields: Partial<TRecord>) => Promise<TRecord | undefined>,
   ClearFn,
   null | TRecord
 ] => {
   if (!collectionName) {
-    throw new Error('Cannot edit: no collection name provided')
+    throw new Error('Cannot edit/create: no collection name provided')
   }
 
   const [isEditing, setIsEditing] = useState<boolean>(false)
@@ -47,14 +49,10 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
     setIsEditing(false)
   }
 
-  // @ts-ignore
-  const save = async (fields: Partial<TRecord>): Promise<TRecord> => {
+  const save = async (
+    fields: Partial<TRecord>
+  ): Promise<TRecord | undefined> => {
     try {
-      if (!id) {
-        // @ts-ignore
-        return
-      }
-
       const fieldsForUpdate = mapFieldsForDatabase(fields) as TRecord
 
       const idFieldName = Array.isArray(options.idField)
@@ -66,9 +64,9 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
       fieldsForUpdate[idFieldName] = id
 
       console.debug(
-        `useDataStoreEditOrCreate :: ${
-          options.queryName || '(unnamed)'
-        } :: update ${collectionName} ${id}...`,
+        `useDataStoreEditOrCreate :: ${options.queryName || '(unnamed)'} :: ${
+          id ? 'update' : 'create'
+        } ${collectionName} ${id ? id : ''}...`,
         fieldsForUpdate
       )
 
@@ -76,42 +74,31 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
       setLastErrorCode(null)
       setIsEditing(true)
 
-      // let query = supabase.from(collectionName).update<TRecord>(fieldsForUpdate)
+      const { data, error } = id
+        ? await supabase
+            .from(collectionName)
+            .update<TRecord>(fieldsForUpdate)
+            .eq('id', id)
+            .select('*')
+        : await supabase
+            .from(collectionName)
+            .insert<TRecord>(fieldsForUpdate)
+            .select('*')
+      // const { data, error } = await supabase
+      //   .from(collectionName)
+      //   .upsert<TRecord>(fieldsForUpdate, {
+      //     onConflict: options.uniqueConstraintFields?.join(','),
+      //   })
+      //   .select('*')
 
-      // if (Array.isArray(options.idField)) {
-      //   console.debug(`is array of ID fields`, options.idField)
-      //   for (const idField of options.idField) {
-      //     query = query.eq(idField, fields[idField])
-      //   }
-      // } else {
-      //   query = query.eq(options.idField || 'id', id)
-      // }
-
-      const createResult = await supabase
-        .from(collectionName)
-        .upsert<TRecord>(fieldsForUpdate)
-
-      // TODO: finish
-      // if (selectAfter) {
-      //   .select<string, TRecord>(options.select || '*')
-      // }
-
-      if (createResult.error) {
-        console.error(createResult.error)
-
-        throw new DataStoreError(
-          'useDataStoreEditOrCreate create failed',
-          createResult.error
-        )
+      if (error) {
+        console.error(error)
+        throw new DataStoreError('useDataStoreEditOrCreate failed', error)
       }
 
-      // if (!createResult.data || !createResult.data.length) {
-      //   throw new DataStoreError(
-      //     'useDataStoreEditOrCreate data null or invalid length'
-      //   )
-      // }
-
-      // data = createResult.data
+      if (data.length !== 1) {
+        throw new Error(`Count is ${data.length}`)
+      }
 
       console.debug(
         `useDataStoreEditOrCreate :: ${
@@ -122,9 +109,9 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
       setIsEditing(false)
       setIsSuccess(true)
       setLastErrorCode(null)
-      // setUpdatedRecord(data[0])
+      setUpdatedRecord(data[0])
 
-      // return data[0]
+      return data[0]
     } catch (err) {
       setIsEditing(false)
       setIsSuccess(false)

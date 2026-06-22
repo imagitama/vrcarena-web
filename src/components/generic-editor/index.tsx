@@ -35,6 +35,7 @@ import TagsInput from './components/tags-input'
 import DropdownInput from './components/dropdown-input'
 import ItemInput from './components/item-input'
 import DateInput from './components/date-input'
+import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
 
 export type GenericInputProps<TRecord extends Record<string, any>> = {
   editableField: EditableField<any>
@@ -151,7 +152,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   cancelUrl?: string
   extraFormData?: Object
   getSuccessUrl?: (newId: string | null) => string
-  overrideFields?: TRecord | null
+  overrideFields?: Partial<TRecord> | null
   onFieldChanged?: (fieldName: string, newValue: any) => void
   onFieldsChanged?: (fields: TRecord) => void
   // asset editor mini
@@ -178,8 +179,8 @@ const GenericEditor = <TRecord extends Record<string, any>>({
     }
   )
   const [isSaving, isSuccess, lastErrorCodeSaving, save, , updatedRecord] =
-    useDataStoreEdit<TRecord>(collectionName, id || false)
-  const [formFields, setFormFields] = useState<null | TRecord>(
+    useDataStoreEditOrCreate<TRecord>(collectionName, id || false)
+  const [formFields, setFormFields] = useState<null | Partial<TRecord>>(
     overrideFields
       ? overrideFields
       : id
@@ -242,12 +243,14 @@ const GenericEditor = <TRecord extends Record<string, any>>({
 
   const onSaveBtnClick = async () => {
     try {
+      console.debug('on click save button')
+
       if (analyticsCategory) {
         trackAction(analyticsCategory, saveBtnAction, id)
       }
 
       if (!formFields) {
-        console.warn('Cannot save - no form fields')
+        console.warn('stopping save/create - no form fields')
         return
       }
 
@@ -269,11 +272,17 @@ const GenericEditor = <TRecord extends Record<string, any>>({
       )
 
       if (newValidationIssues.length) {
+        console.warn(
+          `stopping save/create - validation issues:`,
+          newValidationIssues
+        )
         setValidationIssues(newValidationIssues)
         return
       } else {
         setValidationIssues([])
       }
+
+      console.debug(`performing save...`)
 
       const result = await save({
         ...formFields,

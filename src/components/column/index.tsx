@@ -7,6 +7,7 @@ const useStyles = makeStyles({
     flex: '1 1 50%', // grow, shrink, basis of 50%
     minWidth: 0, // prevents flex blowout with long content
     [mediaQueryForMobiles]: {
+      width: '100% !important',
       flex: '1 1 100%', // full width on mobile
     },
   },

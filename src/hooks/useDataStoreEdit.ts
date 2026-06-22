@@ -22,7 +22,7 @@ const useDataStoreEdit = <TRecord extends Record<string, unknown>>(
   boolean,
   boolean,
   null | DataStoreErrorCode,
-  (fields: Partial<TRecord>) => Promise<TRecord>,
+  (fields: Partial<TRecord>) => Promise<TRecord | undefined>,
   ClearFn,
   null | TRecord
 ] => {
@@ -45,11 +45,11 @@ const useDataStoreEdit = <TRecord extends Record<string, unknown>>(
     setIsEditing(false)
   }
 
-  // @ts-ignore
-  const save = async (fields: Partial<TRecord>): Promise<TRecord> => {
+  const save = async (
+    fields: Partial<TRecord>
+  ): Promise<TRecord | undefined> => {
     try {
       if (!id) {
-        // @ts-ignore
         return
       }
 

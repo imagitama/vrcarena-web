@@ -1,38 +1,64 @@
 import React from 'react'
-import TextField from '@mui/material/TextField'
 import moment from 'moment'
-
-const convertIsoStringToLocalDateTime = (isoString: string): string =>
-  moment(isoString).format(moment.HTML5_FMT.DATETIME_LOCAL)
-const convertLocalDateTimeToIsoString = (localDateTime: string): string =>
-  moment(localDateTime).local().toISOString()
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import DateFormatToggle from '../date-format-toggle'
+import useIsDateFormatUS from '@/hooks/useIsDateFormatUS'
+import Button from '../button'
 
 const DateTimeInput = ({
   onChange,
   value,
 }: {
-  value: string
+  value: string | undefined
   onChange: (newDate: string) => void
 }) => {
+  const [isDateFormatUS] = useIsDateFormatUS()
   return (
-    <TextField
-      type="datetime-local"
-      defaultValue={convertIsoStringToLocalDateTime(value)}
-      variant="outlined"
-      InputLabelProps={{
-        shrink: true,
-      }}
-      fullWidth
-      onChange={(e) => {
-        // NOTE: onChange never fired and value never set if date is invalid
-        const newIsoString = convertLocalDateTimeToIsoString(e.target.value)
-        console.debug(`DateTimeInput.onChange`, {
-          raw: e.target.value,
-          final: newIsoString,
-        })
-        onChange(newIsoString)
-      }}
-    />
+    <>
+      <DateFormatToggle />
+      <br />
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <DateTimePicker
+          value={moment(value)}
+          onChange={(newVal) => onChange(newVal!.utc().toISOString())}
+          format={`${isDateFormatUS ? 'MM/DD' : 'DD/MM'}/YYYY hh:mm A`}
+        />
+      </LocalizationProvider>{' '}
+      <Button
+        onClick={() => onChange(new Date().toISOString())}
+        color="secondary"
+        hollow>
+        Now
+      </Button>{' '}
+      {value && (
+        <Button
+          onClick={() => {
+            const date = new Date(value)
+            const newVal = new Date(date)
+            newVal.setHours(newVal.getHours() + 1)
+            onChange(newVal.toISOString())
+          }}
+          color="secondary"
+          hollow>
+          +1 Hour
+        </Button>
+      )}{' '}
+      {value && (
+        <Button
+          onClick={() => {
+            const date = new Date(value)
+            const newVal = new Date(date)
+            newVal.setDate(newVal.getDate() + 1)
+            onChange(newVal.toISOString())
+          }}
+          color="secondary"
+          hollow>
+          +1 Day
+        </Button>
+      )}
+    </>
   )
 }
 

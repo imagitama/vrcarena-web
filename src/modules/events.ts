@@ -18,13 +18,14 @@ export interface Event {
   assetids: string[]
   discordserverid: string
   isadult: boolean
-  startsat: Date
-  endsat: Date
+  startsat: string // date
+  endsat: string // date
   assettags: string[]
   slug: string
-  lastmodifiedat: Date
+  isbackground: boolean
+  lastmodifiedat: string // date
   lastmodifiedby: string
-  createdat: Date
+  createdat: string // date
   createdby: string
 }
 
@@ -34,9 +35,9 @@ export interface EventMeta {
   approvalstatus: ApprovalStatus
   accessstatus: AccessStatus
   featuredstatus: FeaturedStatus
-  lastmodifiedat: Date
+  lastmodifiedat: string // date
   lastmodifiedby: string
-  createdat: Date
+  createdat: string // date
   createdby: string
 }
 
@@ -90,12 +91,14 @@ export const EditableFields: EditableField<Event>[] = [
     label: 'Name',
     type: fieldTypes.text,
     hint: 'The name of the event. Keep it short but descriptive.',
+    isRequired: true,
   },
   {
     name: 'description',
     label: 'Description',
     type: fieldTypes.textMarkdown,
     hint: 'Explain what your event is, who can come, how to join.',
+    isRequired: true,
   },
   {
     name: 'sourceurl',
@@ -123,13 +126,15 @@ export const EditableFields: EditableField<Event>[] = [
     name: 'startsat',
     label: 'Starts At',
     type: fieldTypes.date,
-    hint: 'When the event starts. In your local timezone.',
+    hint: 'When the event starts.',
+    isRequired: true,
   },
   {
     name: 'endsat',
     label: 'Ends At',
     type: fieldTypes.date,
-    hint: 'When the event ends. In your local timezone.',
+    hint: 'When the event ends.',
+    isRequired: true,
   },
   {
     name: 'assettags',

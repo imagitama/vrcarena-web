@@ -15,6 +15,7 @@ import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
 import ErrorMessage from '@/components/error-message'
 import Button from '@/components/button'
+import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
 
 const EventAttendenceButton = ({
   eventId,
@@ -26,14 +27,18 @@ const EventAttendenceButton = ({
   onDone?: () => void
 }) => {
   const isLoggedIn = useIsLoggedIn()
-  const [isSaving, , lastErrorCode, saveOrCreate] = myAttendance
-    ? useDataStoreEdit<EventAttendance>(
-        CollectionNames.EventAttendance,
-        myAttendance.id
-      )
-    : useDataStoreCreate<EventAttendance>(CollectionNames.EventAttendance)
+  const [isSaving, , lastErrorCode, saveOrCreate] =
+    useDataStoreEditOrCreate<EventAttendance>(
+      CollectionNames.EventAttendance,
+      myAttendance ? myAttendance.id : false,
+      {
+        uniqueConstraintFields: ['event', 'createdby'], // CONSTRAINT unique_only UNIQUE (event, createdby)
+      }
+    )
 
   const currentStatus = myAttendance ? myAttendance.status : undefined
+
+  console.debug(`EventAttendenceButton.render`, myAttendance, lastErrorCode)
 
   if (lastErrorCode !== null) {
     return (
@@ -50,10 +55,18 @@ const EventAttendenceButton = ({
           ? AttendanceStatus.Abstain
           : statusClickedOn
 
-      await saveOrCreate({
-        event: eventId,
-        status: statusToSave,
-      })
+      await saveOrCreate(
+        myAttendance
+          ? {
+              id: myAttendance.id,
+              event: eventId,
+              status: statusToSave,
+            }
+          : {
+              event: eventId,
+              status: statusToSave,
+            }
+      )
 
       if (onDone) {
         onDone()

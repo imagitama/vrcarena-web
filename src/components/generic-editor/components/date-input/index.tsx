@@ -1,8 +1,12 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableRow from '@mui/material/TableRow'
+import moment from 'moment'
 
 import DateTimeInput from '@/components/datetime-input'
-import FormattedDate from '@/components/formatted-date'
 
 const useStyles = makeStyles({
   preview: {
@@ -21,16 +25,25 @@ const DateInput = ({
   return (
     <div>
       <DateTimeInput value={value} onChange={onChange} />{' '}
-      <div className={classes.preview}>
-        {value ? (
-          <>
-            <FormattedDate date={new Date(value)} isRelative={false} /> (
-            <FormattedDate date={new Date(value)} isRelative={true} />)
-          </>
-        ) : (
-          '(no date entered)'
-        )}
-      </div>
+      {value && (
+        <Table size="small">
+          <TableBody>
+            <TableRow>
+              <TableCell>UTC</TableCell>
+              <TableCell>
+                {moment.utc(value).format('YYYY-MM-DD HH:mm:ss')}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Local</TableCell>
+              <TableCell>
+                {new Date(value).toDateString()}{' '}
+                {new Date(value).toTimeString()}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      )}
     </div>
   )
 }

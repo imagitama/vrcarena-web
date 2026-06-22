@@ -24,12 +24,13 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   titleWrapper: {
     display: 'flex',
     alignItems: 'center',
+    marginBottom: '0.5rem',
   },
   title: {
     flex: '1 0 auto',
     fontSize: '150%',
     fontWeight: '200',
-    marginBottom: '0.5rem',
+    marginRight: '0.5rem',
     display: 'flex',
     alignItems: 'center',
     '& a': {
@@ -38,17 +39,17 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       alignItems: 'center',
     },
     '&:hover $icon': {
-      opacity: 1,
+      display: 'flex',
     },
     [mediaQueryForMobiles]: {
       padding: '0.25rem',
+      marginRight: '0.25rem',
     },
   },
   icon: {
-    opacity: 0,
+    display: 'none', // to flex
     transition: 'all 100ms',
-    marginLeft: '0.5rem',
-    display: 'flex',
+    marginLeft: '0.25rem',
     alignItems: 'center',
   },
   border: {

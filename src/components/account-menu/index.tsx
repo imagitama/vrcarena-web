@@ -21,7 +21,7 @@ import useUserRecord from '@/hooks/useUserRecord'
 import useSupabaseClient from '@/hooks/useSupabaseClient'
 
 import Menu, { MenuItemData } from '@/components/menu'
-import Button from '@/components/button'
+import Button, { GoToButton } from '@/components/button'
 import Avatar, { AvatarSize } from '@/components/avatar'
 import classNames from 'classnames'
 
@@ -283,17 +283,14 @@ export default ({
   return (
     <div className={classes.root}>
       {isLoggedIn ? (
-        <Button
+        <GoToButton
           url={routes.createAsset}
           className={classNames(classes.submitBtn, {
             [classes.mobileBtn]: isMobile,
           })}
-          onClick={closeAllDropdowns}
-          icon={<ChevronRightIcon />}
-          color="secondary"
-          hollow>
+          onClick={closeAllDropdowns}>
           Submit
-        </Button>
+        </GoToButton>
       ) : null}
       <div className={classes.items}>
         {Object.entries(menu)

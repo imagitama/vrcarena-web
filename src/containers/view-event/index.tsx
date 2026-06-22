@@ -30,7 +30,6 @@ import Block from '@/components/block'
 import FormattedDate from '@/components/formatted-date'
 import EventAttendanceButton from '@/components/event-attendance-button'
 import EventAttendanceResults from '@/components/event-attendance-results'
-import DeprecationNotice from '@/components/deprecation-notice'
 import Link from '@/components/link'
 import ErrorMessage from '@/components/error-message'
 import Heading from '@/components/heading'
@@ -242,10 +241,6 @@ const View = () => {
         <title>{`${name || '(unnamed)'}`}</title>
         {description ? <meta name="description" content={description} /> : null}
       </Helmet>
-      <DeprecationNotice>
-        The events and calendar system of the site is mostly unused as of July
-        2025 so it will be removed.
-      </DeprecationNotice>
       <div className={classes.root}>
         {editornotes ? <PublicEditorNotes notes={editornotes} /> : null}
         <div className={classes.primaryMetadata}>
@@ -266,18 +261,20 @@ const View = () => {
         </div>
         <div className={classes.dates}>
           {startsat ? (
-            <FormattedDate date={startsat} isRelative={false} />
+            <FormattedDate date={startsat} isRelative={false} showTimezone />
           ) : null}
           {startsat && endsat ? (
             <div className={classes.separator}>
               <ArrowForwardIcon />
             </div>
           ) : null}
-          {endsat ? <FormattedDate date={endsat} isRelative={false} /> : null}
+          {endsat ? (
+            <FormattedDate date={endsat} isRelative={false} showTimezone />
+          ) : null}
         </div>
         <div className={classes.cols}>
           <div className={classes.leftCol}>
-            <Block>
+            <Block title="Description">
               {description ? (
                 <Markdown source={description} />
               ) : (
