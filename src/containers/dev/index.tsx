@@ -204,8 +204,10 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
-        <h2>Asset Tree</h2>
-        <AssetTreeDemo />
+        <h2>Tag Input</h2>
+        <TagInput currentTags={['free', 'paid', 'rigged']} />
+        {/* <h2>Asset Tree</h2>
+        <AssetTreeDemo /> */}
         {/* <h2>Asset Results Item</h2>
         <AssetResultsItem />{' '}
         <AssetResultsItem
@@ -259,8 +261,6 @@ export default () => {
         <div style={{ width: '300px', height: '300px' }}>
           <DefaultAvatar stringForDecision="HelloWorld" />
         </div>
-        <h2>Tag Input</h2>
-        <TagInput currentTags={['free', 'paid', 'rigged']} />
         <h2>Species Selector</h2>
         <SpeciesSelector selectedSpeciesIds={['IpItSWT1QpwLB16IPz2e']} />
         <h2>Performance Editor</h2>

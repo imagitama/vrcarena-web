@@ -130,7 +130,6 @@ const AutocompleteInput = <TOption,>({
   textFieldProps?: TextFieldProps
   fullWidth?: boolean
 }) => {
-  const classes = useStyles()
   return (
     <Autocomplete
       options={options}
@@ -152,7 +151,6 @@ const AutocompleteInput = <TOption,>({
             (options) => options
       }
       clearOnEscape
-      autoHighlight
       clearIcon={<ClearIcon />}
       onChange={(e: any, value, reason) => {
         switch (reason) {
