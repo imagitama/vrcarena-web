@@ -31,6 +31,7 @@ import DefaultAvatar from '@/components/default-avatar'
 import AssetResultsItem from '@/components/asset-results-item'
 import AssetResults from '@/components/asset-results'
 import AssetTree from '@/components/asset-tree'
+import AssetOverview from '@/components/asset-overview'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -204,8 +205,8 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
-        <h2>Tag Input</h2>
-        <TagInput currentTags={['free', 'paid', 'rigged']} />
+        {/* <h2>Tag Input</h2>
+        <TagInput currentTags={['free', 'paid', 'rigged']} /> */}
         {/* <h2>Asset Tree</h2>
         <AssetTreeDemo /> */}
         {/* <h2>Asset Results Item</h2>

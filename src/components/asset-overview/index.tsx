@@ -225,9 +225,7 @@ const useStyles = makeStyles({
     fontSize: '150%',
     fontWeight: '300',
   },
-  titleAndAuthor: {
-    // fontSize: '300%',
-  },
+  titleAndAuthor: {},
   subTitle: {
     fontSize: '1rem',
     fontWeight: '300',
@@ -535,11 +533,13 @@ const AssetOverview = ({
     </Control>
   )
 
-  const isAssetLoaded =
+  let isAssetLoaded =
     asset !== null &&
     asset !== undefined &&
     asset !== false &&
     isLoading !== true
+
+  isAssetLoaded = false
 
   return (
     <>
@@ -599,20 +599,7 @@ const AssetOverview = ({
         <div className={classes.primaryMetadata}>
           <div>
             <div className={classes.categoryAndSpecies}>
-              {/* {isAssetLoaded ? (
-                <Link
-                  to={routes.viewCategoryWithVar.replace(
-                    ':categoryName',
-                    asset.category
-                  )}>
-                  {asset.category
-                    ? getCategoryMeta(asset.category).nameSingular
-                    : '(no category)'}
-                </Link>
-              ) : (
-                <LoadingShimmer width={300} height={50} />
-              )}{' '} */}
-              {asset ? (
+              {isAssetLoaded ? (
                 asset.category === AssetCategory.Avatar ? (
                   <>
                     <Typography
@@ -639,7 +626,11 @@ const AssetOverview = ({
                   </>
                 ) : null
               ) : (
-                <LoadingShimmer width={300} height={50} />
+                <div>
+                  <LoadingShimmer width={100} height={30} />
+                  {' / '}
+                  <LoadingShimmer width={200} height={30} />
+                </div>
               )}
             </div>
             <div className={classes.primaryMetadataText}>
@@ -661,12 +652,10 @@ const AssetOverview = ({
                     </Link>
                   </Typography>
                 ) : null
-              ) : (
-                <LoadingShimmer width={300} height={50} />
-              )}{' '}
+              ) : null}{' '}
               <Heading variant="h1" noMargin className={classes.titleAndAuthor}>
                 {!isAssetLoaded ? (
-                  <LoadingShimmer width={300} height={50} />
+                  <LoadingShimmer width={200} height={40} />
                 ) : (
                   <>
                     <Link to={urlToAsset}>{asset.title}</Link>
@@ -676,7 +665,9 @@ const AssetOverview = ({
                 <span className={classes.authorName}>
                   {' '}
                   {!isAssetLoaded ? (
-                    <LoadingShimmer width={200} height={30} />
+                    <>
+                      by <LoadingShimmer width={100} height={30} />
+                    </>
                   ) : (
                     <>
                       by{' '}
@@ -691,11 +682,6 @@ const AssetOverview = ({
                   )}
                 </span>
               </Heading>
-              {!isAssetLoaded ? (
-                <LoadingShimmer width={200} height={25} />
-              ) : (
-                <div className={classes.subTitle}></div>
-              )}
             </div>
           </div>
         </div>
