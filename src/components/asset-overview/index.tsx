@@ -533,13 +533,11 @@ const AssetOverview = ({
     </Control>
   )
 
-  let isAssetLoaded =
+  const isAssetLoaded =
     asset !== null &&
     asset !== undefined &&
     asset !== false &&
     isLoading !== true
-
-  isAssetLoaded = false
 
   return (
     <>
