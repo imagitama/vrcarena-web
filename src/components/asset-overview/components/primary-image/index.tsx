@@ -54,8 +54,13 @@ const cleanupAttachmentUrl = (url: string) =>
 
 const PrimaryImage = () => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false)
-  const { asset } = useAssetOverview()
+  const { asset, isLoading } = useAssetOverview()
   const classes = useStyles()
+
+  // fix showing a stale asset image until new one is loaded
+  if (isLoading) {
+    return null
+  }
 
   if (!asset) {
     return (
