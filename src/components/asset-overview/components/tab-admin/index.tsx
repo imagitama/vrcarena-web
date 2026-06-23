@@ -46,9 +46,9 @@ const AssetSims = ({
       {sims.map((sim) => (
         <AssetResultsItem
           asset={assets.find((asset) => asset.id === sim.id)}
-          controls={() => (
+          controls={
             <ConfidenceScore score={sim.confidence} title={sim.reason} small />
-          )}
+          }
           className={classes.asset}
         />
       ))}
