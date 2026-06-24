@@ -125,7 +125,6 @@ export const createReview = '/reviews/create'
 export const createSupportTicket = '/support-tickets/create'
 export const createSupportTicketWithVar =
   '/support-tickets/create/:parentTable/:parentId'
-// export const editSupportTicketWithVar = '/support-tickets/edit/:supportTicketId'
 export const viewSupportTicketWithVar = '/support-tickets/:supportTicketId'
 
 // @deprecated

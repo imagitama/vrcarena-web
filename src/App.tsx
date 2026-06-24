@@ -90,6 +90,7 @@ const useStyles = makeStyles({
 })
 
 // Lazy load these to improve performance (downloading and processing JS)
+const Stats = lazy(() => catchChunkDeaths(() => import('./containers/stats')))
 const Login = lazy(() => catchChunkDeaths(() => import('./containers/login')))
 const SignUp = lazy(() => catchChunkDeaths(() => import('./containers/signup')))
 const Logout = lazy(() => catchChunkDeaths(() => import('./containers/logout')))
@@ -293,6 +294,7 @@ const MainContent = () => {
         <Redirect from={'/privacy-policy'} to={routes.privacyPolicy} />
         <Redirect from={'/dcma-policy'} to={routes.dmcaPolicy} />
         <Route exact path={routes.home} component={Home} />
+        <Route exact path={routes.stats} component={Stats} />
         <Route exact path={routes.searchWithVar} component={Search} />
         <Route exact path={routes.cart} component={DeprecatedRouteView} />
         <Route exact path={routes.social} component={DeprecatedRouteView} />
