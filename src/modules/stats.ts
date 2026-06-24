@@ -2,6 +2,7 @@ import { AssetCategory } from './assets'
 
 interface GetAssetsStats {
   assetcount: number // public
+  adultassetcount: number // public isadult=true
   categorycount: {
     [AssetCategory.Avatar]: number
     [AssetCategory.Accessory]: number
@@ -18,6 +19,7 @@ interface GetAssetsStats {
 
 interface GetPatreonStats {
   activepatroncount: number
+  totalpatroncount: number
 }
 
 interface GetAuthorsStats {

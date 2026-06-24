@@ -14,6 +14,7 @@ import categoryMetas from '@/category-meta'
 import ErrorBoundary from '@/components/error-boundary'
 import Tooltip from '@/components/tooltip'
 import { FullStats, ViewNames } from '@/modules/stats'
+import InfoMessage from '@/components/info-message'
 
 const Tiles = styled.div`
   display: flex;
@@ -80,8 +81,16 @@ const Content = () => {
             ))}
             <TableRow>
               <TableCell>
+                <Tooltip title="Only: Public">
+                  <span>Total Adult Assets</span>
+                </Tooltip>
+              </TableCell>
+              <TableCell>{stats.assets.adultassetcount}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>
                 <Tooltip title="Approved in last 30 days">
-                  <span>Per Day</span>
+                  <span>Per Day*</span>
                 </Tooltip>
               </TableCell>
               <TableCell>{stats.assets.assetsperday}</TableCell>
@@ -89,7 +98,7 @@ const Content = () => {
             <TableRow>
               <TableCell>
                 <Tooltip title="Approved in last 30 days">
-                  <span>Per Week</span>
+                  <span>Per Week*</span>
                 </Tooltip>
               </TableCell>
               <TableCell>{stats.assets.assetsperweek}</TableCell>
@@ -165,8 +174,12 @@ const Content = () => {
         <Table size="small">
           <TableBody>
             <TableRow>
-              <TableCell>Total Active Patrons</TableCell>
+              <TableCell>Active Patrons</TableCell>
               <TableCell>{stats.patreon.activepatroncount}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>All-Time Total Patrons</TableCell>
+              <TableCell>{stats.patreon.totalpatroncount}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -182,6 +195,7 @@ export default () => (
       <meta name="description" content="Stats about the site." />
     </Helmet>
     <Heading variant="h1">Stats</Heading>
+    <InfoMessage>Stats updated every hour</InfoMessage>
     <Content />
   </>
 )
