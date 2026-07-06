@@ -45,6 +45,7 @@ import InfoMessage from '@/components/info-message'
 import PlatformSyncAssertion from './components/platform-sync-assertion'
 import ErrorBoundary from '@/components/error-boundary'
 import useUserId from '@/hooks/useUserId'
+import SuccessMessage from '@/components/success-message'
 
 // TODO: move to component
 const useStyles = makeStyles({
@@ -262,6 +263,8 @@ export default () => {
     return <NoPermissionMessage />
   }
 
+  const tenthJuly2026 = new Date(2026, 6, 10)
+
   return (
     <>
       <Helmet>
@@ -278,13 +281,9 @@ export default () => {
         asset is not on one of those sites (or you must log in to see it like{' '}
         <em>some</em> Jinxxy products) you can create it manually.
       </InfoMessage>
-      <InfoMessage hideId="extra-sources">
-        Is your asset on multiple platforms? Please sync one product{' '}
-        <span style={{ textDecoration: 'underline', fontWeight: 'bold' }}>
-          ONLY
-        </span>{' '}
-        then add the extra sources to it.
-      </InfoMessage>
+      {new Date() < tenthJuly2026 && (
+        <SuccessMessage>Asset sync has been fixed (6 July 2026)</SuccessMessage>
+      )}
       <View />
     </>
   )
