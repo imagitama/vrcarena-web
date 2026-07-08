@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -425,6 +425,14 @@ const DupeOutput = ({ dupeInfo }: { dupeInfo: GetAuthorDupesResult }) => {
 const AdminDupes = () => {
   const [isLoading, lastErrorCode, dupes] =
     useSupabaseView<GetAuthorDupesResult>('getAuthorDupes')
+
+  // TODO: do this better
+  useEffect(() => {
+    document.getElementById('root')?.classList.add('scroll')
+    return () => {
+      document.getElementById('root')?.classList.remove('scroll')
+    }
+  }, [])
 
   if (isLoading) {
     return <LoadingIndicator message="Finding dupes..." />

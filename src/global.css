@@ -6,6 +6,11 @@
   grid-template-rows: auto 1fr auto;
 }
 
+/* admin dupes */
+#root.scroll {
+  overflow-x: auto;
+}
+
 .main {
   position: relative;
 }

@@ -7,6 +7,7 @@ import useDatabaseQuery, {
 import {
   FullAsset,
   CollectionNames as AssetsCollectionNames,
+  AssetForList,
 } from '@/modules/assets'
 import {
   AuditQueueItem,
@@ -90,7 +91,7 @@ export const Renderer = ({ queuedItem }: { queuedItem: AuditQueueItem }) => (
   </Item>
 )
 
-const AssetAuditResult = ({ asset }: { asset: FullAsset }) => {
+const AssetAuditResult = ({ asset }: { asset: AssetForList }) => {
   const [isLoading, lastErrorCode, results, hydrate] =
     useDatabaseQuery<AuditQueueItem>(
       CollectionNames.AuditQueue,

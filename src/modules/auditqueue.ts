@@ -1,6 +1,7 @@
 import { PopularCurrency } from '@/currency'
 import {
   Asset,
+  AssetForList,
   CollectionNames as AssetsCollectionNames,
   SourceInfo,
 } from './assets'
