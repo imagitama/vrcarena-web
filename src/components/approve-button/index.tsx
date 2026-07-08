@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
+import ButtonGroup from '@mui/material/ButtonGroup'
 
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useUserId from '@/hooks/useUserId'
@@ -116,28 +117,22 @@ const ApproveButton = ({
         }
       }
 
-      const extraFields = isAsset
-        ? ({
-            ...(newApprovalStatus === ApprovalStatus.Declined
-              ? ({
-                  publishstatus: PublishStatus.Draft,
-                  declinedreasons: selectedReasons,
-                } as AssetMeta)
-              : {
-                  declinedreasons: [],
-                }),
-          } as AssetMeta)
-        : {}
-
-      await save({
-        approvalstatus: newApprovalStatus,
-        approvedat:
-          newApprovalStatus === ApprovalStatus.Approved
-            ? new Date().toISOString()
-            : null,
-        ...extraFields,
-        approvedby: userId,
-      })
+      if (newApprovalStatus === ApprovalStatus.Approved) {
+        await save({
+          approvalstatus: ApprovalStatus.Approved,
+          approvedat: new Date().toISOString(),
+          approvedby: userId,
+          declinedreasons: [],
+        })
+      } else {
+        await save({
+          approvalstatus: ApprovalStatus.Declined,
+          approvedat: null,
+          approvedby: null,
+          publishstatus: PublishStatus.Draft,
+          declinedreasons: selectedReasons,
+        })
+      }
 
       if (onDone) {
         onDone()
@@ -175,54 +170,56 @@ const ApproveButton = ({
         size="small"
         color="secondary"
         hollow={false}
-        isDisabled={approvalStatus === ApprovalStatus.Approved}>
+        isDisabled={approvalStatus === ApprovalStatus.Approved}
+        title="Notifies publisher, shows in search results, etc.">
         Approve
       </Button>
-      <div style={{ marginTop: '0.25rem' }} />
-      {isAsset && (
-        <ButtonDropdown
-          options={declinedReasonMeta.map((meta) => ({
-            id: meta.reason,
-            label: meta.label,
-          }))}
-          selectedIds={selectedReasons}
-          onSelect={(newReason: string) =>
-            setSelectedReasons((currentReasons) =>
-              currentReasons.includes(newReason as DeclinedReason)
-                ? currentReasons.filter((id) => id !== newReason)
-                : currentReasons.concat([newReason as DeclinedReason])
-            )
-          }
-          closeOnSelect={false}
-          size="small"
-          iconOnly
-          hollow
-          label="Reasons"
-        />
-      )}
-      <Button
-        onClick={() => onClickDecline()}
-        icon={<CancelIcon />}
-        size="small"
-        color="secondary"
-        hollow={false}
-        isDisabled={approvalStatus === ApprovalStatus.Declined}>
-        Decline{isAsset ? ' & Draft' : ''}
-      </Button>
-      {existingDeclinedReasons &&
-        !getAreArraysSame(selectedReasons, existingDeclinedReasons) && (
-          <div style={{ marginTop: '0.25rem' }}>
-            New reasons:
-            <ul>
-              {selectedReasons.map((reason) => (
-                <li key={reason}>{reason}</li>
-              ))}
-            </ul>
-            <Button onClick={onClickUpdate} size="small" color="secondary">
-              Save
-            </Button>
-          </div>
+      <ButtonGroup style={{ marginTop: '0.25rem' }}>
+        {isAsset && (
+          <ButtonDropdown
+            options={declinedReasonMeta.map((meta) => ({
+              id: meta.reason,
+              label: meta.label,
+            }))}
+            selectedIds={selectedReasons}
+            onSelect={(newReason: string) =>
+              setSelectedReasons((currentReasons) =>
+                currentReasons.includes(newReason as DeclinedReason)
+                  ? currentReasons.filter((id) => id !== newReason)
+                  : currentReasons.concat([newReason as DeclinedReason])
+              )
+            }
+            closeOnSelect={false}
+            size="small"
+            hollow
+            label="Reasons"
+          />
         )}
+        <Button
+          onClick={() => onClickDecline()}
+          icon={<CancelIcon />}
+          size="small"
+          color="secondary"
+          hollow={false}
+          isDisabled={approvalStatus === ApprovalStatus.Declined}
+          title="Reverts to draft, notifies publisher">
+          Decline{isAsset ? ' & Draft' : ''}
+        </Button>
+        {existingDeclinedReasons &&
+          !getAreArraysSame(selectedReasons, existingDeclinedReasons) && (
+            <div style={{ marginTop: '0.25rem' }}>
+              New reasons:
+              <ul>
+                {selectedReasons.map((reason) => (
+                  <li key={reason}>{reason}</li>
+                ))}
+              </ul>
+              <Button onClick={onClickUpdate} size="small" color="secondary">
+                Save
+              </Button>
+            </div>
+          )}
+      </ButtonGroup>
     </>
   )
 }

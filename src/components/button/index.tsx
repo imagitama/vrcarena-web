@@ -236,6 +236,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       </span>
     )
 
+    const isIconOnly = children === undefined
+
     const contents = (
       <MaterialButton
         ref={ref}
@@ -249,14 +251,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           [classes.root]: true,
           [classes.tertiary]: props.color === 'tertiary',
           [classes.ai]: props.color === 'ai',
-          [classes.iconOnly]: children === undefined,
+          [classes.iconOnly]: isIconOnly,
           [classes.hollow]: isHollow,
           [classes.small]: props.size === 'small',
           [classes.large]: props.size === 'large',
           [classes.margin]: props.margin,
-          [classes.iconLeft]: iconSide === 'left',
-          [classes.iconCenter]: iconSide === 'center',
-          [classes.iconRight]: iconSide === 'right',
+          [classes.iconLeft]: iconSide === 'left' && !isIconOnly,
+          [classes.iconCenter]: iconSide === 'center' || isIconOnly,
+          [classes.iconRight]: iconSide === 'right' && !isIconOnly,
           [classes.isLoading]: isLoading,
           [className]: true,
         })}

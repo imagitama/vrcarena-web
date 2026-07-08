@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
+import ButtonGroup from '@mui/material/ButtonGroup'
 
 import { handleError } from '@/error-handling'
 import { AccessStatus, MetaRecord } from '@/modules/common'
@@ -127,7 +128,7 @@ const DeleteButton = ({
   const isAsset = metaCollectionName === AssetCollectionNames.AssetsMeta
 
   return (
-    <>
+    <ButtonGroup>
       {isAsset && (
         <ButtonDropdown
           options={deletionReasonMeta
@@ -147,7 +148,6 @@ const DeleteButton = ({
           }
           closeOnSelect={true}
           size="small"
-          iconOnly
           hollow
           label="Reasons"
         />
@@ -156,7 +156,6 @@ const DeleteButton = ({
         onClick={toggle}
         icon={<DeleteIcon />}
         size="small"
-        iconOnly
         color="secondary"
         title={accessStatus === AccessStatus.Deleted ? 'Un-delete' : 'Delete'}
         {...buttonProps}
@@ -168,7 +167,7 @@ const DeleteButton = ({
             Update Reason
           </Button>
         )}
-    </>
+    </ButtonGroup>
   )
 }
 

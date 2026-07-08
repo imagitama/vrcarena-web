@@ -76,7 +76,12 @@ const AssetApprovalChecklistItem = ({
     <TableRow key={label}>
       <TableCell align="right">{label}</TableCell>
       <TableCell className={classes.cell}>
-        {isValid ? (
+        {isNotImportant ? (
+          <span>
+            <CheckIcon />
+            {validLabel || invalidLabel}
+          </span>
+        ) : isValid ? (
           <>
             <span className={classes.pass}>
               {' '}
@@ -111,7 +116,7 @@ const QueuedAssetInfo = ({
 
   return (
     <Message title="Queued Asset">
-      Published by{' '}
+      Published <FormattedDate date={asset.publishedat!} /> by{' '}
       {asset.publishedby !== null ? (
         <UsernameLink
           id={asset.publishedby}
@@ -122,7 +127,6 @@ const QueuedAssetInfo = ({
         '(unknown)'
       )}{' '}
       <br />
-      <FormattedDate date={asset.publishedat!} />
       <Columns>
         <Column>
           <Table size="small">
@@ -201,7 +205,6 @@ const QueuedAssetInfo = ({
                   isValid={
                     Array.isArray(asset.species) && asset.species.length > 0
                   }
-                  isNotImportant
                   validLabel={
                     asset.speciesnames && asset.speciesnames.length
                       ? asset.speciesnames.join(', ')
@@ -211,9 +214,8 @@ const QueuedAssetInfo = ({
               )}
               <AssetApprovalChecklistItem
                 label="Adult Flag"
-                isValid={asset.isadult}
-                validLabel="Is NSFW"
-                invalidLabel="Is not NSFW"
+                isValid
+                validLabel={asset.isadult ? 'Is NSFW' : 'Is not NSFW'}
                 isNotImportant
               />
             </TableBody>
