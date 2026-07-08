@@ -338,8 +338,13 @@ const Avatars = () => {
           {Object.entries(resultsByAssetId).map(([assetId, submissions]) => (
             <TableRow key={assetId}>
               <TableCell>
-                {/* @ts-ignore */}
-                <AssetResultsItem asset={submissions[0]} />
+                {submissions[0].assetdata ? (
+                  <AssetResultsItem asset={submissions[0].assetdata} />
+                ) : (
+                  <ErrorMessage>
+                    Asset {submissions[0].asset} was not found
+                  </ErrorMessage>
+                )}
               </TableCell>
               <TableCell>
                 <ApplyAvatarsForm
@@ -359,9 +364,5 @@ const Avatars = () => {
 }
 
 export default () => {
-  return (
-    <div>
-      <Avatars />
-    </div>
-  )
+  return <Avatars />
 }

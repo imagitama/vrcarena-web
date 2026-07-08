@@ -1,5 +1,6 @@
 import { VrchatAvatar } from '@/vrchat'
 import { VrchatAvatarCachedItem } from './vrchat-cache'
+import { AssetForList } from './assets'
 
 export interface PublicAvatarSubmission {
   id: string
@@ -11,9 +12,8 @@ export interface PublicAvatarSubmission {
 }
 
 export interface FullPublicAvatarSubmission extends PublicAvatarSubmission {
+  assetdata: AssetForList | null
   creatorname: string
-  title: string
-  thumbnailurl: string
   existingavatarids: string[]
   existingavatardata: VrchatAvatarCachedItem[]
   avatar?: VrchatAvatar
