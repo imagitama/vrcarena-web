@@ -30,7 +30,7 @@ const approvalStatusMetas: { [key in ApprovalStatus]: Meta } = {
   },
   [ApprovalStatus.Waiting]: {
     positivity: 0,
-    label: 'Waiting For Approval',
+    label: 'Queued',
   },
   [ApprovalStatus.Declined]: {
     positivity: -1,

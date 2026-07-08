@@ -9,7 +9,7 @@ import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import AmendmentResults from '@/components/amendment-results'
 
-export default ({ assetId }: { assetId: string }) => {
+const AmendmentsForAsset = ({ assetId }: { assetId: string }) => {
   const getQuery = useCallback(
     (client: SupabaseClient) =>
       client
@@ -19,9 +19,9 @@ export default ({ assetId }: { assetId: string }) => {
         .eq('parent', assetId),
     [assetId]
   )
-  const [isLoading, lastErrorCode, results] = useDataStore<FullAmendment>(
+  const [isLoading, lastErrorCode, results] = useDataStore<FullAmendment<any>>(
     getQuery,
-    'asset-amendments'
+    { queryName: 'asset-amendments' }
   )
 
   if (isLoading || !results || !Array.isArray(results)) {
@@ -38,3 +38,5 @@ export default ({ assetId }: { assetId: string }) => {
 
   return <AmendmentResults results={results} showParentDetails={false} />
 }
+
+export default AmendmentsForAsset

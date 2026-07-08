@@ -12,7 +12,7 @@ const AmendmentEditorRecordManager = ({
   amendment,
   onDone,
 }: {
-  amendment: FullAmendment
+  amendment: FullAmendment<any>
   onDone: () => void
 }) => {
   const [isSavingParent, isSavingParentSuccess, lastErrorCode, saveParent] =

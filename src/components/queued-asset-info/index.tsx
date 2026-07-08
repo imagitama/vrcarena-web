@@ -43,12 +43,11 @@ const useStyles = makeStyles({
   fail: {
     color: colorPalette.negative,
   },
-  notImportant: {
-    color: 'rgba(255, 0, 0, 0.5)',
-  },
   cell: {
+    display: 'flex',
+    alignItems: 'center',
     '& span': {
-      display: 'flex',
+      display: 'inline-flex',
       alignItems: 'center',
     },
     '& svg': {
@@ -90,10 +89,7 @@ const AssetApprovalChecklistItem = ({
             ) : null}
           </>
         ) : (
-          <span
-            className={`${classes.fail} ${
-              isNotImportant ? classes.notImportant : ''
-            }`}>
+          <span className={`${isNotImportant ? '' : classes.fail}`}>
             <CloseIcon /> {invalidLabel || 'Not Good'}
           </span>
         )}
@@ -218,6 +214,7 @@ const QueuedAssetInfo = ({
                 isValid={asset.isadult}
                 validLabel="Is NSFW"
                 invalidLabel="Is not NSFW"
+                isNotImportant
               />
             </TableBody>
           </Table>

@@ -22,9 +22,9 @@ export interface AmendmentMeta {
   editornotes: string
 }
 
-export interface FullAmendment extends Amendment, AmendmentMeta {
+export interface FullAmendment<T> extends Amendment, AmendmentMeta {
   approvalstatus: ApprovalStatus
-  parentdata: any
+  parentdata: T
   createdbyusername: string
   createdbyreputation: number
 }

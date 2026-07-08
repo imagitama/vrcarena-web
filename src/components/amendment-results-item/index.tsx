@@ -36,11 +36,11 @@ const ParentRenderer = ({ table, data }: { table: string; data: any }) => {
   }
 }
 
-export default ({
+const AmendmentResultsItem = ({
   result,
   showParentDetails = true,
 }: {
-  result: FullAmendment
+  result: FullAmendment<any>
   showParentDetails?: boolean
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -48,7 +48,6 @@ export default ({
   const {
     id: amendmentId,
     parenttable: parentTable,
-    // parent: parentId,
     fields: fields,
     comments: comments,
     createdat: createdAt,
@@ -130,3 +129,5 @@ export default ({
     </>
   )
 }
+
+export default AmendmentResultsItem

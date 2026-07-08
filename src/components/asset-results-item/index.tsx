@@ -188,10 +188,7 @@ const AssetState = ({ asset }: { asset: AssetForList | FullAsset }) => {
   ) {
     return (
       <Tooltip title="This asset is waiting for approval by our editorial team. It may also be waiting for automical approval.">
-        <Chip
-          className={classes.waitingForApproval}
-          label="Waiting For Approval"
-        />
+        <Chip className={classes.waitingForApproval} label="Queued" />
       </Tooltip>
     )
   }

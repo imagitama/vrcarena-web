@@ -8,7 +8,7 @@ import NoResultsMessage from '@/components/no-results-message'
 import { ApprovalStatus } from '@/modules/common'
 import { EqualActiveFilter } from '@/filters'
 
-const Renderer = ({ items }: { items?: FullAmendment[] }) =>
+const Renderer = ({ items }: { items?: FullAmendment<any>[] }) =>
   items ? (
     <AmendmentResults results={items} />
   ) : (
@@ -22,11 +22,11 @@ enum SubView {
 }
 
 export default () => {
-  const getQuery = useCallback<GetQueryFn<FullAmendment, SubView>>(
+  const getQuery = useCallback<GetQueryFn<FullAmendment<any>, SubView>>(
     (query, selectedSubView, activeFilters) => {
       const userIdFilter = activeFilters.find(
         (filter) => filter.fieldName === 'createdby'
-      ) as EqualActiveFilter<FullAmendment>
+      ) as EqualActiveFilter<FullAmendment<any>>
 
       if (userIdFilter && userIdFilter.value) {
         query = query.eq('createdby', userIdFilter.value)
@@ -55,7 +55,7 @@ export default () => {
   )
 
   return (
-    <PaginatedView<FullAmendment>
+    <PaginatedView<FullAmendment<any>>
       name="admin-amendments"
       viewName={ViewNames.GetFullAmendments}
       getQuery={getQuery}

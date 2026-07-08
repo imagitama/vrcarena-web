@@ -24,7 +24,7 @@ export interface AssetAdminQueueItem extends AdminQueueItemBase<SmallAsset> {
   type: AdminQueueItemType.Asset
 }
 export interface AmendmentAdminQueueItem
-  extends AdminQueueItemBase<FullAmendment> {
+  extends AdminQueueItemBase<FullAmendment<any>> {
   type: AdminQueueItemType.Amendment
 }
 export interface ReportAdminQueueItem extends AdminQueueItemBase<FullReport> {

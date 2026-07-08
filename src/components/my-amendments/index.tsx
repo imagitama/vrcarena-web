@@ -11,15 +11,13 @@ import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import AmendmentResults from '@/components/amendment-results'
 
-export default () => {
+const MyAmendments = () => {
   const userId = useUserId()
-  const [isLoading, lastErrorCode, results] = useDatabaseQuery<FullAmendment>(
-    ViewNames.GetFullAmendments,
-    [['createdby', Operators.EQUALS, userId]],
-    {
-      orderBy: ['createdat', OrderDirections.DESC],
-    }
-  )
+  const [isLoading, lastErrorCode, results] = useDatabaseQuery<
+    FullAmendment<any>
+  >(ViewNames.GetFullAmendments, [['createdby', Operators.EQUALS, userId]], {
+    orderBy: ['createdat', OrderDirections.DESC],
+  })
 
   if (isLoading || !results) {
     return <LoadingIndicator message="Loading amendments..." />
@@ -35,3 +33,5 @@ export default () => {
 
   return <AmendmentResults results={results} />
 }
+
+export default MyAmendments

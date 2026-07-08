@@ -10,11 +10,11 @@ import { FullAmendment } from '@/modules/amendments'
 import NoResultsMessage from '@/components/no-results-message'
 import AmendmentResultsItem from '@/components/amendment-results-item'
 
-export default ({
+const AmendmentResults = ({
   results,
   showParentDetails = true,
 }: {
-  results: FullAmendment[]
+  results: FullAmendment<any>[]
   showParentDetails?: boolean
 }) => {
   const isEditor = useIsEditor()
@@ -42,3 +42,5 @@ export default ({
     <NoResultsMessage>No amendments to display</NoResultsMessage>
   )
 }
+
+export default AmendmentResults

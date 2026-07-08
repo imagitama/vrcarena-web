@@ -12,7 +12,6 @@ import CheckIcon from '@mui/icons-material/Check'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
 import useIsEditor from '@/hooks/useIsEditor'
@@ -56,7 +55,7 @@ import LoadingShimmer from '@/components/loading-shimmer'
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import Button from '@/components/button'
-import FailureInfoOutput from '../failure-info-output'
+import FailureInfoOutput from '@/components/failure-info-output'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   queuedStatus: {
@@ -290,11 +289,13 @@ const QueuedItemRow = ({
   showMoreInfo?: boolean
   hydrate?: () => void
 }) => {
-  const [isSubscribing, isSubscribed, lastSubscribeErrorCode, liveQueuedItem] =
+  const [isSubscribing, , lastSubscribeErrorCode, liveQueuedItem] =
     useDataStoreItemSync<AssetSyncQueueItem>(
       CollectionNames.AssetSyncQueue,
       originalQueuedItem.id,
-      `get-my-asset-sync-queued-item_${originalQueuedItem.id}_SYNCED`
+      {
+        queryName: `get-my-asset-sync-queued-item_${originalQueuedItem.id}_SYNCED`,
+      }
     )
   const [isDeleted, setIsDeleted] = useState(false)
   const classes = useStyles()
@@ -599,13 +600,6 @@ const AssetSyncQueue = ({
   return (
     <>
       <Table>
-        {/* <TableHead>
-          <TableRow>
-            <TableCell width="60%">Source</TableCell>
-            <TableCell width="20%"></TableCell>
-            <TableCell width="20%">Controls</TableCell>
-          </TableRow>
-        </TableHead> */}
         <TableBody>
           {isLoading ? (
             <>

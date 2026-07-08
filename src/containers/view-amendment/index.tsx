@@ -155,7 +155,7 @@ const View = () => {
   const { amendmentId } = useParams<{ amendmentId: string }>()
   const userId = useUserId()
   const [isLoadingAmendment, lastErrorCode, amendment, hydrate] =
-    useDataStoreItem<FullAmendment>(
+    useDataStoreItem<FullAmendment<any>>(
       AmendmentsViewNames.GetFullAmendments,
       userId ? amendmentId : false,
       { queryName: 'view-amendment' }
