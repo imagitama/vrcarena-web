@@ -136,7 +136,11 @@ const View = () => {
                 <InfoMessage
                   title="How Support Tickets Work"
                   hideId="admin-support-tickets-info">
-                  Can be created via the website or our Discord.
+                  Users can open a support ticket from their profile to resolve
+                  issues with assets, authentication, etc.
+                  <br />
+                  <br />
+                  Be sure to check the Discord server too!
                 </InfoMessage>
                 <AdminSupportTickets />
               </>

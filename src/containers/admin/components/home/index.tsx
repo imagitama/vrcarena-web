@@ -34,6 +34,7 @@ import FormControls from '@/components/form-controls'
 import Whiteboard from '@/components/whiteboard'
 import ErrorBoundary from '@/components/error-boundary'
 import Paper from '@/components/paper'
+import NoResultsMessage from '@/components/no-results-message'
 
 const parentName = 'admin'
 const pageName = 'notepad'
@@ -153,9 +154,9 @@ const QueueItemLabel = ({ queueItem }: { queueItem: AdminQueueItem }) => {
           <Link
             to={routes.viewAssetWithVar.replace(
               ':assetId',
-              queueItem.record.id
+              queueItem.record.asset
             )}>
-            {queueItem.record.asset}
+            {queueItem.record.assetdata?.title || '(untitled asset)'}
           </Link>
         </>
       )
@@ -205,9 +206,7 @@ const AdminQueue = () => {
           ) : (
             <TableRow>
               <TableCell colSpan={999}>
-                <FormControls>
-                  <em>No items in queue</em>
-                </FormControls>
+                <NoResultsMessage>No items in the queue</NoResultsMessage>
               </TableCell>
             </TableRow>
           )}

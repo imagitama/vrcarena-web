@@ -423,6 +423,7 @@ const DupeOutput = ({ dupeInfo }: { dupeInfo: GetAuthorDupesResult }) => {
 }
 
 const AdminDupes = () => {
+  // TODO: use enum for view name, use correct hook useDataStoreItems(...)
   const [isLoading, lastErrorCode, dupes] =
     useSupabaseView<GetAuthorDupesResult>('getAuthorDupes')
 

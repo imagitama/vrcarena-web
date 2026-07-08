@@ -1,6 +1,9 @@
 import { FullAmendment } from './amendments'
 import { SmallAsset } from './assets'
-import { PublicAvatarSubmission } from './public-avatar-submissions'
+import {
+  FullPublicAvatarSubmission,
+  PublicAvatarSubmission,
+} from './public-avatar-submissions'
 import { FullReport } from './reports'
 
 export enum AdminQueueItemType {
@@ -10,28 +13,26 @@ export enum AdminQueueItemType {
   Avatar = 'avatar',
 }
 
-export interface AdminQueueItemBase {
+export interface AdminQueueItemBase<T> {
   id: number
   type: AdminQueueItemType
-  record: SmallAsset | FullAmendment | FullReport | PublicAvatarSubmission
+  record: T
   createdat: string
 }
 
-export interface AssetAdminQueueItem extends AdminQueueItemBase {
+export interface AssetAdminQueueItem extends AdminQueueItemBase<SmallAsset> {
   type: AdminQueueItemType.Asset
-  record: SmallAsset
 }
-export interface AmendmentAdminQueueItem extends AdminQueueItemBase {
+export interface AmendmentAdminQueueItem
+  extends AdminQueueItemBase<FullAmendment> {
   type: AdminQueueItemType.Amendment
-  record: FullAmendment
 }
-export interface ReportAdminQueueItem extends AdminQueueItemBase {
+export interface ReportAdminQueueItem extends AdminQueueItemBase<FullReport> {
   type: AdminQueueItemType.Report
-  record: FullReport
 }
-export interface AvatarAdminQueueItem extends AdminQueueItemBase {
+export interface AvatarAdminQueueItem
+  extends AdminQueueItemBase<FullPublicAvatarSubmission> {
   type: AdminQueueItemType.Avatar
-  record: PublicAvatarSubmission
 }
 
 export type AdminQueueItem =

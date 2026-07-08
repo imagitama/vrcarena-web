@@ -50,7 +50,8 @@ export default () => {
           type: FilterType.Equal,
           subType: FilterSubType.UserId,
         },
-      ]}>
+      ]}
+      itemNamePlural="support tickets">
       <Renderer />
     </PaginatedView>
   )
