@@ -18,6 +18,7 @@ import {
   CollectionNames as AssetsCollectionNames,
   ViewNames,
   AssetForList_Editor,
+  getIsAssetWaitingForApproval,
 } from '@/modules/assets'
 import { EqualActiveFilter, FilterSubType, FilterType } from '@/filters'
 import { colorPalette } from '@/config'
@@ -105,11 +106,15 @@ function AssetsTable({
                     <AssetResultsItem asset={asset} showState />
                   </TableCell>
                   <TableCell>
-                    <QueuedAssetInfo
-                      asset={asset}
-                      hydrate={hydrate}
-                      showEditorControls={false}
-                    />
+                    {getIsAssetWaitingForApproval(asset) ? (
+                      <QueuedAssetInfo
+                        asset={asset}
+                        hydrate={hydrate}
+                        showEditorControls={false}
+                      />
+                    ) : (
+                      '-'
+                    )}
                   </TableCell>
                   <TableCell>
                     <EditorRecordManager
@@ -124,6 +129,14 @@ function AssetsTable({
                       // @ts-ignore
                       onDone={hydrate ? () => hydrate() : undefined}
                       callOnDoneOnEditorNotes={false}
+                      approver={
+                        asset.approvedby
+                          ? {
+                              id: asset.approvedby!,
+                              username: asset.approvedbyusername!,
+                            }
+                          : undefined
+                      }
                     />
                     <div style={{ marginTop: '0.5rem' }} />
                     <ErrorBoundary>

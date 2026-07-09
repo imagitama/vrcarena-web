@@ -25,6 +25,7 @@ import MetaStatus from '@/components/meta-status'
 import AdminPublishButton from '@/components/admin-publish-button'
 import ErrorBoundary from '@/components/error-boundary'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { UserFromView } from '@/modules/users'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -87,6 +88,7 @@ const EditorRecordManager = ({
   showBox = true,
   comments,
   small = false,
+  approver,
 }: {
   id: string
   metaCollectionName: string
@@ -114,6 +116,7 @@ const EditorRecordManager = ({
   showBox?: boolean
   comments?: string
   small?: boolean
+  approver?: UserFromView
 }) => {
   const classes = useStyles()
   return (
@@ -165,6 +168,7 @@ const EditorRecordManager = ({
                   <MetaStatus
                     status={existingApprovalStatus}
                     type={ApprovalStatus}
+                    byUser={approver}
                   />
                 </div>
               )}

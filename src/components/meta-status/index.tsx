@@ -2,6 +2,8 @@ import React from 'react'
 import { makeStyles } from '@mui/styles'
 import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
 import { colorPalette } from '@/config'
+import { UserFromView } from '@/modules/users'
+import UsernameLink from '../username-link'
 
 const useStyles = makeStyles({
   status: {
@@ -72,7 +74,15 @@ const publishStatusMetas: { [key in PublishStatus]: Meta } = {
   },
 }
 
-const MetaStatus = ({ status, type }: { status: any; type: any }) => {
+const MetaStatus = ({
+  status,
+  type,
+  byUser,
+}: {
+  status: any
+  type: any
+  byUser?: UserFromView
+}) => {
   const classes = useStyles()
 
   if (!status) {
@@ -103,7 +113,19 @@ const MetaStatus = ({ status, type }: { status: any; type: any }) => {
       ? classes.bad
       : ''
 
-  return <div className={`${classes.status} ${className}`}>{meta.label}</div>
+  return (
+    <div className={`${classes.status} ${className}`}>
+      {meta.label}
+      {byUser ? (
+        <>
+          {' '}
+          by <UsernameLink id={byUser.id} username={byUser.username} />
+        </>
+      ) : (
+        ''
+      )}
+    </div>
+  )
 }
 
 export default MetaStatus

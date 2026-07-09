@@ -230,7 +230,7 @@ const getAssetStateText = (
     case ApprovalStatus.AutoApproved:
       return {
         label: `Public${
-          asset.approvalstatus === ApprovalStatus.AutoApproved && '*'
+          asset.approvalstatus === ApprovalStatus.AutoApproved ? '*' : ''
         }`,
         title:
           'This asset is in search results, viewing someone like an author, browsing a category, browsing a species, etc. (* = auto-approved)',

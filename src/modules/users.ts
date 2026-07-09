@@ -75,6 +75,11 @@ export interface FullUser_Editor extends FullUser {
   aievaluation: AiEvaluateQueuedItem | null
 }
 
+export interface UserFromView {
+  id: string
+  username: string
+}
+
 export enum CollectionNames {
   Users = 'users',
   UsersMeta = 'usermeta',

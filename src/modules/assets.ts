@@ -242,6 +242,8 @@ export interface AssetForList_Editor extends AssetForList {
 
   // extra metadata for admin assets view
   editornotes: string
+  approvedby: string | null
+  approvedbyusername: string | null
 }
 
 export type FullAssetMention = {
