@@ -5,6 +5,10 @@ import {
   CollectionNames as AssetsCollectionNames,
 } from '@/modules/assets'
 import {
+  Author,
+  CollectionNames as AuthorsCollectionNames,
+} from '@/modules/authors'
+import {
   FullComment,
   CollectionNames as CommentsCollectionNames,
 } from '@/modules/comments'
@@ -19,7 +23,7 @@ const GenericOutputLabel = ({
 }: {
   type: string
   id: string
-  data?: Asset | FullComment
+  data?: Asset | FullComment | Author
 }) => {
   if (!data) {
     return (
@@ -31,6 +35,8 @@ const GenericOutputLabel = ({
   switch (type) {
     case AssetsCollectionNames.Assets:
       return <Link to={getUrlForParent(type, id)}>{data.title}</Link>
+    case AuthorsCollectionNames.Authors:
+      return <Link to={getUrlForParent(type, id)}>{data.name}</Link>
     case CommentsCollectionNames.Comments:
       return (
         <Link to={getUrlForParent(type, id)}>{data.createdbyusername}</Link>
