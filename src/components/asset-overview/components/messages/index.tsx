@@ -97,7 +97,7 @@ const AssetOverviewMessages = () => {
   }
 
   switch (asset.approvalstatus) {
-    case ApprovalStatus.Declined:
+    case ApprovalStatus.Quarantined:
       messages.push(
         <Message color="#1c0002" key="declined" icon={<CancelIcon />}>
           This asset is waiting in the approval queue and is under investigation
@@ -105,7 +105,7 @@ const AssetOverviewMessages = () => {
         </Message>
       )
       break
-    case ApprovalStatus.Quarantined:
+    case ApprovalStatus.Declined:
       messages.push(
         <Message color="#1c0002" key="declined" icon={<CancelIcon />}>
           This asset has been declined for approval. It has the following
