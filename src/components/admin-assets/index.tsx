@@ -124,6 +124,7 @@ function AssetsTable({
                       onDone={hydrate ? () => hydrate() : undefined}
                       callOnDoneOnEditorNotes={false}
                     />
+                    <div style={{ marginTop: '0.5rem' }} />
                     <ErrorBoundary>
                       <AiArea
                         title="Evaluation"

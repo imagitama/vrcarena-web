@@ -23,8 +23,8 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     position: 'relative',
     padding: '1rem',
     overflow: 'hidden',
-    background: colorAiVeryDark,
-    borderRadius: theme.shape.borderRadius,
+    border: `1px solid ${colorAiVeryDark}`,
+    borderRadius: '0.5rem',
     [mediaQueryForTabletsOrBelow]: {
       padding: '0.5rem',
     },
