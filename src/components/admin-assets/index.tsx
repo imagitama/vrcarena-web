@@ -38,6 +38,7 @@ import ErrorBoundary from '@/components/error-boundary'
 import AiArea from '../ai-area'
 import { Intent } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
+import { OrderDirections } from '@/hooks/useDatabaseQuery'
 
 const useStyles = makeStyles({
   pass: {
@@ -353,6 +354,7 @@ const AdminAssets = () => {
           },
         ]}
         defaultFieldName={'publishedat'}
+        defaultDirection={OrderDirections.ASC}
         urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
           ':tabName',
           'assets'

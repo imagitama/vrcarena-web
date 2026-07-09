@@ -203,6 +203,8 @@ const Page = () => {
         )
       : false
 
+  console.debug('SORTING', defaultFieldName, defaultDirection, sorting)
+
   const rangeStart = (currentPageNumber - 1) * limitPerPage
   const rangeEnd = rangeStart + limitPerPage - 1
 
@@ -740,6 +742,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
                         options={sortOptions}
                         sortKey={`${keyPrefix}_sorting`}
                         defaultFieldName={defaultFieldName}
+                        defaultDirection={defaultDirection}
                       />
                     </Control>
                   </ControlGroup>

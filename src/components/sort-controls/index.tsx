@@ -72,12 +72,18 @@ const SortControls = <TRecord extends Record<string, any>>({
   sortKey,
   options,
   defaultFieldName = '',
+  defaultDirection,
 }: {
   sortKey: string
   options: SortOption<TRecord>[]
   defaultFieldName?: string
+  defaultDirection?: OrderDirections
 }) => {
-  const [sorting, setSorting] = useSorting(sortKey, defaultFieldName)
+  const [sorting, setSorting] = useSorting(
+    sortKey,
+    defaultFieldName,
+    defaultDirection
+  )
   const buttonRef = useRef<HTMLSpanElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const optionsWithDirections = appendDirections(options)
