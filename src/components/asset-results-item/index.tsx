@@ -29,7 +29,7 @@ import useUserPreferences from '@/hooks/useUserPreferences'
 import { getCategoryMeta } from '@/category-meta'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import { AssetSearchResult } from '@/hooks/useAlgoliaSearch'
-import { AccessStatus, ApprovalStatus } from '@/modules/common'
+import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
 
 import Link from '@/components/link'
 import DefaultThumbnail from '@/components/default-thumbnail'
@@ -154,7 +154,7 @@ const useStyles = makeStyles({
     },
   },
   // chips
-  visibleToEveryone: {
+  public: {
     backgroundColor: 'rgb(0, 100, 0) !important',
   },
   waitingForApproval: {
@@ -167,62 +167,99 @@ const useStyles = makeStyles({
   declined: {
     backgroundColor: 'rgb(100, 0, 0) !important',
   },
+  quarantined: {
+    '&&': {
+      background: `repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.25) 0,
+    rgba(0,0,0,0.25) 0.25rem,
+    rgba(255, 221, 0, 0.25) 0.25rem,
+    rgba(255, 221, 0, 0.25) 0.5rem
+  )`,
+    },
+  },
 })
 
 const divider = '/'
 
-const AssetState = ({ asset }: { asset: AssetForList | FullAsset }) => {
-  const classes = useStyles()
-
-  if (asset.accessstatus === AccessStatus.Deleted) {
-    return (
-      <Tooltip title="This asset has been deleted by the editorial team. Please view the editor notes for more info.">
-        <Chip className={classes.deleted} label="Deleted" />
-      </Tooltip>
-    )
+const getAssetStateText = (
+  asset: AssetForList | FullAsset
+): null | {
+  title: string
+  class: keyof ReturnType<typeof useStyles>
+  label: string
+} => {
+  switch (asset.accessstatus) {
+    case AccessStatus.Deleted:
+      return {
+        label: 'Deleted',
+        title:
+          'This asset has been deleted by the editorial team. Please view the editor notes for more info.',
+        class: 'deleted',
+      }
   }
 
-  if (
-    getIsAssetWaitingForApproval(asset) &&
-    asset.approvalstatus !== ApprovalStatus.AutoApproved
-  ) {
-    return (
-      <Tooltip title="This asset is waiting for approval by our editorial team. It may also be waiting for automical approval.">
-        <Chip className={classes.waitingForApproval} label="Queued" />
-      </Tooltip>
-    )
+  switch (asset.publishstatus) {
+    case PublishStatus.Draft:
+      return {
+        label: 'Draft',
+        title:
+          'This asset is a draft and requires publishing before it is visible to everyone.',
+        class: 'draft',
+      }
   }
 
-  if (getIsAssetDeclined(asset)) {
-    return (
-      <Tooltip title="This asset was declined by our editorial team. Please view the editor notes and comments.">
-        <Chip className={classes.declined} label="Declined" />
-      </Tooltip>
-    )
-  }
+  switch (asset.approvalstatus) {
+    case ApprovalStatus.Declined:
+      return {
+        label: 'Declined',
+        title:
+          'This asset was declined by our staff. Please view the editor notes and comments.',
+        class: 'declined',
+      }
 
-  if (getIsAssetADraft(asset)) {
-    return (
-      <Tooltip title="This asset is a draft and requires publishing before it is visible to everyone.">
-        <Chip className={classes.draft} label="Draft" />
-      </Tooltip>
-    )
-  }
+    case ApprovalStatus.Quarantined:
+      return {
+        label: 'Quarantined',
+        title:
+          'This asset cannot be approved until it has been un-quarantined.',
+        class: 'quarantined',
+      }
 
-  if (getIsAssetVisibleToEveryone(asset)) {
-    return (
-      <Tooltip title="This asset is in search results, viewing someone like an author, browsing a category, browsing a species, etc. * = auto-approved">
-        <Chip
-          className={classes.visibleToEveryone}
-          label={`Visible${
-            asset.approvalstatus === ApprovalStatus.AutoApproved ? '*' : ''
-          }`}
-        />
-      </Tooltip>
-    )
+    case ApprovalStatus.Approved:
+    case ApprovalStatus.AutoApproved:
+      return {
+        label: `Public${
+          asset.approvalstatus === ApprovalStatus.AutoApproved && '*'
+        }`,
+        title:
+          'This asset is in search results, viewing someone like an author, browsing a category, browsing a species, etc. (* = auto-approved)',
+        class: 'public',
+      }
+
+    case ApprovalStatus.Waiting:
+      return {
+        label: 'Pending',
+        title:
+          'This asset is waiting to be approved. It may be auto-approved if conditions are met.',
+        class: 'waitingForApproval',
+      }
   }
 
   return null
+}
+
+const AssetState = ({ asset }: { asset: AssetForList | FullAsset }) => {
+  const classes = useStyles()
+  const result = getAssetStateText(asset)
+
+  if (!result) return null
+
+  return (
+    <Tooltip title={result.title}>
+      <Chip className={classes[result.class]} label={result.label} />
+    </Tooltip>
+  )
 }
 
 const SpeciesOutput = ({
@@ -393,7 +430,7 @@ const AssetResultsItem = ({
                   />
                 ))}
             </div>
-            {Controls || actuallyShowMoreInfo ? (
+            {Controls || actuallyShowMoreInfo || showState ? (
               <div className={classes.moreInfo}>
                 <div className={classes.controls}>
                   {Controls ? (

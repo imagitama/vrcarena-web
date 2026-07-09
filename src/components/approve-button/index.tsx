@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 import ButtonGroup from '@mui/material/ButtonGroup'
+import {
+  Quarantine as QuarantineIcon,
+  Unquarantine as UnquarantineIcon,
+} from '@/icons'
 
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useUserId from '@/hooks/useUserId'
@@ -99,9 +103,12 @@ const ApproveButton = ({
     : undefined
 
   const isAsset = metaCollectionName === AssetsCollectionNames.AssetsMeta
+  const isQuarantined = approvalStatus === ApprovalStatus.Quarantined
 
   const onClickApprove = async () => onNewStatus(ApprovalStatus.Approved)
   const onClickDecline = async () => onNewStatus(ApprovalStatus.Declined)
+  const onClickQuarantine = async () => onNewStatus(ApprovalStatus.Quarantined)
+  const onClickUnquarantine = async () => onNewStatus(ApprovalStatus.Waiting)
 
   const onNewStatus = async (newApprovalStatus: ApprovalStatus) => {
     try {
@@ -124,13 +131,19 @@ const ApproveButton = ({
           approvedby: userId,
           declinedreasons: [],
         })
-      } else {
+      } else if (newApprovalStatus === ApprovalStatus.Declined) {
         await save({
           approvalstatus: ApprovalStatus.Declined,
           approvedat: null,
           approvedby: null,
           publishstatus: PublishStatus.Draft,
           declinedreasons: selectedReasons,
+        })
+      } else {
+        await save({
+          approvalstatus: newApprovalStatus,
+          approvedat: null,
+          approvedby: null,
         })
       }
 
@@ -170,11 +183,26 @@ const ApproveButton = ({
         size="small"
         color="secondary"
         hollow={false}
-        isDisabled={approvalStatus === ApprovalStatus.Approved}
+        isDisabled={approvalStatus === ApprovalStatus.Approved || isQuarantined}
         title="Notifies publisher, shows in search results, etc.">
         Approve
-      </Button>
-      <ButtonGroup style={{ marginTop: '0.25rem' }}>
+      </Button>{' '}
+      <Button
+        onClick={() =>
+          isQuarantined ? onClickUnquarantine() : onClickQuarantine()
+        }
+        icon={isQuarantined ? <UnquarantineIcon /> : <QuarantineIcon />}
+        size="small"
+        color="secondary"
+        hollow={false}
+        title={
+          isQuarantined
+            ? 'Returns to waiting in the queue'
+            : 'Prevents approval, notifies editors on Discord, shows notice at top of asset'
+        }>
+        {isQuarantined ? 'Un-' : ''}Quarantine
+      </Button>{' '}
+      <ButtonGroup style={{ width: '100%', marginTop: '0.25rem' }}>
         {isAsset && (
           <ButtonDropdown
             options={declinedReasonMeta.map((meta) => ({
@@ -193,6 +221,7 @@ const ApproveButton = ({
             size="small"
             hollow
             label="Reasons"
+            isDisabled={isQuarantined}
           />
         )}
         <Button
@@ -201,7 +230,9 @@ const ApproveButton = ({
           size="small"
           color="secondary"
           hollow={false}
-          isDisabled={approvalStatus === ApprovalStatus.Declined}
+          isDisabled={
+            approvalStatus === ApprovalStatus.Declined || isQuarantined
+          }
           title="Reverts to draft, notifies publisher">
           Decline{isAsset ? ' & Draft' : ''}
         </Button>

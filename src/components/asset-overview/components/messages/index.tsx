@@ -96,21 +96,32 @@ const AssetOverviewMessages = () => {
     )
   }
 
-  if (asset.approvalstatus === ApprovalStatus.Declined) {
-    messages.push(
-      <Message color="#1c0002" key="declined" icon={<CancelIcon />}>
-        This asset has been declined for approval. It has the following issues:
-        <ul style={{ marginBottom: 0 }}>
-          {asset.declinedreasons && asset.declinedreasons.length ? (
-            asset.declinedreasons.map((reason) => (
-              <li key={reason}>{getDeclinedReasonLabel(reason)}</li>
-            ))
-          ) : (
-            <li>no reasons specified</li>
-          )}
-        </ul>
-      </Message>
-    )
+  switch (asset.approvalstatus) {
+    case ApprovalStatus.Declined:
+      messages.push(
+        <Message color="#1c0002" key="declined" icon={<CancelIcon />}>
+          This asset is waiting in the approval queue and is under investigation
+          by our staff.
+        </Message>
+      )
+      break
+    case ApprovalStatus.Quarantined:
+      messages.push(
+        <Message color="#1c0002" key="declined" icon={<CancelIcon />}>
+          This asset has been declined for approval. It has the following
+          issues:
+          <ul style={{ marginBottom: 0 }}>
+            {asset.declinedreasons && asset.declinedreasons.length ? (
+              asset.declinedreasons.map((reason) => (
+                <li key={reason}>{getDeclinedReasonLabel(reason)}</li>
+              ))
+            ) : (
+              <li>no reasons specified</li>
+            )}
+          </ul>
+        </Message>
+      )
+      break
   }
 
   return <>{messages}</>

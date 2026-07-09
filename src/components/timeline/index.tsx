@@ -41,6 +41,8 @@ const getLabelForApprovalStatus = (approvalStatus: string): string => {
       return 'declined'
     case ApprovalStatus.Waiting:
       return 'reverted back to waiting'
+    case ApprovalStatus.Quarantined:
+      return 'quarantined'
     case ApprovalStatus.AutoApproved:
       return 'auto-approved'
     default:

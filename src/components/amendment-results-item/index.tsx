@@ -18,6 +18,8 @@ import AmendmentEditorRecordManager from '@/components/amendment-editor-record-m
 import AssetResultsItem from '@/components/asset-results-item'
 import AuthorResultsItem from '@/components/author-results-item'
 import UsernameLink from '@/components/username-link'
+import { HydrateFn } from '@/hooks/useDataStore'
+import useTimer from '@/hooks/useTimer'
 
 const useStyles = makeStyles({
   mainCell: {
@@ -39,9 +41,11 @@ const ParentRenderer = ({ table, data }: { table: string; data: any }) => {
 const AmendmentResultsItem = ({
   result,
   showParentDetails = true,
+  hydrate,
 }: {
   result: FullAmendment<any>
   showParentDetails?: boolean
+  hydrate?: HydrateFn
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -56,11 +60,15 @@ const AmendmentResultsItem = ({
     createdbyusername: createdByUsername,
     createdbyreputation: createdByRep,
   } = result
+  const hydrateAfterDelay = useTimer(hydrate)
 
   const classes = useStyles()
   const isEditor = useIsEditor()
 
-  const onDone = () => setIsSuccess(true)
+  const onDone = () => {
+    setIsSuccess(true)
+    if (hydrate) hydrateAfterDelay()
+  }
 
   return (
     <>
@@ -107,7 +115,7 @@ const AmendmentResultsItem = ({
           <TableCell className={classes.mainCell}>
             {isSuccess ? (
               <SuccessMessage>
-                Amendment has been updated successfully
+                Amendment has been updated successfully, refreshing...
               </SuccessMessage>
             ) : null}
             <AmendmentEditorRecordManager amendment={result} onDone={onDone} />

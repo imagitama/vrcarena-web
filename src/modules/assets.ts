@@ -20,9 +20,10 @@ export const getIsFullAsset = (asset: any): asset is FullAsset =>
 export const getIsAssetWaitingForApproval = (
   asset: AssetBasicMetadata
 ): boolean =>
-  asset.publishstatus == PublishStatus.Published &&
-  asset.approvalstatus == ApprovalStatus.Waiting &&
-  asset.accessstatus == AccessStatus.Public
+  asset.publishstatus === PublishStatus.Published &&
+  (asset.approvalstatus === ApprovalStatus.Waiting ||
+    asset.approvalstatus === ApprovalStatus.Quarantined) &&
+  asset.accessstatus === AccessStatus.Public
 
 export const getIsAssetVisibleToEveryone = (
   asset: AssetBasicMetadata

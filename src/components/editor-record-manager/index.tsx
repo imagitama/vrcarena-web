@@ -24,6 +24,7 @@ import ArchiveButton from '@/components/archive-button'
 import MetaStatus from '@/components/meta-status'
 import AdminPublishButton from '@/components/admin-publish-button'
 import ErrorBoundary from '@/components/error-boundary'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -36,10 +37,19 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     width: '100%',
     marginBottom: '0.75rem',
+    [mediaQueryForTabletsOrBelow]: {
+      flexWrap: 'wrap',
+    },
   },
   cell: {
     '&:nth-child(1)': {
       width: '25%',
+    },
+    [mediaQueryForTabletsOrBelow]: {
+      width: '100%',
+      '&:nth-child(1)': {
+        width: '100%',
+      },
     },
   },
 }))

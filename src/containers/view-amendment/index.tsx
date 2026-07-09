@@ -224,6 +224,8 @@ const View = () => {
         ? 'Declined'
         : approvalStatus === ApprovalStatus.Waiting
         ? 'Waiting'
+        : approvalStatus === ApprovalStatus.Quarantined
+        ? 'Quarantined'
         : approvalStatus === ApprovalStatus.Approved
         ? 'Approved & applied'
         : 'Unknown'}

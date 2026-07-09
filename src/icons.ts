@@ -58,3 +58,6 @@ export const Filter = React.lazy(() => import('@mui/icons-material/FilterList').
 export const Warning = React.lazy(() => import('@mui/icons-material/Warning').then(result => result.default))
 export const Refresh = React.lazy(() => import('@mui/icons-material/Refresh').then(result => result.default))
 export const Login = React.lazy(() => import('@mui/icons-material/LockOpen').then(result => result.default))
+
+export const Quarantine = React.lazy(() => import('@mui/icons-material/Https').then(result => result.default))
+export const Unquarantine = React.lazy(() => import('@mui/icons-material/NoEncryptionGmailerrorred').then(result => result.default))

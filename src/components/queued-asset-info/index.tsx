@@ -35,6 +35,7 @@ import {
   CollectionNames as AiEvaluateCollectionNames,
 } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
+import { ApprovalStatus } from '@/modules/common'
 
 const useStyles = makeStyles({
   pass: {

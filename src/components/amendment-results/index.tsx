@@ -9,13 +9,16 @@ import useIsEditor from '@/hooks/useIsEditor'
 import { FullAmendment } from '@/modules/amendments'
 import NoResultsMessage from '@/components/no-results-message'
 import AmendmentResultsItem from '@/components/amendment-results-item'
+import { HydrateFn } from '@/hooks/useDataStore'
 
 const AmendmentResults = ({
   results,
   showParentDetails = true,
+  hydrate,
 }: {
   results: FullAmendment<any>[]
   showParentDetails?: boolean
+  hydrate?: HydrateFn
 }) => {
   const isEditor = useIsEditor()
   return results.length ? (
@@ -34,6 +37,7 @@ const AmendmentResults = ({
             key={result.id}
             result={result}
             showParentDetails={showParentDetails}
+            hydrate={hydrate}
           />
         ))}
       </TableBody>

@@ -7,10 +7,17 @@ import { FullAmendment, ViewNames } from '@/modules/amendments'
 import NoResultsMessage from '@/components/no-results-message'
 import { ApprovalStatus } from '@/modules/common'
 import { EqualActiveFilter } from '@/filters'
+import { HydrateFn } from '@/hooks/useDataStore'
 
-const Renderer = ({ items }: { items?: FullAmendment<any>[] }) =>
+const Renderer = ({
+  items,
+  hydrate,
+}: {
+  items?: FullAmendment<any>[]
+  hydrate?: HydrateFn
+}) =>
   items ? (
-    <AmendmentResults results={items} />
+    <AmendmentResults results={items} hydrate={hydrate} />
   ) : (
     <NoResultsMessage>No amendments found</NoResultsMessage>
   )
@@ -45,7 +52,9 @@ export default () => {
 
         case SubView.Pending:
         default:
-          query = query.eq('approvalstatus', ApprovalStatus.Waiting)
+          query = query.or(
+            `approvalstatus.eq.${ApprovalStatus.Waiting},approvalstatus.eq.${ApprovalStatus.Quarantined}`
+          )
           break
       }
 
@@ -84,7 +93,8 @@ export default () => {
           id: SubView.Declined,
           label: 'Declined',
         },
-      ]}>
+      ]}
+      itemNamePlural="amendments">
       <Renderer />
     </PaginatedView>
   )

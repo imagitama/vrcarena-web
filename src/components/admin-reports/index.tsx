@@ -127,7 +127,8 @@ export default () => {
           type: FilterType.Equal,
           subType: FilterSubType.UserId,
         },
-      ]}>
+      ]}
+      itemNamePlural="reports">
       <Renderer />
     </PaginatedView>
   )
