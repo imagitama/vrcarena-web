@@ -30,9 +30,7 @@ export const getFriendlyDate = (
   }
 
   if (moment.isMoment(date)) {
-    return date.format(
-      `dddd, MMMM D, YYYY h:mm:ss A${showTimezone ? ' z' : ''}`
-    )
+    return date.format(`dddd, MMMM D, YYYY h:mm A${showTimezone ? ' z' : ''}`)
   }
 
   const formatted = new Intl.DateTimeFormat('en-US', {
@@ -42,7 +40,6 @@ export const getFriendlyDate = (
     day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
-    second: '2-digit',
     hour12: true,
     timeZone: timezone,
     ...(showTimezone ? { timeZoneName: 'short' } : {}), // sometimes shows user's localised timezone eg. PDT for americans
