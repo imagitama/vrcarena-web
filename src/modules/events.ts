@@ -149,16 +149,14 @@ export const EditableFields: EditableField<Event>[] = [
   {
     name: 'startsat',
     label: 'Starts At',
-    type: fieldTypes.date,
-    hint: 'When the event ends.',
+    type: fieldTypes.hidden,
     isRequired: true,
     isEditable: false, // needed so formFields is populated for startsat.endsAtFieldName
   },
   {
     name: 'endsat',
     label: 'Ends At',
-    type: fieldTypes.date,
-    hint: 'When the event ends.',
+    type: fieldTypes.hidden,
     isRequired: true,
     isEditable: false, // needed so formFields is populated for startsat.endsAtFieldName
   },
