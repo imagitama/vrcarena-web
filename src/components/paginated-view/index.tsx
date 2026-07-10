@@ -203,8 +203,6 @@ const Page = () => {
         )
       : false
 
-  console.debug('SORTING', defaultFieldName, defaultDirection, sorting)
-
   const rangeStart = (currentPageNumber - 1) * limitPerPage
   const rangeEnd = rangeStart + limitPerPage - 1
 

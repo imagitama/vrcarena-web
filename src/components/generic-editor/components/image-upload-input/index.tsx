@@ -27,6 +27,7 @@ export default ({
             alt="Preview"
             width={editableField.requiredWidth}
             height={editableField.requiredHeight}
+            style={{ maxWidth: '100%', height: 'auto' }}
           />
           <br />
           <Button color="secondary" onClick={() => onChange(null)}>

@@ -18,7 +18,7 @@ export const getIsDateInbetweenTwoDates = (
 ): boolean => dateToCheck >= startDate && dateToCheck <= endDate
 
 export const getFriendlyDate = (
-  date: Date | string,
+  date: Date | string | moment.Moment,
   isRelative: boolean = true,
   showTimezone: boolean = false,
   timezone?: string // falls back to system timezone
@@ -27,6 +27,12 @@ export const getFriendlyDate = (
 
   if (isRelative) {
     return moment(date).fromNow()
+  }
+
+  if (moment.isMoment(date)) {
+    return date.format(
+      `dddd, MMMM D, YYYY h:mm:ss A${showTimezone ? ' z' : ''}`
+    )
   }
 
   const formatted = new Intl.DateTimeFormat('en-US', {
@@ -40,7 +46,7 @@ export const getFriendlyDate = (
     hour12: true,
     timeZone: timezone,
     ...(showTimezone ? { timeZoneName: 'short' } : {}), // sometimes shows user's localised timezone eg. PDT for americans
-  }).format(d)
+  }).format(d as Date)
 
   return addOrdinalSuffix(formatted)
 }

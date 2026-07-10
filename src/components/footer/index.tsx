@@ -99,13 +99,6 @@ function DevelopmentTools() {
   const firebaseUserId = useUserId()
   const supabaseUserId = useSupabaseUserId()
   const isEditor = useIsEditor()
-  const [isCalling, lastErrorCode, result, callFunc] = useDataStoreFunction<
-    {},
-    boolean
-  >('get_api_url')
-  useEffect(() => {
-    callFunc()
-  }, [firebaseUserId, supabaseUserId])
   const isVerified = useAccountVerification()
   const isBanned = useIsBanned()
 
@@ -133,13 +126,6 @@ function DevelopmentTools() {
             <Button onClick={() => firebaseAuth.signOut()}>
               Sign out of FB
             </Button>
-            <br />
-            Is backend editor:{' '}
-            {isCalling
-              ? 'Calling...'
-              : lastErrorCode !== null
-              ? `code: ${lastErrorCode}`
-              : JSON.stringify(result)}
             <br />
             Is verified: {isVerified ? 'Yes' : 'No'}
             <br />

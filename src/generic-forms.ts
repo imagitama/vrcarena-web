@@ -4,6 +4,7 @@ export enum fieldTypes {
   multichoice = 'multichoice',
   checkbox = 'checkbox',
   date = 'date',
+  dateRange = 'dateRange',
   ref = 'ref',
   imageUpload = 'imageUpload',
   hidden = 'hidden',

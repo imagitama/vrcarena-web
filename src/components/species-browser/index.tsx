@@ -24,6 +24,7 @@ import ErrorMessage from '@/components/error-message'
 import SpeciesResultItem from '@/components/species-result-item'
 import FormControls from '@/components/form-controls'
 import AutocompleteInput from '@/components/autocomplete-input'
+import useGlobalState from '@/hooks/useGlobalState'
 
 const analyticsCategory = 'ViewAllSpecies'
 
@@ -149,14 +150,15 @@ const SpeciesBrowser = ({
   showControls?: boolean
   startCollapsed?: boolean
 }) => {
-  const [isLoading, lastErrorCode, speciesItems] = useDatabaseQuery<Species>(
-    ViewNames.GetPublicSpeciesCache,
-    [['redirectto', Operators.IS, null]],
-    {
-      queryName: 'species-browser',
-      orderBy: ['singularname', OrderDirections.ASC],
-    }
-  )
+  // const [isLoading, lastErrorCode, speciesItems] = useDatabaseQuery<Species>(
+  //   ViewNames.GetPublicSpeciesCache,
+  //   [['redirectto', Operators.IS, null]],
+  //   {
+  //     queryName: 'species-browser',
+  //     orderBy: ['singularname', OrderDirections.ASC],
+  //   }
+  // )
+  const [isLoading, lastErrorCode, globalState] = useGlobalState()
   const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()
   const [speciesContainerSettings, setContainerSettings] =
@@ -177,10 +179,10 @@ const SpeciesBrowser = ({
   )
   const [isExpanded, setIsExpanded] = useState(!startCollapsed)
 
-  const filteredSpecies = speciesItems
+  const filteredSpecies = globalState?.species
     ? filterId !== null
-      ? findItemAndParents<Species>(speciesItems, filterId)
-      : speciesItems
+      ? findItemAndParents<Species>(globalState.species, filterId)
+      : globalState.species
     : null
 
   const speciesHierarchy: SpeciesWithChildren[] | null = filteredSpecies
@@ -339,8 +341,8 @@ const SpeciesBrowser = ({
         <AutocompleteInput
           label="Filter species"
           options={
-            speciesItems
-              ? speciesItems.map((speciesItem) => ({
+            globalState?.species
+              ? globalState.species.map((speciesItem) => ({
                   label: `${speciesItem.pluralname}${
                     speciesItem.singularname !== speciesItem.pluralname
                       ? `/${speciesItem.singularname}`

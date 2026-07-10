@@ -10,7 +10,7 @@ import { handleError } from '@/error-handling'
 import { ValidationIssue, getValidationIssues } from '@/validation'
 
 import useDataStoreItem from '@/hooks/useDataStoreItem'
-import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
 
 import Button from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
@@ -35,25 +35,12 @@ import TagsInput from './components/tags-input'
 import DropdownInput from './components/dropdown-input'
 import ItemInput from './components/item-input'
 import DateInput from './components/date-input'
-import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
-
-export type GenericInputProps<TRecord extends Record<string, any>> = {
-  editableField: EditableField<any>
-  value: any
-  onChange: (newVal: any) => void
-  extraFormData: any
-  setFieldsValues: (updates: Partial<TRecord>) => void
-  databaseResult: any
-  formFields: any
-}
-
-type GenericInput<TRecord extends Record<string, any>> = (
-  props: GenericInputProps<TRecord>
-) => JSX.Element
+import DateRangeInput from './components/date-range-input'
+import { GenericInput } from './types'
 
 function getInputForFieldType<TRecord extends Record<string, any>>(
   type: keyof typeof fieldTypes
-): GenericInput<TRecord> {
+): GenericInput<any, TRecord> {
   switch (type) {
     case fieldTypes.text:
       // @ts-ignore
@@ -78,6 +65,8 @@ function getInputForFieldType<TRecord extends Record<string, any>>(
       return SinglechoiceInput
     case fieldTypes.date:
       return DateInput
+    case fieldTypes.dateRange:
+      return DateRangeInput
     case fieldTypes.assets:
       return AssetsInput
     case fieldTypes.custom:

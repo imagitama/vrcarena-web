@@ -32,11 +32,6 @@ const useSorting = (
       ] as keyof typeof OrderDirections,
     }
 
-    console.debug(`useSorting.set`, {
-      provided: newSortingConfig,
-      stored: newRawSortingConfig,
-    })
-
     storeRawSortingConfig(newRawSortingConfig)
   }
 
@@ -47,8 +42,6 @@ const useSorting = (
           direction: OrderDirections[rawSortingConfig.direction],
         }
       : null
-
-  console.debug('useSorting.render', { rawSortingConfig, sortingConfig })
 
   return [sortingConfig, storeSortingConfig]
 }

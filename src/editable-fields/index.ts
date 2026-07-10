@@ -87,6 +87,12 @@ export interface ItemEditableField<TRecord, TFieldData>
   getLabel?: (item: any) => string
 }
 
+export interface DateRangeEditableField<TFieldData>
+  extends EditableFieldBase<TFieldData> {
+  type: fieldTypes.dateRange
+  endsAtFieldName: string
+}
+
 export interface CheckboxEditableField<TRecord, TFieldData>
   extends EditableFieldBase<TRecord, TFieldData> {
   type: fieldTypes.checkbox
@@ -113,6 +119,7 @@ export interface MarkdownEditableField<TRecord, TFieldData>
 
 export type EditableField<TRecord, TFieldData = undefined> =
   | TextEditableField<TRecord>
+  | DateRangeEditableField<TRecord>
   | CheckboxEditableField<TRecord, TFieldData>
   | ImageUploadEditableField<TRecord>
   | SearchableEditableField<TRecord>

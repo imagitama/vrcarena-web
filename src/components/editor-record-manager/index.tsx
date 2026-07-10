@@ -224,11 +224,19 @@ const EditorRecordManager = ({
           ) : null}
           {showStatuses || showFeatureButtons ? (
             <div className={classes.row}>
-              {showStatuses && <div className={classes.cell}></div>}
+              {showStatuses && (
+                <div className={classes.cell}>
+                  <MetaStatus
+                    status={existingFeaturedStatus}
+                    type={FeaturedStatus}
+                  />
+                </div>
+              )}
               {showFeatureButtons && (
                 <div className={classes.cell}>
                   <FeatureButton
                     id={id}
+                    metaCollectionName={metaCollectionName}
                     existingFeaturedStatus={existingFeaturedStatus}
                     onDone={onDone}
                   />

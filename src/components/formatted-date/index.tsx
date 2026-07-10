@@ -8,7 +8,7 @@ const FormattedDate = ({
   className,
   showTimezone = false,
 }: {
-  date: Date | string
+  date: Date | string | moment.Moment
   isRelative?: boolean
   className?: string
   showTimezone?: boolean

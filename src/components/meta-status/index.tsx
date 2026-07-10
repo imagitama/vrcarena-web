@@ -1,6 +1,11 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
-import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  FeaturedStatus,
+  PublishStatus,
+} from '@/modules/common'
 import { colorPalette } from '@/config'
 import { UserFromView } from '@/modules/users'
 import UsernameLink from '../username-link'
@@ -74,6 +79,17 @@ const publishStatusMetas: { [key in PublishStatus]: Meta } = {
   },
 }
 
+const featuredStatusMetas: { [key in FeaturedStatus]: Meta } = {
+  [FeaturedStatus.Featured]: {
+    positivity: 1,
+    label: 'Featured',
+  },
+  [FeaturedStatus.Unfeatured]: {
+    positivity: 0,
+    label: 'Unfeatured',
+  },
+}
+
 const MetaStatus = ({
   status,
   type,
@@ -96,6 +112,8 @@ const MetaStatus = ({
       ? accessStatusMetas
       : type === PublishStatus
       ? publishStatusMetas
+      : type === FeaturedStatus
+      ? featuredStatusMetas
       : undefined
 
   if (!metas) {

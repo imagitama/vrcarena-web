@@ -2,17 +2,10 @@ import React, { useRef, useState } from 'react'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ButtonGroup from '@mui/material/ButtonGroup'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import CheckIcon from '@mui/icons-material/Check'
-import { makeStyles } from '@mui/styles'
 
 import Button, { ButtonProps } from '@/components/button'
-
-// const useStyles = makeStyles({
-//   root: {
-//     display: 'inline-flex',
-//   },
-// })
+import { ChevronDown } from '@/icons'
 
 export interface DropdownOption {
   id: string
@@ -60,7 +53,7 @@ const ButtonDropdown = ({
       <ButtonGroup>
         <Button
           {...buttonProps}
-          icon={buttonProps.icon || <KeyboardArrowDownIcon />}
+          icon={buttonProps.icon || <ChevronDown />}
           onClick={(e) => {
             onMainBtnClick()
 

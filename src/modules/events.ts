@@ -1,5 +1,10 @@
 import { AccessStatus, ApprovalStatus, FeaturedStatus } from './common'
-import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
+import {
+  BANNER_HEIGHT,
+  BANNER_WIDTH,
+  THUMBNAIL_HEIGHT,
+  THUMBNAIL_WIDTH,
+} from '@/config'
 import { EditableField } from '@/editable-fields'
 import { fieldTypes } from '@/generic-forms'
 import { bucketNames } from '@/file-uploading'
@@ -7,9 +12,16 @@ import { bucketNames } from '@/file-uploading'
 export const EVENT_BANNER_WIDTH = 600
 export const EVENT_BANNER_HEIGHT = 300
 
-export interface Event {
+export interface BasicEvent {
   id: string
   name: string
+  bannerurl: string
+  slug: string
+  startsat: string // date
+  endsat: string // date
+}
+
+export interface Event extends BasicEvent {
   description: string
   sourceurl: string
   thumbnailurl: string
@@ -18,10 +30,7 @@ export interface Event {
   assetids: string[]
   discordserverid: string
   isadult: boolean
-  startsat: string // date
-  endsat: string // date
   assettags: string[]
-  slug: string
   isbackground: boolean
   lastmodifiedat: string // date
   lastmodifiedby: string
@@ -74,15 +83,20 @@ export interface FullEvent extends Event, EventMeta {
   attendance: FullEventAttendance[]
 }
 
-export const CollectionNames = {
-  Events: 'events',
-  EventsMeta: 'eventsmeta',
-  EventAttendance: 'eventattendance',
+export enum CollectionNames {
+  Events = 'events',
+  EventsMeta = 'eventsmeta',
+  EventAttendance = 'eventattendance',
 }
 
-export const ViewNames = {
-  GetFullEvents: 'getfullevents',
-  GetPublicEvents: 'getpublicevents',
+export enum ViewNames {
+  GetFullEvents = 'getfullevents',
+  GetPublicEvents = 'getpublicevents',
+}
+
+export enum BucketNames {
+  EventThumbnails = 'event-thumbnails',
+  EventBanners = 'event-banners',
 }
 
 export const EditableFields: EditableField<Event>[] = [
@@ -103,7 +117,7 @@ export const EditableFields: EditableField<Event>[] = [
   {
     name: 'sourceurl',
     label: 'URL',
-    type: fieldTypes.text,
+    type: fieldTypes.url,
     hint: 'The URL to the website for the event. Must contain https://',
   },
   {
@@ -112,7 +126,7 @@ export const EditableFields: EditableField<Event>[] = [
     type: fieldTypes.imageUpload,
     requiredWidth: THUMBNAIL_WIDTH,
     requiredHeight: THUMBNAIL_HEIGHT,
-    bucketName: bucketNames.eventThumbnails,
+    bucketName: BucketNames.EventThumbnails,
     hint: 'A thumbnail used for your event. Used in search results etc.',
   },
   {
@@ -124,21 +138,34 @@ export const EditableFields: EditableField<Event>[] = [
   },
   {
     name: 'startsat',
-    label: 'Starts At',
-    type: fieldTypes.date,
-    hint: 'When the event starts.',
+    label: 'Date/Time',
+    type: fieldTypes.dateRange,
+    hint: 'When the event starts and ends.',
     isRequired: true,
+    endsAtFieldName: 'endsat',
   },
   {
     name: 'endsat',
     label: 'Ends At',
     type: fieldTypes.date,
     hint: 'When the event ends.',
-    isRequired: true,
+    // isRequired: true,
+    isEditable: false, // needed so formFields is populated for startsat.endsAtFieldName
+  },
+  {
+    name: 'bannerurl',
+    label: 'Banner',
+    type: fieldTypes.imageUpload,
+    requiredWidth: BANNER_WIDTH,
+    requiredHeight: BANNER_HEIGHT,
+    bucketName: BucketNames.EventBanners,
+    hint: 'Shown at the top of the page when the event is featured',
   },
   {
     name: 'assettags',
     label: 'Display any assets that have these tags',
     type: fieldTypes.tags,
+    showRecommendedTags: false,
+    hint: 'Anyone viewing the event will see any asset that has one of these tags. eg. "new_years_eve", "furality", "pride", "rainbow"',
   },
 ]

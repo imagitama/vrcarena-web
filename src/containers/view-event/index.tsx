@@ -3,7 +3,6 @@ import { Helmet } from '@unhead/react/helmet'
 import LaunchIcon from '@mui/icons-material/Launch'
 import { makeStyles } from '@mui/styles'
 import EditIcon from '@mui/icons-material/Edit'
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { useParams } from 'react-router'
 
 import * as routes from '@/routes'
@@ -27,7 +26,6 @@ import EditorRecordManager from '@/components/editor-record-manager'
 import PublicEditorNotes from '@/components/public-editor-notes'
 import CommentList from '@/components/comment-list'
 import Block from '@/components/block'
-import FormattedDate from '@/components/formatted-date'
 import EventAttendanceButton from '@/components/event-attendance-button'
 import EventAttendanceResults from '@/components/event-attendance-results'
 import Link from '@/components/link'
@@ -37,6 +35,7 @@ import Markdown from '@/components/markdown'
 import Button from '@/components/button'
 import TagChips from '@/components/tag-chips'
 import AssetResults from '@/components/asset-results'
+import EventDateRange from '@/components/event-date-range'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
@@ -65,9 +64,6 @@ const useStyles = makeStyles({
   },
   dates: {
     marginTop: '2rem',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   dateWrapper: {
     textAlign: 'center',
@@ -75,10 +71,6 @@ const useStyles = makeStyles({
   date: {
     display: 'block',
     fontSize: '150%',
-  },
-  separator: {
-    fontSize: '150%',
-    margin: '0 2rem',
   },
   timezone: {
     display: 'block',
@@ -259,19 +251,11 @@ const View = () => {
             </Link>{' '}
           </Heading>
         </div>
-        <div className={classes.dates}>
-          {startsat ? (
-            <FormattedDate date={startsat} isRelative={false} showTimezone />
-          ) : null}
-          {startsat && endsat ? (
-            <div className={classes.separator}>
-              <ArrowForwardIcon />
-            </div>
-          ) : null}
-          {endsat ? (
-            <FormattedDate date={endsat} isRelative={false} showTimezone />
-          ) : null}
-        </div>
+        <EventDateRange
+          startsAt={new Date(startsat)}
+          endsAt={new Date(endsat)}
+          className={classes.dates}
+        />
         <div className={classes.cols}>
           <div className={classes.leftCol}>
             <Block title="Description">
@@ -331,6 +315,7 @@ const View = () => {
                 onDone={hydrate}
                 showApprovalButtons={false}
                 showFeatureButtons={true}
+                showStatuses
               />
             )}
           </div>

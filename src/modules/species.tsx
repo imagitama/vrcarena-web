@@ -35,6 +35,15 @@ export interface FullSpecies extends Species {
   avatarcount: number
 }
 
+// species.*,
+// 	p.pluralname AS parentpluralname,
+// 	s.avatarcount AS avatarcount
+
+export interface PublicSpeciesForCache extends Species {
+  parentpluralname: string | null
+  avatarcount: number
+}
+
 export enum CollectionNames {
   Species = 'species',
 }

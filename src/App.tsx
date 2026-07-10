@@ -45,6 +45,7 @@ import DeprecatedRouteView from './containers/deprecated-route'
 import AccountVerificationMessage from './components/account-verification-message'
 import { DEFAULT_PAGE_DESC } from './config'
 import WelcomeMessage from './components/welcome-message'
+import FeaturedEvent from './components/featured-event'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -644,15 +645,22 @@ export default () => {
   return (
     <ErrorBoundary>
       <CssBaseline />
-      <Header />
-      <WelcomeMessage />
+      <ErrorBoundary>
+        <FeaturedEvent />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <Header />
+        <WelcomeMessage />
+      </ErrorBoundary>
       <main className="main">
         <div className={classes.mainContainer}>
-          <BannedNotice />
-          <Notices />
-          <AccountVerificationMessage />
-          <UnapprovedAssetsMessage />
-          <DraftAssetsMessage />
+          <ErrorBoundary>
+            <BannedNotice />
+            <Notices />
+            <AccountVerificationMessage />
+            <UnapprovedAssetsMessage />
+            <DraftAssetsMessage />
+          </ErrorBoundary>
           <ErrorBoundary>
             <MainContent />
           </ErrorBoundary>
