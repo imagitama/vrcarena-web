@@ -85,7 +85,6 @@ const useStyles = makeStyles({
     '& a': {
       height: '100%',
       display: 'flex',
-      alignItems: 'center',
     },
   },
   socialIcons: {

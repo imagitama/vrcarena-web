@@ -137,19 +137,29 @@ export const EditableFields: EditableField<Event>[] = [
     hint: 'If the event is NSFW. If enabled the event will never be shown to users unless they opt-in to NSFW content.',
   },
   {
-    name: 'startsat',
+    // @ts-ignore
+    name: 'startsat_endsat',
     label: 'Date/Time',
     type: fieldTypes.dateRange,
     hint: 'When the event starts and ends.',
-    isRequired: true,
+    isRequired: false, // perform validation at startsat/endsat
+    startsAtFieldName: 'startsat',
     endsAtFieldName: 'endsat',
+  },
+  {
+    name: 'startsat',
+    label: 'Starts At',
+    type: fieldTypes.date,
+    hint: 'When the event ends.',
+    isRequired: true,
+    isEditable: false, // needed so formFields is populated for startsat.endsAtFieldName
   },
   {
     name: 'endsat',
     label: 'Ends At',
     type: fieldTypes.date,
     hint: 'When the event ends.',
-    // isRequired: true,
+    isRequired: true,
     isEditable: false, // needed so formFields is populated for startsat.endsAtFieldName
   },
   {

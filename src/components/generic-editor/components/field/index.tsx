@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({
+const Field = ({
   editableField,
   children,
   isAccordion,
@@ -81,3 +81,5 @@ export default ({
     </FormControl>
   )
 }
+
+export default Field

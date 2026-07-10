@@ -1,4 +1,8 @@
-import { EditableField, TextEditableField } from './editable-fields'
+import {
+  DateRangeEditableField,
+  EditableField,
+  TextEditableField,
+} from './editable-fields'
 import { fieldTypes } from './generic-forms'
 import { getIsUrl } from './utils'
 
@@ -14,7 +18,7 @@ export enum ValidationReason {
   NotUrl,
 }
 
-export const getValidationIssues = <TRecord extends object>(
+export const getValidationIssues = <TRecord extends Record<string, any>>(
   fields: TRecord,
   editableFields: EditableField<any>[]
 ): ValidationIssue[] => {
@@ -40,7 +44,7 @@ export const getValidationIssues = <TRecord extends object>(
       if (
         (editableField as TextEditableField<any>).minLength !== undefined &&
         (fieldValue as string).length <
-          (editableField as TextEditableField<any>).minLength
+          (editableField as TextEditableField<any>).minLength!
       ) {
         issues.push({
           fieldName,
@@ -51,7 +55,7 @@ export const getValidationIssues = <TRecord extends object>(
       if (
         (editableField as TextEditableField<any>).maxLength !== undefined &&
         (fieldValue as string).length >
-          (editableField as TextEditableField<any>).maxLength
+          (editableField as TextEditableField<any>).maxLength!
       ) {
         issues.push({
           fieldName,

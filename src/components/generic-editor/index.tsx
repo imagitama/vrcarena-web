@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, Suspense } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 
@@ -66,6 +66,7 @@ function getInputForFieldType<TRecord extends Record<string, any>>(
     case fieldTypes.date:
       return DateInput
     case fieldTypes.dateRange:
+      // @ts-ignore
       return DateRangeInput
     case fieldTypes.assets:
       return AssetsInput
@@ -169,6 +170,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   )
   const [isSaving, isSuccess, lastErrorCodeSaving, save, , updatedRecord] =
     useDataStoreEditOrCreate<TRecord>(collectionName, id || false)
+
   const [formFields, setFormFields] = useState<null | Partial<TRecord>>(
     overrideFields
       ? overrideFields
@@ -185,6 +187,8 @@ const GenericEditor = <TRecord extends Record<string, any>>({
     []
   )
   const rootElementRef = useRef<HTMLDivElement>(null)
+
+  console.debug(`GenericEditor.render`, formFields)
 
   useEffect(() => {
     if (!rawRecord) {
@@ -207,8 +211,6 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   }, [rawRecord === null])
 
   const onFieldChange = (name: string, newVal: string | boolean | number) => {
-    console.debug(`GenericEditor.onFieldChange`, name, newVal)
-
     if (onFieldChanged) {
       onFieldChanged(name, newVal)
     }
@@ -224,6 +226,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   }
 
   const onFieldsChange = (updates: TRecord) => {
+    console.debug('onFieldsChange', updates)
     setFormFields({
       ...formFields,
       ...updates,
@@ -323,27 +326,29 @@ const GenericEditor = <TRecord extends Record<string, any>>({
     const Input = getInputForFieldType(editableField.type)
 
     return (
-      <Field
-        key={editableField.name as string}
-        editableField={editableField}
-        // for mini editor
-        isAccordion={isAccordion}
-        startExpanded={startExpanded}>
-        <Input
+      <Suspense fallback={<LoadingIndicator message="Loading field..." />}>
+        <Field
+          key={editableField.name as string}
           editableField={editableField}
-          value={formFields[editableField.name as string]}
-          onChange={(newVal: any) =>
-            onFieldChange(editableField.name as string, newVal)
-          }
-          extraFormData={extraFormData}
-          setFieldsValues={
-            onFieldsChange as (updates: Partial<Record<string, any>>) => void
-          }
-          databaseResult={rawRecord}
           // for mini editor
-          formFields={formFields}
-        />
-      </Field>
+          isAccordion={isAccordion}
+          startExpanded={startExpanded}>
+          <Input
+            editableField={editableField}
+            value={formFields[editableField.name as string]}
+            onChange={(newVal: any) =>
+              onFieldChange(editableField.name as string, newVal)
+            }
+            extraFormData={extraFormData}
+            setFieldsValues={
+              onFieldsChange as (updates: Partial<Record<string, any>>) => void
+            }
+            databaseResult={rawRecord}
+            // for mini editor
+            formFields={formFields}
+          />
+        </Field>
+      </Suspense>
     )
   }
 

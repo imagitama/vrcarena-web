@@ -9,7 +9,7 @@ const DateRangeInput: GenericInput<
   string,
   any,
   DateRangeEditableField<any>
-> = ({ value, onChange, editableField, formFields, setFieldsValues }) => {
+> = ({ editableField, formFields, setFieldsValues }) => {
   if (!(editableField.endsAtFieldName in formFields)) {
     throw new Error(
       `Field "${
@@ -18,29 +18,24 @@ const DateRangeInput: GenericInput<
     )
   }
 
+  const startsAtValue = formFields[editableField.startsAtFieldName]
   const endsAtValue = formFields[editableField.endsAtFieldName]
-
-  console.debug(`DateRangeInput.render`, {
-    value,
-    onChange,
-    editableField,
-    formFields,
-    endsAtValue,
-  })
 
   return (
     <div>
-      <EventDateRange
-        startsAt={new Date(value)}
-        endsAt={new Date(endsAtValue)}
-      />
+      {startsAtValue && endsAtValue && (
+        <EventDateRange
+          startsAt={new Date(startsAtValue)}
+          endsAt={new Date(endsAtValue)}
+        />
+      )}
       <br />
       <DateTimeRangeInput
-        startsAtValue={value}
+        startsAtValue={startsAtValue}
         endsAtValue={endsAtValue}
         onChange={(newStartsAtValue, newEndsAtValue) => {
           setFieldsValues({
-            [editableField.name]: newStartsAtValue,
+            [editableField.startsAtFieldName]: newStartsAtValue,
             [editableField.endsAtFieldName]: newEndsAtValue,
           })
         }}

@@ -67,15 +67,18 @@ function DateTimeRangeInput({
   endsAtValue,
   onChange,
 }: {
-  startsAtValue: string
-  endsAtValue: string
-  onChange: (newStartsAtVal: string, newEndsAtValue: string) => void
+  startsAtValue: string | undefined
+  endsAtValue: string | undefined
+  onChange: (
+    newStartsAtVal: string | undefined,
+    newEndsAtValue: string | undefined
+  ) => void
 }) {
   return (
     <Columns>
       <Column widthPerc={45}>
         <DateTimeBoundaryInput
-          value={startsAtValue}
+          value={startsAtValue || new Date().toISOString()}
           onChange={(newVal) => {
             onChange(newVal, endsAtValue)
           }}
@@ -88,7 +91,7 @@ function DateTimeRangeInput({
       </Column>
       <Column widthPerc={45}>
         <DateTimeBoundaryInput
-          value={endsAtValue}
+          value={endsAtValue || new Date().toISOString()}
           onChange={(newVal) => {
             onChange(startsAtValue, newVal)
           }}

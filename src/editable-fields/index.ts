@@ -87,10 +87,11 @@ export interface ItemEditableField<TRecord, TFieldData>
   getLabel?: (item: any) => string
 }
 
-export interface DateRangeEditableField<TFieldData>
-  extends EditableFieldBase<TFieldData> {
+export interface DateRangeEditableField<TRecord>
+  extends EditableFieldBase<TRecord> {
   type: fieldTypes.dateRange
-  endsAtFieldName: string
+  startsAtFieldName: Extract<keyof TRecord, string>
+  endsAtFieldName: Extract<keyof TRecord, string>
 }
 
 export interface CheckboxEditableField<TRecord, TFieldData>
