@@ -185,6 +185,7 @@ export enum DeclinedReason {
   missing_species = 'missing_species',
   incorrect_species = 'incorrect_species',
   missing_nsfw_flag = 'missing_nsfw_flag',
+  no_suitable_category = 'no_suitable_category',
 }
 
 export enum IndicativeAuditStatus {

@@ -247,6 +247,10 @@ export const declinedReasonMeta: DeclinedReasonMeta[] = [
     reason: DeclinedReason.missing_nsfw_flag,
     label: 'Should be flagged NSFW',
   },
+  {
+    reason: DeclinedReason.no_suitable_category,
+    label: 'No suitable category (the asset does not fit into any category)',
+  },
 ]
 
 export const getDeclinedReasonLabel = (reason: DeclinedReason): string => {
