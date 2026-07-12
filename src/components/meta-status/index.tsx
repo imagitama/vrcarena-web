@@ -48,7 +48,7 @@ const approvalStatusMetas: { [key in ApprovalStatus]: Meta } = {
     label: 'Approved',
   },
   [ApprovalStatus.Waiting]: {
-    positivity: 0,
+    positivity: -0.5, // to grab attention
     label: 'Queued',
   },
   [ApprovalStatus.Quarantined]: {
