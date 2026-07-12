@@ -36,6 +36,7 @@ import {
 } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
 import { ApprovalStatus } from '@/modules/common'
+import AssetEditorRecordManager from '../asset-editor-record-manager'
 
 const useStyles = makeStyles({
   pass: {
@@ -224,16 +225,11 @@ const QueuedAssetInfo = ({
         </Column>
         {isEditor && showEditorControls ? (
           <Column>
-            <EditorRecordManager
+            <AssetEditorRecordManager
               id={asset.id}
-              collectionName={AssetsCollectionNames.Assets}
-              metaCollectionName={AssetsCollectionNames.AssetsMeta}
-              existingApprovalStatus={asset.approvalstatus}
-              existingPublishStatus={asset.publishstatus}
-              existingAccessStatus={asset.accessstatus}
-              existingEditorNotes={asset.editornotes}
-              onDone={hydrate}
-              showStatuses
+              asset={asset as FullAsset_Editor}
+              onDone={hydrate!}
+              actions={(asset as FullAsset_Editor).actions}
             />
             <br />
             <ErrorBoundary>
