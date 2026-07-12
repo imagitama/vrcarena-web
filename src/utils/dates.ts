@@ -99,3 +99,9 @@ export const addHours = (date: Date, hours: number): Date => {
   result.setUTCHours(result.getUTCHours() + hours)
   return result
 }
+
+export const getRelativeTime = (date: Date | string): string =>
+  moment(date)
+    .fromNow()
+    .replace(/^in\s+/, '')
+    .replace(/\s+ago$/, '')

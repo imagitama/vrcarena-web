@@ -210,7 +210,10 @@ const GenericEditor = <TRecord extends Record<string, any>>({
     )
   }, [rawRecord === null])
 
-  const onFieldChange = (name: string, newVal: string | boolean | number) => {
+  const onFieldChange = (
+    name: string,
+    newVal: string | boolean | number | null
+  ) => {
     if (onFieldChanged) {
       onFieldChanged(name, newVal)
     }

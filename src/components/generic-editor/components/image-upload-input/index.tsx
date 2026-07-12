@@ -6,18 +6,18 @@ import { ImageUploadEditableField } from '@/editable-fields'
 
 import ImageUploader from '@/components/image-uploader'
 import Button from '@/components/button'
+import { GenericInputProps } from '../../types'
 
-export default ({
+export default <TRecord extends Record<string, any>>({
   editableField,
   onChange,
   value,
   formFields,
-}: {
-  editableField: ImageUploadEditableField<any>
-  onChange: (newUrl: string | null) => void
-  value: string
-  formFields: any
-}) => {
+}: GenericInputProps<
+  string | null,
+  TRecord,
+  ImageUploadEditableField<TRecord>
+>) => {
   return (
     <>
       {value ? (

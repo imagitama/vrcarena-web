@@ -14,8 +14,6 @@ export type GenericInputProps<
   formFields: TRecord
 }
 
-export type GenericInput<
-  TValue,
-  TRecord extends Record<string, any>,
-  TEditableField = EditableField<TRecord>
-> = (props: GenericInputProps<TValue, TRecord, TEditableField>) => JSX.Element
+export type GenericInput<TValue, TRecord extends Record<string, any>> = (
+  props: GenericInputProps<TValue, TRecord>
+) => JSX.Element

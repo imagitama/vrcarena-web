@@ -1,36 +1,32 @@
 import { AccessStatus, ApprovalStatus, FeaturedStatus } from './common'
-import {
-  BANNER_HEIGHT,
-  BANNER_WIDTH,
-  THUMBNAIL_HEIGHT,
-  THUMBNAIL_WIDTH,
-} from '@/config'
+import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
 import { EditableField } from '@/editable-fields'
 import { fieldTypes } from '@/generic-forms'
-import { bucketNames } from '@/file-uploading'
+import EventBannerUploader from '@/components/event-banner-uploader'
 
 export const EVENT_BANNER_WIDTH = 600
 export const EVENT_BANNER_HEIGHT = 300
 
+// used by <FeaturedEvent />
 export interface BasicEvent {
   id: string
   name: string
-  bannerurl: string
-  slug: string
+  description: string
+  bannerurl: string | null
+  slug: string | null
   startsat: string // date
   endsat: string // date
 }
 
 export interface Event extends BasicEvent {
-  description: string
-  sourceurl: string
-  thumbnailurl: string
+  sourceurl: string | null
+  thumbnailurl: string | null
   attachmentids: string[]
   speciesids: string[]
   assetids: string[]
-  discordserverid: string
+  discordserverid: string | null
   isadult: boolean
-  assettags: string[]
+  assettags: string[] | null
   isbackground: boolean
   lastmodifiedat: string // date
   lastmodifiedby: string
@@ -163,10 +159,8 @@ export const EditableFields: EditableField<Event>[] = [
   {
     name: 'bannerurl',
     label: 'Banner',
-    type: fieldTypes.imageUpload,
-    requiredWidth: BANNER_WIDTH,
-    requiredHeight: BANNER_HEIGHT,
-    bucketName: BucketNames.EventBanners,
+    type: fieldTypes.custom,
+    renderer: EventBannerUploader as any,
     hint: 'Shown at the top of the page when the event is featured',
   },
   {

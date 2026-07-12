@@ -3,20 +3,24 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { routes } from '@/routes'
 import { getIsEventLive } from '@/utils/events'
+import {
+  mediaQueryForMobiles,
+  mediaQueryForWideDesktops,
+} from '@/media-queries'
+import { colorBrand } from '@/themes'
 
 import useGlobalState from '@/hooks/useGlobalState'
 import useStorage from '@/hooks/useStorage'
 
 import Link from '@/components/link'
 import FormattedDate from '@/components/formatted-date'
-import {
-  mediaQueryForMobiles,
-  mediaQueryForWideDesktops,
-} from '@/media-queries'
-import { colorBrand, colorBrandLight } from '@/themes'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/modules'
+import { Event } from '@/modules/events'
+import { getRelativeTime } from '@/utils/dates'
 
 const Root = styled.div`
-  background: rgba(110, 74, 158, 0.2);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   line-height: 1rem;
   & a {
@@ -32,12 +36,6 @@ const Block = styled.div`
   height: 2rem;
 `
 
-const PrimaryBlock = styled(Block)`
-  background: rgb(0, 0, 0);
-  font-weight: bold;
-  text-transform: uppercase;
-`
-
 const TimeBlock = styled(Block)`
   background: ${({ isLive }: { isLive: boolean }) =>
     isLive ? `rgb(150, 0, 0)` : colorBrand};
@@ -45,6 +43,9 @@ const TimeBlock = styled(Block)`
 `
 
 const NameBlock = styled(Block)`
+  background: rgb(0, 0, 0);
+  font-weight: bold;
+  text-transform: uppercase;
   ${mediaQueryForMobiles} {
     width: 100%;
   }
@@ -60,13 +61,13 @@ const CloseBtn = styled.div`
   transition: all 100ms;
   cursor: pointer;
   &:hover {
-    background: rgba(255, 255, 255, 1);
+    background: rgba(0, 0, 0, 0.5);
   }
 `
 
 const BannerWrapper = styled.div`
   width: 100%;
-  height: 5rem;
+  height: 7rem;
   position: absolute;
   top: 0;
   left: 0;
@@ -92,17 +93,23 @@ const STORAGE_KEY = 'hidden-events'
 const FeaturedEvent = () => {
   const [, lastErrorCode, globalState] = useGlobalState()
   const [hiddenEventIds, setHiddenEventIds] = useStorage<string[]>(STORAGE_KEY)
+  const previewFeaturedEvent = useSelector<RootState, Event | null>(
+    (root) => root.app.previewFeaturedEvent
+  )
 
   if (lastErrorCode !== null) {
     return <div>Failed to load featured event</div>
   }
 
-  if (!globalState || !globalState.featuredevents.length) {
+  if (
+    !globalState ||
+    (!globalState.featuredevents.length && previewFeaturedEvent === null)
+  ) {
     return null
   }
 
   // TODO: display multiple events
-  const event = globalState.featuredevents[0]
+  const event = previewFeaturedEvent || globalState.featuredevents[0]
 
   if (hiddenEventIds?.includes(event.id)) {
     return null
@@ -124,11 +131,11 @@ const FeaturedEvent = () => {
       )}
       <Root>
         <Link to={routes.viewEventWithVar.replace(':eventId', event.id)}>
-          <PrimaryBlock>Featured Event</PrimaryBlock>
-          <TimeBlock isLive={isLive}>
-            {isLive ? 'LIVE' : <FormattedDate date={event.startsat} />}
-          </TimeBlock>
           <NameBlock>{event.name}</NameBlock>
+          <TimeBlock isLive={isLive}>
+            {isLive ? 'LIVE' : getRelativeTime(event.startsat)}
+          </TimeBlock>
+          <Block>{event.description}</Block>
         </Link>
         <CloseBtn onClick={onClickHideEvent}>
           <CloseIcon />

@@ -3,6 +3,7 @@ import { Asset, CollectionNames as AssetsCollectionNames } from './assets'
 import { UserPreferences } from './user'
 import { CollectionNames as UsersCollectionNames } from './users'
 import { CollectionNames as AuthorsCollectionNames } from './authors'
+import { Event } from '@/modules/events'
 
 export const searchIndexNameLabels = {
   [AssetsCollectionNames.Assets]: 'Assets',
@@ -46,7 +47,7 @@ function getInitialSearchTerm() {
   return ''
 }
 
-export interface SearchFilter { }
+export interface SearchFilter {}
 
 export interface AppState {
   isMenuOpen: boolean
@@ -59,6 +60,7 @@ export interface AppState {
   isSelectingAll: boolean
   bulkEditAssetDatas: Asset[]
   userPrefs: UserPreferences | null
+  previewFeaturedEvent: Event | null
 }
 
 const initialState: AppState = {
@@ -72,13 +74,13 @@ const initialState: AppState = {
   isSelectingAll: false,
   bulkEditAssetDatas: [],
   userPrefs: null,
+  previewFeaturedEvent: null,
 }
 
 const OPEN_MENU = 'OPEN_MENU'
 const CLOSE_MENU = 'CLOSE_MENU'
 const CHANGE_SEARCH_TERM = 'CHANGE_SEARCH_TERM'
 const CHANGE_SEARCH_TABLE_NAME = 'CHANGE_SEARCH_TABLE_NAME'
-const SET_BANNER_URLS = 'SET_BANNER_URLS'
 const OVERRIDE_SEARCH_FILTER = 'OVERRIDE_SEARCH_FILTER'
 const ADD_SEARCH_FILTER = 'ADD_SEARCH_FILTER'
 const REMOVE_SEARCH_FILTER = 'REMOVE_SEARCH_FILTER'
@@ -90,6 +92,8 @@ const TOGGLE_BULK_EDIT_ID = 'TOGGLE_BULK_EDIT_ID'
 const SELECT_BULK_EDIT_ID = 'SELECT_BULK_EDIT_ID'
 const SET_SELECT_ALL = 'SET_SELECT_ALL'
 const SET_USER_PREFS = 'SET_USER_PREFS'
+
+const SET_PREVIEW_FEATURED_EVENT = 'SET_PREVIEW_FEATURED_EVENT'
 
 export default (
   state: AppState = initialState,
@@ -177,8 +181,8 @@ export default (
         ...state,
         bulkEditIds: state.bulkEditIds.includes(action.payload.id)
           ? state.bulkEditIds.filter(
-            (idToCheck) => idToCheck !== action.payload.id
-          )
+              (idToCheck) => idToCheck !== action.payload.id
+            )
           : state.bulkEditIds.concat([action.payload.id]),
         bulkEditAssetDatas: action.payload.asset
           ? state.bulkEditAssetDatas.concat([action.payload.asset])
@@ -217,6 +221,12 @@ export default (
         userPrefs: action.payload.newUserPrefs,
       }
 
+    case SET_PREVIEW_FEATURED_EVENT:
+      return {
+        ...state,
+        previewFeaturedEvent: action.payload.previewFeaturedEvent,
+      }
+
     default:
       return state
   }
@@ -236,14 +246,14 @@ export const closeMenu = () => (dispatch: Dispatch) => {
 
 export const changeSearchTerm =
   (searchTerm = '') =>
-    (dispatch: Dispatch) => {
-      dispatch({
-        type: CHANGE_SEARCH_TERM,
-        payload: {
-          searchTerm,
-        },
-      })
-    }
+  (dispatch: Dispatch) => {
+    dispatch({
+      type: CHANGE_SEARCH_TERM,
+      payload: {
+        searchTerm,
+      },
+    })
+  }
 
 export const changeSearchTableName =
   (newTableName: string) => (dispatch: Dispatch) => {
@@ -335,5 +345,14 @@ export const setUserPrefs = (newUserPrefs: UserPreferences) => ({
   type: SET_USER_PREFS,
   payload: {
     newUserPrefs,
+  },
+})
+
+export const setPreviewFeaturedEvent = (
+  previewFeaturedEvent: Event | null
+) => ({
+  type: SET_PREVIEW_FEATURED_EVENT,
+  payload: {
+    previewFeaturedEvent,
   },
 })

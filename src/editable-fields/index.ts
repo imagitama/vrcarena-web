@@ -18,13 +18,14 @@ import users from './users'
 import discordServers from './discord-servers'
 import userMeta from './user-meta'
 import pages from './pages'
+import { GenericInputProps } from '@/components/generic-editor/types'
 
 export interface Option {
   value: string | null
   label: string
 }
 
-export interface EditableFieldBase<TRecord, TFieldData = undefined> {
+export interface EditableFieldBase<TRecord> {
   type: fieldTypes
   name: keyof TRecord
   label?: string // optional for hidden fields
@@ -68,19 +69,17 @@ export interface SearchableEditableField<TRecord>
   renderer: (props: { item: any }) => React.ReactElement
 }
 
-export interface CustomEditableField<TRecord, TFieldData>
-  extends EditableFieldBase<TRecord> {
+export interface CustomEditableField<
+  TValue,
+  TRecord extends Record<string, any>
+> extends EditableFieldBase<TRecord> {
   type: fieldTypes.custom
-  renderer: (props: {
-    onChange: (newValue: TFieldData) => void
-    value: TFieldData
-    databaseResult: TRecord // the raw data for the original item
-    formFields: any
-  }) => React.ReactElement
+  renderer: (
+    props: GenericInputProps<TValue, TRecord, EditableField<TRecord>>
+  ) => React.ReactElement
 }
 
-export interface ItemEditableField<TRecord, TFieldData>
-  extends EditableFieldBase<TRecord, TFieldData> {
+export interface ItemEditableField<TRecord> extends EditableFieldBase<TRecord> {
   type: fieldTypes.item
   collectionName: string
   fieldAsLabel?: string
@@ -94,43 +93,42 @@ export interface DateRangeEditableField<TRecord>
   endsAtFieldName: Extract<keyof TRecord, string>
 }
 
-export interface CheckboxEditableField<TRecord, TFieldData>
-  extends EditableFieldBase<TRecord, TFieldData> {
+export interface CheckboxEditableField<TRecord>
+  extends EditableFieldBase<TRecord> {
   type: fieldTypes.checkbox
   checkboxLabel?: string
 }
 
-export interface UrlEditableField<TRecord, TFieldData>
-  extends EditableFieldBase<TRecord, TFieldData> {
+export interface UrlEditableField<TRecord> extends EditableFieldBase<TRecord> {
   type: fieldTypes.url
 }
 
-export interface TagEditableField<TRecord, TFieldData>
+export interface TagEditableField<TRecord>
   extends TagInputSettings,
-    EditableFieldBase<TRecord, TFieldData> {
+    EditableFieldBase<TRecord> {
   type: fieldTypes.tags
 }
 
-export interface MarkdownEditableField<TRecord, TFieldData>
+export interface MarkdownEditableField<TRecord>
   extends TagInputSettings,
-    EditableFieldBase<TRecord, TFieldData> {
+    EditableFieldBase<TRecord> {
   type: fieldTypes.textMarkdown
   allowImages?: boolean
 }
 
-export type EditableField<TRecord, TFieldData = undefined> =
+export type EditableField<TRecord extends Record<string, any>> =
   | TextEditableField<TRecord>
   | DateRangeEditableField<TRecord>
-  | CheckboxEditableField<TRecord, TFieldData>
+  | CheckboxEditableField<TRecord>
   | ImageUploadEditableField<TRecord>
   | SearchableEditableField<TRecord>
-  | CustomEditableField<TRecord, TFieldData>
-  | ItemEditableField<TRecord, TFieldData>
-  | UrlEditableField<TRecord, TFieldData>
-  | TagEditableField<TRecord, TFieldData>
+  | CustomEditableField<any, TRecord>
+  | ItemEditableField<TRecord>
+  | UrlEditableField<TRecord>
+  | TagEditableField<TRecord>
   | SelectEditableField<TRecord>
-  | MarkdownEditableField<TRecord, TFieldData>
-  | EditableFieldBase<TRecord, TFieldData>
+  | MarkdownEditableField<TRecord>
+  | EditableFieldBase<TRecord>
 
 // @ts-ignore
 const editableFieldsByCollectionName: {
