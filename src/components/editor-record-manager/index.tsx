@@ -168,7 +168,11 @@ const EditorRecordManager = ({
                   <MetaStatus
                     status={existingApprovalStatus}
                     type={ApprovalStatus}
-                    byUser={approver}
+                    byUser={
+                      existingApprovalStatus === ApprovalStatus.Approved
+                        ? approver
+                        : undefined
+                    }
                   />
                 </div>
               )}
