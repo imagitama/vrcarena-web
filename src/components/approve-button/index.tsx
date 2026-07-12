@@ -237,20 +237,19 @@ const ApproveButton = ({
           title="Reverts to draft, notifies publisher">
           Decline{isAsset ? ' & Draft' : ''}
         </Button>
-        {existingDeclinedReasons &&
-          !getAreArraysSame(selectedReasons, existingDeclinedReasons) && (
-            <div style={{ marginTop: '0.25rem' }}>
-              New reasons:
-              <ul>
-                {selectedReasons.map((reason) => (
-                  <li key={reason}>{reason}</li>
-                ))}
-              </ul>
-              <Button onClick={onClickUpdate} size="small" color="secondary">
-                Save
-              </Button>
-            </div>
-          )}
+        {!getAreArraysSame(selectedReasons, existingDeclinedReasons || []) && (
+          <div style={{ marginTop: '0.25rem' }}>
+            New reasons:
+            <ul>
+              {selectedReasons.map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
+            </ul>
+            <Button onClick={onClickUpdate} size="small" color="primary">
+              Save Reasons
+            </Button>
+          </div>
+        )}
       </ButtonGroup>
     </>
   )
