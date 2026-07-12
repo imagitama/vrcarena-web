@@ -333,7 +333,9 @@ const AdminAssets = () => {
           break
 
         case SubView.Declined:
-          query = query.eq('approvalstatus', ApprovalStatus.Declined)
+          query = query
+            .eq('approvalstatus', ApprovalStatus.Declined)
+            .not('publishedat', 'is', null)
           break
 
         default:
