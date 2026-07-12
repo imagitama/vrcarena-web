@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { Suspense, useContext } from 'react'
 import { makeStyles } from '@mui/styles'
 
 import { Asset, FullAsset_Editor } from '@/modules/assets'
@@ -22,6 +22,8 @@ import {
   getScoreAsPercentage,
   Score,
 } from '@/components/ai-result'
+import LoadingIndicator from '@/components/loading-indicator'
+import EditorControls from '../editor-controls'
 
 const useStyles = makeStyles({
   assets: {
@@ -61,14 +63,16 @@ export default () => {
 
   if (!asset || !('aisimilarities' in asset)) return null
 
-  const queuedItem = (asset as FullAsset_Editor).aisimilarities
-  const similarAssets = (asset as FullAsset_Editor).aisimilaritiesdata
-
   return (
     <>
+      <Suspense fallback={<LoadingIndicator message="Loading controls..." />}>
+        <EditorControls />
+      </Suspense>
+      <Heading variant="h3">AI Stuff</Heading>
       <Columns>
         <Column padding>
           <ErrorBoundary>
+            <Heading variant="h4">AI Suggestions</Heading>
             <AiArea
               title="Suggestions"
               tooltip="The site has asked AI to suggest fields for the asset.">
@@ -78,6 +82,7 @@ export default () => {
         </Column>
         <Column padding>
           <ErrorBoundary>
+            <Heading variant="h4">AI Similar Assets</Heading>
             <AiArea
               title="Similar Assets"
               tooltip="The site has asked AI what assets are similar to this one.">
@@ -86,17 +91,6 @@ export default () => {
           </ErrorBoundary>
         </Column>
       </Columns>
-      <Heading variant="h3">AI Similar Assets</Heading>
-      {queuedItem !== null && queuedItem.similarities !== null ? (
-        <ErrorBoundary>
-          <AssetSims sims={queuedItem.similarities} assets={similarAssets} />
-        </ErrorBoundary>
-      ) : (
-        <NoResultsMessage>No AI similarity yet</NoResultsMessage>
-      )}
-      <Button onClick={() => hydrate()} size="small" color="secondary">
-        Refresh Asset
-      </Button>
       <Heading variant="h3">History</Heading>
       <AssetTimeline assetId={assetId} />
     </>

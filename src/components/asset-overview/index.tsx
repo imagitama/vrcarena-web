@@ -92,6 +92,7 @@ import TabAdmin from './components/tab-admin'
 import TabSimilar from './components/tab-similar'
 import { TabName } from './tabs'
 import AddToMyCollectionButton from '../add-to-my-collection-button'
+import InfoMessage from '../info-message'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -1011,12 +1012,9 @@ const AssetOverview = ({
               ) : null}
               {isEditor && (
                 <ControlGroup>
-                  <Suspense
-                    fallback={
-                      <LoadingIndicator message="Loading controls..." />
-                    }>
-                    <EditorControls />
-                  </Suspense>
+                  <InfoMessage>
+                    Editor controls moved to end of page
+                  </InfoMessage>
                 </ControlGroup>
               )}
               {isEditor && (
@@ -1043,21 +1041,6 @@ const AssetOverview = ({
                           id={asset.lastmodifiedby}
                           username={asset.lastmodifiedbyusername}
                         />
-                      ) : (
-                        '(unknown)'
-                      )}
-                    </div>
-                  ) : null}
-                  {asset && asset.approvedat ? (
-                    <div>
-                      Approved <FormattedDate date={asset.approvedat} /> by{' '}
-                      {asset.approvedby && asset.approvedbyusername ? (
-                        <UsernameLink
-                          id={asset.approvedby}
-                          username={asset.approvedbyusername}
-                        />
-                      ) : asset.approvedby ? (
-                        asset.approvedby
                       ) : (
                         '(unknown)'
                       )}

@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
+import classNames from 'classnames'
 
 const useStyles = makeStyles({
   root: {
@@ -25,10 +26,12 @@ type Props = TextFieldProps & {
 
 const TextInput = ({ button, ...props }: Props) => {
   const classes = useStyles()
-
   return (
     <span
-      className={`${classes.root} ${props.fullWidth ? classes.fullWidth : ''}`}>
+      className={classNames({
+        [classes.root]: true,
+        [classes.fullWidth]: props.fullWidth,
+      })}>
       <TextField
         {...props}
         multiline={props.minRows !== undefined}

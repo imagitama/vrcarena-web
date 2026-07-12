@@ -15,19 +15,20 @@ import PaginatedView from '@/components/paginated-view'
 import { Filter, FilterSubType, FilterType } from '@/filters'
 import useQueryParam from '@/hooks/useQueryParam'
 
-const getShouldRender = (entry: FullHistoryEntry): boolean => {
-  if (entry.parenttable.includes('meta')) return false
-  if (entry.parenttable === 'discordusers') return false
-
-  return true
+const Renderer = ({ items }: { items?: FullHistoryEntry[] }) => {
+  const highlightedEntryId = useQueryParam('entryId')
+  return (
+    <HistoryResults
+      results={items!}
+      highlightedEntryId={highlightedEntryId || undefined}
+    />
+  )
 }
-
-const Renderer = ({ items }: { items?: FullHistoryEntry[] }) => (
-  <HistoryResults results={items!.filter(getShouldRender)} />
-)
 
 const History = () => {
   const createdByUserId = useQueryParam('userId')
+  const parentType = useQueryParam('parentType')
+  const parentId = useQueryParam('parentId')
 
   const filters: Filter<HistoryEntry>[] = [
     {
@@ -43,11 +44,15 @@ const History = () => {
       type: FilterType.Equal,
       label: 'Parent Type',
       suggestions: [UsersCollectionNames.Users, AssetsCollectionNames.Assets],
+      defaultValue: parentType,
+      defaultActive: parentType !== null,
     },
     {
       fieldName: 'parent',
       type: FilterType.Equal,
       label: 'Parent ID',
+      defaultValue: parentId,
+      defaultActive: parentId !== null,
     },
     {
       fieldName: 'message',

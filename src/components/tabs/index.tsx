@@ -131,7 +131,7 @@ const Tabs = ({
 
   useEffect(() => {
     setActiveTabIdx(getInitialTabIdx(tabName, enabledItems))
-  }, [items.length])
+  }, [items.length, tabName])
 
   const next = () => setActiveTabIdx((currentIdx) => currentIdx + 1)
   const back = () => setActiveTabIdx((currentIdx) => currentIdx - 1)

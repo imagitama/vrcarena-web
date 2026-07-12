@@ -25,9 +25,7 @@ export const getIsAssetWaitingForApproval = (
     asset.approvalstatus === ApprovalStatus.Quarantined) &&
   asset.accessstatus === AccessStatus.Public
 
-export const getIsAssetVisibleToEveryone = (
-  asset: AssetBasicMetadata
-): boolean =>
+export const getIsAssetPublic = (asset: AssetBasicMetadata): boolean =>
   asset.accessstatus === AccessStatus.Public &&
   (asset.approvalstatus === ApprovalStatus.Approved ||
     asset.approvalstatus === ApprovalStatus.AutoApproved) &&
@@ -232,6 +230,29 @@ export interface AssetForList extends Asset, AssetBasicMetadata {
 
 export type PublicAsset = AssetForList
 
+export interface ActionUser {
+  id: string
+  username: string
+  avatarUrl: string
+}
+
+export interface AssetAction {
+  by: ActionUser | null
+  at: string
+  history: string // id
+}
+
+export interface AssetActions {
+  id: string
+  approved: AssetAction | null
+  autoapproved: AssetAction | null
+  declined: AssetAction | null
+  deleted: AssetAction | null
+  archived: AssetAction | null
+  published: AssetAction | null
+  featured: AssetAction | null
+}
+
 export interface AssetForList_Editor extends AssetForList {
   aievaluation: AiEvaluateQueuedItem | null
 
@@ -243,8 +264,12 @@ export interface AssetForList_Editor extends AssetForList {
 
   // extra metadata for admin assets view
   editornotes: string
-  approvedby: string | null
-  approvedbyusername: string | null
+  deletionreason: DeletionReason | null
+  archivedreason: ArchivedReason | null
+  declinedreasons: DeclinedReason[] | null
+
+  // actions
+  actions: AssetActions
 }
 
 export type FullAssetMention = {
@@ -277,6 +302,7 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
 
 export interface FullAsset_Editor extends FullAsset {
   aievaluation: AiEvaluateQueuedItem | null
+  actions: AssetActions
 }
 
 export interface SmallAsset extends Asset, AssetMeta {

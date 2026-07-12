@@ -4,10 +4,11 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
+import styled from '@emotion/styled'
 
 import { FullHistoryEntry, HistoryEntry } from '@/modules/history'
 import { getMessageLabel } from '@/history'
-import { getLinkUrl } from '@/notifications'
+import { getUrlForParent } from '@/relations'
 
 import UsernameLink from '@/components/username-link'
 import FormattedDate from '@/components/formatted-date'
@@ -40,7 +41,7 @@ const ExpandedData = ({ data }: { data: any }) => {
 }
 
 function MessageLabel({ entry }: { entry: HistoryEntry }) {
-  const url = getLinkUrl(entry)
+  const url = getUrlForParent(entry.parenttable, entry.parent)
   const label = getParentLabel(entry.parenttable, entry.parent)
   return (
     <span
@@ -50,10 +51,26 @@ function MessageLabel({ entry }: { entry: HistoryEntry }) {
   )
 }
 
-const HistoryResultsItem = ({ entry }: { entry: HistoryEntry<any> }) => {
+const HistoryEntryTableRow = styled(TableRow)`
+  ${({ isHighlighted }: { isHighlighted: boolean }) =>
+    isHighlighted
+      ? `
+    border: 1px dashed rgb(255, 255, 0);
+    padding: 0.25rem;
+  `
+      : ''}
+`
+
+const HistoryResultsItem = ({
+  entry,
+  isHighlighted = false,
+}: {
+  entry: HistoryEntry<any>
+  isHighlighted?: boolean
+}) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
   return (
-    <TableRow>
+    <HistoryEntryTableRow isHighlighted={isHighlighted}>
       <TableCell>
         <MessageLabel entry={entry} />
       </TableCell>
@@ -85,14 +102,16 @@ const HistoryResultsItem = ({ entry }: { entry: HistoryEntry<any> }) => {
       <TableCell>
         <FormattedDate date={entry.createdat} />
       </TableCell>
-    </TableRow>
+    </HistoryEntryTableRow>
   )
 }
 
 const HistoryResults = ({
   results,
+  highlightedEntryId,
 }: {
   results: (FullHistoryEntry | HistoryEntry)[]
+  highlightedEntryId?: string
 }) => (
   <Table>
     <TableHead>
@@ -104,10 +123,13 @@ const HistoryResults = ({
       </TableRow>
     </TableHead>
     <TableBody>
-      {results.map((entry) => {
-        const { id, data, createdat: createdAt, createdby: createdBy } = entry
-        return <HistoryResultsItem key={entry.id} entry={entry} />
-      })}
+      {results.map((entry) => (
+        <HistoryResultsItem
+          key={entry.id}
+          entry={entry}
+          isHighlighted={entry.id === highlightedEntryId}
+        />
+      ))}
     </TableBody>
   </Table>
 )

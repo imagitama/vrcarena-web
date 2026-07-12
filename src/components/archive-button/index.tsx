@@ -145,9 +145,9 @@ const ArchiveButton = ({
           }
           closeOnSelect={true}
           size="small"
-          iconOnly
           hollow
           label="Reasons"
+          iconSide="right"
         />
       )}
       <Button

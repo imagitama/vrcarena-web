@@ -180,6 +180,11 @@ const HistoryEntryLabel = ({
                 {getLabelForPublishStatus((fields as AssetMeta).publishstatus!)}
               </>
             )
+          } else if (
+            (fields as AssetMeta).publishedat ||
+            (fields as AssetMeta).publishedby
+          ) {
+            return <>published</>
           } else if ((fields as AssetMeta).editornotes) {
             return <>changed editor notes for asset</>
           } else {

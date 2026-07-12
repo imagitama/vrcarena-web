@@ -222,6 +222,7 @@ const ApproveButton = ({
             hollow
             label="Reasons"
             isDisabled={isQuarantined}
+            iconSide="right"
           />
         )}
         <Button

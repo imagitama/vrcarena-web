@@ -41,6 +41,7 @@ import { Intent } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
 import { OrderDirections } from '@/hooks/useDatabaseQuery'
 import { useParams } from 'react-router'
+import AssetEditorRecordManager from '../asset-editor-record-manager'
 
 const useStyles = makeStyles({
   pass: {
@@ -94,15 +95,8 @@ function AssetsTable({
         <TableBody>
           {assets ? (
             assets.map((asset) => {
-              const {
-                id,
-                editornotes,
-                approvalstatus,
-                publishstatus,
-                accessstatus,
-              } = asset
               return (
-                <TableRow key={id}>
+                <TableRow key={asset.id}>
                   <TableCell>
                     <AssetResultsItem asset={asset} showState />
                   </TableCell>
@@ -118,27 +112,14 @@ function AssetsTable({
                     )}
                   </TableCell>
                   <TableCell>
-                    <EditorRecordManager
-                      id={id}
-                      showStatuses
-                      collectionName={AssetsCollectionNames.Assets}
-                      metaCollectionName={AssetsCollectionNames.AssetsMeta}
-                      existingApprovalStatus={approvalstatus}
-                      existingPublishStatus={publishstatus}
-                      existingAccessStatus={accessstatus}
-                      existingEditorNotes={editornotes}
-                      // @ts-ignore
-                      onDone={hydrate ? () => hydrate() : undefined}
-                      callOnDoneOnEditorNotes={false}
-                      approver={
-                        asset.approvedby
-                          ? {
-                              id: asset.approvedby!,
-                              username: asset.approvedbyusername!,
-                            }
-                          : undefined
-                      }
-                    />
+                    <ErrorBoundary>
+                      <AssetEditorRecordManager
+                        id={asset.id}
+                        asset={asset}
+                        onDone={hydrate!}
+                        actions={asset.actions}
+                      />
+                    </ErrorBoundary>
                     <div style={{ marginTop: '0.5rem' }} />
                     <ErrorBoundary>
                       <AiArea
@@ -309,6 +290,7 @@ const AdminAssets = () => {
               `approvalstatus.eq.${ApprovalStatus.Approved},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
             )
             .not('publishedat', 'is', null) // TODO: repair assets that don't have this
+            .eq('accessstatus', AccessStatus.Public)
           break
 
         case SubView.Pending:

@@ -33,6 +33,11 @@ export interface CommonMetaRecordFields extends Record<string, unknown> {
   editornotes: string
 }
 
+export interface RecordWithParent<TParentRecord> {
+  parenttable: string
+  parent: string
+}
+
 export const readRecord = async <TRecord>(
   supabase: SupabaseClient,
   tableName: string,

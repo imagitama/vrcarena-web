@@ -150,6 +150,7 @@ const DeleteButton = ({
           size="small"
           hollow
           label="Reasons"
+          iconSide="right"
         />
       )}
       <Button

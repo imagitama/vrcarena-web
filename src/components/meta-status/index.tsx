@@ -1,32 +1,44 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
+import InfoIcon from '@mui/icons-material/Info'
+
 import {
   AccessStatus,
   ApprovalStatus,
   FeaturedStatus,
   PublishStatus,
 } from '@/modules/common'
+import { ActionUser, AssetAction } from '@/modules/assets'
 import { colorPalette } from '@/config'
-import { UserFromView } from '@/modules/users'
-import UsernameLink from '../username-link'
+
+import UsernameLink from '@/components/username-link'
+import FormattedDate from '@/components/formatted-date'
+import Link from '@/components/link'
+import Tooltip from '../tooltip'
+import { routes } from '@/routes'
+import HintText from '../hint-text'
 
 const useStyles = makeStyles({
   status: {
     fontWeight: 'bold',
+    '& a': {
+      color: 'inherit',
+    },
   },
   good: {
     color: colorPalette.positive,
   },
-  average: {
+  average: {},
+  bad: {
     color: colorPalette.warning,
   },
-  bad: {
+  verybad: {
     color: colorPalette.negative,
   },
 })
 
 interface Meta {
-  positivity: -1 | 0 | 1
+  positivity: -1 | -0.5 | 0 | 1
   label: string
 }
 
@@ -48,7 +60,7 @@ const approvalStatusMetas: { [key in ApprovalStatus]: Meta } = {
     label: 'Declined',
   },
   [ApprovalStatus.AutoApproved]: {
-    positivity: 0,
+    positivity: 1, // emphasise as important
     label: 'Auto-Approved',
   },
 }
@@ -63,18 +75,18 @@ const accessStatusMetas: { [key in AccessStatus]: Meta } = {
     label: 'Deleted',
   },
   [AccessStatus.Public]: {
-    positivity: 1,
+    positivity: 0,
     label: 'Not Deleted', // "Public" is confusing with actually visible to everyone
   },
 }
 
 const publishStatusMetas: { [key in PublishStatus]: Meta } = {
   [PublishStatus.Draft]: {
-    positivity: -1, // negative to hint to user
+    positivity: 0,
     label: 'Draft',
   },
   [PublishStatus.Published]: {
-    positivity: 1,
+    positivity: 0, // dont highlight unimportant things
     label: 'Published',
   },
 }
@@ -93,11 +105,17 @@ const featuredStatusMetas: { [key in FeaturedStatus]: Meta } = {
 const MetaStatus = ({
   status,
   type,
-  byUser,
+  action,
+  parentType,
+  parentId,
+  reasonOrReasons,
 }: {
   status: any
   type: any
-  byUser?: UserFromView
+  parentType?: string
+  parentId?: string
+  action?: AssetAction
+  reasonOrReasons?: string | string[]
 }) => {
   const classes = useStyles()
 
@@ -127,18 +145,52 @@ const MetaStatus = ({
       ? classes.good
       : meta.positivity === 0
       ? classes.average
-      : meta.positivity === -1
+      : meta.positivity === -0.5
       ? classes.bad
+      : meta.positivity === -1
+      ? classes.verybad
       : ''
 
   return (
-    <div className={`${classes.status} ${className}`}>
+    <div
+      className={`${classes.status} ${className}`}
+      title={action ? action.at : ''}>
       {meta.label}
-      {byUser ? (
+      {reasonOrReasons ? (
         <>
-          {' '}
-          by <UsernameLink id={byUser.id} username={byUser.username} />
+          :{' '}
+          {Array.isArray(reasonOrReasons)
+            ? reasonOrReasons.length
+              ? reasonOrReasons.join('')
+              : '(no reason)'
+            : reasonOrReasons}
         </>
+      ) : null}
+      {action ? (
+        <small>
+          <br />
+          <FormattedDate date={action.at} />
+          {action.by ? (
+            <>
+              {' '}
+              by{' '}
+              <UsernameLink id={action.by.id} username={action.by.username} />
+            </>
+          ) : null}
+          {parentId && parentType && (
+            <Tooltip title="View history entry">
+              <Link
+                to={`${routes.adminWithTabNameVar.replace(
+                  ':tabName',
+                  'history'
+                )}?parentType=${parentType}&parentId=${parentId}&entryId=${
+                  action.history
+                }`}>
+                <InfoIcon />
+              </Link>
+            </Tooltip>
+          )}
+        </small>
       ) : (
         ''
       )}

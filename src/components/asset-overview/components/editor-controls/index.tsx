@@ -20,6 +20,8 @@ import {
   AiEvaluateQueuedItem,
 } from '@/modules/aievaluation'
 import AiResult from '@/components/ai-result'
+import AssetEditorRecordManager from '@/components/asset-editor-record-manager'
+import Heading from '@/components/heading'
 
 export default () => {
   const { assetId, asset, isLoading, hydrate } = useContext(TabContext)
@@ -30,26 +32,13 @@ export default () => {
 
   return (
     <>
-      <EditorRecordManager
+      <AssetEditorRecordManager
         id={assetId}
-        collectionName={AssetsCollectionNames.Assets}
-        metaCollectionName={AssetsCollectionNames.AssetsMeta}
-        existingApprovalStatus={asset.approvalstatus}
-        existingPublishStatus={asset.publishstatus}
-        existingAccessStatus={asset.accessstatus}
-        existingEditorNotes={asset.editornotes}
-        // assets
-        existingDeletionReason={asset.deletionreason}
-        existingArchivedReason={asset.archivedreason}
-        existingDeclinedReasons={asset.declinedreasons}
-        onDone={() => hydrate()}
-        showStatuses
-        showPublishButtons
-        showFeatureButtons={false}
-        showAccessButtons
-        showArchiveButton
+        asset={asset as FullAsset_Editor}
+        onDone={hydrate}
+        actions={(asset as FullAsset_Editor).actions}
       />
-      <br />
+      <Heading variant="h4">AI Evaluation</Heading>
       <ErrorBoundary>
         <AiArea
           title="Evaluation"
@@ -69,9 +58,8 @@ export default () => {
       </ErrorBoundary>
       <br />
       <ErrorBoundary>
-        <EditorBox>
-          <AssetAuditResult asset={asset} />
-        </EditorBox>
+        <Heading variant="h4">Auditing</Heading>
+        <AssetAuditResult asset={asset} />
       </ErrorBoundary>
     </>
   )

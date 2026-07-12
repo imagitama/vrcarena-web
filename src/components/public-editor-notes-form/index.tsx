@@ -31,7 +31,7 @@ const PublicEditorNotesForm = ({
 }: {
   id: string
   metaCollectionName: string
-  existingEditorNotes?: string
+  existingEditorNotes?: string | null
   onClick?: (result: { editorNotes: string }) => void
   onDone?: () => void
 }) => {
@@ -108,12 +108,13 @@ const PublicEditorNotesForm = ({
 
   return (
     <>
-      <span className={classes.label}>Public notes from editors:</span>
       <TextInput
+        fullWidth
         multiline
         minRows={2}
         value={newEditorNotes}
         onChange={(e) => setNewEditorNotes(e.target.value)}
+        size="small"
       />
       <FormControls>
         <Button
@@ -122,7 +123,7 @@ const PublicEditorNotesForm = ({
           color="secondary"
           hollow={false}
           icon={<SaveIcon />}>
-          Save Notes
+          Save
         </Button>
       </FormControls>
     </>

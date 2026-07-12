@@ -18,11 +18,6 @@ import {
   FullAsset,
   PublicAsset,
   Relation,
-  getIsAssetADraft,
-  getIsAssetDeclined,
-  getIsAssetVisibleToEveryone,
-  getIsAssetWaitingForApproval,
-  getIsFullAsset,
   getIsPublicAsset,
 } from '@/modules/assets'
 import useUserPreferences from '@/hooks/useUserPreferences'
@@ -222,18 +217,18 @@ const getAssetStateText = (
       return {
         label: 'Quarantined',
         title:
-          'This asset cannot be approved until it has been un-quarantined.',
+          'This asset has been manually quarantined and cannot be approved until it has been un-quarantined.',
         class: 'quarantined',
       }
 
     case ApprovalStatus.Approved:
     case ApprovalStatus.AutoApproved:
       return {
-        label: `Public${
+        label: `Visible${
           asset.approvalstatus === ApprovalStatus.AutoApproved ? '*' : ''
         }`,
         title:
-          'This asset is in search results, viewing someone like an author, browsing a category, browsing a species, etc. (* = auto-approved)',
+          'This asset is visible in search results, viewing someone like an author, browsing a category, browsing a species, etc. (* = auto-approved)',
         class: 'public',
       }
 
