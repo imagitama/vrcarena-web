@@ -33,6 +33,7 @@ const fields: EditableField<Asset>[] = [
     options: Object.values(AssetCategory).map((category) => ({
       value: category,
       label: categoryMetas[category].nameSingular,
+      subLabel: categoryMetas[category].shortDescription,
     })),
     isRequired: true,
   },

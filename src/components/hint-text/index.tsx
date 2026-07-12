@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { makeStyles } from '@mui/styles'
 import { colorGreyedOut } from '@/themes'
 
@@ -14,16 +14,21 @@ const useStyles = makeStyles({
 const HintText = ({
   children,
   small,
-  className = '',
+  className,
+  style,
 }: {
   children: React.ReactNode
   small?: boolean
   className?: string
+  style?: CSSProperties
 }) => {
   const classes = useStyles()
   return (
     <span
-      className={`${classes.root} ${small ? classes.small : ''} ${className}`}>
+      className={`${classes.root} ${small ? classes.small : ''} ${
+        className || ''
+      }`}
+      style={style}>
       {children}
     </span>
   )

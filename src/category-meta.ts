@@ -92,7 +92,7 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     id: AssetCategory.WorldAsset,
     name: 'World Assets',
     nameSingular: 'World Asset',
-    shortDescription: `Assets that you can use in your worlds such as buttons, games, video players, etc.`,
+    shortDescription: `Assets designed specifically for VR games such as VRChat Udon prefabs, ProtoFlux prefabs etc.`,
     optimizedImageUrl: worldAssetOptimizedImageUrl,
   },
 }

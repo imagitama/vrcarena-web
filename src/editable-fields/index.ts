@@ -23,6 +23,7 @@ import { GenericInputProps } from '@/components/generic-editor/types'
 export interface Option {
   value: string | null
   label: string
+  subLabel?: string
 }
 
 export interface EditableFieldBase<TRecord> {

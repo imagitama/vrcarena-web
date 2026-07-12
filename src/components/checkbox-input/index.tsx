@@ -21,7 +21,7 @@ const CheckboxInput = ({
   onClick,
 }: {
   onChange?: (newVal: boolean) => void | Promise<void>
-  label?: string
+  label?: string | React.ReactElement
   value: boolean
   isDisabled?: boolean
   fullWidth?: boolean
