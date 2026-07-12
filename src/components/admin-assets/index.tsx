@@ -40,6 +40,7 @@ import AiArea from '../ai-area'
 import { Intent } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
 import { OrderDirections } from '@/hooks/useDatabaseQuery'
+import { useParams } from 'react-router'
 
 const useStyles = makeStyles({
   pass: {
@@ -283,10 +284,12 @@ const filters = [
 ]
 
 const AdminAssets = () => {
+  // TODO: rename/merge with PaginatedView
   const [selectedView, setSelectedView] = useStorage(
     StorageKeys.View,
     View.List
   )
+  const { tabName } = useParams<{ tabName?: string }>()
   const getQuery = useCallback<
     GetQueryFn<AssetForList_Editor, SubView, typeof filters>
   >(
@@ -368,17 +371,17 @@ const AdminAssets = () => {
             fieldName: 'title',
           },
         ]}
-        defaultFieldName={'publishedat'}
+        defaultFieldName="publishedat"
         defaultDirection={OrderDirections.ASC}
-        urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+        defaultSubView={tabName || SubView.Pending}
+        urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar.replace(
           ':tabName',
-          'assets'
+          tabName || ''
         )}
         subViews={[
           {
             id: SubView.Pending,
             label: 'Pending',
-            defaultActive: true,
           },
           {
             id: SubView.Approved,

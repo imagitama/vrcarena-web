@@ -29,7 +29,9 @@ const NewAssetsView = () => {
         </p>
         <AssetsPaginatedView
           viewName={ViewNames.GetNewPublicAssets}
-          urlWithPageNumberVar={routes.newAssetsWithPageNumberVar}>
+          urlWithSubViewNameAndPageNumberVar={
+            routes.newAssetsWithPageNumberVar
+          }>
           <Renderer />
         </AssetsPaginatedView>
       </div>

@@ -128,7 +128,7 @@ const AssetsForSpecies = ({
       viewName={AssetsViewNames.GetPublicAssets}
       getQuery={getQuery}
       categoryName={AssetCategory.Avatar} // hides controls
-      urlWithPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
+      urlWithSubViewNameAndPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
         .replace(':speciesIdOrSlug', species.id)
         .replace(':categoryName', AssetCategory.Avatar)}
       getQueryString={() =>

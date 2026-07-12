@@ -38,7 +38,7 @@ const AssetsForTag = ({ tag }: { tag: string }) => {
           Run As Query
         </Button>,
       ]}
-      urlWithPageNumberVar={routes.viewTagWithPageNumberVar.replace(
+      urlWithSubViewNameAndPageNumberVar={routes.viewTagWithPageNumberVar.replace(
         ':tag',
         tag
       )}

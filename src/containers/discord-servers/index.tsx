@@ -33,7 +33,9 @@ const DiscordServersView = () => {
         editorViewName={ViewNames.GetFullDiscordServers}
         name="discord-servers"
         defaultFieldName="name"
-        urlWithPageNumberVar={routes.viewDiscordServersWithPageNumberVar}
+        urlWithSubViewNameAndPageNumberVar={
+          routes.viewDiscordServersWithPageNumberVar
+        }
         createUrl={routes.createDiscordServer}>
         <Renderer />
       </PaginatedView>

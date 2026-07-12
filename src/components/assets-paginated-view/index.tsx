@@ -86,13 +86,17 @@ const AssetsPaginatedView = ({
         },
       ]}
       defaultFieldName="createdat"
+      defaultSubView={
+        categoryName !== AssetCategory.Avatar && showAreas && defaultGroupByArea
+          ? SubView.GroupByArea
+          : undefined
+      }
       subViews={
         categoryName !== AssetCategory.Avatar && showAreas
           ? [
               {
                 id: SubView.GroupByArea,
                 label: 'Group By Area',
-                defaultActive: defaultGroupByArea,
               },
             ]
           : undefined

@@ -95,7 +95,7 @@ const ViewAreaView = () => {
             },
           ]}
           defaultFieldName="createdat"
-          urlWithPageNumberVar={routes.viewAreaWithPageNumberVar
+          urlWithSubViewNameAndPageNumberVar={routes.viewAreaWithPageNumberVar
             .replace(':categoryName', categoryName)
             .replace(':areaName', areaName)}>
           <Renderer />

@@ -118,7 +118,6 @@ export type GetQueryFn<TRecord, SubViewEnum = any, TFilters = Filter<any>[]> = (
 interface SubViewConfig {
   id: string
   label: string
-  defaultActive?: boolean
 }
 
 interface PaginatedViewData<TRecord extends Record<string, any>> {
@@ -132,7 +131,7 @@ interface PaginatedViewData<TRecord extends Record<string, any>> {
   defaultFieldName: keyof TRecord
   defaultDirection?: OrderDirections
   renderer: React.ReactElement
-  urlWithPageNumberVar: string
+  urlWithSubViewNameAndPageNumberVar: string
   selectedSubView: string | null
   filtersKey: string
   filters: Filter<TRecord>[]
@@ -176,7 +175,7 @@ const Page = () => {
     defaultDirection,
     renderer,
     filters,
-    urlWithPageNumberVar,
+    urlWithSubViewNameAndPageNumberVar,
     selectedSubView,
     internalPageNumber,
     setInternalPageNumber,
@@ -222,12 +221,12 @@ const Page = () => {
         count: 'exact' | 'planned' | 'estimated' | null | undefined
       } = { count: 'exact' }
 
-      console.debug(`PaginatedView.getQuery`, {
-        collectionName,
-        viewName,
-        selectedSubView,
-        activeFilters,
-      })
+      // console.debug(`PaginatedView.getQuery`, {
+      //   collectionName,
+      //   viewName,
+      //   selectedSubView,
+      //   activeFilters,
+      // })
 
       if (whereClauses) {
         return
@@ -265,11 +264,6 @@ const Page = () => {
                 activeFilter.fieldName,
                 (activeFilter as EqualActiveFilter<any>).value
               )
-              console.debug(
-                `filter eq`,
-                activeFilter.fieldName,
-                (activeFilter as EqualActiveFilter<any>).value
-              )
             }
             break
 
@@ -277,31 +271,13 @@ const Page = () => {
             if ((activeFilter as NotEqualActiveFilter<any>).value) {
               if (activeFilter.subType === FilterSubType.Null) {
                 query = query.not(activeFilter.fieldName, 'is', null)
-
-                console.debug(
-                  `filter not is`,
-                  activeFilter.fieldName,
-                  (activeFilter as NotEqualActiveFilter<any>).value
-                )
               } else if (activeFilter.fieldValue !== undefined) {
                 query = query.neq(
                   activeFilter.fieldName,
                   activeFilter.fieldValue
                 )
-
-                console.debug(
-                  `filter neq`,
-                  activeFilter.fieldName,
-                  activeFilter.fieldValue
-                )
               } else {
                 query = query.neq(
-                  activeFilter.fieldName,
-                  (activeFilter as NotEqualActiveFilter<any>).value
-                )
-
-                console.debug(
-                  `filter neq`,
                   activeFilter.fieldName,
                   (activeFilter as NotEqualActiveFilter<any>).value
                 )
@@ -312,11 +288,6 @@ const Page = () => {
           case FilterType.Multichoice:
             if ((activeFilter as MultichoiceActiveFilter<any, any>).value) {
               query = query.in(
-                activeFilter.fieldName,
-                (activeFilter as MultichoiceActiveFilter<any, any>).value
-              )
-              console.debug(
-                `filter in`,
                 activeFilter.fieldName,
                 (activeFilter as MultichoiceActiveFilter<any, any>).value
               )
@@ -345,8 +316,6 @@ const Page = () => {
           ascending: true,
         })
       }
-
-      console.debug('return query', query)
 
       return query
     },
@@ -461,9 +430,9 @@ const Page = () => {
           currentPageNumber={currentPageNumber}
           pageCount={Math.ceil(totalCount / limitPerPage)}
           onClickWithPageNumber={(newPageNumber) => {
-            if (urlWithPageNumberVar) {
+            if (urlWithSubViewNameAndPageNumberVar) {
               push(
-                urlWithPageNumberVar.replace(
+                urlWithSubViewNameAndPageNumberVar.replace(
                   ':pageNumber',
                   newPageNumber.toString()
                 )
@@ -543,7 +512,6 @@ const defaultSubViewConfigs: SubViewConfig[] = [
   {
     label: 'All',
     id: 'all',
-    defaultActive: true,
   },
 ]
 
@@ -557,10 +525,11 @@ export interface PaginatedViewProps<TRecord extends Record<string, any>> {
   sortOptions?: SortOption<TRecord>[]
   defaultFieldName?: Extract<keyof TRecord, string>
   defaultDirection?: OrderDirections
+  defaultSubView?: string
   children?: React.ReactElement
   extraControls?: React.ReactElement[]
   extraControlsLeft?: React.ReactElement[] // todo: better name
-  urlWithPageNumberVar?: string
+  urlWithSubViewNameAndPageNumberVar?: string
   createUrl?: string
   subViews?: SubViewConfig[]
   showCommonMetaControls?: boolean
@@ -584,10 +553,11 @@ const PaginatedView = <TRecord extends Record<string, any>>({
   sortOptions: originalSortOptions = [],
   defaultFieldName = undefined,
   defaultDirection,
+  defaultSubView,
   children,
   extraControls = [],
   extraControlsLeft = [],
-  urlWithPageNumberVar = '',
+  urlWithSubViewNameAndPageNumberVar = '',
   createUrl,
   subViews,
   filters,
@@ -606,25 +576,22 @@ const PaginatedView = <TRecord extends Record<string, any>>({
 
   const keyPrefix = name || viewName || collectionName
 
-  const defaultSubView = defaultSubViewConfigs
-    .concat(subViews || [])
-    .find((subViewConfig) => subViewConfig.defaultActive)
-
   const [selectedSubView, setSelectedSubView] = useStorage<string | null>(
     `${keyPrefix}_subview`,
-    defaultSubView ? defaultSubView.id : null
+    defaultSubView ? defaultSubView : null
   )
 
   const classes = useStyles()
   const isEditor = useIsEditor()
   const { pageNumber = '1' } = useParams<{ pageNumber: string }>()
+  const { push } = useHistory()
 
   const currentPageNumber = parseInt(pageNumber)
 
   // for views that do not want to use the URL to track page number
   // eg users/abc/assets
   const [internalPageNumber, setInternalPageNumber] = useState<number | null>(
-    urlWithPageNumberVar ? null : currentPageNumber
+    urlWithSubViewNameAndPageNumberVar ? null : currentPageNumber
   )
 
   const sortOptions = allowRandomSort
@@ -651,7 +618,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
           defaultDirection,
           renderer: children,
           sortOptions,
-          urlWithPageNumberVar,
+          urlWithSubViewNameAndPageNumberVar,
           subViews,
           selectedSubView,
           filters,
@@ -675,7 +642,15 @@ const PaginatedView = <TRecord extends Record<string, any>>({
                         <Fragment key={id}>
                           {idx !== 0 ? <>&nbsp;</> : ''}
                           <Button
-                            onClick={() => setSelectedSubView(id)}
+                            onClick={() => {
+                              setSelectedSubView(id)
+                              if (urlWithSubViewNameAndPageNumberVar) {
+                                const url = urlWithSubViewNameAndPageNumberVar
+                                  .replace(':subViewName', id)
+                                  .replace(':pageNumber', pageNumber.toString())
+                                push(url)
+                              }
+                            }}
                             color="secondary"
                             size="small"
                             icon={

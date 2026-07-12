@@ -43,7 +43,7 @@ const AuthorsView = () => {
           },
         ]}
         defaultFieldName={'name'}
-        urlWithPageNumberVar={routes.viewAuthorsWithPageNumberVar}
+        urlWithSubViewNameAndPageNumberVar={routes.viewAuthorsWithPageNumberVar}
         createUrl={routes.createAuthor}>
         <Renderer />
       </PaginatedView>

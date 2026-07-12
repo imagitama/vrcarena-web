@@ -663,7 +663,7 @@ export default () => {
             collectionName={ViewNames.GetPublicAssets}
             getQuery={getQuery}
             defaultFieldName="createdat"
-            urlWithPageNumberVar={routes.queryWithVarAndPageVar.replace(
+            urlWithSubViewNameAndPageNumberVar={routes.queryWithVarAndPageVar.replace(
               ':query',
               convertSearchTermToUrlPath(queryStringToDisplay)
             )}>

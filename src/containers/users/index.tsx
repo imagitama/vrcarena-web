@@ -100,7 +100,7 @@ export default () => {
             Staff
           </Button>,
         ]}
-        urlWithPageNumberVar={routes.viewUsersWithPageNumberVar}>
+        urlWithSubViewNameAndPageNumberVar={routes.viewUsersWithPageNumberVar}>
         <Renderer />
       </PaginatedView>
     </>

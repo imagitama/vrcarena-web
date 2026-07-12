@@ -68,7 +68,7 @@ const Assets = () => {
         },
       ]}
       defaultFieldName="title"
-      urlWithPageNumberVar={routes.nsfwWithPageNumberVar}>
+      urlWithSubViewNameAndPageNumberVar={routes.nsfwWithPageNumberVar}>
       <Renderer />
     </PaginatedView>
   )

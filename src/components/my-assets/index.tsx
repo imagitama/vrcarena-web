@@ -76,7 +76,7 @@ const MyUploads = () => {
         },
       ]}
       defaultFieldName={'createdat'}
-      urlWithPageNumberVar={routes.myAccountWithTabNameVarAndPageNumberVar.replace(
+      urlWithSubViewNameAndPageNumberVar={routes.myAccountWithTabNameVarAndPageNumberVar.replace(
         ':tabName',
         'assets'
       )}

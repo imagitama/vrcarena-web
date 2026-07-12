@@ -28,7 +28,9 @@ const NewAssetsView = () => {
         <PaginatedView
           name="attachments"
           collectionName={CollectionNames.Attachments}
-          urlWithPageNumberVar={routes.attachmentsWithPageNumberVar}>
+          urlWithSubViewNameAndPageNumberVar={
+            routes.attachmentsWithPageNumberVar
+          }>
           <Renderer />
         </PaginatedView>
       </div>

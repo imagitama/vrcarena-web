@@ -40,7 +40,9 @@ export default () => {
         viewName={ViewNames.GetPublicCollections}
         defaultFieldName="createdat"
         defaultDirection={OrderDirections.ASC}
-        urlWithPageNumberVar={routes.viewCollectionsWithPageNumberVar}
+        urlWithSubViewNameAndPageNumberVar={
+          routes.viewCollectionsWithPageNumberVar
+        }
         extraControls={[
           <Button
             url={routes.myAccountWithTabNameVar.replace(

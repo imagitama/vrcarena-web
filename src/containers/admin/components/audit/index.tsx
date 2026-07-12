@@ -698,7 +698,7 @@ const Renderer = ({
 const AdminAudit = () => (
   <PaginatedView<AuditQueueItemsByAsset>
     viewName={ViewNames.GetAuditQueueItemsByAsset}
-    urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+    urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
       ':tabName',
       'audit'
     )}

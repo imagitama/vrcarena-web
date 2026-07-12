@@ -68,7 +68,7 @@ const ViewCategoryView = () => {
           },
         ]}
         defaultFieldName="createdat"
-        urlWithPageNumberVar={routes.viewCategoryWithPageNumberVar.replace(
+        urlWithSubViewNameAndPageNumberVar={routes.viewCategoryWithPageNumberVar.replace(
           ':categoryName',
           categoryName
         )}

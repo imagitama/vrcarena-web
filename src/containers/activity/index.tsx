@@ -73,7 +73,7 @@ export default () => {
         viewName={ViewNames.FullActivity}
         name="history"
         defaultFieldName="createdat"
-        urlWithPageNumberVar={routes.activityWithPageNumberVar}>
+        urlWithSubViewNameAndPageNumberVar={routes.activityWithPageNumberVar}>
         <Renderer />
       </PaginatedView>
     </>

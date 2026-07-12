@@ -11,6 +11,10 @@ export const admin = '/admin'
 export const adminWithTabNameVar = '/admin/:tabName'
 export const adminWithTabNameVarAndPageNumberVar =
   '/admin/:tabName/page/:pageNumber'
+export const adminWithTabNameVarAndSubViewNameVar =
+  '/admin/:tabName/:subViewName'
+export const adminWithTabNameVarAndSubViewNameVarAndPageNumberVar =
+  '/admin/:tabName/:subViewName/page/:pageNumber'
 export const myAccount = '/my-account'
 export const myAccountWithTabNameVar = '/my-account/:tabName'
 export const myAccountWithTabNameVarAndPageNumberVar =

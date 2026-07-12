@@ -8,6 +8,7 @@ import NoResultsMessage from '@/components/no-results-message'
 import { ApprovalStatus } from '@/modules/common'
 import { EqualActiveFilter } from '@/filters'
 import { HydrateFn } from '@/hooks/useDataStore'
+import { useParams } from 'react-router'
 
 const Renderer = ({
   items,
@@ -29,6 +30,8 @@ enum SubView {
 }
 
 export default () => {
+  const { tabName } = useParams<{ tabName?: string }>()
+
   const getQuery = useCallback<GetQueryFn<FullAmendment<any>, SubView>>(
     (query, selectedSubView, activeFilters) => {
       const userIdFilter = activeFilters.find(
@@ -75,7 +78,8 @@ export default () => {
         },
       ]}
       defaultFieldName="createdat"
-      urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+      defaultSubView={tabName || SubView.Pending}
+      urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar.replace(
         ':tabName',
         'amendments'
       )}
@@ -83,7 +87,6 @@ export default () => {
         {
           id: SubView.Pending,
           label: 'Pending',
-          defaultActive: true,
         },
         {
           id: SubView.Approved,

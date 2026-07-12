@@ -63,7 +63,7 @@ const ViewAvatarsView = () => {
               Browse All Species
             </Button>,
           ]}
-          urlWithPageNumberVar={routes.viewAvatarsWithPageVar}
+          urlWithSubViewNameAndPageNumberVar={routes.viewAvatarsWithPageVar}
           getQueryString={() => `category:${AssetCategory.Avatar}`}
           allowRandomSort
         />

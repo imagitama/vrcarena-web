@@ -316,22 +316,24 @@ const MainContent = () => {
         />
         <Route
           exact
-          path={routes.adminWithTabNameVarAndPageNumberVar}
+          path={[
+            routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar,
+            routes.adminWithTabNameVarAndSubViewNameVar,
+            routes.adminWithTabNameVarAndPageNumberVar,
+            routes.adminWithTabNameVar,
+            routes.admin,
+          ]}
           component={Admin}
         />
-        <Route exact path={routes.adminWithTabNameVar} component={Admin} />
-        <Route exact path={routes.admin} component={Admin} />
         <Route
           exact
-          path={routes.myAccountWithTabNameVarAndPageNumberVar}
+          path={[
+            routes.myAccountWithTabNameVarAndPageNumberVar,
+            routes.myAccountWithTabNameVar,
+            routes.myAccount,
+          ]}
           component={MyAccount}
         />
-        <Route
-          exact
-          path={routes.myAccountWithTabNameVar}
-          component={MyAccount}
-        />
-        <Route exact path={routes.myAccount} component={MyAccount} />
         <Route exact path={routes.randomAvatars} component={RandomAvatars} />
         <Route
           exact

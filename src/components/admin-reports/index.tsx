@@ -108,7 +108,7 @@ export default () => {
         },
       ]}
       defaultFieldName={'createdat'}
-      urlWithPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+      urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
         ':tabName',
         'reports'
       )}
