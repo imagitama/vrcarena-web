@@ -13,19 +13,19 @@ import useGlobalState from '@/hooks/useGlobalState'
 import useStorage from '@/hooks/useStorage'
 
 import Link from '@/components/link'
-import FormattedDate from '@/components/formatted-date'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/modules'
 import { Event } from '@/modules/events'
 import { getRelativeTime } from '@/utils/dates'
 
 const Root = styled.div`
+  overflow: hidden;
   background: rgba(0, 0, 0, 0.3);
   display: flex;
   line-height: 1rem;
   & a {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
     color: inherit;
     height: 100%;
   }
@@ -34,27 +34,36 @@ const Root = styled.div`
 const Block = styled.div`
   padding: 0.5rem;
   height: 2rem;
+  overflow: hidden;
+  text-overflow: hidden;
+  white-space: nowrap;
 `
 
 const TimeBlock = styled(Block)`
+  flex-shrink: 0;
+  font-weight: bold;
   background: ${({ isLive }: { isLive: boolean }) =>
     isLive ? `rgb(150, 0, 0)` : colorBrand};
   ${({ isLive }: { isLive: boolean }) => (isLive ? 'font-weight: bold;' : '')}
 `
 
 const NameBlock = styled(Block)`
+  flex-shrink: 0;
   background: rgb(0, 0, 0);
   font-weight: bold;
   text-transform: uppercase;
-  ${mediaQueryForMobiles} {
-    width: 100%;
-  }
+`
+
+const DescBlock = styled(Block)`
+  width: 100%;
+  text-overflow: ellipsis;
 `
 
 const CloseBtn = styled.div`
   width: 2rem;
   height: 2rem;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   margin-left: auto;
@@ -115,10 +124,14 @@ const FeaturedEvent = () => {
     return null
   }
 
-  const onClickHideEvent = () =>
+  const onClickHideEvent = (e: React.SyntheticEvent) => {
     setHiddenEventIds(
       hiddenEventIds ? hiddenEventIds.concat(event.id) : [event.id]
     )
+    e.preventDefault()
+    e.stopPropagation()
+    return false
+  }
 
   const isLive = getIsEventLive(event)
 
@@ -135,11 +148,12 @@ const FeaturedEvent = () => {
           <TimeBlock isLive={isLive}>
             {isLive ? 'LIVE' : getRelativeTime(event.startsat)}
           </TimeBlock>
-          <Block>{event.description}</Block>
+          <DescBlock>{event.description}</DescBlock>
+
+          <CloseBtn onClick={onClickHideEvent}>
+            <CloseIcon />
+          </CloseBtn>
         </Link>
-        <CloseBtn onClick={onClickHideEvent}>
-          <CloseIcon />
-        </CloseBtn>
       </Root>
     </>
   )

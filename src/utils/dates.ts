@@ -100,6 +100,7 @@ export const addHours = (date: Date, hours: number): Date => {
   return result
 }
 
+// without any prefix eg. "2 days"
 export const getRelativeTime = (date: Date | string): string =>
   moment(date)
     .fromNow()
