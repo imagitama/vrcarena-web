@@ -62,6 +62,23 @@ export interface UserMeta extends Record<string, unknown> {
   reputation: number // int
 }
 
+export type NotificationPreferencesMethods = { [methodName: string]: boolean }
+export type NotificationPreferencesEvents = { [eventName: string]: boolean }
+
+export interface NotificationPreferences {
+  methods: NotificationPreferencesMethods
+  events: NotificationPreferencesEvents
+}
+
+export interface UserPreferences extends Record<string, unknown> {
+  id: string
+  enabledadultcontent: boolean
+  notificationemail: string
+  notificationprefs: NotificationPreferences
+  tagblacklist: string[]
+  showmoreinfo: boolean
+}
+
 export enum BanStatus {
   Banned = 'banned',
   Unbanned = 'unbanned',
@@ -103,7 +120,15 @@ export enum ViewNames {
   GetFullUsers = 'getfullusers',
   GetFullUsers_Editor = 'getfullusers_editor',
   GetStaffUsers = 'getstaffusers',
+  GetMyUser = 'getmyuser',
 }
+
+// from view GetMyUser
+export interface MyUser
+  extends User,
+    UserMeta,
+    UserAdminMeta,
+    UserPreferences {}
 
 export const getIsFullUser = (user: User | FullUser): user is FullUser =>
   'role' in user

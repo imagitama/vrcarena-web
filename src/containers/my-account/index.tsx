@@ -43,6 +43,8 @@ import Button from '@/components/button'
 import Features from './components/features'
 import MyRep from './components/my-rep'
 import MySupportTickets from './components/my-support-tickets'
+import WarningMessage from '@/components/warning-message'
+import FormControls from '@/components/form-controls'
 
 const analyticsCategoryName = 'MyAccount'
 
@@ -210,6 +212,9 @@ const View = () => {
                   route={routes.viewUserWithVar.replace(':userId', user.id)}
                 />
                 <Heading variant="h3">My Featured Assets</Heading>
+                <WarningMessage>
+                  This feature has temporarily been disabled.
+                </WarningMessage>
                 <InfoMessage title="How It Works">
                   A Patreon supporter can feature any asset on the site (even
                   ones you didn't publish). Every day the featured asset is
@@ -278,12 +283,14 @@ const View = () => {
             contents: (
               <>
                 <Heading variant="h2">My Support Tickets</Heading>
-                <Button
-                  url={routes.createSupportTicket}
-                  size="large"
-                  icon={<AddIcon />}>
-                  Create Support Ticket
-                </Button>
+                <FormControls>
+                  <Button
+                    url={routes.createSupportTicket}
+                    size="large"
+                    icon={<AddIcon />}>
+                    Create Support Ticket
+                  </Button>
+                </FormControls>
                 <MySupportTickets />
               </>
             ),
@@ -294,6 +301,11 @@ const View = () => {
             contents: (
               <>
                 <Heading variant="h2">My Claims</Heading>
+                <InfoMessage>
+                  Visit an author and click "claim" which shows other people
+                  that you are them. There is no verification process so it is
+                  an honesty system.
+                </InfoMessage>
                 <MyClaims />
               </>
             ),
@@ -304,6 +316,11 @@ const View = () => {
             contents: (
               <>
                 <Heading variant="h2">Reputation</Heading>
+                <InfoMessage>
+                  You gain rep as you perform actions on the site. Rep is used
+                  by our staff (and automated systems) to decide if to approve
+                  assets and amendments.
+                </InfoMessage>
                 <MyRep />
               </>
             ),

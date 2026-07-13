@@ -1,9 +1,8 @@
 import React from 'react'
 import * as routes from './routes'
 import categoriesMeta from './category-meta'
-import { UserPreferences } from './modules/user'
 import { AssetCategory } from './modules/assets'
-import { FullUser, UserRoles } from './modules/users'
+import { UserAdminMeta, UserPreferences, UserRoles } from './modules/users'
 
 export interface MenuItem {
   id: string
@@ -20,7 +19,7 @@ export interface MenuItem {
 
 export function canShowMenuItem(
   menuItem: MenuItem,
-  user: FullUser | null,
+  user: UserAdminMeta | null,
   userPreferences: UserPreferences | false | null
 ): boolean {
   if (menuItem.requiresAuth && !user) {
@@ -42,7 +41,7 @@ export function canShowMenuItem(
     if (!user) {
       return false
     }
-    if (user.isAdmin || user.isEditor) {
+    if (user.role === UserRoles.Admin || user.role === UserRoles.Editor) {
       return true
     }
     return false

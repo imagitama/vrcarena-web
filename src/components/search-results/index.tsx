@@ -1,11 +1,15 @@
 import React, { useCallback, Fragment } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import Link from '@/components/link'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { makeStyles } from '@mui/styles'
 
-import { searchIndexNameLabels, changeSearchTableName } from '@/modules/app'
+import {
+  searchIndexNameLabels,
+  changeSearchTableName,
+  AppState,
+} from '@/modules/app'
 import * as routes from '@/routes'
 import { trackAction } from '@/analytics'
 import { mediaQueryForMobiles } from '@/media-queries'
@@ -239,10 +243,13 @@ const PoweredByAlgoliaLogo = () => {
 function IndexFilters() {
   const { searchTableName } = useSelector<
     RootState,
-    { searchTableName: string }
-  >(({ app: { searchTableName } }) => ({
-    searchTableName,
-  }))
+    Pick<AppState, 'searchTableName'>
+  >(
+    ({ app: { searchTableName } }) => ({
+      searchTableName,
+    }),
+    shallowEqual
+  )
   const dispatch = useDispatch<typeof store.dispatch>()
   const classes = useStyles()
 
@@ -422,12 +429,10 @@ const useAppSearch = (): {
   const { searchTerm, searchTableName, searchFilters, searchCount } =
     useSelector<
       RootState,
-      {
-        searchTerm: string
-        searchTableName: string
-        searchFilters: string[]
-        searchCount: number
-      }
+      Pick<
+        AppState,
+        'searchTerm' | 'searchTableName' | 'searchFilters' | 'searchCount'
+      >
     >(
       ({
         app: { searchTerm, searchTableName, searchFilters, searchCount },
@@ -436,7 +441,8 @@ const useAppSearch = (): {
         searchTableName,
         searchFilters: searchFilters as string[],
         searchCount,
-      })
+      }),
+      shallowEqual
     )
 
   return {
@@ -553,14 +559,17 @@ const NonAssetSearch = () => {
   )
 }
 
-export default () => {
+const SearchResults = () => {
   const { searchTerm, searchTableName } = useSelector<
     RootState,
     { searchTerm: string; searchTableName: string }
-  >(({ app: { searchTerm, searchTableName } }) => ({
-    searchTerm,
-    searchTableName,
-  }))
+  >(
+    ({ app: { searchTerm, searchTableName } }) => ({
+      searchTerm,
+      searchTableName,
+    }),
+    shallowEqual
+  )
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const classes = useStyles()
 
@@ -587,3 +596,5 @@ export default () => {
     </>
   )
 }
+
+export default SearchResults

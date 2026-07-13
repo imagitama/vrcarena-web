@@ -102,20 +102,20 @@ interface MenuItemDetails {
 
 const AvatarMenuItem = () => {
   const classes = useStyles()
-  const [, , user] = useUserRecord()
+  const [, , myUser] = useUserRecord()
 
   return (
     <>
       <Avatar
-        url={user && user.avatarurl ? user.avatarurl : undefined}
-        username={user && user.username ? user.username : undefined}
+        url={myUser?.avatarurl || undefined}
+        username={myUser?.username || undefined}
         size={AvatarSize.Tiny}
       />
       <span
         className={classNames(classes.username, {
-          [classes.loggedIn]: user !== null,
+          [classes.loggedIn]: myUser !== null,
         })}>
-        {user ? user.username : 'Logged out'}
+        {myUser?.username || 'Logged out'}
       </span>
       <KeyboardArrowDownIcon />
     </>
@@ -244,8 +244,6 @@ export default ({
       if (!menuDetails || !menuDetails.getItems) {
         return
       }
-
-      console.debug(`Hydrating menu ${id}...`)
 
       const newItemsResult = await menuDetails.getItems(supabase)
 

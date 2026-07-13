@@ -125,7 +125,9 @@ const DesktopMenu = () => {
   return (
     <div className={classes.root}>
       {navItems
-        .filter((navItem) => canShowMenuItem(navItem, user, userPreferences))
+        .filter((navItem) =>
+          user ? canShowMenuItem(navItem, user, userPreferences) : false
+        )
         .map(({ id, label, url, children }) => {
           const actualLabel = getLabelForMenuItem(label)
 
@@ -162,9 +164,11 @@ const DesktopMenu = () => {
                   items={
                     !Array.isArray(children)
                       ? children
-                      : children.filter((navItem) =>
+                      : user
+                      ? children.filter((navItem) =>
                           canShowMenuItem(navItem, user, userPreferences)
                         )
+                      : children
                   }
                   isOpen={openMenuItem === id}
                   onOpen={() => {

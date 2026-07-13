@@ -1,6 +1,5 @@
 import { AnyAction, Dispatch } from 'redux'
 import { Asset, CollectionNames as AssetsCollectionNames } from './assets'
-import { UserPreferences } from './user'
 import { CollectionNames as UsersCollectionNames } from './users'
 import { CollectionNames as AuthorsCollectionNames } from './authors'
 import { Event } from '@/modules/events'
@@ -47,7 +46,7 @@ function getInitialSearchTerm() {
   return ''
 }
 
-export interface SearchFilter {}
+export type SearchFilter = string
 
 export interface AppState {
   isMenuOpen: boolean
@@ -59,7 +58,6 @@ export interface AppState {
   bulkEditIds: null | string[] // null is not in edit mode
   isSelectingAll: boolean
   bulkEditAssetDatas: Asset[]
-  userPrefs: UserPreferences | null
   previewFeaturedEvent: Event | null
 }
 
@@ -73,7 +71,6 @@ const initialState: AppState = {
   bulkEditIds: null,
   isSelectingAll: false,
   bulkEditAssetDatas: [],
-  userPrefs: null,
   previewFeaturedEvent: null,
 }
 
@@ -91,7 +88,6 @@ const LEAVE_BULK_EDIT_MODE = 'LEAVE_BULK_EDIT_MODE'
 const TOGGLE_BULK_EDIT_ID = 'TOGGLE_BULK_EDIT_ID'
 const SELECT_BULK_EDIT_ID = 'SELECT_BULK_EDIT_ID'
 const SET_SELECT_ALL = 'SET_SELECT_ALL'
-const SET_USER_PREFS = 'SET_USER_PREFS'
 
 const SET_PREVIEW_FEATURED_EVENT = 'SET_PREVIEW_FEATURED_EVENT'
 
@@ -215,12 +211,6 @@ export default (
         isSelectingAll: action.payload.newValue,
       }
 
-    case SET_USER_PREFS:
-      return {
-        ...state,
-        userPrefs: action.payload.newUserPrefs,
-      }
-
     case SET_PREVIEW_FEATURED_EVENT:
       return {
         ...state,
@@ -338,13 +328,6 @@ export const setSelectingAll = (newValue: boolean) => ({
   type: SET_SELECT_ALL,
   payload: {
     newValue,
-  },
-})
-
-export const setUserPrefs = (newUserPrefs: UserPreferences) => ({
-  type: SET_USER_PREFS,
-  payload: {
-    newUserPrefs,
   },
 })
 

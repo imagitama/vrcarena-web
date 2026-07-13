@@ -1,19 +1,33 @@
-import { useSelector } from 'react-redux'
+import { shallowEqual, useSelector } from 'react-redux'
 
 import { loadUserIntoStore } from '@/auth'
-import { FullUser } from '@/modules/users'
+import { MyUser } from '@/modules/users'
+import { UserState } from '@/modules/user'
 import { RootState } from '@/modules'
 import useSupabaseUserId from './useSupabaseUserId'
 import useSupabaseClient from './useSupabaseClient'
+import { DataStoreErrorCode } from '@/data-store'
 
-const useUserRecord = (): [boolean, boolean, FullUser | null, () => void] => {
+const useUserRecord = (): [
+  boolean,
+  DataStoreErrorCode | null,
+  MyUser | null,
+  () => void
+] => {
   const userId = useSupabaseUserId()
-  const { isLoading, isErrored, record } = useSelector(({ user }: RootState) => ({ record: user.user, isLoading: user.isLoading, isErrored: user.isErrored }))
+  const { isLoading, lastErrorCode, user } = useSelector<RootState, UserState>(
+    ({ user }) => ({
+      user: user.user,
+      isLoading: user.isLoading,
+      lastErrorCode: user.lastErrorCode,
+    }),
+    shallowEqual
+  )
   const supabase = useSupabaseClient()
 
   const hydrate = () => loadUserIntoStore(supabase, userId, false)
 
-  return [isLoading, isErrored, record, hydrate]
+  return [isLoading, lastErrorCode, user, hydrate]
 }
 
 export default useUserRecord

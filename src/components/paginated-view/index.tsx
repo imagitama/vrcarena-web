@@ -508,10 +508,12 @@ const CommonMetaControl = ({
   )
 }
 
+const SUB_VIEW_ID_ALL = 'all'
+
 const defaultSubViewConfigs: SubViewConfig[] = [
   {
     label: 'All',
-    id: 'all',
+    id: SUB_VIEW_ID_ALL,
   },
 ]
 
@@ -578,7 +580,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
 
   const [selectedSubView, setSelectedSubView] = useStorage<string | null>(
     `${keyPrefix}_subview`,
-    defaultSubView ? defaultSubView : null
+    defaultSubView ? defaultSubView : SUB_VIEW_ID_ALL
   )
 
   const classes = useStyles()

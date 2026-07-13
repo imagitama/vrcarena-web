@@ -1,58 +1,15 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { CollectionNames } from '@/modules/users'
-import { UserPreferences } from '@/modules/user'
 import { DataStoreErrorCode } from '@/data-store'
-import { setUserPrefs } from '@/modules/app'
+import useUserRecord from './useUserRecord'
+import { UserPreferences } from '@/modules/users'
 
-import useDataStoreItem from './useDataStoreItem'
-import useUserId from './useUserId'
-
-let isSomethingGoingToHydrate = false
-let isHydrating = false
-
-export default (
-  forceHydrate?: boolean
-): [
+const useUserPreferences = (): [
   boolean,
-  null | DataStoreErrorCode,
-  UserPreferences | false | null,
+  DataStoreErrorCode | null,
+  UserPreferences | null,
   () => void
 ] => {
-  const lastKnownUserPrefs: UserPreferences | null = useSelector(
-    // @ts-ignore
-    (store) => store.app.userPrefs
-  )
-  const userId = useUserId()
-  const dispatch = useDispatch()
-
-  const needToHydrate =
-    userId &&
-    (forceHydrate ||
-      (isSomethingGoingToHydrate === false &&
-        isHydrating === false &&
-        lastKnownUserPrefs === null))
-
-  if (needToHydrate) {
-    isSomethingGoingToHydrate = true
-  }
-
-  const [isLoading, lastErrorCode, userPrefs, hydrate] =
-    useDataStoreItem<UserPreferences>(
-      CollectionNames.UserPreferences,
-      needToHydrate ? userId : false,
-      { queryName: 'user-prefs-hook' }
-    )
-
-  useEffect(() => {
-    if (isLoading) {
-      isHydrating = true
-    }
-    if (userPrefs) {
-      dispatch(setUserPrefs(userPrefs))
-    }
-  }, [isLoading])
-
-  return [isLoading, lastErrorCode, lastKnownUserPrefs, hydrate]
+  const [isLoading, lastErrorCode, myUser, hydrate] = useUserRecord()
+  return [isLoading, lastErrorCode, myUser, hydrate]
 }
+
+export default useUserPreferences

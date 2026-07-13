@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 
 import useIsPatron from '@/hooks/useIsPatron'
 import { WEBSITE_FULL_URL } from '@/config'
@@ -139,7 +140,8 @@ const SupporterBadgeForm = ({
               url={downloadUrl}
               downloadFilename="vrcarena_badge.png"
               color="secondary"
-              hollow={false}>
+              hollow={true}
+              icon={<CloudDownloadIcon />}>
               Download PNG
             </Button>
           ) : (

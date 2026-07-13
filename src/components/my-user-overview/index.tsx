@@ -54,7 +54,7 @@ const MyUserOverview = () => {
   return (
     <>
       <Avatar url={userRecord.avatarurl} />
-      <Heading variant="h1">
+      <Heading variant="h1" style={{ marginTop: '0.5rem' }}>
         <UsernameLink username={userRecord.username} id={userRecord.id} />
       </Heading>
       <Heading variant="h2">Email</Heading>

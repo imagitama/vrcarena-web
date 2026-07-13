@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { matchPath, useLocation } from 'react-router'
 
-import { changeSearchTerm, overrideSearchFilter } from '@/modules/app'
+import { AppState, changeSearchTerm, overrideSearchFilter } from '@/modules/app'
 import * as routes from '@/routes'
 import { convertSearchTermToUrlPath } from '@/utils'
 import { trackAction } from '@/analytics'
@@ -13,6 +13,8 @@ import { CollectionNames as UsersCollectionNames } from '@/modules/users'
 import useHistory from '@/hooks/useHistory'
 
 import BigSearchInput from '@/components/big-search-input'
+import { RootState } from '@/modules'
+import store from '@/store'
 
 function getPlaceholderForSearchIndexName(searchTableName: string): string {
   switch (searchTableName) {
@@ -38,15 +40,18 @@ function updateUrlWithSearchData(indexName: string, searchTerm: string): void {
 }
 
 export default () => {
-  const { searchTerm, searchTableName, isSearching } = useSelector(
-    // @ts-ignore repair
+  const { searchTerm, searchTableName, isSearching } = useSelector<
+    RootState,
+    Pick<AppState, 'searchTerm' | 'searchTableName' | 'isSearching'>
+  >(
     ({ app: { searchTerm, searchTableName, isSearching } }) => ({
       searchTerm,
       searchTableName,
       isSearching,
-    })
+    }),
+    shallowEqual
   )
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
   const { push } = useHistory()
   const location = useLocation()
   const inputRef = useRef<HTMLInputElement>(null)

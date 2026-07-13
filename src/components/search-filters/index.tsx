@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
@@ -49,9 +49,12 @@ const SearchFilters = () => {
   const { searchFilters } = useSelector<
     RootState,
     { searchFilters: SearchFilter[] }
-  >(({ app: { searchFilters } }) => ({
-    searchFilters,
-  }))
+  >(
+    ({ app: { searchFilters } }) => ({
+      searchFilters,
+    }),
+    shallowEqual
+  )
   const dispatch = useDispatch<typeof store.dispatch>()
   const addFilter = (id: string) => dispatch(addSearchFilter(id))
   const removeFilter = (id: string) => dispatch(removeSearchFilter(id))

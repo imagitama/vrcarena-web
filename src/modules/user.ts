@@ -1,5 +1,6 @@
 import { AnyAction } from 'redux'
-import { FullUser } from './users'
+import { MyUser } from './users'
+import { DataStoreErrorCode } from '@/data-store'
 
 export const USER_IS_LOADING = 'user/USER_IS_LOADING'
 export const USER_IS_DONE_LOADING = 'user/USER_IS_DONE_LOADING'
@@ -9,35 +10,20 @@ export const USER_UNLOADED = 'user/USER_UNLOADED'
 
 export interface UserState {
   isLoading: boolean
-  // TODO: Use lastErrorCode
-  isErrored: boolean
-  user: null | FullUser
+  lastErrorCode: DataStoreErrorCode | null
+  user: null | MyUser
 }
 
 const initialState: UserState = {
   isLoading: false,
-  isErrored: false,
+  lastErrorCode: null,
   user: null,
 }
 
-export type NotificationPreferencesMethods = { [methodName: string]: boolean }
-export type NotificationPreferencesEvents = { [eventName: string]: boolean }
-
-export interface NotificationPreferences {
-  methods: NotificationPreferencesMethods
-  events: NotificationPreferencesEvents
-}
-
-export interface UserPreferences extends Record<string, unknown> {
-  id: string
-  enabledadultcontent: boolean
-  notificationemail: string
-  notificationprefs: NotificationPreferences
-  tagblacklist: string[]
-  showmoreinfo: boolean
-}
-
-export default (state = initialState, action: AnyAction) => {
+export default (
+  state: UserState = initialState,
+  action: AnyAction
+): UserState => {
   switch (action.type) {
     case USER_IS_LOADING:
       return {
@@ -54,14 +40,14 @@ export default (state = initialState, action: AnyAction) => {
     case USER_IS_ERRORED:
       return {
         ...state,
-        isErrored: true,
+        lastErrorCode: action.data.errorCode,
       }
 
     case USER_LOADED:
       return {
         ...state,
         isLoading: false,
-        isErrored: false,
+        lastErrorCode: null,
         user: action.data.user,
       }
 
@@ -69,7 +55,7 @@ export default (state = initialState, action: AnyAction) => {
       return {
         ...state,
         isLoading: false,
-        isErrored: false,
+        lastErrorCode: null,
         user: null,
       }
 
