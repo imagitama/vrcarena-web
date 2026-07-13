@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles'
 import * as routes from '@/routes'
 import { getUserIsStaffMember } from '@/utils/users'
 import { mediaQueryForMobiles } from '@/media-queries'
-import { BanStatus, FullUser, User, getIsFullUser } from '@/modules/users'
+import { BanStatus, CoreUserFields, getIsFullUser } from '@/modules/users'
 import { AccessStatus } from '@/modules/common'
 
 import Link from '@/components/link'
@@ -59,7 +59,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({ user }: { user: FullUser | User }) => {
+const UserListItem = ({ user }: { user: CoreUserFields }) => {
   const classes = useStyles()
   return (
     <div
@@ -81,9 +81,11 @@ export default ({ user }: { user: FullUser | User }) => {
           <span className={classes.name}>
             {user.username || '(no name set)'}
           </span>
-          {getIsFullUser(user) && getUserIsStaffMember(user) && <StaffBadge />}
+          {getUserIsStaffMember(user) && <StaffBadge />}
         </div>
       </Link>
     </div>
   )
 }
+
+export default UserListItem

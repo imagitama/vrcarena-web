@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
@@ -6,23 +6,20 @@ import Box from '@mui/material/Box'
 
 import { CachedDiscordMessage } from '@/modules/discordmessagecache'
 import { getAvatarImageUrl } from '@/discord'
-import Paper from '@/components/paper'
 import { getFormattedDate } from '@/utils/dates'
 import { VRCArenaTheme } from '@/themes'
+import { trimDescription } from '@/utils/formatting'
+import ExpandIcon from '../expand-icon'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
-  messageContainer: {
+  root: {
     display: 'flex',
     alignItems: 'flex-start',
-    padding: theme.spacing(1),
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    backgroundColor: '#36393f',
-    color: 'white',
   },
   avatar: {
     width: theme.spacing(4),
     height: theme.spacing(4),
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(1),
   },
   contentBox: {
     flex: 1,
@@ -33,25 +30,34 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     marginRight: theme.spacing(1),
   },
   timestamp: {
-    fontSize: '0.75rem',
-    color: '#72767d',
+    '&&': {
+      fontSize: '0.75rem',
+      color: '#72767d',
+      marginLeft: '0.25rem',
+    },
   },
   content: {
-    color: '#dcddde',
-    marginTop: theme.spacing(0.5),
-    whiteSpace: 'pre-wrap',
+    '&&': {
+      color: '#dcddde',
+      marginTop: theme.spacing(0.5),
+      whiteSpace: 'pre-wrap',
+      fontSize: '75%',
+    },
   },
 }))
 
 const DiscordMessageResult = ({
   message,
+  trim,
 }: {
   message: CachedDiscordMessage
+  trim?: boolean
 }) => {
   const classes = useStyles()
+  const [isExpanded, setIsExpanded] = useState(!trim)
 
   return (
-    <Paper className={classes.messageContainer}>
+    <div className={classes.root}>
       <Avatar
         src={
           message.rawdata.author.avatar
@@ -64,7 +70,7 @@ const DiscordMessageResult = ({
         className={classes.avatar}
       />
       <Box className={classes.contentBox}>
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" flexWrap="wrap">
           <Typography className={classes.username}>
             {message.rawdata.author.username}
           </Typography>
@@ -72,9 +78,19 @@ const DiscordMessageResult = ({
             {getFormattedDate(message.sentat, 'MMM d, yyyy h:mm a')}
           </Typography>
         </Box>
-        <Typography className={classes.content}>{message.content}</Typography>
+        <Typography className={classes.content}>
+          {trim && !isExpanded
+            ? trimDescription(message.content)
+            : message.content}{' '}
+          {trim && !isExpanded && (
+            <ExpandIcon
+              isExpanded={isExpanded}
+              onClick={() => setIsExpanded(true)}
+            />
+          )}
+        </Typography>
       </Box>
-    </Paper>
+    </div>
   )
 }
 

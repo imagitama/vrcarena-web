@@ -25,3 +25,27 @@ export function trimDescription(desc: string, maxLength: number = 200): string {
   }
   return desc
 }
+
+export const getUserFriendlyNumber = (num: number): string => {
+  const absNum = Math.abs(num)
+  const sign = num < 0 ? '-' : ''
+
+  if (absNum < 1000) {
+    return `${sign}${absNum}`
+  }
+
+  const units = [
+    { value: 1_000_000_000, suffix: 'B' },
+    { value: 1_000_000, suffix: 'M' },
+    { value: 1_000, suffix: 'k' },
+  ]
+
+  for (const { value, suffix } of units) {
+    if (absNum >= value) {
+      const formatted = (absNum / value).toFixed(1).replace(/\.0$/, '')
+      return `${sign}${formatted}${suffix}`
+    }
+  }
+
+  return `${sign}${absNum}`
+}

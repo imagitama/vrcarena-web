@@ -30,6 +30,7 @@ import UsernameEditor from '@/components/username-editor'
 import Tabs, { useTabs } from '@/components/tabs'
 
 import AuthorClaims from './components/author-claims'
+import { CONTENT_MAX_WIDTH_PX } from '@/config'
 
 const useStyles = makeStyles({
   root: {
@@ -63,7 +64,7 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     '& > *': {
       width: '100%',
-      maxWidth: '700px',
+      maxWidth: `${CONTENT_MAX_WIDTH_PX}px`,
     },
   },
   formControls: {

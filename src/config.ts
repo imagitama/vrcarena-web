@@ -19,6 +19,8 @@ export const VRCHAT_GROUP_ID = 'ARENA.9705'
 export const VRCHAT_GROUP_URL =
   'https://vrchat.com/home/group/grp_77b54431-3d6e-46a4-874d-87bce1c08152'
 
+export const CONTENT_MAX_WIDTH_PX = 800
+
 export const BANNER_WIDTH = 1280
 export const BANNER_HEIGHT = 300
 

@@ -2,6 +2,18 @@ import { AiEvaluateQueuedItem } from './aievaluation'
 import { AccessStatus } from './common'
 import { Species } from './species'
 
+// minimal data shared between ALL views
+export interface CoreUserFields extends Record<string, unknown> {
+  id: string
+  username: string
+  avatarurl: string | null
+  reputation: number
+  banstatus: BanStatus
+  accessstatus: AccessStatus
+  role: UserRoles
+  createdat: string // date
+}
+
 export interface SocialMediaUsernames extends Record<string, unknown> {
   // profile
   vrchatuserid: string | null
@@ -16,7 +28,7 @@ export interface SocialMediaUsernames extends Record<string, unknown> {
   patreonusername: string | null
 }
 
-export interface User extends SocialMediaUsernames {
+export interface User extends CoreUserFields, SocialMediaUsernames {
   id: string
 
   // basic stuff
@@ -27,9 +39,9 @@ export interface User extends SocialMediaUsernames {
 
   // meta
   lastmodifiedby: string
-  lastmodifiedat: Date
+  lastmodifiedat: string // date
   createdby: string
-  createdat: Date
+  createdat: string // date
 }
 
 export enum PatreonStatus {

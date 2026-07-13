@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { makeStyles } from '@mui/styles'
 import Chariot from '@/components/chariot'
 import useNotice from '@/hooks/useNotice'
+import { CONTENT_MAX_WIDTH_PX } from '@/config'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles(() => ({
     position: 'relative',
     padding: '1rem',
     width: '100%',
-    maxWidth: '750px',
+    maxWidth: `${CONTENT_MAX_WIDTH_PX}px`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

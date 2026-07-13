@@ -8,6 +8,8 @@ import { routes } from '@/routes'
 import Button, { GoToButton } from '@/components/button'
 import Link from '@/components/link'
 import Tooltip from '@/components/tooltip'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+import { CONTENT_MAX_WIDTH_PX } from '@/config'
 
 const WELCOME_MESSAGE_HIDE_ID = 'welcome_may2026'
 
@@ -17,9 +19,11 @@ const Controls = styled.div`
 
 const WelcomeMessageRoot = styled.div`
   display: flex;
-  padding: 0 0.5rem;
-  max-width: 900px;
+  max-width: ${CONTENT_MAX_WIDTH_PX}px;
   margin: 0 auto 1rem;
+  ${mediaQueryForTabletsOrBelow} {
+    padding: 0 0.5rem;
+  }
 `
 
 const SpeechBubble = styled.div`
