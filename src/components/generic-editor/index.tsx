@@ -90,7 +90,9 @@ function getInputForFieldType<TRecord extends Record<string, any>>(
 }
 
 const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
-  const hiddenFields = fields.filter(({ type }) => type === fieldTypes.hidden)
+  const hiddenFields = fields.filter(
+    ({ type, default: defaultVal }) => type === fieldTypes.hidden && defaultVal
+  )
 
   if (!hiddenFields.length) {
     return {}
