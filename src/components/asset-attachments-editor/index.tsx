@@ -36,7 +36,7 @@ const AssetAttachmentsEditor = ({
 
   const onSave = async (newIds: string[], newDatas: Attachment[]) => {
     try {
-      console.debug(`AssetAttachmentsEditor.onSave`, { newIds })
+      // console.debug(`AssetAttachmentsEditor.onSave`, { newIds })
 
       if (overrideSave) {
         overrideSave(newIds, { attachmentsdata: newDatas })

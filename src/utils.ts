@@ -1,26 +1,25 @@
 // TODO: Move to utils/index.ts
 
-import { validate as validateUuid, version as uuidVersion } from 'uuid'
-import { FullUser, PatreonStatus, UserRoles } from './modules/users'
+import { validate as validateUuid } from 'uuid'
 import { EditableField } from './editable-fields'
 
 export function scrollToTop(isSmooth: boolean = true): void {
-  console.debug(`Scrolling to top...`)
+  console.debug(`scrolling to top...`)
   return scrollTo(0, isSmooth)
 }
 
 export function smoothScrollToTop(): void {
-  console.debug(`Smooth scrolling to top...`)
+  console.debug(`smooth scrolling to top...`)
   return scrollTo(0, true)
 }
 
 export function snapScrollToTop(): void {
-  console.debug(`Snap scrolling to top...`)
+  console.debug(`snap scrolling to top...`)
   return scrollTo(0, false)
 }
 
 export function scrollTo(x: number, isSmooth: boolean = true): void {
-  console.debug(`Scrolling to ${x}...`)
+  console.debug(`scrolling to ${x}...`)
   try {
     window.scrollTo({
       top: x,
@@ -45,7 +44,7 @@ export function scrollToSide(
   y: number,
   isSmooth: boolean = true
 ): void {
-  console.debug(`Scrolling to ${x},${y}...`)
+  console.debug(`scrolling to ${x},${y}...`)
   try {
     window.scrollTo({
       top: y,
@@ -70,7 +69,7 @@ export function scrollToElement(
   isSmooth = true,
   padding = 0
 ): void {
-  console.debug(`Scrolling to element...`, element)
+  console.debug(`scrolling to element...`, element)
   return scrollTo(element.getBoundingClientRect().top - padding, isSmooth)
 }
 
@@ -378,7 +377,7 @@ export const addOrUpdateQueryParam = (name: string, value: string): void => {
 
   url.searchParams.set(name, value)
 
-  console.debug(`addOrUpdateQueryParam`, { name, value, url: url.href })
+  // console.debug(`addOrUpdateQueryParam`, { name, value, url: url.href })
 
   window.history.replaceState(null, '', url.href)
 }
@@ -481,7 +480,7 @@ export function getUrlForBoothByUsername(username: string): string {
 export function getPrefersBritishSpelling() {
   const locales = navigator.languages || [navigator.language]
 
-  console.debug('locales', locales)
+  // console.debug('locales', locales)
 
   const britishLocales = [
     'en-GB', // United Kingdom

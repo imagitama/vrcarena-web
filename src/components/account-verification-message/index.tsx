@@ -30,7 +30,7 @@ const AccountVerificationMessage = () => {
           throw new Error('No current user')
         }
         if (!auth.currentUser.email) {
-          console.debug('cannot send verification without an email')
+          console.warn('Cannot send verification without an email')
           return
         }
         console.debug(`sending email verificationn...`)

@@ -608,12 +608,12 @@ const AiSuggestForm = ({
     )
 
   const onClickRequest = async () => {
-    console.debug(`onClickRequest`)
+    // console.debug(`onClickRequest`)
     const createdId = await requestAiSuggestion({
       assetid: assetId,
     })
     if (!createdId) throw new Error('Result is null')
-    console.debug(`onClickRequest.done`, { createdId })
+    // console.debug(`onClickRequest.done`, { createdId })
     if (createdId !== null) {
       hydrate()
     }

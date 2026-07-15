@@ -54,7 +54,7 @@ export const uploadFile = async (
     throw new Error('Need a full path inside bucket')
   }
 
-  console.debug(`uploadFile`, { file, bucketName, fullPathInsideBucket })
+  // console.debug(`uploadFile`, { file, bucketName, fullPathInsideBucket })
 
   let fakeProgressPercentage = 0
 
@@ -77,9 +77,9 @@ export const uploadFile = async (
 
   const fullPathToUploadTo = fullPathInsideBucketAsUuid
 
-  console.debug(
-    `Uploading ${file.name} to ${bucketName}/${fullPathToUploadTo}...`
-  )
+  // console.debug(
+  //   `uploading ${file.name} to ${bucketName}/${fullPathToUploadTo}...`
+  // )
 
   const { error } = await supabase.storage
     .from(bucketName)
@@ -113,7 +113,7 @@ export const uploadFile = async (
 
   const { publicUrl: url } = data
 
-  console.debug(`File uploaded to ${url}`)
+  // console.debug(`file uploaded to ${url}`)
 
   return url
 }
@@ -147,7 +147,7 @@ export const uploadImage = async (
     throw new Error('Need a bucket name')
   }
 
-  console.debug(`uploadImage`, { image, bucketName, bucketDirectoryPath })
+  // console.debug(`uploadImage`, { image, bucketName, bucketDirectoryPath })
 
   let fakeProgressPercentage = 0
 
@@ -178,7 +178,7 @@ export const uploadImage = async (
   if (errorMessage) {
     throw new UploadImageError(errorMessage, code || null)
   } else {
-    console.debug(`File uploaded to ${imageUrl}`)
+    // console.debug(`file uploaded to ${imageUrl}`)
   }
 
   return imageUrl

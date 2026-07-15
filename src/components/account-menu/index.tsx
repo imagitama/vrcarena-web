@@ -166,7 +166,7 @@ const getMenu = (
       if (id === 'clear-all') {
         return
       }
-      console.debug(`Clicked notification ${id}...`)
+      console.debug(`clicked notification ${id}...`)
       await deleteRecord(supabase, CollectionNames.Notifications, id)
     },
     loggedInOnly: true,
@@ -175,7 +175,7 @@ const getMenu = (
       const userId = getUserId()
 
       if (!userId) {
-        console.debug(`No user ID!`)
+        console.warn(`No user ID!`) // they could have signed out
         return
       }
 

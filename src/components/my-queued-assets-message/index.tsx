@@ -94,7 +94,7 @@ const DraftAssetsMessage = () => {
               <Button
                 url={routes.myAccountWithTabNameVarAndSubViewNameVar
                   .replace(':tabName', 'assets')
-                  .replace(':subViewName', 'queue')}
+                  .replace(':subViewName', 'queued')}
                 size="small"
                 color="secondary"
                 hollow>
@@ -111,7 +111,7 @@ const DraftAssetsMessage = () => {
               <Button
                 url={routes.myAccountWithTabNameVarAndSubViewNameVar
                   .replace(':tabName', 'assets')
-                  .replace(':subViewName', 'queue')}
+                  .replace(':subViewName', 'queued')}
                 size="small"
                 color="secondary"
                 hollow>
@@ -128,7 +128,7 @@ const DraftAssetsMessage = () => {
             <Button
               url={routes.myAccountWithTabNameVarAndSubViewNameVar
                 .replace(':tabName', 'assets')
-                .replace(':subViewName', 'queue')}
+                .replace(':subViewName', 'queued')}
               size="small"
               color="secondary"
               hollow>

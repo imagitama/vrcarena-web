@@ -98,7 +98,7 @@ export const notifications = async (
       label: getLabelForNotification(notification),
       date: notification.createdat,
       onRemove: async () => {
-        console.debug(`Removing notification ${notification.id}...`)
+        console.debug(`removing notification ${notification.id}...`)
         await deleteRecord(
           supabase,
           NotificationsCollectionNames.Notifications,

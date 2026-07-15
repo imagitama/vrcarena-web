@@ -130,7 +130,7 @@ export const updateRecord = async <TFields>(
     .update(newVal)
     .eq('id', id)
 
-  console.debug(`updateRecord`, tableName, id, data, error)
+  // console.debug(`updateRecord`, tableName, id, data, error)
 
   if (error) throw error
 
@@ -148,7 +148,7 @@ export const updateRecords = async <TFields>(
     .update(newVal)
     .or(ids.map((id) => `id.eq.${id}`).join(','))
 
-  console.debug(`updateRecords`, tableName, ids, data, error)
+  // console.debug(`updateRecords`, tableName, ids, data, error)
 
   if (error) throw error
 }
@@ -170,7 +170,7 @@ export const insertRecord = async <TFields, TReturnVal>(
 
   const { error, data } = await query
 
-  console.debug(`insertRecord`, tableName, data, error)
+  // console.debug(`insertRecord`, tableName, data, error)
 
   if (error) throw error
 
@@ -196,7 +196,7 @@ export const insertRecords = async <TFields, TReturnVal>(
 
   const { error, data } = await query
 
-  console.debug(`insertRecords`, tableName, data, error)
+  // console.debug(`insertRecords`, tableName, data, error)
 
   if (error) throw error
 
@@ -212,7 +212,7 @@ export const deleteRecord = async (
 ): Promise<void> => {
   const { error, data } = await supabase.from(tableName).delete().eq('id', id)
 
-  console.debug(`deleteRecord`, tableName, id, data, error)
+  // console.debug(`deleteRecord`, tableName, id, data, error)
 
   if (error) throw error
 }
@@ -227,7 +227,7 @@ export const deleteRecordsByUser = async (
     .delete()
     .eq('createdby', userId)
 
-  console.debug(`deleteRecordsByUser`, tableName, userId, data, error)
+  // console.debug(`deleteRecordsByUser`, tableName, userId, data, error)
 
   if (error) throw error
 }

@@ -208,7 +208,7 @@ const ApplyAvatarsForm = ({
 
     onDoneAfterDelay()
 
-    console.debug(`Submissions deleted`)
+    console.debug(`submissions deleted`)
   }
 
   const avatarListItems: AvatarListItem[] = existingAvatarIds
