@@ -101,9 +101,13 @@ export const getIsUserIdCreatorOfAsset = (
 
 export const getCanAssetBePublished = (assetMeta: AssetMeta): boolean =>
   assetMeta.accessstatus === AccessStatus.Public &&
-  (assetMeta.approvalstatus === ApprovalStatus.Waiting ||
-    assetMeta.approvalstatus === ApprovalStatus.Declined) &&
   assetMeta.publishstatus === PublishStatus.Draft
+
+export const getCanAssetBeUnpublished = (assetMeta: AssetMeta): boolean =>
+  assetMeta.accessstatus === AccessStatus.Public &&
+  assetMeta.approvalstatus !== ApprovalStatus.Approved &&
+  assetMeta.approvalstatus !== ApprovalStatus.AutoApproved &&
+  assetMeta.publishstatus === PublishStatus.Published
 
 export interface DeletionReasonMeta {
   reason: DeletionReason

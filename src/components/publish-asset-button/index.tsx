@@ -23,6 +23,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/modules'
 import store from '@/store'
 import { incrementPublishedAssetCount } from '@/modules/app'
+import {
+  getCanAssetBePublished,
+  getCanAssetBeUnpublished,
+} from '@/utils/assets'
 
 interface PublishAssetPayload {
   assetid: string
@@ -92,6 +96,14 @@ const PublishAssetButton = ({
   const dispatch = useDispatch<typeof store.dispatch>()
   const refreshMyQueuedAssetsMessage = () =>
     dispatch(incrementPublishedAssetCount())
+
+  if (isAlreadyPublished && !getCanAssetBeUnpublished(asset)) {
+    return null
+  }
+
+  if (!isAlreadyPublished && !getCanAssetBePublished(asset)) {
+    return null
+  }
 
   const onClickPublish = async () => {
     const newValidationErrorMessages = getValidationErrorMessagesForAsset(asset)
