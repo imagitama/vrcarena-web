@@ -52,7 +52,7 @@ const DiscordServerMustJoinNotice = ({
         To visit this URL you must be a member of the Discord server "
         {discordServerData?.name || '(unnamed)'}"
         <br />
-        {discordServerData?.requirespatreon ? (
+        {discordServerData?.requirespatreon && discordServerData.patreonurl ? (
           <div className={classes.buttonWrapper}>
             <div>You must be a Patreon: </div>
             <a

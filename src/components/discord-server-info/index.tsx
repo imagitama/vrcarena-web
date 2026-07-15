@@ -37,7 +37,7 @@ const DiscordServerInfo = ({
     <div className={classes.root}>
       To download this asset you must be a member of Discord server "{name}"
       <br />
-      {requiresPatreon ? (
+      {requiresPatreon && patreonUrl ? (
         <>
           You must be a Patreon:{' '}
           <a

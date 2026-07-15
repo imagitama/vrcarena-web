@@ -1,7 +1,7 @@
 import React, { ChangeEventHandler } from 'react'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 import type { AutocompleteRenderInputParams } from '@mui/material'
-import Autocomplete from '@mui/lab/Autocomplete'
+import Autocomplete from '@mui/material/Autocomplete'
 import ClearIcon from '@mui/icons-material/Clear'
 import { makeStyles } from '@mui/styles'
 
@@ -38,84 +38,29 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
 }))
 
-const MyTextField = ({
-  params,
-  textFieldProps,
-  useDiv,
-}: {
-  params: AutocompleteRenderInputParams
-  textFieldProps: TextFieldProps
-  useDiv: boolean
-}) => {
-  const classes = useStyles()
-
-  if (textFieldProps.inputRef) {
-    // @ts-ignore
-    textFieldProps.inputRef.current = params.inputProps.ref.current
-  }
-
-  return (
-    <div ref={params.InputProps.ref} className={classes.textFieldWrapper}>
-      {useDiv ? (
-        <div
-          // @ts-ignore
-          ref={params.inputProps.ref}
-          // @ts-ignore
-          className={`${classes.fakeInput} ${params.inputProps.className} ${textFieldProps.className}`}
-          contentEditable
-          onKeyDown={textFieldProps.onKeyDown}
-          onMouseDown={(e) => {
-            e.stopPropagation()
-          }}
-          onInput={(event) => {
-            const target = event.target
-
-            // @ts-ignore
-            target.value = event.target.innerText.trim()
-
-            params.inputProps.onChange!({
-              // @ts-ignore
-              target,
-            })
-          }}
-        />
-      ) : (
-        // @ts-ignore
-        <TextField
-          {...textFieldProps}
-          {...params.inputProps}
-          // @ts-ignore
-          ref={params.inputProps.ref}
-          variant="outlined"
-        />
-      )}
-    </div>
-  )
-}
-
 const AutocompleteInput = <TOption,>({
-  useDiv,
-  label,
   options,
-  filterOptions = undefined,
-  onClear = undefined,
-  value = undefined,
-  onNewValue = undefined,
-  onSelectedOption = undefined,
+  label,
+  filterOptions,
+  onFilteredOptions,
+  onClear,
+  value,
+  onNewValue,
+  onSelectedOption,
   multiple = false,
   renderInput,
   className,
   onChange,
   textFieldProps = {},
-  ...autocompleteProps
+  ...otherProps
 }: {
-  useDiv?: boolean
-  label?: string
   options: AutocompleteOption<TOption>[]
+  label?: string
   filterOptions?: (
     options: AutocompleteOption<TOption>[],
     searchTerm: string
   ) => AutocompleteOption<TOption>[]
+  onFilteredOptions?: (opts: AutocompleteOption<TOption>[]) => void
   onClear?: () => void
   multiple?: boolean
   renderInput?: (props: {
@@ -133,20 +78,21 @@ const AutocompleteInput = <TOption,>({
   return (
     <Autocomplete
       options={options}
+      isOptionEqualToValue={(option, value) => option.data === value.data}
       getOptionDisabled={(option) => option.isDisabled === true}
       getOptionLabel={(option: string | AutocompleteOption<TOption>) =>
         typeof option === 'string' ? `Option: ${option}` : option.label
       }
-      renderInput={(params) => (
-        <MyTextField
-          params={params}
-          textFieldProps={{ label, ...(textFieldProps || {}) }}
-          useDiv={useDiv || false}
-        />
-      )}
+      renderInput={(props) => <TextField placeholder={label} {...props} />}
       filterOptions={
         filterOptions
-          ? (options, state) => filterOptions(options, state.inputValue)
+          ? (options, state) => {
+              const filteredOpts = filterOptions(options, state.inputValue)
+              if (onFilteredOptions) {
+                onFilteredOptions(filteredOpts)
+              }
+              return filteredOpts
+            }
           : // Passing undefined should ignore filtering but it doesnt
             (options) => options
       }
@@ -155,19 +101,19 @@ const AutocompleteInput = <TOption,>({
       onChange={(e: any, value, reason) => {
         switch (reason) {
           case 'clear':
-            console.debug(`Autocomplete.clear`)
+            // console.debug(`Autocomplete.clear`)
             if (onClear) {
               onClear()
             }
             break
           case 'selectOption':
-            console.debug(`Autocomplete.select-option`, value)
+            // console.debug(`Autocomplete.select-option`, value)
             if (onSelectedOption && value) {
               onSelectedOption(value as AutocompleteOption<any>)
             }
             break
           case 'createOption':
-            console.debug(`Autocomplete.create-option`, value)
+            // console.debug(`Autocomplete.create-option`, value)
             if (onSelectedOption && value) {
               onSelectedOption({
                 label: value,
@@ -184,7 +130,7 @@ const AutocompleteInput = <TOption,>({
       onInputChange={(e, value, reason) => {
         switch (reason) {
           case 'input':
-            console.debug(`Autocomplete.onInputChange.input`, value)
+            // console.debug(`Autocomplete.onInputChange.input`, value)
             if (onNewValue) {
               onNewValue(value)
             }
@@ -197,13 +143,9 @@ const AutocompleteInput = <TOption,>({
           // ignore
         }
       }}
-      // openOnFocus
       multiple={multiple}
       className={className}
-      classes={{
-        groupLabel: 'test',
-      }}
-      {...autocompleteProps}
+      {...otherProps}
     />
   )
 }

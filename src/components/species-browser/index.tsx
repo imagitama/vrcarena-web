@@ -10,7 +10,7 @@ import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
 } from '@/media-queries'
-import { findItemAndParents, getRandomInt } from '@/utils'
+import { findItemAndParents, getAreArraysSame, getRandomInt } from '@/utils'
 
 import useIsEditor from '@/hooks/useIsEditor'
 import useDatabaseQuery, {
@@ -143,22 +143,15 @@ const CreateButton = () => {
 const SpeciesBrowser = ({
   selectedSpeciesIds,
   onClickSpecies,
-  showControls = true,
   startCollapsed = false,
 }: {
   selectedSpeciesIds?: string[]
   onClickSpecies?: (id: string) => void
-  showControls?: boolean
   startCollapsed?: boolean
 }) => {
   const [isLoading, lastErrorCode, globalState] = useGlobalState()
-  const [filterId, setFilterId] = useState<string | null>(null)
+  const [filterIds, setFilterIds] = useState<string[]>([])
   const classes = useStyles()
-  const [speciesContainerSettings, setContainerSettings] =
-    useStorage<SpeciesContainerSettings>(storageKey, {
-      grid: true,
-      groupChildren: true,
-    })
   const loadingChildren = useMemo(
     () =>
       Array.from({ length: 6 }).map((_, i) => (
@@ -174,33 +167,14 @@ const SpeciesBrowser = ({
 
   const species = [...(globalState?.species || [])]
   const filteredSpecies = species.length
-    ? filterId !== null
-      ? findItemAndParents<Species>(species, filterId)
+    ? filterIds.length > 0
+      ? findItemAndParents<Species>(species, filterIds)
       : species
     : null
 
   const speciesHierarchy: SpeciesWithChildren[] | null = filteredSpecies
-    ? speciesContainerSettings?.groupChildren
-      ? convertToNestedArray(filteredSpecies)
-      : (filteredSpecies as SpeciesWithChildren[])
+    ? convertToNestedArray(filteredSpecies)
     : null
-
-  const setSetting = (name: keyof SpeciesContainerSettings, newValue: any) => {
-    if (!speciesContainerSettings) {
-      return
-    }
-    setContainerSettings({
-      ...speciesContainerSettings,
-      [name]: newValue,
-    })
-  }
-
-  const toggleSetting = (name: keyof SpeciesContainerSettings) => {
-    if (!speciesContainerSettings) {
-      return
-    }
-    setSetting(name, !speciesContainerSettings[name])
-  }
 
   const children = speciesHierarchy
     ? speciesHierarchy.map((speciesItem) => (
@@ -247,7 +221,7 @@ const SpeciesBrowser = ({
           isSelected={
             selectedSpeciesIds && selectedSpeciesIds.includes(speciesItem.id)
           }>
-          {speciesContainerSettings?.groupChildren && speciesItem.children
+          {speciesItem.children
             ? speciesItem.children.map((speciesChild, index) => (
                 <SpeciesResultItem
                   key={speciesChild.id}
@@ -305,32 +279,6 @@ const SpeciesBrowser = ({
 
   return (
     <>
-      {showControls ? (
-        <div className={classes.controls}>
-          <div className={classes.controlsRight}>
-            <div className={classes.controlGroup}>
-              <Button
-                color="secondary"
-                onClick={() => toggleSetting('grid')}
-                checked={speciesContainerSettings?.grid}
-                size="small"
-                hollow>
-                Grid
-              </Button>
-              &nbsp;
-              <Button
-                color="secondary"
-                onClick={() => toggleSetting('groupChildren')}
-                checked={speciesContainerSettings?.groupChildren}
-                size="small"
-                hollow>
-                Group Children
-              </Button>
-              <CreateButton />
-            </div>
-          </div>
-        </div>
-      ) : null}
       <div className={classes.autocompleteWrapper}>
         <AutocompleteInput
           label="Filter species"
@@ -349,24 +297,29 @@ const SpeciesBrowser = ({
               option.label.toLowerCase().includes(searchTerm.toLowerCase())
             )
           }
-          onSelectedOption={(newOption) => setFilterId(newOption.data)}
+          onFilteredOptions={(opts) => {
+            // warning: will cause infinite loop if we keep setting state
+            if (opts.length < 5) {
+              const newIds = opts.map((opt) => opt.data)
+              if (!getAreArraysSame(newIds, filterIds)) {
+                setFilterIds(newIds)
+              }
+            } else if (filterIds.length > 0) {
+              setFilterIds([])
+            }
+          }}
+          onSelectedOption={(newOption) => setFilterIds([newOption.data])}
           className={classes.autocomplete}
-          onClear={() => setFilterId(null)}
+          onClear={() => setFilterIds([])}
           textFieldProps={{
             fullWidth: true,
             disabled: isLoading,
           }}
         />
       </div>
-      {speciesContainerSettings?.grid ? (
-        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-          <Masonry>{isLoading ? loadingChildren : children}</Masonry>
-        </ResponsiveMasonry>
-      ) : (
-        <div className={classes.speciesResults}>
-          {isLoading ? loadingChildren : children}
-        </div>
-      )}
+      <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
+        <Masonry>{isLoading ? loadingChildren : children}</Masonry>
+      </ResponsiveMasonry>
     </>
   )
 }

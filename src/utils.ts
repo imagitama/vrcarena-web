@@ -317,24 +317,24 @@ export const findItemAndParents = <
   TItem extends { id: string; parent: string }
 >(
   items: TItem[],
-  id: string
+  ids: string[]
 ): TItem[] => {
-  const findItem = (items: TItem[], id: string): TItem[] => {
+  const findItem = (items: TItem[], ids: string[]): TItem[] => {
     let returnItems: TItem[] = []
 
     for (const item of items) {
-      if (item.id === id) {
+      if (ids.includes(item.id)) {
         returnItems.push(item)
 
         if (item.parent) {
-          returnItems = returnItems.concat(findItem(items, item.parent))
+          returnItems = returnItems.concat(findItem(items, [item.parent]))
         }
       }
     }
     return returnItems
   }
 
-  return findItem(items, id) || []
+  return findItem(items, ids) || []
 }
 
 // https://stackoverflow.com/a/2450976/1215393

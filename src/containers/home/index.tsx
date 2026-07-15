@@ -186,8 +186,6 @@ const Stats = ({ stats }: { stats: StatsForHomepage }) => {
 const Tiles = () => {
   const [isLoading, lastErrorCode, globalState] = useGlobalState()
 
-  console.debug(`Tiles.render`, { isLoading, globalState })
-
   if (lastErrorCode !== null) {
     return (
       <ErrorMessage>
