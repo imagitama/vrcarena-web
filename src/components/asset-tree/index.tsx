@@ -212,15 +212,13 @@ const AssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
           ))}
         </Items>
       ) : null}
-      {nonParents.length && (
-        <Items>
-          <PrimaryItem style={{ paddingTop: parents.length ? undefined : 0 }}>
-            {parents.length > 0 && <VerticalLine />}
-            <AssetResultsItem asset={activeAsset} />
-            {nonParents.length > 0 && <VerticalLine bottom />}
-          </PrimaryItem>
-        </Items>
-      )}
+      <Items>
+        <PrimaryItem style={{ paddingTop: parents.length ? undefined : 0 }}>
+          {parents.length > 0 && <VerticalLine />}
+          {nonParents.length ? <AssetResultsItem asset={activeAsset} /> : null}
+          {nonParents.length > 0 && <VerticalLine bottom />}
+        </PrimaryItem>
+      </Items>
       {nonParents.length ? (
         <Children>
           <Items>
