@@ -50,6 +50,8 @@ const MyUploads = () => {
         case SubView.Queued:
           query = query
             .eq('publishstatus', PublishStatus.Published)
+            .neq('approvalstatus', ApprovalStatus.Approved)
+            .neq('approvalstatus', ApprovalStatus.AutoApproved)
             .eq('accessstatus', AccessStatus.Public)
           break
       }
