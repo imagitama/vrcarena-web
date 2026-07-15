@@ -155,11 +155,12 @@ const ArchiveButton = ({
             label="Reasons"
             iconSide="right"
           />
-          {existingArchivedReason !== null && hasChangedReason && (
-            <Button onClick={onClickUpdate} size="small">
-              Save Reason
-            </Button>
-          )}
+          {existingAccessStatus === AccessStatus.Archived &&
+            hasChangedReason && (
+              <Button onClick={onClickUpdate} size="small">
+                Save Reason
+              </Button>
+            )}
         </>
       )}
       <Button

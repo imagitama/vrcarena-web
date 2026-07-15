@@ -163,7 +163,8 @@ const DeleteButton = ({
             label="Reasons"
             iconSide="right"
           />
-          {existingDeletionReason !== selectedReason ? (
+          {existingAccessStatus === AccessStatus.Deleted &&
+          existingDeletionReason !== selectedReason ? (
             <Button onClick={onClickUpdate} size="small">
               Update Reason
             </Button>
