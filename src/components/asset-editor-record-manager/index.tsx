@@ -20,6 +20,7 @@ import ApproveButton from '../approve-button'
 import DeleteButton from '../delete-button'
 import PublicEditorNotesForm from '../public-editor-notes-form'
 import StatusText from '../status-text'
+import ArchiveButton from '../archive-button'
 
 const Row = styled.div`
   display: flex;
@@ -146,6 +147,13 @@ const AssetEditorRecordManager = ({
             existingAccessStatus={asset.accessstatus}
             existingDeletionReason={asset.deletionreason}
             onDone={onDone}
+          />
+          <br />
+          <ArchiveButton
+            id={id}
+            metaCollectionName={AssetsCollectionNames.AssetsMeta}
+            existingAccessStatus={asset.accessstatus}
+            existingArchivedReason={asset.archivedreason}
           />
         </ValueCell>
       </Row>

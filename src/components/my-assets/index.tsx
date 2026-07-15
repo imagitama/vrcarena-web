@@ -63,7 +63,7 @@ const MyUploads = () => {
 
   return (
     <PaginatedView<AssetForList>
-      viewName={ViewNames.GetAssetsForList}
+      viewName={ViewNames.GetMyQueuedAssets}
       getQuery={getQuery}
       name="my-assets"
       sortOptions={[
