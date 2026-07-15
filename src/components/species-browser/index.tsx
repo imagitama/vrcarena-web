@@ -96,12 +96,13 @@ function convertToNestedArray(
 ): SpeciesWithChildren[] {
   const nestedArray: SpeciesWithChildren[] = []
   for (const item of arr) {
-    if (item.parent === parentId) {
-      const children = convertToNestedArray(arr, item.id)
+    const newItem = { ...item }
+    if (newItem.parent === parentId) {
+      const children = convertToNestedArray(arr, newItem.id)
       if (children.length) {
-        ;(item as SpeciesWithChildren).children = children
+        ;(newItem as SpeciesWithChildren).children = children
       }
-      nestedArray.push(item as SpeciesWithChildren)
+      nestedArray.push(newItem as SpeciesWithChildren)
     }
   }
   return nestedArray
@@ -150,14 +151,6 @@ const SpeciesBrowser = ({
   showControls?: boolean
   startCollapsed?: boolean
 }) => {
-  // const [isLoading, lastErrorCode, speciesItems] = useDatabaseQuery<Species>(
-  //   ViewNames.GetPublicSpeciesCache,
-  //   [['redirectto', Operators.IS, null]],
-  //   {
-  //     queryName: 'species-browser',
-  //     orderBy: ['singularname', OrderDirections.ASC],
-  //   }
-  // )
   const [isLoading, lastErrorCode, globalState] = useGlobalState()
   const [filterId, setFilterId] = useState<string | null>(null)
   const classes = useStyles()
@@ -179,10 +172,11 @@ const SpeciesBrowser = ({
   )
   const [isExpanded, setIsExpanded] = useState(!startCollapsed)
 
-  const filteredSpecies = globalState?.species
+  const species = [...(globalState?.species || [])]
+  const filteredSpecies = species.length
     ? filterId !== null
-      ? findItemAndParents<Species>(globalState.species, filterId)
-      : globalState.species
+      ? findItemAndParents<Species>(species, filterId)
+      : species
     : null
 
   const speciesHierarchy: SpeciesWithChildren[] | null = filteredSpecies
@@ -340,22 +334,16 @@ const SpeciesBrowser = ({
       <div className={classes.autocompleteWrapper}>
         <AutocompleteInput
           label="Filter species"
-          options={
-            globalState?.species
-              ? globalState.species.map((speciesItem) => ({
-                  label: `${speciesItem.pluralname}${
-                    speciesItem.singularname !== speciesItem.pluralname
-                      ? `/${speciesItem.singularname}`
-                      : ''
-                  }${
-                    speciesItem.tags.length
-                      ? ` (${speciesItem.tags.join(', ')})`
-                      : ''
-                  }`,
-                  data: speciesItem.id,
-                }))
-              : []
-          }
+          options={species.map((speciesItem) => ({
+            label: `${speciesItem.pluralname}${
+              speciesItem.singularname !== speciesItem.pluralname
+                ? `/${speciesItem.singularname}`
+                : ''
+            }${
+              speciesItem.tags.length ? ` (${speciesItem.tags.join(', ')})` : ''
+            }`,
+            data: speciesItem.id,
+          }))}
           filterOptions={(options, searchTerm) =>
             options.filter((option) =>
               option.label.toLowerCase().includes(searchTerm.toLowerCase())

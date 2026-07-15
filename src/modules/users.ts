@@ -124,11 +124,9 @@ export enum ViewNames {
 }
 
 // from view GetMyUser
-export interface MyUser
-  extends User,
-    UserMeta,
-    UserAdminMeta,
-    UserPreferences {}
+export interface MyUser extends User, UserMeta, UserAdminMeta, UserPreferences {
+  favoritespeciesdata: Species
+}
 
 export const getIsFullUser = (user: User | FullUser): user is FullUser =>
   'role' in user

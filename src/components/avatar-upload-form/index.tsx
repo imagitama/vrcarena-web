@@ -25,7 +25,7 @@ const AvatarUploadForm = ({
   onClick?: () => void
 }) => {
   const userId = useUserId()
-  const [, , user, hydrate] = useUserRecord()
+  const [, , user, hydrateUser] = useUserRecord()
   const [isSaving, , lastErrorCode, save] = useDataStoreEdit<User>(
     CollectionNames.Users,
     userId!
@@ -43,7 +43,7 @@ const AvatarUploadForm = ({
         avatarurl: url,
       })
 
-      hydrate()
+      hydrateUser()
     } catch (err) {
       console.error(err)
       handleError(err)

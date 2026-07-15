@@ -97,20 +97,15 @@ enum SignUpErrorCode {
 
 interface SignUpUserResult {
   code?: SignUpErrorCode
-  token?: string // auth
+  token?: string // auth token
 }
 
 const RECAPTCHA_SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY!
 const RECAPTCHA_ACTION_NAME = 'signup'
 
 const getRecaptchaToken = async () => {
-  console.debug(`getting recaptcha token...`, {
-    key: RECAPTCHA_SITE_KEY,
-    action: RECAPTCHA_ACTION_NAME,
-  })
   const recaptcha = await loadRecaptcha(RECAPTCHA_SITE_KEY)
   const token = await recaptcha.execute(RECAPTCHA_ACTION_NAME)
-  console.debug(`got token: ${token}`)
   return token
 }
 

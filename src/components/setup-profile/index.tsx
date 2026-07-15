@@ -132,7 +132,7 @@ const SetupProfile = ({
   onDone: () => void
 }) => {
   const userId = useUserId()
-  const [isLoadingUser, , user, hydrate] = useUserRecord()
+  const [isLoadingUser, , user, hydrateUser] = useUserRecord()
   const [isCreating, isCreateSuccess, lastCreateErrorCode, save] =
     useDataStoreEdit<UserPreferences>(
       CollectionNames.UserPreferences,
@@ -190,7 +190,7 @@ const SetupProfile = ({
         notificationprefs: notificationPrefs,
       })
 
-      hydrate()
+      hydrateUser()
 
       onDone()
     } catch (err) {

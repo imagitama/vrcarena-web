@@ -188,7 +188,7 @@ const Anchor = ({
     </Link>
   ) : (
     <a
-      href={url}
+      href={url || undefined}
       target={openInNewTab ? '_blank' : undefined}
       rel="noopener noreferrer"
       download={downloadFilename}

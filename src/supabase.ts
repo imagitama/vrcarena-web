@@ -47,7 +47,9 @@ enum FunctionNames {
   GetSupabaseJwt = 'getSupabaseJwt',
 }
 
-interface RefreshJwtResult { errorCode?: string }
+interface RefreshJwtResult {
+  errorCode?: string
+}
 
 let refreshJwtPromise: Promise<RefreshJwtResult> | null = null
 
@@ -90,9 +92,9 @@ export const refreshJwt = async (): Promise<RefreshJwtResult> => {
 
   nextJwtExpiryDate = new Date(expiryTimestampSec * 1000)
 
-  console.debug(`token: ${token}
-expires: ${nextJwtExpiryDate} (${expiryTimestampSec})
-currently: ${new Date()}`)
+  //   console.debug(`token: ${token}
+  // expires: ${nextJwtExpiryDate} (${expiryTimestampSec})
+  // currently: ${new Date()}`)
 
   activeJwt = token
 
@@ -120,7 +122,9 @@ const queueRefreshJwt = () => {
     nextJwtExpiryDate.getTime() - new Date().getTime() - gapBeforeCheckingMs
 
   if (delayMs < 10000) {
-    throw new Error(`Cannot queue: delay is way too small: ${nextJwtExpiryDate.getTime()} - ${new Date().getTime()} - ${gapBeforeCheckingMs} = ${delayMs})`)
+    throw new Error(
+      `Cannot queue: delay is way too small: ${nextJwtExpiryDate.getTime()} - ${new Date().getTime()} - ${gapBeforeCheckingMs} = ${delayMs})`
+    )
   }
 
   console.debug(`Refreshing JWT in ${delayMs / 1000} seconds...`)
@@ -198,7 +202,7 @@ auth.onAuthStateChanged(async (user) => {
       type: FIREBASE_USER_LOADED,
       data: {
         user: {
-          uid: user.uid
+          uid: user.uid,
         },
       },
     })

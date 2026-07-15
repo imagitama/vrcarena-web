@@ -8,12 +8,10 @@ import { trackAction } from '@/analytics'
 import { handleError } from '@/error-handling'
 import { formHideDelay } from '@/config'
 
-import useUserRecord from '@/hooks/useUserRecord'
 import useQueryParams from '@/hooks/useQueryParams'
 import SuccessMessage from '@/components/success-message'
 
 export default () => {
-  const [isLoading, isErrored, user] = useUserRecord()
   const { push } = useHistory()
   const queryParams = useQueryParams()
 

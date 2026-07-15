@@ -48,8 +48,10 @@ const SyncUserWithDiscordForm = ({
     null
   )
   const [isLoading, setIsLoading] = useState(false)
-  const [isSaving, isSuccess, lastSaveErrorCode, save, clear] =
-    useDataStoreEdit<User>(CollectionNames.Users, userId!)
+  const [isSaving, , lastSaveErrorCode, save, clear] = useDataStoreEdit<User>(
+    CollectionNames.Users,
+    userId!
+  )
   const avatarUrlRef = useRef<string | null>(null)
 
   const performSync = async (onlyWithAvatar: boolean = false) => {

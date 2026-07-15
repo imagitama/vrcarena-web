@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles'
 import styled from '@emotion/styled'
 
 import useSearchTerm from '@/hooks/useSearchTerm'
-import useGlobalState, { StatsForHomepage } from '@/hooks/useGlobalState'
+import useGlobalState from '@/hooks/useGlobalState'
 
 import {
   mediaQueryForMobiles,
@@ -28,6 +28,8 @@ import LazyLoad from '@/components/lazy-load'
 import { GoToButton } from '@/components/button'
 import ErrorBoundary from '@/components/error-boundary'
 import ExpandIcon from '@/components/expand-icon'
+import LoadingShimmer from '@/components/loading-shimmer'
+import { StatsForHomepage } from '@/slices/globalState'
 
 const useStyles = makeStyles({
   root: {},
@@ -101,7 +103,7 @@ const Tile = ({
   buttonLabel,
   children,
 }: {
-  title: string
+  title: string | React.ReactElement
   url?: string
   buttonLabel?: string
   children: React.ReactNode
@@ -124,10 +126,13 @@ const Tile = ({
   )
 }
 
-const LoadingContentBlock = () => (
-  <Block>
-    <AssetResults shimmer shimmerCount={10} />
-  </Block>
+const LoadingTile = () => (
+  <Tile title={<LoadingShimmer width="100%" height="10px" />}>
+    <div style={{ width: '100%' }}>
+      <LoadingShimmer width="100%" height="15px" />
+      <LoadingShimmer width="100%" height="15px" />
+    </div>
+  </Tile>
 )
 
 const StatRow = styled.div`
@@ -181,6 +186,8 @@ const Stats = ({ stats }: { stats: StatsForHomepage }) => {
 const Tiles = () => {
   const [isLoading, lastErrorCode, globalState] = useGlobalState()
 
+  console.debug(`Tiles.render`, { isLoading, globalState })
+
   if (lastErrorCode !== null) {
     return (
       <ErrorMessage>
@@ -192,9 +199,9 @@ const Tiles = () => {
   if (isLoading || !globalState) {
     return (
       <TilesRoot>
-        <LoadingContentBlock />
-        <LoadingContentBlock />
-        <LoadingContentBlock />
+        <LoadingTile />
+        <LoadingTile />
+        <LoadingTile />
       </TilesRoot>
     )
   }

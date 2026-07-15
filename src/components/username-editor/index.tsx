@@ -37,7 +37,8 @@ const getMessageForErrorCode = (errorCode: DataStoreErrorCode): string => {
 
 const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
   const userId = useUserId()
-  const [isLoadingUser, isErrorLoadingUser, user, hydrate] = useUserRecord()
+  const [isLoadingUser, lastErrorCodeLoadingUser, user, hydrateUser] =
+    useUserRecord()
   const [isSaving, isSaveSuccess, lastSaveErrorCode, save] =
     useDataStoreEdit<User>(CollectionNames.Users, userId || false, {
       uncatchErrorCodes: [DataStoreErrorCode.ViolateUniqueConstraint],
@@ -56,7 +57,7 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
     return <LoadingIndicator message="Loading your user details..." />
   }
 
-  if (isErrorLoadingUser) {
+  if (lastErrorCodeLoadingUser !== null) {
     return <ErrorMessage>Failed to load your user account</ErrorMessage>
   }
 
@@ -75,7 +76,7 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
         username: fieldValue,
       })
 
-      hydrate()
+      hydrateUser()
     } catch (err) {
       console.error(
         'Failed to edit username',

@@ -30,14 +30,18 @@ import AdminReputation from './components/reputation'
 import Analytics from './components/analytics'
 
 const View = () => {
-  const [isLoading, isErrored, user] = useUserRecord()
+  const [isLoading, lastErrorCode, user] = useUserRecord()
 
   if (isLoading) {
     return <LoadingIndicator />
   }
 
-  if (isErrored) {
-    return <ErrorMessage>Failed to load user</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>
+        Failed to load your user (code {lastErrorCode})
+      </ErrorMessage>
+    )
   }
 
   if (

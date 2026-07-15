@@ -423,7 +423,7 @@ export const getIsUrlRisky = (url: string): boolean => {
   return false
 }
 
-export const getLabelFromEditableFields = <TRecord>(
+export const getLabelFromEditableFields = <TRecord extends Record<string, any>>(
   fieldName: Extract<keyof TRecord, string>,
   editableFields: EditableField<TRecord>[]
 ): string => {

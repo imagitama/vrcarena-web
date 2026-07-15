@@ -147,7 +147,7 @@ export default ({
 }) => {
   const classes = useStyles()
   const userId = useUserId()
-  const [isLoadingUser, isErroredLoadingUser, user] = useUserRecord()
+  const [isLoadingUser, lastErrorCodeLoadingUser, user] = useUserRecord()
   const [isSaving, isSaveSuccess, lastErrorCode, save] = useDataStoreEdit<User>(
     CollectionNames.Users,
     userId!
@@ -253,8 +253,12 @@ export default ({
     return <LoadingIndicator />
   }
 
-  if (isErroredLoadingUser) {
-    return <ErrorMessage>Failed to lookup your profile</ErrorMessage>
+  if (lastErrorCodeLoadingUser !== null) {
+    return (
+      <ErrorMessage>
+        Failed to lookup your profile (code {lastErrorCodeLoadingUser})
+      </ErrorMessage>
+    )
   }
 
   return (

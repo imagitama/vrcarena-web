@@ -15,7 +15,7 @@ type Props = Omit<LinkProps, 'onClick' | 'children'> & {
 const Link = (props: Props) =>
   props.inNewTab ? (
     <a
-      href={props.to as string}
+      href={(props.to as string) || undefined}
       target="_blank"
       rel="noopener noreferrer"
       onClick={(e) => {

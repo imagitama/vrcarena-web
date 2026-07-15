@@ -43,7 +43,7 @@ export default ({
 }) => {
   const classes = useStyles()
   const userId = useUserId()
-  const [isLoadingUser, isErrorLoadingUser, user] = useUserRecord()
+  const [isLoadingUser, lastErrorCodeLoadingUser, user] = useUserRecord()
   const [isLoadingSpecies, lastErrorCodeLoadingSpecies, species] =
     useDataStoreItems<Species>(SpeciesCollectionNames.Species, undefined, {
       queryName: 'favorite-species-editor-species',
@@ -96,8 +96,12 @@ export default ({
     return <LoadingIndicator message="Loading species..." />
   }
 
-  if (isErrorLoadingUser) {
-    return <ErrorMessage>Failed to lookup your profile</ErrorMessage>
+  if (lastErrorCodeLoadingUser !== null) {
+    return (
+      <ErrorMessage>
+        Failed to lookup your profile (code {lastErrorCodeLoadingUser})
+      </ErrorMessage>
+    )
   }
 
   if (lastErrorCodeLoadingSpecies !== null) {

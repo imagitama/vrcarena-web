@@ -1,7 +1,6 @@
 import InfoIcon from '@mui/icons-material/Info'
 import styled from '@emotion/styled'
 
-import useUserRecord from '@/hooks/useUserRecord'
 import StatusText from '../status-text'
 import Tooltip from '../tooltip'
 

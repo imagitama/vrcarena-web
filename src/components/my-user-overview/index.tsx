@@ -43,19 +43,19 @@ const getSigninMethod = (firebaseUser: FirebaseUser): string => {
 }
 
 const MyUserOverview = () => {
-  const [, , userRecord] = useUserRecord()
+  const [, , user] = useUserRecord()
   const firebaseUser = useFirebaseUser()
   const [isPrivateInfoRevealed, setIsPrivateInfoRevealed] = useState(false)
 
-  if (!userRecord || !firebaseUser) {
+  if (!user || !firebaseUser) {
     return null
   }
 
   return (
     <>
-      <Avatar url={userRecord.avatarurl} />
+      <Avatar url={user.avatarurl} />
       <Heading variant="h1" style={{ marginTop: '0.5rem' }}>
-        <UsernameLink username={userRecord.username} id={userRecord.id} />
+        <UsernameLink username={user.username} id={user.id} />
       </Heading>
       <Heading variant="h2">Email</Heading>
       {!isPrivateInfoRevealed ? (
