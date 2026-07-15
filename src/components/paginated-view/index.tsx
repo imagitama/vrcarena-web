@@ -662,6 +662,10 @@ const PaginatedView = <TRecord extends Record<string, any>>({
                           {idx !== 0 ? <>&nbsp;</> : ''}
                           <Button
                             onClick={() => {
+                              console.debug(`PaginatedView.subview.click`, {
+                                id,
+                                urlWithSubViewNameAndPageNumberVar,
+                              })
                               setSelectedSubView(id)
                               if (urlWithSubViewNameAndPageNumberVar) {
                                 const url = urlWithSubViewNameAndPageNumberVar

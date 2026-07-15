@@ -1,28 +1,58 @@
 import { useEffect, useRef } from 'react'
-import { useLocation } from 'react-router'
+import { matchPath, useLocation } from 'react-router'
 
 import { scrollTo, scrollToTop } from '@/utils'
+import { routes } from '@/routes'
 
 const scrollAmountsByUrl = new Map<string, number>()
+
+const getMatchedPattern = (pathname: string): string | null => {
+  for (const pattern of Object.values(routes)) {
+    if (matchPath(pathname, pattern)) {
+      return pattern
+    }
+  }
+  return null
+}
+
+const getHasNavigatedBetweenPages = (
+  lastPathname: string | null,
+  currentPathname: string | null
+): boolean => {
+  if (lastPathname === currentPathname) {
+    return false
+  }
+
+  if (lastPathname === null || currentPathname === null) {
+    return true
+  }
+
+  const lastPattern = getMatchedPattern(lastPathname)
+  const currentPattern = getMatchedPattern(currentPathname)
+
+  if (lastPattern !== null && lastPattern === currentPattern) {
+    return false
+  }
+
+  return true
+}
 
 const useScrollMemory = () => {
   const lastPathname = useRef<string | null>(null)
   const { pathname } = useLocation()
 
   useEffect(() => {
-    console.debug(`useScrollMemory.page-nav`, {
-      old: lastPathname.current,
-      new: pathname,
-    })
+    // console.debug(`useScrollMemory.page-nav`, {
+    //   old: lastPathname.current,
+    //   new: pathname,
+    // })
 
-    const onScroll = () => {
-      scrollAmountsByUrl.set(pathname, Math.floor(window.scrollY))
-    }
+    const hasNavigatedBetweenPages = getHasNavigatedBetweenPages(
+      lastPathname.current,
+      pathname
+    )
 
-    const navigatedBetweenPages =
-      lastPathname.current !== null && lastPathname.current !== pathname
-
-    if (navigatedBetweenPages) {
+    if (hasNavigatedBetweenPages) {
       console.debug(
         `useScrollMemory.page-nav between pages -> scrolling to top`
       )
@@ -39,6 +69,10 @@ const useScrollMemory = () => {
     }
 
     lastPathname.current = pathname
+
+    const onScroll = () => {
+      scrollAmountsByUrl.set(pathname, Math.floor(window.scrollY))
+    }
 
     window.addEventListener('scroll', onScroll)
 

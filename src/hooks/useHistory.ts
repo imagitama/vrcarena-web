@@ -7,7 +7,12 @@ export default () => {
   const useHistoryResult = useHistory()
 
   const pushWithScroll = (url: string, shouldScroll: boolean = true): void => {
-    useHistoryResult.push(url)
+    console.debug(`useHistory.pushWithScroll`, { url, shouldScroll })
+
+    // attach some state so useScrollMemory doesn't kick in
+    useHistoryResult.push(url, { state: { shouldScroll } })
+
+    // TODO: investigate if actually needed as useScrollMemory does it for us
     if (shouldScroll) {
       smoothScrollToTop()
     }

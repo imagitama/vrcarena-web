@@ -96,7 +96,8 @@ const MyUploads = () => {
           id: SubView.Deleted,
           label: 'Deleted',
         },
-      ]}>
+      ]}
+      itemNamePlural="assets">
       <Renderer />
     </PaginatedView>
   )
