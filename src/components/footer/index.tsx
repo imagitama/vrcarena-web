@@ -13,7 +13,6 @@ import useUserId from '@/hooks/useUserId'
 import useStorage from '@/hooks/useStorage'
 import useSupabaseUserId from '@/hooks/useSupabaseUserId'
 import useIsEditor from '@/hooks/useIsEditor'
-import useDataStoreFunction from '@/hooks/useDataStoreFunction'
 import useAccountVerification from '@/hooks/useAccountVerification'
 import useIsBanned from '@/hooks/useIsBanned'
 

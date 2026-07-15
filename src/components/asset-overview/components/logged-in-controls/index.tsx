@@ -14,11 +14,14 @@ import ReportButton from '@/components/report-button'
 import DeleteDraftButton from '@/components/delete-draft-button'
 
 import TabContext from '../../context'
+import PublishAssetButton from '@/components/publish-asset-button'
+import useIsEditor from '@/hooks/useIsEditor'
 
 export default () => {
   const { assetId, asset, isLoading, analyticsCategoryName, hydrate } =
     useContext(TabContext)
   const myUserId = useUserId()
+  const isEditor = useIsEditor()
 
   if (isLoading || !asset) {
     return null
@@ -47,6 +50,9 @@ export default () => {
       {isCreator && getIsAssetADraft(asset) && !getIsAssetDeleted(asset) ? (
         <DeleteDraftButton assetId={assetId} onDone={hydrate} margin />
       ) : null}
+      {isCreator && (
+        <PublishAssetButton assetId={assetId} asset={asset} onDone={hydrate} />
+      )}
     </>
   )
 }

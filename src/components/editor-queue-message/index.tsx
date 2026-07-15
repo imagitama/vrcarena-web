@@ -14,7 +14,7 @@ import Link from '@/components/link'
 import ErrorMessage from '@/components/error-message'
 import Message from '@/components/message'
 
-const UnapprovedAssetsMessage = () => {
+const EditorQueueMessage = () => {
   const isEditor = useIsEditor()
   const [isLoading, lastErrorCode, queueItems] =
     useDataStoreItems<AdminQueueItem>(
@@ -79,4 +79,4 @@ const UnapprovedAssetsMessage = () => {
   )
 }
 
-export default UnapprovedAssetsMessage
+export default EditorQueueMessage

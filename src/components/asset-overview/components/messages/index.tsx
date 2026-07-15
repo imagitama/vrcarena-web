@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
-import CancelIcon from '@mui/icons-material/Cancel'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CreateIcon from '@mui/icons-material/Create'
+import { Decline as DeclineIcon, Queue as QueueIcon } from '@/icons'
 
 import { IndicativeAuditStatus } from '@/modules/assets'
 import useIsEditor from '@/hooks/useIsEditor'
@@ -94,34 +94,41 @@ const AssetOverviewMessages = () => {
         seen by other people.
       </Message>
     )
-  }
-
-  switch (asset.approvalstatus) {
-    case ApprovalStatus.Quarantined:
-      messages.push(
-        <Message color="#1c0002" key="declined" icon={<CancelIcon />}>
-          This asset is waiting in the approval queue and is under investigation
-          by our staff.
-        </Message>
-      )
-      break
-    case ApprovalStatus.Declined:
-      messages.push(
-        <Message color="#1c0002" key="declined" icon={<CancelIcon />}>
-          This asset has been declined for approval. It has the following
-          issues:
-          <ul style={{ marginBottom: 0 }}>
-            {asset.declinedreasons && asset.declinedreasons.length ? (
-              asset.declinedreasons.map((reason) => (
-                <li key={reason}>{getDeclinedReasonLabel(reason)}</li>
-              ))
-            ) : (
-              <li>no reasons specified</li>
-            )}
-          </ul>
-        </Message>
-      )
-      break
+  } else {
+    switch (asset.approvalstatus) {
+      case ApprovalStatus.Quarantined:
+        messages.push(
+          <Message color="#1c0002" key="declined" icon={<DeclineIcon />}>
+            This asset is currently being reviewed by our staff.
+          </Message>
+        )
+        break
+      case ApprovalStatus.Declined:
+        messages.push(
+          <Message color="#1c0002" key="declined" icon={<DeclineIcon />}>
+            This asset has been declined by our staff. It has the following
+            issues:
+            <ul style={{ marginBottom: 0 }}>
+              {asset.declinedreasons && asset.declinedreasons.length ? (
+                asset.declinedreasons.map((reason) => (
+                  <li key={reason}>{getDeclinedReasonLabel(reason)}</li>
+                ))
+              ) : (
+                <li>no reasons specified</li>
+              )}
+            </ul>
+          </Message>
+        )
+        break
+      case ApprovalStatus.Waiting:
+        messages.push(
+          <Message icon={<QueueIcon />}>
+            This asset is waiting in the approval queue. If it has been longer
+            than 48 hours please open a support ticket or ask in our Discord
+            server.
+          </Message>
+        )
+    }
   }
 
   return <>{messages}</>

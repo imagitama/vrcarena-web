@@ -59,6 +59,7 @@ export interface AppState {
   isSelectingAll: boolean
   bulkEditAssetDatas: Asset[]
   previewFeaturedEvent: Event | null
+  publishedAssetCount: number // to inform <MyQueuedAssetsMessage />
 }
 
 const initialState: AppState = {
@@ -72,6 +73,7 @@ const initialState: AppState = {
   isSelectingAll: false,
   bulkEditAssetDatas: [],
   previewFeaturedEvent: null,
+  publishedAssetCount: 0,
 }
 
 const OPEN_MENU = 'OPEN_MENU'
@@ -89,6 +91,7 @@ const TOGGLE_BULK_EDIT_ID = 'TOGGLE_BULK_EDIT_ID'
 const SELECT_BULK_EDIT_ID = 'SELECT_BULK_EDIT_ID'
 const SET_SELECT_ALL = 'SET_SELECT_ALL'
 const SET_PREVIEW_FEATURED_EVENT = 'SET_PREVIEW_FEATURED_EVENT'
+const INCREMENT_PUBLISHED_ASSET_COUNT = 'INCREMENT_PUBLISHED_ASSET_COUNT'
 
 export default (
   state: AppState = initialState,
@@ -216,6 +219,12 @@ export default (
         previewFeaturedEvent: action.payload.previewFeaturedEvent,
       }
 
+    case INCREMENT_PUBLISHED_ASSET_COUNT:
+      return {
+        ...state,
+        publishedAssetCount: state.publishedAssetCount + 1,
+      }
+
     default:
       return state
   }
@@ -337,4 +346,8 @@ export const setPreviewFeaturedEvent = (
   payload: {
     previewFeaturedEvent,
   },
+})
+
+export const incrementPublishedAssetCount = () => ({
+  type: INCREMENT_PUBLISHED_ASSET_COUNT,
 })

@@ -29,7 +29,6 @@ import {
 
 import Button from '@/components/button'
 import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
-import EditorRecordManager from '@/components/editor-record-manager'
 import AssetOverview from '@/components/asset-overview'
 import useStorage from '@/hooks/useStorage'
 import QueuedAssetInfo from '@/components/queued-asset-info'
@@ -40,7 +39,6 @@ import AiArea from '../ai-area'
 import { Intent } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
 import { OrderDirections } from '@/hooks/useDatabaseQuery'
-import { useParams } from 'react-router'
 import AssetEditorRecordManager from '../asset-editor-record-manager'
 
 const useStyles = makeStyles({
@@ -270,7 +268,6 @@ const AdminAssets = () => {
     StorageKeys.View,
     View.List
   )
-  const { tabName } = useParams<{ tabName?: string }>()
   const getQuery = useCallback<
     GetQueryFn<AssetForList_Editor, SubView, typeof filters>
   >(
@@ -355,10 +352,10 @@ const AdminAssets = () => {
         ]}
         defaultFieldName="publishedat"
         defaultDirection={OrderDirections.ASC}
-        defaultSubView={tabName || SubView.Pending}
+        defaultSubView={SubView.Pending}
         urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar.replace(
           ':tabName',
-          tabName || ''
+          'assets'
         )}
         subViews={[
           {

@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useState,
   Suspense,
+  useEffect,
 } from 'react'
 import { useParams } from 'react-router'
 import { makeStyles } from '@mui/styles'
@@ -578,14 +579,30 @@ const PaginatedView = <TRecord extends Record<string, any>>({
 
   const keyPrefix = name || viewName || collectionName
 
+  const { pageNumber = '1', subViewName: subViewNameFromUrl } = useParams<{
+    pageNumber: string
+    subViewName: string
+  }>()
+
   const [selectedSubView, setSelectedSubView] = useStorage<string | null>(
     `${keyPrefix}_subview`,
     defaultSubView ? defaultSubView : SUB_VIEW_ID_ALL
   )
 
+  useEffect(() => {
+    if (subViewNameFromUrl) {
+      setSelectedSubView(subViewNameFromUrl)
+    }
+  }, [])
+
+  // console.debug(`PaginatedView.render`, {
+  //   pageNumber,
+  //   subViewNameFromUrl,
+  //   selectedSubView,
+  // })
+
   const classes = useStyles()
   const isEditor = useIsEditor()
-  const { pageNumber = '1' } = useParams<{ pageNumber: string }>()
   const { push } = useHistory()
 
   const currentPageNumber = parseInt(pageNumber)
@@ -650,7 +667,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
                                 const url = urlWithSubViewNameAndPageNumberVar
                                   .replace(':subViewName', id)
                                   .replace(':pageNumber', pageNumber.toString())
-                                push(url)
+                                push(url, false)
                               }
                             }}
                             color="secondary"

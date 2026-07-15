@@ -57,12 +57,12 @@ const RegenerateThumbnailButton = ({
   const [
     isUpdatingThumbnail,
     lastErrorCode,
-    lastThumbnailUpdateResult,
+    ,
     randomlyUpdateSpeciesThumbnailResult,
   ] = useDataStoreFunction<
     { speciesid: string },
     RandomlyUpdateSpeciesThumbnailResult
-  >('randomly_update_species_thumbnail')
+  >('randomly_update_species_thumbnail', [])
 
   return (
     <Button

@@ -10,7 +10,6 @@ import {
 import { getCanAssetBePublished } from '@/utils/assets'
 import useFeature, { FeatureName } from '@/hooks/useFeature'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
-import useIsEditor from '@/hooks/useIsEditor'
 
 import GenericEditor from '@/components/generic-editor'
 import FormControls from '@/components/form-controls'
@@ -81,7 +80,6 @@ const AssetEditor = ({
               <PublishAssetButton
                 assetId={assetId}
                 asset={asset}
-                enableRedirect={false}
                 isDisabled={!getCanAssetBePublished(asset)}
               />
             </FormControls>

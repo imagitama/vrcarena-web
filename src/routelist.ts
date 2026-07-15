@@ -19,6 +19,10 @@ export const myAccount = '/my-account'
 export const myAccountWithTabNameVar = '/my-account/:tabName'
 export const myAccountWithTabNameVarAndPageNumberVar =
   '/my-account/:tabName/page/:pageNumber'
+export const myAccountWithTabNameVarAndSubViewNameVar =
+  '/my-account/:tabName/:subViewName'
+export const myAccountWithTabNameVarAndSubViewNameVarAndPageNumberVar =
+  '/my-account/:tabName/:subViewName/page/:pageNumber'
 // help
 export const privacyPolicy = '/help/privacy-policy'
 export const aiPolicy = '/help/ai-policy'

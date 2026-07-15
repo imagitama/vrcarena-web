@@ -8,6 +8,7 @@ import { useEffect } from 'react'
 import useIsAdultContentEnabled from './useIsAdultContentEnabled'
 import useDataStoreFunction from './useDataStoreFunction'
 import { FunctionNames } from '@/modules/assets'
+import store from '@/store'
 
 const defaultLimit = 50
 
@@ -47,13 +48,13 @@ const useAssetSearch = (
   const [isSimpleLoading, lastSimpleErrorCode, simpleResults] =
     useDataStoreFunction<
       { search_term: string; include_adult: boolean },
-      AssetSearchResult
-    >(FunctionNames.SearchAssets, usingSimpleSearch, {
+      AssetSearchResult[]
+    >(FunctionNames.SearchAssets, [], usingSimpleSearch, {
       search_term: searchTerm,
       include_adult: isAdultContentEnabled,
     })
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
 
   const isLoading = usingSimpleSearch ? isSimpleLoading : isAlgoliaLoading
   const lastErrorCode = usingSimpleSearch

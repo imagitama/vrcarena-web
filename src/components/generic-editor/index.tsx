@@ -190,7 +190,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   )
   const rootElementRef = useRef<HTMLDivElement>(null)
 
-  console.debug(`GenericEditor.render`, formFields)
+  // console.debug(`GenericEditor.render`, formFields)
 
   useEffect(() => {
     if (!rawRecord) {

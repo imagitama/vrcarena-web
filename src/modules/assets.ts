@@ -355,10 +355,13 @@ export enum ViewNames {
   GetWishlistAssetResults = 'getwishlistassetresults',
   GetDraftAssets = 'getdraftassets',
   GetAssetsForList_Editor = 'getassetsforlist_editor', // for admin assets
-  GetMentions = 'getMentions', // <AssetTree />
+  GetMentions = 'getmentions', // <AssetTree />
+  GetMyQueuedAssets = 'getmyqueuedassets',
 }
 
 export enum FunctionNames {
+  PublishAsset = 'publishasset',
+  UnpublishAsset = 'unpublishasset',
   SearchAssets = 'searchassets',
   GetOrHydrateGetFullAssets = 'get_or_hydrate_getfullassets',
   GetMentions = 'getmentions',

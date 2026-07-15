@@ -21,11 +21,11 @@ const EventBannerUploader = (
     (root) => root.app.previewFeaturedEvent
   )
   const dispatch = useDispatch()
-  console.debug(
-    `EventBannerUploader.render`,
-    props.formFields,
-    previewFeaturedEvent
-  )
+  // console.debug(
+  //   `EventBannerUploader.render`,
+  //   props.formFields,
+  //   previewFeaturedEvent
+  // )
   const onClickPreview = () => {
     dispatch(setPreviewFeaturedEvent(props.formFields))
   }

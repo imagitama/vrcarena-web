@@ -5,6 +5,7 @@ import { useMediaQuery } from 'react-responsive'
 import MenuIcon from '@mui/icons-material/Menu'
 import GitHubIcon from '@mui/icons-material/GitHub'
 
+import store from '@/store'
 import * as routes from '@/routes'
 import { openMenu } from '@/modules/app'
 import { ReactComponent as Logo } from '@/assets/images/logo.svg'
@@ -14,7 +15,6 @@ import {
   queryForMobiles,
   mediaQueryForMobiles,
   mediaQueryForDesktopsOnly,
-  mediaQueryForTabletsOrBelow,
 } from '@/media-queries'
 import { trackAction } from '@/analytics'
 import {
@@ -29,8 +29,7 @@ import MobileMenu from '@/components/mobile-menu'
 import AccountMenu from '@/components/account-menu'
 import Searchbar from '@/components/searchbar'
 import DesktopMenu from '@/components/desktop-menu'
-import VrchatGroupButton from '../vrchat-group-button'
-import store from '@/store'
+import VrchatGroupButton from '@/components/vrchat-group-button'
 
 // when the navigation starts obstructing the logo
 const mediaQueryForMenuLogoCollision = '@media (max-width: 1280px)'

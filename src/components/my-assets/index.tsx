@@ -16,7 +16,7 @@ enum SubView {
   Visible = 'visible',
   Drafts = 'drafts',
   Deleted = 'deleted',
-  Declined = 'declined',
+  Queued = 'queued',
 }
 
 const MyUploads = () => {
@@ -47,10 +47,9 @@ const MyUploads = () => {
           )
           break
 
-        case SubView.Declined:
+        case SubView.Queued:
           query = query
-            .eq('publishstatus', PublishStatus.Draft)
-            .eq('approvalstatus', ApprovalStatus.Declined)
+            .eq('publishstatus', PublishStatus.Published)
             .eq('accessstatus', AccessStatus.Public)
           break
       }
@@ -76,7 +75,7 @@ const MyUploads = () => {
         },
       ]}
       defaultFieldName={'createdat'}
-      urlWithSubViewNameAndPageNumberVar={routes.myAccountWithTabNameVarAndPageNumberVar.replace(
+      urlWithSubViewNameAndPageNumberVar={routes.myAccountWithTabNameVarAndSubViewNameVarAndPageNumberVar.replace(
         ':tabName',
         'assets'
       )}
@@ -86,8 +85,8 @@ const MyUploads = () => {
           label: 'Visible',
         },
         {
-          id: SubView.Declined,
-          label: 'Declined',
+          id: SubView.Queued,
+          label: 'Queued',
         },
         {
           id: SubView.Drafts,

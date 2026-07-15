@@ -583,6 +583,11 @@ interface RequestAiSuggestionPayload {
   assetid: string
 }
 
+enum RequestAiSuggestionErrorCode {
+  USER_NOT_VERIFIED = 'USER_NOT_VERIFIED',
+  ALREADY_IN_QUEUE = 'ALREADY_IN_QUEUE',
+}
+
 const AiSuggestForm = ({
   assetId,
   asset,
@@ -596,18 +601,18 @@ const AiSuggestForm = ({
   const [isLoading, lastErrorCode, lastQueuedItem, hydrate] =
     useAiSuggestion(assetId)
   const classes = useStyles()
-  const [isCalling, lastErrorCodeFunction, lastResult, requestAiSuggestion] =
-    useDataStoreFunction<RequestAiSuggestionPayload, string>(
-      FunctionNames.RequestAiSuggestion
+  const [isCalling, lastErrorCodeFunction, , requestAiSuggestion] =
+    useDataStoreFunction<RequestAiSuggestionPayload, string[]>(
+      FunctionNames.RequestAiSuggestion,
+      Object.values(RequestAiSuggestionErrorCode)
     )
 
   const onClickRequest = async () => {
     console.debug(`onClickRequest`)
-    const createdIds = await requestAiSuggestion({
+    const createdId = await requestAiSuggestion({
       assetid: assetId,
     })
-    if (!createdIds) throw new Error('Result is null')
-    const createdId = createdIds[0]
+    if (!createdId) throw new Error('Result is null')
     console.debug(`onClickRequest.done`, { createdId })
     if (createdId !== null) {
       hydrate()

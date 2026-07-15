@@ -263,26 +263,6 @@ export const getDeclinedReasonLabel = (reason: DeclinedReason): string => {
   return match.label
 }
 
-export enum PublishErrorCode {
-  IS_NOT_DRAFT = 'IS_NOT_DRAFT',
-  NOT_CREATOR = 'NOT_CREATOR',
-  USER_BANNED = 'USER_BANNED',
-  UNKNOWN = 'UNKNOWN',
-}
-
-export const getErrorMessageForCode = (errorCode: string): string => {
-  switch (errorCode) {
-    case PublishErrorCode.IS_NOT_DRAFT:
-      return 'Only drafts can be published'
-    case PublishErrorCode.NOT_CREATOR:
-      return 'You are not the creator of this asset'
-    case PublishErrorCode.USER_BANNED:
-      return 'You are banned'
-    default:
-      return 'Unknown'
-  }
-}
-
 export const cleanupSourceUrl = (url: string): string => {
   if (
     getIsGumroadProductUrl(url) ||

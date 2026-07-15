@@ -27,9 +27,8 @@ import SearchResults from './components/search-results'
 import Notices from './components/notices'
 import ErrorBoundary from './components/error-boundary'
 import LoadingIndicator from './components/loading-indicator'
-import UnapprovedAssetsMessage from './components/unapproved-assets-message'
 import BannedNotice from './components/banned-notice'
-import DraftAssetsMessage from './components/draft-assets-message'
+import MyQueuedAssetsMessage from './components/my-queued-assets-message'
 
 import useSearchTerm from './hooks/useSearchTerm'
 
@@ -46,6 +45,7 @@ import AccountVerificationMessage from './components/account-verification-messag
 import { DEFAULT_PAGE_DESC } from './config'
 import WelcomeMessage from './components/welcome-message'
 import FeaturedEvent from './components/featured-event'
+import EditorQueueMessage from './components/editor-queue-message'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -328,6 +328,8 @@ const MainContent = () => {
         <Route
           exact
           path={[
+            routes.myAccountWithTabNameVarAndSubViewNameVarAndPageNumberVar,
+            routes.myAccountWithTabNameVarAndSubViewNameVar,
             routes.myAccountWithTabNameVarAndPageNumberVar,
             routes.myAccountWithTabNameVar,
             routes.myAccount,
@@ -660,8 +662,8 @@ export default () => {
             <BannedNotice />
             <Notices />
             <AccountVerificationMessage />
-            <UnapprovedAssetsMessage />
-            <DraftAssetsMessage />
+            <EditorQueueMessage />
+            <MyQueuedAssetsMessage />
           </ErrorBoundary>
           <ErrorBoundary>
             <MainContent />

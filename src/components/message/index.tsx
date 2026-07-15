@@ -38,6 +38,9 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
   },
+  iconToTop: {
+    alignItems: 'baseline',
+  },
   chariot: {
     position: 'absolute',
     top: 0,

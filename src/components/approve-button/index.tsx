@@ -134,10 +134,9 @@ const ApproveButton = ({
       } else if (newApprovalStatus === ApprovalStatus.Declined) {
         await save({
           approvalstatus: ApprovalStatus.Declined,
+          declinedreasons: selectedReasons,
           approvedat: null,
           approvedby: null,
-          publishstatus: PublishStatus.Draft,
-          declinedreasons: selectedReasons,
         })
       } else {
         await save({
@@ -234,8 +233,8 @@ const ApproveButton = ({
           isDisabled={
             approvalStatus === ApprovalStatus.Declined || isQuarantined
           }
-          title="Reverts to draft, notifies publisher">
-          Decline{isAsset ? ' & Draft' : ''}
+          title="Notifies publisher, they must now un-publish and make changes">
+          Decline
         </Button>
         {!getAreArraysSame(selectedReasons, existingDeclinedReasons || []) && (
           <div style={{ marginTop: '0.25rem' }}>

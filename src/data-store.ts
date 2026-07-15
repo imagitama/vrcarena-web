@@ -268,6 +268,7 @@ export class DataStoreUpdateError extends DataStoreError {}
 // Source: https://docs.postgrest.org/en/v12/references/errors.html
 // NOTE: cannot have numeric keys so standard postgres errors prefixed with "PG" (vs "PGRST" for Postgrest)
 export enum PostgresErrorCode {
+  Custom = 'P0001', // custom exception
   // code: "PGRST103", details: "An offset of 200 was requested, but there are only 33 rows.", hint: null, message: "Requested range not satisfiable"
   PGRST103 = 'PGRST103',
   'PGRST301' = 'PGRST301', // JWT expired
@@ -372,8 +373,6 @@ export const getParentLabel = (
 
     case SpeciesCollectionNames.Species:
       return 'comment'
-    // case SpeciesCollectionNames.SpeciesMeta:
-    //   return 'comment metadata'
 
     case UsersCollectionNames.UserPreferences:
       return 'user preferences'
@@ -383,7 +382,5 @@ export const getParentLabel = (
 
     default:
       return `Parent: ${parentTable}.${parentId}`
-
-    // return routes.viewAmendmentWithVar.replace(':amendmentId', parentId)
   }
 }

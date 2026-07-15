@@ -22,7 +22,6 @@ import FeatureButton from '@/components/feature-button'
 import EditorBox from '@/components/editor-box'
 import ArchiveButton from '@/components/archive-button'
 import MetaStatus from '@/components/meta-status'
-import AdminPublishButton from '@/components/admin-publish-button'
 import ErrorBoundary from '@/components/error-boundary'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import { UserFromView } from '@/modules/users'
@@ -150,15 +149,6 @@ const EditorRecordManager = ({
                   />
                 </div>
               )}
-              {showPublishButtons && (
-                <div className={classes.cell}>
-                  <AdminPublishButton
-                    assetId={id}
-                    existingPublishStatus={existingPublishStatus}
-                    onDone={onDone}
-                  />
-                </div>
-              )}
             </div>
           ) : null}
           {showStatuses || showApprovalButtons ? (
@@ -168,11 +158,6 @@ const EditorRecordManager = ({
                   <MetaStatus
                     status={existingApprovalStatus}
                     type={ApprovalStatus}
-                    byUser={
-                      existingApprovalStatus === ApprovalStatus.Approved
-                        ? approver
-                        : undefined
-                    }
                   />
                 </div>
               )}
