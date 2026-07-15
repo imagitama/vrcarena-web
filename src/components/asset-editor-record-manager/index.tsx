@@ -115,7 +115,6 @@ const AssetEditorRecordManager = ({
             existingApprovalStatus={asset.approvalstatus}
             existingDeclinedReasons={asset.declinedreasons}
             onDone={onDone}
-            isDisabled={!isWaitingForApproval}
           />
         </ValueCell>
       </Row>
