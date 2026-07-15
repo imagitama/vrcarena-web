@@ -167,6 +167,11 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       margin: '0 0.25rem 0.25rem 0',
     },
   },
+  disabled: {
+    '&&': {
+      borderColor: 'transparent',
+    },
+  },
 }))
 
 // when provided as LinkComponent is given all props the Button root element would usually get (no type for it)
@@ -262,6 +267,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           [classes.isLoading]: isLoading,
           [className]: true,
         })}
+        classes={{
+          disabled: classes.disabled,
+        }}
         href={url}
         {...props}>
         {iconToUse}

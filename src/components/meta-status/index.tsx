@@ -161,7 +161,7 @@ const MetaStatus = ({
           :{' '}
           {Array.isArray(reasonOrReasons)
             ? reasonOrReasons.length
-              ? reasonOrReasons.join('')
+              ? reasonOrReasons.join(', ')
               : '(no reason)'
             : reasonOrReasons}
         </>

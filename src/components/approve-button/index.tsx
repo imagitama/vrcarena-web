@@ -11,9 +11,8 @@ import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useUserId from '@/hooks/useUserId'
 import { handleError } from '@/error-handling'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
-import { ApprovalStatus, MetaRecord, PublishStatus } from '@/modules/common'
+import { ApprovalStatus, MetaRecord } from '@/modules/common'
 import {
-  AssetMeta,
   DeclinedReason,
   CollectionNames as AssetsCollectionNames,
 } from '@/modules/assets'
@@ -24,23 +23,15 @@ import Button from '@/components/button'
 import ErrorMessage from '@/components/error-message'
 import ButtonDropdown from '@/components/button-dropdown'
 
-function fullDiff<T>(prev: T[], next: T[]) {
-  const prevSet = new Set(prev)
-  const nextSet = new Set(next)
-  return {
-    added: next.filter((x) => !prevSet.has(x)),
-    removed: prev.filter((x) => !nextSet.has(x)),
-  }
-}
-
 const ApproveButton = ({
   id,
   metaCollectionName,
-  existingApprovalStatus = undefined,
-  existingDeclinedReasons = undefined,
-  onClick = undefined,
-  onDone = undefined,
-  beforeApprove = undefined,
+  existingApprovalStatus,
+  existingDeclinedReasons,
+  onClick,
+  onDone,
+  beforeApprove,
+  isDisabled,
 }: {
   id: string
   metaCollectionName: string
@@ -54,6 +45,7 @@ const ApproveButton = ({
   }) => void
   onDone?: () => void
   beforeApprove?: () => boolean | Promise<boolean> // false to cancel approval
+  isDisabled?: boolean
 }) => {
   const userId = useUserId()
   const [isLoading, lastErrorCodeLoading, metaRecord] =
@@ -174,6 +166,11 @@ const ApproveButton = ({
     return <>No approval status</>
   }
 
+  const hasChangedReasons = !getAreArraysSame(
+    selectedReasons,
+    existingDeclinedReasons || []
+  )
+
   return (
     <>
       <Button
@@ -182,7 +179,11 @@ const ApproveButton = ({
         size="small"
         color="secondary"
         hollow={false}
-        isDisabled={approvalStatus === ApprovalStatus.Approved || isQuarantined}
+        isDisabled={
+          isDisabled ||
+          approvalStatus === ApprovalStatus.Approved ||
+          isQuarantined
+        }
         title="Notifies publisher, shows in search results, etc.">
         Approve
       </Button>{' '}
@@ -198,31 +199,40 @@ const ApproveButton = ({
           isQuarantined
             ? 'Returns to waiting in the queue'
             : 'Prevents approval, notifies editors on Discord, shows notice at top of asset'
-        }>
+        }
+        isDisabled={isDisabled}>
         {isQuarantined ? 'Un-' : ''}Quarantine
       </Button>{' '}
       <ButtonGroup style={{ width: '100%', marginTop: '0.25rem' }}>
         {isAsset && (
-          <ButtonDropdown
-            options={declinedReasonMeta.map((meta) => ({
-              id: meta.reason,
-              label: meta.label,
-            }))}
-            selectedIds={selectedReasons}
-            onSelect={(newReason: string) =>
-              setSelectedReasons((currentReasons) =>
-                currentReasons.includes(newReason as DeclinedReason)
-                  ? currentReasons.filter((id) => id !== newReason)
-                  : currentReasons.concat([newReason as DeclinedReason])
-              )
-            }
-            closeOnSelect={false}
-            size="small"
-            hollow
-            label="Reasons"
-            isDisabled={isQuarantined}
-            iconSide="right"
-          />
+          <>
+            <ButtonDropdown
+              options={declinedReasonMeta.map((meta) => ({
+                id: meta.reason,
+                label: meta.label,
+              }))}
+              selectedIds={selectedReasons}
+              onSelect={(newReason: string) =>
+                setSelectedReasons((currentReasons) =>
+                  currentReasons.includes(newReason as DeclinedReason)
+                    ? currentReasons.filter((id) => id !== newReason)
+                    : currentReasons.concat([newReason as DeclinedReason])
+                )
+              }
+              closeOnSelect={false}
+              size="small"
+              hollow
+              label="Reasons"
+              isDisabled={isDisabled || isQuarantined}
+              iconSide="right"
+            />
+            {existingApprovalStatus === ApprovalStatus.Declined &&
+              hasChangedReasons && (
+                <Button onClick={onClickUpdate} size="small">
+                  Save {selectedReasons.length} Reasons
+                </Button>
+              )}
+          </>
         )}
         <Button
           onClick={() => onClickDecline()}
@@ -231,24 +241,14 @@ const ApproveButton = ({
           color="secondary"
           hollow={false}
           isDisabled={
-            approvalStatus === ApprovalStatus.Declined || isQuarantined
+            isDisabled ||
+            approvalStatus === ApprovalStatus.Declined ||
+            isQuarantined
           }
           title="Notifies publisher, they must now un-publish and make changes">
           Decline
+          {hasChangedReasons ? ` with ${selectedReasons.length} reasons` : ''}
         </Button>
-        {!getAreArraysSame(selectedReasons, existingDeclinedReasons || []) && (
-          <div style={{ marginTop: '0.25rem' }}>
-            New reasons:
-            <ul>
-              {selectedReasons.map((reason) => (
-                <li key={reason}>{reason}</li>
-              ))}
-            </ul>
-            <Button onClick={onClickUpdate} size="small" color="primary">
-              Save Reasons
-            </Button>
-          </div>
-        )}
       </ButtonGroup>
     </>
   )

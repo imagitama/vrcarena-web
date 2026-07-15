@@ -126,48 +126,66 @@ const DeleteButton = ({
   }
 
   const isAsset = metaCollectionName === AssetCollectionNames.AssetsMeta
+  const hasChangedReason = selectedReason !== existingDeletionReason
+
+  console.debug(`DeleteButton.render`, {
+    isAsset,
+    hasChangedReason,
+    selectedReason,
+    existingDeletionReason,
+  })
 
   return (
     <ButtonGroup>
       {isAsset && (
-        <ButtonDropdown
-          options={deletionReasonMeta
-            .map((meta) => ({
-              id: meta.reason as string,
-              label: meta.label,
-            }))
-            .concat([
-              {
-                id: '',
-                label: '(none)',
-              },
-            ])}
-          selectedId={selectedReason || ''}
-          onSelect={(newReason: string) =>
-            setSelectedReason(newReason ? (newReason as DeletionReason) : null)
-          }
-          closeOnSelect={true}
-          size="small"
-          hollow
-          label="Reasons"
-          iconSide="right"
-        />
+        <>
+          <ButtonDropdown
+            options={deletionReasonMeta
+              .map((meta) => ({
+                id: meta.reason as string,
+                label: meta.label,
+              }))
+              .concat([
+                {
+                  id: '',
+                  label: '(none)',
+                },
+              ])}
+            selectedId={selectedReason || ''}
+            onSelect={(newReason: string) =>
+              setSelectedReason(
+                newReason ? (newReason as DeletionReason) : null
+              )
+            }
+            closeOnSelect={true}
+            size="small"
+            hollow
+            label="Reasons"
+            iconSide="right"
+          />
+          {existingDeletionReason !== selectedReason ? (
+            <Button onClick={onClickUpdate} size="small">
+              Update Reason
+            </Button>
+          ) : null}
+        </>
       )}
       <Button
         onClick={toggle}
         icon={<DeleteIcon />}
         size="small"
         color="secondary"
-        title={accessStatus === AccessStatus.Deleted ? 'Un-delete' : 'Delete'}
-        {...buttonProps}
-      />
-      {isAsset &&
-        existingDeletionReason !== undefined &&
-        existingDeletionReason !== selectedReason && (
-          <Button onClick={onClickUpdate} size="small">
-            Update Reason
-          </Button>
-        )}
+        hollow={false}
+        title={
+          accessStatus === AccessStatus.Deleted
+            ? 'Does not do any notification'
+            : 'Notifies creator, prevents edits'
+        }
+        {...buttonProps}>
+        {accessStatus === AccessStatus.Deleted
+          ? 'Un-delete'
+          : `Delete${hasChangedReason ? ` (${selectedReason})` : ''}`}
+      </Button>
     </ButtonGroup>
   )
 }

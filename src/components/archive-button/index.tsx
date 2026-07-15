@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
+import ButtonGroup from '@mui/material/ButtonGroup'
 
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import { handleError } from '@/error-handling'
@@ -109,6 +110,8 @@ const ArchiveButton = ({
     }
   }
 
+  const hasChangedReason = selectedReason !== existingArchivedReason
+
   const onClickUpdate = async () => {
     try {
       await save({
@@ -125,46 +128,56 @@ const ArchiveButton = ({
   }
 
   return (
-    <>
+    <ButtonGroup>
       {isAsset && (
-        <ButtonDropdown
-          options={archivedReasonMeta
-            .map((meta) => ({
-              id: meta.reason as string,
-              label: meta.label,
-            }))
-            .concat([
-              {
-                id: '',
-                label: '(none)',
-              },
-            ])}
-          selectedId={selectedReason || ''}
-          onSelect={(newReason: string) =>
-            setSelectedReason(newReason ? (newReason as ArchivedReason) : null)
-          }
-          closeOnSelect={true}
-          size="small"
-          hollow
-          label="Reasons"
-          iconSide="right"
-        />
+        <>
+          <ButtonDropdown
+            options={archivedReasonMeta
+              .map((meta) => ({
+                id: meta.reason as string,
+                label: meta.label,
+              }))
+              .concat([
+                {
+                  id: '',
+                  label: '(none)',
+                },
+              ])}
+            selectedId={selectedReason || ''}
+            onSelect={(newReason: string) =>
+              setSelectedReason(
+                newReason ? (newReason as ArchivedReason) : null
+              )
+            }
+            closeOnSelect={true}
+            size="small"
+            hollow
+            label="Reasons"
+            iconSide="right"
+          />
+          {existingArchivedReason !== null && hasChangedReason && (
+            <Button onClick={onClickUpdate} size="small">
+              Save Reason
+            </Button>
+          )}
+        </>
       )}
       <Button
         onClick={onClickButton}
         icon={<BusinessCenterIcon />}
         size="small"
         color="secondary"
-        hollow={false}>
-        {accessStatus === AccessStatus.Archived ? 'Un-archive' : 'Archive'}
+        hollow={false}
+        title={
+          accessStatus === AccessStatus.Archived
+            ? 'Does not notify anyone, starts showing in search results'
+            : 'Notifies publisher, hides in search results'
+        }>
+        {accessStatus === AccessStatus.Archived
+          ? 'Un-archive'
+          : `Archive${hasChangedReason ? ` (${selectedReason})` : ''}`}
       </Button>
-      {existingArchivedReason !== undefined &&
-        existingArchivedReason !== selectedReason && (
-          <Button onClick={onClickUpdate} size="small">
-            Save Reason
-          </Button>
-        )}
-    </>
+    </ButtonGroup>
   )
 }
 

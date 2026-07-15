@@ -12,6 +12,7 @@ import {
   DeletionReason,
   FullAsset_Editor,
   getIsAssetPublic,
+  getIsAssetWaitingForApproval,
 } from '@/modules/assets'
 
 import EditorBox from '@/components/editor-box'
@@ -51,6 +52,7 @@ const AssetEditorRecordManager = ({
   actions: AssetActions
 }) => {
   const isPublic = getIsAssetPublic(asset)
+  const isWaitingForApproval = getIsAssetWaitingForApproval(asset)
   return (
     <EditorBox>
       <Row>
@@ -113,6 +115,7 @@ const AssetEditorRecordManager = ({
             existingApprovalStatus={asset.approvalstatus}
             existingDeclinedReasons={asset.declinedreasons}
             onDone={onDone}
+            isDisabled={!isWaitingForApproval}
           />
         </ValueCell>
       </Row>
@@ -148,7 +151,7 @@ const AssetEditorRecordManager = ({
             existingDeletionReason={asset.deletionreason}
             onDone={onDone}
           />
-          <br />
+          <div style={{ marginBottom: '0.25rem' }} />
           <ArchiveButton
             id={id}
             metaCollectionName={AssetsCollectionNames.AssetsMeta}
