@@ -205,7 +205,11 @@ const Tiles = () => {
   }
 
   const {
-    home: { stats, recentdiscordannouncement: recentDiscordAnnouncement },
+    home: {
+      stats,
+      recentdiscordannouncement: recentDiscordAnnouncement,
+      recentdiscordtechchanges: recentDiscordTechChanges,
+    },
   } = globalState
 
   return (
@@ -215,9 +219,16 @@ const Tiles = () => {
           <Stats stats={stats} />
         </Tile>
         <Tile title="Discord" url={DISCORD_URL} buttonLabel="Join Discord">
-          {recentDiscordAnnouncement ? (
-            <DiscordMessageResult message={recentDiscordAnnouncement} trim />
-          ) : null}
+          <div>
+            {recentDiscordAnnouncement ? (
+              <DiscordMessageResult message={recentDiscordAnnouncement} trim />
+            ) : null}
+            {recentDiscordTechChanges ? (
+              <div style={{ marginTop: '0.5rem ' }}>
+                <DiscordMessageResult message={recentDiscordTechChanges} trim />
+              </div>
+            ) : null}
+          </div>
         </Tile>
         <Tile
           title="Patreon"

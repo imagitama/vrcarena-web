@@ -15,6 +15,10 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'flex-start',
+    fontSize: '0.75rem',
+    '& p': {
+      fontSize: '1em',
+    },
   },
   avatar: {
     width: theme.spacing(4),
@@ -31,7 +35,6 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
   timestamp: {
     '&&': {
-      fontSize: '0.75rem',
       color: '#72767d',
       marginLeft: '0.25rem',
     },
@@ -80,7 +83,7 @@ const DiscordMessageResult = ({
         </Box>
         <Typography className={classes.content}>
           {trim && !isExpanded
-            ? trimDescription(message.content)
+            ? trimDescription(message.content, 50)
             : message.content}{' '}
           {trim && !isExpanded && (
             <ExpandIcon

@@ -59,6 +59,7 @@ export interface StatsForHomepage {
 export interface HomepageContent {
   stats: StatsForHomepage
   recentdiscordannouncement: CachedDiscordMessage | null
+  recentdiscordtechchanges: CachedDiscordMessage | null
   featuredspecies: Species | null
 }
 
