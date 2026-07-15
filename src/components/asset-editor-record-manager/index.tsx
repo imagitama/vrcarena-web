@@ -154,6 +154,7 @@ const AssetEditorRecordManager = ({
             metaCollectionName={AssetsCollectionNames.AssetsMeta}
             existingAccessStatus={asset.accessstatus}
             existingArchivedReason={asset.archivedreason}
+            onDone={onDone}
           />
         </ValueCell>
       </Row>
