@@ -115,7 +115,6 @@ function Dropdown({
 const DesktopMenu = () => {
   const classes = useStyles()
   const [, , user] = useUserRecord()
-  const [, , userPreferences] = useUserPreferences()
   const [openMenuItem, setOpenMenuItem] = useState<string | null>(null)
 
   const closeMenuDropdown = () => {
@@ -125,9 +124,7 @@ const DesktopMenu = () => {
   return (
     <div className={classes.root}>
       {navItems
-        .filter((navItem) =>
-          user ? canShowMenuItem(navItem, user, userPreferences) : true
-        )
+        .filter((navItem) => canShowMenuItem(navItem, user))
         .map(({ id, label, url, children }) => {
           const actualLabel = getLabelForMenuItem(label)
 
@@ -164,11 +161,9 @@ const DesktopMenu = () => {
                   items={
                     !Array.isArray(children)
                       ? children
-                      : user
-                      ? children.filter((navItem) =>
-                          canShowMenuItem(navItem, user, userPreferences)
+                      : children.filter((navItem) =>
+                          canShowMenuItem(navItem, user)
                         )
-                      : children
                   }
                   isOpen={openMenuItem === id}
                   onOpen={() => {

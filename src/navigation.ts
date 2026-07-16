@@ -24,8 +24,7 @@ export interface MenuItem {
 
 export function canShowMenuItem(
   menuItem: MenuItem,
-  user: MyUser | null,
-  userPreferences: UserPreferences | false | null
+  user: MyUser | null
 ): boolean {
   if (menuItem.requiresAuth && !user) {
     return false
@@ -51,14 +50,11 @@ export function canShowMenuItem(
     }
     return false
   }
-  if (menuItem.requiresAdultContentEnabled) {
-    if (!userPreferences) {
-      return false
-    }
-    if (userPreferences.enabledadultcontent) {
-      return true
-    }
-    return false
+  if (
+    menuItem.requiresAdultContentEnabled &&
+    user?.enabledadultcontent === true
+  ) {
+    return true
   }
   return true
 }
