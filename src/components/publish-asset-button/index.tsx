@@ -40,26 +40,44 @@ enum PublishErrorCode {
   USER_NOT_VERIFIED = 'USER_NOT_VERIFIED',
   USER_BANNED = 'USER_BANNED',
   ASSET_NOT_FOUND = 'ASSET_NOT_FOUND',
-  IS_NOT_DRAFT = 'IS_NOT_DRAFT',
+  NOT_DRAFT = 'NOT_DRAFT',
   NOT_CREATOR = 'NOT_CREATOR',
 }
 
 enum UnpublishErrorCode {
   USER_NOT_VERIFIED = 'USER_NOT_VERIFIED',
   ASSET_NOT_FOUND = 'ASSET_NOT_FOUND',
+  NOT_PUBLISHED = 'NOT_PUBLISHED',
   NOT_PUBLISHER = 'NOT_PUBLISHER',
+  NOT_IN_QUEUE = 'NOT_IN_QUEUE',
 }
 
 export const getErrorMessageForCode = (
   errorCode: PublishFlowErrorCode
 ): string => {
   switch (errorCode) {
-    case PublishErrorCode.IS_NOT_DRAFT:
+    case PublishErrorCode.USER_NOT_VERIFIED:
+      return 'Your account is not verified'
+    case PublishErrorCode.USER_BANNED:
+      return 'You are banned'
+    case PublishErrorCode.ASSET_NOT_FOUND:
+      return 'Asset not found'
+    case PublishErrorCode.NOT_DRAFT:
       return 'Only drafts can be published'
     case PublishErrorCode.NOT_CREATOR:
       return 'You are not the creator of this asset'
-    case PublishErrorCode.USER_BANNED:
-      return 'You are banned'
+
+    case UnpublishErrorCode.USER_NOT_VERIFIED:
+      return 'Your account is not verified'
+    case UnpublishErrorCode.ASSET_NOT_FOUND:
+      return 'Asset not found'
+    case UnpublishErrorCode.NOT_PUBLISHED:
+      return 'Asset has not been published yet'
+    case UnpublishErrorCode.NOT_PUBLISHER:
+      return 'You are not the publisher of this asset'
+    case UnpublishErrorCode.NOT_IN_QUEUE:
+      return 'Asset is not in the queue'
+
     default:
       return 'Unknown'
   }
