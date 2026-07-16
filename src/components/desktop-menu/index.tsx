@@ -126,7 +126,7 @@ const DesktopMenu = () => {
     <div className={classes.root}>
       {navItems
         .filter((navItem) =>
-          user ? canShowMenuItem(navItem, user, userPreferences) : false
+          user ? canShowMenuItem(navItem, user, userPreferences) : true
         )
         .map(({ id, label, url, children }) => {
           const actualLabel = getLabelForMenuItem(label)

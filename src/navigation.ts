@@ -2,7 +2,12 @@ import React from 'react'
 import * as routes from './routes'
 import categoriesMeta from './category-meta'
 import { AssetCategory } from './modules/assets'
-import { UserAdminMeta, UserPreferences, UserRoles } from './modules/users'
+import {
+  MyUser,
+  UserAdminMeta,
+  UserPreferences,
+  UserRoles,
+} from './modules/users'
 
 export interface MenuItem {
   id: string
@@ -19,7 +24,7 @@ export interface MenuItem {
 
 export function canShowMenuItem(
   menuItem: MenuItem,
-  user: UserAdminMeta | null,
+  user: MyUser | null,
   userPreferences: UserPreferences | false | null
 ): boolean {
   if (menuItem.requiresAuth && !user) {
