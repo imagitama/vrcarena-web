@@ -10,6 +10,8 @@ import Link from '@/components/link'
 import Tooltip from '@/components/tooltip'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import { CONTENT_MAX_WIDTH_PX } from '@/config'
+import { useState } from 'react'
+import ExpandIcon from '../expand-icon'
 
 const WELCOME_MESSAGE_HIDE_ID = 'welcome_may2026'
 
@@ -95,6 +97,7 @@ const CloseButton = styled.div`
 
 const WelcomeMessage = () => {
   const [isHidden, hideNotice] = useNotice(WELCOME_MESSAGE_HIDE_ID)
+  const [isExpanded, setIsExpanded] = useState(false)
   if (isHidden) return null
   return (
     <WelcomeMessageRoot>
@@ -111,33 +114,57 @@ const WelcomeMessage = () => {
         <p>
           An open-source, not-for-profit community project to document, tag and
           categorize every asset for VR social games such as VRChat, ChilloutVR
-          and Resonite.
+          and Resonite since 2020
+          {isExpanded ? (
+            '.'
+          ) : (
+            <>
+              ...{' '}
+              <ExpandIcon
+                isExpanded={isExpanded}
+                onClick={() => setIsExpanded(true)}
+              />
+            </>
+          )}
         </p>
-        <p>
-          Anyone can submit and amend any asset on the site. No automated
-          scraping of products
-          <Tooltip
-            title={
-              <>
-                We use scraping to help humans add their assets to the site.
-                <br />
-                <br />
-                We use AI to help humans add their assets to the site, and for
-                some basic tasks. See our{' '}
-                <Link to={routes.aiPolicy}>AI policy</Link>.
-              </>
-            }>
-            <span>*</span>
-          </Tooltip>
-          .
-        </p>
-        <p>
-          The site was created in 2020 and is moderated by our awesome{' '}
-          <Link to={routes.staffUsers}>volunteer team</Link> and funded entirely
-          by our <Link to={routes.patreon}>Patreon supporters</Link>.
-        </p>
+        {isExpanded && (
+          <>
+            <p>
+              Anyone can submit and amend any asset on the site. No automated
+              scraping of products
+              <Tooltip
+                title={
+                  <>
+                    We use scraping to help humans add their assets to the site.
+                    <br />
+                    <br />
+                    We use AI to help humans add their assets to the site, and
+                    for some basic tasks. See our{' '}
+                    <Link to={routes.aiPolicy}>AI policy</Link>.
+                  </>
+                }>
+                <span>*</span>
+              </Tooltip>
+              .
+            </p>
+            <p>
+              The site was created in 2020 and is moderated by our awesome{' '}
+              <Link to={routes.staffUsers}>volunteer team</Link> and funded
+              entirely by our{' '}
+              <Link to={routes.patreon}>Patreon supporters</Link>.
+            </p>
+          </>
+        )}
         <Controls>
-          <Button onClick={hideNotice} size="small" color="secondary" hollow>
+          {!isExpanded && (
+            <Button
+              onClick={() => setIsExpanded(true)}
+              size="small"
+              color="secondary">
+              Expand
+            </Button>
+          )}{' '}
+          <Button onClick={hideNotice} size="small" color="secondary">
             Hide
           </Button>{' '}
           <GoToButton url={routes.about} size="small">

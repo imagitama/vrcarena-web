@@ -115,7 +115,11 @@ const AvatarMenuItem = () => {
         className={classNames(classes.username, {
           [classes.loggedIn]: myUser !== null,
         })}>
-        {myUser?.username || 'Logged out'}
+        {myUser
+          ? myUser.username
+            ? myUser.username
+            : 'Logged in'
+          : 'Logged out'}
       </span>
       <KeyboardArrowDownIcon />
     </>

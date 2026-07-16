@@ -116,14 +116,14 @@ const getLabelForSignUpErrorCode = (errorCode: SignUpErrorCode): string => {
     case SignUpErrorCode.InvalidEmail:
       return 'invalid email'
     case SignUpErrorCode.InvalidPassword:
-      return 'invalid password'
+      return 'invalid password (must have more than 6 characters)'
     case SignUpErrorCode.WeakPassword:
       return 'weak password'
     case SignUpErrorCode.EmailAlreadyInUse:
       return 'email already in use'
     case SignUpErrorCode.Unknown:
     default:
-      return 'something unusual happened'
+      return `unknown error (code ${errorCode})`
   }
 }
 
@@ -136,15 +136,11 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
     useFirebaseFunction<SignUpUserPayload, SignUpUserResult>(
       FunctionNames.SignUpWithEmail
     )
-  const [lastSignUpErrorCode, setLastSignUpErrorCode] =
-    useState<null | SignUpErrorCode>(null)
 
   const submit = async () => {
     try {
       if (!usernameVal || !passwordVal || !getIsEmailAddress(usernameVal))
         return
-
-      setLastSignUpErrorCode(null)
 
       console.debug(`signing in with email and password...`, {
         email: usernameVal,
@@ -166,8 +162,9 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         recaptchaToken,
       })
 
+      // outputted to user from hook result
       if (code) {
-        setLastSignUpErrorCode(code)
+        console.warn('Got a signup error code:', code)
         return
       }
 
@@ -227,17 +224,12 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         </div>
       </FormControls>
       {isWorking && <LoadingIndicator message="Signing up..." />}
-      {lastSignUpErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to sign up: {getLabelForSignUpErrorCode(lastSignUpErrorCode)}
-        </ErrorMessage>
-      ) : null}
       {lastErrorCode !== null ? (
         <ErrorMessage>Failed to sign up (code {lastErrorCode})</ErrorMessage>
       ) : null}
       {lastResult !== null && lastResult.code !== undefined ? (
         <ErrorMessage>
-          Failed to sign up (result {lastResult.code})
+          Failed to sign up: {getLabelForSignUpErrorCode(lastResult.code)}
         </ErrorMessage>
       ) : null}
     </form>
