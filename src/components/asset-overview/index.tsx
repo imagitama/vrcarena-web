@@ -467,7 +467,6 @@ const AssetOverview = ({
           (attachment) => attachment.type === AttachmentType.File
         )
       : undefined
-  const hasPrimaryImage = nonMediaAttachments.length > 0
 
   const allSources = asset
     ? [

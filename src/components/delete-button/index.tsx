@@ -126,14 +126,16 @@ const DeleteButton = ({
   }
 
   const isAsset = metaCollectionName === AssetCollectionNames.AssetsMeta
-  const hasChangedReason = selectedReason !== existingDeletionReason
+  const hasChangedReason =
+    selectedReason !== existingDeletionReason &&
+    existingDeletionReason !== undefined
 
-  console.debug(`DeleteButton.render`, {
-    isAsset,
-    hasChangedReason,
-    selectedReason,
-    existingDeletionReason,
-  })
+  // console.debug(`DeleteButton.render`, {
+  //   isAsset,
+  //   hasChangedReason,
+  //   selectedReason,
+  //   existingDeletionReason,
+  // })
 
   return (
     <ButtonGroup>

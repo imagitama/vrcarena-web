@@ -3,12 +3,16 @@ import { makeStyles } from '@mui/styles'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useMediaQuery } from 'react-responsive'
+import InfoIcon from '@mui/icons-material/Info'
 
 import { getImageUrlFromYouTubeUrl, getIsUrlAYoutubeVideo } from '@/utils'
 import { mediaQueryForMobiles, queryForMobiles } from '@/media-queries'
 
 import VideoPlayer from '@/components/video-player'
 import Button from '@/components/button'
+import Link from '../link'
+import { routes } from '@/routes'
+import Tooltip from '../tooltip'
 
 const useStyles = makeStyles({
   root: {
@@ -31,11 +35,11 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
     '& img': {
       display: 'block',
       maxWidth: '100%',
       maxHeight: '400px',
-      // aspectRatio: '1/1',
       objectFit: 'contain', // (default: fill) required to fix stretched images on Edge
     },
   },
@@ -108,6 +112,13 @@ const useStyles = makeStyles({
   hidden: {
     display: 'none',
   },
+  infoIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    zIndex: 100,
+    padding: '0.25rem',
+  },
 })
 
 const Image = ({
@@ -152,6 +163,18 @@ const Image = ({
       )}
       {image.caption ? (
         <div className={classes.caption}>{image.caption}</div>
+      ) : null}
+      {image.id ? (
+        <Tooltip title="View attachment">
+          <Link
+            className={classes.infoIcon}
+            to={routes.viewAttachmentWithVar.replace(
+              ':attachmentId',
+              image.id
+            )}>
+            <InfoIcon />
+          </Link>
+        </Tooltip>
       ) : null}
     </div>
   )

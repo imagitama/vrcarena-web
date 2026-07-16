@@ -36,6 +36,7 @@ import AdultContentGate from '@/components/adult-content-gate'
 import useAdultContentGate from '@/hooks/useAdultContentGate'
 import Markdown from '@/components/markdown'
 import InfoMessage from '@/components/info-message'
+import { AccessStatus } from '@/modules/common'
 
 const useStyles = makeStyles({
   output: {
@@ -129,6 +130,12 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
           }
         />
       </Helmet>
+      {attachment.accessstatus === AccessStatus.Deleted && (
+        <ErrorMessage>
+          This attachment has been deleted and will not show anywhere on the
+          site.
+        </ErrorMessage>
+      )}
       {attachment.editornotes && (
         <PublicEditorNotes notes={attachment.editornotes} />
       )}

@@ -89,6 +89,7 @@ const PrimaryImage = () => {
       <ImageGallery
         startSelected
         images={asset.attachmentsdata?.slice(0, 3).map((attachment) => ({
+          id: attachment.id,
           url: cleanupAttachmentUrl(attachment.url),
         }))}
         onClickImage={() =>

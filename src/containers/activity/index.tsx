@@ -10,6 +10,7 @@ import Paper from '@/components/paper'
 import PaginatedView from '@/components/paginated-view'
 import ActivityItemLabel from '@/components/activity-item-label'
 import { FullHistoryEntry } from '@/modules/history'
+import Message from '@/components/message'
 
 // TODO: migrate to component
 const useStyles = makeStyles({
@@ -68,7 +69,7 @@ export default () => {
           content="Take a look at the actions performed by users on the site including editing assets, profiles and more."
         />
       </Helmet>
-      Updated every 15 minutes
+      <Message>Updated every 15 minutes</Message>
       <PaginatedView<FullHistoryEntry>
         viewName={ViewNames.FullActivity}
         name="history"

@@ -23,6 +23,12 @@ export interface Attachment extends AttachmentFields {
   lastmodifiedat: string
 }
 
+export interface AttachmentForList extends Attachment {
+  approvalstatus: ApprovalStatus
+  accessstatus: AccessStatus
+  createdbyusername: string
+}
+
 export interface FullAttachment extends Attachment {
   approvalstatus: ApprovalStatus
   approvedat: string
@@ -50,6 +56,7 @@ export enum CollectionNames {
 }
 
 export enum ViewNames {
+  GetAttachmentsForList = 'getattachmentsforlist',
   GetFullAttachments = 'getfullattachments',
   GetPublicAttachments = 'getpublicattachments',
 }
