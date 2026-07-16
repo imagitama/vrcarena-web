@@ -12,6 +12,11 @@ import { Patreon as PatreonIcon } from '@/icons'
 import Link from '@/components/link'
 import Heading from '@/components/heading'
 import Button from '@/components/button'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import { PatreonStatus, PatronUserForList, UserForList } from '@/modules/users'
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import UserList from '@/components/user-list'
 
 const useStyles = makeStyles({
   link: {
@@ -23,6 +28,56 @@ const useStyles = makeStyles({
     justifyContent: 'center',
   },
 })
+
+enum ViewNames {
+  GetPatreonUsers = 'getpatreonusers',
+}
+
+const Patrons = () => {
+  const [isLoading, lastErrorCode, patrons] =
+    useDataStoreItems<PatronUserForList>(ViewNames.GetPatreonUsers, undefined, {
+      queryName: 'get-patrons',
+    })
+
+  if (lastErrorCode !== null)
+    return (
+      <ErrorMessage>Failed to get patrons (code {lastErrorCode})</ErrorMessage>
+    )
+
+  if (isLoading || !patrons)
+    return <LoadingIndicator message="Getting patrons..." />
+
+  const { active, previous } = patrons.reduce<{
+    active: PatronUserForList[]
+    previous: PatronUserForList[]
+  }>(
+    (results, patron) => {
+      if (patron.patreonstatus === PatreonStatus.Patron) {
+        return {
+          ...results,
+          active: results.active.concat([patron]),
+        }
+      }
+      return {
+        ...results,
+        previous: results.previous.concat([patron]),
+      }
+    },
+    {
+      active: [],
+      previous: [],
+    }
+  )
+
+  return (
+    <>
+      <Heading variant="h2">Active Patrons</Heading>
+      <UserList users={active} />
+      <Heading variant="h2">Previous Patrons</Heading>
+      <UserList users={previous} />
+    </>
+  )
+}
 
 export default () => {
   const classes = useStyles()
@@ -69,6 +124,8 @@ export default () => {
           </Link>{' '}
           and click the Patreon tab for instructions.
         </p>
+
+        <Patrons />
       </Container>
     </>
   )

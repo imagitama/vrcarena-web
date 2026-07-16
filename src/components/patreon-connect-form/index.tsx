@@ -21,6 +21,8 @@ import Paper from '@/components/paper'
 import Heading from '@/components/heading'
 import NoResultsMessage from '@/components/no-results-message'
 import SuccessMessage from '@/components/success-message'
+import useUserPreferences from '@/hooks/useUserPreferences'
+import UserPreferenceEditor from '../user-preference-editor'
 
 const patreonOAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${process.env.REACT_APP_PATREON_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_PATREON_REDIRECT_URI}&scope=identity%20campaigns.members`
 let oauthCode
@@ -90,6 +92,14 @@ const rewardMetaById: { [key: number]: RewardMeta } = {
 enum ErrorCode {
   Unknown,
 }
+
+const ShowPatreonPublicallyToggle = () => (
+  <UserPreferenceEditor
+    name="ispatronpublic"
+    label="Show my Patreon patron status publically"
+    defaultValue={true}
+  />
+)
 
 const PatreonConnectForm = () => {
   const userId = useUserId()
@@ -199,20 +209,9 @@ const PatreonConnectForm = () => {
               Refresh with Patreon
             </Button>
           </p>
-          {/* June 2026 - these rewards are outdated */}
-          {/* <Heading variant="h3">Rewards</Heading>
-          {metaResult && metaResult.patreonrewardids.length ? (
-            metaResult.patreonrewardids
-              .filter((rewardId) => rewardId in rewardMetaById)
-              .map((rewardId) => (
-                <Paper key={rewardId} className={classes.rewardItem}>
-                  <strong>{rewardMetaById[rewardId].title}</strong>
-                  <p>{rewardMetaById[rewardId].description}</p>
-                </Paper>
-              ))
-          ) : (
-            <NoResultsMessage>No rewards found</NoResultsMessage>
-          )} */}
+          <p>
+            <ShowPatreonPublicallyToggle />
+          </p>
         </>
       )
     } else {
@@ -240,8 +239,7 @@ const PatreonConnectForm = () => {
     <div>
       <p>
         Click the button below to open Patreon and connect your VRCArena
-        account. Then depending on your pledge amount you will receive your
-        benefits.
+        account.
       </p>
       <Button
         url={patreonOAuthUrl}

@@ -14,6 +14,9 @@ export const colorAiDark = 'rgb(65, 130, 165)'
 export const colorAiLight = 'rgb(88, 178, 226)'
 export const colorAiVeryDark = 'rgb(29, 60, 76)'
 
+export const patreonGoldDark = '#b1a200'
+export const patreonGold = '#ffea00'
+
 export type VRCArenaTheme = Theme
 
 export const darkTheme: VRCArenaTheme = createTheme({

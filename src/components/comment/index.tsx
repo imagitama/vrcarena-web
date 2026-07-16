@@ -16,12 +16,11 @@ import useIsEditor from '@/hooks/useIsEditor'
 
 import FormattedDate from '@/components/formatted-date'
 import Avatar from '@/components/avatar'
-import StaffBadge from '@/components/staff-badge'
+import { StaffBadge, BannedBadge } from '@/components/badge'
 import LoadingShimmer from '@/components/loading-shimmer'
 import EditorRecordManager from '@/components/editor-record-manager'
 import ReportButton from '@/components/report-button'
 import MentionsOutput from '@/components/mentions-output'
-import BannedBadge from '@/components/banned-badge'
 
 const useStyles = makeStyles({
   cols: {

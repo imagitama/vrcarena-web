@@ -1,5 +1,13 @@
 import { AccessStatus, ApprovalStatus, PublishStatus } from './common'
 
+export interface AuthorForList {
+  id: string
+  name: string
+  avatarurl: string | null
+  accessstatus: AccessStatus
+  createdat: string // date
+}
+
 export interface AuthorFields extends Record<string, unknown> {
   name: string | null
   description: string | null
@@ -55,6 +63,7 @@ export enum CollectionNames {
 }
 
 export enum ViewNames {
+  GetAuthorsForList = 'getauthorsforlist',
   GetFullAuthors = 'getfullauthors',
   GetPublicAuthors = 'getpublicauthors',
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from '@unhead/react/helmet'
 
 import * as routes from '@/routes'
-import { Author, ViewNames } from '@/modules/authors'
+import { Author, AuthorForList, ViewNames } from '@/modules/authors'
 
 import Link from '@/components/link'
 import Heading from '@/components/heading'
@@ -10,7 +10,7 @@ import BodyText from '@/components/body-text'
 import AuthorResults from '@/components/author-results'
 import PaginatedView from '@/components/paginated-view'
 
-const Renderer = ({ items }: { items?: Author[] }) => (
+const Renderer = ({ items }: { items?: AuthorForList[] }) => (
   <AuthorResults authors={items || []} />
 )
 
@@ -28,9 +28,9 @@ const AuthorsView = () => {
         <Link to={routes.authors}>Authors</Link>
       </Heading>
       <BodyText>A list of all authors who have assets on the site.</BodyText>
-      <PaginatedView<Author>
-        viewName={ViewNames.GetFullAuthors}
-        editorViewName={ViewNames.GetFullAuthors}
+      <PaginatedView<AuthorForList>
+        viewName={ViewNames.GetPublicAuthors}
+        editorViewName={ViewNames.GetAuthorsForList}
         name="authors"
         sortOptions={[
           {

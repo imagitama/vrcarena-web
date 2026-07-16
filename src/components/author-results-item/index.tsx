@@ -10,11 +10,14 @@ import Typography from '@mui/material/Typography'
 import * as routes from '@/routes'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import { getCategoryMeta } from '@/category-meta'
-import { Author } from '@/modules/authors'
+import { Author, AuthorForList } from '@/modules/authors'
 import { AssetCategory } from '@/modules/assets'
 import { colorPalette } from '@/config'
 
 import DefaultAvatar from '@/components/default-avatar'
+import { AccessStatus } from '@/modules/common'
+import Tooltip from '../tooltip'
+import Chip from '../chip'
 
 const useStyles = makeStyles({
   root: {
@@ -28,6 +31,7 @@ const useStyles = makeStyles({
   },
   media: {
     height: '200px',
+    position: 'relative',
     [mediaQueryForTabletsOrBelow]: {
       height: '160px',
     },
@@ -44,14 +48,23 @@ const useStyles = makeStyles({
     backgroundColor: `${colorPalette.selectedBg} !important`,
     boxShadow: `${colorPalette.selectedBoxShadow} !important`,
   },
+  deleted: {
+    backgroundColor: 'rgb(100, 0, 0) !important',
+  },
+  chips: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    padding: '0.25rem',
+  },
 })
 
-export default ({
-  author: { id, name, categories = [], avatarurl },
+const AuthorResultsItem = ({
+  author: { id, name, avatarurl, accessstatus },
   onClick = undefined,
   isSelected = false,
 }: {
-  author: Author
+  author: AuthorForList
   onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
   isSelected?: boolean
 }) => {
@@ -71,21 +84,18 @@ export default ({
               {!avatarurl && (
                 <DefaultAvatar stringForDecision={name || undefined} />
               )}
+              <div className={classes.chips}>
+                {accessstatus === AccessStatus.Deleted && (
+                  <Tooltip title="This author has been deleted and will not show up in search results">
+                    <Chip className={classes.deleted} label="Deleted" />
+                  </Tooltip>
+                )}
+              </div>
             </CardMedia>
             <CardContent className={classes.content}>
               <Typography variant="h5" component="h2">
                 {name}
               </Typography>
-              <div className={classes.cats}>
-                {categories && categories.length
-                  ? categories
-                      .map(
-                        (categoryName) =>
-                          getCategoryMeta(categoryName as AssetCategory).name
-                      )
-                      .join(', ')
-                  : '\u00A0'}
-              </div>
             </CardContent>
           </Link>
         </CardActionArea>
@@ -93,3 +103,5 @@ export default ({
     </div>
   )
 }
+
+export default AuthorResultsItem

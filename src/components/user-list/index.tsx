@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import { FullUser, User } from '@/modules/users'
+import { UserForList } from '@/modules/users'
 import UserListItem from '@/components/user-list-item'
 
 const useStyles = makeStyles({
@@ -11,7 +11,8 @@ const useStyles = makeStyles({
   },
 })
 
-export default ({ users }: { users?: (FullUser | User)[] }) => {
+// TODO: rename to UserResults
+const UserList = ({ users }: { users?: UserForList[] }) => {
   const classes = useStyles()
   return (
     <div className={classes.container}>
@@ -21,3 +22,5 @@ export default ({ users }: { users?: (FullUser | User)[] }) => {
     </div>
   )
 }
+
+export default UserList

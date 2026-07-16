@@ -77,6 +77,7 @@ export interface UserPreferences extends Record<string, unknown> {
   notificationprefs: NotificationPreferences
   tagblacklist: string[]
   showmoreinfo: boolean
+  ispatronpublic: boolean
 }
 
 export enum BanStatus {
@@ -96,12 +97,28 @@ export interface UserAdminMeta {
 }
 
 export interface FullUser extends User, UserMeta, UserAdminMeta {
+  ispatronpublic: boolean
   favoritespeciesdata: Species
 }
 
 export interface FullUser_Editor extends FullUser {
   botscore: number | null
   aievaluation: AiEvaluateQueuedItem | null
+}
+
+export interface UserForList {
+  id: string
+  username: string // not null as filtered by view
+  avatarurl: string | null
+  reputation: number
+  accessstatus: AccessStatus
+  banstatus: BanStatus
+  role: UserRoles
+  createdat: string // date
+}
+
+export interface PatronUserForList extends UserForList {
+  patreonstatus: PatreonStatus
 }
 
 export interface UserFromView {

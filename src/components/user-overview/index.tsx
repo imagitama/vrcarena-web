@@ -8,7 +8,7 @@ import {
   getPrefersBritishSpelling,
 } from '@/utils'
 import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
-import { BanStatus, FullUser } from '@/modules/users'
+import { BanStatus, FullUser, PatreonStatus } from '@/modules/users'
 import { AccessStatus } from '@/modules/common'
 import {
   mediaQueryForMobiles,
@@ -24,12 +24,12 @@ import Heading from '@/components/heading'
 import SocialMediaList from '@/components/social-media-list'
 import Avatar, { AvatarSize } from '@/components/avatar'
 import Markdown from '@/components/markdown'
-import StaffBadge from '@/components/staff-badge'
+import { StaffBadge, BannedBadge, PatronBadge } from '@/components/badge'
 import Tooltip from '@/components/tooltip'
 import Image from '@/components/image'
-import BannedBadge from '@/components/banned-badge'
 import DeletedBadge from '@/components/deleted-badge'
 import RepChangeForUser from '@/components/rep-change-for-user'
+import Rep from '@/components/rep'
 
 import Context from './context'
 import TabComments from './components/tab-comments'
@@ -40,7 +40,6 @@ import TabAssets from './components/tab-assets'
 import TabAttachments from './components/tab-attachments'
 import TabEndorsements from './components/tab-endorsements'
 import TabHistory from './components/tab-history'
-import Rep from '../rep'
 
 const UserEditorControls = React.lazy(
   () => import('./components/editor-controls')
@@ -185,10 +184,13 @@ const UserOverview = ({
     favoritespeciesdata: favoriteSpeciesData,
     banstatus: banStatus,
     accessstatus: accessStatus,
+    patreonstatus: patreonStatus,
+    ispatronpublic: isPatronPublic,
   } = user
 
   const isBanned = banStatus === BanStatus.Banned
   const isDeleted = accessStatus === AccessStatus.Deleted
+  const isPatron = patreonStatus === PatreonStatus.Patron && isPatronPublic
 
   if (!username) {
     return <ErrorMessage>User does not appear to exist</ErrorMessage>
@@ -225,6 +227,7 @@ const UserOverview = ({
                   }>
                   {username}
                 </Link>{' '}
+                {isPatron && <PatronBadge />}
                 {getUserIsStaffMember(user) && (
                   <StaffBadge className={classes.badge} />
                 )}

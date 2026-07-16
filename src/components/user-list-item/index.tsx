@@ -4,12 +4,12 @@ import { makeStyles } from '@mui/styles'
 import * as routes from '@/routes'
 import { getUserIsStaffMember } from '@/utils/users'
 import { mediaQueryForMobiles } from '@/media-queries'
-import { BanStatus, CoreUserFields, getIsFullUser } from '@/modules/users'
+import { BanStatus, UserForList } from '@/modules/users'
 import { AccessStatus } from '@/modules/common'
 
 import Link from '@/components/link'
 import Avatar, { AvatarSize } from '@/components/avatar'
-import StaffBadge from '@/components/staff-badge'
+import { StaffBadge } from '@/components/badge'
 
 const useStyles = makeStyles({
   container: {
@@ -59,7 +59,7 @@ const useStyles = makeStyles({
   },
 })
 
-const UserListItem = ({ user }: { user: CoreUserFields }) => {
+const UserListItem = ({ user }: { user: UserForList }) => {
   const classes = useStyles()
   return (
     <div

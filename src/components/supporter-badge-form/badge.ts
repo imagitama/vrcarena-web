@@ -1,5 +1,7 @@
 // import { default as logoUrl } from '@/assets/images/logo.svg?raw'
 
+import { patreonGold, patreonGoldDark } from '@/themes'
+
 interface Options {
   usingAlternateText?: boolean
   width?: number
@@ -40,14 +42,13 @@ export const create = async (
 
   console.debug(`creating badge...`, { url, opts, dpr })
 
+  // TODO: use theme
   const purple = '#6E4A9E'
-  const patreonBorderColor = '#b1a200'
-  const patreonGold = '#ffea00'
 
   if (opts?.patreon === true) {
     ctx.beginPath()
     ctx.roundRect(0, 0, canvasWidth, canvasHeight, borderRadius)
-    ctx.fillStyle = patreonBorderColor
+    ctx.fillStyle = patreonGoldDark
     ctx.fill()
 
     ctx.beginPath()

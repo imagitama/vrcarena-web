@@ -14,6 +14,7 @@ import UserList from '@/components/user-list'
 import Heading from '@/components/heading'
 import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
 import Button from '@/components/button'
+import store from '@/store'
 
 const sortKey = 'view-users'
 const analyticsCategory = 'view-users'
@@ -31,7 +32,7 @@ export default () => {
   const [selectedSubView, setSelectedSubView] = useState(
     location.pathname.includes('staff') ? SubView.STAFF : SubView.ALL
   )
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
 
   useEffect(() => {
     dispatch(changeSearchTableName(CollectionNames.Users))

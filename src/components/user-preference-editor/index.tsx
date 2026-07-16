@@ -37,7 +37,7 @@ const UserPreferenceEditor = ({
   const classes = useStyles()
   const [tempNewValue, setTempNewValue] = useState<boolean | null>(null)
   const [isLoadingUser, lastErrorCodeLoadingUser, userPreferences, hydrate] =
-    useUserPreferences(true)
+    useUserPreferences()
   const [isSaving, isSaveSuccess, lastSaveErrorCode, save, clear] =
     useDataStoreEdit<UserPreferences>(
       CollectionNames.UserPreferences,

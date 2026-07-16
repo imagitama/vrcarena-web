@@ -229,9 +229,6 @@ const RandomAvatars = lazy(() =>
 const QueryCheatsheetContainer = lazy(() =>
   catchChunkDeaths(() => import('./containers/query-cheatsheet'))
 )
-const ImageAtlas = lazy(() =>
-  catchChunkDeaths(() => import('./containers/image-atlas'))
-)
 const ViewAttachment = lazy(() =>
   catchChunkDeaths(() => import('./containers/view-attachment'))
 )
@@ -475,7 +472,10 @@ const MainContent = () => {
         <Route exact path={routes.discordServers} component={DiscordServers} />
         <Route
           exact
-          path={routes.viewDiscordServersWithPageNumberVar}
+          path={[
+            routes.discordServers,
+            routes.viewDiscordServersWithPageNumberVar,
+          ]}
           component={DiscordServers}
         />
         <Route exact path={routes.patreon} component={Patreon} />
@@ -602,7 +602,6 @@ const MainContent = () => {
           component={Query}
         />
         <Route exact path={routes.promos} component={DeprecatedRouteView} />
-        <Route exact path={routes.imageAtlas} component={ImageAtlas} />
         <Route
           exact
           path={[routes.compareWithVars, routes.compareWithVar]}

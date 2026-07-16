@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import AuthorResultsItem from '@/components/author-results-item'
-import { Author } from '@/modules/authors'
+import { Author, AuthorForList } from '@/modules/authors'
 
 const useStyles = makeStyles({
   root: { marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -11,11 +11,11 @@ const AuthorResults = ({
   authors,
   onClick,
 }: {
-  authors?: Author[]
+  authors?: AuthorForList[]
   onClick?: (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     authorId: string,
-    author: Author
+    author: AuthorForList
   ) => void
 }) => {
   const classes = useStyles()

@@ -18,7 +18,6 @@ import NoPermissionMessage from '@/components/no-permission-message'
 import MyAssets from '@/components/my-assets'
 import SocialMediaUsernamesEditor from '@/components/social-media-usernames-editor'
 import BioEditor from '@/components/bio-editor'
-import MyFeaturedAssets from '@/components/my-featured-assets'
 import MyAmendments from '@/components/my-amendments'
 import FavoriteSpeciesEditor from '@/components/favorite-species-editor'
 import NotificationSettings from '@/components/notification-settings'
@@ -43,7 +42,6 @@ import Button from '@/components/button'
 import Features from './components/features'
 import MyRep from './components/my-rep'
 import MySupportTickets from './components/my-support-tickets'
-import WarningMessage from '@/components/warning-message'
 import FormControls from '@/components/form-controls'
 
 const analyticsCategoryName = 'MyAccount'
@@ -211,20 +209,6 @@ const View = () => {
                 <SupporterBadgeForm
                   route={routes.viewUserWithVar.replace(':userId', user.id)}
                 />
-                <Heading variant="h3">My Featured Assets</Heading>
-                <WarningMessage>
-                  This feature has temporarily been disabled.
-                </WarningMessage>
-                <InfoMessage title="How It Works">
-                  A Patreon supporter can feature any asset on the site (even
-                  ones you didn't publish). Every day the featured asset is
-                  rotated until all queued assets have been featured.
-                  <br />
-                  <br />
-                  Click the "Feature" button on any asset to add it to the
-                  queue.
-                </InfoMessage>
-                <MyFeaturedAssets />
               </>
             ),
           },
