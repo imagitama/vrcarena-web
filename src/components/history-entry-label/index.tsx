@@ -211,12 +211,14 @@ const HistoryEntryLabel = ({
               <>changed {Object.keys(changesWithoutMetafields).length} fields</>
             )
           }
+          return <>edited their profile</>
         case UsersCollectionNames.UsersMeta:
           if ((fields as UserMeta).banstatus) {
             return (
               <>{getLabelForBanStatus((fields as UserMeta).banstatus)} user</>
             )
           }
+          return <>edited the user's internal profile</>
         case UsersCollectionNames.UserPreferences:
           return <>edited their preferences</>
         case AuthorsCollectionNames.Authors:
