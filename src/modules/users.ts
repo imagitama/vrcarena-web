@@ -134,6 +134,7 @@ export enum CollectionNames {
 }
 
 export enum ViewNames {
+  GetUsersForList = 'getusersforlist',
   GetFullUsers = 'getfullusers',
   GetFullUsers_Editor = 'getfullusers_editor',
   GetStaffUsers = 'getstaffusers',

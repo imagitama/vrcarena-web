@@ -10,6 +10,8 @@ import { AccessStatus } from '@/modules/common'
 import Link from '@/components/link'
 import Avatar, { AvatarSize } from '@/components/avatar'
 import { StaffBadge } from '@/components/badge'
+import HintText from '../hint-text'
+import FormattedDate from '../formatted-date'
 
 const useStyles = makeStyles({
   container: {
@@ -57,6 +59,11 @@ const useStyles = makeStyles({
   isDeleted: {
     opacity: 0.5,
   },
+  meta: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 })
 
 const UserListItem = ({ user }: { user: UserForList }) => {
@@ -81,7 +88,14 @@ const UserListItem = ({ user }: { user: UserForList }) => {
           <span className={classes.name}>
             {user.username || '(no name set)'}
           </span>
-          {getUserIsStaffMember(user) && <StaffBadge />}
+          <div className={classes.meta}>
+            {user.createdat && (
+              <HintText small>
+                <FormattedDate date={user.createdat} />
+              </HintText>
+            )}
+            {getUserIsStaffMember(user) && <StaffBadge isSmall />}
+          </div>
         </div>
       </Link>
     </div>

@@ -8,7 +8,13 @@ import { useLocation } from 'react-router'
 import * as routes from '@/routes'
 import { trackAction } from '@/analytics'
 import { changeSearchTableName } from '@/modules/app'
-import { User, CollectionNames, ViewNames } from '@/modules/users'
+import {
+  User,
+  CollectionNames,
+  ViewNames,
+  UserForList,
+  UserRoles,
+} from '@/modules/users'
 
 import UserList from '@/components/user-list'
 import Heading from '@/components/heading'
@@ -29,26 +35,25 @@ enum SubView {
 
 export default () => {
   const location = useLocation()
-  const [selectedSubView, setSelectedSubView] = useState(
-    location.pathname.includes('staff') ? SubView.STAFF : SubView.ALL
-  )
+  const isStaff = location.pathname.includes('staff')
+
   const dispatch = useDispatch<typeof store.dispatch>()
 
   useEffect(() => {
     dispatch(changeSearchTableName(CollectionNames.Users))
   }, [])
 
-  const toggleSubView = (subView: SubView): void =>
-    setSelectedSubView((currentVal) => {
-      if (currentVal === subView) {
-        return SubView.ALL
+  const getQuery = useCallback<GetQueryFn<UserForList, SubView>>(
+    (query, selectedSubView, activeFilters) => {
+      if (selectedSubView === SubView.STAFF) {
+        query = query.or(
+          `role.eq.${UserRoles.Editor},role.eq.${UserRoles.Admin}`
+        )
       }
-      return subView
-    })
 
-  const getQuery = useCallback<GetQueryFn<User>>(
-    (query) => query.gt('username', ''),
-    [selectedSubView]
+      return query
+    },
+    []
   )
 
   return (
@@ -61,14 +66,17 @@ export default () => {
         />
       </Helmet>
       <Heading variant="h1">Users</Heading>
-      <PaginatedView<User>
-        viewName={
-          selectedSubView === SubView.STAFF ? ViewNames.GetStaffUsers : ''
-        }
-        collectionName={CollectionNames.Users}
-        select={`id, username, avatarurl`}
-        getQuery={getQuery}
+      <PaginatedView<UserForList>
+        viewName={ViewNames.GetUsersForList}
         name={sortKey}
+        getQuery={getQuery}
+        subViews={[
+          {
+            id: SubView.STAFF,
+            label: 'Staff',
+          },
+        ]}
+        defaultSubView={isStaff ? SubView.STAFF : undefined}
         sortOptions={[
           {
             label: 'Sign up date',
@@ -80,27 +88,6 @@ export default () => {
           },
         ]}
         defaultFieldName="createdat"
-        extraControls={[
-          <Button
-            icon={
-              selectedSubView === SubView.STAFF ? (
-                <CheckBoxIcon />
-              ) : (
-                <CheckBoxOutlineBlankIcon />
-              )
-            }
-            onClick={() => {
-              toggleSubView(SubView.STAFF)
-
-              trackAction(
-                analyticsCategory,
-                'Click on only show staff users button'
-              )
-            }}
-            color="secondary">
-            Staff
-          </Button>,
-        ]}
         urlWithSubViewNameAndPageNumberVar={routes.viewUsersWithPageNumberVar}>
         <Renderer />
       </PaginatedView>

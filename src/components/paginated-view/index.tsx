@@ -318,6 +318,10 @@ const Page = () => {
         })
       }
 
+      // sort by "ID" in case sort field name is identical (like users page)
+      // TODO: probably put this behind a flag in case it breaks some views that dont use ID
+      query = query.order('id', { ascending: false })
+
       return query
     },
     [
