@@ -17,8 +17,20 @@ import Link from '@/components/link'
 import { getParentLabel } from '@/data-store'
 import HistoryEntryLabel from '@/components/history-entry-label'
 import ToggleIcon from '../toggle-icon'
+import FieldOutput from '../field-output'
+import { getEditableField, getLabelForFieldName } from '@/editable-fields'
+import Tooltip from '../tooltip'
+import CopyThing from '../copy-thing'
+import { getShortId } from '@/utils/formatting'
+import LabelWithIcon from '../label-with-icon'
 
-const ExpandedData = ({ data }: { data: any }) => {
+const ExpandedData = ({
+  parentType,
+  data,
+}: {
+  parentType: string
+  data: any
+}) => {
   if (!data) return '(no data)'
   return (
     <Table padding="none">
@@ -31,8 +43,17 @@ const ExpandedData = ({ data }: { data: any }) => {
       <TableBody>
         {Object.entries(data).map(([fieldName, value]) => (
           <TableRow key={fieldName}>
-            <TableCell>{fieldName}</TableCell>
-            <TableCell>{JSON.stringify(value, null, '  ')}</TableCell>
+            <TableCell>
+              {getLabelForFieldName(fieldName, parentType) || fieldName}
+            </TableCell>
+            <TableCell>
+              <FieldOutput
+                editableField={
+                  getEditableField(fieldName, parentType) || undefined
+                }>
+                {value}
+              </FieldOutput>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -64,24 +85,35 @@ const HistoryEntryTableRow = styled(TableRow)`
 const HistoryResultsItem = ({
   entry,
   isHighlighted = false,
+  isExpanded: overrideIsExpanded,
 }: {
   entry: HistoryEntry<any>
   isHighlighted?: boolean
+  isExpanded?: boolean
 }) => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+  const [isExpanded, setIsExpanded] = useState<boolean>(
+    overrideIsExpanded !== undefined ? overrideIsExpanded : false
+  )
   return (
     <HistoryEntryTableRow isHighlighted={isHighlighted}>
       <TableCell>
+        <CopyThing text={entry.id} title={entry.id}>
+          #{getShortId(entry.id)}
+        </CopyThing>
+        <br />
         <MessageLabel entry={entry} />
       </TableCell>
       <TableCell>
-        {entry.data ? <HistoryEntryLabel entry={entry} /> : '(no data)'}{' '}
-        <ToggleIcon
-          isExpanded={isExpanded}
-          onClick={() => setIsExpanded((val) => !val)}
-        />
-        {entry.data && isExpanded ? (
+        <LabelWithIcon>
+          {entry.data ? <HistoryEntryLabel entry={entry} /> : '(no data)'}{' '}
+          <ToggleIcon
+            isExpanded={isExpanded || overrideIsExpanded === true}
+            onClick={() => setIsExpanded((val) => !val)}
+          />
+        </LabelWithIcon>
+        {entry.data && (isExpanded || overrideIsExpanded === true) ? (
           <ExpandedData
+            parentType={entry.parenttable}
             data={
               'changes' in entry.data ? entry.data.changes : entry.data.record
             }
@@ -109,9 +141,11 @@ const HistoryResultsItem = ({
 const HistoryResults = ({
   results,
   highlightedEntryId,
+  isAllExpanded,
 }: {
   results: (FullHistoryEntry | HistoryEntry)[]
   highlightedEntryId?: string
+  isAllExpanded?: boolean
 }) => (
   <Table>
     <TableHead>
@@ -128,6 +162,7 @@ const HistoryResults = ({
           key={entry.id}
           entry={entry}
           isHighlighted={entry.id === highlightedEntryId}
+          isExpanded={isAllExpanded}
         />
       ))}
     </TableBody>

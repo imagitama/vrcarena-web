@@ -145,3 +145,29 @@ const editableFieldsByCollectionName: {
 }
 
 export default editableFieldsByCollectionName
+
+export const getLabelForFieldName = (
+  fieldName: string,
+  type: string
+): string | null => {
+  const editableField = getEditableField(fieldName, type)
+
+  if (!editableField || !editableField.label) return null
+
+  return editableField.label
+}
+
+export const getEditableField = (
+  fieldName: string,
+  type: string
+): EditableField<any> | null => {
+  if (!(type in editableFieldsByCollectionName)) return null
+
+  const editableFields = editableFieldsByCollectionName[type]
+
+  const editableField = editableFields.find((field) => field.name === fieldName)
+
+  if (!editableField) return null
+
+  return editableField
+}

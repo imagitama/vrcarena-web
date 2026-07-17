@@ -115,21 +115,6 @@ const HistoryEntryLabel = ({
 
   if (!fields) return <>no data found</>
 
-  const changesWithoutMetafields: Partial<Asset> = Object.entries(
-    fields
-  ).reduce(
-    (newChanges, [fieldName, newValue]) =>
-      fieldName !== 'lastmodifiedat' &&
-      fieldName !== 'lastmodifiedby' &&
-      fieldName !== 'ts'
-        ? {
-            ...newChanges,
-            [fieldName]: newValue,
-          }
-        : newChanges,
-    {}
-  )
-
   switch (message) {
     case Message.Create:
       switch (parenttable) {
@@ -150,7 +135,7 @@ const HistoryEntryLabel = ({
           return (
             <>
               changed{' '}
-              {Object.keys(changesWithoutMetafields)
+              {Object.keys(fields)
                 .map((fieldName) =>
                   getLabelForAssetField(
                     fieldName as Extract<keyof Asset, string>
@@ -207,9 +192,7 @@ const HistoryEntryLabel = ({
           }
         case UsersCollectionNames.Users:
           if (parent !== createdby) {
-            return (
-              <>changed {Object.keys(changesWithoutMetafields).length} fields</>
-            )
+            return <>changed {Object.keys(fields).length} fields</>
           }
           return <>edited their profile</>
         case UsersCollectionNames.UsersMeta:
@@ -238,9 +221,7 @@ const HistoryEntryLabel = ({
           } else if ((fields as FullReport).editornotes) {
             return <>changed editor notes for report</>
           } else {
-            return (
-              <>changed {Object.keys(changesWithoutMetafields).join(', ')}</>
-            )
+            return <>changed {Object.keys(fields).join(', ')}</>
           }
         case CommentsCollectionNames.CommentsMeta:
           if ((fields as MetaRecord).accessstatus) {
@@ -251,9 +232,7 @@ const HistoryEntryLabel = ({
               </>
             )
           } else {
-            return (
-              <>changed {Object.keys(changesWithoutMetafields).join(', ')}</>
-            )
+            return <>changed {Object.keys(fields).join(', ')}</>
           }
         case CollectionsCollectionNames.Collections:
           return <>updated the collection</>

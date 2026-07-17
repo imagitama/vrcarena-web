@@ -4,7 +4,6 @@ import SaveIcon from '@mui/icons-material/Save'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
 import { RootState } from '@/modules'
@@ -28,7 +27,6 @@ import Items from '@/components/items'
 import CheckboxInput from '@/components/checkbox-input'
 import FormControls from '@/components/form-controls'
 import Button from '@/components/button'
-import { shortIdLength } from '@/config'
 
 import authorEditableFields from '@/editable-fields/authors'
 import WarningMessage from '@/components/warning-message'
@@ -39,6 +37,7 @@ import { AccessStatus } from '@/modules/common'
 import SuccessMessage from '@/components/success-message'
 import NoResultsMessage from '@/components/no-results-message'
 import FieldOutput from '@/components/field-output'
+import { getShortId } from '@/utils/formatting'
 
 const Authors = ({
   assets,
@@ -71,10 +70,7 @@ const Authors = ({
             <CheckboxInput
               value={authorId === primaryAuthorId}
               onClick={() => selectAuthorId(authorId)}
-              label={`Use this author (${authorId.substring(
-                0,
-                shortIdLength
-              )})`}
+              label={`Use this author (${getShortId(authorId)})`}
             />
             {author ? (
               <>
@@ -326,10 +322,7 @@ const RepairAuthorsOperation = () => {
             <li>
               These assets will have their author set to{' '}
               {primaryAuthor
-                ? `"${primaryAuthor.name}" (${primaryAuthor.id.substring(
-                    0,
-                    shortIdLength
-                  )})`
+                ? `"${primaryAuthor.name}" (${getShortId(primaryAuthor.id)})`
                 : ''}
               :
               <ul>
@@ -394,7 +387,7 @@ const RepairAuthorsOperation = () => {
 
                     return (
                       <li key={authorId}>
-                        {author.name} ({author.id.substring(0, shortIdLength)})
+                        {author.name} ({getShortId(author.id)})
                       </li>
                     )
                   })

@@ -11,7 +11,6 @@ import { keyframes } from '@mui/system'
 
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-import { shortIdLength } from '@/config'
 import { VRCArenaTheme } from '@/themes'
 import { routes } from '@/routes'
 import { QueuedItem, QueuedItemForRecord } from '@/queues'
@@ -86,6 +85,7 @@ import ConnectionIndicator, {
   getConnectionStatusFromHookResult,
 } from '@/components/connection-indicator'
 import AiResultSummary from '@/components/ai-result-summary'
+import { getShortId } from '@/utils/formatting'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -499,7 +499,7 @@ const QueueTableRow = <TItem extends QueuedItem>({
         }>
         <TableCell>
           <CopyThing text={item.id} title={item.id}>
-            {item.id.substring(0, shortIdLength)}
+            {getShortId(item.id)}
           </CopyThing>
         </TableCell>
         <TableCell>

@@ -7,14 +7,6 @@ export const createAsset = '/assets/create'
 export const editAssetWithVar = '/assets/:assetId/edit'
 export const editAssetWithVarAndTabNameVar = '/assets/:assetId/edit/:tabName'
 export const viewAssetWithVar = '/assets/:assetId'
-export const admin = '/admin'
-export const adminWithTabNameVar = '/admin/:tabName'
-export const adminWithTabNameVarAndPageNumberVar =
-  '/admin/:tabName/page/:pageNumber'
-export const adminWithTabNameVarAndSubViewNameVar =
-  '/admin/:tabName/:subViewName'
-export const adminWithTabNameVarAndSubViewNameVarAndPageNumberVar =
-  '/admin/:tabName/:subViewName/page/:pageNumber'
 export const myAccount = '/my-account'
 export const myAccountWithTabNameVar = '/my-account/:tabName'
 export const myAccountWithTabNameVarAndPageNumberVar =
@@ -134,6 +126,20 @@ export const createSupportTicket = '/support-tickets/create'
 export const createSupportTicketWithVar =
   '/support-tickets/create/:parentTable/:parentId'
 export const viewSupportTicketWithVar = '/support-tickets/:supportTicketId'
+
+// admin - generic
+export const admin = '/admin'
+export const adminWithTabNameVar = '/admin/:tabName'
+export const adminWithTabNameVarAndPageNumberVar =
+  '/admin/:tabName/page/:pageNumber'
+export const adminWithTabNameVarAndSubViewNameVar =
+  '/admin/:tabName/:subViewName'
+export const adminWithTabNameVarAndSubViewNameVarAndPageNumberVar =
+  '/admin/:tabName/:subViewName/page/:pageNumber'
+
+// admin - specific
+export const adminHistoryWithQueryParamVars =
+  '/admin/history?userId=:userId&parentType=:parentType&parentId=:parentId'
 
 // @deprecated
 export const news = '/news'

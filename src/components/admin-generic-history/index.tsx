@@ -11,6 +11,8 @@ import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import NoResultsMessage from '@/components/no-results-message'
 import Heading from '@/components/heading'
+import Button from '../button'
+import { routes } from '@/routes'
 
 const History = ({
   id,
@@ -106,6 +108,13 @@ const AdminGenericHistory = ({
   limit?: number
 }) => (
   <>
+    <Button
+      url={routes.adminHistoryWithQueryParamVars
+        .replace(':userId', '')
+        .replace(':parentType', type || '')
+        .replace(':parentId', id || '')}>
+      View In Admin Area
+    </Button>
     <Heading variant="h3">Basic Details</Heading>
     <History id={id} type={type} limit={limit} />
     <Heading variant="h3">Meta</Heading>

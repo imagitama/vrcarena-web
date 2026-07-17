@@ -17,18 +17,20 @@ import NoResultsMessage from '@/components/no-results-message'
 import AddCommentForm from '@/components/add-comment-form'
 import WarningMessage from '@/components/warning-message'
 
-export default ({
+const CommentList = ({
   collectionName,
   parentId,
   shimmer = false,
   className = '',
   getPrivate = false,
+  hideWarning,
 }: {
   collectionName?: string
   parentId?: string
   shimmer?: boolean
   className?: string
   getPrivate?: boolean
+  hideWarning?: boolean
 }) => {
   const isEditor = useIsEditor()
   const getQuery = useCallback(
@@ -98,7 +100,9 @@ export default ({
           </NoResultsMessage>
         )}
       </div>
-      {collectionName === CollectionNames.Assets && isLoggedIn ? (
+      {collectionName === CollectionNames.Assets &&
+      isLoggedIn &&
+      !hideWarning ? (
         <WarningMessage>
           If information about this asset is incorrect (eg. the source is
           broken) please create a report instead of commenting here. Staff do
@@ -122,3 +126,5 @@ export default ({
     </div>
   )
 }
+
+export default CommentList

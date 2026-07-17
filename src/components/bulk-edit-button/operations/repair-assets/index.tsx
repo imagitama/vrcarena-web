@@ -28,7 +28,6 @@ import AssetResultsItem from '@/components/asset-results-item'
 import CheckboxInput from '@/components/checkbox-input'
 import FormControls from '@/components/form-controls'
 import Button from '@/components/button'
-import { shortIdLength } from '@/config'
 
 import assetEditableFields from '@/editable-fields/assets'
 import WarningMessage from '@/components/warning-message'
@@ -40,6 +39,7 @@ import SuccessMessage from '@/components/success-message'
 import NoResultsMessage from '@/components/no-results-message'
 import FieldOutput from '@/components/field-output'
 import Tabs from '@/components/tabs'
+import { getShortId } from '@/utils/formatting'
 
 const Items = styled.div`
   display: flex;
@@ -67,10 +67,7 @@ const PrimaryAssetSelector = ({
           <CheckboxInput
             value={asset.id === primaryAssetId}
             onClick={() => onSelect(asset.id)}
-            label={`Use as primary asset (${asset.id.substring(
-              0,
-              shortIdLength
-            )})`}
+            label={`Use as primary asset (${getShortId(asset.id)})`}
           />
           <AssetResultsItem
             asset={asset}
@@ -442,7 +439,7 @@ const RepairAssetsOperation = () => {
               <ul>
                 {assetsForList.map((asset) => (
                   <li key={asset.id}>
-                    {asset.title} ({asset.id.substring(0, shortIdLength)})
+                    {asset.title} ({getShortId(asset.id)})
                   </li>
                 ))}
               </ul>
@@ -517,8 +514,7 @@ const RepairAssetsOperation = () => {
 
                             return (
                               <li key={assetId}>
-                                {asset.title} (
-                                {asset.id.substring(0, shortIdLength)})
+                                {asset.title} ({getShortId(asset.id)})
                               </li>
                             )
                           })
@@ -532,11 +528,8 @@ const RepairAssetsOperation = () => {
                       <ul>
                         <li>
                           {primaryAsset
-                            ? `"${
-                                primaryAsset.title
-                              }" (${primaryAsset.id.substring(
-                                0,
-                                shortIdLength
+                            ? `"${primaryAsset.title}" (${getShortId(
+                                primaryAsset.id
                               )})`
                             : '(no primary asset found)'}
                         </li>

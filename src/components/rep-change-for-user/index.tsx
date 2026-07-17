@@ -13,8 +13,8 @@ import LoadingIndicator from '@/components/loading-indicator'
 import NoResultsMessage from '@/components/no-results-message'
 import StatusText from '@/components/status-text'
 import FormattedDate from '@/components/formatted-date'
-import { shortIdLength } from '@/config'
 import useIsEditor from '@/hooks/useIsEditor'
+import { getShortId } from '@/utils/formatting'
 
 const getReasonLabel = (reason: string): string =>
   `${reason.substring(0, 1).toUpperCase()}${reason
@@ -56,7 +56,7 @@ const RepChangeForUser = ({ userId }: { userId: string }) => {
           repChanges.map((repChange) => (
             <TableRow key={repChange.id}>
               <TableCell title={repChange.id}>
-                {repChange.id.substring(0, shortIdLength)}
+                {getShortId(repChange.id)}
               </TableCell>
               <TableCell>
                 {getReasonLabel(repChange.reason)}

@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow'
 import { EditableField } from '@/editable-fields'
 import { fieldTypes } from '@/generic-forms'
 import { getIsUrlAnImage } from '@/utils'
+import NoValueLabel from '../no-value-label'
 
 const FieldOutput = ({
   children,
@@ -37,6 +38,10 @@ const FieldOutput = ({
       return <img src={children} width="200" />
     }
 
+    if (children === '') {
+      return <NoValueLabel>(empty)</NoValueLabel>
+    }
+
     return children
   }
 
@@ -49,11 +54,11 @@ const FieldOutput = ({
   }
 
   if (children === null) {
-    return '(nothing)'
+    return <NoValueLabel>(nothing)</NoValueLabel>
   }
 
   if (children === undefined) {
-    return '(no value)'
+    return <NoValueLabel>(no value)</NoValueLabel>
   }
 
   if (typeof children === 'object') {

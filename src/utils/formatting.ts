@@ -1,3 +1,5 @@
+import { shortIdLength } from '@/config'
+
 export const addQuotesToDescription = (desc: string): string => {
   return desc
     ? desc
@@ -49,3 +51,6 @@ export const getUserFriendlyNumber = (num: number): string => {
 
   return `${sign}${absNum}`
 }
+
+export const getShortId = (uuid: string): string =>
+  uuid.substring(0, shortIdLength)

@@ -25,7 +25,6 @@ import SocialMediaList from '@/components/social-media-list'
 import Avatar, { AvatarSize } from '@/components/avatar'
 import Markdown from '@/components/markdown'
 import { StaffBadge, BannedBadge, PatronBadge } from '@/components/badge'
-import Tooltip from '@/components/tooltip'
 import Image from '@/components/image'
 import DeletedBadge from '@/components/deleted-badge'
 import RepChangeForUser from '@/components/rep-change-for-user'
@@ -56,8 +55,13 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     '&:last-child': {
       margin: '0 0 0 0.5rem',
     },
-    [mediaQueryForTabletsOrBelow]: {
+    '@media (max-width: 1200px)': {
+      // fix tabs pushing outside of boundary
       width: '100%',
+      margin: 0,
+      '&:last-child': {
+        margin: 0,
+      },
     },
   },
   title: {
@@ -106,12 +110,14 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '150%',
+    textAlign: 'center',
     '& span': {
-      marginRight: '1rem',
+      display: 'flex',
+      justifyContent: 'center',
     },
     '& img': {
       width: '100px',
+      marginBottom: '0.25rem',
     },
     [mediaQueryForTabletsOrBelow]: {
       marginTop: '0.5rem',
@@ -244,21 +250,19 @@ const UserOverview = ({
                 </Heading>
                 <div
                   className={`${classes.tile} ${classes.favoriteSpeciesTile}`}>
-                  <Tooltip title={favoriteSpeciesData.pluralname}>
-                    <Link
-                      to={routes.viewSpeciesWithVar.replace(
-                        ':speciesIdOrSlug',
-                        favoriteSpeciesData.id
-                      )}>
-                      <Image
-                        src={fixAccessingImagesUsingToken(
-                          favoriteSpeciesData.thumbnailurl
-                        )}
-                        alt={`Image for species ${favoriteSpeciesData.pluralname}`}
-                        title={favoriteSpeciesData.pluralname}
-                      />
-                    </Link>
-                  </Tooltip>
+                  <Link
+                    to={routes.viewSpeciesWithVar.replace(
+                      ':speciesIdOrSlug',
+                      favoriteSpeciesData.id
+                    )}>
+                    <Image
+                      src={fixAccessingImagesUsingToken(
+                        favoriteSpeciesData.thumbnailurl
+                      )}
+                      alt={`Image for species ${favoriteSpeciesData.pluralname}`}
+                    />
+                    {favoriteSpeciesData.pluralname}
+                  </Link>
                 </div>
               </>
             )}

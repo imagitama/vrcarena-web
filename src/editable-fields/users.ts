@@ -58,7 +58,7 @@ const fields: EditableField<User>[] = [
   },
   {
     name: 'youtubechannelid',
-    label: 'Youtubec hannelid',
+    label: 'Youtube channel ID',
     type: fieldTypes.text,
   },
   {

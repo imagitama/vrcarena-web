@@ -51,11 +51,11 @@ const AssetEditorRecordManager = ({
   onDone: () => void
   actions: AssetActions
 }) => {
-  const isPublic = getIsAssetPublic(asset)
-  const isWaitingForApproval = getIsAssetWaitingForApproval(asset)
+  // const isPublic = getIsAssetPublic(asset)
+  // const isWaitingForApproval = getIsAssetWaitingForApproval(asset)
   return (
     <EditorBox>
-      <Row>
+      {/* TODO: decide if to show <Row>
         <PrimaryCell>
           <StatusText positivity={isPublic ? 1 : -1}>
             {isPublic ? <CheckIcon /> : <ClearIcon />}{' '}
@@ -64,7 +64,7 @@ const AssetEditorRecordManager = ({
               : 'Only Visible To Staff and Creator'}
           </StatusText>
         </PrimaryCell>
-      </Row>
+      </Row> */}
       <Row>
         <LabelCell>
           <MetaStatus

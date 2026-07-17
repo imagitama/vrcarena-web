@@ -53,6 +53,7 @@ export default () => {
             collectionName={CollectionNames.Assets}
             parentId={assetId}
             getPrivate
+            hideWarning
           />
         </>
       ) : null}
