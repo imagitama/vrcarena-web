@@ -21,6 +21,7 @@ const Controls = styled.div`
 
 const WelcomeMessageRoot = styled.div`
   display: flex;
+  align-items: flex-start; /* fix filling height */
   max-width: ${CONTENT_MAX_WIDTH_PX}px;
   margin: 0 auto 1rem;
   ${mediaQueryForTabletsOrBelow} {
