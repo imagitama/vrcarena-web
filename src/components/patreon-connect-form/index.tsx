@@ -195,7 +195,11 @@ const PatreonConnectForm = () => {
       return (
         <>
           <SuccessMessage icon={<CheckIcon />}>
-            You have successfully connected your VRCArena account with Patreon
+            You have successfully connected your VRCArena account with Patreon!
+            <br />
+            <br />
+            It may take up to 30 minutes for your account to be shown on our
+            Patreon page and your profile to be updated.
           </SuccessMessage>
           <p>
             You can click this button to refresh your account:

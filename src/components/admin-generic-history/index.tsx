@@ -24,7 +24,7 @@ const History = ({
   limit: number
 }) => {
   const [isLoading, lastErrorCode, results] = useDatabaseQuery<HistoryEntry>(
-    ViewNames.GetAllHistory,
+    ViewNames.GetFullHistory,
     id && type
       ? [
           ['parent', Operators.EQUALS, id],
@@ -65,7 +65,7 @@ const MetaHistory = ({
   limit?: number
 }) => {
   const [isLoading, lastErrorCode, results] = useDatabaseQuery<HistoryEntry>(
-    ViewNames.GetAllHistory,
+    ViewNames.GetFullHistory,
     id && type
       ? [
           ['parent', Operators.EQUALS, id],
