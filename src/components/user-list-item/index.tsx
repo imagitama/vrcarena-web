@@ -2,14 +2,14 @@ import React from 'react'
 import { makeStyles } from '@mui/styles'
 
 import * as routes from '@/routes'
-import { getUserIsStaffMember } from '@/utils/users'
+import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
 import { mediaQueryForMobiles } from '@/media-queries'
 import { BanStatus, UserForList } from '@/modules/users'
 import { AccessStatus } from '@/modules/common'
 
 import Link from '@/components/link'
 import Avatar, { AvatarSize } from '@/components/avatar'
-import { StaffBadge } from '@/components/badge'
+import { BannedBadge, StaffBadge } from '@/components/badge'
 import HintText from '../hint-text'
 import FormattedDate from '../formatted-date'
 
@@ -64,6 +64,9 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  isUnallowed: {
+    textDecoration: 'line-through',
+  },
 })
 
 const UserListItem = ({ user }: { user: UserForList }) => {
@@ -85,7 +88,10 @@ const UserListItem = ({ user }: { user: UserForList }) => {
             size={AvatarSize.Small}
             className={classes.avatar}
           />
-          <span className={classes.name}>
+          <span
+            className={`${classes.name} ${
+              getIsUserBanned(user) ? classes.isUnallowed : ''
+            }`}>
             {user.username || '(no name set)'}
           </span>
           <div className={classes.meta}>
@@ -95,6 +101,7 @@ const UserListItem = ({ user }: { user: UserForList }) => {
               </HintText>
             )}
             {getUserIsStaffMember(user) && <StaffBadge isSmall />}
+            {getIsUserBanned(user) && <BannedBadge isSmall />}
           </div>
         </div>
       </Link>
