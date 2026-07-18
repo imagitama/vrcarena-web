@@ -85,14 +85,21 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   connector: {
     flexShrink: 0,
     width: '30px', // half thumb
-    height: '50px',
-    margin: '-40px -10px 0 0', // hide border radius
+    height: '60px',
+    margin: '-50px -10px 0 0', // hide border radius
     borderRadius: `0 0 0 ${theme.shape.borderRadius * 2}px`,
     zIndex: -5,
     position: 'relative',
     border: '2px solid rgba(100, 100, 100)',
     borderTop: 'none',
     borderRight: 'none',
+  },
+  connectorLineOnly: {
+    position: 'absolute',
+    top: '-100px',
+    left: '20px',
+    height: '200%',
+    borderLeft: '2px solid rgba(100, 100, 100)',
   },
   children: {
     width: '100%',
@@ -154,7 +161,7 @@ const SpeciesResultItem = ({
       }>
       {onClick && speciesItem ? (
         <div
-          className={`${classes.clicker} ${
+          className={`${classes.clicker} ${className || ''} ${
             isSelected ? classes.selected : ''
           } ${isSelectedByParent ? classes.selectedByParent : ''}`}
           onClick={() => onClick(speciesItem.id)}>
@@ -166,7 +173,7 @@ const SpeciesResultItem = ({
             ':speciesIdOrSlug',
             speciesItem ? speciesItem.slug || speciesItem.id : ''
           )}
-          className={`${classes.clicker} ${
+          className={`${classes.clicker} ${className || ''} ${
             isSelected ? classes.selected : ''
           } ${isSelectedByParent ? classes.selectedByParent : ''}`}>
           {children}
@@ -176,15 +183,24 @@ const SpeciesResultItem = ({
   )
 
   return (
-    <div
-      className={`${classes.root} ${className || ''}`}
-      data-species={speciesItem?.id}>
+    <div className={`${classes.root}`} data-species={speciesItem?.id}>
       {index !== undefined && index > 0 && <div className={classes.line} />}
       {indent > 0 && (
         <div
           className={classes.connector}
-          style={{ marginLeft: `calc(20px * ${indent})` }}></div>
+          style={{
+            marginLeft: `calc(20px * ${indent > 1 ? indent + 1 : indent})`,
+          }}></div>
       )}
+      {indent > 1
+        ? Array.from({ length: indent - 1 }).map((i) => (
+            <div
+              className={classes.connectorLineOnly}
+              style={{
+                marginLeft: `calc(20px * ${i})`,
+              }}></div>
+          ))
+        : null}
       <Wrapper>
         <LazyLoad placeholder={<div />} className={classes.thumbnail}>
           {speciesItem?.thumbnailurl ? (

@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles'
 
 import { trackAction } from '@/analytics'
 import * as routes from '@/routes'
-import { FullSpecies, Species, ViewNames } from '@/modules/species'
+import { FullSpecies, Species } from '@/modules/species'
 import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
@@ -13,11 +13,6 @@ import {
 import { findItemAndParents, getAreArraysSame, getRandomInt } from '@/utils'
 
 import useIsEditor from '@/hooks/useIsEditor'
-import useDatabaseQuery, {
-  Operators,
-  OrderDirections,
-} from '@/hooks/useDatabaseQuery'
-import useStorage from '@/hooks/useStorage'
 
 import Button from '@/components/button'
 import ErrorMessage from '@/components/error-message'
@@ -108,19 +103,13 @@ function convertToNestedArray(
   return nestedArray
 }
 
-interface SpeciesContainerSettings {
-  grid: boolean // 3 cols
-  groupChildren: boolean
-}
-
-const storageKey = 'speciescontainer'
-
 const CreateButton = () => {
   const isEditor = useIsEditor()
 
   if (!isEditor) {
     return null
   }
+
   return (
     <>
       &nbsp;
@@ -137,6 +126,108 @@ const CreateButton = () => {
         Create
       </Button>
     </>
+  )
+}
+
+function getIsDescendantSelected(
+  item: SpeciesWithChildren,
+  selectedSpeciesIds: string[]
+): boolean {
+  return !!item.children?.some(
+    (child) =>
+      selectedSpeciesIds.includes(child.id) ||
+      getIsDescendantSelected(child, selectedSpeciesIds)
+  )
+}
+
+function getIsAncestorSelected(
+  ancestorIds: string[],
+  selectedSpeciesIds: string[]
+): boolean {
+  return ancestorIds.some((id) => selectedSpeciesIds.includes(id))
+}
+
+function getCanSelectSpecies(
+  item: SpeciesWithChildren,
+  ancestorIds: string[],
+  selectedSpeciesIds: string[]
+): boolean {
+  if (getIsAncestorSelected(ancestorIds, selectedSpeciesIds)) return false
+
+  const descendantSelected = getIsDescendantSelected(item, selectedSpeciesIds)
+  if (!descendantSelected) return true
+
+  return selectedSpeciesIds.includes(item.id)
+}
+
+interface SpeciesTreeNodeProps {
+  speciesItem: SpeciesWithChildren
+  ancestorIds: string[]
+  depth: number
+  index?: number
+  className?: string
+  onClickSpecies?: (id: string) => void
+  selectedSpeciesIds?: string[]
+}
+
+const SpeciesTreeNode = ({
+  speciesItem,
+  ancestorIds,
+  depth,
+  index,
+  onClickSpecies,
+  selectedSpeciesIds,
+}: SpeciesTreeNodeProps) => {
+  const classes = useStyles()
+
+  const isSelectable =
+    !!onClickSpecies &&
+    !!selectedSpeciesIds &&
+    getCanSelectSpecies(speciesItem, ancestorIds, selectedSpeciesIds)
+
+  const isSelected = !!selectedSpeciesIds?.includes(speciesItem.id)
+
+  const isSelectedByParent =
+    depth > 0 &&
+    !!selectedSpeciesIds &&
+    getIsAncestorSelected(ancestorIds, selectedSpeciesIds)
+
+  const handleClick = onClickSpecies
+    ? (id: string) => {
+        if (
+          !selectedSpeciesIds ||
+          getCanSelectSpecies(speciesItem, ancestorIds, selectedSpeciesIds)
+        ) {
+          onClickSpecies(id)
+        }
+      }
+    : undefined
+
+  return (
+    <SpeciesResultItem
+      key={speciesItem.id}
+      speciesItem={speciesItem}
+      className={classes.speciesItem}
+      index={index}
+      indent={depth}
+      onClick={handleClick}
+      isSelectable={isSelectable}
+      isSelected={isSelected}
+      isSelectedByParent={isSelectedByParent}>
+      {speciesItem.children?.length
+        ? speciesItem.children.map((child, childIndex) => (
+            <SpeciesTreeNode
+              key={child.id}
+              speciesItem={child}
+              index={childIndex}
+              ancestorIds={[...ancestorIds, speciesItem.id]}
+              depth={depth + 1}
+              onClickSpecies={onClickSpecies}
+              selectedSpeciesIds={selectedSpeciesIds}
+            />
+          ))
+        : null}
+    </SpeciesResultItem>
   )
 }
 
@@ -178,88 +269,14 @@ const SpeciesBrowser = ({
 
   const children = speciesHierarchy
     ? speciesHierarchy.map((speciesItem) => (
-        <SpeciesResultItem
+        <SpeciesTreeNode
           key={speciesItem.id}
           speciesItem={speciesItem}
-          className={classes.speciesItem}
-          onClick={
-            onClickSpecies
-              ? (id) => {
-                  if (
-                    selectedSpeciesIds &&
-                    speciesItem.children &&
-                    speciesItem.children.length
-                  ) {
-                    if (
-                      !speciesItem.children.find((speciesChild) =>
-                        selectedSpeciesIds.includes(speciesChild.id)
-                      ) ||
-                      // allow repairing assets that have both parent and child
-                      (selectedSpeciesIds.includes(speciesItem.id) &&
-                        speciesItem.children.find((speciesChild) =>
-                          selectedSpeciesIds.includes(speciesChild.id)
-                        ))
-                    ) {
-                      onClickSpecies(id)
-                    }
-                  } else {
-                    onClickSpecies(id)
-                  }
-                }
-              : undefined
-          }
-          isSelectable={
-            onClickSpecies &&
-            selectedSpeciesIds &&
-            (speciesItem.children?.find((speciesChild) =>
-              selectedSpeciesIds.includes(speciesChild.id)
-            ) === undefined ||
-              !speciesItem.children?.length)
-              ? true
-              : false
-          }
-          isSelected={
-            selectedSpeciesIds && selectedSpeciesIds.includes(speciesItem.id)
-          }>
-          {speciesItem.children
-            ? speciesItem.children.map((speciesChild, index) => (
-                <SpeciesResultItem
-                  key={speciesChild.id}
-                  index={index}
-                  speciesItem={speciesChild}
-                  indent={1}
-                  onClick={
-                    onClickSpecies
-                      ? (id) => {
-                          if (selectedSpeciesIds) {
-                            if (!selectedSpeciesIds.includes(speciesItem.id)) {
-                              onClickSpecies(id)
-                            }
-                          } else {
-                            onClickSpecies(id)
-                          }
-                        }
-                      : undefined
-                  }
-                  isSelectable={
-                    onClickSpecies &&
-                    selectedSpeciesIds &&
-                    !selectedSpeciesIds.includes(speciesItem.id)
-                      ? true
-                      : false
-                  }
-                  isSelected={
-                    selectedSpeciesIds &&
-                    selectedSpeciesIds.includes(speciesChild.id)
-                  }
-                  isSelectedByParent={
-                    selectedSpeciesIds &&
-                    selectedSpeciesIds.includes(speciesItem.id)
-                  }
-                />
-              ))
-            : null}
-        </SpeciesResultItem>
+          ancestorIds={[]}
+          depth={0}
+          onClickSpecies={onClickSpecies}
+          selectedSpeciesIds={selectedSpeciesIds}
+        />
       ))
     : null
 
@@ -320,6 +337,7 @@ const SpeciesBrowser = ({
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
         <Masonry>{isLoading ? loadingChildren : children}</Masonry>
       </ResponsiveMasonry>
+      <CreateButton />
     </>
   )
 }
