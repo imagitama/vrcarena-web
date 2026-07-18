@@ -38,6 +38,7 @@ export interface EditableFieldBase<TRecord> {
   multiline?: true
   section?: string
   allowEmpty?: boolean // if boolean column can be "empty" or undefined
+  overrideValue?: any
 }
 
 export interface TextEditableField<TRecord>
@@ -117,6 +118,11 @@ export interface MarkdownEditableField<TRecord>
   allowImages?: boolean
 }
 
+export interface JsonEditableField<TRecord> extends EditableFieldBase<TRecord> {
+  type: fieldTypes.json
+  json: EditableField<any>[]
+}
+
 export type EditableField<TRecord extends Record<string, any>> =
   | TextEditableField<TRecord>
   | DateRangeEditableField<TRecord>
@@ -129,6 +135,7 @@ export type EditableField<TRecord extends Record<string, any>> =
   | TagEditableField<TRecord>
   | SelectEditableField<TRecord>
   | MarkdownEditableField<TRecord>
+  | JsonEditableField<TRecord>
   | EditableFieldBase<TRecord>
 
 // @ts-ignore

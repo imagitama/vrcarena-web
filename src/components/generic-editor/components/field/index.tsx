@@ -14,6 +14,7 @@ import { Warning as WarningIcon } from '@/icons'
 import Heading from '@/components/heading'
 import Markdown from '@/components/markdown'
 import StatusText from '@/components/status-text'
+import { fieldTypes } from '@/generic-forms'
 
 const useStyles = makeStyles({
   title: {
@@ -50,7 +51,7 @@ const Field = ({
   return isAccordion ? (
     <Accordion defaultExpanded={startExpanded}>
       <AccordionSummary className={classes.title}>
-        {editableField.label || '(no label)'}{' '}
+        {editableField.label || ''}{' '}
         {editableField.isRequired && (
           <StatusText positivity={-1} className={classes.requiredLabel}>
             {' '}
@@ -69,9 +70,11 @@ const Field = ({
     </Accordion>
   ) : (
     <FormControl fullWidth style={{ marginBottom: '2rem' }}>
-      <Heading variant="h3" noTopMargin>
-        {editableField.label || '(no label)'}
-      </Heading>
+      {editableField.type !== fieldTypes.checkbox && (
+        <Heading variant="h3" noTopMargin>
+          {editableField.label || ''}
+        </Heading>
+      )}
       {children}
       {editableField.hint && (
         <FormHelperText>

@@ -14,6 +14,9 @@ export enum fieldTypes {
   custom = 'custom',
   tags = 'tags',
   dropdown = 'dropdown',
+  float = 'float',
+  int = 'int',
+  json = 'json',
   // for diffs
   url = 'url',
   email = 'email',

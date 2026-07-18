@@ -31,9 +31,9 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
   ClearFn,
   null | TRecord
 ] => {
-  if (!collectionName) {
-    throw new Error('Cannot edit/create: no collection name provided')
-  }
+  // if (!collectionName) {
+  //   throw new Error('Cannot edit/create: no collection name provided')
+  // }
 
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isSuccess, setIsSuccess] = useState<boolean>(false)

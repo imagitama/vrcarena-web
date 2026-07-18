@@ -36,7 +36,10 @@ import DropdownInput from './components/dropdown-input'
 import ItemInput from './components/item-input'
 import DateInput from './components/date-input'
 import DateRangeInput from './components/date-range-input'
+import JsonInput from './components/json-input'
 import { GenericInput } from './types'
+import IntInput from './components/int-input'
+import FloatInput from './components/float-input'
 
 function getInputForFieldType<TRecord extends Record<string, any>>(
   type: keyof typeof fieldTypes
@@ -84,6 +87,12 @@ function getInputForFieldType<TRecord extends Record<string, any>>(
       return ItemInput
     case fieldTypes.url:
       return UrlInput
+    case fieldTypes.json:
+      return JsonInput
+    case fieldTypes.int:
+      return IntInput
+    case fieldTypes.float:
+      return FloatInput
     default:
       throw new Error(`Invalid field type "${type}"`)
   }
@@ -109,7 +118,7 @@ const getHiddenFieldsForDb = (fields: EditableField<any>[]) => {
 
 const GenericEditor = <TRecord extends Record<string, any>>({
   fields = undefined,
-  collectionName,
+  collectionName = undefined,
   viewName = '',
   id = null,
   analyticsCategory = '',
@@ -119,6 +128,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   cancelUrl = '',
   extraFormData = {},
   getSuccessUrl = undefined,
+  showControls = true,
   // amendments
   overrideFields = null,
   onFieldChanged = undefined,
@@ -134,7 +144,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   onAttemptSave = undefined,
 }: {
   fields?: EditableField<any>[]
-  collectionName: string
+  collectionName?: string
   viewName?: string
   id?: string | null
   analyticsCategory?: string
@@ -146,7 +156,8 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   getSuccessUrl?: (newId: string | null) => string
   overrideFields?: Partial<TRecord> | null
   onFieldChanged?: (fieldName: string, newValue: any) => void
-  onFieldsChanged?: (fields: TRecord) => void
+  onFieldsChanged?: (fields: Partial<TRecord>) => void
+  showControls?: boolean
   // asset editor mini
   isAccordion?: boolean
   startExpanded?: boolean
@@ -157,21 +168,17 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   scrollDisabled?: boolean
   onAttemptSave?: () => void
 }) => {
-  if (!fields && !(collectionName in editableFields)) {
-    throw new Error(`Collection name ${collectionName} not in editable fields`)
-  }
-
-  const editableFieldsToUse = fields || editableFields[collectionName]
+  const editableFieldsToUse = fields || editableFields[collectionName!]
 
   const [isLoading, lastErrorCode, rawRecord] = useDataStoreItem<TRecord>(
-    viewName || collectionName,
+    viewName || collectionName!,
     id || false,
     {
       queryName: `generic-editor-${viewName || collectionName}`,
     }
   )
   const [isSaving, isSuccess, lastErrorCodeSaving, save, , updatedRecord] =
-    useDataStoreEditOrCreate<TRecord>(collectionName, id || false)
+    useDataStoreEditOrCreate<TRecord>(collectionName!, id || false)
 
   const [formFields, setFormFields] = useState<null | Partial<TRecord>>(
     overrideFields
@@ -205,7 +212,9 @@ const GenericEditor = <TRecord extends Record<string, any>>({
             rawRecord[fieldConfig.name as string] === false
               ? false
               : (fieldConfig.name as string) in rawRecord
-              ? rawRecord[fieldConfig.name as string]
+              ? fieldConfig.overrideValue !== undefined
+                ? fieldConfig.overrideValue
+                : rawRecord[fieldConfig.name as string]
               : fieldConfig.default,
         }
       }, {} as TRecord)
@@ -224,10 +233,16 @@ const GenericEditor = <TRecord extends Record<string, any>>({
       return
     }
 
-    setFormFields({
+    const newFields = {
       ...formFields,
       [name]: newVal,
-    })
+    }
+
+    setFormFields(newFields)
+
+    if (onFieldsChanged) {
+      onFieldsChanged(newFields)
+    }
   }
 
   const onFieldsChange = (updates: TRecord) => {
@@ -425,7 +440,11 @@ const GenericEditor = <TRecord extends Record<string, any>>({
         />
       ) : null}
 
-      {onFieldChanged || !showTopSaveBtn ? null : controls}
+      {onFieldChanged || !showTopSaveBtn
+        ? null
+        : showControls
+        ? controls
+        : null}
 
       {fieldsBySection ? (
         <Tabs
@@ -445,7 +464,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
           )
           .map(mapEditableFieldToFieldOutput)
       )}
-      {onFieldChanged ? null : controls}
+      {onFieldChanged ? null : showControls ? controls : null}
     </div>
   )
 }

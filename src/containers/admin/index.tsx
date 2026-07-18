@@ -28,6 +28,7 @@ import AdminAudit from './components/audit'
 import AdminDupes from './components/dupes'
 import AdminReputation from './components/reputation'
 import Analytics from './components/analytics'
+import SiteSettingsForm from './components/site-settings-form'
 
 const View = () => {
   const [isLoading, lastErrorCode, user] = useUserRecord()
@@ -267,6 +268,15 @@ const View = () => {
                   </p>
                 </InfoMessage>
                 <Analytics />
+              </>
+            ),
+          },
+          {
+            name: 'settings',
+            label: 'Settings',
+            contents: (
+              <>
+                <SiteSettingsForm />
               </>
             ),
           },
