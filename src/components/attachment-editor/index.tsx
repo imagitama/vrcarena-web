@@ -31,6 +31,7 @@ import useIsBanned from '@/hooks/useIsBanned'
 import NoPermissionMessage from '@/components/no-permission-message'
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
 
 const attachmentTypesMeta: { [key: string]: { name: string } } = {
   [AttachmentType.Image]: {
@@ -164,9 +165,10 @@ const AttachmentEditor = ({
     existingAttachment || emptyRecord
   )
   const [isSaving, isSaveSuccess, lastErrorCodeSaving, saveOrCreate] =
-    attachmentId
-      ? useDataStoreEdit<Attachment>(CollectionNames.Attachments, attachmentId)
-      : useDataStoreCreate<Attachment>(CollectionNames.Attachments)
+    useDataStoreEditOrCreate<Attachment>(
+      CollectionNames.Attachments,
+      attachmentId || false
+    )
   const classes = useStyles()
   const [newUrl, setNewUrl] = useState('')
   const [isExpanded, setIsExpanded] = useState(isPreExpanded)
@@ -210,6 +212,8 @@ const AttachmentEditor = ({
       console.debug(`AttachmentEditor.onSaveClick`, { fields })
 
       const newAttachment = await saveOrCreate(fields)
+
+      if (!newAttachment) throw new Error('Did not get an attachment')
 
       if (onDone) {
         onDone(newAttachment)

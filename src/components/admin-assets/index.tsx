@@ -111,12 +111,14 @@ function AssetsTable({
                   </TableCell>
                   <TableCell>
                     <ErrorBoundary>
-                      <AssetEditorRecordManager
-                        id={asset.id}
-                        asset={asset}
-                        onDone={hydrate!}
-                        actions={asset.actions}
-                      />
+                      {asset && (
+                        <AssetEditorRecordManager
+                          id={asset.id}
+                          asset={asset}
+                          onDone={hydrate!}
+                          actions={asset.actions}
+                        />
+                      )}
                     </ErrorBoundary>
                     <div style={{ marginTop: '0.5rem' }} />
                     <ErrorBoundary>

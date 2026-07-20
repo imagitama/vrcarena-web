@@ -223,7 +223,7 @@ const QueuedAssetInfo = ({
             </TableBody>
           </Table>
         </Column>
-        {isEditor && showEditorControls ? (
+        {isEditor && showEditorControls && asset ? (
           <Column>
             <AssetEditorRecordManager
               id={asset.id}
