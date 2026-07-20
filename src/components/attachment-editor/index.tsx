@@ -147,7 +147,7 @@ const AttachmentEditor = ({
   isPreExpanded?: boolean
   allowEmptyIsAdult?: boolean
 }) => {
-  const emptyRecord = {
+  const emptyRecord: AttachmentFields = {
     reason,
     type: null,
     url: '',
@@ -162,7 +162,21 @@ const AttachmentEditor = ({
   }
 
   const [fields, setFields] = useState<AttachmentFields>(
-    existingAttachment || emptyRecord
+    existingAttachment
+      ? {
+          reason: existingAttachment.reason,
+          url: existingAttachment.url,
+          type: existingAttachment.type,
+          thumbnailurl: existingAttachment.thumbnailurl,
+          title: existingAttachment.title,
+          description: existingAttachment.description,
+          license: existingAttachment.license,
+          isadult: existingAttachment.isadult,
+          tags: existingAttachment.tags,
+          parenttable: existingAttachment.parenttable,
+          parentid: existingAttachment.parentid,
+        }
+      : emptyRecord
   )
   const [isSaving, isSaveSuccess, lastErrorCodeSaving, saveOrCreate] =
     useDataStoreEditOrCreate<Attachment>(
