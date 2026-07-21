@@ -15,7 +15,10 @@ const ErrorBoundaryMessage = (
         fix it.
         <br />
         <br />
-        Error: {base64EncodeString(props.error.message)}
+        Error:{' '}
+        {props.error && props.error.message
+          ? base64EncodeString(props.error.message)
+          : '(no error)'}
       </>
     }
     {...props}>
