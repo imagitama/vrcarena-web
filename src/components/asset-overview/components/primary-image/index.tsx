@@ -70,7 +70,19 @@ const PrimaryImage = () => {
     )
   }
 
-  if (!asset.attachmentids.length) return null
+  if (!asset.attachmentids.length) {
+    if (asset.thumbnailurl) {
+      return (
+        <div className={classes.root}>
+          <div className={classes.primary}>
+            <img src={asset.thumbnailurl} alt="Thumbnail for asset" />
+          </div>
+        </div>
+      )
+    }
+
+    return null
+  }
 
   const bestImageAttachment = asset.attachmentsdata?.find(
     (attachment) => attachment.type === AttachmentType.Image
