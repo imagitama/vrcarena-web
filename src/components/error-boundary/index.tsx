@@ -45,7 +45,12 @@ class ErrorBoundary extends Component<ErrorBoundaryProps> {
 
   render() {
     if (this.state.hasError) {
-      return <ErrorBoundaryMessage onOkay={this.onOkay} />
+      return (
+        <ErrorBoundaryMessage
+          error={this.lastError as Error}
+          onOkay={this.onOkay}
+        />
+      )
     }
 
     return this.props.children

@@ -1,19 +1,25 @@
 import React from 'react'
 import ErrorMessage, { ErrorMessageProps } from '@/components/error-message'
 import { DISCORD_URL, EMAIL } from '@/config'
+import { base64EncodeString } from '@/utils'
 
-const ErrorBoundaryMessage = (props: Omit<ErrorMessageProps, 'children'>) => (
+const ErrorBoundaryMessage = (
+  props: { error: Error } & Omit<ErrorMessageProps, 'children'>
+) => (
   <ErrorMessage
     hintText={
       <>
         This doesn't usually happen. Please{' '}
         <a href={DISCORD_URL}>join our Discord</a> or{' '}
-        <a href={`mailto:${EMAIL}`}>email us</a> to report this error so we can
+        <a href={`mailto:${EMAIL}`}>email us</a> to report this error so I can
         fix it.
+        <br />
+        <br />
+        Error: {base64EncodeString(props.error.message)}
       </>
     }
     {...props}>
-    Whoops. Something went wrong.
+    Something really screwed up (which doesn't happen often).
   </ErrorMessage>
 )
 
