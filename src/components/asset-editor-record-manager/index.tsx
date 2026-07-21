@@ -74,7 +74,7 @@ const AssetEditorRecordManager = ({
             type={PublishStatus}
             action={
               asset.publishstatus === PublishStatus.Published &&
-              actions.published
+              actions?.published
                 ? actions.published
                 : undefined
             }
@@ -91,13 +91,13 @@ const AssetEditorRecordManager = ({
             type={ApprovalStatus}
             action={
               asset.approvalstatus === ApprovalStatus.Approved &&
-              actions.approved
+              actions?.approved
                 ? actions.approved
                 : asset.approvalstatus === ApprovalStatus.AutoApproved &&
-                  actions.autoapproved
+                  actions?.autoapproved
                 ? actions.autoapproved
                 : asset.approvalstatus === ApprovalStatus.Declined &&
-                  actions.declined
+                  actions?.declined
                 ? actions.declined
                 : undefined
             }
@@ -126,10 +126,10 @@ const AssetEditorRecordManager = ({
             status={asset.accessstatus}
             type={AccessStatus}
             action={
-              asset.accessstatus === AccessStatus.Deleted && actions.deleted
+              asset.accessstatus === AccessStatus.Deleted && actions?.deleted
                 ? actions.deleted
                 : asset.accessstatus === AccessStatus.Archived &&
-                  actions.archived
+                  actions?.archived
                 ? actions.archived
                 : undefined
             }

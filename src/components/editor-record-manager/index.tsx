@@ -88,6 +88,8 @@ const EditorRecordManager = ({
   comments,
   small = false,
   approver,
+  // amendments
+  showDeclineReasons = true,
 }: {
   id: string
   metaCollectionName: string
@@ -116,6 +118,7 @@ const EditorRecordManager = ({
   comments?: string
   small?: boolean
   approver?: UserFromView
+  showDeclineReasons?: boolean
 }) => {
   const classes = useStyles()
   return (
@@ -170,6 +173,7 @@ const EditorRecordManager = ({
                     existingDeclinedReasons={existingDeclinedReasons}
                     onDone={onDone}
                     beforeApprove={beforeApprove}
+                    showDeclineReasons={showDeclineReasons}
                   />
                 </div>
               )}

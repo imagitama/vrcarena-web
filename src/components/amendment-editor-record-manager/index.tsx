@@ -56,6 +56,7 @@ const AmendmentEditorRecordManager = ({
         existingPublishStatus={PublishStatus.Published} // amendments don't have this field
         onDone={onDone}
         beforeApprove={beforeApprove}
+        showDeclineReasons={false}
       />
     </>
   )

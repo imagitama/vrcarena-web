@@ -32,6 +32,7 @@ const ApproveButton = ({
   onDone,
   beforeApprove,
   isDisabled,
+  showDeclineReasons = true,
 }: {
   id: string
   metaCollectionName: string
@@ -46,6 +47,7 @@ const ApproveButton = ({
   onDone?: () => void
   beforeApprove?: () => boolean | Promise<boolean> // false to cancel approval
   isDisabled?: boolean
+  showDeclineReasons?: boolean
 }) => {
   const userId = useUserId()
   const [isLoading, lastErrorCodeLoading, metaRecord] =
@@ -121,14 +123,22 @@ const ApproveButton = ({
           approvalstatus: ApprovalStatus.Approved,
           approvedat: new Date().toISOString(),
           approvedby: userId,
-          declinedreasons: [],
+          ...(showDeclineReasons
+            ? {
+                declinedreasons: [],
+              }
+            : {}),
         })
       } else if (newApprovalStatus === ApprovalStatus.Declined) {
         await save({
           approvalstatus: ApprovalStatus.Declined,
-          declinedreasons: selectedReasons,
           approvedat: null,
           approvedby: null,
+          ...(showDeclineReasons
+            ? {
+                declinedreasons: selectedReasons,
+              }
+            : {}),
         })
       } else {
         await save({
