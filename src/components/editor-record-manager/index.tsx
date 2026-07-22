@@ -4,9 +4,11 @@ import EditIcon from '@mui/icons-material/Edit'
 
 import {
   ArchivedReason,
+  CollectionNames as AssetsCollectionNames,
   DeclinedReason,
   DeletionReason,
 } from '@/modules/assets'
+import { CollectionNames as AmendmentsCollectionNames } from '@/modules/amendments'
 import {
   AccessStatus,
   ApprovalStatus,
@@ -121,6 +123,9 @@ const EditorRecordManager = ({
   showDeclineReasons?: boolean
 }) => {
   const classes = useStyles()
+  const canBeApproved =
+    metaCollectionName === AssetsCollectionNames.AssetsMeta ||
+    metaCollectionName === AmendmentsCollectionNames.AmendmentsMeta
   return (
     <ErrorBoundary>
       <EditorBox className={classes.root} show={showBox}>
@@ -154,7 +159,7 @@ const EditorRecordManager = ({
               )}
             </div>
           ) : null}
-          {showStatuses || showApprovalButtons ? (
+          {canBeApproved && (showStatuses || showApprovalButtons) ? (
             <div className={classes.row}>
               {showStatuses && existingApprovalStatus && (
                 <div className={classes.cell}>

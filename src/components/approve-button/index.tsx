@@ -197,22 +197,24 @@ const ApproveButton = ({
         title="Notifies publisher, shows in search results, etc.">
         Approve
       </Button>{' '}
-      <Button
-        onClick={() =>
-          isQuarantined ? onClickUnquarantine() : onClickQuarantine()
-        }
-        icon={isQuarantined ? <UnquarantineIcon /> : <QuarantineIcon />}
-        size="small"
-        color="secondary"
-        hollow={false}
-        title={
-          isQuarantined
-            ? 'Returns to waiting in the queue'
-            : 'Prevents approval, notifies editors on Discord, shows notice at top of asset'
-        }
-        isDisabled={isDisabled}>
-        {isQuarantined ? 'Un-' : ''}Quarantine
-      </Button>{' '}
+      {isAsset && (
+        <Button
+          onClick={() =>
+            isQuarantined ? onClickUnquarantine() : onClickQuarantine()
+          }
+          icon={isQuarantined ? <UnquarantineIcon /> : <QuarantineIcon />}
+          size="small"
+          color="secondary"
+          hollow={false}
+          title={
+            isQuarantined
+              ? 'Returns to waiting in the queue'
+              : 'Prevents approval, notifies editors on Discord, shows notice at top of asset'
+          }
+          isDisabled={isDisabled}>
+          {isQuarantined ? 'Un-' : ''}Quarantine
+        </Button>
+      )}{' '}
       <ButtonGroup style={{ width: '100%', marginTop: '0.25rem' }}>
         {isAsset && (
           <>
