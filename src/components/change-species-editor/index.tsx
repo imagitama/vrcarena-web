@@ -14,6 +14,7 @@ import FormControls from '@/components/form-controls'
 import Heading from '@/components/heading'
 import SpeciesBrowser from '@/components/species-browser'
 import InfoMessage from '@/components/info-message'
+import SpeciesSelector from '../species-selector'
 
 function isSpeciesIdActive(
   speciesId: string,
@@ -95,18 +96,18 @@ export default ({
     return <>Error saving new species (code {lastErrorCodeSaving})</>
   }
 
-  const onClickSpecies = (speciesId: string) =>
-    setNewSpeciesIds((currentIds) => {
-      const newIds = isSpeciesIdActive(speciesId, newSpeciesIds)
-        ? currentIds.filter((id) => id !== speciesId)
-        : currentIds.concat([speciesId])
+  // const onClickSpecies = (speciesId: string) =>
+  //   setNewSpeciesIds((currentIds) => {
+  //     const newIds = isSpeciesIdActive(speciesId, newSpeciesIds)
+  //       ? currentIds.filter((id) => id !== speciesId)
+  //       : currentIds.concat([speciesId])
 
-      if (onChange) {
-        onChange(newIds)
-      }
+  //     if (onChange) {
+  //       onChange(newIds)
+  //     }
 
-      return newIds
-    })
+  //     return newIds
+  //   })
 
   const onSaveBtnClick = async () => {
     try {
@@ -152,11 +153,11 @@ export default ({
           </li>
         </ul>
       </InfoMessage>
-      <SpeciesBrowser
+      <SpeciesSelector
         selectedSpeciesIds={newSpeciesIds}
-        onClickSpecies={onClickSpecies}
-        showControls={false}
-        startCollapsed={startCollapsed}
+        onSelectedSpeciesIds={(ids) => setNewSpeciesIds(ids)}
+        // showControls={false}
+        // startCollapsed={startCollapsed}
       />
       {showControls ? (
         <FormControls>

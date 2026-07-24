@@ -1,123 +1,137 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@mui/styles'
+import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
+import { TreeItem } from '@mui/x-tree-view/TreeItem'
+import styled from '@emotion/styled'
 
-import { CollectionNames, Species } from '@/modules/species'
+import { PublicSpeciesForCache } from '@/modules/species'
 import { findItemAndParents } from '@/utils'
-
-import useDataStoreItems from '@/hooks/useDataStoreItems'
 
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import AutocompleteInput from '@/components/autocomplete-input'
+import NoResultsMessage from '../no-results-message'
+import { TreeItemProps } from '@mui/x-tree-view'
+import useSpecies from '@/hooks/useSpecies'
+import { VRCArenaTheme } from '@/themes'
 
-interface SpeciesWithChildren extends Species {
-  children?: SpeciesWithChildren[]
+interface TreeItem {
+  id: string
+  label: string
+  children: TreeItem[]
+}
+interface SpeciesTreeItem extends TreeItem {
+  children: SpeciesTreeItem[]
+  species: PublicSpeciesForCache
 }
 
-const useStyles = makeStyles({
-  speciesResults: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  speciesItem: {
-    padding: '0.25rem',
-    '&:hover': {
-      cursor: 'pointer',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    },
-  },
-  speciesItemTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    '& img': {
-      width: '50px',
-      height: '50px',
-      marginRight: '0.5rem',
-    },
-  },
-  selected: {
-    outline: '2px solid yellow',
-  },
-})
-
-function convertToNestedArray(
-  arr: Species[],
+const convertToNestedArray = (
+  arr: PublicSpeciesForCache[],
   parentId: string | null = null
-): SpeciesWithChildren[] {
-  const nestedArray: SpeciesWithChildren[] = []
+): SpeciesTreeItem[] => {
+  const nestedArray: SpeciesTreeItem[] = []
   for (const item of arr) {
     if (item.parent === parentId) {
-      const children = convertToNestedArray(arr, item.id)
-      if (children.length) {
-        ;(item as SpeciesWithChildren).children = children
+      const treeItem: SpeciesTreeItem = {
+        id: item.id,
+        label: item.singularname,
+        children: convertToNestedArray(arr, item.id),
+        species: item,
       }
-      nestedArray.push(item as SpeciesWithChildren)
+      nestedArray.push(treeItem)
     }
   }
   return nestedArray
 }
 
-const SpeciesOutput = ({
-  speciesItem,
-  indent,
-  selectedSpeciesIds,
-  onSpeciesClickWithId,
-}: {
-  speciesItem: SpeciesWithChildren
-  indent?: number
-  selectedSpeciesIds?: string[]
-  onSpeciesClickWithId?: (id: string) => void
-}) => {
-  const classes = useStyles()
-  const isSelected = selectedSpeciesIds
-    ? selectedSpeciesIds.includes(speciesItem.id)
-    : false
+const TreeItemRoot = styled.div`
+  & svg {
+    font-size: 200%;
+  }
+`
+
+const TreeItemLabel = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 100%;
+`
+
+const SpeciesThumb = styled.img`
+  border-radius: ${({ theme }: { theme?: VRCArenaTheme }) =>
+    `${theme!.shape.borderRadius}px`};
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.5rem;
+`
+
+const CustomTreeItem = (props: TreeItemProps) => {
+  const [, , species] = useSpecies()
+  const speciesItem = species!.find((item) => item.id === props.itemId)!
   return (
-    <div
-      className={`${classes.speciesItem} ${isSelected ? classes.selected : ''}`}
-      style={{ marginLeft: indent ? indent * 10 : 0 }}
-      onClick={
-        onSpeciesClickWithId
-          ? (e) => {
-              e.stopPropagation()
-              e.preventDefault()
-              onSpeciesClickWithId(speciesItem.id)
-              return false
-            }
-          : undefined
-      }>
-      <div className={classes.speciesItemTitle}>
-        <img src={speciesItem.thumbnailurl} />{' '}
-        <span>{speciesItem.pluralname}</span>
-      </div>
-      {speciesItem.children
-        ? speciesItem.children.map((speciesChild) => (
-            <SpeciesOutput
-              speciesItem={speciesChild}
-              indent={1}
-              selectedSpeciesIds={selectedSpeciesIds}
-              onSpeciesClickWithId={onSpeciesClickWithId}
-            />
-          ))
-        : null}
-    </div>
+    <TreeItem
+      {...props}
+      slots={{
+        root: (props) => <TreeItemRoot {...props} />,
+        label: (props) => (
+          <TreeItemLabel>
+            <SpeciesThumb src={speciesItem.thumbnailurl} />
+            {props.children}
+          </TreeItemLabel>
+        ),
+      }}
+    />
+  )
+}
+
+const findSelectedTreeItems = (
+  items: SpeciesTreeItem[],
+  selectedIds: string[]
+): SpeciesTreeItem[] => {
+  const selectedSet = new Set(selectedIds)
+  const result: SpeciesTreeItem[] = []
+
+  const walk = (nodes: SpeciesTreeItem[]) => {
+    for (const node of nodes) {
+      if (selectedSet.has(node.id)) {
+        result.push(node)
+      }
+      if (node.children?.length) {
+        walk(node.children)
+      }
+    }
+  }
+
+  walk(items)
+  return result
+}
+
+const renderTreeItemChildren = (children: TreeItem[]) => {
+  if (!children.length) return null
+
+  return (
+    <span>
+      {' '}
+      (
+      {children.map((child, i) => (
+        <span key={child.id}>
+          {i > 0 ? ', ' : ''}
+          {child.label}
+          {renderTreeItemChildren(child.children)}
+        </span>
+      ))}
+      )
+    </span>
   )
 }
 
 const SpeciesSelector = ({
   selectedSpeciesIds,
-  onSpeciesClickWithId,
+  onSelectedSpeciesIds,
 }: {
-  selectedSpeciesIds?: string[]
-  onSpeciesClickWithId?: (id: string) => void
+  selectedSpeciesIds: string[]
+  onSelectedSpeciesIds: (ids: string[]) => void
 }) => {
-  const [isLoading, lastErrorCode, allSpecies] = useDataStoreItems<Species>(
-    CollectionNames.Species,
-    undefined,
-    { queryName: 'species-selector', orderBy: 'pluralname' }
-  )
+  const [isLoading, lastErrorCode, allSpecies] = useSpecies()
   const [filterId, setFilterId] = useState<string | null>(null)
-  const classes = useStyles()
 
   if (isLoading || !allSpecies) {
     return <LoadingIndicator message="Loading species..." />
@@ -131,13 +145,35 @@ const SpeciesSelector = ({
 
   const filteredSpecies =
     filterId !== null
-      ? findItemAndParents<Species>(allSpecies, filterId)
+      ? findItemAndParents<PublicSpeciesForCache>(allSpecies, [filterId])
       : allSpecies
 
-  const speciesHierarchy = convertToNestedArray(filteredSpecies)
+  const speciesTreeItems: SpeciesTreeItem[] =
+    convertToNestedArray(filteredSpecies)
+
+  const selectedTreeItems: SpeciesTreeItem[] = findSelectedTreeItems(
+    speciesTreeItems,
+    selectedSpeciesIds
+  )
 
   return (
     <>
+      {selectedSpeciesIds.length ? (
+        <div style={{ margin: '1rem 0' }}>
+          <strong>Selected: </strong>
+          {selectedTreeItems.map((treeItem, i) => {
+            return (
+              <span key={treeItem.id}>
+                {i > 0 ? ', ' : ''}
+                {treeItem.label}
+                {renderTreeItemChildren(treeItem.children)}
+              </span>
+            )
+          })}
+        </div>
+      ) : (
+        <NoResultsMessage>No species selected yet</NoResultsMessage>
+      )}
       <AutocompleteInput
         label="Search for species"
         options={allSpecies.map((speciesItem) => ({
@@ -155,19 +191,21 @@ const SpeciesSelector = ({
         onClear={() => setFilterId(null)}
         textFieldProps={{
           fullWidth: true,
+          size: 'small',
         }}
       />
-
-      <div className={classes.speciesResults}>
-        {speciesHierarchy.map((speciesItem) => (
-          <SpeciesOutput
-            key={speciesItem.id}
-            speciesItem={speciesItem}
-            selectedSpeciesIds={selectedSpeciesIds}
-            onSpeciesClickWithId={onSpeciesClickWithId}
-          />
-        ))}
-      </div>
+      <RichTreeView
+        items={speciesTreeItems}
+        multiSelect
+        checkboxSelection
+        selectedItems={selectedSpeciesIds}
+        onSelectedItemsChange={(event, ids) => {
+          onSelectedSpeciesIds(ids)
+        }}
+        slots={{
+          item: (props) => <CustomTreeItem {...props} />,
+        }}
+      />
     </>
   )
 }

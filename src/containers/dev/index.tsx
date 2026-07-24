@@ -196,6 +196,17 @@ const AssetTreeDemo = () => {
   )
 }
 
+const SpeciesSelectorWrapper = () => {
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+
+  return (
+    <SpeciesSelector
+      selectedSpeciesIds={selectedIds}
+      onSelectedSpeciesIds={(ids) => setSelectedIds(ids)}
+    />
+  )
+}
+
 export default () => {
   return (
     <>
@@ -205,6 +216,7 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <SpeciesSelectorWrapper />
         {/* <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} /> */}
         {/* <h2>Asset Tree</h2>
