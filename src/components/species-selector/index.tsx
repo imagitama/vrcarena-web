@@ -152,7 +152,7 @@ const SpeciesSelector = ({
     convertToNestedArray(filteredSpecies)
 
   const selectedTreeItems: SpeciesTreeItem[] = findSelectedTreeItems(
-    speciesTreeItems,
+    convertToNestedArray(allSpecies),
     selectedSpeciesIds
   )
 
