@@ -15,6 +15,7 @@ import EditorRecordManager from '@/components/editor-record-manager'
 import Button from '@/components/button'
 import { Edit as EditIcon } from '@/icons'
 import { routes } from '@/routes'
+import Link from '@/components/link'
 
 const AdminSpecies = () => {
   const [isLoading, lastErrorCode, speciesItems, , hydrate] =
@@ -50,7 +51,12 @@ const AdminSpecies = () => {
         ) : (
           speciesItems.map((item) => (
             <TableRow key={item.id}>
-              <TableCell title={item.id}>#{getShortId(item.id)}</TableCell>
+              <TableCell title={item.id}>
+                <Link
+                  to={routes.viewSpeciesWithVar.replace(':speciesId', item.id)}>
+                  #{getShortId(item.id)}
+                </Link>
+              </TableCell>
               <TableCell title={item.parent || ''}>
                 {item.parent
                   ? `${item.parentpluralname} (#${getShortId(item.parent)})`
