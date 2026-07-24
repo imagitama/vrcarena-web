@@ -4,7 +4,6 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import EditIcon from '@mui/icons-material/Edit'
 
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
@@ -13,7 +12,9 @@ import { CollectionNames, FullSpecies, ViewNames } from '@/modules/species'
 import NoResultsMessage from '@/components/no-results-message'
 import { getShortId } from '@/utils/formatting'
 import EditorRecordManager from '@/components/editor-record-manager'
-import { OrderDirections } from '@/hooks/useDatabaseQuery'
+import Button from '@/components/button'
+import { Edit as EditIcon } from '@/icons'
+import { routes } from '@/routes'
 
 const AdminSpecies = () => {
   const [isLoading, lastErrorCode, speciesItems, , hydrate] =
@@ -69,6 +70,14 @@ const AdminSpecies = () => {
                 </a>
               </TableCell>
               <TableCell>
+                <Button
+                  url={routes.editSpeciesWithVar.replace(':speciesId', item.id)}
+                  icon={<EditIcon />}
+                  color="secondary"
+                  size="small">
+                  Edit
+                </Button>
+
                 <EditorRecordManager
                   id={item.id}
                   metaCollectionName={CollectionNames.SpeciesMeta}
