@@ -244,7 +244,7 @@ export default () => {
         <Link
           to={routes.home}
           title="Go to the homepage of The VRCArena Project">
-          <Logo className={classes.logo} />
+          <Logo className={classes.logo} data-testid="logo" />
         </Link>
         <div className={classes.socialMediaRows}>
           <div>
