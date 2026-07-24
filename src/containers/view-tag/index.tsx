@@ -89,8 +89,8 @@ export default () => {
           id={tag}
           metaCollectionName={CollectionNames.TagsMeta}
           editUrl={routes.editTagWithVar.replace(':tag', tag)}
-          showApprovalButtons={false}
           showAccessButtons
+          existingAccessStatus={fullTag.accessstatus}
           onDone={hydrate}
         />
       ) : null}

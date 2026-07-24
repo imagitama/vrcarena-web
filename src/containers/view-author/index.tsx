@@ -304,11 +304,15 @@ const View = () => {
             id={authorId}
             metaCollectionName={CollectionNames.AuthorsMeta}
             editUrl={routes.editAuthorWithVar.replace(':authorId', authorId)}
+            showApprovalButtons
             existingApprovalStatus={approvalStatus}
+            showPublishButtons
             existingPublishStatus={publishStatus}
+            showAccessButtons
             existingAccessStatus={accessStatus}
+            showEditorNotes
             existingEditorNotes={editorNotes}
-            onDone={() => hydrate()}
+            onDone={hydrate}
           />
         </>
       )}

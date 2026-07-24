@@ -198,14 +198,13 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
             )}
             id={attachment.id}
             metaCollectionName={CollectionNames.AttachmentsMeta}
+            showApprovalButtons
             existingApprovalStatus={attachment.approvalstatus}
+            showAccessButtons
             existingAccessStatus={attachment.accessstatus}
+            showEditorNotes
             existingEditorNotes={attachment.editornotes}
-            showPublishButtons={false}
-            showStatuses
             onDone={hydrate}
-            comments="Note: Attachments waiting for approval are still public"
-            showDeclineReasons={false}
           />
           {imageConvertQueueItems && imageConvertQueueItems.length ? (
             <InfoMessage>

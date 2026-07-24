@@ -72,65 +72,51 @@ const EditorRecordManager = ({
   existingDeletionReason,
   existingDeclinedReasons,
   existingArchivedReason,
+  // conditions
+  showPublishButtons,
+  showApprovalButtons,
+  showDeclineReasons,
+  showAccessButtons,
+  showArchiveButton,
+  showFeatureButtons,
+  showEditorNotes,
   // callbacks
-  onDone = undefined,
-  // visibility
-  showStatuses = true, // this data is very important so ensure
-  showApprovalButtons = true,
-  showAccessButtons = true,
-  showEditorNotes = true,
-  showArchiveButton = false,
-  showFeatureButtons = false,
-  showPublishButtons = true, // true so we can see publishstatus
+  onDone,
   // hooks
-  beforeApprove = undefined,
-  // other
-  callOnDoneOnEditorNotes = true,
-  showBox = true,
-  comments,
-  small = false,
-  approver,
-  // amendments
-  showDeclineReasons = true,
+  beforeApprove,
 }: {
   id: string
   metaCollectionName: string
   collectionName?: string
   editUrl?: string
+  onDone?: () => void
+  // save us a trip
   existingApprovalStatus?: ApprovalStatus
   existingPublishStatus?: PublishStatus
   existingAccessStatus?: AccessStatus
   existingEditorNotes?: string | null
   existingFeaturedStatus?: FeaturedStatus
-  // assets
+  // specifically for assets and some other record types
   existingDeletionReason?: DeletionReason | null
   existingArchivedReason?: ArchivedReason | null
   existingDeclinedReasons?: DeclinedReason[] | null
-  onDone?: () => void
-  showStatuses?: boolean
+  // conditions
   showApprovalButtons?: boolean
   showPublishButtons?: boolean
   showAccessButtons?: boolean
   showArchiveButton?: boolean
   showEditorNotes?: boolean
   showFeatureButtons?: boolean
-  beforeApprove?: () => boolean | Promise<boolean>
-  callOnDoneOnEditorNotes?: boolean
-  showBox?: boolean
-  comments?: string
-  small?: boolean
-  approver?: UserFromView
   showDeclineReasons?: boolean
+  // hooks
+  beforeApprove?: () => boolean | Promise<boolean>
 }) => {
   const classes = useStyles()
-  const canBeApproved =
-    metaCollectionName === AssetsCollectionNames.AssetsMeta ||
-    metaCollectionName === AmendmentsCollectionNames.AmendmentsMeta
   return (
     <ErrorBoundary>
-      <EditorBox className={classes.root} show={showBox}>
-        {editUrl ? (
-          <div>
+      <EditorBox className={classes.root}>
+        {editUrl && (
+          <div style={{ marginBottom: '0.25rem' }}>
             <Button
               icon={<EditIcon />}
               url={editUrl}
@@ -139,17 +125,11 @@ const EditorRecordManager = ({
               Edit Record
             </Button>
           </div>
-        ) : null}
-        {comments ? (
-          <>
-            <br />
-            {comments}
-          </>
-        ) : null}
+        )}
         <div className={classes.rows}>
-          {showStatuses || showPublishButtons ? (
+          {showPublishButtons && (
             <div className={classes.row}>
-              {showStatuses && showPublishButtons && existingPublishStatus && (
+              {existingPublishStatus !== undefined && (
                 <div className={classes.cell}>
                   <MetaStatus
                     status={existingPublishStatus}
@@ -158,10 +138,10 @@ const EditorRecordManager = ({
                 </div>
               )}
             </div>
-          ) : null}
-          {canBeApproved && (showStatuses || showApprovalButtons) ? (
+          )}
+          {showApprovalButtons && (
             <div className={classes.row}>
-              {showStatuses && existingApprovalStatus && (
+              {existingApprovalStatus !== undefined && (
                 <div className={classes.cell}>
                   <MetaStatus
                     status={existingApprovalStatus}
@@ -169,24 +149,22 @@ const EditorRecordManager = ({
                   />
                 </div>
               )}
-              {showApprovalButtons && (
-                <div className={classes.cell}>
-                  <ApproveButton
-                    id={id}
-                    metaCollectionName={metaCollectionName}
-                    existingApprovalStatus={existingApprovalStatus}
-                    existingDeclinedReasons={existingDeclinedReasons}
-                    onDone={onDone}
-                    beforeApprove={beforeApprove}
-                    showDeclineReasons={showDeclineReasons}
-                  />
-                </div>
-              )}
+              <div className={classes.cell}>
+                <ApproveButton
+                  id={id}
+                  metaCollectionName={metaCollectionName}
+                  existingApprovalStatus={existingApprovalStatus}
+                  existingDeclinedReasons={existingDeclinedReasons}
+                  onDone={onDone}
+                  beforeApprove={beforeApprove}
+                  showDeclineReasons={showDeclineReasons}
+                />
+              </div>
             </div>
-          ) : null}
-          {showStatuses || showAccessButtons ? (
+          )}
+          {showAccessButtons && (
             <div className={classes.row}>
-              {showStatuses && existingAccessStatus && (
+              {existingAccessStatus !== undefined && (
                 <div className={classes.cell}>
                   <MetaStatus
                     status={existingAccessStatus}
@@ -194,35 +172,32 @@ const EditorRecordManager = ({
                   />
                 </div>
               )}
-              {showAccessButtons && (
-                <div className={classes.cell}>
-                  <DeleteButton
-                    id={id}
-                    metaCollectionName={metaCollectionName}
-                    existingAccessStatus={existingAccessStatus}
-                    existingDeletionReason={existingDeletionReason}
-                    onDone={onDone}
-                    hollow={small === true}
-                  />
-                  {showArchiveButton ? (
-                    <>
-                      <div style={{ marginTop: '0.25rem' }} />
-                      <ArchiveButton
-                        id={id}
-                        metaCollectionName={metaCollectionName}
-                        existingAccessStatus={existingAccessStatus}
-                        existingArchivedReason={existingArchivedReason}
-                        onDone={onDone}
-                      />
-                    </>
-                  ) : null}
-                </div>
-              )}
+              <div className={classes.cell}>
+                <DeleteButton
+                  id={id}
+                  metaCollectionName={metaCollectionName}
+                  existingAccessStatus={existingAccessStatus}
+                  existingDeletionReason={existingDeletionReason}
+                  onDone={onDone}
+                />
+                {showArchiveButton ? (
+                  <>
+                    <div style={{ marginTop: '0.25rem' }} />
+                    <ArchiveButton
+                      id={id}
+                      metaCollectionName={metaCollectionName}
+                      existingAccessStatus={existingAccessStatus}
+                      existingArchivedReason={existingArchivedReason}
+                      onDone={onDone}
+                    />
+                  </>
+                ) : null}
+              </div>
             </div>
-          ) : null}
-          {showStatuses || showFeatureButtons ? (
+          )}
+          {showFeatureButtons ? (
             <div className={classes.row}>
-              {showStatuses && existingFeaturedStatus && (
+              {existingFeaturedStatus !== undefined && (
                 <div className={classes.cell}>
                   <MetaStatus
                     status={existingFeaturedStatus}
@@ -243,18 +218,16 @@ const EditorRecordManager = ({
             </div>
           ) : null}
         </div>
-        {showEditorNotes ? (
+        {showEditorNotes && (
           <div className={classes.item}>
             <PublicEditorNotesForm
               id={id}
               metaCollectionName={metaCollectionName}
-              // @ts-ignore
               existingEditorNotes={existingEditorNotes}
-              // @ts-ignore
-              onDone={callOnDoneOnEditorNotes ? onDone : undefined}
+              onDone={onDone}
             />
           </div>
-        ) : null}
+        )}
       </EditorBox>
     </ErrorBoundary>
   )

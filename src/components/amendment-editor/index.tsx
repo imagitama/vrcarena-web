@@ -33,6 +33,7 @@ import ShortDiff from '@/components/short-diff'
 import GenericEditor from '@/components/generic-editor'
 import WarningMessage from '@/components/warning-message'
 import Heading from '@/components/heading'
+import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
 
 const useStyles = makeStyles({
   cols: {
@@ -103,7 +104,7 @@ const ParentEditor = ({
           assetId={null}
           overrideFields={fields}
           onFieldChanged={onFieldChanged}
-          onFieldsChanged={onFieldsChanged}
+          // NOTE: do not set onFieldsChanged as it uses view fields (to fix)
         />
       )
     case AuthorsCollectionNames.Authors:
@@ -158,12 +159,10 @@ const AmendmentEditor = ({
     saveOrCreate,
     clear,
     createdOrUpdatedAmendment,
-  ] = amendmentId
-    ? useDataStoreEdit<Amendment>(
-        AmendmentsCollectionNames.Amendments,
-        amendmentId
-      )
-    : useDataStoreCreate<Amendment>(AmendmentsCollectionNames.Amendments)
+  ] = useDataStoreEditOrCreate<Amendment>(
+    AmendmentsCollectionNames.Amendments,
+    amendmentId || false
+  )
   const [newFieldsForSaving, setNewFieldsForSaving] = useState({})
   const [newFieldsForOutput, setNewFieldsForOutput] = useState<{
     [fieldName: string]: any
@@ -171,6 +170,11 @@ const AmendmentEditor = ({
   const [isPreviewVisible, setIsPreviewVisible] = useState(false)
   const [comments, setComments] = useState('')
   const supabase = useSupabaseClient()
+
+  console.debug(`AmendmentEditor.render`, {
+    newFieldsForSaving,
+    newFieldsForOutput,
+  })
 
   if (isLoadingParent || !parent) {
     return <LoadingIndicator message="Loading parent..." />

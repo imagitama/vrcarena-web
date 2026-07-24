@@ -40,7 +40,7 @@ const AmendmentEditorRecordManager = ({
         <LoadingIndicator message="Applying..." />
       ) : lastErrorCode !== null ? (
         <ErrorMessage>
-          Failed to apply to parent (code {lastErrorCode}
+          Failed to apply to parent (code {lastErrorCode})
         </ErrorMessage>
       ) : isSavingParentSuccess ? (
         <SuccessMessage>Parent has been updated successfully</SuccessMessage>
@@ -48,15 +48,15 @@ const AmendmentEditorRecordManager = ({
       <EditorRecordManager
         id={amendment.id}
         metaCollectionName={CollectionNames.AmendmentsMeta}
-        showStatuses
         showPublishButtons={false}
         showAccessButtons={false}
-        showEditorNotes
+        showDeclineReasons={false}
+        showApprovalButtons
         existingApprovalStatus={amendment.approvalstatus}
-        existingPublishStatus={PublishStatus.Published} // amendments don't have this field
+        showEditorNotes
+        existingEditorNotes={amendment.editornotes}
         onDone={onDone}
         beforeApprove={beforeApprove}
-        showDeclineReasons={false}
       />
     </>
   )

@@ -308,14 +308,15 @@ const View = () => {
                 id={id}
                 collectionName={CollectionNames.Events}
                 metaCollectionName={CollectionNames.EventsMeta}
+                showApprovalButtons
                 existingApprovalStatus={approvalstatus}
+                showAccessButtons
                 existingAccessStatus={accessstatus}
+                showEditorNotes
                 existingEditorNotes={editornotes}
+                showFeatureButtons
                 existingFeaturedStatus={featuredstatus}
                 onDone={hydrate}
-                showApprovalButtons={false}
-                showFeatureButtons={true}
-                showStatuses
               />
             )}
           </div>

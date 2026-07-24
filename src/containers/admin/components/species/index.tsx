@@ -74,24 +74,26 @@ const AdminSpecies = () => {
               </TableCell>
               <TableCell>
                 <img width="50" height="50" src={item.thumbnailurl} />
-                <a href={item.thumbnailsourceurl} target="_blank">
-                  Source
-                </a>
+                <br />
+                <small>
+                  <a href={item.thumbnailsourceurl} target="_blank">
+                    Source
+                  </a>
+                </small>
               </TableCell>
               <TableCell>
-                <Button
-                  url={routes.editSpeciesWithVar.replace(':speciesId', item.id)}
-                  icon={<EditIcon />}
-                  color="secondary"
-                  size="small">
-                  Edit
-                </Button>
-
                 <EditorRecordManager
                   id={item.id}
                   metaCollectionName={CollectionNames.SpeciesMeta}
+                  editUrl={routes.editSpeciesWithVar.replace(
+                    ':speciesId',
+                    item.id
+                  )}
+                  showAccessButtons
                   existingAccessStatus={item.accessstatus}
-                  // existingApprovalStatus={item.approvalstatus}
+                  showApprovalButtons
+                  existingApprovalStatus={item.approvalstatus}
+                  showEditorNotes
                   existingEditorNotes={item.editornotes}
                   onDone={hydrate}
                 />

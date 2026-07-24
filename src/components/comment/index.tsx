@@ -233,14 +233,10 @@ export default ({
                 <EditorRecordManager
                   id={id}
                   metaCollectionName={CollectionNames.CommentsMeta}
+                  showAccessButtons
                   existingAccessStatus={accessStatus}
                   existingEditorNotes={editorNotes}
-                  showApprovalButtons={false}
-                  showPublishButtons={false}
-                  showEditorNotes={false}
-                  onDone={hydrate ? () => hydrate() : undefined}
-                  showBox={false}
-                  small
+                  onDone={hydrate ? hydrate : undefined}
                 />
               </div>
             </div>

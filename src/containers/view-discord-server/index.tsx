@@ -191,11 +191,15 @@ const View = () => {
           <EditorRecordManager
             id={discordServerId}
             metaCollectionName={CollectionNames.DiscordServersMeta}
+            showApprovalButtons
             existingApprovalStatus={approvalStatus}
+            showPublishButtons
             existingPublishStatus={publishStatus}
+            showAccessButtons
             existingAccessStatus={accessStatus}
+            showEditorNotes
             existingEditorNotes={editorNotes}
-            onDone={() => hydrate()}
+            onDone={hydrate}
           />
           <br />
           <br />

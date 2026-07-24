@@ -201,13 +201,11 @@ const CommentsByUser = ({
                   id={comment.id}
                   collectionName={CollectionNames.Comments}
                   metaCollectionName={CollectionNames.CommentsMeta}
+                  showAccessButtons
                   existingAccessStatus={comment.accessstatus}
+                  showEditorNotes
                   existingEditorNotes={comment.editornotes}
-                  // @ts-ignore
-                  onDone={() => hydrate()}
-                  showApprovalButtons={false}
-                  showEditorNotes={false}
-                  showBox={false}
+                  onDone={hydrate}
                 />
               </TableCell>
               <TableCell>
