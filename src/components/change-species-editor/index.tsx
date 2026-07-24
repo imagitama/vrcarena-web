@@ -96,18 +96,14 @@ export default ({
     return <>Error saving new species (code {lastErrorCodeSaving})</>
   }
 
-  // const onClickSpecies = (speciesId: string) =>
-  //   setNewSpeciesIds((currentIds) => {
-  //     const newIds = isSpeciesIdActive(speciesId, newSpeciesIds)
-  //       ? currentIds.filter((id) => id !== speciesId)
-  //       : currentIds.concat([speciesId])
+  const onSelectedSpeciesIds = (ids: string[]) =>
+    setNewSpeciesIds(() => {
+      if (onChange) {
+        onChange(ids)
+      }
 
-  //     if (onChange) {
-  //       onChange(newIds)
-  //     }
-
-  //     return newIds
-  //   })
+      return ids
+    })
 
   const onSaveBtnClick = async () => {
     try {
@@ -155,7 +151,7 @@ export default ({
       </InfoMessage>
       <SpeciesSelector
         selectedSpeciesIds={newSpeciesIds}
-        onSelectedSpeciesIds={(ids) => setNewSpeciesIds(ids)}
+        onSelectedSpeciesIds={onSelectedSpeciesIds}
         // showControls={false}
         // startCollapsed={startCollapsed}
       />
