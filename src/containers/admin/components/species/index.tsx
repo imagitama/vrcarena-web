@@ -53,7 +53,10 @@ const AdminSpecies = () => {
             <TableRow key={item.id}>
               <TableCell title={item.id}>
                 <Link
-                  to={routes.viewSpeciesWithVar.replace(':speciesId', item.id)}>
+                  to={routes.viewSpeciesWithVar.replace(
+                    ':speciesIdOrSlug',
+                    item.id
+                  )}>
                   #{getShortId(item.id)}
                 </Link>
               </TableCell>
