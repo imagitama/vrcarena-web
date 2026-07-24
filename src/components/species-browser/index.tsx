@@ -85,7 +85,9 @@ interface SpeciesWithChildren extends FullSpecies {
   children?: SpeciesWithChildren[]
 }
 
-function sortSpeciesTree(items: SpeciesWithChildren[]): SpeciesWithChildren[] {
+const sortSpeciesTree = (
+  items: SpeciesWithChildren[]
+): SpeciesWithChildren[] => {
   return [...items]
     .sort((a, b) => a.singularname.localeCompare(b.singularname))
     .map((item) =>
@@ -95,10 +97,10 @@ function sortSpeciesTree(items: SpeciesWithChildren[]): SpeciesWithChildren[] {
     )
 }
 
-function convertToNestedArray(
+const convertToNestedArray = (
   arr: Species[],
   parentId: string | null = null
-): SpeciesWithChildren[] {
+): SpeciesWithChildren[] => {
   const nestedArray: SpeciesWithChildren[] = []
   for (const item of arr) {
     const newItem = { ...item }

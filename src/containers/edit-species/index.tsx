@@ -3,7 +3,11 @@ import { useParams } from 'react-router'
 import { Helmet } from '@unhead/react/helmet'
 
 import * as routes from '@/routes'
-import { CollectionNames, editableFields } from '@/modules/species'
+import {
+  CollectionNames,
+  editableFields,
+  metaEditableFields,
+} from '@/modules/species'
 
 import usePermissions from '@/hooks/usePermissions'
 
@@ -39,6 +43,33 @@ const View = () => {
             : routes.viewAllSpecies
         }
       />
+      {!isCreating && (
+        <>
+          <Heading variant="h1">
+            {isCreating ? 'Create' : 'Edit'} Species Meta
+          </Heading>
+          <GenericEditor
+            fields={metaEditableFields}
+            collectionName={CollectionNames.SpeciesMeta}
+            id={speciesId}
+            analyticsCategory="EditSpeciesMeta"
+            getSuccessUrl={(newId) =>
+              routes.viewSpeciesWithVar.replace(
+                ':speciesIdOrSlug',
+                newId || speciesId
+              )
+            }
+            cancelUrl={
+              speciesId
+                ? routes.viewSpeciesWithVar.replace(
+                    ':speciesIdOrSlug',
+                    speciesId
+                  )
+                : routes.viewAllSpecies
+            }
+          />
+        </>
+      )}
     </>
   )
 }

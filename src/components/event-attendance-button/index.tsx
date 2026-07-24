@@ -38,8 +38,6 @@ const EventAttendenceButton = ({
 
   const currentStatus = myAttendance ? myAttendance.status : undefined
 
-  // console.debug(`EventAttendenceButton.render`, myAttendance, lastErrorCode)
-
   if (lastErrorCode !== null) {
     return (
       <ErrorMessage>

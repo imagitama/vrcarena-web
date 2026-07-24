@@ -88,7 +88,7 @@ function getInputForFieldType<TRecord extends Record<string, any>>(
     case fieldTypes.url:
       return UrlInput
     case fieldTypes.json:
-      return JsonInput
+      return JsonInput as unknown as GenericInput<any, TRecord>
     case fieldTypes.int:
       return IntInput
     case fieldTypes.float:
@@ -196,8 +196,6 @@ const GenericEditor = <TRecord extends Record<string, any>>({
     []
   )
   const rootElementRef = useRef<HTMLDivElement>(null)
-
-  // console.debug(`GenericEditor.render`, formFields)
 
   useEffect(() => {
     if (!rawRecord) {

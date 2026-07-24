@@ -19,9 +19,7 @@ import {
 import categoryMetas from '@/category-meta'
 import { getUserFriendlyNumber } from '@/utils/formatting'
 
-import AssetResults from '@/components/asset-results'
 import DiscordMessageResult from '@/components/discord-message-result'
-import Block from '@/components/block'
 import ErrorMessage from '@/components/error-message'
 import SpeciesBrowser from '@/components/species-browser'
 import LazyLoad from '@/components/lazy-load'

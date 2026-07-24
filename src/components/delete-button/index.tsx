@@ -130,13 +130,6 @@ const DeleteButton = ({
     selectedReason !== existingDeletionReason &&
     existingDeletionReason !== undefined
 
-  // console.debug(`DeleteButton.render`, {
-  //   isAsset,
-  //   hasChangedReason,
-  //   selectedReason,
-  //   existingDeletionReason,
-  // })
-
   return (
     <ButtonGroup>
       {isAsset && (

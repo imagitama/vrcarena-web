@@ -4,7 +4,7 @@ import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
 import { EditableField } from '@/editable-fields'
 import { bucketNames } from '@/file-uploading'
 import { fieldTypes } from '@/generic-forms'
-import { AccessStatus } from './common'
+import { AccessStatus, ApprovalStatus } from './common'
 
 export interface SpeciesFields extends Record<string, any> {
   parent: string
@@ -18,7 +18,6 @@ export interface SpeciesFields extends Record<string, any> {
   thumbnailsourceurl: string
   ispopular: boolean
   slug: string
-  redirectto: string // ID
   tags: string[] // for easier filtering
 }
 
@@ -30,22 +29,47 @@ export interface Species extends SpeciesFields {
   createdby: string
 }
 
-export interface FullSpecies extends Species {
+export interface FullSpecies extends Species, SpeciesMeta {
   parentpluralname: string | null
   avatarcount: number
 }
-
-// species.*,
-// 	p.pluralname AS parentpluralname,
-// 	s.avatarcount AS avatarcount
 
 export interface PublicSpeciesForCache extends Species {
   parentpluralname: string | null
   avatarcount: number
 }
 
+export enum SpeciesDeletionReason {
+  inferior = 'inferior',
+  violates_tos = 'violates_tos',
+}
+
+export enum SpeciesArchivedReason {}
+
+export enum SpeciesDeclinedReason {
+  violates_tos = 'violates_tos',
+  inferior = 'inferior',
+}
+
+// TODO: make other interfaces extend from this
+export interface SpeciesMeta extends Record<string, any> {
+  editornotes: string | null
+
+  accessstatus: AccessStatus
+  deletionreason: SpeciesDeletionReason | null
+  archivedreason: SpeciesArchivedReason | null
+
+  approvalstatus: ApprovalStatus
+  approvedby: string | null // user ID
+  approvedat: string | null // date
+  declinedreasons: SpeciesDeclinedReason[] | null
+
+  redirectto: string | null // species ID
+}
+
 export enum CollectionNames {
   Species = 'species',
+  SpeciesMeta = 'speciesmeta',
 }
 
 export enum ViewNames {
@@ -114,6 +138,9 @@ export const editableFields: EditableField<Species>[] = [
     type: fieldTypes.text,
     hint: 'The website or social media post or whatever that you found the image above. Respect authors!',
   },
+]
+
+export const metaEditableFields: EditableField<Species>[] = [
   {
     name: 'redirectto',
     label: 'Redirect',
