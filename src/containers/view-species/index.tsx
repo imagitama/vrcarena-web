@@ -40,6 +40,8 @@ import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import RedirectMessage from '@/components/redirect-message'
 import Button from '@/components/button'
+import { AccessStatus } from '@/modules/common'
+import WarningMessage from '@/components/warning-message'
 
 const Renderer = ({ items }: { items?: PublicAsset[] }) => (
   <AssetResults assets={items} />
@@ -255,7 +257,7 @@ const View = () => {
         push(
           routes.viewSpeciesWithVar.replace(
             ':speciesIdOrSlug',
-            species.redirectto
+            species.redirectto!
           )
         ),
       1000
@@ -297,6 +299,21 @@ const View = () => {
           content={species.description || species.shortdescription}
         />
       </Helmet>
+      {species.accessstatus === AccessStatus.Deleted && (
+        <ErrorMessage>
+          Species has been deleted: {species.deletionreason || '(no reason)'}
+        </ErrorMessage>
+      )}
+      {species.accessstatus === AccessStatus.Archived && (
+        <ErrorMessage>
+          Species has been archived: {species.archivedreason || '(no reason)'}
+        </ErrorMessage>
+      )}
+      {species.redirectto !== null && (
+        <WarningMessage>
+          Species is being redirected to: {species.redirectto}
+        </WarningMessage>
+      )}
       <div className={classes.headings}>
         <Heading variant="h2" inline>
           <Link to={routes.viewAllSpecies}>All</Link>

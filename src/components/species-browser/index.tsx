@@ -252,7 +252,7 @@ const SpeciesBrowser = ({
   onClickSpecies?: (id: string) => void
   startCollapsed?: boolean
 }) => {
-  const [isLoading, lastErrorCode, globalState] = useGlobalState()
+  const [isLoading, lastErrorCode, globalState] = useGlobalState() // TODO: call useSpecies()
   const [filterIds, setFilterIds] = useState<string[]>([])
   const classes = useStyles()
   const loadingChildren = useMemo(
