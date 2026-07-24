@@ -100,7 +100,7 @@ const EditorRecordManager = ({
   existingApprovalStatus?: ApprovalStatus
   existingPublishStatus?: PublishStatus
   existingAccessStatus?: AccessStatus
-  existingEditorNotes?: string
+  existingEditorNotes?: string | null
   existingFeaturedStatus?: FeaturedStatus
   // assets
   existingDeletionReason?: DeletionReason | null

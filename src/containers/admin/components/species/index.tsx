@@ -1,0 +1,89 @@
+import React from 'react'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import EditIcon from '@mui/icons-material/Edit'
+
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+import { CollectionNames, FullSpecies, ViewNames } from '@/modules/species'
+import NoResultsMessage from '@/components/no-results-message'
+import { getShortId } from '@/utils/formatting'
+import EditorRecordManager from '@/components/editor-record-manager'
+import { OrderDirections } from '@/hooks/useDatabaseQuery'
+
+const AdminSpecies = () => {
+  const [isLoading, lastErrorCode, speciesItems, , hydrate] =
+    useDataStoreItems<FullSpecies>(ViewNames.GetFullSpecies, undefined, {
+      orderBy: 'createdat',
+    })
+
+  if (lastErrorCode !== null)
+    return (
+      <ErrorMessage>Failed to load species (code {lastErrorCode})</ErrorMessage>
+    )
+  if (isLoading || !speciesItems)
+    return <LoadingIndicator message="Loading species..." />
+
+  return (
+    <Table size="small">
+      <TableHead>
+        <TableCell></TableCell>
+        <TableCell>Parent</TableCell>
+        <TableCell>Name (singular)</TableCell>
+        <TableCell>Name (plural)</TableCell>
+        <TableCell>Redirect To</TableCell>
+        <TableCell>Thumbnail</TableCell>
+        <TableCell></TableCell>
+      </TableHead>
+      <TableBody>
+        {speciesItems.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={999}>
+              <NoResultsMessage>No species found</NoResultsMessage>
+            </TableCell>
+          </TableRow>
+        ) : (
+          speciesItems.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell title={item.id}>#{getShortId(item.id)}</TableCell>
+              <TableCell title={item.parent || ''}>
+                {item.parent
+                  ? `${item.parentpluralname} (#${getShortId(item.parent)})`
+                  : '-'}
+              </TableCell>
+              <TableCell>{item.singularname}</TableCell>
+              <TableCell>{item.pluralname}</TableCell>
+              <TableCell title={item.redirectto || ''}>
+                {item.redirectto
+                  ? `${item.redirectto} (#${getShortId(item.redirectto)})`
+                  : '-'}
+              </TableCell>
+              <TableCell>
+                <img width="50" height="50" src={item.thumbnailurl} />
+                <a href={item.thumbnailsourceurl} target="_blank">
+                  Source
+                </a>
+              </TableCell>
+              <TableCell>
+                <EditorRecordManager
+                  id={item.id}
+                  metaCollectionName={CollectionNames.SpeciesMeta}
+                  existingAccessStatus={item.accessstatus}
+                  // existingApprovalStatus={item.approvalstatus}
+                  existingEditorNotes={item.editornotes}
+                  onDone={hydrate}
+                />
+              </TableCell>
+            </TableRow>
+          ))
+        )}
+      </TableBody>
+    </Table>
+  )
+}
+
+export default AdminSpecies
