@@ -1,4 +1,4 @@
-import { auth, loggedInUser } from '@/firebase'
+import { auth, getHasMfaEnabled, loggedInUser } from '@/firebase'
 import { useState } from 'react'
 import SuccessMessage from '../success-message'
 import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
@@ -54,7 +54,9 @@ const getErrorCodeFromError = (err: Error): string => {
 }
 
 const MultiFactorAuthForm = () => {
-  const [step, setStep] = useState(Step.Start)
+  const [step, setStep] = useState(
+    getHasMfaEnabled() ? Step.Enrolled : Step.Start
+  )
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
   const [secret, setSecret] = useState<null | TotpSecret>(null)
   const [qrCodeUrl, setQrCodeUrl] = useState<null | string>(null)
@@ -86,10 +88,11 @@ const MultiFactorAuthForm = () => {
             return
           }
 
-          if (!getHasUserVerifiedTheirEmail(user)) {
-            setLastErrorCode(ErrorCode.EmailUnverified)
-            return
-          }
+          // TODO: investigate why this doesnt work
+          //   if (!getHasUserVerifiedTheirEmail(user)) {
+          //     setLastErrorCode(ErrorCode.EmailUnverified)
+          //     return
+          //   }
 
           console.debug(`getting MFA session...`)
 

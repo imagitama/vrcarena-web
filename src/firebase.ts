@@ -12,6 +12,7 @@ import {
   User as FirebaseUser,
   updatePassword,
   updateEmail,
+  multiFactor,
 } from 'firebase/auth'
 
 export type { FirebaseUser }
@@ -192,4 +193,10 @@ export const changeLoggedInUserPassword = async (
   await updatePassword(auth.currentUser, newPassword)
 
   console.debug(`changed logged in user's password successfully`)
+}
+
+export const getHasMfaEnabled = (): boolean => {
+  const user = getAuth().currentUser
+  if (!user) return false
+  return multiFactor(user).enrolledFactors.length > 0
 }
