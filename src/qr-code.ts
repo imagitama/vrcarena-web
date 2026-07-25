@@ -60,12 +60,6 @@ export const renderIntoCanvas = async (
 
   const ctx = canvasElem.getContext('2d')!
 
-  // console.debug(`renderIntoCanvas`, {
-  //   canvasWidth,
-  //   qrCodeWidth,
-  //   qrCodeTotalWidth,
-  // })
-
   // fix blurriness
   const dpr = window.devicePixelRatio || 1
   canvasElem.width = canvasWidth * dpr
