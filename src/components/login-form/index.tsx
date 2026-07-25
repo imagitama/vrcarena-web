@@ -277,6 +277,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         err instanceof FirebaseError &&
         err.code === FirebaseErrorCode['auth/multi-factor-auth-required']
       ) {
+        setIsWorking(false)
         setResolver(getMultiFactorResolver(auth, err as MultiFactorError))
         setStep(LoginStep.Totp)
         return
