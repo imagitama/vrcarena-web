@@ -6,6 +6,13 @@ import {
   TwitterAuthProvider,
   signInWithEmailAndPassword,
   AuthErrorCodes,
+  MultiFactorSession,
+  MultiFactorInfo,
+  MultiFactorAssertion,
+  UserCredential,
+  getMultiFactorResolver,
+  MultiFactorError,
+  TotpMultiFactorGenerator,
 } from 'firebase/auth'
 import { FirebaseError } from 'firebase/app' // TODO: re-export from other file
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
@@ -34,6 +41,8 @@ import Center from '@/components/center'
 import SignUpWithEmailForm from '@/components/signup-with-email-form'
 
 import { signinWithProvider } from './utils'
+import Heading from '../heading'
+import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
 
 const useStyles = makeStyles({
   root: {
@@ -166,6 +175,28 @@ const getMessageForFirebaseErrorCode = (errorCode: string) => {
   }
 }
 
+enum FirebaseErrorCode {
+  'auth/multi-factor-auth-required' = 'auth/multi-factor-auth-required',
+}
+
+interface MultiFactorResolver {
+  readonly session: MultiFactorSession
+  readonly hints: MultiFactorInfo[]
+  resolveSignIn(assertion: MultiFactorAssertion): Promise<UserCredential>
+}
+
+enum LoginStep {
+  UsernameAndPassword,
+  Totp,
+}
+
+const getErrorCodeFromError = (err: Error): string => {
+  if (err instanceof FirebaseError) {
+    return err.code
+  }
+  return 'unknown'
+}
+
 const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isWorking, setIsWorking] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
@@ -173,7 +204,55 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [passwordVal, setPasswordVal] = useState('')
   const classes = useStyles()
 
-  const submit = async () => {
+  // 2fa
+  const [step, setStep] = useState<LoginStep>(LoginStep.UsernameAndPassword)
+  const [resolver, setResolver] = useState<null | MultiFactorResolver>(null)
+
+  if (step === LoginStep.Totp) {
+    const onCode = async (code: string) => {
+      try {
+        console.debug(`submitting totp...`)
+
+        setIsWorking(true)
+
+        if (!resolver) throw new Error('No resolver')
+
+        const totpFactor = resolver.hints.find((h) => h.factorId === 'totp')
+
+        if (!totpFactor) throw new Error('No factor')
+
+        console.debug(`totp assertion...`)
+
+        const assertion = TotpMultiFactorGenerator.assertionForSignIn(
+          totpFactor.uid,
+          code
+        )
+
+        console.debug(`resolving sign in...`)
+
+        await resolver.resolveSignIn(assertion)
+
+        console.debug('user signed in!')
+
+        onSuccess()
+      } catch (err) {
+        console.error(err)
+        handleError(err)
+        setIsWorking(false)
+        setLastErrorCode(getErrorCodeFromError(err as Error))
+      }
+    }
+
+    return (
+      <div>
+        <Heading variant="h2">Two-Factor Authentication</Heading>
+        <p>Enter the code from your MFA app:</p>
+        <MultiFactorAuthCodeInput onCode={onCode} isDisabled={isWorking} />
+      </div>
+    )
+  }
+
+  const submitLogin = async () => {
     try {
       if (!usernameVal || !passwordVal) return
 
@@ -194,22 +273,26 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       setIsWorking(false)
       onSuccess()
     } catch (err) {
-      setIsWorking(false)
-
-      if (err instanceof FirebaseError) {
-        const code = err.code
-        setLastErrorCode(code)
-      } else {
-        console.error(err)
-        handleError(err)
+      if (
+        err instanceof FirebaseError &&
+        err.code === FirebaseErrorCode['auth/multi-factor-auth-required']
+      ) {
+        setResolver(getMultiFactorResolver(auth, err as MultiFactorError))
+        setStep(LoginStep.Totp)
+        return
       }
+
+      console.error(err)
+      handleError(err)
+      setIsWorking(false)
+      setLastErrorCode(getErrorCodeFromError(err as Error))
     }
   }
 
   const onKeyDown: KeyboardEventHandler = (e) => {
     if (e.key == 'Enter') {
       console.debug(`user pressed enter, submitting...`)
-      submit()
+      submitLogin()
     }
   }
 
@@ -237,7 +320,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <br />
           <Center>
             <Button
-              onClick={submit}
+              onClick={submitLogin}
               isDisabled={isWorking}
               icon={<LoginIcon />}>
               Login

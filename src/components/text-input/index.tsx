@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   },
 })
 
-type Props = TextFieldProps & {
+export type Props = TextFieldProps & {
   isDisabled?: boolean
   variant?: 'outlined'
   button?: React.ReactElement

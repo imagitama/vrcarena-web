@@ -12,7 +12,7 @@ import InfoMessage from '@/components/info-message'
 import TextInput from '@/components/text-input'
 import WarningMessage from '@/components/warning-message'
 
-import { create as createBadgeDownloadUrl } from './badge'
+import { renderIntoCanvas as createBadgeDownloadUrl } from '@/qr-code'
 
 const BADGE_WIDTH = 280
 const BADGE_HEIGHT = 125
@@ -26,12 +26,10 @@ const SupporterBadgeForm = ({
 }) => {
   const isPatron = useIsPatron()
   const [isGenerating, setIsGenerating] = useState(true)
-  //   const [isGenerating, setIsGenerating] = useState(false)
   const [downloadUrl, setDownloadUrl] = useState<null | string>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [overrideUrl, setOverrideUrl] = useState<null | string>(null)
   const [overrideUrlText, setOverrideUrlText] = useState<string>('')
-  const [qrCodeEnabled, setQrCodeEnabled] = useState(true)
   const [isUsingPatreonStyle, setIsUsingPatreonStyle] = useState(
     isPatron === true
   )
@@ -61,7 +59,6 @@ const SupporterBadgeForm = ({
         width: BADGE_WIDTH,
         height: BADGE_HEIGHT,
         patreon: isUsingPatreonStyle || isPreviewingPatreonStyle,
-        qrCode: qrCodeEnabled,
       })
 
       console.debug(`onCanvas.createdUrl`, createdUrl)

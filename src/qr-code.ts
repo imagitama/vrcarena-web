@@ -1,3 +1,20 @@
+const dpr = window.devicePixelRatio || 1
+
+export const getDataUrl = async (
+  url: string,
+  widthPx: number
+): Promise<string> => {
+  const QRCode = (await import('qrcode')).default
+
+  const dataUrl = await QRCode.toDataURL(url, {
+    width: widthPx * dpr,
+    margin: 4,
+    errorCorrectionLevel: 'H',
+  })
+
+  return dataUrl
+}
+
 // import { default as logoUrl } from '@/assets/images/logo.svg?raw'
 
 import { patreonGold, patreonGoldDark } from '@/themes'
@@ -10,7 +27,8 @@ interface Options {
   patreon?: boolean
 }
 
-export const create = async (
+// returns a download URL for a PNG
+export const renderIntoCanvas = async (
   url: string,
   canvasElem: HTMLCanvasElement,
   opts?: Options

@@ -43,6 +43,7 @@ import Features from './components/features'
 import MyRep from './components/my-rep'
 import MySupportTickets from './components/my-support-tickets'
 import FormControls from '@/components/form-controls'
+import MultiFactorAuthForm from '@/components/multi-factor-auth-form'
 
 const analyticsCategoryName = 'MyAccount'
 
@@ -148,18 +149,24 @@ const View = () => {
                 <Features />
                 <Heading variant="h3">Notifications</Heading>
                 <NotificationSettings />
-                <Heading variant="h3">Advanced Settings</Heading>
-                <Heading variant="h4" noTopMargin>
-                  Change Email Address
-                </Heading>
+              </>
+            ),
+          },
+          {
+            name: 'auth',
+            label: 'Auth',
+            contents: (
+              <>
+                <Heading variant="h2">Authentication</Heading>
+                <Heading variant="h3">Multi-Factor Authentication</Heading>
+                <MultiFactorAuthForm />
+                <Heading variant="h3">Change Email Address</Heading>
                 <p>
                   Use this form to change your signup email address to something
                   else.
                 </p>
                 <ChangeEmailForm />
-                <Heading variant="h4" noTopMargin>
-                  Change Password
-                </Heading>
+                <Heading variant="h3">Change Password</Heading>
                 <p>Use this form to change your password to something else.</p>
                 <ChangePasswordForm />
                 <DeleteAccountForm />
