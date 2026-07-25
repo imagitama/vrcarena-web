@@ -14,13 +14,13 @@ import FormControls from '../form-controls'
 import ErrorMessage from '../error-message'
 import WarningMessage from '../warning-message'
 import QrCode from '../qr-code'
-import useIsEditor from '@/hooks/useIsEditor'
 import { getHasUserVerifiedTheirEmail } from '@/auth'
 
 enum Step {
   Start,
   Scan,
   Enrolled,
+  Unenrolled, // after manually unenrolling
 }
 
 enum ErrorCode {
@@ -42,7 +42,7 @@ const getMessageForCode = (code: string): string => {
     case FirebaseErrorCode['auth/invalid-argument']:
       return 'MFA unavailable'
     default:
-      return `Unknown code: ${code}`
+      return `Error code: ${code}`
   }
 }
 
@@ -57,13 +57,10 @@ const MultiFactorAuthForm = () => {
   const [step, setStep] = useState(
     getHasMfaEnabled() ? Step.Enrolled : Step.Start
   )
+  const [isWorking, setIsWorking] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
   const [secret, setSecret] = useState<null | TotpSecret>(null)
   const [qrCodeUrl, setQrCodeUrl] = useState<null | string>(null)
-  const isEditor = useIsEditor()
-
-  if (!isEditor)
-    return <WarningMessage>MFA is currently unavailable</WarningMessage>
 
   if (!loggedInUser) return null
 
@@ -75,6 +72,8 @@ const MultiFactorAuthForm = () => {
     case Step.Start:
       const onClickEnable = async () => {
         try {
+          setIsWorking(true)
+
           console.debug(`enabling MFA...`)
 
           const user = auth.currentUser
@@ -88,11 +87,10 @@ const MultiFactorAuthForm = () => {
             return
           }
 
-          // TODO: investigate why this doesnt work
-          //   if (!getHasUserVerifiedTheirEmail(user)) {
-          //     setLastErrorCode(ErrorCode.EmailUnverified)
-          //     return
-          //   }
+          if (!getHasUserVerifiedTheirEmail(user)) {
+            setLastErrorCode(ErrorCode.EmailUnverified)
+            return
+          }
 
           console.debug(`getting MFA session...`)
 
@@ -103,10 +101,12 @@ const MultiFactorAuthForm = () => {
 
           setSecret(totpSecret)
           setQrCodeUrl(totpSecret.generateQrCodeUrl(user.email, 'VRCArena'))
+          setIsWorking(false)
           setStep(Step.Scan)
         } catch (err) {
           console.error(err)
           handleError(err)
+          setIsWorking(false)
           setLastErrorCode(getErrorCodeFromError(err as Error))
         }
       }
@@ -128,6 +128,8 @@ const MultiFactorAuthForm = () => {
     case Step.Scan:
       const onCode = async (code: string) => {
         try {
+          setIsWorking(true)
+
           const user = auth.currentUser
           if (!user || !secret) return
 
@@ -137,10 +139,13 @@ const MultiFactorAuthForm = () => {
           )
 
           await multiFactor(user).enroll(assertion, 'VRCArena')
+
+          setIsWorking(false)
           setStep(Step.Enrolled)
         } catch (err) {
           console.error(err)
           handleError(err)
+          setIsWorking(false)
           setLastErrorCode(getErrorCodeFromError(err as Error))
         }
       }
@@ -162,10 +167,41 @@ const MultiFactorAuthForm = () => {
         </>
       )
     case Step.Enrolled:
+      const onClickRemove = async () => {
+        try {
+          setIsWorking(true)
+
+          const user = auth.currentUser!
+
+          const factors = multiFactor(user).enrolledFactors
+          const totpFactor = factors.find((f) => f.factorId === 'totp')
+
+          if (!totpFactor) throw new Error('No totp')
+
+          await multiFactor(user!).unenroll(totpFactor)
+
+          setIsWorking(false)
+          setStep(Step.Unenrolled)
+        } catch (err) {
+          console.error(err)
+          handleError(err)
+          setIsWorking(false)
+          setLastErrorCode(getErrorCodeFromError(err as Error))
+        }
+      }
+
       return (
         <SuccessMessage>
-          Multi-factor authentication has been enabled for your account
+          MFA has been enabled for your account
+          <br />
+          <br />
+          <Button onClick={onClickRemove}>Remove MFA</Button>
         </SuccessMessage>
+      )
+
+    case Step.Unenrolled:
+      return (
+        <SuccessMessage>MFA has been removed from your account</SuccessMessage>
       )
   }
 }
