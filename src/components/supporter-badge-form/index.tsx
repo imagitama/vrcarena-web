@@ -14,8 +14,18 @@ import WarningMessage from '@/components/warning-message'
 
 import { renderIntoCanvas as createBadgeDownloadUrl } from '@/qr-code'
 
-const BADGE_WIDTH = 280
-const BADGE_HEIGHT = 125
+const BADGE_WIDTH_PX = 280
+const BADGE_HEIGHT_PX = 125
+
+const getTextLines = (usingAlternateText: boolean, patreon: boolean) => {
+  const textLines = usingAlternateText
+    ? ['View on', 'VRCArena']
+    : patreon
+    ? ['Patreon', 'Supporter']
+    : ['VRCArena', 'Supporter']
+
+  return textLines
+}
 
 const SupporterBadgeForm = ({
   url,
@@ -55,9 +65,12 @@ const SupporterBadgeForm = ({
       if (!qrCodeUrl) throw new Error('Need a URL or route')
 
       const createdUrl = await createBadgeDownloadUrl(qrCodeUrl, canvas, {
-        usingAlternateText,
-        width: BADGE_WIDTH,
-        height: BADGE_HEIGHT,
+        textLines: getTextLines(
+          usingAlternateText,
+          isUsingPatreonStyle || isPreviewingPatreonStyle
+        ),
+        widthPx: BADGE_WIDTH_PX,
+        heightPx: BADGE_HEIGHT_PX,
         patreon: isUsingPatreonStyle || isPreviewingPatreonStyle,
       })
 
@@ -146,11 +159,6 @@ const SupporterBadgeForm = ({
           )}
         </div>
       ) : null}
-      {/* <CheckboxInput
-        value={qrCodeEnabled}
-        onChange={(newVal) => setQrCodeEnabled(newVal)}
-        label="QR Code"
-      /> */}
       <CheckboxInput
         value={usingAlternateText}
         onChange={(newVal) => setUsingAlternateText(newVal)}

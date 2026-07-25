@@ -20,9 +20,9 @@ export const getDataUrl = async (
 import { patreonGold, patreonGoldDark } from '@/themes'
 
 interface Options {
-  usingAlternateText?: boolean
-  width?: number
-  height?: number
+  textLines?: string[]
+  widthPx?: number
+  heightPx?: number
   qrCode?: boolean
   patreon?: boolean
 }
@@ -33,8 +33,8 @@ export const renderIntoCanvas = async (
   canvasElem: HTMLCanvasElement,
   opts?: Options
 ): Promise<string> => {
-  const canvasWidth = opts?.width || canvasElem.width
-  const canvasHeight = opts?.height || canvasElem.height
+  // const canvasWidth = opts?.widthPx || canvasElem.width
+  const canvasHeight = opts?.heightPx || canvasElem.height
 
   const borderWidth = 2
   const borderRadius = 10
@@ -46,9 +46,25 @@ export const renderIntoCanvas = async (
   const qrCodeHeight = qrCodeWidth
   const qrCodeTotalWidth = qrCodeWidth + qrCodePadding
 
-  const textAreaWidth = canvasWidth - qrCodeTotalWidth - qrCodeMargin
+  const textAreaWidth = opts?.textLines
+    ? (opts?.widthPx || canvasElem.width) - qrCodeTotalWidth - qrCodeMargin
+    : 0
+
+  // const canvasWidth = opts?.textLines
+  //   ? opts?.widthPx || canvasElem.width
+  //   : qrCodeTotalWidth + borderWidth * 2 + qrCodeMargin
+
+  const canvasWidth = opts?.textLines
+    ? opts?.widthPx || canvasElem.width
+    : qrCodeTotalWidth + borderWidth * 2 + qrCodeMargin * 2
 
   const ctx = canvasElem.getContext('2d')!
+
+  // console.debug(`renderIntoCanvas`, {
+  //   canvasWidth,
+  //   qrCodeWidth,
+  //   qrCodeTotalWidth,
+  // })
 
   // fix blurriness
   const dpr = window.devicePixelRatio || 1
@@ -93,34 +109,32 @@ export const renderIntoCanvas = async (
   ctx.font = 'bold 24px "Roboto", sans-serif'
   const textPosX = textAreaWidth / 2
 
-  const textLines = opts?.usingAlternateText
-    ? ['View on', 'VRCArena']
-    : opts?.patreon
-    ? ['Patreon', 'Supporter']
-    : ['VRCArena', 'Supporter']
+  if (opts?.textLines) {
+    const textLines = opts.textLines
 
-  if (opts?.patreon) {
-    const lineDistance = 30
-    ctx.fillText(`VRCArena`, textPosX, canvasHeight / 2 - lineDistance)
-    const shadowDistance = 2
-    ctx.fillStyle = '#8b7f00'
-    ctx.fillText(
-      textLines[0],
-      textPosX + shadowDistance,
-      canvasHeight / 2 + shadowDistance
-    )
-    ctx.fillText(
-      textLines[1],
-      textPosX + shadowDistance,
-      canvasHeight / 2 + lineDistance + shadowDistance
-    )
-    ctx.fillStyle = patreonGold
-    ctx.fillText(textLines[0], textPosX, canvasHeight / 2)
-    ctx.fillText(textLines[1], textPosX, canvasHeight / 2 + lineDistance)
-  } else {
-    const lineDistance = 15
-    ctx.fillText(textLines[0], textPosX, canvasHeight / 2 - lineDistance)
-    ctx.fillText(textLines[1], textPosX, canvasHeight / 2 + lineDistance)
+    if (opts?.patreon) {
+      const lineDistance = 30
+      ctx.fillText(`VRCArena`, textPosX, canvasHeight / 2 - lineDistance)
+      const shadowDistance = 2
+      ctx.fillStyle = '#8b7f00'
+      ctx.fillText(
+        textLines[0],
+        textPosX + shadowDistance,
+        canvasHeight / 2 + shadowDistance
+      )
+      ctx.fillText(
+        textLines[1],
+        textPosX + shadowDistance,
+        canvasHeight / 2 + lineDistance + shadowDistance
+      )
+      ctx.fillStyle = patreonGold
+      ctx.fillText(textLines[0], textPosX, canvasHeight / 2)
+      ctx.fillText(textLines[1], textPosX, canvasHeight / 2 + lineDistance)
+    } else {
+      const lineDistance = 15
+      ctx.fillText(textLines[0], textPosX, canvasHeight / 2 - lineDistance)
+      ctx.fillText(textLines[1], textPosX, canvasHeight / 2 + lineDistance)
+    }
   }
 
   const qrCodePosX =
