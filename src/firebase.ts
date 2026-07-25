@@ -3,7 +3,7 @@ import {
   getFunctions,
   httpsCallable,
 } from 'firebase/functions'
-import { FirebaseError, initializeApp } from 'firebase/app'
+import { initializeApp } from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import { inDevelopment } from './environment'
 import {

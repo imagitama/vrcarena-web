@@ -19,7 +19,12 @@ import UsernameLink from '@/components/username-link'
 import Button from '@/components/button'
 
 const getSigninMethod = (firebaseUser: FirebaseUser): string => {
-  // TODO: someday populate this
+  console.debug(
+    `getSigninMethod`,
+    firebaseUser.providerData,
+    firebaseUser.providerId
+  )
+
   if (!firebaseUser.providerData || !firebaseUser.providerData.length) {
     return 'Discord'
   }
