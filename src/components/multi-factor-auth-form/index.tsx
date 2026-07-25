@@ -31,6 +31,7 @@ enum ErrorCode {
 
 enum FirebaseErrorCode {
   'auth/invalid-argument' = 'auth/invalid-argument', // when using emulator (https://github.com/firebase/firebase-tools/issues/6224)
+  'auth/requires-recent-login' = 'auth/requires-recent-login',
 }
 
 const getMessageForCode = (code: string): string => {
@@ -41,6 +42,8 @@ const getMessageForCode = (code: string): string => {
       return 'MFA can only be enabled for verified accounts'
     case FirebaseErrorCode['auth/invalid-argument']:
       return 'MFA unavailable'
+    case FirebaseErrorCode['auth/requires-recent-login']:
+      return 'You must have logged in recently before changing your MFA settings. Logout then login and try again.'
     default:
       return `Error code: ${code}`
   }
@@ -164,12 +167,17 @@ const MultiFactorAuthForm = () => {
           <hr />
           Enter the MFA code to confirm:
           <MultiFactorAuthCodeInput onCode={onCode} />
+          {lastErrorCode !== null && (
+            <ErrorMessage>{getMessageForCode(lastErrorCode)}</ErrorMessage>
+          )}
         </>
       )
     case Step.Enrolled:
       const onClickRemove = async () => {
         try {
           setIsWorking(true)
+
+          console.debug(`removing mfa...`)
 
           const user = auth.currentUser!
 
@@ -178,7 +186,11 @@ const MultiFactorAuthForm = () => {
 
           if (!totpFactor) throw new Error('No totp')
 
+          console.debug(`unenrolling...`)
+
           await multiFactor(user!).unenroll(totpFactor)
+
+          console.debug(`unenroll successful`)
 
           setIsWorking(false)
           setStep(Step.Unenrolled)
@@ -191,12 +203,17 @@ const MultiFactorAuthForm = () => {
       }
 
       return (
-        <SuccessMessage>
-          MFA has been enabled for your account
-          <br />
-          <br />
-          <Button onClick={onClickRemove}>Remove MFA</Button>
-        </SuccessMessage>
+        <>
+          <SuccessMessage>
+            MFA has been enabled for your account
+            <br />
+            <br />
+            <Button onClick={onClickRemove}>Remove MFA</Button>
+          </SuccessMessage>
+          {lastErrorCode !== null && (
+            <ErrorMessage>{getMessageForCode(lastErrorCode)}</ErrorMessage>
+          )}
+        </>
       )
 
     case Step.Unenrolled:
