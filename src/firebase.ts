@@ -3,7 +3,7 @@ import {
   getFunctions,
   httpsCallable,
 } from 'firebase/functions'
-import { initializeApp } from 'firebase/app'
+import { FirebaseError, initializeApp } from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import { inDevelopment } from './environment'
 import {
@@ -168,7 +168,7 @@ export const changeLoggedInUserEmail = async (
   console.debug(`changing logged in user's email to "${newEmail}"...`)
 
   if (!auth.currentUser) {
-    throw new Error('Need a usser')
+    throw new Error('Need a user')
   }
 
   await updateEmail(auth.currentUser, newEmail)

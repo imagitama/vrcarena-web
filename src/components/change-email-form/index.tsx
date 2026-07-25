@@ -9,10 +9,7 @@ import { changeLoggedInUserEmail, loggedInUser } from '@/firebase'
 import { handleError } from '@/error-handling'
 import SuccessMessage from '@/components/success-message'
 import FormControls from '@/components/form-controls'
-
-enum ErrorCode {
-  Unknown,
-}
+import { FirebaseError } from 'firebase/app'
 
 const getIsValidEmail = (input: string): boolean =>
   String(input)
@@ -21,13 +18,20 @@ const getIsValidEmail = (input: string): boolean =>
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     ) !== null
 
+const getErrorCodeFromError = (err: Error): string => {
+  if (err instanceof FirebaseError) {
+    return err.code
+  }
+  return 'unknown'
+}
+
 const ChangeEmailForm = () => {
   const [emailInput, setEmailInput] = useState(
     loggedInUser && loggedInUser.email ? loggedInUser.email : ''
   )
   const [isChanging, setIsChanging] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
 
   if (!loggedInUser) {
     return null
@@ -51,7 +55,7 @@ const ChangeEmailForm = () => {
       console.error(err)
       setIsChanging(false)
       setIsSuccess(false)
-      setLastErrorCode(ErrorCode.Unknown)
+      setLastErrorCode(getErrorCodeFromError(err as Error))
     }
   }
 
@@ -78,9 +82,9 @@ const ChangeEmailForm = () => {
         <SuccessMessage>Your email has been changed</SuccessMessage>
       ) : lastErrorCode !== null ? (
         <ErrorMessage>
-          Failed to change your email (code {lastErrorCode}). You can try
-          contacting us on our Discord server to investigate and possibly change
-          it manually.
+          Failed to change your email (code {lastErrorCode}). If it keeps
+          happening please contact us on our Discord server and we can
+          investigate and potentially manually update your account.
         </ErrorMessage>
       ) : null}
     </>

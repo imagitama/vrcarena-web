@@ -9,16 +9,20 @@ import { changeLoggedInUserPassword, loggedInUser } from '@/firebase'
 import { handleError } from '@/error-handling'
 import SuccessMessage from '@/components/success-message'
 import FormControls from '@/components/form-controls'
+import { FirebaseError } from 'firebase/app'
 
-enum ErrorCode {
-  Unknown,
+const getErrorCodeFromError = (err: Error): string => {
+  if (err instanceof FirebaseError) {
+    return err.code
+  }
+  return 'unknown'
 }
 
 const ChangePasswordForm = () => {
   const [passwordInput, setPasswordInput] = useState('')
   const [isChanging, setIsChanging] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
 
   if (!loggedInUser) {
     return null
@@ -47,7 +51,7 @@ const ChangePasswordForm = () => {
       console.error(err)
       setIsChanging(false)
       setIsSuccess(false)
-      setLastErrorCode(ErrorCode.Unknown)
+      setLastErrorCode(getErrorCodeFromError(err as Error))
     }
   }
 
@@ -74,8 +78,9 @@ const ChangePasswordForm = () => {
         <SuccessMessage>Your password has been changed</SuccessMessage>
       ) : lastErrorCode !== null ? (
         <ErrorMessage>
-          Failed to change your password. Please try logging out and in, then
-          trying again (code {lastErrorCode})
+          Failed to change your password (code {lastErrorCode}). If it keeps
+          happening please contact us on our Discord server and we can
+          investigate and potentially manually update your account.
         </ErrorMessage>
       ) : null}
     </>

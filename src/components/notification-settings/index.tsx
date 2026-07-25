@@ -10,11 +10,11 @@ import {
   defaultNotificationPrefs,
 } from '@/notifications'
 import {
+  CollectionNames,
   NotificationPreferences,
   NotificationPreferencesEvents,
   UserPreferences,
-} from '@/modules/user'
-import { CollectionNames } from '@/modules/users'
+} from '@/modules/users'
 
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useUserId from '@/hooks/useUserId'
@@ -79,6 +79,10 @@ const getLabelForEventName = (
       return 'Get the weekly digest! (email only)'
     case NotificationEvents.SUBSCRIPTION_ALERT:
       return 'Subscription alerts'
+    case NotificationEvents.REPORT_RESOLUTION_CHANGED:
+      return 'Report resolution changed'
+    case NotificationEvents.REP_AWARDED:
+      return 'Reputation awarded'
     default:
       return `Unknown event ${eventName}`
   }
