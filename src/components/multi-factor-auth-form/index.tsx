@@ -15,6 +15,7 @@ import ErrorMessage from '../error-message'
 import WarningMessage from '../warning-message'
 import QrCode from '../qr-code'
 import useIsEditor from '@/hooks/useIsEditor'
+import { getHasUserVerifiedTheirEmail } from '@/auth'
 
 enum Step {
   Start,
@@ -85,7 +86,7 @@ const MultiFactorAuthForm = () => {
             return
           }
 
-          if (!user.emailVerified) {
+          if (!getHasUserVerifiedTheirEmail(user)) {
             setLastErrorCode(ErrorCode.EmailUnverified)
             return
           }
