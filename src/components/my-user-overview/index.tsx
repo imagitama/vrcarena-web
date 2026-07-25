@@ -17,15 +17,10 @@ import FormattedDate from '@/components/formatted-date'
 import Avatar from '@/components/avatar'
 import UsernameLink from '@/components/username-link'
 import Button from '@/components/button'
+import { getSignedUpWithDiscord } from '@/auth'
 
 const getSigninMethod = (firebaseUser: FirebaseUser): string => {
-  console.debug(
-    `getSigninMethod`,
-    firebaseUser.providerData,
-    firebaseUser.providerId
-  )
-
-  if (!firebaseUser.providerData || !firebaseUser.providerData.length) {
+  if (getSignedUpWithDiscord(firebaseUser)) {
     return 'Discord'
   }
 

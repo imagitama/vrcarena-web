@@ -201,9 +201,7 @@ auth.onAuthStateChanged(async (user) => {
     store.dispatch({
       type: FIREBASE_USER_LOADED,
       data: {
-        user: {
-          uid: user.uid,
-        },
+        userId: user.uid,
       },
     })
 

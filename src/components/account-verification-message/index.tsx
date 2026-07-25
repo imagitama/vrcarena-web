@@ -9,17 +9,20 @@ import ErrorMessage from '@/components/error-message'
 import SuccessMessage from '@/components/success-message'
 import useAccountVerification from '@/hooks/useAccountVerification'
 import { sendEmailVerification } from 'firebase/auth'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 
 enum ErrorCode {
   Unknown,
 }
 
 const AccountVerificationMessage = () => {
-  const firebaseUser = useFirebaseUser()
-  const isVerified = useAccountVerification() // NOTE: use this hook as it does extra functionality
+  const isLoggedIn = useIsLoggedIn()
+  const isVerified = useAccountVerification()
   const [isSending, setIsSending] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
+
+  if (!isLoggedIn || isVerified) return null
 
   const ResentVerificationEmailButton = () => {
     const sendEmail = async () => {
@@ -54,28 +57,23 @@ const AccountVerificationMessage = () => {
     )
   }
 
-  if (firebaseUser && firebaseUser.email && !isVerified) {
-    return (
-      <WarningMessage
-        title="Verification"
-        controls={[<ResentVerificationEmailButton />]}>
-        Your email address has not been verified yet. Please find the
-        verification email (you may need to check your spam) and perform the
-        verification.
-        {isSending ? <LoadingIndicator message="Sending..." /> : null}
-        {lastErrorCode !== null ? (
-          <ErrorMessage>Failed to send (code {lastErrorCode})</ErrorMessage>
-        ) : null}
-        {isSuccess ? <SuccessMessage>Email sent</SuccessMessage> : null}
-        <br />
-        <br />
-        Already verified but this message still shows? Please report this in our
-        Discord server.
-      </WarningMessage>
-    )
-  }
-
-  return null
+  return (
+    <WarningMessage
+      title="Verification"
+      controls={[<ResentVerificationEmailButton />]}>
+      Your email address has not been verified yet. Please find the verification
+      email (you may need to check your spam) and perform the verification.
+      {isSending ? <LoadingIndicator message="Sending..." /> : null}
+      {lastErrorCode !== null ? (
+        <ErrorMessage>Failed to send (code {lastErrorCode})</ErrorMessage>
+      ) : null}
+      {isSuccess ? <SuccessMessage>Email sent</SuccessMessage> : null}
+      <br />
+      <br />
+      Already verified but this message still shows? Please report this in our
+      Discord server.
+    </WarningMessage>
+  )
 }
 
 export default AccountVerificationMessage

@@ -50,4 +50,4 @@ export const getSignedUpWithDiscord = (user: FirebaseUser): boolean =>
   !user.providerData || !user.providerData.length
 
 export const getHasUserVerifiedTheirEmail = (user: FirebaseUser): boolean =>
-  user.emailVerified || user.email === null || getSignedUpWithDiscord(user)
+  user.emailVerified === true
