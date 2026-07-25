@@ -90,10 +90,11 @@ const MultiFactorAuthForm = () => {
             return
           }
 
-          if (!getHasUserVerifiedTheirEmail(user)) {
-            setLastErrorCode(ErrorCode.EmailUnverified)
-            return
-          }
+          // TODO: investigate why some users see this while already verified
+          // if (!getHasUserVerifiedTheirEmail(user)) {
+          //   setLastErrorCode(ErrorCode.EmailUnverified)
+          //   return
+          // }
 
           console.debug(`getting MFA session...`)
 
