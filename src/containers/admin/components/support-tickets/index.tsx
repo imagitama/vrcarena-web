@@ -1,21 +1,43 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import * as routes from '@/routes'
 import {
   FullSupportTicket,
   ResolutionStatus,
+  SupportTicket,
   ViewNames,
 } from '@/modules/support-tickets'
 
-import PaginatedView from '@/components/paginated-view'
-import { FilterSubType, FilterType, MultichoiceFilter } from '@/filters'
+import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
+import { FilterSubType, FilterType } from '@/filters'
 import SupportTicketResults from '@/components/support-ticket-results'
 
 const Renderer = ({ items }: { items?: FullSupportTicket[] }) => (
   <SupportTicketResults supportTickets={items!} />
 )
 
+enum SubView {
+  Pending = 'pending',
+  Resolved = 'resolved',
+}
+
 export default () => {
+  const getQuery = useCallback<GetQueryFn<FullSupportTicket, SubView>>(
+    (query, selectedSubView) => {
+      switch (selectedSubView) {
+        case SubView.Pending:
+          query = query.eq('resolutionstatus', ResolutionStatus.Pending)
+          break
+        case SubView.Resolved:
+          query = query.eq('resolutionstatus', ResolutionStatus.Resolved)
+          break
+      }
+
+      return query
+    },
+    []
+  )
+
   return (
     <PaginatedView<FullSupportTicket>
       viewName={ViewNames.GetFullSupportTickets}
@@ -35,15 +57,19 @@ export default () => {
         ':tabName',
         'support-tickets'
       )}
-      filters={[
+      getQuery={getQuery}
+      subViews={[
         {
-          fieldName: 'resolutionstatus',
-          type: FilterType.Multichoice,
-          options: [ResolutionStatus.Pending, ResolutionStatus.Resolved],
-          label: 'Status',
-          defaultActive: true,
-          defaultValue: [ResolutionStatus.Pending],
-        } as MultichoiceFilter<FullSupportTicket, ResolutionStatus>,
+          id: SubView.Pending,
+          label: 'Pending',
+        },
+        {
+          id: SubView.Resolved,
+          label: 'Resolved',
+        },
+      ]}
+      defaultSubView={SubView.Pending}
+      filters={[
         {
           fieldName: 'createdby',
           label: 'Created By',

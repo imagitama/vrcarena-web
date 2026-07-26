@@ -5,6 +5,7 @@ import { makeStyles } from '@mui/styles'
 import Chariot from '@/components/chariot'
 import useNotice from '@/hooks/useNotice'
 import { CONTENT_MAX_WIDTH_PX } from '@/config'
+import classNames from 'classnames'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -96,6 +97,9 @@ const useStyles = makeStyles(() => ({
       cursor: 'pointer',
     },
   },
+  small: {
+    padding: '0.5rem',
+  },
 }))
 
 export interface MessageProps {
@@ -110,6 +114,7 @@ export interface MessageProps {
   paperClassName?: string
   className?: string
   hideId?: string
+  small?: boolean
 }
 
 export default ({
@@ -124,6 +129,7 @@ export default ({
   paperClassName = undefined,
   className,
   hideId,
+  small = false,
 }: MessageProps) => {
   const [isHidden, hideMessage] = useNotice(hideId)
   const classes = useStyles()
@@ -134,11 +140,15 @@ export default ({
 
   return (
     <div
-      className={`${classes.root} ${leftAlign ? classes.leftAlign : ''} ${
-        noMargin ? classes.noMargin : ''
-      } ${noTopMargin ? classes.noTopMargin : ''} ${className}`}>
+      className={classNames(classes.root, className, {
+        [classes.leftAlign]: leftAlign,
+        [classes.noMargin]: noMargin,
+        [classes.noTopMargin]: noTopMargin,
+      })}>
       <Paper
-        className={`${classes.paper} ${paperClassName}`}
+        className={classNames(classes.paper, paperClassName, {
+          [classes.small]: small,
+        })}
         style={{ backgroundColor: color }}>
         <div className={classes.chariot}>
           <Chariot />

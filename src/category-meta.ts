@@ -58,7 +58,7 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     id: AssetCategory.Tutorial,
     name: 'Tutorials',
     nameSingular: 'Tutorial',
-    shortDescription: `Learn how to use software such as Unity, Blender or Substance Painter. Learn how to make changes to your avatar or build worlds.`,
+    shortDescription: `Learn how to create avatars and worlds, add accessories and more.`,
     optimizedImageUrl: tutorialOptimizedImageUrl,
     icon: SchoolIcon,
   },

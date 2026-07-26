@@ -121,7 +121,6 @@ export default ({
         onChange={(e) => setNewResolutionNotes(e.target.value)}
         value={newResolutionNotes}
       />
-      <br />
       <Button
         color="secondary"
         onClick={toggle}

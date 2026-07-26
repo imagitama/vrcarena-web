@@ -1,12 +1,18 @@
 import React from 'react'
 import FormHelperText from '@mui/material/FormHelperText'
+import styled from '@emotion/styled'
 
 import { fixAccessingImagesUsingToken } from '@/utils'
 import { ImageUploadEditableField } from '@/editable-fields'
 
 import ImageUploader from '@/components/image-uploader'
-import Button from '@/components/button'
+import { ClearButton } from '@/components/button'
 import { GenericInputProps } from '../../types'
+
+const ImagePreview = styled.div`
+  display: flex;
+  align-items: center;
+`
 
 export default <TRecord extends Record<string, any>>({
   editableField,
@@ -21,7 +27,7 @@ export default <TRecord extends Record<string, any>>({
   return (
     <>
       {value ? (
-        <div>
+        <ImagePreview>
           <img
             src={fixAccessingImagesUsingToken(value)}
             alt="Preview"
@@ -29,11 +35,8 @@ export default <TRecord extends Record<string, any>>({
             height={editableField.requiredHeight}
             style={{ maxWidth: '100%', height: 'auto' }}
           />
-          <br />
-          <Button color="secondary" onClick={() => onChange(null)}>
-            Clear
-          </Button>
-        </div>
+          <ClearButton onClick={() => onChange(null)} />
+        </ImagePreview>
       ) : (
         <>
           <ImageUploader

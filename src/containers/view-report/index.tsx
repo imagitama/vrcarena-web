@@ -3,41 +3,20 @@ import { Helmet } from '@unhead/react/helmet'
 import { useParams } from 'react-router'
 
 import * as routes from '@/routes'
-import { getViewNameForParentTable } from '@/utils/reports'
-import {
-  CollectionNames,
-  FullReport,
-  reportReasonsKeysByCollection,
-  ResolutionStatus,
-  ViewNames,
-} from '@/modules/reports'
-import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
-import { getUrlForParent } from '@/relations'
+import { CollectionNames, FullReport, ViewNames } from '@/modules/reports'
 
 import useDataStoreItem from '@/hooks/useDataStoreItem'
-import useIsEditor from '@/hooks/useIsEditor'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 
 import NoResultsMessage from '@/components/no-results-message'
-import WarningMessage from '@/components/warning-message'
-import FormattedDate from '@/components/formatted-date'
-import ResolutionStatusOutput from '@/components/resolution-status'
-import Button from '@/components/button'
-import ResolutionControls from '@/components/resolution-controls'
-import Markdown from '@/components/markdown'
-import EditorBox from '@/components/editor-box'
-import Link from '@/components/link'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
-import GenericOutputItem from '@/components/generic-output-item'
-import Heading from '@/components/heading'
-import CommentList from '@/components/comment-list'
 import NoPermissionMessage from '@/components/no-permission-message'
+import ResolvableItem from '@/components/resolvable-item'
 
 const View = () => {
   const { reportId } = useParams<{ reportId: string }>()
   const isLoggedIn = useIsLoggedIn()
-  const isEditor = useIsEditor()
 
   const [isLoading, lastErrorCode, report, hydrate] =
     useDataStoreItem<FullReport>(
@@ -45,11 +24,6 @@ const View = () => {
       isLoggedIn ? reportId : false,
       { queryName: 'view-report' }
     )
-  const [, , parent] = useDataStoreItem(
-    report ? getViewNameForParentTable(report.parenttable) || '' : '',
-    report ? report.parent : false,
-    { queryName: 'view-report-parent' }
-  )
 
   if (!isLoggedIn) {
     return <NoPermissionMessage />
@@ -69,107 +43,21 @@ const View = () => {
     return <NoResultsMessage>Report not found</NoResultsMessage>
   }
 
-  const {
-    id,
-    reason,
-    comments,
-    parent: parentId,
-    parenttable: parentTable,
-    createdat,
-    createdby,
-    // meta
-    resolutionstatus: resolutionStatus,
-    resolvedat: resolvedAt,
-    resolvedby: resolvedBy,
-    resolutionnotes: resolutionNotes,
-    // view
-    createdbyusername: createdByUsername,
-    parentdata: rawParentData,
-    resolvedbyusername: resolvedByUsername,
-  } = report
-
-  const parentData = parent || rawParentData
-
-  const onResolutionStatusChanged = () => hydrate()
-
   return (
-    <>
-      <Helmet>
-        <title>Report #{reportId}</title>
-        <meta
-          name="description"
-          content={`Read more information about report #${reportId} on the site.`}
-        />
-      </Helmet>
-      <Heading variant="h1">
-        <Link to={routes.viewReportWithVar.replace(':reportId', reportId)}>
-          Report #{reportId}
-        </Link>
-      </Heading>
-      <Heading variant="h2">Resolution Status</Heading>
-      <ResolutionStatusOutput
-        resolutionStatus={resolutionStatus}
-        resolvedAt={resolvedAt}
-        resolvedBy={resolvedBy}
-        resolvedByUsername={resolvedByUsername}
-      />
-      {resolutionStatus === ResolutionStatus.Resolved ? (
-        <>
-          <Heading variant="h2">Resolution Notes</Heading>
-          <Markdown source={resolutionNotes || ''} />
-        </>
-      ) : null}
-      {isEditor ? (
-        <>
-          <br />
-          <EditorBox>
-            <Heading variant="h2">Editor Controls</Heading>
-            <ResolutionControls
-              id={id}
-              existingResolutionStatus={resolutionStatus}
-              existingResolutionNotes={resolutionNotes}
-              onDone={onResolutionStatusChanged}
-            />
-          </EditorBox>
-        </>
-      ) : null}
-      <Heading variant="h2">Reported Item</Heading>
-      <Button
-        url={getUrlForParent(parentTable, parentId, parentData)}
-        color="secondary">
-        View Reported Item
-      </Button>
-      <br />
-      <br />
-      <GenericOutputItem type={parentTable} id={parentId} data={parentData} />
-      <Heading variant="h2">Reason</Heading>
-      {reason || '(no reason)'}
-      {reason ===
-        reportReasonsKeysByCollection[AssetsCollectionNames.Assets]
-          .TAKEDOWN && (
-        <WarningMessage>
-          Please ensure this report aligns with our{' '}
-          <Link to={routes.takedownPolicy}>takedown policy</Link>.
-        </WarningMessage>
-      )}
-      <Heading variant="h2">Reporter Comments</Heading>
-      {comments || '(none)'}
-      <Heading variant="h2">Metadata</Heading>
-      <FormattedDate date={createdat} />{' '}
-      {createdByUsername ? (
-        <>
-          by{' '}
-          <Link to={routes.viewUserWithVar.replace(':userId', createdby)}>
-            {createdByUsername}
-          </Link>
-        </>
-      ) : null}
-      <Heading variant="h2">Comments</Heading>
-      <CommentList
-        collectionName={CollectionNames.Reports}
-        parentId={reportId}
-      />
-    </>
+    <ResolvableItem
+      collectionName={CollectionNames.Reports}
+      metaCollectionName={CollectionNames.ReportsMeta}
+      title="Report"
+      item={{
+        ...report,
+        category: report.reason,
+        relateddata: report.parentdata,
+        relatedid: report.parent,
+        relatedtable: report.parenttable,
+      }}
+      url={routes.viewReportWithVar.replace(':reportId', reportId)}
+      hydrate={hydrate}
+    />
   )
 }
 

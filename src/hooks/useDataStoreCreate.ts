@@ -10,7 +10,10 @@ import useSupabaseClient from './useSupabaseClient'
 
 type ClearFn = () => void
 
-const useDataStoreCreate = <TRecord extends Record<string, unknown>>(
+const useDataStoreCreate = <
+  TFields extends Record<string, unknown>,
+  TRecord extends Record<string, unknown> = TFields
+>(
   collectionName: string,
   options: DataStoreOptions = {}
 ): [

@@ -41,7 +41,7 @@ const fields: EditableField<Asset>[] = [
     name: 'sourceurl',
     label: 'Main Source URL',
     type: fieldTypes.url,
-    hint: 'The recommended source of the asset.',
+    hint: 'The main product page or download link you want people to visit. You can set other sources elsewhere.',
     isRequired: true,
   },
   {

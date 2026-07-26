@@ -1,6 +1,6 @@
 import { AccessStatus, ApprovalStatus, PublishStatus } from './common'
 
-export interface AuthorForList {
+export interface AuthorForList extends Record<string, any> {
   id: string
   name: string
   avatarurl: string | null

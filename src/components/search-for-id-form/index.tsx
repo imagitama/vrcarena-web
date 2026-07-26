@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
+import styled from '@emotion/styled'
 
 import useSearching from '@/hooks/useSearching'
 import { CollectionNames as SpeciesCollectionNames } from '@/modules/species'
@@ -29,7 +30,7 @@ const useStyles = makeStyles({
     width: '100%',
   },
   row: {
-    marginTop: '1rem',
+    marginTop: '0.5rem',
     '&:first-child': {
       marginTop: 0,
     },
@@ -46,6 +47,11 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
   },
 })
+
+const SearchResults = styled.div`
+  display: flex;
+  align-items: center;
+`
 
 // TODO: Use enums and types
 const getSearchStatementForCollectionName = (collectionName: string) => {
@@ -145,7 +151,7 @@ function SearchForm({
   }
 
   return (
-    <>
+    <SearchResults>
       <strong>Select a search result:</strong>
       <div className={classes.results}>
         {results.map((result) =>
@@ -172,7 +178,7 @@ function SearchForm({
           )
         )}
       </div>
-    </>
+    </SearchResults>
   )
 }
 

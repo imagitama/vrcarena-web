@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
+import styled from '@emotion/styled'
 
 import { handleError } from '@/error-handling'
 import { trackAction } from '@/analytics'
@@ -22,7 +23,13 @@ import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useSearching from '@/hooks/useSearching'
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
-import { Author, AuthorFields, CollectionNames } from '@/modules/authors'
+import {
+  Author,
+  AuthorFields,
+  AuthorForList,
+  CollectionNames,
+  ViewNames,
+} from '@/modules/authors'
 import { AVATAR_HEIGHT, AVATAR_WIDTH } from '@/config'
 import { bucketNames } from '@/file-uploading'
 
@@ -41,6 +48,19 @@ import CheckboxInput from '@/components/checkbox-input'
 import NoResultsMessage from '@/components/no-results-message'
 import ImageUploaderWithPreview from '@/components/image-uploader-with-preview'
 import FormFieldLabel from '@/components/form-field-label'
+import { VRCArenaTheme } from '@/themes'
+
+const Root = styled.div`
+  padding: 0.5rem;
+  border-radius: ${({ theme }: { theme?: VRCArenaTheme }) =>
+    theme!.shape.borderRadius}px;
+  border: 0.1rem dashed rgba(255, 255, 255, 0.5);
+`
+
+const SelectedAuthor = styled.div`
+  display: flex;
+  align-items: center;
+`
 
 const fieldsBySectionName = authorEditableFields.reduce<{
   [sectionName: string]: EditableField<Author>[]
@@ -59,7 +79,7 @@ const SearchResultRenderer = ({
   result,
   onClick,
 }: {
-  result: Author
+  result: AuthorForList
   onClick: () => void
 }) => {
   return (
@@ -81,8 +101,8 @@ const CheckExistingAuthorForm = ({
   nameToSearch: string
   onClickExistingAuthorId: (id: string) => void
 }) => {
-  const [isSearching, lastErrorCode, results] = useSearching<Author>(
-    CollectionNames.Authors,
+  const [isSearching, lastErrorCode, results] = useSearching<AuthorForList>(
+    ViewNames.GetAuthorsForList,
     nameToSearch,
     '*',
     ['name']
@@ -412,7 +432,10 @@ const ChangeAuthorForm = ({
     useDataStoreEdit<Asset>(collectionName || '', id !== null ? id : false)
   const [isCreating, setIsCreating] = useState(false)
   const [isLoading, lastErrorCodeLoading, existingAuthor] =
-    useDataStoreItem<Author>(CollectionNames.Authors, existingAuthorId || false)
+    useDataStoreItem<AuthorForList>(
+      ViewNames.GetAuthorsForList,
+      existingAuthorId || false
+    )
 
   const restart = () => {
     setIsCreating(false)
@@ -494,7 +517,7 @@ const ChangeAuthorForm = ({
   return (
     <>
       {existingAuthorId ? (
-        <div>
+        <SelectedAuthor>
           <strong>You have selected this author:</strong>
           {isLoading ? (
             <>Loading author...</>
@@ -508,30 +531,32 @@ const ChangeAuthorForm = ({
             <>Author is null</>
           )}
           <Button icon={<ClearIcon />} color="secondary" onClick={onClickClear}>
-            Clear Author
+            Clear
           </Button>
-        </div>
+        </SelectedAuthor>
       ) : (
-        <NoResultsMessage>No author selected</NoResultsMessage>
+        <Root>
+          <NoResultsMessage>No author selected</NoResultsMessage>
+          <SearchForIdForm
+            collectionName={CollectionNames.Authors}
+            renderer={SearchResultRenderer}
+            onClickWithIdAndDetails={onAuthorObtained}
+          />
+          <FormControls>
+            <Button
+              onClick={() => create()}
+              icon={<AddIcon />}
+              color={onDone ? undefined : 'secondary'}>
+              Create Author
+            </Button>
+            {onDone ? (
+              <Button onClick={() => onDone()} color="secondary">
+                Cancel
+              </Button>
+            ) : null}
+          </FormControls>
+        </Root>
       )}
-      <SearchForIdForm
-        collectionName={CollectionNames.Authors}
-        renderer={SearchResultRenderer}
-        onClickWithIdAndDetails={onAuthorObtained}
-      />
-      <FormControls>
-        <Button
-          onClick={() => create()}
-          icon={<AddIcon />}
-          color={onDone ? undefined : 'secondary'}>
-          Create Author
-        </Button>
-        {onDone ? (
-          <Button onClick={() => onDone()} color="secondary">
-            Cancel
-          </Button>
-        ) : null}
-      </FormControls>
     </>
   )
 }

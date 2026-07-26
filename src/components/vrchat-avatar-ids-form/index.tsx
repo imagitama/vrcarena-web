@@ -26,10 +26,6 @@ const analyticsCategoryName = 'ViewAssetEditor'
 
 const useStyles = makeStyles({
   root: {},
-  label: {
-    marginBottom: '0.5rem',
-    fontWeight: 'bold',
-  },
   inputWrapper: {
     display: 'flex',
   },
@@ -46,10 +42,14 @@ const useStyles = makeStyles({
     marginTop: '1rem',
   },
   result: {
+    display: 'flex',
     padding: '0.5rem',
     '&:nth-child(even)': {
       background: 'rgba(255, 255, 255, 0.1)',
     },
+  },
+  label: {
+    width: '100%',
   },
   avatarOutput: {
     padding: '0.5rem',
@@ -153,7 +153,7 @@ const VrchatAvatarIdsForm = ({
         <div className={classes.results}>
           {newAvatarIds.map((avatarId) => (
             <div key={avatarId} className={classes.result}>
-              {avatarId}{' '}
+              <span className={classes.label}>{avatarId}</span>
               <Button
                 onClick={() => removeAvatarId(avatarId)}
                 color="secondary"

@@ -85,9 +85,7 @@ export const nsfwRules = `"Adult" means NSFW (Not Safe For Work). In general it 
 - clearly outlined genitals in clothing (underwear, bras, etc.)
 - "extreme" fetishes (eg. heavy BDSM like whips, muzzles, chastity - harnesses are OK)
 - suggestive poses (where focus is on the genital area or butt or some sexual act)
-- gore (some realistic blood is OK)
-
-**You must toggle adult "on" for any asset that has the above.**`
+- gore (some realistic blood is OK)`
 
 export const adultSearchTerms = [
   // general

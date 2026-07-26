@@ -169,6 +169,7 @@ export interface SupportTicketMeta extends Record<string, unknown> {
   resolutionstatus: ResolutionStatus
   resolvedat: string | null // Date
   resolvedby: string | null
+  assignedto: string | null // id
   resolutionnotes: string
 }
 
@@ -177,7 +178,13 @@ export interface FullSupportTicket<TRelated = any>
     SupportTicketMeta {
   relateddata: TRelated
   createdbyusername: string
+  createdbyavatarurl: string
+  lastmodifiedbyusername: string
+  lastmodifiedbyavatarurl: string
   resolvedbyusername: string
+  resolvedbyavatarurl: string
+  assignedtousername: string
+  assignedtoavatarurl: string
 }
 
 export enum CollectionNames {

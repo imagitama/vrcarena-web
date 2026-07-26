@@ -25,11 +25,13 @@ export default ({
   resolvedBy,
   // view
   resolvedByUsername,
+  resolvedByAvatarUrl,
 }: {
   resolutionStatus: string // waiting | resolved
   resolvedAt: Date | string | null
   resolvedBy: string | null
   resolvedByUsername?: string
+  resolvedByAvatarUrl?: string
 }) => {
   const classes = useStyles()
 
@@ -48,8 +50,9 @@ export default ({
         <>
           Resolved by{' '}
           <UsernameLink
-            id={resolvedBy as string}
+            id={resolvedBy!}
             username={resolvedByUsername}
+            avatarUrl={resolvedByAvatarUrl}
           />{' '}
           {resolvedAt !== null ? (
             <FormattedDate date={resolvedAt} />

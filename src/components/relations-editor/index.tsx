@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 import CheckIcon from '@mui/icons-material/Check'
+import styled from '@emotion/styled'
 
 import { formHideDelay } from '@/config'
 import { handleError } from '@/error-handling'
@@ -17,7 +17,7 @@ import useTimer from '@/hooks/useTimer'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 
 import AssetSearch from '@/components/asset-search'
-import Button from '@/components/button'
+import Button, { ClearButton } from '@/components/button'
 import FormControls from '@/components/form-controls'
 import ItemsEditor, { Item } from '@/components/items-editor'
 import TextInput from '@/components/text-input'
@@ -27,24 +27,15 @@ import ErrorMessage from '@/components/error-message'
 import SuccessMessage from '@/components/success-message'
 import { RelationItem } from '@/components/relations'
 import RadioInputs from '@/components/radio-inputs'
-import Message from '@/components/message'
-import Paper from '@/components/paper'
 import Heading from '@/components/heading'
 import CheckboxInput from '@/components/checkbox-input'
 import WarningMessage from '@/components/warning-message'
+import InfoMessage from '../info-message'
 
-const useStyles = makeStyles({
-  editor: {
-    marginBottom: '1rem',
-  },
-  label: {
-    fontSize: '150%',
-    marginBottom: '0.5rem',
-  },
-  formLabel: {
-    margin: '0.5rem 0',
-  },
-})
+const SelectedAsset = styled.div`
+  display: flex;
+  align-items: center;
+`
 
 const RelationEditorForm = ({
   relation,
@@ -55,7 +46,6 @@ const RelationEditorForm = ({
   relation?: Relation
   assetsData?: Asset[]
 }) => {
-  const classes = useStyles()
   const [newRelation, setNewRelation] = useState<Relation>(
     relation || {
       asset: '',
@@ -89,21 +79,19 @@ const RelationEditorForm = ({
   }
 
   return (
-    <Paper className={classes.editor}>
+    <div>
       <Heading variant="h3" noTopMargin>
         Asset
       </Heading>
       {newRelation.asset ? (
-        <>
+        <SelectedAsset>
           <AssetResultsItem
             asset={assetsData.find(
               (assetData) => assetData.id === newRelation.asset
             )}
           />
-          <Button onClick={() => setField('asset', null)} color="secondary">
-            Clear
-          </Button>
-        </>
+          <ClearButton onClick={() => setField('asset', null)} />
+        </SelectedAsset>
       ) : (
         <AssetSearch
           selectedAsset={assetsData.find(
@@ -122,6 +110,7 @@ const RelationEditorForm = ({
           label: key,
         }))}
       />
+      <Heading variant="h3">Verification</Heading>
       <CheckboxInput
         label="Verification of the parent asset is required (explain in comments)"
         value={newRelation.requiresVerification || false}
@@ -149,7 +138,7 @@ const RelationEditorForm = ({
           Done
         </Button>
       </FormControls>
-    </Paper>
+    </div>
   )
 }
 
@@ -172,7 +161,6 @@ const Editor = ({
 const Renderer = ({ item }: { item: Item<Relation> }) => {
   const [isLoadingAsset, lastErrorCodeLoadingAsset, asset] =
     useDataStoreItem<Asset>(CollectionNames.Assets, item.asset || false)
-  const classes = useStyles()
 
   if (isLoadingAsset) {
     return <LoadingIndicator message="Loading asset..." />
@@ -229,7 +217,6 @@ const RelationsEditor = ({
     CollectionNames.Assets,
     assetId || false
   )
-  const [isAddFormVisible, setIsAddFormVisible] = useState(false)
   const [newRelations, setNewRelations] = useState<Relation[]>(
     currentRelations || []
   )
@@ -250,10 +237,6 @@ const RelationsEditor = ({
   }, [JSON.stringify(currentRelations)])
 
   const onNewRelations = (relations: Relation[]) => storeNewRelations(relations)
-  const onAddRelation = (newRelation: Relation) => {
-    storeNewRelations(newRelations.concat(newRelation))
-    setIsAddFormVisible(false)
-  }
 
   const onSaveClick = async () => {
     try {
@@ -288,8 +271,6 @@ const RelationsEditor = ({
     }
   }
 
-  const onAddClick = () => setIsAddFormVisible(true)
-
   if (isSaving) {
     return <LoadingIndicator message="Saving relations..." />
   }
@@ -308,16 +289,10 @@ const RelationsEditor = ({
 
   return (
     <div>
-      <Message hideId="relations-editor-info">
-        We encourage everyone to "link" different assets together to help
-        people:
-        <ul>
-          <li>find a dependency to make your asset work</li>
-          <li>find other similar assets</li>
-        </ul>
-        Please link other assets using this form.
-      </Message>
-      {isAddFormVisible ? <RelationEditorForm onDone={onAddRelation} /> : null}
+      <InfoMessage hideId="relations-editor-info" small>
+        Is your accessory designed for a specific avatar? Does your avatar
+        require owning another one? Link it here.
+      </InfoMessage>
       <ItemsEditor<Relation, { assetsData: Asset[] | undefined }>
         nameSingular="relation"
         editor={Editor}
@@ -329,7 +304,6 @@ const RelationsEditor = ({
           type: '',
           comments: '',
         }}
-        onAdd={onAddClick}
         getKey={(item) => item.asset}
         commonProps={{
           assetsData,

@@ -370,7 +370,7 @@ const ChangeDiscordServerForm = ({
 
   return (
     <div>
-      <WarningMessage noTopMargin>
+      <WarningMessage noMargin small>
         Only set a Discord server if they are <strong>required</strong> to join
         to be able to purchase/download this asset. Set a support Discord in the
         author.

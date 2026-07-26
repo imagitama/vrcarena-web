@@ -1,10 +1,24 @@
 import React from 'react'
+import styled from '@emotion/styled'
 
 import Link from '@/components/link'
 import * as routes from '@/routes'
 
-import Avatar, { AvatarSize } from '@/components/avatar'
+import OriginalAvatar, { AvatarSize } from '@/components/avatar'
 import StatusText from '@/components/status-text'
+
+const UserLink = styled(Link)`
+  display: inline-flex;
+  align-items: first baseline;
+  & img {
+  }
+`
+
+const Avatar = styled(OriginalAvatar)`
+  position: relative;
+  top: 6px;
+  margin: 0 0.25rem;
+`
 
 export default ({
   id,
@@ -20,10 +34,12 @@ export default ({
   reputation?: number
 }) => (
   <>
-    <Link to={routes.viewUserWithVar.replace(':userId', id)} title={username}>
-      {avatarUrl && <Avatar url={avatarUrl} size={AvatarSize.Tiny} />}
+    <UserLink
+      to={routes.viewUserWithVar.replace(':userId', id)}
+      title={username}>
+      {avatarUrl && <Avatar url={avatarUrl} size={AvatarSize.ExtraTiny} />}
       {children || username}
-    </Link>
+    </UserLink>
     {reputation !== undefined ? (
       <>
         {' '}

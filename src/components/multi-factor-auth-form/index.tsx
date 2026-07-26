@@ -43,7 +43,8 @@ const getMessageForCode = (code: string): string => {
     case FirebaseErrorCode['auth/invalid-argument']:
       return 'MFA unavailable'
     case FirebaseErrorCode['auth/requires-recent-login']:
-      return 'You must have logged in recently before changing your MFA settings. Logout then login and try again.'
+      // TODO: prompt to login instead of doing this
+      return 'You must have logged in recently (within approx 5 mins) before changing your MFA settings. Logout then login and try again.'
     default:
       return `Error code: ${code}`
   }
@@ -53,7 +54,9 @@ const getErrorCodeFromError = (err: Error): string => {
   if (err instanceof FirebaseError) {
     return err.code
   }
-  return 'unknown'
+  // outputting the error sucks but it's the quickest way to debug issues
+  // (especially because we cant test locally - thanks firebase!)
+  return `Unknown: ${err.message}`
 }
 
 const MultiFactorAuthForm = () => {
@@ -135,7 +138,8 @@ const MultiFactorAuthForm = () => {
           setIsWorking(true)
 
           const user = auth.currentUser
-          if (!user || !secret) return
+          if (!user) throw new Error('No user')
+          if (!secret) throw new Error('No secret')
 
           const assertion = TotpMultiFactorGenerator.assertionForEnrollment(
             secret,
@@ -209,7 +213,9 @@ const MultiFactorAuthForm = () => {
             MFA has been enabled for your account
             <br />
             <br />
-            <Button onClick={onClickRemove}>Remove MFA</Button>
+            <Button onClick={onClickRemove} color="secondary">
+              Remove MFA
+            </Button>
           </SuccessMessage>
           {lastErrorCode !== null && (
             <ErrorMessage>{getMessageForCode(lastErrorCode)}</ErrorMessage>

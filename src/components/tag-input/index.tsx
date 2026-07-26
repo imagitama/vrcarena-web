@@ -21,6 +21,7 @@ import AutocompleteInput, {
   AutocompleteOption,
 } from '@/components/autocomplete-input'
 import TagChips from '@/components/tag-chips'
+import NoResultsMessage from '../no-results-message'
 
 const useStyles = makeStyles({
   fullWidth: {
@@ -55,6 +56,11 @@ const useStyles = makeStyles({
     textAlign: 'center',
     display: 'block',
     fontWeight: 'bold',
+  },
+  btn: {
+    '&&': {
+      marginTop: '0.25rem',
+    },
   },
 })
 
@@ -238,6 +244,7 @@ const TagInput = ({
   const [textInput, setTextInput] = useState('')
   const [newTags, setNewTags] = useState(currentTags || [])
   const classes = useStyles()
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
@@ -329,7 +336,11 @@ const TagInput = ({
 
   return (
     <div className={`${fullWidth ? classes.fullWidth : ''}`}>
-      <TagChips tags={newTags} onDelete={removeTag} />
+      {newTags.length ? (
+        <TagChips tags={newTags} onDelete={removeTag} />
+      ) : (
+        <NoResultsMessage>No tags yet</NoResultsMessage>
+      )}
       <AutocompleteInput
         value={textInput}
         onNewValue={(newValue) => setTextInput(newValue)}
@@ -344,15 +355,25 @@ const TagInput = ({
           disabled: isDisabled,
         }}
       />
-      {showRecommendedTags && (
-        <div className={classes.recommendedTags}>
-          <RecommendedTags
-            newTags={newTags}
-            onClickWithTag={(tag) => addTag(tag)}
-            categoryName={asset?.category}
-          />
-        </div>
-      )}
+      {showRecommendedTags ? (
+        isExpanded ? (
+          <div className={classes.recommendedTags}>
+            <RecommendedTags
+              newTags={newTags}
+              onClickWithTag={(tag) => addTag(tag)}
+              categoryName={asset?.category}
+            />
+          </div>
+        ) : (
+          <Button
+            onClick={() => setIsExpanded(true)}
+            color="secondary"
+            size="small"
+            className={classes.btn}>
+            Show Recommended Tags
+          </Button>
+        )
+      ) : null}
       {onDone && (
         <FormControls>
           <Button onClick={onDoneClick} isDisabled={isDisabled}>

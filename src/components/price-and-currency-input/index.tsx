@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem'
 
 import { popularCurrencies, PopularCurrency } from '@/currency'
 
-import Button from '@/components/button'
+import { ClearButton } from '@/components/button'
 import Select from '@/components/select'
 import Price from '@/components/price'
 import PriceInput from '@/components/price-input'
@@ -63,9 +63,7 @@ const PriceAndCurrencyInput = ({
           onChange={(newPrice) => onChange(newPrice, priceCurrency)}
           allowClear={false}
         />
-        <Button onClick={() => onChange(null, priceCurrency)} color="secondary">
-          Clear Price
-        </Button>
+        <ClearButton onClick={() => onChange(null, priceCurrency)} />
       </div>
       {showPreview ? (
         <>

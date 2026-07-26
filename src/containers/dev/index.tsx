@@ -34,6 +34,7 @@ import AssetTree from '@/components/asset-tree'
 import AssetOverview from '@/components/asset-overview'
 import QrCode from '@/components/qr-code'
 import SupporterBadgeForm from '@/components/supporter-badge-form'
+import AssetEditor from '@/components/asset-editor'
 
 const ErrorCodeDecoder = () => {
   const [inputString, setInputString] = useState('')
@@ -218,8 +219,7 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
-        <QrCode url="http://www.vrcarena.com" heightPx={200} />
-        <SupporterBadgeForm url="http://www.vrcarena.com" />
+        <AssetEditor assetId={'t9t33LFHlzzMeBHFbIVF'} />
         {/* <h2>Tag Input</h2>
         <TagInput currentTags={['free', 'paid', 'rigged']} /> */}
         {/* <h2>Asset Tree</h2>

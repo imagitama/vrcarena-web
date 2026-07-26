@@ -17,10 +17,34 @@ import StatusText from '@/components/status-text'
 import { fieldTypes } from '@/generic-forms'
 
 const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    '& > *:nth-child(2)': {
+      width: '70%',
+    },
+    '&&': {
+      // TODO: replace inherited Paper somehow
+      margin: 0,
+      background: 'none',
+      border: 'none',
+      boxShadow: 'none',
+      '&:nth-child(even)': {
+        background: 'rgba(0,0,0,0.1)',
+      },
+      // borderBottom: '1px solid rgba(255,255,255,0.15)',
+    },
+  },
   title: {
-    fontSize: '150%',
+    width: '30%',
+    fontSize: '125%',
     '& > *': {
-      margin: '5px 0 0 !important',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+  },
+  content: {
+    '&&': {
+      padding: '0.25rem',
     },
   },
   requiredLabel: {
@@ -29,6 +53,11 @@ const useStyles = makeStyles({
     alignItems: 'center',
     '& svg': {
       marginRight: '0.25rem',
+    },
+  },
+  expanded: {
+    '&&': {
+      margin: '0 !important',
     },
   },
 })
@@ -49,9 +78,14 @@ const Field = ({
   const classes = useStyles()
 
   return isAccordion ? (
-    <Accordion defaultExpanded={startExpanded}>
+    <Accordion
+      defaultExpanded={startExpanded}
+      className={classes.root}
+      classes={{
+        expanded: classes.expanded,
+      }}>
       <AccordionSummary className={classes.title}>
-        {editableField.label || ''}{' '}
+        <span>{editableField.label || ''} </span>
         {editableField.isRequired && (
           <StatusText positivity={-1} className={classes.requiredLabel}>
             {' '}
@@ -59,7 +93,7 @@ const Field = ({
           </StatusText>
         )}
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails className={classes.content}>
         <FormControl fullWidth>{children}</FormControl>
         {editableField.hint && (
           <FormHelperText>

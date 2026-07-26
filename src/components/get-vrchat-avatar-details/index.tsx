@@ -153,10 +153,12 @@ const GetVrchatAvatarDetails = ({
           onChange={(e) => setTextInputValue(e.target.value.trim())}
           className={classes.input}
           fullWidth
+          button={
+            <Button onClick={() => lookupAvatar()} color="secondary">
+              Look Up
+            </Button>
+          }
         />
-        <Button onClick={() => lookupAvatar()} color="secondary">
-          Look Up
-        </Button>
       </div>
     </div>
   )

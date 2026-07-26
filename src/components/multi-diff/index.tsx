@@ -85,6 +85,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     '&:hover:not($disabledControl)': {
       background: theme.palette.action.hover,
     },
+    fontSize: '2rem',
   },
   disabledControl: {
     opacity: '0.5',

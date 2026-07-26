@@ -4,11 +4,15 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles({
-  root: {
-    fontSize: '1.5rem',
-  },
+  root: {},
   fullWidth: {
     width: '100%',
+  },
+  checkbox: {
+    '&&': {
+      fontSize: '1.5rem',
+      padding: '0.25rem',
+    },
   },
 })
 
@@ -38,6 +42,7 @@ const CheckboxInput = ({
           checked={value}
           disabled={isDisabled}
           size="large"
+          className={classes.checkbox}
         />
       }
       onClick={onClick}

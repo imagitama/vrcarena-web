@@ -10,6 +10,7 @@ import FlipMove from 'react-flip-move'
 import { moveItemToLeft, moveItemToRight } from '@/utils'
 import { VRCArenaTheme } from '@/themes'
 import Button from '@/components/button'
+import classNames from 'classnames'
 
 export type Item<T> = {} & T
 
@@ -32,9 +33,8 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    minWidth: '200px',
-    minHeight: '300px',
     margin: '0 0.25rem',
+    padding: '0.5rem',
     '& > *': {
       width: '100%',
     },
@@ -42,6 +42,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   emptyItem: {
     borderRadius: theme.shape.borderRadius,
     border: '0.1rem dashed rgba(255, 255, 255, 0.5)',
+    padding: '1rem',
   },
   sideControl: {
     display: 'flex',
@@ -54,6 +55,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     height: '3rem',
     padding: '0.5rem',
     cursor: 'pointer',
+    fontSize: '2rem',
     borderRadius: '100%',
     background: theme.palette.background.paper,
     display: 'flex',
@@ -89,14 +91,20 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     justifyContent: 'center',
     flexWrap: 'wrap',
   },
-  activeForEditing: {
+  itemBeingEdited: {
     width: '100%',
     padding: '0.5rem',
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderRadius: theme.shape.borderRadius,
+    border: '0.1rem dashed rgba(255, 255, 255, 0.5)',
   },
   disabledControl: {
     opacity: '0.5',
     cursor: 'not-allowed',
+  },
+  addBtn: {
+    '&&': {
+      padding: '3rem 2rem',
+    },
   },
 }))
 
@@ -223,9 +231,10 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
               return (
                 <div
                   key={key}
-                  className={`${classes.item} ${
-                    idx === activeIndexToEdit ? classes.activeForEditing : ''
-                  } ${itemClassName}`}>
+                  className={classNames(classes.item, itemClassName, {
+                    [classes.itemBeingEdited]:
+                      idx === activeIndexToEdit && editor,
+                  })}>
                   {idx === activeIndexToEdit && editor ? (
                     <div>
                       {/* @ts-ignore */}
@@ -291,32 +300,15 @@ const ItemsEditor = <TItem, TCommonProps extends object = {}>({
             })
           : null}
         {allowAdding ? (
-          <div className={`${classes.item} ${classes.emptyItem}`}>
-            <div className={classes.noItemsMessageWrapper}>
-              <div className={classes.noItemsMessage}>
-                No {nameSingular}s defined yet
-              </div>
-              <Button color="secondary" onClick={onAddClick} icon={<AddIcon />}>
-                Add {nameSingular}
-              </Button>
-            </div>
-          </div>
+          <Button
+            color="secondary"
+            onClick={onAddClick}
+            icon={<AddIcon />}
+            className={classes.addBtn}>
+            Add {nameSingular}
+          </Button>
         ) : null}
       </FlipMove>
-      {/* {allowAdding ? (
-        <div className={classes.item}>
-          <div className={classes.addButton}>
-            <CardButton
-              label={
-                <>
-                  <AddIcon /> Add {nameSingular}
-                </>
-              }
-              onClick={onAddClick}
-            />
-          </div>
-        </div>
-      ) : null} */}
     </div>
   )
 }

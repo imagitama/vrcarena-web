@@ -6,6 +6,7 @@ import { setIsSearching } from '@/modules/app'
 import { DataStoreErrorCode, GetQuery } from '@/data-store'
 
 import useSupabaseClient from './useSupabaseClient'
+import store from '@/store'
 
 export type GetQueryFn<TRecord> = (
   query: GetQuery<TRecord>
@@ -111,7 +112,7 @@ export default <TRecord>(
     getQuery,
   ])
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
 
   useEffect(() => {
     dispatch(setIsSearching(isLoading))

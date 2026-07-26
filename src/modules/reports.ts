@@ -85,6 +85,7 @@ export interface Report extends Record<string, any> {
   parent: string
   reason: string
   comments: string
+  assignedto: string | null
   lastmodifiedat: string // Date
   lastmodifiedby: string
   createdat: string // Date
@@ -107,7 +108,13 @@ export interface ReportMeta extends Record<string, unknown> {
 export interface FullReport<TParent = any> extends Report, ReportMeta {
   parentdata: TParent
   createdbyusername: string
+  createdbyavatarurl: string
+  lastmodifiedbyusername: string
+  lastmodifiedbyavatarurl: string
   resolvedbyusername: string
+  resolvedbyavatarurl: string
+  assignedtousername: string
+  assignedtoavatarurl: string
 }
 
 export enum CollectionNames {

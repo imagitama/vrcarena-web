@@ -13,6 +13,7 @@ import {
   CollectionNames as AssetsCollectionNames,
   Asset,
   FullAsset,
+  AssetFields,
 } from '@/modules/assets'
 import {
   AssetSyncQueueItem,
@@ -46,6 +47,7 @@ import PlatformSyncAssertion from './components/platform-sync-assertion'
 import ErrorBoundary from '@/components/error-boundary'
 import useUserId from '@/hooks/useUserId'
 import SuccessMessage from '@/components/success-message'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
 // TODO: move to component
 const useStyles = makeStyles({
@@ -81,42 +83,27 @@ const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
 }
 
 const ManualCreateView = () => {
-  const [isCreating, setIsCreating] = useState(false)
-
-  // TODO: Store last error code
-  const [isError, setIsError] = useState(false)
+  const [isCreating, isSuccess, lastErrorCode, create] = useDataStoreCreate<
+    AssetFields,
+    Asset
+  >(AssetsCollectionNames.Assets, {
+    queryName: 'create-asset',
+  })
   const classes = useStyles()
   const [isLoadingDrafts, lastErrorCodeLoadingDrafts, drafts] = useMyDrafts()
   const { push } = useHistory()
-  const supabase = useSupabaseClient()
   const isLoggedIn = useIsLoggedIn()
 
   const createDraft = async () => {
-    try {
-      setIsCreating(true)
-      setIsError(false)
+    const newDraftRecord = await create({
+      title: 'My draft asset',
+    })
 
-      const newDraftRecord = await insertRecord<{ title: string }, Asset>(
-        supabase,
-        AssetsCollectionNames.Assets,
-        {
-          title: 'My draft asset',
-        },
-        true
-      )
-
-      if (!newDraftRecord) {
-        throw new Error('Did not return a draft')
-      }
-
-      push(routes.editAssetWithVar.replace(':assetId', newDraftRecord.id))
-    } catch (err) {
-      console.error(err)
-      handleError(err)
-
-      setIsCreating(false)
-      setIsError(true)
+    if (!newDraftRecord) {
+      throw new Error('Did not return a draft')
     }
+
+    push(routes.editAssetWithVar.replace(':assetId', newDraftRecord.id))
   }
 
   if (isLoadingDrafts) {
@@ -174,8 +161,10 @@ const ManualCreateView = () => {
     return <LoadingIndicator message="Creating draft..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to create draft</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage>Failed to create draft (code {lastErrorCode})</ErrorMessage>
+    )
   }
 
   return (

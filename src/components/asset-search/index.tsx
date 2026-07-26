@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import MenuItem from '@mui/material/MenuItem'
 
@@ -37,16 +37,26 @@ const AssetSearch = ({
   limit?: number
 }) => {
   const [userInput, setUserInput] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
   // preselect avatars as it is the most common kind of search
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     AssetCategory.Avatar
   )
   const [isSearching, lastErrorCode, results] = useAssetSearch(
-    userInput,
+    searchTerm,
     selectedCategory ? { category: [selectedCategory] } : {},
     limit
   )
   const classes = useStyles()
+
+  useEffect(() => {
+    const newSearchTerm = userInput.trim()
+    if (newSearchTerm.length >= 3) {
+      setSearchTerm(newSearchTerm)
+    } else {
+      setSearchTerm('')
+    }
+  }, [userInput])
 
   return (
     <>

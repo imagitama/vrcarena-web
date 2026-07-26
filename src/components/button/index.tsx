@@ -3,11 +3,14 @@ import Link from '@/components/link'
 import MaterialButton from '@mui/material/Button'
 import { makeStyles } from '@mui/styles'
 import classnames from 'classnames'
+import SaveIcon from '@mui/icons-material/Save'
+
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined'
 import AddIcon from '@mui/icons-material/Add'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import ClearIcon from '@mui/icons-material/Clear'
 
 import Tooltip from '@/components/tooltip'
 import { VRCArenaTheme } from '@/themes'
@@ -299,6 +302,23 @@ export const CreateButton = (args: ButtonProps) => (
     iconSide="left"
     {...args}
   />
+)
+
+export const ClearButton = (args: ButtonProps) => (
+  <Button
+    icon={<ClearIcon />}
+    color="secondary"
+    hollow
+    iconSide="left"
+    {...args}>
+    Clear
+  </Button>
+)
+
+export const SaveButton = (args: ButtonProps) => (
+  <Button icon={<SaveIcon />} color="secondary" hollow {...args}>
+    Save
+  </Button>
 )
 
 export const GoToButton = (args: ButtonProps) => (

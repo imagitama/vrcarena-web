@@ -47,11 +47,18 @@ const useAssetSearch = (
 
   const [isSimpleLoading, lastSimpleErrorCode, simpleResults] =
     useDataStoreFunction<
-      { search_term: string; include_adult: boolean },
+      {
+        search_term: string
+        include_adult: boolean
+        p_category: string | null
+      },
       AssetSearchResult[]
     >(FunctionNames.SearchAssets, [], usingSimpleSearch, {
       search_term: searchTerm,
       include_adult: isAdultContentEnabled,
+      p_category: filtersByFieldName.category
+        ? filtersByFieldName.category[0]
+        : null,
     })
 
   const dispatch = useDispatch<typeof store.dispatch>()

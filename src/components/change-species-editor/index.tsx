@@ -135,25 +135,13 @@ export default ({
 
   return (
     <>
-      <InfoMessage hideId="how-to-pick-species">
-        <Heading variant="h2" noTopMargin>
-          How do I pick a species?
-        </Heading>
-        <ul>
-          <li>
-            tag what you SEE - does the avatar contain a texture for a different
-            species? Tag it!
-          </li>
-          <li>
-            selecting a parent will automatically select all of the children
-          </li>
-        </ul>
+      <InfoMessage hideId="how-to-pick-species" small>
+        Selecting a species will select its children automatically (you do not
+        need to select them yourself).
       </InfoMessage>
       <SpeciesSelector
         selectedSpeciesIds={newSpeciesIds}
         onSelectedSpeciesIds={onSelectedSpeciesIds}
-        // showControls={false}
-        // startCollapsed={startCollapsed}
       />
       {showControls ? (
         <FormControls>
