@@ -15,6 +15,7 @@ import GenericOutputItem from '@/components/generic-output-item'
 import ResolutionStatusOutput from '@/components/resolution-status'
 import Link from '@/components/link'
 import UsernameLink from '@/components/username-link'
+import { getShortId } from '@/utils/formatting'
 
 function ReportsTable({ reports }: { reports?: FullReport[] }) {
   return (
@@ -22,6 +23,7 @@ function ReportsTable({ reports }: { reports?: FullReport[] }) {
       <TableHead>
         <TableRow>
           <TableCell />
+          <TableCell>Reason</TableCell>
           <TableCell>Parent</TableCell>
           <TableCell>Metadata</TableCell>
           <TableCell>Status</TableCell>
@@ -50,12 +52,10 @@ function ReportsTable({ reports }: { reports?: FullReport[] }) {
               <TableRow key={id}>
                 <TableCell>
                   <Link to={routes.viewReportWithVar.replace(':reportId', id)}>
-                    View Report
+                    #{getShortId(id)}
                   </Link>
-                  <br />
-                  <br />
-                  Reason: {reason}
                 </TableCell>
+                <TableCell>{reason || '-'}</TableCell>
                 <TableCell>
                   <GenericOutputItem
                     type={parenttable}

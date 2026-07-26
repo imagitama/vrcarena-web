@@ -22,6 +22,7 @@ import {
   CollectionNames as ReportsCollectionNames,
   ResolutionStatus,
 } from '@/modules/reports'
+import { CollectionNames as SupportTicketsCollectionNames } from '@/modules/support-tickets'
 import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
 import { CollectionNames as CollectionsCollectionNames } from '@/modules/collections'
 import { CollectionNames as WishlistsCollectionNames } from '@/modules/wishlists'
@@ -124,6 +125,10 @@ const HistoryEntryLabel = ({
           return <>created the asset</>
         case AuthorsCollectionNames.Authors:
           return <>created the author</>
+        case ReportsCollectionNames.Reports:
+          return <>created the report</>
+        case SupportTicketsCollectionNames.SupportTickets:
+          return <>created the support ticket</>
         default:
           return (
             <>created the {parenttable.substring(0, parenttable.length - 1)}*</>
@@ -218,6 +223,8 @@ const HistoryEntryLabel = ({
             )
           } else if ((fields as FullReport).resolutionnotes) {
             return <>changed the resolution notes</>
+          } else if ((fields as FullReport).assignedto) {
+            return <>assigned to someone</>
           } else if ((fields as FullReport).editornotes) {
             return <>changed editor notes for report</>
           } else {

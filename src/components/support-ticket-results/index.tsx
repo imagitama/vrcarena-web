@@ -28,7 +28,7 @@ export default ({
           <TableCell />
           {showRelatedDetails && <TableCell>Parent</TableCell>}
           <TableCell>Category</TableCell>
-          <TableCell>Metadata</TableCell>
+          <TableCell>Created</TableCell>
           <TableCell>Status</TableCell>
         </TableRow>
       </TableHead>

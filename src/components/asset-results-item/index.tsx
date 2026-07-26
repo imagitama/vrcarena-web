@@ -398,7 +398,9 @@ const AssetResultsItem = ({
             </div>
             <div className={classes.author}>
               {asset ? (
-                `by ${asset.authorname || '(unnamed)'}`
+                asset.authorname ? (
+                  `by ${asset.authorname || '(unnamed)'}`
+                ) : null
               ) : (
                 <LoadingShimmer width="80px" height="12px" marginTop={'2px'} />
               )}

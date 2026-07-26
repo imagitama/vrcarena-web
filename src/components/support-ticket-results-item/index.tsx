@@ -9,7 +9,7 @@ import Link from '@/components/link'
 import FormattedDate from '@/components/formatted-date'
 import GenericOutputItem from '@/components/generic-output-item'
 import ResolutionStatus from '@/components/resolution-status'
-import Button from '@/components/button'
+import { getShortId } from '@/utils/formatting'
 
 export default ({
   supportTicket,
@@ -26,7 +26,6 @@ export default ({
     relatedtable: relatedTable,
     relatedid: relatedId,
     category,
-    guestid: guestId,
 
     createdat,
     createdby,
@@ -45,16 +44,14 @@ export default ({
   return (
     <Fragment key={supportTicketId}>
       <TableRow key={supportTicketId} title={supportTicketId}>
-        <TableCell>
-          <Button
-            url={routes.viewSupportTicketWithVar.replace(
+        <TableCell title={supportTicketId}>
+          <Link
+            to={routes.viewSupportTicketWithVar.replace(
               ':supportTicketId',
               supportTicketId
-            )}
-            color="secondary"
-            size="small">
-            View Support Ticket
-          </Button>
+            )}>
+            #{getShortId(supportTicketId)}
+          </Link>
         </TableCell>
         {showRelatedDetails && (
           <TableCell>
@@ -65,7 +62,7 @@ export default ({
                 data={parentdata}
               />
             ) : (
-              '(none)'
+              '-'
             )}
           </TableCell>
         )}

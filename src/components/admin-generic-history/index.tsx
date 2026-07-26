@@ -112,8 +112,10 @@ const AdminGenericHistory = ({
       url={routes.adminHistoryWithQueryParamVars
         .replace(':userId', '')
         .replace(':parentType', type || '')
-        .replace(':parentId', id || '')}>
-      View In Admin Area
+        .replace(':parentId', id || '')}
+      size="small"
+      color="secondary">
+      View In History
     </Button>
     <Heading variant="h3">Basic Details</Heading>
     <History id={id} type={type} limit={limit} />
