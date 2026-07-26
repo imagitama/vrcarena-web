@@ -44,3 +44,8 @@ export interface MetaRecord extends Record<string, unknown> {
   approvedat: string | null // Date
   approvedby: string | null // id
 }
+
+export enum ResolutionStatus {
+  Pending = 'pending',
+  Resolved = 'resolved',
+}

@@ -1,3 +1,5 @@
+import { ResolutionStatus } from './common'
+
 export enum SupportTicketCategory {
   // ccounts
   CantEditAccount = 'cant-edit-account',
@@ -159,10 +161,7 @@ export interface SupportTicket extends Record<string, any> {
   createdby: string
 }
 
-export enum ResolutionStatus {
-  Pending = 'pending',
-  Resolved = 'resolved',
-}
+export { ResolutionStatus }
 
 export interface SupportTicketMeta extends Record<string, unknown> {
   editornotes: string

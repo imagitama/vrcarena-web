@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 
 import { getUrlForParent } from '@/relations'
-import { CollectionNames, ResolutionStatus } from '@/modules/support-tickets'
+import { ResolutionStatus } from '@/modules/support-tickets'
 import useIsEditor from '@/hooks/useIsEditor'
 
 import Link from '@/components/link'
@@ -26,6 +26,8 @@ import {
 } from '@/media-queries'
 import { HydrateFn } from '@/hooks/useDataStore'
 import { getShortId } from '@/utils/formatting'
+import AdminGenericHistory from '../admin-generic-history'
+import ErrorBoundary from '../error-boundary'
 
 const Cells = styled.div`
   display: flex;
@@ -218,6 +220,15 @@ const ResolvableItem = ({
       )}
       <Heading variant="h2">Comments</Heading>
       <CommentList collectionName={collectionName} parentId={item.id} />
+      {isEditor && (
+        <ErrorBoundary>
+          <AdminGenericHistory
+            id={item.id}
+            type={collectionName}
+            metaType={metaCollectionName}
+          />
+        </ErrorBoundary>
+      )}
     </>
   )
 }

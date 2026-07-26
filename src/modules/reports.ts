@@ -1,5 +1,6 @@
 import { CollectionNames as AssetsCollectionNames } from './assets'
 import { CollectionNames as CommentsCollectionNames } from './comments'
+import { ResolutionStatus } from './common'
 import { CollectionNames as ReviewsCollectionNames } from './reviews'
 
 const commonReportReasonKeys = {
@@ -92,10 +93,7 @@ export interface Report extends Record<string, any> {
   createdby: string
 }
 
-export enum ResolutionStatus {
-  Pending = 'pending',
-  Resolved = 'resolved',
-}
+export { ResolutionStatus }
 
 export interface ReportMeta extends Record<string, unknown> {
   editornotes: string

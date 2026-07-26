@@ -87,9 +87,7 @@ export const getUrlForParent = (
         parentData ? parentData.id : 'ERROR'
       )
     default:
-      throw new Error(
-        `Could not get URL for parent ${parentTable} - not supported`
-      )
+      return `/#unknown-parent/${parentTable}`
   }
 }
 
