@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -7,9 +7,9 @@ import TableRow from '@mui/material/TableRow'
 
 import * as routes from '@/routes'
 import { FullReport, ResolutionStatus, ViewNames } from '@/modules/reports'
-import { FilterSubType, FilterType, MultichoiceFilter } from '@/filters'
+import { FilterSubType, FilterType } from '@/filters'
 
-import PaginatedView from '@/components/paginated-view'
+import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
 import FormattedDate from '@/components/formatted-date'
 import GenericOutputItem from '@/components/generic-output-item'
 import ResolutionStatusOutput from '@/components/resolution-status'
@@ -92,7 +92,28 @@ const Renderer = ({ items }: { items?: FullReport[] }) => (
   <ReportsTable reports={items} />
 )
 
+enum SubView {
+  Pending = 'pending',
+  Resolved = 'resolved',
+}
+
 export default () => {
+  const getQuery = useCallback<GetQueryFn<FullReport, SubView>>(
+    (query, selectedSubView) => {
+      switch (selectedSubView) {
+        case SubView.Pending:
+          query = query.eq('resolutionstatus', ResolutionStatus.Pending)
+          break
+        case SubView.Resolved:
+          query = query.eq('resolutionstatus', ResolutionStatus.Resolved)
+          break
+      }
+
+      return query
+    },
+    []
+  )
+
   return (
     <PaginatedView<FullReport>
       viewName={ViewNames.GetFullReports}
@@ -112,15 +133,19 @@ export default () => {
         ':tabName',
         'reports'
       )}
-      filters={[
+      getQuery={getQuery}
+      subViews={[
         {
-          fieldName: 'resolutionstatus',
-          type: FilterType.Multichoice,
-          options: [ResolutionStatus.Pending, ResolutionStatus.Resolved],
-          label: 'Status',
-          defaultActive: true,
-          defaultValue: [ResolutionStatus.Pending],
-        } as MultichoiceFilter<FullReport, ResolutionStatus>,
+          id: SubView.Pending,
+          label: 'Pending',
+        },
+        {
+          id: SubView.Resolved,
+          label: 'Resolved',
+        },
+      ]}
+      defaultSubView={SubView.Pending}
+      filters={[
         {
           fieldName: 'createdby',
           label: 'Reporter',

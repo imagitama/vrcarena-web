@@ -1,30 +1,16 @@
 import React from 'react'
 import { Helmet } from '@unhead/react/helmet'
-import { useParams } from 'react-router'
 import styled from '@emotion/styled'
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 
-import * as routes from '@/routes'
 import { getUrlForParent } from '@/relations'
-import {
-  CollectionNames,
-  FullSupportTicket,
-  ResolutionStatus,
-  ViewNames,
-} from '@/modules/support-tickets'
-import { getViewNameForParentTable } from '@/utils/reports'
-
-import useIsLoggedIn from '@/hooks/useIsLoggedIn'
-import useDataStoreItem from '@/hooks/useDataStoreItem'
+import { CollectionNames, ResolutionStatus } from '@/modules/support-tickets'
 import useIsEditor from '@/hooks/useIsEditor'
 
 import Link from '@/components/link'
-import LoadingIndicator from '@/components/loading-indicator'
-import ErrorMessage from '@/components/error-message'
 import GenericOutputItem from '@/components/generic-output-item'
 import Heading from '@/components/heading'
 import CommentList from '@/components/comment-list'
-import NoPermissionMessage from '@/components/no-permission-message'
 import NoResultsMessage from '@/components/no-results-message'
 import FormattedDate from '@/components/formatted-date'
 import ResolutionStatusOutput from '@/components/resolution-status'
