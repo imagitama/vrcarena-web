@@ -101,11 +101,13 @@ const ResolvableItem = ({
     <>
       <Helmet>
         <title>
-          {title} #{item.id}
+          {title} #{getShortId(item.id)}
         </title>
         <meta
           name="description"
-          content={`Read more information about support ticket #${item.id} on the site.`}
+          content={`Read more information about ${title.toLowerCase()} #${
+            item.id
+          } on the site.`}
         />
       </Helmet>
       <Heading variant="h1" noMargin>
