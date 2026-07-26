@@ -212,6 +212,7 @@ const HistoryEntryLabel = ({
         case AuthorsCollectionNames.Authors:
           return <>edited author</>
         case ReportsCollectionNames.ReportsMeta:
+        case SupportTicketsCollectionNames.SupportTicketsMeta:
           if ((fields as FullReport).resolutionstatus) {
             return (
               <>
@@ -226,7 +227,7 @@ const HistoryEntryLabel = ({
           } else if ((fields as FullReport).assignedto) {
             return <>assigned to someone</>
           } else if ((fields as FullReport).editornotes) {
-            return <>changed editor notes for report</>
+            return <>changed editor notes</>
           } else {
             return <>changed {Object.keys(fields).join(', ')}</>
           }
