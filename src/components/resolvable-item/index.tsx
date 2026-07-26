@@ -181,7 +181,7 @@ const ResolvableItem = ({
             </Heading>
             <ResolutionControls
               id={item.id}
-              metaCollectionName={CollectionNames.SupportTicketsMeta}
+              metaCollectionName={metaCollectionName}
               existingResolutionStatus={item.resolutionstatus}
               existingResolutionNotes={item.resolutionnotes}
               onDone={hydrate}

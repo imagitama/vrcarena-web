@@ -78,7 +78,7 @@ const AssignForm = ({
 
   return (
     <>
-      <InfoMessage>Please only assign support tickets to yourself</InfoMessage>
+      <InfoMessage>Please only assign to yourself</InfoMessage>
       <div style={{ margin: '0.5rem 0' }}>
         <InputLabel>Assign To</InputLabel>
         <Select
