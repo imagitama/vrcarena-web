@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import CheckIcon from '@mui/icons-material/Check'
+
 import TextInput, { Props as TextInputProps } from '../text-input'
 import Button from '../button'
 import ErrorMessage from '../error-message'
@@ -64,7 +66,11 @@ const MultiFactorAuthCodeInput = ({
           maxLength: TOTP_LENGTH,
           autoComplete: 'one-time-code', // some devices will be smart and suggest a copied code
         }}
-        button={<Button onClick={onClickSubmit}>Submit</Button>}
+        button={
+          <Button icon={<CheckIcon />} onClick={onClickSubmit}>
+            Submit
+          </Button>
+        }
       />
       {lastErrorCode !== null && (
         <ErrorMessage>{getMessageForErrorCode(lastErrorCode)}</ErrorMessage>

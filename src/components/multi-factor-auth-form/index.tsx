@@ -1,5 +1,7 @@
-import { auth, getHasMfaEnabled, loggedInUser } from '@/firebase'
 import { useState } from 'react'
+import VpnKeyIcon from '@mui/icons-material/VpnKey'
+
+import { auth, getHasMfaEnabled } from '@/firebase'
 import SuccessMessage from '../success-message'
 import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
 import Button from '../button'
@@ -14,7 +16,9 @@ import FormControls from '../form-controls'
 import ErrorMessage from '../error-message'
 import WarningMessage from '../warning-message'
 import QrCode from '../qr-code'
-import { getHasUserVerifiedTheirEmail } from '@/auth'
+import { getHasUserVerifiedTheirEmail, getSignedUpWithEmail } from '@/auth'
+import useFirebaseUser from '@/hooks/useFirebaseUser'
+import Message from '../message'
 
 enum Step {
   Start,
@@ -32,6 +36,7 @@ enum ErrorCode {
 enum FirebaseErrorCode {
   'auth/invalid-argument' = 'auth/invalid-argument', // when using emulator (https://github.com/firebase/firebase-tools/issues/6224)
   'auth/requires-recent-login' = 'auth/requires-recent-login',
+  'auth/unsupported-first-factor' = 'auth/unsupported-first-factor', // when not using email
 }
 
 const getMessageForCode = (code: string): string => {
@@ -45,6 +50,8 @@ const getMessageForCode = (code: string): string => {
     case FirebaseErrorCode['auth/requires-recent-login']:
       // TODO: prompt to login instead of doing this
       return 'You must have logged in recently (within approx 5 mins) before changing your MFA settings. Logout then login and try again.'
+    case FirebaseErrorCode['auth/unsupported-first-factor']:
+      return 'MFA is not available for your sign-up method'
     default:
       return `Error code: ${code}`
   }
@@ -67,11 +74,16 @@ const MultiFactorAuthForm = () => {
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
   const [secret, setSecret] = useState<null | TotpSecret>(null)
   const [qrCodeUrl, setQrCodeUrl] = useState<null | string>(null)
+  const user = useFirebaseUser()
 
-  if (!loggedInUser) return null
+  if (!user) return null
 
-  if (!loggedInUser.email) {
-    return <>You did not sign up with an email address</>
+  if (!getSignedUpWithEmail(user)) {
+    return (
+      <Message>
+        MFA is only available if you signed up with an email and password
+      </Message>
+    )
   }
 
   switch (step) {
@@ -93,11 +105,13 @@ const MultiFactorAuthForm = () => {
             return
           }
 
-          // TODO: investigate why some users see this while already verified
-          // if (!getHasUserVerifiedTheirEmail(user)) {
-          //   setLastErrorCode(ErrorCode.EmailUnverified)
-          //   return
-          // }
+          if (
+            getSignedUpWithEmail(user) &&
+            !getHasUserVerifiedTheirEmail(user)
+          ) {
+            setLastErrorCode(ErrorCode.EmailUnverified)
+            return
+          }
 
           console.debug(`getting MFA session...`)
 
@@ -120,12 +134,14 @@ const MultiFactorAuthForm = () => {
 
       return (
         <>
-          <WarningMessage>
-            MFA is only allowed for email sign-ups only at this time
-          </WarningMessage>
           Click this button to enable MFA on your account:
           <FormControls>
-            <Button onClick={onClickEnable}>Enable MFA</Button>
+            <Button
+              icon={<VpnKeyIcon />}
+              onClick={onClickEnable}
+              isDisabled={isWorking}>
+              Enable MFA
+            </Button>
           </FormControls>
           {lastErrorCode !== null && (
             <ErrorMessage>{getMessageForCode(lastErrorCode)}</ErrorMessage>
