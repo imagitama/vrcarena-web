@@ -33,7 +33,7 @@ const MultiFactorAuthCodeInput = ({
   const [codeTextVal, setCodeTextVal] = useState('')
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
 
-  const onClickSubmit = () => {
+  const submit = () => {
     const code = codeTextVal.trim()
 
     if (!code) {
@@ -66,8 +66,13 @@ const MultiFactorAuthCodeInput = ({
           maxLength: TOTP_LENGTH,
           autoComplete: 'one-time-code', // some devices will be smart and suggest a copied code
         }}
+        onKeyDown={(e) => {
+          if (e.key == 'Enter') {
+            submit()
+          }
+        }}
         button={
-          <Button icon={<CheckIcon />} onClick={onClickSubmit}>
+          <Button icon={<CheckIcon />} onClick={submit}>
             Submit
           </Button>
         }
