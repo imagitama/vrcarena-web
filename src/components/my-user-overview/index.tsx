@@ -17,7 +17,11 @@ import FormattedDate from '@/components/formatted-date'
 import Avatar from '@/components/avatar'
 import UsernameLink from '@/components/username-link'
 import Button from '@/components/button'
-import { getSignedUpWithDiscord } from '@/auth'
+import {
+  getHasUserVerifiedTheirEmail,
+  getSignedUpWithDiscord,
+  getSignedUpWithEmail,
+} from '@/auth'
 
 const getSigninMethod = (firebaseUser: FirebaseUser): string => {
   if (getSignedUpWithDiscord(firebaseUser)) {
@@ -87,7 +91,12 @@ const MyUserOverview = () => {
         '(not recorded)'
       )}
       <Heading variant="h2">Method</Heading>
-      {getSigninMethod(firebaseUser)}
+      {getSigninMethod(firebaseUser)}{' '}
+      {getSignedUpWithEmail(firebaseUser)
+        ? getHasUserVerifiedTheirEmail(firebaseUser)
+          ? ' (verified)'
+          : '(unverified)'
+        : null}
       <Heading variant="h2">ID</Heading>
       {firebaseUser.uid}
     </>

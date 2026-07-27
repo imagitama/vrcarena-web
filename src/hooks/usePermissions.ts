@@ -23,7 +23,7 @@ function usePermissions<TRecord extends CommonRecordFields = never>(
     return false
   }
 
-  if (routeOrRecord !== routes.myAccount && !isVerified) {
+  if (routeOrRecord !== routes.myAccount && isVerified === false) {
     return false
   }
 

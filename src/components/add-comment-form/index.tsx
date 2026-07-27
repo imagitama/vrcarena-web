@@ -57,7 +57,7 @@ const AddCommentForm = ({
     )
   }
 
-  if (isBanned || !isVerified) {
+  if (isBanned || isVerified === false) {
     return <NoPermissionMessage />
   }
 

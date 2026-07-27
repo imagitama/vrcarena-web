@@ -46,6 +46,9 @@ export const unloadUserFromStore = async () => {
   })
 }
 
+export const getSignedUpWithEmail = (user: FirebaseUser): boolean =>
+  !!user.providerData?.some((provider) => provider.providerId === 'password')
+
 export const getSignedUpWithDiscord = (user: FirebaseUser): boolean =>
   !user.providerData || !user.providerData.length
 
