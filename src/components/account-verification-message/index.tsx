@@ -22,7 +22,7 @@ const AccountVerificationMessage = () => {
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
 
-  if (!isLoggedIn || isVerified) return null
+  if (!isLoggedIn || isVerified === null || isVerified === true) return null
 
   const ResentVerificationEmailButton = () => {
     const sendEmail = async () => {
