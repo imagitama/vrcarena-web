@@ -4,7 +4,7 @@ import { RootState } from '@/modules'
 
 export default (): boolean => {
   const doesHaveFirebaseId = useSelector<RootState, boolean>(
-    ({ firebase }) => firebase.user !== null
+    ({ firebase }) => firebase.userId !== null
   )
   const doesHaveSupabaseId = !!useSupabaseUserId()
   return doesHaveFirebaseId && doesHaveSupabaseId
