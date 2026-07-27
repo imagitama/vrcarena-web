@@ -141,7 +141,9 @@ export default ({
           disabled={isSaving}>
           {species
             .filter(
-              (speciesItem) => !speciesItem.singularname.includes('DO NOT USE')
+              (speciesItem) =>
+                speciesItem.singularname &&
+                !speciesItem.singularname.includes('DO NOT USE')
             )
             .map((speciesItem) => (
               <MenuItem key={speciesItem.id} value={speciesItem.id}>

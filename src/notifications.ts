@@ -14,64 +14,72 @@ import { CollectionNames as ReportsCollectionNames } from './modules/reports'
 import { CollectionNames as CommentsCollectionNames } from './modules/comments'
 import { FullNotification } from './modules/notifications'
 
-export const NotificationEvents = {
-  ASSET_APPROVED: 'ASSET_APPROVED',
-  ASSET_UNAPPROVED: 'ASSET_UNAPPROVED',
-  ASSET_DELETED: 'ASSET_DELETED',
-  ASSET_AMENDED: 'ASSET_AMENDED',
-  COMMENT_ON_ASSET: 'COMMENT_ON_ASSET',
-  COMMENT_ON_USER: 'COMMENT_ON_USER',
-  COMMENT_ON_ASSET_AMENDMENT: 'COMMENT_ON_ASSET_AMENDMENT',
-  COMMENT_ON_REPORT: 'COMMENT_ON_REPORT',
-  TAGGED_IN_COMMENT: 'TAGGED_IN_COMMENT',
-  ASSET_NEEDS_APPROVAL: 'ASSET_NEEDS_APPROVAL',
-  REPORT_CREATED: 'REPORT_CREATED',
-  AWARD_GIVEN: 'AWARD_GIVEN',
-  PRIVATE_MESSAGE_RECEIVED: 'PRIVATE_MESSAGE_RECEIVED',
-  ASSET_OWNERSHIP_CHANGED: 'ASSET_OWNERSHIP_CHANGED',
-  ASSET_AMENDMENT_APPROVED: 'ASSET_AMENDMENT_APPROVED',
-  ASSET_AMENDMENT_REJECTED: 'ASSET_AMENDMENT_REJECTED',
-  DIGEST: 'DIGEST',
-  SUBSCRIPTION_ALERT: 'SUBSCRIPTION_ALERT',
-  REPORT_RESOLUTION_CHANGED: 'REPORT_RESOLUTION_CHANGED',
-  REP_AWARDED: 'REP_AWARDED', // only if repreason.shouldnotify=true (sent by SQL trigger)
+export enum NotificationEvent {
+  ASSET_APPROVED = 'ASSET_APPROVED',
+  ASSET_UNAPPROVED = 'ASSET_UNAPPROVED',
+  ASSET_DELETED = 'ASSET_DELETED',
+  ASSET_AMENDED = 'ASSET_AMENDED',
+  COMMENT_ON_ASSET = 'COMMENT_ON_ASSET',
+  COMMENT_ON_USER = 'COMMENT_ON_USER',
+  COMMENT_ON_ASSET_AMENDMENT = 'COMMENT_ON_ASSET_AMENDMENT',
+  COMMENT_ON_REPORT = 'COMMENT_ON_REPORT',
+  TAGGED_IN_COMMENT = 'TAGGED_IN_COMMENT',
+  ASSET_NEEDS_APPROVAL = 'ASSET_NEEDS_APPROVAL',
+  REPORT_CREATED = 'REPORT_CREATED',
+  AWARD_GIVEN = 'AWARD_GIVEN',
+  PRIVATE_MESSAGE_RECEIVED = 'PRIVATE_MESSAGE_RECEIVED',
+  ASSET_OWNERSHIP_CHANGED = 'ASSET_OWNERSHIP_CHANGED',
+  ASSET_AMENDMENT_APPROVED = 'ASSET_AMENDMENT_APPROVED', // TODO: remove prefix
+  ASSET_AMENDMENT_REJECTED = 'ASSET_AMENDMENT_REJECTED', // TODO: remove prefix
+  DIGEST = 'DIGEST',
+  SUBSCRIPTION_ALERT = 'SUBSCRIPTION_ALERT',
+  REPORT_RESOLUTION_CHANGED = 'REPORT_RESOLUTION_CHANGED',
+  REP_AWARDED = 'REP_AWARDED', // only if repreason.shouldnotify=true (sent by SQL trigger)
+  USER_CHANGED = 'USER_CHANGED', // banned, role change, etc.
+  EVENT_APPROVED = 'EVENT_APPROVED',
+  EVENT_FEATURED = 'EVENT_FEATURED',
 }
 
-export const NotificationMethods = {
-  WEB: 'WEB',
-  EMAIL: 'EMAIL',
-  DISCORD: 'DISCORD',
+// values are all-caps from legacy code
+export enum NotificationMethod {
+  Web = 'WEB',
+  Email = 'EMAIL',
+  Discord = 'DISCORD', // not used
 }
 
 export const defaultNotificationPrefs = {
   events: {
-    [NotificationEvents.ASSET_APPROVED]: true,
-    [NotificationEvents.ASSET_UNAPPROVED]: true,
-    [NotificationEvents.ASSET_DELETED]: true,
-    [NotificationEvents.ASSET_AMENDED]: true,
-    [NotificationEvents.COMMENT_ON_ASSET]: true,
-    [NotificationEvents.COMMENT_ON_USER]: true,
-    [NotificationEvents.COMMENT_ON_ASSET_AMENDMENT]: true, // TODO: make generic event for commenting
-    [NotificationEvents.COMMENT_ON_REPORT]: true, // TODO: make generic event for commenting
-    [NotificationEvents.TAGGED_IN_COMMENT]: true,
-    [NotificationEvents.AWARD_GIVEN]: true,
-    [NotificationEvents.PRIVATE_MESSAGE_RECEIVED]: true,
-    [NotificationEvents.ASSET_OWNERSHIP_CHANGED]: true,
-    [NotificationEvents.ASSET_AMENDMENT_APPROVED]: true,
-    [NotificationEvents.ASSET_AMENDMENT_REJECTED]: true,
-    [NotificationEvents.DIGEST]: false,
-    [NotificationEvents.SUBSCRIPTION_ALERT]: true,
-    [NotificationEvents.REPORT_RESOLUTION_CHANGED]: true,
-    [NotificationEvents.REP_AWARDED]: true, // only if repreason.shouldnotify=true (sent by SQL trigger)
+    [NotificationEvent.ASSET_APPROVED]: true,
+    [NotificationEvent.ASSET_UNAPPROVED]: true,
+    [NotificationEvent.ASSET_DELETED]: true,
+    [NotificationEvent.ASSET_AMENDED]: true,
+    [NotificationEvent.COMMENT_ON_ASSET]: true,
+    [NotificationEvent.COMMENT_ON_USER]: true,
+    [NotificationEvent.COMMENT_ON_ASSET_AMENDMENT]: true, // TODO: make generic event for commenting
+    [NotificationEvent.COMMENT_ON_REPORT]: true, // TODO: make generic event for commenting
+    [NotificationEvent.TAGGED_IN_COMMENT]: true,
+    [NotificationEvent.AWARD_GIVEN]: true,
+    [NotificationEvent.PRIVATE_MESSAGE_RECEIVED]: true,
+    [NotificationEvent.ASSET_OWNERSHIP_CHANGED]: true,
+    [NotificationEvent.ASSET_AMENDMENT_APPROVED]: true,
+    [NotificationEvent.ASSET_AMENDMENT_REJECTED]: true,
+    [NotificationEvent.DIGEST]: false,
+    [NotificationEvent.SUBSCRIPTION_ALERT]: true,
+    [NotificationEvent.REPORT_RESOLUTION_CHANGED]: true, // shared with support tickets
+    [NotificationEvent.REP_AWARDED]: true, // only if repreason.shouldnotify=true (sent by SQL trigger)
+
+    [NotificationEvent.USER_CHANGED]: true,
+    [NotificationEvent.EVENT_APPROVED]: true,
+    [NotificationEvent.EVENT_FEATURED]: true,
 
     // editors only
-    [NotificationEvents.ASSET_NEEDS_APPROVAL]: true,
-    [NotificationEvents.REPORT_CREATED]: true,
+    [NotificationEvent.ASSET_NEEDS_APPROVAL]: true,
+    [NotificationEvent.REPORT_CREATED]: true,
   },
   methods: {
-    [NotificationMethods.WEB]: true,
-    [NotificationMethods.EMAIL]: true,
-    [NotificationMethods.DISCORD]: true,
+    [NotificationMethod.Web]: true,
+    [NotificationMethod.Email]: true,
+    [NotificationMethod.Discord]: true,
   },
 }
 
@@ -90,28 +98,28 @@ export const getLabelForNotification = ({
   }
 
   switch (event) {
-    case NotificationEvents.ASSET_APPROVED:
+    case NotificationEvent.ASSET_APPROVED:
     case 'Approved asset':
       return `Your asset "${
         data && data.asset && (data.asset as Asset).title
           ? (data.asset as Asset).title
           : 'Unknown'
       }" was approved`
-    case NotificationEvents.COMMENT_ON_ASSET_AMENDMENT:
+    case NotificationEvent.COMMENT_ON_ASSET_AMENDMENT:
       return `${
         (data && data.author && data.author.username) || 'Someone'
       } commented on your amendment`
-    case NotificationEvents.COMMENT_ON_ASSET:
+    case NotificationEvent.COMMENT_ON_ASSET:
       return `${
         (data && data.author && data.author.username) || 'Someone'
       } commented on asset "${
         (parentData as Asset).title ? (parentData as Asset).title : 'Unknown'
       }"`
-    case NotificationEvents.COMMENT_ON_USER:
+    case NotificationEvent.COMMENT_ON_USER:
       return `${
         (data && data.author && data.author.username) || 'Someone'
       } commented on your profile`
-    case NotificationEvents.TAGGED_IN_COMMENT:
+    case NotificationEvent.TAGGED_IN_COMMENT:
       switch (collectionName) {
         case AssetsCollectionNames.Assets:
           return `${
@@ -140,7 +148,7 @@ export const getLabelForNotification = ({
             'Someone'
           } tagged you in a comment`
       }
-    case NotificationEvents.ASSET_AMENDED:
+    case NotificationEvent.ASSET_AMENDED:
       return `User "${
         data && data.creator && (data.creator as User).username
           ? (data.creator as User).username
@@ -150,33 +158,42 @@ export const getLabelForNotification = ({
           ? (data.asset as Asset).title
           : 'unknown'
       }"`
-    case NotificationEvents.ASSET_AMENDMENT_APPROVED:
+    case NotificationEvent.ASSET_AMENDMENT_APPROVED:
       return `Your amendment has been approved`
-    case NotificationEvents.ASSET_AMENDMENT_REJECTED:
+    case NotificationEvent.ASSET_AMENDMENT_REJECTED:
       return `Your amendment has been rejected`
-    case NotificationEvents.ASSET_NEEDS_APPROVAL:
+    case NotificationEvent.ASSET_NEEDS_APPROVAL:
       return `Asset needs approval`
-    case NotificationEvents.ASSET_UNAPPROVED:
+    case NotificationEvent.ASSET_UNAPPROVED:
       return `Asset has not been approved (and is marked as unpublished) and it may require your input`
-    case NotificationEvents.ASSET_DELETED:
+    case NotificationEvent.ASSET_DELETED:
       return `Your asset has been deleted`
-    case NotificationEvents.REPORT_CREATED:
+    case NotificationEvent.REPORT_CREATED:
       return 'Report created'
-    case NotificationEvents.AWARD_GIVEN:
+    case NotificationEvent.AWARD_GIVEN:
       return `You have been given the award "${getNameForAwardId(
         data.awardId
       )}"!`
-    case NotificationEvents.ASSET_OWNERSHIP_CHANGED:
+    case NotificationEvent.ASSET_OWNERSHIP_CHANGED:
       return `You are now the owner of "${
         (parentData as Asset).title ? (parentData as Asset).title : 'Unknown'
       }"`
-    case NotificationEvents.SUBSCRIPTION_ALERT:
+    case NotificationEvent.SUBSCRIPTION_ALERT:
       return `Subscription alert: ${getSubscriptionMessage(
         data.topic,
         data.extraData
       )}`
-    case NotificationEvents.REPORT_RESOLUTION_CHANGED:
+    case NotificationEvent.REPORT_RESOLUTION_CHANGED:
       return `Your report has been updated`
+    case NotificationEvent.REP_AWARDED:
+      return 'You gain reputation'
+    case NotificationEvent.USER_CHANGED:
+      return 'Your account has been changed (eg. banned, role changed)'
+    case NotificationEvent.EVENT_APPROVED:
+      return 'Your event has been approved'
+    case NotificationEvent.EVENT_FEATURED:
+      return 'Your event has been featured'
+
     default:
       console.log(`Unknown event for notification: ` + event)
       return `Event: ${event}`
@@ -192,23 +209,23 @@ export const getLinkUrl = ({
   const userId = getUserId()
   let actualParentId
   switch (event) {
-    case NotificationEvents.REPORT_CREATED:
-    case NotificationEvents.REPORT_RESOLUTION_CHANGED:
+    case NotificationEvent.REPORT_CREATED:
+    case NotificationEvent.REPORT_RESOLUTION_CHANGED:
       return routes.viewReportWithVar.replace(':reportId', parentId)
-    case NotificationEvents.AWARD_GIVEN:
+    case NotificationEvent.AWARD_GIVEN:
       return routes.viewUserWithVar.replace(':userId', userId || '')
-    case NotificationEvents.ASSET_AMENDED:
-    case NotificationEvents.ASSET_AMENDMENT_APPROVED:
-    case NotificationEvents.ASSET_AMENDMENT_REJECTED:
+    case NotificationEvent.ASSET_AMENDED:
+    case NotificationEvent.ASSET_AMENDMENT_APPROVED:
+    case NotificationEvent.ASSET_AMENDMENT_REJECTED:
       return routes.viewAmendmentWithVar.replace(':amendmentId', parentId)
-    case NotificationEvents.SUBSCRIPTION_ALERT:
+    case NotificationEvent.SUBSCRIPTION_ALERT:
       if (data) {
         return getRouteForTopic(data.topic, parentId, data.extraData)
       } else {
         return '/#no-data'
       }
-    case NotificationEvents.COMMENT_ON_ASSET:
-    case NotificationEvents.TAGGED_IN_COMMENT:
+    case NotificationEvent.COMMENT_ON_ASSET:
+    case NotificationEvent.TAGGED_IN_COMMENT:
       const commentOrSocialPostId = parentId
       const commentOrSocialPostCollectionName = collectionName
 
@@ -241,11 +258,11 @@ export const getLinkUrl = ({
               return `/#unknown-collection-${actualParentCollectionName}`
           }
       }
-    case NotificationEvents.COMMENT_ON_ASSET_AMENDMENT:
+    case NotificationEvent.COMMENT_ON_ASSET_AMENDMENT:
       return routes.viewAmendmentWithVar.replace(':amendmentId', parentId)
-    case NotificationEvents.COMMENT_ON_REPORT:
+    case NotificationEvent.COMMENT_ON_REPORT:
       return routes.viewReportWithVar.replace(':reportId', parentId)
-    case NotificationEvents.REP_AWARDED:
+    case NotificationEvent.REP_AWARDED:
       return routes.myAccountWithTabNameVar.replace(':tabName', 'reputation')
   }
 

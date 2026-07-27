@@ -15,8 +15,8 @@ import {
 import {
   ViewNames as AmendmentsViewNames,
   FullAmendment,
+  CollectionNames as AmendmentsCollectionNames,
 } from '@/modules/amendments'
-import { CollectionNames as CommentsCollectionNames } from '@/modules/comments'
 import { ApprovalStatus } from '@/modules/common'
 
 import useIsEditor from '@/hooks/useIsEditor'
@@ -233,7 +233,7 @@ const View = () => {
       <Changes parentTable={parentTable} parentId={parentId} fields={fields} />
       <Heading variant="h2">Comments</Heading>
       <CommentList
-        collectionName={CommentsCollectionNames.Comments}
+        collectionName={AmendmentsCollectionNames.Amendments}
         parentId={amendmentId}
       />
       {isEditor && (

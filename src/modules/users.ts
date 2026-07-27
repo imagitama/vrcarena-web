@@ -1,3 +1,4 @@
+import { NotificationEvent } from '@/notifications'
 import { AiEvaluateQueuedItem } from './aievaluation'
 import { AccessStatus } from './common'
 import { Species } from './species'

@@ -1,14 +1,7 @@
 import React from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
-import MenuList from '@mui/material/MenuList'
-import MenuItem from '@mui/material/MenuItem'
-import Paper from '@mui/material/Paper'
-
 import { VRCArenaTheme } from '@/themes'
-import useUserMentioning from '@/hooks/useUserMentioning'
-
-import { AutocompleteOption } from '@/components/autocomplete-input'
 import EmojiPicker from '@/components/emoji-picker'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
@@ -179,21 +172,9 @@ const MentionsInput = ({
 }) => {
   const rootRef = useRef<HTMLDivElement>(null)
   const classes = useStyles()
-  const [
-    userSuggestions,
-    isLoadingUserSuggestions,
-    atSymbolIndexInText,
-    clearSuggestions,
-    stopMentioningAndClear,
-  ] = useUserMentioning(value)
   const usernameMapping = useRef<UsernameMapping>(initialUsernameMapping || {})
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const outputRef = useRef<HTMLDivElement>(null)
-  const [selectedSuggestionIdx, setSelectedSuggestionIdx] = useState<number>(0)
-
-  useEffect(() => {
-    setSelectedSuggestionIdx(0)
-  }, [userSuggestions && userSuggestions.length])
 
   useEffect(() => {
     if (inputRef.current == null || autoFocus === false) {
@@ -203,21 +184,6 @@ const MentionsInput = ({
     inputRef.current.focus()
     inputRef.current.selectionStart = inputRef.current.value.length
   }, [])
-
-  const onSelectUserSuggestion = (option: AutocompleteOption<string>) => {
-    console.debug(`User selected option ${option.data} "${option.label}"`)
-
-    // make sure this happens first for race condition
-    usernameMapping.current[option.label] = option.data
-
-    stopMentioningAndClear()
-
-    const newInternalText = `${value.substring(0, atSymbolIndexInText)}[user:${
-      option.data
-    }] `
-
-    onChange(newInternalText)
-  }
 
   const onChangeCustom = (newText: string) => {
     const newInternalText = getValueForSaving(newText, usernameMapping.current)
@@ -231,32 +197,6 @@ const MentionsInput = ({
     outputRef.current!.scrollTop = event.target.scrollTop
   }
 
-  const onKeyDown: React.KeyboardEventHandler = (e) => {
-    if (!userSuggestions || !userSuggestions.length) {
-      return
-    }
-
-    if (e.key === 'Escape') {
-      clearSuggestions()
-      e.preventDefault()
-    } else if (e.key === 'ArrowDown') {
-      setSelectedSuggestionIdx((currentVal) =>
-        userSuggestions && currentVal < userSuggestions.length - 1
-          ? currentVal + 1
-          : currentVal
-      )
-      e.preventDefault()
-    } else if (e.key === 'ArrowUp') {
-      setSelectedSuggestionIdx((currentVal) =>
-        userSuggestions && currentVal > 0 ? currentVal - 1 : 0
-      )
-      e.preventDefault()
-    } else if (e.key === 'Enter') {
-      onSelectUserSuggestion(userSuggestions[selectedSuggestionIdx])
-      e.preventDefault()
-    }
-  }
-
   return (
     <div className={classes.root} ref={rootRef}>
       <div className={classes.inputWrapper}>
@@ -267,7 +207,6 @@ const MentionsInput = ({
           onScroll={onScroll}
           placeholder="Type anything"
           disabled={isDisabled}
-          onKeyDown={onKeyDown}
         />
         <div className={classes.display} ref={outputRef}>
           <Output value={value} map={usernameMapping.current} />
@@ -280,30 +219,6 @@ const MentionsInput = ({
           fromRight
         />
       </div>
-      <div className={classes.hint}>
-        {isLoadingUserSuggestions
-          ? 'Searching...'
-          : atSymbolIndexInText !== -1 && userSuggestions === null
-          ? 'Keep typing...'
-          : 'Type @ and at least 3 characters to mention someone'}
-      </div>
-      {userSuggestions !== null && userSuggestions.length > 0 && (
-        <MenuList className={classes.menu} autoFocus={false}>
-          <Paper>
-            {userSuggestions &&
-              userSuggestions.length &&
-              userSuggestions.map((userSuggestion, idx) => (
-                <MenuItem
-                  key={userSuggestion.data}
-                  value={userSuggestion.data}
-                  onClick={() => onSelectUserSuggestion(userSuggestion)}
-                  selected={idx === selectedSuggestionIdx}>
-                  {userSuggestion.label}
-                </MenuItem>
-              ))}
-          </Paper>
-        </MenuList>
-      )}
     </div>
   )
 }

@@ -9,7 +9,7 @@ import { handleError } from '@/error-handling'
 import { trackAction } from '@/analytics'
 import * as routes from '@/routes'
 import { mediaQueryForMobiles } from '@/media-queries'
-import { defaultNotificationPrefs, NotificationEvents } from '@/notifications'
+import { defaultNotificationPrefs, NotificationEvent } from '@/notifications'
 import { CollectionNames, UserPreferences } from '@/modules/users'
 
 import useUserRecord from '@/hooks/useUserRecord'
@@ -182,7 +182,7 @@ const SetupProfile = ({
         ...defaultNotificationPrefs,
         events: {
           ...defaultNotificationPrefs.events,
-          [NotificationEvents.DIGEST]: subscribeToDigest,
+          [NotificationEvent.DIGEST]: subscribeToDigest,
         },
       }
 

@@ -5,8 +5,8 @@ import SaveIcon from '@mui/icons-material/Save'
 import { callFunction } from '@/firebase'
 import { handleError } from '@/error-handling'
 import {
-  NotificationEvents,
-  NotificationMethods,
+  NotificationEvent,
+  NotificationMethod,
   defaultNotificationPrefs,
 } from '@/notifications'
 import {
@@ -39,62 +39,64 @@ const useStyles = makeStyles({
   },
 })
 
-const getLabelForEventName = (
-  eventName: keyof typeof NotificationEvents
-): string => {
+const getLabelForEventName = (eventName: NotificationEvent): string => {
   switch (eventName) {
-    case NotificationEvents.ASSET_AMENDED:
-      return 'My assets are amended with new tags'
-    case NotificationEvents.ASSET_APPROVED:
+    case NotificationEvent.ASSET_AMENDED:
+      return 'My assets are amended by someone'
+    case NotificationEvent.ASSET_APPROVED:
       return 'My assets are approved'
-    case NotificationEvents.ASSET_UNAPPROVED:
-      return 'My assets are not approved'
-    case NotificationEvents.ASSET_DELETED:
+    case NotificationEvent.ASSET_UNAPPROVED:
+      return 'My assets are declined'
+    case NotificationEvent.ASSET_DELETED:
       return 'My assets are rejected or deleted'
-    case NotificationEvents.COMMENT_ON_ASSET:
+    case NotificationEvent.COMMENT_ON_ASSET:
       return 'Someone comments on my assets'
-    case NotificationEvents.COMMENT_ON_USER:
+    case NotificationEvent.COMMENT_ON_USER:
       return 'Someone comments on my user profile'
-    case NotificationEvents.COMMENT_ON_ASSET_AMENDMENT:
-      return 'Someone comments on my asset amendment'
-    case NotificationEvents.COMMENT_ON_REPORT:
+    case NotificationEvent.COMMENT_ON_ASSET_AMENDMENT:
+      return 'Someone comments on my amendment'
+    case NotificationEvent.COMMENT_ON_REPORT:
       return 'Someone comments on my report'
-    case NotificationEvents.TAGGED_IN_COMMENT:
+    case NotificationEvent.TAGGED_IN_COMMENT:
       return 'Someone mentions me in a comment or social post'
-    case NotificationEvents.AWARD_GIVEN:
+    case NotificationEvent.AWARD_GIVEN:
       return 'You are given an award'
-    case NotificationEvents.ASSET_NEEDS_APPROVAL:
+    case NotificationEvent.ASSET_NEEDS_APPROVAL:
       return 'An asset needs approval (staff only)'
-    case NotificationEvents.REPORT_CREATED:
+    case NotificationEvent.REPORT_CREATED:
       return 'A report has been created (staff only)'
-    case NotificationEvents.ASSET_OWNERSHIP_CHANGED:
+    case NotificationEvent.ASSET_OWNERSHIP_CHANGED:
       return 'You are given ownership of an asset'
-    case NotificationEvents.ASSET_AMENDMENT_APPROVED:
-      return 'Your asset amendment is approved'
-    case NotificationEvents.ASSET_AMENDMENT_REJECTED:
-      return 'Your asset amendment is rejected'
-    case NotificationEvents.PRIVATE_MESSAGE_RECEIVED:
+    case NotificationEvent.ASSET_AMENDMENT_APPROVED:
+      return 'Your amendment is approved'
+    case NotificationEvent.ASSET_AMENDMENT_REJECTED:
+      return 'Your amendment is rejected'
+    case NotificationEvent.PRIVATE_MESSAGE_RECEIVED:
       return 'Someone sent you a private message'
-    case NotificationEvents.DIGEST:
+    case NotificationEvent.DIGEST:
       return 'Get the weekly digest! (email only)'
-    case NotificationEvents.SUBSCRIPTION_ALERT:
+    case NotificationEvent.SUBSCRIPTION_ALERT:
       return 'Subscription alerts'
-    case NotificationEvents.REPORT_RESOLUTION_CHANGED:
-      return 'Report resolution changed'
-    case NotificationEvents.REP_AWARDED:
+    case NotificationEvent.REPORT_RESOLUTION_CHANGED:
+      return 'Report or support ticket resolution changed'
+    case NotificationEvent.REP_AWARDED:
       return 'Reputation awarded'
+    case NotificationEvent.USER_CHANGED:
+      return 'Your account has been changed (banned, etc.)'
+    case NotificationEvent.EVENT_APPROVED:
+      return 'Your event has been approved'
+    case NotificationEvent.EVENT_FEATURED:
+      return 'Your event has been featured'
     default:
       return `Unknown event ${eventName}`
   }
 }
 
-const getLabelForMethodName = (
-  methodName: keyof typeof NotificationMethods
-): string => {
+const getLabelForMethodName = (methodName: NotificationMethod): string => {
   switch (methodName) {
-    case NotificationMethods.WEB:
+    case NotificationMethod.Web:
       return 'Notification in the website (top right corner)'
-    case NotificationMethods.EMAIL:
+    case NotificationMethod.Email:
       return 'Email'
     default:
       return `Unknown method ${methodName}`
@@ -110,14 +112,17 @@ const mergeInEvents = (
     if (eventName in newEvents) {
       finalEvents[eventName] = newEvents[eventName]
     } else {
-      finalEvents[eventName] = defaultNotificationPrefs.events[eventName]
+      finalEvents[eventName] =
+        defaultNotificationPrefs.events[eventName as NotificationEvent]
     }
   }
 
   return finalEvents
 }
 
-const mergeInNotificationPrefs = (newPrefs: NotificationPreferences) => {
+const mergeInNotificationPrefs = (
+  newPrefs: NotificationPreferences
+): NotificationPreferences => {
   return {
     // TODO: Merge in methods too? Only if we add a new one
     methods: newPrefs.methods,
@@ -270,10 +275,7 @@ const NotificationSettings = ({
     )
   }
 
-  const onChangeEvent = (
-    eventName: keyof typeof NotificationEvents,
-    newVal: boolean
-  ) => {
+  const onChangeEvent = (eventName: NotificationEvent, newVal: boolean) => {
     setNewPrefs((currentVal) => ({
       ...currentVal,
       events: {
@@ -283,10 +285,7 @@ const NotificationSettings = ({
     }))
   }
 
-  const onChangeMethod = (
-    methodName: keyof typeof NotificationMethods,
-    newVal: boolean
-  ) => {
+  const onChangeMethod = (methodName: NotificationMethod, newVal: boolean) => {
     setNewPrefs((currentVal) => ({
       ...currentVal,
       methods: {
@@ -331,37 +330,30 @@ const NotificationSettings = ({
       ) : null}
       <Heading variant="h4">Events</Heading>
       <p>Choose what kind of events you want to subscribe to.</p>
-      {Object.keys(NotificationEvents).map((eventName) => (
+      {Object.values(NotificationEvent).map((eventName) => (
         <CheckboxInput
           key={eventName}
           value={newPrefs.events[eventName] !== false}
           onChange={(newVal) =>
-            onChangeEvent(eventName as keyof typeof NotificationEvents, newVal)
+            onChangeEvent(eventName as NotificationEvent, newVal)
           }
-          label={getLabelForEventName(
-            eventName as keyof typeof NotificationEvents
-          )}
+          label={getLabelForEventName(eventName as NotificationEvent)}
           fullWidth
           isDisabled={isBusy}
         />
       ))}
       <Heading variant="h4">Methods</Heading>
       <p>Choose how you want to receive your notifications.</p>
-      {Object.keys(NotificationMethods)
-        .filter((methodName) => methodName !== NotificationMethods.DISCORD)
+      {Object.values(NotificationMethod)
+        .filter((methodName) => methodName !== NotificationMethod.Discord)
         .map((methodName) => (
           <CheckboxInput
             key={methodName}
             value={newPrefs.methods[methodName] !== false}
             onChange={(newVal) =>
-              onChangeMethod(
-                methodName as keyof typeof NotificationMethods,
-                newVal
-              )
+              onChangeMethod(methodName as NotificationMethod, newVal)
             }
-            label={getLabelForMethodName(
-              methodName as keyof typeof NotificationMethods
-            )}
+            label={getLabelForMethodName(methodName as NotificationMethod)}
             fullWidth
             isDisabled={isBusy}
           />

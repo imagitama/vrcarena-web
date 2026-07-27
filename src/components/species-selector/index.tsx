@@ -33,7 +33,7 @@ const convertToNestedArray = (
     if (item.parent === parentId) {
       const treeItem: SpeciesTreeItem = {
         id: item.id,
-        label: item.singularname,
+        label: item.singularname || '(no name)',
         children: convertToNestedArray(arr, item.id),
         species: item,
       }
@@ -177,7 +177,7 @@ const SpeciesSelector = ({
       <AutocompleteInput
         label="Search for species"
         options={allSpecies.map((speciesItem) => ({
-          label: speciesItem.pluralname,
+          label: speciesItem.pluralname || '(no name)',
           data: speciesItem.id,
         }))}
         filterOptions={(options, searchTerm) =>

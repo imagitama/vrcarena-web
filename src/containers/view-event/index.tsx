@@ -309,6 +309,7 @@ const View = () => {
                 collectionName={CollectionNames.Events}
                 metaCollectionName={CollectionNames.EventsMeta}
                 showApprovalButtons
+                showDeclineReasons={false}
                 existingApprovalStatus={approvalstatus}
                 showAccessButtons
                 existingAccessStatus={accessstatus}

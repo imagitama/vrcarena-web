@@ -72,7 +72,10 @@ const MultiFactorAuthCodeInput = ({
           }
         }}
         button={
-          <Button icon={<CheckIcon />} onClick={submit}>
+          <Button
+            icon={<CheckIcon />}
+            onClick={submit}
+            isDisabled={textInputProps.isDisabled}>
             Submit
           </Button>
         }

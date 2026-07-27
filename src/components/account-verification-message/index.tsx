@@ -29,14 +29,13 @@ const AccountVerificationMessage = () => {
       setIsSending(true)
       setIsSuccess(false)
       try {
+        console.debug(`sending email verification...`)
         if (!auth.currentUser) {
           throw new Error('No current user')
         }
         if (!auth.currentUser.email) {
-          console.warn('Cannot send verification without an email')
-          return
+          throw new Error('User has no email')
         }
-        console.debug(`sending email verificationn...`)
         await sendEmailVerification(auth.currentUser)
         console.debug(`sent successfully`)
         setIsSuccess(true)
