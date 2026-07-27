@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import PublishIcon from '@mui/icons-material/Publish'
 
 import { FullAsset, FunctionNames } from '@/modules/assets'
@@ -19,8 +20,6 @@ import SuccessMessage from '@/components/success-message'
 import WarningMessage from '@/components/warning-message'
 import FormControls from '@/components/form-controls'
 import Tooltip from '@/components/tooltip'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/modules'
 import store from '@/store'
 import { incrementPublishedAssetCount } from '@/modules/app'
 import {
@@ -89,12 +88,10 @@ const PublishAssetButton = ({
   assetId,
   asset,
   onDone,
-  isDisabled,
 }: {
   assetId: string
   asset: FullAsset
   onDone?: () => void
-  isDisabled?: boolean
 }) => {
   const isAlreadyPublished = asset.publishstatus === PublishStatus.Published
 
@@ -187,8 +184,7 @@ const PublishAssetButton = ({
   const isSuccess = lastResult?.success === true
 
   if (isSuccess) {
-    // invert success as we re-render and it should be the opposite
-    if (!isAlreadyPublished) {
+    if (isAlreadyPublished) {
       return (
         <SuccessMessage>
           Asset removed from the approval queue successfully. It is now a draft
@@ -220,6 +216,9 @@ const PublishAssetButton = ({
   const nonBlockingValidationErrorTypes = lastValidationErrorTypes.filter(
     (errorType) => Object.keys(NonBlockingErrorTypes).includes(errorType as any)
   )
+
+  const isDisabled =
+    !getCanAssetBePublished(asset) && !getCanAssetBeUnpublished(asset)
 
   return (
     <div>
