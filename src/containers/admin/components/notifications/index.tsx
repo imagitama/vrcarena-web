@@ -18,6 +18,8 @@ import Button from '@/components/button'
 import Dialog from '@/components/dialog'
 import { OrderDirections } from '@/hooks/useDatabaseQuery'
 import NoValueLabel from '@/components/no-value-label'
+import StatusText from '@/components/status-text'
+import QueueStatusLabel from '@/components/queue-status-label'
 
 const WebDetails = ({ webDetails }: { webDetails: WebNotification<any> }) => {
   return (
@@ -122,10 +124,14 @@ const Renderer = ({ items }: { items?: NotificationQueuedItem<any>[] }) => (
         <TableRow key={item.id}>
           <TableCell>#{getShortId(item.id)}</TableCell>
           <TableCell>
-            {item.status}
+            <QueueStatusLabel id={item.id} status={item.status} />
             {item.failureinfo && (
-              <FailureInfoOutput failureInfo={item.failureinfo} />
+              <>
+                <br />
+                <FailureInfoOutput failureInfo={item.failureinfo} />
+              </>
             )}
+            {item.result && JSON.stringify(item.result, null, '  ')}
           </TableCell>
           <TableCell>{item.eventname}</TableCell>
           <TableCell>{item.recipient}</TableCell>

@@ -32,6 +32,7 @@ export interface NotificationQueuedItem<TData = any>
   parenttable: string | null
   parent: string | null
   // queue mechanism
+  result: any // array of objects with IDs
   status: NotificationQueuedItemStatus
   notes: string | null // auto-cleared on status change
   failureinfo: QueuedItemFailureInfo<any> | null // auto-cleared on status change

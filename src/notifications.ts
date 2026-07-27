@@ -193,7 +193,6 @@ export const getLabelForNotification = ({
       return 'Your event has been approved'
     case NotificationEvent.EVENT_FEATURED:
       return 'Your event has been featured'
-
     default:
       console.log(`Unknown event for notification: ` + event)
       return `Event: ${event}`
