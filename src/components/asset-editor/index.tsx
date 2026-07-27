@@ -7,7 +7,10 @@ import {
   FullAsset_Editor,
   ViewNames,
 } from '@/modules/assets'
-import { getCanAssetBePublished } from '@/utils/assets'
+import {
+  getCanAssetBePublished,
+  getCanAssetBeUnpublished,
+} from '@/utils/assets'
 import useFeature, { FeatureName } from '@/hooks/useFeature'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 
@@ -27,6 +30,7 @@ import Paper from '@/components/paper'
 import ExperimentalArea from '../experimental-area'
 import { getCanSync } from '@/syncing'
 import useTimer from '@/hooks/useTimer'
+import useIsEditor from '@/hooks/useIsEditor'
 
 const AssetEditor = ({
   assetId,
@@ -50,6 +54,7 @@ const AssetEditor = ({
   const [isAiFeaureEnabled] = useFeature(FeatureName.Ai)
   const [reRenderKey, setReRenderKey] = useState(0)
   const hydrateAfterDelay = useTimer(hydrate)
+  const isEditor = useIsEditor()
 
   const onAssetSyncDone = (fields: Partial<Asset>) => {
     if (!onFieldsChanged) return
@@ -77,11 +82,7 @@ const AssetEditor = ({
         {assetId && asset && (
           <Column>
             <FormControls>
-              <PublishAssetButton
-                assetId={assetId}
-                asset={asset}
-                isDisabled={!getCanAssetBePublished(asset)}
-              />
+              <PublishAssetButton assetId={assetId} asset={asset} />
             </FormControls>
           </Column>
         )}
@@ -124,12 +125,14 @@ const AssetEditor = ({
         startExpanded
         collectionName={CollectionNames.Assets}
         id={assetId}
-        onDone={onDone}
+        onDone={() => {
+          hydrateAfterDelay()
+          if (onDone) onDone()
+        }}
         itemTypeSingular="Asset"
         showTopSaveBtn
         scrollDisabled
         onAttemptSave={() => {
-          hydrateAfterDelay()
           if (onAttemptSave) onAttemptSave()
         }}
         // amendments
