@@ -17,10 +17,10 @@ export interface AttachmentFields extends Record<string, unknown> {
 
 export interface Attachment extends AttachmentFields {
   id: string
+  lastmodifiedby: string | null
+  lastmodifiedat: string | null
   createdby: string
   createdat: string
-  lastmodifiedby: string
-  lastmodifiedat: string
 }
 
 export interface AttachmentForList extends Attachment {
@@ -31,9 +31,9 @@ export interface AttachmentForList extends Attachment {
 
 export interface FullAttachment extends Attachment {
   approvalstatus: ApprovalStatus
-  approvedat: string
+  approvedat: string | null
   accessstatus: AccessStatus
-  editornotes: string
+  editornotes: string | null
   createdbyusername: string
   lastmodifiedbyusername: string
 }

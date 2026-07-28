@@ -7,18 +7,18 @@ export interface Claim extends Record<string, unknown> {
   id: string
   parenttable: string
   parent: string
-  comments: string
+  comments: string | null
   status: ClaimStatus
-  lastmodifiedat: Date | null
-  lastmodifiedby: string | null
-  createdat: Date
-  createdby: string
+  lastmodifiedat: string | null // date
+  lastmodifiedby: string | null // id
+  createdat: string // date
+  createdby: string // id
 }
 
-export interface FullClaim extends Claim {
+export interface FullClaim<TParentData = any> extends Claim {
   createdbyusername: string
   createdbyavatarurl: string
-  parentdata: any
+  parentdata: TParentData
 }
 
 export const CollectionNames = {

@@ -23,9 +23,9 @@ export interface SpeciesFields extends Record<string, any> {
 
 export interface Species extends SpeciesFields {
   id: string
-  lastmodifiedat: Date
-  lastmodifiedby: string
-  createdat: Date
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
+  createdat: string
   createdby: string
 }
 
@@ -60,7 +60,7 @@ export interface SpeciesMeta extends Record<string, any> {
   archivedreason: SpeciesArchivedReason | null
 
   approvalstatus: ApprovalStatus
-  approvedby: string | null // user ID
+  approvedby: string | null // id
   approvedat: string | null // date
   declinedreasons: SpeciesDeclinedReason[] | null
 

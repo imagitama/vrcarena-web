@@ -6,6 +6,8 @@ export interface Collection extends Record<string, unknown> {
   description: string
   thumbnailurl: string
   items: CollectionItem[]
+  lastmodifiedat: string | null // date
+  lastmodifiedby: string | null // id
   createdat: string
   createdby: string
 }

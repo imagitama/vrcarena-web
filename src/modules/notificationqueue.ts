@@ -39,7 +39,7 @@ export interface NotificationQueuedItem<TData = any>
   lastmodifiedat: string | null // date
   lastmodifiedby: string | null // id
   createdat: string // date
-  createdby: string | null // id
+  createdby: string | null // can be null if system
 }
 
 export enum CollectionNames {

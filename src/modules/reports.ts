@@ -87,8 +87,8 @@ export interface Report extends Record<string, any> {
   reason: string
   comments: string
   assignedto: string | null
-  lastmodifiedat: string // Date
-  lastmodifiedby: string
+  lastmodifiedat: string | null // Date
+  lastmodifiedby: string | null
   createdat: string // Date
   createdby: string
 }
@@ -96,11 +96,11 @@ export interface Report extends Record<string, any> {
 export { ResolutionStatus }
 
 export interface ReportMeta extends Record<string, unknown> {
-  editornotes: string
+  editornotes: string | null
   resolutionstatus: ResolutionStatus
   resolvedat: string | null // Date
   resolvedby: string | null
-  resolutionnotes: string
+  resolutionnotes: string | null
 }
 
 export interface FullReport<TParent = any> extends Report, ReportMeta {

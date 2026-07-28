@@ -8,10 +8,10 @@ export interface NoticeFields extends Record<string, any> {
 
 export interface Notice extends NoticeFields {
   id: string
+  lastmodifiedby: string | null
+  lastmodifiedat: string | null
   createdby: string
   createdat: string
-  lastmodifiedby: string
-  lastmodifiedat: string
 }
 
 export interface FullNotice extends Notice {}

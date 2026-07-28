@@ -28,8 +28,8 @@ export interface Event extends BasicEvent {
   isadult: boolean
   assettags: string[] | null
   isbackground: boolean
-  lastmodifiedat: string // date
-  lastmodifiedby: string
+  lastmodifiedat: string | null // date
+  lastmodifiedby: string | null
   createdat: string // date
   createdby: string
 }
@@ -40,8 +40,8 @@ export interface EventMeta {
   approvalstatus: ApprovalStatus
   accessstatus: AccessStatus
   featuredstatus: FeaturedStatus
-  lastmodifiedat: string // date
-  lastmodifiedby: string
+  lastmodifiedat: string | null // date
+  lastmodifiedby: string | null
   createdat: string // date
   createdby: string
 }
@@ -64,9 +64,9 @@ export interface EventAttendance extends Record<string, any> {
   id: string
   event: string // id
   status: AttendanceStatus
-  lastmodifiedat: Date
-  lastmodifiedby: string
-  createdat: Date
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
+  createdat: string
   createdby: string
 }
 

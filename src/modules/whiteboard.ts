@@ -5,14 +5,14 @@ export interface WhiteboardDot {
   g: number
   b: number
   a: number
-  t: number // Date.now()
+  t: number // timestamp eg Date.now()
 }
 
 export interface WhiteboardRecordForUser extends Record<string, any> {
   id: string // userId
   dots: WhiteboardDot[]
-  lastmodifiedby: string
-  lastmodifiedat: string // date
+  lastmodifiedby: string | null
+  lastmodifiedat: string | null // date
   createdby: string
   createdat: string // date
 }

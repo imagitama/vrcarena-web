@@ -2,20 +2,20 @@ export interface RepReason extends Record<string, any> {
   name: string // unique
   delta: number // int
   description: string | null
-  lastmodifiedby: string | null // id
   lastmodifiedat: string | null // date
-  createdby: string // id
+  lastmodifiedby: string | null // id
   createdat: string // date
+  createdby: string | null // id, can be null
 }
 
-export interface RepChange extends Record<string, any> {
+export interface RepChange<TRelatedData = any> extends Record<string, any> {
   id: string
   userid: string
   reason: string // RepReason.name
   delta: number // int
-  relateddata: any // object
-  createdby: string // id
+  relateddata: TRelatedData | null // object
   createdat: string // date
+  createdby: string | null // id, can be null
 }
 
 export interface FullRepChange extends RepChange {

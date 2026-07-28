@@ -7,8 +7,8 @@ export interface Comment extends Record<string, unknown> {
   isprivate: boolean
   parenttable: string
   parent: string
-  lastmodifiedat: string
-  lastmodifiedby: string
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
   createdat: string
   createdby: string
 }
@@ -21,11 +21,11 @@ export enum SuspicionReason {
 
 export interface CommentMeta {
   accessstatus: AccessStatus
-  editornotes: string
+  editornotes: string | null
   suspicionamount: number | null
   suspicionreason: SuspicionReason | null
-  lastmodifiedat: string
-  lastmodifiedby: string
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
   createdat: string
   createdby: string
 }

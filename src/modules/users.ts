@@ -34,14 +34,14 @@ export interface User extends CoreUserFields, SocialMediaUsernames {
 
   // basic stuff
   username: string
-  avatarurl: string
+  avatarurl: string | null
   favoritespecies: string | null
-  bio: string
+  bio: string | null
 
   // meta
-  lastmodifiedby: string
-  lastmodifiedat: string // date
-  createdby: string
+  lastmodifiedby: string | null
+  lastmodifiedat: string | null // date
+  createdby: string | null // can be null as they create themselves
   createdat: string // date
 }
 
@@ -53,12 +53,12 @@ export enum PatreonStatus {
 
 export interface UserMeta extends Record<string, unknown> {
   patreonstatus: PatreonStatus
-  patreonrewardids: number[]
-  linkedvrchatuserid: string
-  vrchatlinkcode: number
-  discorduserid: number
+  patreonrewardids: number[] | null
+  linkedvrchatuserid: string | null
+  vrchatlinkcode: number | null
+  discorduserid: number | null
   banstatus: BanStatus
-  banreason: string
+  banreason: string | null
   accessstatus: AccessStatus // when user wants to delete their account
   reputation: number // int
 }

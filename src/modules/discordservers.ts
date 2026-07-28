@@ -2,21 +2,21 @@ import { AccessStatus, ApprovalStatus, PublishStatus } from './common'
 
 export interface DiscordServerFields extends Record<string, unknown> {
   name: string
-  description?: string
-  widgetid?: string
-  iconurl?: string
-  inviteurl?: string
-  requirespatreon?: boolean
-  patreonurl?: string
-  species?: string[]
+  description: string
+  widgetid: string
+  iconurl: string
+  inviteurl: string
+  requirespatreon: boolean
+  patreonurl: string
+  species: string[]
 }
 
 export interface DiscordServer extends DiscordServerFields {
   id: string
-  lastmodifiedat?: string
-  lastmodifiedby?: string
-  createdat?: string
-  createdby?: string
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
+  createdat: string
+  createdby: string
 }
 
 export interface FullDiscordServer extends DiscordServer {

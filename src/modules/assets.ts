@@ -120,6 +120,8 @@ export interface AssetFields
 
 export interface Asset extends AssetFields, Record<string, unknown> {
   id: string
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
   createdat: string
   createdby: string
 }
@@ -196,8 +198,8 @@ export interface AssetMeta extends MetaRecord {
   id: string
   publishedby: string | null
   featuredby: string | null
-  lastmodifiedby: string
-  lastmodifiedat: string // Date
+  lastmodifiedby: string | null
+  lastmodifiedat: string | null // Date
   createdby: string
   createdat: string // Date
   approvedby: string | null

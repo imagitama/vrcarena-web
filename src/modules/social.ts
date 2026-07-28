@@ -19,19 +19,19 @@ export interface SocialPostFields extends Record<string, unknown> {
 
 export interface SocialPost extends SocialPostFields {
   id: string
-  createdat: Date
+  createdat: string
   createdby: string
-  lastmodifiedat: Date
-  lastmodifiedby: string
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
 }
 
 export interface SocialPostMeta {
   editornotes: string
   accessstatus: AccessStatus
-  createdat: Date
+  createdat: string
   createdby: string
-  lastmodifiedat: Date
-  lastmodifiedby: string
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
 }
 
 export interface FullSocialPost extends SocialPost, SocialPostMeta {
@@ -54,10 +54,10 @@ export interface SocialReactionInsertFields extends SocialReactionUpdateFields {
 }
 
 export interface SocialReaction extends SocialReactionInsertFields {
-  createdat: Date
+  createdat: string
   createdby: string
-  lastmodifiedat: Date
-  lastmodifiedby: string
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
 }
 
 export interface ReactionSummary {

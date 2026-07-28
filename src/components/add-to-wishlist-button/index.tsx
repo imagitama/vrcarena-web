@@ -111,6 +111,7 @@ export default ({
       userId || false,
       { queryName: 'add-to-wishlist-button' }
     )
+  // TODO: replace with useDataStoreEditOrCreate
   const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] = myWishlist
     ? useDataStoreEdit<WishlistForUser>(
         CollectionNames.WishlistsForUsers,

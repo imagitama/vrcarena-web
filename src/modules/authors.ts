@@ -30,8 +30,8 @@ export interface AuthorFields extends Record<string, unknown> {
 
 export interface Author extends AuthorFields {
   id: string
-  lastmodifiedat: string // date
-  lastmodifiedby: string
+  lastmodifiedat: string | null // date
+  lastmodifiedby: string | null
   createdat: string // date
   createdby: string
 }
@@ -44,8 +44,8 @@ export interface AuthorMeta extends Record<string, unknown> {
   publishstatus: PublishStatus
   publishedby: string
   editornotes: string
-  lastmodifiedat: string // date
-  lastmodifiedby: string
+  lastmodifiedat: string | null // date
+  lastmodifiedby: string | null
   createdat: string // date
   createdby: string
 }

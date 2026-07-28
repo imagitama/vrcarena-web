@@ -155,21 +155,21 @@ export interface SupportTicket extends Record<string, any> {
   relatedid: null | string
   comments: string
   guestid: string
-  lastmodifiedat: string // Date
-  lastmodifiedby: string
-  createdat: string // Date
+  lastmodifiedat: string | null // date
+  lastmodifiedby: string | null
+  createdat: string // date
   createdby: string
 }
 
 export { ResolutionStatus }
 
 export interface SupportTicketMeta extends Record<string, unknown> {
-  editornotes: string
+  editornotes: string | null
   resolutionstatus: ResolutionStatus
   resolvedat: string | null // Date
   resolvedby: string | null
   assignedto: string | null // id
-  resolutionnotes: string
+  resolutionnotes: string | null
 }
 
 export interface FullSupportTicket<TRelated = any>

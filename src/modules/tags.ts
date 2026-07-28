@@ -12,20 +12,20 @@ export interface Tag extends Record<string, unknown> {
   isadult: boolean
   oppositetag: string
   icon: string // svg
-  createdby: string
-  createdat: Date
-  lastmodifiedby: string
-  lastmodifiedat: Date
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
+  createdat: string
+  createdby: string | null // can be null
 }
 
 export interface TagMeta extends Record<string, unknown> {
   id: string
   editornotes: string
   accessstatus: AccessStatus
-  lastmodifiedby: string
-  lastmodifiedat: Date
-  createdby: string
-  createdat: Date
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
+  createdat: string
+  createdby: string | null // can be null
 }
 
 export interface TagStats extends Record<string, unknown> {

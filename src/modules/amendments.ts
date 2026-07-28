@@ -2,8 +2,8 @@ import { ApprovalStatus } from './common'
 
 export interface Amendment extends AmendmentFields {
   id: string
-  lastmodifiedby: string
-  lastmodifiedat: Date
+  lastmodifiedby: string | null
+  lastmodifiedat: Date | null
   createdby: string
   createdat: Date
 }
@@ -12,14 +12,14 @@ export interface AmendmentFields extends Record<string, unknown> {
   parenttable: string
   parent: string
   fields: { [fieldName: string]: any }
-  comments: string
+  comments: string | null
 }
 
 export interface AmendmentMeta {
   approvalstatus: ApprovalStatus
-  approvedat: string // date
-  approvedby: string // id
-  editornotes: string
+  approvedat: string | null // date
+  approvedby: string | null // id
+  editornotes: string | null
 }
 
 export interface FullAmendment<T> extends Amendment, AmendmentMeta {
