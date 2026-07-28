@@ -1,5 +1,4 @@
 import React, { Suspense, useContext } from 'react'
-import { FullAsset_Editor } from '@/modules/assets'
 
 import Heading from '@/components/heading'
 import AssetTimeline from '@/components/asset-timeline'
@@ -15,9 +14,9 @@ import LoadingIndicator from '@/components/loading-indicator'
 import EditorControls from '../editor-controls'
 
 export default () => {
-  const { assetId, asset } = useContext(TabContext)
+  const { assetId, asset, assetExtra } = useContext(TabContext)
 
-  if (!asset || !('aisimilarities' in asset)) return null
+  if (!asset || !assetExtra) return null
 
   return (
     <>
@@ -42,7 +41,7 @@ export default () => {
             <AiArea
               title="Similar Assets"
               tooltip="The site has asked AI what assets are similar to this one.">
-              <AiSimilarResult asset={asset as FullAsset_Editor} />
+              <AiSimilarResult assetExtra={assetExtra} />
             </AiArea>
           </ErrorBoundary>
         </Column>

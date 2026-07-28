@@ -388,7 +388,7 @@ const QueuedItemsList = <
   renderer: React.ComponentType<RendererProps<TQueuedItem>>
   parentCollectionName: string
   parentId: string
-  extraFields?: Partial<TParent>
+  extraFields?: Partial<TQueuedItem>
 }) => {
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<QueuedItem>(
@@ -490,7 +490,7 @@ const AiResult = <
   noResultMessage?: string
   mostRecentQueuedItem?: TQueuedItem | null
   startExpanded?: boolean
-  extraFields?: Partial<TParent>
+  extraFields?: Partial<TQueuedItem>
 }) => {
   const classes = useStyles()
   const [isShowingMore, setIsShowingMore] = useState(startExpanded)

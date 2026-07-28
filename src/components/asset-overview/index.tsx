@@ -28,6 +28,8 @@ import { getCategoryMeta } from '@/category-meta'
 import {
   AssetCategory,
   FullAsset,
+  FullAssetEditor,
+  FullAssetExtra,
   SourceInfo,
   ViewNames,
   getIsAssetADraft,
@@ -93,6 +95,7 @@ import TabSimilar from './components/tab-similar'
 import { TabName } from './tabs'
 import AddToMyCollectionButton from '../add-to-my-collection-button'
 import InfoMessage from '../info-message'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -355,12 +358,11 @@ const useSluggedAsset = (
   FullAsset | null | false,
   HydrateFn
 ] => {
-  const isEditor = useIsEditor()
   const isSlug = getIsUuid(idOrSlug) === false && idOrSlug.includes('-')
 
   const [isLoading, lastErrorCode, results, hydrate] =
     useDatabaseQuery<FullAsset>(
-      isEditor ? ViewNames.GetFullAssets_Editor : ViewNames.GetFullAssets,
+      ViewNames.GetFullAssets,
       [[isSlug ? 'slug' : 'id', Operators.EQUALS, idOrSlug]],
       { queryName: `asset-overview-${idOrSlug}` }
     )
@@ -385,6 +387,14 @@ const AssetOverview = ({
   const isEditor = useIsEditor()
   const [isLoadingAsset, lastErrorCode, asset, hydrate] =
     useSluggedAsset(assetIdOrSlug)
+  const [, , assetExtra] = useDataStoreItem<FullAssetExtra>(
+    ViewNames.GetFullAssetsExtra,
+    asset ? asset.id : false
+  )
+  const [, , assetEditorData] = useDataStoreItem<FullAssetEditor>(
+    ViewNames.GetFullAssetsEditor,
+    asset && isEditor ? asset.id : false
+  )
 
   const isLoading = isLoadingAsset || asset === null
   const hasLoadedAndExists =
@@ -545,6 +555,8 @@ const AssetOverview = ({
         value={{
           assetId,
           asset,
+          assetExtra: assetExtra || null,
+          assetEditorData: assetEditorData || null,
           isLoading,
           trackAction: (action: string, payload: any) =>
             trackAction(analyticsCategoryName, action, payload),
@@ -587,10 +599,16 @@ const AssetOverview = ({
             ) : null}
           </Helmet>
         )}
-        {isAssetLoaded && getIsAssetWaitingForApproval(asset) && isEditor ? (
+        {isAssetLoaded &&
+        getIsAssetWaitingForApproval(asset) &&
+        assetEditorData ? (
           <Suspense
             fallback={<LoadingIndicator message="Loading component..." />}>
-            <QueuedAssetInfo asset={asset} hydrate={hydrate} />
+            <QueuedAssetInfo
+              asset={asset}
+              assetEditorData={assetEditorData}
+              hydrate={hydrate}
+            />
           </Suspense>
         ) : null}
         <Messages />
@@ -695,9 +713,13 @@ const AssetOverview = ({
           <div className={classes.cols}>
             <div className={classes.leftCol}>
               {asset &&
-              (asset.relations?.length || asset.mentionsdata?.length) ? (
+              assetExtra &&
+              (asset.relations?.length || assetExtra.mentionsdata?.length) ? (
                 <ErrorBoundary>
-                  <AssetTree activeAsset={asset} />
+                  <AssetTree
+                    activeAsset={asset}
+                    activeAssetExtra={assetExtra}
+                  />
                 </ErrorBoundary>
               ) : null}
               <PrimaryImage />
@@ -778,9 +800,10 @@ const AssetOverview = ({
                     </Area>
                   ) : null}
                   {asset &&
-                  (asset.aisimilarities !== null ||
-                    (asset.similarassets !== null &&
-                      asset.similarassets.length)) ? (
+                  assetExtra &&
+                  (assetExtra.aisimilarities !== null ||
+                    (assetExtra.similarassets !== null &&
+                      assetExtra.similarassets.length)) ? (
                     <Area name="similar" label="Similar Assets">
                       <TabSimilar />
                     </Area>
@@ -1031,7 +1054,7 @@ const AssetOverview = ({
                       )}
                     </div>
                   ) : null}
-                  {asset && asset.lastmodifiedby ? (
+                  {asset && asset.lastmodifiedat && asset.lastmodifiedby ? (
                     <div>
                       Last modified{' '}
                       <FormattedDate date={asset.lastmodifiedat} /> by{' '}

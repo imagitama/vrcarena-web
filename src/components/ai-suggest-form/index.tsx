@@ -11,8 +11,8 @@ import InfoIcon from '@mui/icons-material/Info'
 
 import {
   Asset,
-  FullAsset_Editor,
   CollectionNames as AssetsCollectionNames,
+  FullAsset,
 } from '@/modules/assets'
 import assetEditableFields from '@/editable-fields/assets'
 import {
@@ -259,7 +259,7 @@ const Form = ({
   queuedItem,
   onDone,
 }: {
-  asset: FullAsset_Editor
+  asset: FullAsset
   queuedItem: AiSuggestQueuedItem
   onDone: () => void
 }) => {
@@ -594,7 +594,7 @@ const AiSuggestForm = ({
   onDone,
 }: {
   assetId: string
-  asset: FullAsset_Editor
+  asset: FullAsset
   onDone: () => void
 }) => {
   const [isOpen, setIsOpen] = useState(false)

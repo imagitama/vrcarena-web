@@ -1,16 +1,6 @@
 import React, { useState } from 'react'
 
-import {
-  Asset,
-  CollectionNames,
-  FullAsset,
-  FullAsset_Editor,
-  ViewNames,
-} from '@/modules/assets'
-import {
-  getCanAssetBePublished,
-  getCanAssetBeUnpublished,
-} from '@/utils/assets'
+import { Asset, CollectionNames, FullAsset, ViewNames } from '@/modules/assets'
 import useFeature, { FeatureName } from '@/hooks/useFeature'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 
@@ -110,7 +100,7 @@ const AssetEditor = ({
                 <ErrorBoundary>
                   <AiSuggestForm
                     assetId={assetId}
-                    asset={asset as FullAsset_Editor}
+                    asset={asset}
                     onDone={hydrate}
                   />
                 </ErrorBoundary>

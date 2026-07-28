@@ -6,6 +6,7 @@ import {
   Asset,
   AssetCategory,
   FullAsset,
+  FullAssetExtra,
   GetMentionsResult,
   Relation,
   RelationType,
@@ -170,11 +171,19 @@ export const FullAssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
   )
 }
 
-const AssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
-  const isAdultContentEnabled = useIsAdultContentEnabled()
-  const {
+const AssetTree = ({
+  activeAsset,
+  activeAssetExtra: {
     mentionsdata: mentionsIncludingAdult,
     mentionstotal: mentionsTotal,
+  },
+}: {
+  activeAsset: FullAsset
+  activeAssetExtra: FullAssetExtra
+}) => {
+  const isAdultContentEnabled = useIsAdultContentEnabled()
+  const {
+    id: assetId,
     relations: activeAssetRelations,
     relationsdata: relationsData,
   } = activeAsset
@@ -244,7 +253,7 @@ const AssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
                 <ShowMoreCard>
                   <Link
                     to={routes.viewAssetWithVarAndTabVar
-                      .replace(':assetId', activeAsset.id)
+                      .replace(':assetId', assetId)
                       .replace(':tabName', TabName.Relations)}>
                     <ShowMoreCardActionArea>
                       View {mentionsTotal - nonParents.length} more related

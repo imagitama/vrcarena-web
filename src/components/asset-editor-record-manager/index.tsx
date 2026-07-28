@@ -1,18 +1,11 @@
 import styled from '@emotion/styled'
-import CheckIcon from '@mui/icons-material/Check'
-import ClearIcon from '@mui/icons-material/Clear'
 
 import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
 import {
-  ArchivedReason,
   AssetActions,
   AssetForList_Editor,
   CollectionNames as AssetsCollectionNames,
-  DeclinedReason,
-  DeletionReason,
-  FullAsset_Editor,
-  getIsAssetPublic,
-  getIsAssetWaitingForApproval,
+  FullAsset,
 } from '@/modules/assets'
 
 import EditorBox from '@/components/editor-box'
@@ -20,18 +13,11 @@ import MetaStatus from '../meta-status'
 import ApproveButton from '../approve-button'
 import DeleteButton from '../delete-button'
 import PublicEditorNotesForm from '../public-editor-notes-form'
-import StatusText from '../status-text'
 import ArchiveButton from '../archive-button'
 
 const Row = styled.div`
   display: flex;
   margin-bottom: 0.25rem;
-`
-const PrimaryCell = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `
 const LabelCell = styled.div`
   width: 30%;
@@ -47,7 +33,7 @@ const AssetEditorRecordManager = ({
   actions,
 }: {
   id: string
-  asset: AssetForList_Editor | FullAsset_Editor
+  asset: AssetForList_Editor | FullAsset
   onDone: () => void
   actions: AssetActions
 }) => {

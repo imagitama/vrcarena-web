@@ -1,9 +1,11 @@
 import { createContext } from 'react'
-import { FullAsset } from '@/modules/assets'
+import { FullAsset, FullAssetEditor, FullAssetExtra } from '@/modules/assets'
 
 export interface AssetOverviewContext {
   assetId: string
   asset: FullAsset | null | false
+  assetExtra: FullAssetExtra | null
+  assetEditorData: FullAssetEditor | null
   isLoading: boolean
   trackAction: (action: string, payload: any) => void
   hydrate: () => void

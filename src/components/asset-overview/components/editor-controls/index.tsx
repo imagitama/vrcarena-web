@@ -3,14 +3,12 @@ import React, { useContext } from 'react'
 import {
   Asset,
   CollectionNames as AssetsCollectionNames,
-  FullAsset_Editor,
+  FullAssetEditor,
 } from '@/modules/assets'
 
-import EditorRecordManager from '@/components/editor-record-manager'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import ErrorBoundary from '@/components/error-boundary'
 import AiArea from '@/components/ai-area'
-import EditorBox from '@/components/editor-box'
 import AssetAuditResult from '@/components/asset-audit-result'
 
 import TabContext from '../../context'
@@ -24,9 +22,10 @@ import AssetEditorRecordManager from '@/components/asset-editor-record-manager'
 import Heading from '@/components/heading'
 
 export default () => {
-  const { assetId, asset, isLoading, hydrate } = useContext(TabContext)
+  const { assetId, asset, assetEditorData, isLoading, hydrate } =
+    useContext(TabContext)
 
-  if (isLoading || !asset) {
+  if (isLoading || !asset || !assetEditorData) {
     return null
   }
 
@@ -34,9 +33,9 @@ export default () => {
     <>
       <AssetEditorRecordManager
         id={assetId}
-        asset={asset as FullAsset_Editor}
+        asset={asset}
         onDone={hydrate}
-        actions={(asset as FullAsset_Editor).actions}
+        actions={assetEditorData.actions}
       />
       <Heading variant="h4">AI Evaluation</Heading>
       <ErrorBoundary>
@@ -48,7 +47,7 @@ export default () => {
             queueCollectionName={AiEvaluationCollectionNames.AiEvaluateQueue}
             parentCollectionName={AssetsCollectionNames.Assets}
             parentId={asset.id}
-            mostRecentQueuedItem={(asset as FullAsset_Editor).aievaluation}
+            mostRecentQueuedItem={assetEditorData.aievaluation}
             renderer={AiEvaluationResult}
             extraFields={{
               intent: Intent.AutoApprove,

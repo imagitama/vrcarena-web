@@ -284,25 +284,32 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   speciesnames: string[]
   createdbyusername: string
   lastmodifiedbyusername: string
-  linkedassets: Asset[]
+  // linkedassets: Asset[]
   incominglinkedassets: Asset[]
   discordserverdata: DiscordServerData | null
   clonableworlddata: VrchatWorld | null
   relationsdata: Asset[] | null
-  similarassets: PublicAsset[]
   approvedbyusername: string
   tagsdata: Tag[]
   attachmentsdata: FullAttachment[] | null
   publishedbyusername: string | null
   publishedbyreputation: number
   tagscount: TagStats[] // different to tagsdata as that returns null if tag already in database
+}
+
+// data not necessary for viewing the asset - lazy loaded
+export interface FullAssetExtra extends Record<string, unknown> {
+  id: string
+  similarassets: PublicAsset[]
   aisimilarities: AiSimilarQueuedItem | null
   aisimilaritiesdata: PublicAsset[]
   mentionsdata: FullAssetMention[]
   mentionstotal: number
 }
 
-export interface FullAsset_Editor extends FullAsset {
+// data only relevant to editors
+export interface FullAssetEditor extends Record<string, unknown> {
+  id: string
   aievaluation: AiEvaluateQueuedItem | null
   actions: AssetActions
 }
@@ -347,7 +354,8 @@ export enum ViewNames {
   GetAssetsForList = 'getassetsforlist', // AssetForList[]
   GetPublicAssets = 'getpublicassets', // PublicAsset[] - identical to GetAssetsForList except with WHERE clause
   GetFullAssets = 'getfullassets', // FullAsset[]
-  GetFullAssets_Editor = 'getfullassets_editor', // FullAsset_Editor[]
+  GetFullAssetsExtra = 'getfullassetsextra',
+  GetFullAssetsEditor = 'getfullassetseditor',
   GetFullAssetsCache = 'getfullassetscache',
   RelatedAssets = 'relatedassets', // RelatedAssetsResult[]
   GetNewPublicAssets = 'getnewpublicassets', // PublicAsset[]-like

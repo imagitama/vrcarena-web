@@ -13,8 +13,9 @@ import {
   CollectionNames,
 } from '@/modules/aisimilar'
 import {
-  FullAsset_Editor,
+  FullAssetEditor,
   CollectionNames as AssetsCollectionNames,
+  FullAssetExtra,
 } from '@/modules/assets'
 import { QueueStatus } from '@/modules/common'
 
@@ -261,14 +262,14 @@ export const Renderer = ({
   )
 }
 
-const AiSimilarResult = ({ asset }: { asset: FullAsset_Editor }) => {
+const AiSimilarResult = ({ assetExtra }: { assetExtra: FullAssetExtra }) => {
   return (
     <AiResult
       noResultMessage="No similar assets yet"
       title="AI Similar Asset Detection"
       parentCollectionName={AssetsCollectionNames.Assets}
-      parentId={asset.id}
-      mostRecentQueuedItem={asset.aisimilarities}
+      parentId={assetExtra.id}
+      mostRecentQueuedItem={assetExtra.aisimilarities}
       queueCollectionName={CollectionNames.AiSimilarQueue}
       renderer={
         Renderer as React.ComponentType<RendererProps<AiSimilarQueuedItem>>

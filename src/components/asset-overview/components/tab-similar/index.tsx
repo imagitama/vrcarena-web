@@ -9,10 +9,10 @@ import NoResultsMessage from '@/components/no-results-message'
 import TabContext from '../../context'
 
 export default () => {
-  const { asset } = useContext(TabContext)
+  const { asset, assetExtra } = useContext(TabContext)
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
-  if (!asset) {
+  if (!asset || !assetExtra) {
     return null
   }
 
@@ -20,7 +20,7 @@ export default () => {
     similarassets: nonAiSims,
     aisimilarities: aiSims,
     aisimilaritiesdata: aiSimsData,
-  } = asset
+  } = assetExtra
 
   const sims: PublicAsset[] = aiSimsData !== null ? aiSimsData : nonAiSims
 

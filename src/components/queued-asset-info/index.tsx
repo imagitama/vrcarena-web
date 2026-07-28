@@ -15,14 +15,14 @@ import {
   AssetForList_Editor,
   CollectionNames as AssetsCollectionNames,
   FullAsset,
-  FullAsset_Editor,
+  FullAssetEditor,
+  FullAssetExtra,
 } from '@/modules/assets'
 
 import useIsEditor from '@/hooks/useIsEditor'
 
 import UsernameLink from '@/components/username-link'
 import FormattedDate from '@/components/formatted-date'
-import EditorRecordManager from '@/components/editor-record-manager'
 import Message from '@/components/message'
 import Columns from '@/components/columns'
 import Column from '@/components/column'
@@ -35,7 +35,6 @@ import {
   CollectionNames as AiEvaluateCollectionNames,
 } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
-import { ApprovalStatus } from '@/modules/common'
 import AssetEditorRecordManager from '../asset-editor-record-manager'
 
 const useStyles = makeStyles({
@@ -107,10 +106,12 @@ const AssetApprovalChecklistItem = ({
 
 const QueuedAssetInfo = ({
   asset,
+  assetEditorData,
   hydrate,
   showEditorControls = true,
 }: {
   asset: FullAsset | AssetForList_Editor
+  assetEditorData: FullAssetEditor
   hydrate?: () => void
   showEditorControls?: boolean
 }) => {
@@ -223,20 +224,20 @@ const QueuedAssetInfo = ({
             </TableBody>
           </Table>
         </Column>
-        {isEditor && showEditorControls && asset ? (
+        {isEditor && showEditorControls && asset && assetEditorData ? (
           <Column>
             <AssetEditorRecordManager
               id={asset.id}
-              asset={asset as FullAsset_Editor}
+              asset={asset}
               onDone={hydrate!}
-              actions={(asset as FullAsset_Editor).actions}
+              actions={assetEditorData.actions}
             />
             <br />
             <ErrorBoundary>
               <AiArea
                 title="Evaluation"
                 tooltip="We use AI to evaluate our assets for auto-approval.">
-                <AiResult<AiEvaluateQueuedItem, FullAsset_Editor>
+                <AiResult<AiEvaluateQueuedItem, FullAssetEditor>
                   title="AI Evaluation"
                   renderer={AiEvaluationResult}
                   queueCollectionName={
@@ -247,9 +248,7 @@ const QueuedAssetInfo = ({
                   extraFields={{
                     intent: Intent.AutoApprove,
                   }}
-                  mostRecentQueuedItem={
-                    (asset as FullAsset_Editor).aievaluation
-                  }
+                  mostRecentQueuedItem={assetEditorData.aievaluation}
                 />
               </AiArea>
             </ErrorBoundary>
