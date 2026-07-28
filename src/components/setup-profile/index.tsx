@@ -30,6 +30,7 @@ import Tabs, { useTabs } from '@/components/tabs'
 
 import AuthorClaims from './components/author-claims'
 import { CONTENT_MAX_WIDTH_PX } from '@/config'
+import AdultContentToggle from '../adult-content-toggle'
 
 const useStyles = makeStyles({
   root: {
@@ -227,7 +228,7 @@ const SetupProfile = ({
             ),
           },
           {
-            name: 'newsletter',
+            name: 'settings',
             label: 'Settings',
             contents: (
               <TabPanel>
@@ -243,6 +244,9 @@ const SetupProfile = ({
                     Read a summary of new assets posted on the site. Sent every
                     Sunday. You can unsubscribe at any time.
                   </div>
+                </div>
+                <div>
+                  <AdultContentToggle />
                 </div>
               </TabPanel>
             ),
