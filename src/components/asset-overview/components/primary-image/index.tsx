@@ -89,11 +89,8 @@ const PrimaryImage = () => {
   )
 
   if (!bestImageAttachment) {
-    return (
-      <ErrorMessage>
-        No primary image found (IDs: {asset.attachmentids.join(',')})
-      </ErrorMessage>
-    )
+    // do not output any error here to make it nice
+    return null
   }
 
   if (isGalleryOpen) {
