@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import { handleError } from '@/error-handling'
 import { mergeNewFieldsIntoParent } from '@/utils/amendments'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
@@ -18,14 +17,12 @@ import {
   CollectionNames as AmendmentsCollectionNames,
 } from '@/modules/amendments'
 import useSupabaseClient from '@/hooks/useSupabaseClient'
-import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import { routes } from '@/routes'
 
 import ErrorMessage from '@/components/error-message'
 import FormControls from '@/components/form-controls'
 import Button from '@/components/button'
 import AssetEditor from '@/components/asset-editor'
-import Message from '@/components/message'
 import TextInput from '@/components/text-input'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
@@ -88,14 +85,12 @@ const ParentEditor = ({
   fields,
   onFieldChanged,
   onFieldsChanged,
-}: // storeFieldsForOutput,
-{
+}: {
   type?: string
   id?: string
   fields: any
   onFieldChanged: (fieldName: string, value: any) => void
   onFieldsChanged: (fields: { [fieldName: string]: any }) => void
-  // storeFieldsForOutput: (extraFields: { [fieldName: string]: any }) => void
 }) => {
   switch (type) {
     case AssetsCollectionNames.Assets:
@@ -134,6 +129,17 @@ const getViewNameForParentTable = (parentTable: string): string => {
   }
 }
 
+const getOldFields = (
+  parent: Record<string, any>,
+  fieldsForSaving: Record<string, any>
+): Record<string, any> => {
+  const oldFields: Record<string, any> = {}
+  for (const fieldName in fieldsForSaving) {
+    oldFields[fieldName] = parent[fieldName]
+  }
+  return oldFields
+}
+
 const AmendmentEditor = ({
   amendmentId = undefined,
   parentTable = undefined,
@@ -157,7 +163,7 @@ const AmendmentEditor = ({
     isSuccess,
     lastErrorCodeSaving,
     saveOrCreate,
-    clear,
+    ,
     createdOrUpdatedAmendment,
   ] = useDataStoreEditOrCreate<Amendment>(
     AmendmentsCollectionNames.Amendments,
@@ -171,17 +177,12 @@ const AmendmentEditor = ({
   const [comments, setComments] = useState('')
   const supabase = useSupabaseClient()
 
-  console.debug(`AmendmentEditor.render`, {
-    newFieldsForSaving,
-    newFieldsForOutput,
-  })
-
   if (isLoadingParent || !parent) {
     return <LoadingIndicator message="Loading parent..." />
   }
 
   if (isSaving) {
-    return <LoadingIndicator message="Saving..." />
+    return <LoadingIndicator message="Saving amendment..." />
   }
 
   if (isSuccess) {
@@ -198,15 +199,16 @@ const AmendmentEditor = ({
         Amendment {amendmentId ? 'saved' : 'created'} successfully
         <br />
         <br />
-        Our editors have been notified of your pending amendment and will try to
-        review it ASAP.
+        Our editorial team has been notified of your amendment and we try to
+        review them within 48 hours. If it has been over 48 hours, please ask in
+        our Discord server.
         <br />
         <br />
-        Please ask in our Discord server if it has been several days without
-        action.
-        <br />
-        <br />
-        {returnUrl ? <Button url={returnUrl}>Return to Parent</Button> : null}
+        {returnUrl ? (
+          <Button url={returnUrl} color="secondary">
+            Return to Parent
+          </Button>
+        ) : null}
       </SuccessMessage>
     )
   }
@@ -304,23 +306,26 @@ const AmendmentEditor = ({
     }))
   }
 
-  const parentWithFieldsForOutput = mergeNewFieldsIntoParent(
+  const parentWithNewFields = mergeNewFieldsIntoParent(
     newFieldsForOutput,
     parent
   )
 
+  console.debug(`AmendmentEditor.render`, {
+    newFieldsForOutput,
+    newFieldsForSaving,
+  })
+
+  const oldFields = getOldFields(parent, newFieldsForSaving)
+
   if (isPreviewVisible) {
     return (
       <div>
-        <WarningMessage>
-          Please review ALL fields to ensure your amendment is correct before
-          submitting it for approval
-        </WarningMessage>
         <Heading variant="h2">Fields</Heading>
         <ShortDiff
           type={parentTable as any}
-          oldFields={parent}
-          newFields={parentWithFieldsForOutput}
+          oldFields={oldFields}
+          newFields={newFieldsForOutput}
           onlyNewFields={newFieldsForSaving}
         />
         <Heading variant="h2">Comments</Heading>
@@ -354,21 +359,29 @@ const AmendmentEditor = ({
   } else {
     return (
       <>
-        <Message>
-          To proceed with your amendment you must click this button:
-          <FormControls>
-            <Button onClick={() => setIsPreviewVisible(true)} size="large">
-              View Preview
-            </Button>
-          </FormControls>
-        </Message>
+        <FormControls>
+          <Button
+            icon={<CheckIcon />}
+            onClick={() => setIsPreviewVisible(true)}
+            size="large">
+            Finalize Amendment
+          </Button>
+        </FormControls>
         <ParentEditor
           type={parentTable}
           id={parentId}
-          fields={parentWithFieldsForOutput}
+          fields={parentWithNewFields}
           onFieldChanged={onFieldChanged}
           onFieldsChanged={onFieldsChanged}
         />
+        <FormControls>
+          <Button
+            icon={<CheckIcon />}
+            onClick={() => setIsPreviewVisible(true)}
+            size="large">
+            Finalize Amendment
+          </Button>
+        </FormControls>
       </>
     )
   }

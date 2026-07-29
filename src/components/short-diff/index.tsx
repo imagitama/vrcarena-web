@@ -10,7 +10,9 @@ import { fieldTypes } from '@/generic-forms'
 import { Asset, FullAsset, SourceInfo } from '@/modules/assets'
 import {
   Author,
+  AuthorForList,
   CollectionNames as AuthorsCollectionNames,
+  ViewNames as AuthorsViewNames,
 } from '@/modules/authors'
 import {
   Species,
@@ -42,6 +44,9 @@ import NoResultsMessage from '@/components/no-results-message'
 import ErrorMessage from '@/components/error-message'
 import VisitSourceButton from '@/components/visit-source-button'
 import NoValueLabel from '../no-value-label'
+import AttachmentCaption from '../attachment-caption'
+import { Image } from '../image-gallery'
+import { getHasFieldChanged } from '@/utils/equality'
 
 const useStyles = makeStyles({
   output: {
@@ -103,7 +108,9 @@ const useStyles = makeStyles({
     },
   },
   changed: {
-    backgroundColor: 'rgba(255, 255, 0, 0.2)',
+    '&&': {
+      backgroundColor: 'rgba(255, 255, 0, 0.2)',
+    },
   },
   divider: {
     display: 'flex',
@@ -140,7 +147,6 @@ const getLabelForValue = (value: any): string | React.ReactElement => {
 }
 
 function Value({ value }: { value: any }) {
-  const classes = useStyles()
   const label = getLabelForValue(value)
   return (
     <div>
@@ -242,8 +248,8 @@ function TagOutput({ fields }: { fields: Asset }) {
 }
 
 const AuthorOutputItem = ({ id }: { id: string }) => {
-  const [isLoading, lastErrorCode, author] = useDataStoreItem<Author>(
-    AuthorsCollectionNames.Authors,
+  const [isLoading, lastErrorCode, author] = useDataStoreItem<AuthorForList>(
+    AuthorsViewNames.GetAuthorsForList,
     id ? id : false,
     { queryName: 'short-asset-diff-author' }
   )
@@ -388,7 +394,33 @@ function AttachmentsOutput({ fields }: { fields: Asset }) {
     return <NoResultsMessage>No attachments</NoResultsMessage>
   }
 
-  return <Attachments ids={ids} attachmentsData={attachments} />
+  return (
+    <div>
+      {ids.map((id) => {
+        const attachment = attachments.find(
+          (attachment) => attachment.id === id
+        )
+
+        if (!attachment)
+          return <ErrorMessage>No attachment found with ID {id}</ErrorMessage>
+
+        return (
+          <div key={id}>
+            <Image
+              image={{
+                url: attachment.url,
+              }}
+            />
+            <AttachmentCaption
+              attachment={attachment}
+              includeMeta
+              includeParents={false} // need more data to make this look good
+            />
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
 const ExtraSourcesOutput = ({
@@ -716,7 +748,7 @@ export default ({
           rendererInfo.renderer ||
           getRendererByType(rendererInfo.type, fieldNameToUse)
 
-        if (textDiffFieldNames.includes(fieldNameThatChanged)) {
+        if (textDiffFieldNames.includes(fieldNameToUse)) {
           return (
             // @ts-ignore
             <Field
@@ -724,12 +756,24 @@ export default ({
               label={rendererInfo.label}
               hasChanged={!!onlyNewFields[fieldNameToUse]}>
               <TextDiff
-                oldValue={oldFields[fieldNameThatChanged] || ''}
-                newValue={newFields[fieldNameThatChanged] || ''}
+                oldValue={oldFields[fieldNameToUse] || ''}
+                newValue={newFields[fieldNameToUse] || ''}
               />
             </Field>
           )
         }
+
+        const hasChanged = getHasFieldChanged(
+          oldFields[fieldNameToUse],
+          newFields[fieldNameToUse]
+        )
+
+        console.debug(`ShortDiff.renderField`, {
+          fieldNameToUse,
+          hasChanged,
+          old: oldFields[fieldNameToUse],
+          new: newFields[fieldNameToUse],
+        })
 
         return (
           <Field
@@ -737,7 +781,7 @@ export default ({
             label={rendererInfo.label}
             oldFields={oldFields}
             newFields={newFields}
-            hasChanged={!!onlyNewFields[fieldNameToUse]}>
+            hasChanged={hasChanged}>
             {React.cloneElement(
               renderer({
                 fields: { ...oldFields },
