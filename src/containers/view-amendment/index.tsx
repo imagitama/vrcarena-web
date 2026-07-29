@@ -11,6 +11,7 @@ import {
   Author,
   ViewNames as AuthorsViewNames,
   CollectionNames as AuthorsCollectionNames,
+  AuthorForList,
 } from '@/modules/authors'
 import {
   ViewNames as AmendmentsViewNames,
@@ -63,8 +64,8 @@ const AssetOutput = ({ assetId }: { assetId: string }) => {
 }
 
 const AuthorOutput = ({ authorId }: { authorId: string }) => {
-  const [isLoading, lastErrorCode, author] = useDataStoreItem<Author>(
-    AuthorsCollectionNames.Authors,
+  const [isLoading, lastErrorCode, author] = useDataStoreItem<AuthorForList>(
+    AuthorsViewNames.GetAuthorsForList,
     authorId,
     { queryName: 'view-amendment-author' }
   )

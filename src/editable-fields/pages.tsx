@@ -1,11 +1,8 @@
-import React from 'react'
-
 import { fieldTypes } from '@/generic-forms'
 import { Page } from '@/modules/pages'
-
 import type { EditableField } from './'
 
-const fields: EditableField<Page, string>[] = [
+const fields: EditableField<Page>[] = [
   {
     name: 'title',
     label: 'Title',

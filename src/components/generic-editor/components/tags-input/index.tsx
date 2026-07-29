@@ -8,7 +8,7 @@ export default ({
   onChange,
   value,
 }: {
-  editableField: TagEditableField<any, any>
+  editableField: TagEditableField<any>
   value: string[]
   onChange: (newTags: string[]) => void
 } & TagInputSettings) => (

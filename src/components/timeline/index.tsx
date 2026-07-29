@@ -5,7 +5,13 @@ import {
   CommentMeta,
   CollectionNames as CommentsCollectionNames,
 } from '@/modules/comments'
-import { createMessage, editMessage, FullHistoryEntry } from '@/modules/history'
+import {
+  createMessage,
+  EditHistoryEntry,
+  editMessage,
+  FullHistoryEntry,
+  HistoryEntryChanges,
+} from '@/modules/history'
 import {
   AssetMeta,
   CollectionNames as AssetsCollectionNames,
@@ -110,7 +116,9 @@ const LabelForEntry = ({
 }: {
   entry: FullHistoryEntry
 }) => {
-  const changesWithoutMetafields = Object.entries(data.changes).reduce(
+  const changesWithoutMetafields = Object.entries(
+    (data as HistoryEntryChanges).changes
+  ).reduce(
     (newChanges, [fieldName, newValue]) =>
       fieldName !== 'lastmodifiedat' &&
       fieldName !== 'lastmodifiedby' &&
@@ -141,48 +149,65 @@ const LabelForEntry = ({
         case AssetsCollectionNames.Assets:
           return <>changed {Object.keys(changesWithoutMetafields).join(', ')}</>
         case AssetsCollectionNames.AssetsMeta:
-          if ((data.changes as AssetMeta).approvalstatus) {
+          if (
+            ((data as HistoryEntryChanges).changes as AssetMeta).approvalstatus
+          ) {
             return (
               <>
                 {getLabelForApprovalStatus(
-                  (data.changes as AssetMeta).approvalstatus!
+                  ((data as HistoryEntryChanges).changes as AssetMeta)
+                    .approvalstatus!
                 )}
               </>
             )
-          } else if ((data.changes as AssetMeta).accessstatus) {
+          } else if (
+            ((data as HistoryEntryChanges).changes as AssetMeta).accessstatus
+          ) {
             return (
               <>
                 {getLabelForAccessStatus(
-                  (data.changes as AssetMeta).accessstatus!
+                  ((data as HistoryEntryChanges).changes as AssetMeta)
+                    .accessstatus!
                 )}
               </>
             )
-          } else if ((data.changes as AssetMeta).publishstatus) {
+          } else if (
+            ((data as HistoryEntryChanges).changes as AssetMeta).publishstatus
+          ) {
             return (
               <>
                 {getLabelForPublishStatus(
-                  (data.changes as AssetMeta).publishstatus!
+                  ((data as HistoryEntryChanges).changes as AssetMeta)
+                    .publishstatus!
                 )}
               </>
             )
-          } else if ((data.changes as AssetMeta).editornotes) {
+          } else if (
+            ((data as HistoryEntryChanges).changes as AssetMeta).editornotes
+          ) {
             return <>changed editor notes for asset</>
           } else {
             return null
           }
         case AmendmentsCollectionNames.AmendmentsMeta:
-          if ((data.changes as AmendmentMeta).approvalstatus) {
+          if (
+            ((data as HistoryEntryChanges).changes as AmendmentMeta)
+              .approvalstatus
+          ) {
             return (
               <>
-                {(data.changes as AmendmentMeta).approvalstatus ===
-                ApprovalStatus.Approved
+                {((data as HistoryEntryChanges).changes as AmendmentMeta)
+                  .approvalstatus === ApprovalStatus.Approved
                   ? 'applied'
                   : getLabelForApprovalStatus(
-                      (data.changes as AmendmentMeta).approvalstatus
+                      ((data as HistoryEntryChanges).changes as AmendmentMeta)
+                        .approvalstatus
                     )}
               </>
             )
-          } else if ((data.changes as AmendmentMeta).editornotes) {
+          } else if (
+            ((data as HistoryEntryChanges).changes as AmendmentMeta).editornotes
+          ) {
             return <>changed editor notes for amendment</>
           }
         case UsersCollectionNames.Users:
@@ -192,10 +217,12 @@ const LabelForEntry = ({
             )
           }
         case UsersCollectionNames.UsersMeta:
-          if ((data.changes as UserMeta).banstatus) {
+          if (((data as HistoryEntryChanges).changes as UserMeta).banstatus) {
             return (
               <>
-                {getLabelForBanStatus((data.changes as UserMeta).banstatus)}{' '}
+                {getLabelForBanStatus(
+                  ((data as HistoryEntryChanges).changes as UserMeta).banstatus
+                )}{' '}
                 user
               </>
             )
@@ -203,18 +230,27 @@ const LabelForEntry = ({
         case AuthorsCollectionNames.Authors:
           return <>edited author</>
         case ReportsCollectionNames.ReportsMeta:
-          if ((data.changes as ReportMeta).resolutionstatus) {
+          if (
+            ((data as HistoryEntryChanges).changes as ReportMeta)
+              .resolutionstatus
+          ) {
             return (
               <>
                 {getLabelForResolutionStatus(
-                  (data.changes as ReportMeta).resolutionstatus
+                  ((data as HistoryEntryChanges).changes as ReportMeta)
+                    .resolutionstatus
                 )}{' '}
                 report
               </>
             )
-          } else if ((data.changes as ReportMeta).resolutionnotes) {
+          } else if (
+            ((data as HistoryEntryChanges).changes as ReportMeta)
+              .resolutionnotes
+          ) {
             return <>changed the resolution notes</>
-          } else if ((data.changes as ReportMeta).editornotes) {
+          } else if (
+            ((data as HistoryEntryChanges).changes as ReportMeta).editornotes
+          ) {
             return <>changed editor notes for report</>
           } else {
             return (
@@ -222,11 +258,14 @@ const LabelForEntry = ({
             )
           }
         case CommentsCollectionNames.CommentsMeta:
-          if ((data.changes as CommentMeta).accessstatus) {
+          if (
+            ((data as HistoryEntryChanges).changes as CommentMeta).accessstatus
+          ) {
             return (
               <>
                 {getLabelForAccessStatus(
-                  (data.changes as CommentMeta).accessstatus
+                  ((data as HistoryEntryChanges).changes as CommentMeta)
+                    .accessstatus
                 )}{' '}
                 comment
               </>

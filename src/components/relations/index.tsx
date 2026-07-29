@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
   },
   relationType: {
-    margin: '0 0.5rem 0.5rem 0',
+    margin: '0.5rem 0.5rem 0.5rem 0',
   },
   relations: {
     display: 'flex',
@@ -38,6 +38,7 @@ const useStyles = makeStyles({
   label: {
     fontSize: '150%',
     marginBottom: '0.5rem',
+    fontWeight: 100,
   },
   itemLabel: {
     marginTop: '0.5rem',

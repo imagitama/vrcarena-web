@@ -115,7 +115,6 @@ export default ({
 
   return (
     <Paper
-      margin={false}
       className={`${classes.root} ${
         showViewAuthorButton ? classes.withButton : ''
       }`}>

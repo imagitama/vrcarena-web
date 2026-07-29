@@ -1,14 +1,14 @@
 import React from 'react'
 
 import TextInput from '@/components/text-input'
-import { EditableField } from '@/editable-fields'
+import { TextEditableField } from '@/editable-fields'
 
 export default ({
   editableField,
   onChange,
   value,
 }: {
-  editableField: EditableField<any, any>
+  editableField: TextEditableField<any>
   value: string
   onChange: (newStr: string) => void
 }) => (

@@ -61,7 +61,6 @@ const AuthorClaims = () => {
         onChange={(e) => setUserInput(e.target.value)}
         fullWidth
         placeholder="Type an author name"
-        // button={<Button onClick={performSearch}>Search</Button>}
       />
       {isLoading ? (
         <LoadingIndicator message="Searching authors..." />
@@ -71,7 +70,7 @@ const AuthorClaims = () => {
         </ErrorMessage>
       ) : hits ? (
         <AuthorResults
-          authors={hits}
+          authors={hits as any} // TODO: repair type sometime
           onClick={(e, authorId) => {
             setSelectedAuthorId((currentId) =>
               currentId === authorId ? null : authorId

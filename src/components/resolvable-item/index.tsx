@@ -46,24 +46,22 @@ const Cell = styled.div`
 export interface ResolvableItem extends Record<string, any> {
   id: string
   category?: string
-  //   answers: SupportTicketAnswer[]
-  relatedtable: null | string // table name
-  relatedid: null | string
-  comments: string
-  //   guestid: string
-  lastmodifiedat: string // Date
-  lastmodifiedby: string
+  relatedtable: string | null // table name
+  relatedid: string | null
+  comments: string | null
+  lastmodifiedat: string | null // Date
+  lastmodifiedby: string | null
   createdat: string // Date
   createdby: string
 }
 
 export interface ResolvableItemMeta extends Record<string, unknown> {
-  editornotes: string
+  editornotes: string | null
   resolutionstatus: ResolutionStatus
   resolvedat: string | null // Date
   resolvedby: string | null
   assignedto: string | null // id
-  resolutionnotes: string
+  resolutionnotes: string | null
 }
 
 export interface FullResolvableItem<TRelated = any>
@@ -72,12 +70,12 @@ export interface FullResolvableItem<TRelated = any>
   relateddata: TRelated
   createdbyusername: string
   createdbyavatarurl: string
-  lastmodifiedbyusername: string
-  lastmodifiedbyavatarurl: string
-  resolvedbyusername: string
-  resolvedbyavatarurl: string
-  assignedtousername: string
-  assignedtoavatarurl: string
+  lastmodifiedbyusername: string | null
+  lastmodifiedbyavatarurl: string | null
+  resolvedbyusername: string | null
+  resolvedbyavatarurl: string | null
+  assignedtousername: string | null
+  assignedtoavatarurl: string | null
 }
 
 const ResolvableItem = ({
@@ -130,13 +128,13 @@ const ResolvableItem = ({
             username={item.createdbyusername}
             avatarUrl={item.createdbyavatarurl}
           />
-          {item.lastmodifiedby && (
+          {item.lastmodifiedby && item.lastmodifiedat && (
             <>
               <br />
               Modified <FormattedDate date={item.lastmodifiedat} /> by{' '}
               <UsernameLink
                 id={item.lastmodifiedby}
-                username={item.lastmodifiedbyusername}
+                username={item.lastmodifiedbyusername || '(no username)'}
                 avatarUrl={item.lastmodifiedbyavatarurl}
               />
             </>
@@ -150,7 +148,7 @@ const ResolvableItem = ({
               Assigned to{' '}
               <UsernameLink
                 id={item.assignedto}
-                username={item.assignedtousername}
+                username={item.assignedtousername || '(no username)'}
                 avatarUrl={item.assignedtoavatarurl}
               />
             </>

@@ -2,7 +2,11 @@ import { SupabaseClient } from '@supabase/supabase-js'
 
 import { inDevelopment } from './environment'
 import { insertRecord } from './data-store'
-import { AnalyticsEntry, CollectionNames } from './modules/analytics'
+import {
+  AnalyticsEntry,
+  AnalyticsEntryFields,
+  CollectionNames,
+} from './modules/analytics'
 
 export const trackAction = (
   category: string,
@@ -35,7 +39,7 @@ export const trackInternalAction = async (
   extraData: any = null
 ) => {
   try {
-    await insertRecord<AnalyticsEntry, AnalyticsEntry>(
+    await insertRecord<AnalyticsEntryFields, AnalyticsEntry>(
       supabase,
       CollectionNames.Analytics,
       {

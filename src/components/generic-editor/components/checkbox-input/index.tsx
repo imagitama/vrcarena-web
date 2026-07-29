@@ -1,20 +1,20 @@
 import React from 'react'
-import type { GenericInputProps } from '../../'
 import Button from '@/components/button'
 import { CheckboxEditableField } from '@/editable-fields'
 import CheckboxInput from '@/components/checkbox-input'
+import { GenericInputProps } from '../../types'
 
 export default ({
   editableField,
   onChange,
   value,
-}: GenericInputProps & CheckboxEditableField<any, any>) => (
+}: GenericInputProps<any, any> & CheckboxEditableField<any>) => (
   <>
     <CheckboxInput
       onChange={() => onChange(!value)}
       value={value}
       label={
-        (editableField as CheckboxEditableField<any, any>).checkboxLabel ||
+        (editableField as CheckboxEditableField<any>).checkboxLabel ||
         editableField.label
       }
     />

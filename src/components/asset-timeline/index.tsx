@@ -19,7 +19,7 @@ import {
 } from '@/modules/common'
 import assetEditableFields from '@/editable-fields/assets'
 import { fieldTypes } from '@/generic-forms'
-import { EditableField } from '@/editable-fields'
+import { EditableField, EditableFieldBase } from '@/editable-fields'
 import { Message, HistoryEntry } from '@/modules/history'
 import { ViewNames } from '@/modules/assets'
 
@@ -166,7 +166,7 @@ const getExpandedDataForPretty = (event: TimelineEvent<any>): PrettyField[] => {
   return []
 }
 
-interface PrettyField extends EditableField<any> {
+interface PrettyField extends EditableFieldBase<any> {
   value: any
 }
 
@@ -266,7 +266,10 @@ const AssetTimelineItem = ({
 const getPositivity = (event: TimelineEvent<any>): Positivity => {
   if (event.type === TimelineEventType.History) {
     const historyEntry = event.originalrecord as HistoryEntry
-    const changes = historyEntry.data.changes as MetaRecord
+    const changes =
+      'changes' in historyEntry.data
+        ? (historyEntry.data.changes as MetaRecord)
+        : null
 
     if (historyEntry.message === Message.Create) {
       return Positivity.Positive

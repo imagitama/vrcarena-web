@@ -102,6 +102,7 @@ function AssetsTable({
                     {getIsAssetWaitingForApproval(asset) ? (
                       <QueuedAssetInfo
                         asset={asset}
+                        assetEditorData={asset} // view contains all the same fields
                         hydrate={hydrate}
                         showEditorControls={false}
                       />

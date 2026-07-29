@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import AddIcon from '@mui/icons-material/Add'
 import CheckIcon from '@mui/icons-material/Check'
@@ -8,10 +8,11 @@ import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
 import { handleError } from '@/error-handling'
 import { trackAction } from '@/analytics'
-import { AssetFields, DiscordServerData } from '@/modules/assets'
+import { AssetFields } from '@/modules/assets'
 import {
   CollectionNames,
   DiscordServer,
+  DiscordServerFields,
   ViewNames,
 } from '@/modules/discordservers'
 import { AssetEditorProps } from '@/generic-forms'
@@ -26,6 +27,7 @@ import DiscordServerResultsItem from '@/components/discord-server-results-item'
 import Button from '@/components/button'
 import FormControls from '@/components/form-controls'
 import WarningMessage from '@/components/warning-message'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
 const SearchResultRenderer = ({
   result,
@@ -201,53 +203,47 @@ const AllDiscordServers = ({
   )
 }
 
-interface FormProps {
-  collectionName?: string
-  id?: string
-  existingDiscordServerId?: string | null
-  existingDiscordServerData?: DiscordServerData
-  overrideSave?: (newId: string | null | undefined) => void
-  onDone?: () => void
-  actionCategory?: string
-}
-
 type DiscordServerId = AssetFields['discordserver']
 
 const ChangeDiscordServerForm = ({
+  value,
   collectionName = undefined,
   id = undefined,
   associatedRecord = undefined,
   overrideSave = undefined,
   onDone = undefined,
   actionCategory = undefined,
-}: { collectionName?: string; id?: string } & AssetEditorProps<
-  DiscordServerId,
-  DiscordServer
->) => {
+  onChange,
+}: {
+  value: string | null
+  collectionName?: string
+  id?: string
+  onChange?: (id: string | null) => void
+} & AssetEditorProps<DiscordServerId, DiscordServer>) => {
   const [selectedDiscordServerId, setSelectedDiscordServerId] = useState<
-    string | null | undefined
-  >()
-  const [selectedDiscordServerData, setSelectedDiscordServerData] = useState<
-    DiscordServerData | undefined
-  >(associatedRecord)
-  const [isSaving, isSuccess, lastErrorCode, save, clear] =
+    string | null
+  >(value)
+  const [, , discordServer] = useDataStoreItem<DiscordServer>(
+    CollectionNames.DiscordServers,
+    selectedDiscordServerId || false
+  )
+  const [isSaving, isSuccess, lastErrorCode, save] =
     useDataStoreEdit<AssetFields>(collectionName || '', id || false)
-  const [isCreating, setIsCreating] = useState(false)
+  const [isShowingForm, setIsShowingForm] = useState(false)
   const [isBrowsingAll, setIsBrowsingAll] = useState(false)
 
-  const restart = () => {
-    setIsCreating(false)
-    setIsBrowsingAll(false)
-    setSelectedDiscordServerId(undefined)
-    setSelectedDiscordServerData(undefined)
-    clear()
-  }
+  useEffect(() => {
+    setSelectedDiscordServerId(value)
+  }, [value])
 
   const onIdAndDetails = (id: string, data: DiscordServer) => {
-    setIsCreating(false)
+    setIsShowingForm(false)
     setIsBrowsingAll(false)
     setSelectedDiscordServerId(id)
-    setSelectedDiscordServerData(data)
+
+    if (onChange) {
+      onChange(id)
+    }
   }
 
   const onSave = async (overrideValue?: string | null) => {
@@ -287,9 +283,15 @@ const ChangeDiscordServerForm = ({
     }
   }
 
-  const onClear = () => onSave(null)
+  const onClear = () => {
+    if (onChange) {
+      onChange(null)
+    } else {
+      onSave(null)
+    }
+  }
 
-  const onClickCreate = () => setIsCreating(true)
+  const onClickCreate = () => setIsShowingForm(true)
   const onClickBrowseAll = () => setIsBrowsingAll(true)
 
   if (isSaving) {
@@ -298,7 +300,7 @@ const ChangeDiscordServerForm = ({
 
   if (isSuccess) {
     return (
-      <SuccessMessage onOkay={restart}>
+      <SuccessMessage>
         Resource has been updated with Discord Server notice
       </SuccessMessage>
     )
@@ -306,7 +308,7 @@ const ChangeDiscordServerForm = ({
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage onOkay={restart}>
+      <ErrorMessage>
         Failed to save the resource (code {lastErrorCode})
       </ErrorMessage>
     )
@@ -316,29 +318,29 @@ const ChangeDiscordServerForm = ({
     return (
       <AllDiscordServers
         onClickWithIdAndDetails={onIdAndDetails}
-        onCancel={() => restart()}
+        onCancel={() => setIsShowingForm(false)}
       />
     )
   }
 
-  if (isCreating) {
+  if (isShowingForm) {
     return (
       <CreateForm
         onClickWithIdAndDetails={onIdAndDetails}
         actionCategory={actionCategory}
-        onCancel={() => setIsCreating(false)}
+        onCancel={() => setIsShowingForm(false)}
       />
     )
   }
 
   if (selectedDiscordServerId) {
-    if (selectedDiscordServerData) {
+    if (discordServer) {
       return (
         <>
           You have selected:
           <DiscordServerResultsItem
             discordServer={{
-              ...selectedDiscordServerData,
+              ...discordServer,
             }}
             onClick={(e) => {
               e.preventDefault()
@@ -346,12 +348,11 @@ const ChangeDiscordServerForm = ({
             }}
           />
           <FormControls>
-            <Button onClick={() => onSave()} icon={<SaveIcon />}>
-              Save
-            </Button>{' '}
-            <Button onClick={() => restart()} color="secondary">
-              Try Again
-            </Button>{' '}
+            {onChange === undefined ? (
+              <Button onClick={() => onSave()} icon={<SaveIcon />}>
+                Save
+              </Button>
+            ) : null}{' '}
             <Button onClick={() => onClear()} color="secondary">
               Clear
             </Button>
@@ -359,12 +360,7 @@ const ChangeDiscordServerForm = ({
         </>
       )
     } else {
-      return (
-        <ErrorMessage onRetry={() => restart()}>
-          There is an ID but there is no data for that Discord Server. This
-          should not happen
-        </ErrorMessage>
-      )
+      return <>Loading Discord server...</>
     }
   }
 

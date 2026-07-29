@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { HistoryEntry } from '@/modules/history'
+import { EditHistoryEntry, HistoryEntry } from '@/modules/history'
 
 import FormattedDate from '@/components/formatted-date'
 import Tabs from '@/components/tabs'
@@ -21,7 +21,7 @@ const HistoryRevisions = <TData,>({
   fieldNameToDiff: keyof TData
 }) => {
   const entriesWithContent = entries.filter(
-    (entry) => entry.data.changes[fieldNameToDiff]
+    (entry) => (entry as EditHistoryEntry).data.changes[fieldNameToDiff]
   )
 
   if (!entriesWithContent) {
@@ -34,7 +34,9 @@ const HistoryRevisions = <TData,>({
         {
           entry,
           oldValue: idx === 0 ? '' : finalEntryDiffs[idx - 1].newValue,
-          newValue: entry.data.changes[fieldNameToDiff] as unknown as string, // assume whatever field you want to diff is a string
+          newValue: (entry as EditHistoryEntry).data.changes[
+            fieldNameToDiff
+          ] as unknown as string, // assume whatever field you want to diff is a string
         },
       ]),
     []

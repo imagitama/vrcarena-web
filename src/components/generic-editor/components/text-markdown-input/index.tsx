@@ -8,7 +8,7 @@ export default ({
   onChange,
   value,
 }: {
-  editableField: MarkdownEditableField<any, any>
+  editableField: MarkdownEditableField<any>
   value: string
   onChange: (newVal: string) => void
 }) => (

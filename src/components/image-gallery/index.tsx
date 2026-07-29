@@ -121,14 +121,14 @@ const useStyles = makeStyles({
   },
 })
 
-const Image = ({
+export const Image = ({
   image,
   onClick,
   isSelected,
   isExpanded,
 }: {
   image: ImageDetails
-  onClick: () => void
+  onClick?: () => void
   isSelected?: boolean
   isExpanded?: boolean
 }) => {
@@ -144,11 +144,11 @@ const Image = ({
       {isExpanded && isYoutube ? (
         <>
           <VideoPlayer url={image.url} autoplay width="100%" height="500px" />
-          {isMobile ? null : (
+          {isMobile ? null : onClick ? (
             <div className={classes.videoPlayerControls}>
               <Button onClick={() => onClick()}>Close Player</Button>
             </div>
-          )}
+          ) : null}
         </>
       ) : (
         <img
@@ -158,7 +158,7 @@ const Image = ({
               : image.thumbnailUrl || image.url
           }
           alt={image.alt || ''}
-          onClick={() => onClick()}
+          onClick={onClick}
         />
       )}
       {image.caption ? (

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react'
 
 /** WARNING: The named exports of this file correspond to the "icon" column in tags table */

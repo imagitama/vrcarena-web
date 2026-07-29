@@ -30,8 +30,8 @@ export default ({
   resolutionStatus: string // waiting | resolved
   resolvedAt: Date | string | null
   resolvedBy: string | null
-  resolvedByUsername?: string
-  resolvedByAvatarUrl?: string
+  resolvedByUsername?: string | null
+  resolvedByAvatarUrl?: string | null
 }) => {
   const classes = useStyles()
 
@@ -51,7 +51,7 @@ export default ({
           Resolved by{' '}
           <UsernameLink
             id={resolvedBy!}
-            username={resolvedByUsername}
+            username={resolvedByUsername || '(no username)'}
             avatarUrl={resolvedByAvatarUrl}
           />{' '}
           {resolvedAt !== null ? (

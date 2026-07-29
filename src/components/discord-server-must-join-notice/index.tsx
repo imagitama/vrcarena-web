@@ -3,12 +3,12 @@ import { makeStyles } from '@mui/styles'
 import WarningIcon from '@mui/icons-material/Warning'
 
 import { trackAction } from '@/analytics'
-import { DiscordServerData } from '@/modules/assets'
 import { Discord as DiscordIcon } from '@/icons'
 import { discordPurple } from '@/config'
 
 import Box from '@/components/box'
 import Button from '@/components/button'
+import { DiscordServerFields } from '@/modules/discordservers'
 
 const useStyles = makeStyles({
   title: {
@@ -38,7 +38,7 @@ const DiscordServerMustJoinNotice = ({
   className = undefined,
 }: {
   discordServerId: string
-  discordServerData?: DiscordServerData
+  discordServerData?: DiscordServerFields
   analyticsCategoryName?: string
   className?: string
 }) => {

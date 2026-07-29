@@ -30,7 +30,7 @@ export default ({
   id: string
   username?: string
   children?: React.ReactNode
-  avatarUrl?: string
+  avatarUrl?: string | null
   reputation?: number
 }) => (
   <>

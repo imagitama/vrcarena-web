@@ -20,6 +20,7 @@ import useUserPreferences from '@/hooks/useUserPreferences'
 
 import AccountMenu from '@/components/account-menu'
 import { RootState } from '@/modules'
+import store from '@/store'
 
 const useStyles = makeStyles({
   content: {
@@ -94,7 +95,7 @@ export default () => {
   const isMenuOpen = useSelector<RootState, boolean>(
     ({ app }) => app.isMenuOpen
   )
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
 
   const dispatchCloseMenu = () => dispatch(closeMenu())
 
@@ -128,9 +129,7 @@ export default () => {
         <Divider />
         <MenuList>
           {navItems
-            .filter((navItem) =>
-              canShowMenuItem(navItem, user, userPreferences)
-            )
+            .filter((navItem) => canShowMenuItem(navItem, user))
             .map(({ id, label, url, children }) => (
               <div key={id}>
                 <MenuItem>
@@ -163,9 +162,7 @@ export default () => {
                       })
                     : children
                     ? children
-                        .filter((navItem) =>
-                          canShowMenuItem(navItem, user, userPreferences)
-                        )
+                        .filter((navItem) => canShowMenuItem(navItem, user))
                         .map((child) => (
                           <MenuItem
                             key={child.id}

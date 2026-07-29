@@ -9,6 +9,7 @@ import {
 } from './common'
 import { Tag, TagStats } from './tags'
 import { AiSimilarQueuedItem } from './aisimilar'
+import { DiscordServer, DiscordServerFields } from './discordservers'
 
 // TODO: Better func here as technically FullAsset has speciesnames
 export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
@@ -138,18 +139,10 @@ export interface VrcFuryPrefabInfo {
   url: string
   discordServerId?: string | null
   // when full:
-  discordserverdata?: DiscordServerData | null
+  discordserverdata?: DiscordServerFields | null
 }
 
 export interface TutorialStep {}
-
-export interface DiscordServerData {
-  id: string
-  name: string
-  inviteurl?: string
-  requirespatreon?: boolean
-  patreonurl?: string
-}
 
 export interface VrchatWorld {}
 
@@ -274,7 +267,7 @@ export interface AssetForList_Editor extends AssetForList {
   actions: AssetActions
 }
 
-export type FullAssetMention = {
+export type MentionForFullAsset = {
   relation: Relation
   asset: PublicAsset
 }
@@ -286,7 +279,7 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   lastmodifiedbyusername: string
   // linkedassets: Asset[]
   incominglinkedassets: Asset[]
-  discordserverdata: DiscordServerData | null
+  discordserverdata: DiscordServer | null
   clonableworlddata: VrchatWorld | null
   relationsdata: Asset[] | null
   approvedbyusername: string
@@ -303,7 +296,7 @@ export interface FullAssetExtra extends Record<string, unknown> {
   similarassets: PublicAsset[]
   aisimilarities: AiSimilarQueuedItem | null
   aisimilaritiesdata: PublicAsset[]
-  mentionsdata: FullAssetMention[]
+  mentionsdata: MentionForFullAsset[]
   mentionstotal: number
 }
 

@@ -58,7 +58,6 @@ const View = () => {
         id={isCreating ? undefined : reviewId}
         analyticsCategory={isCreating ? 'CreateReview' : 'EditReview'}
         saveBtnAction="Click save review button"
-        viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewReviewWithVar.replace(':reviewId', reviewId)}
         getSuccessUrl={(newId) =>

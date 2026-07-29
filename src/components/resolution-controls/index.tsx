@@ -28,7 +28,7 @@ export default ({
   id: string
   metaCollectionName?: string
   existingResolutionStatus?: ResolutionStatus
-  existingResolutionNotes?: string
+  existingResolutionNotes?: string | null
   onClick?: (newValue: string) => void
   onDone?: () => void
 }) => {

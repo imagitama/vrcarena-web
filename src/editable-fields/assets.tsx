@@ -3,7 +3,12 @@ import React from 'react'
 import categoryMetas from '@/category-meta'
 import type { EditableField } from './'
 import { fieldTypes } from '@/generic-forms'
-import { Asset, AssetCategory, CollectionNames } from '@/modules/assets'
+import {
+  Asset,
+  AssetCategory,
+  CollectionNames,
+  FullAsset,
+} from '@/modules/assets'
 import {
   ASSET_TITLE_MAX_LENGTH,
   ASSET_TITLE_MIN_LENGTH,
@@ -177,7 +182,7 @@ const fields: EditableField<Asset>[] = [
         parentId={formFields.id} // TODO: support creating without ID
         reason={AttachmentReason.AssetFile}
         ids={(value as any) || []}
-        attachmentsData={formFields.attachmentsdata}
+        attachmentsData={(formFields as FullAsset).attachmentsdata || undefined}
         onChange={(newAttachmentIds) => onChange(newAttachmentIds as any)} // TODO: fix up types
       />
     ),
@@ -188,11 +193,12 @@ const fields: EditableField<Asset>[] = [
     label: 'Required Discord Server',
     type: fieldTypes.custom,
     default: null,
-    renderer: ({ value, onChange }) => (
+    renderer: ({ value, onChange, formFields }) => (
       <ChangeDiscordServerForm
         assetId={null}
-        initialValue={value || null}
-        overrideSave={(newId) => onChange(newId as any)}
+        value={value}
+        // passing this hides save button
+        onChange={onChange}
       />
     ),
   },

@@ -239,7 +239,9 @@ const NotificationSettings = ({
       CollectionNames.UserPreferences,
       myUserId || false
     )
-  const [newPrefs, setNewPrefs] = useState(defaultNotificationPrefs)
+  const [newPrefs, setNewPrefs] = useState<NotificationPreferences>(
+    defaultNotificationPrefs
+  )
   const [notificationEmail, setNotificationEmail] = useState('')
   const classes = useStyles()
   const [

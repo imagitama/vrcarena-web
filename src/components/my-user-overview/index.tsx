@@ -57,7 +57,7 @@ const MyUserOverview = () => {
 
   return (
     <>
-      <Avatar url={user.avatarurl} />
+      {user.avatarurl && <Avatar url={user.avatarurl} />}
       <Heading variant="h1" style={{ marginTop: '0.5rem' }}>
         <UsernameLink username={user.username} id={user.id} />
       </Heading>

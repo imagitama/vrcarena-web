@@ -29,7 +29,6 @@ const View = () => {
         id={isCreating ? undefined : authorId}
         analyticsCategory={isCreating ? 'CreateAuthor' : 'EditAuthor'}
         saveBtnAction="Click save author button"
-        viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewAuthorWithVar.replace(':authorId', authorId)}
         getSuccessUrl={(newId) =>

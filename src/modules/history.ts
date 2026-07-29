@@ -1,3 +1,7 @@
+export interface HistoryEntryChanges<TData = any> {
+  changes: Partial<TData>
+}
+
 export interface HistoryEntry<TData = any> {
   id: string
   createdby: string
@@ -6,12 +10,20 @@ export interface HistoryEntry<TData = any> {
   parent: string
   message: string
   data:
-    | {
-        changes: Partial<TData>
-      }
+    | HistoryEntryChanges<TData>
     | {
         record: TData
       }
+}
+
+export interface CreateHistoryEntry<TData = any> extends HistoryEntry<TData> {
+  data: {
+    record: TData
+  }
+}
+
+export interface EditHistoryEntry<TData = any> extends HistoryEntry<TData> {
+  data: HistoryEntryChanges<TData>
 }
 
 export interface FullHistoryEntry<TData = any> extends HistoryEntry<TData> {

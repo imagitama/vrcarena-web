@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 
-import { CollectionNames } from '@/modules/users'
-import { UserPreferences } from '@/modules/user'
+import { CollectionNames, UserPreferences } from '@/modules/users'
 import { handleError } from '@/error-handling'
 import { cleanupTags } from '@/utils/tags'
 

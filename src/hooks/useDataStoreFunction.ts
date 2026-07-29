@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import useSupabaseClient from './useSupabaseClient'
 import { handleError } from '@/error-handling'
 import { PostgrestError } from '@supabase/supabase-js'
-import { DataStoreErrorCode, PostgresErrorCode } from '@/data-store'
+import { PostgresErrorCode } from '@/data-store'
 
 export enum ErrorCode {
   Unknown = 0,

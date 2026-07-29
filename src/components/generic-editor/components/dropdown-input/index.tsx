@@ -2,7 +2,7 @@ import React from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import { SelectProps } from '@mui/material/Select'
 
-import { EditableField, SelectEditableField } from '@/editable-fields'
+import { SelectEditableField } from '@/editable-fields'
 import Select from '@/components/select'
 
 const DropdownInput = ({
@@ -11,7 +11,7 @@ const DropdownInput = ({
   value = null,
   selectProps = {},
 }: {
-  editableField: EditableField<any, any>
+  editableField: SelectEditableField<any>
   onChange: (newVal: any) => void
   value: string | null
   selectProps?: SelectProps
@@ -19,7 +19,6 @@ const DropdownInput = ({
   <Select
     value={value}
     onChange={(e: any) => onChange(e.target.value)}
-    // disabled={isDisabled} TODO: verify needed
     {...selectProps}>
     {(editableField as SelectEditableField<any>).options.map((option) => (
       <MenuItem key={option.value} value={option.value || undefined}>

@@ -29,7 +29,6 @@ const View = () => {
         id={isCreating ? undefined : attachmentId}
         analyticsCategory={isCreating ? 'CreateAttachment' : 'EditAttachment'}
         saveBtnAction="Click save attachment button"
-        viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewAttachmentWithVar.replace(
           ':attachmentId',

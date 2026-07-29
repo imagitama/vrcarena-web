@@ -1,12 +1,15 @@
 import { Asset } from './assets'
 
-export interface AnalyticsEntry {
-  id: string
+export interface AnalyticsEntryFields extends Record<string, any> {
   category: string
   action: string
   parenttable: string
   parent: string
   extradata: any
+}
+
+export interface AnalyticsEntry {
+  id: string
 }
 
 export type SourceTotals = { [url: string]: number }

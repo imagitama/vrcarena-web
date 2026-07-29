@@ -7,10 +7,11 @@ import { parseSearchTermFromUrlPath } from '@/utils'
 import { trackAction } from '@/analytics'
 
 import HomeContainer from '@/containers/home'
+import store from '@/store'
 
 export default () => {
   const { searchTerm: rawSearchTerm } = useParams<{ searchTerm: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<typeof store.dispatch>()
   const dispatchChangeSearchTerm = (newTerm: string) =>
     dispatch(changeSearchTerm(newTerm))
 

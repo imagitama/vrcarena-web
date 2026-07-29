@@ -4,6 +4,7 @@ import Button from '@/components/button'
 import {
   Author,
   CollectionNames as AuthorCollectionNames,
+  AuthorForList,
 } from '@/modules/authors'
 import {
   Claim,
@@ -35,7 +36,9 @@ const Renderer = <TData,>({
 }) => {
   switch (parentTable) {
     case AuthorCollectionNames.Authors:
-      return <AuthorResultsItem author={parentData as unknown as Author} />
+      return (
+        <AuthorResultsItem author={parentData as unknown as AuthorForList} />
+      )
     default:
       return <>No renderer</>
   }

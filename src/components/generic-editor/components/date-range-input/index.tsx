@@ -3,13 +3,13 @@ import React from 'react'
 import { DateRangeEditableField } from '@/editable-fields'
 import DateTimeRangeInput from '@/components/datetime-range-input'
 import EventDateRange from '@/components/event-date-range'
-import { GenericInput } from '../../types'
+import { GenericInputProps } from '../../types'
 
-const DateRangeInput: GenericInput<
-  string,
-  any,
-  DateRangeEditableField<any>
-> = ({ editableField, formFields, setFieldsValues }) => {
+const DateRangeInput = ({
+  editableField,
+  formFields,
+  setFieldsValues,
+}: GenericInputProps<string, any, DateRangeEditableField<any>>) => {
   if (!(editableField.endsAtFieldName in formFields)) {
     throw new Error(
       `Field "${

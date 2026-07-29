@@ -24,6 +24,7 @@ import UrlSelector from '@/components/url-selector'
 import CheckboxInput from '@/components/checkbox-input'
 import ChangeDiscordServerForm from '@/components/change-discord-server-form'
 import DiscordServerResultsItem from '@/components/discord-server-results-item'
+import { DiscordServer } from '@/modules/discordservers'
 
 const actionCategory = 'AssetOverviewEditor'
 
@@ -86,12 +87,12 @@ const PrefabEditor = ({
       {doesRequireDiscordServer &&
         (isChangeDiscordServerFormVisible || !discordServerId ? (
           <ChangeDiscordServerForm
-            existingDiscordServerId={discordServerId}
+            assetId={null}
             overrideSave={(newId) => setDiscordServerId(newId)}
           />
         ) : item.discordserverdata && discordServerId ? (
           <DiscordServerResultsItem
-            discordServer={{ ...item.discordserverdata }}
+            discordServer={{ ...item.discordserverdata } as DiscordServer}
           />
         ) : (
           <div>
@@ -113,6 +114,7 @@ const PrefabEditor = ({
   )
 }
 
+// TODO: delete unused form?
 export default ({
   assetId,
   currentExtraData,

@@ -30,7 +30,6 @@ const View = () => {
         id={isCreating ? undefined : collectionId}
         analyticsCategory={isCreating ? 'CreateCollection' : 'EditCollection'}
         saveBtnAction="Click save collection button"
-        viewBtnAction="Click view item button after save"
         cancelBtnAction="Click cancel button"
         successUrl={routes.viewCollectionWithVar.replace(
           ':collectionId',

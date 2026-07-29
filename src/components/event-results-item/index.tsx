@@ -54,7 +54,7 @@ const EventResultsItem = ({
           <Link to={routes.viewEventWithVar.replace(':eventId', slug || id)}>
             <CardMedia
               className={classes.media}
-              image={thumbnailUrl}
+              image={thumbnailUrl || ''}
               title={`Thumbnail for ${name}`}>
               {!thumbnailUrl && <DefaultAvatar stringForDecision={name} />}
             </CardMedia>

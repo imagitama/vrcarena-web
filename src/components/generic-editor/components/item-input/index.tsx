@@ -20,10 +20,10 @@ export default ({
   onChange,
   value = null,
 }: {
-  editableField: ItemEditableField<any, any>
+  editableField: ItemEditableField<any>
   onChange: (newVal: any) => void
   value: string | null
-} & ItemEditableField<any, any>) => {
+} & ItemEditableField<any>) => {
   const [isLoading, lastErrorCode, items] = useDataStoreItems<any>(
     editableField.collectionName,
     undefined,

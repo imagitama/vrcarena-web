@@ -43,7 +43,7 @@ const AttachmentCaption = ({
 }) => {
   const isEditor = useIsEditor()
   return (
-    <Paper className={className}>
+    <Paper className={className} noPadding>
       {includeParents ? (
         <>
           Posted by{' '}

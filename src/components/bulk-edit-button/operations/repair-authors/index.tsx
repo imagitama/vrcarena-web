@@ -10,13 +10,16 @@ import { RootState } from '@/modules'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
 import {
   Asset,
+  AssetForList,
   CollectionNames as AssetsCollectionNames,
   ViewNames as AssetsViewNames,
 } from '@/modules/assets'
 import {
   Author,
+  AuthorForList,
   AuthorMeta,
   CollectionNames as AuthorsCollectionNames,
+  ViewNames as AuthorsViewNames,
 } from '@/modules/authors'
 
 import Heading from '@/components/heading'
@@ -47,8 +50,8 @@ const Authors = ({
   finalFields,
   toggleFinalField,
 }: {
-  assets: Asset[]
-  authors: Author[]
+  assets: AssetForList[]
+  authors: AuthorForList[]
   primaryAuthorId: string | null
   selectAuthorId: (id: string) => void
   finalFields: FinalFields
@@ -153,7 +156,7 @@ const RepairAuthorsOperation = () => {
     (state) => state.app.bulkEditIds || []
   )
   const [isLoadingAssets, lastErrorCodeAssets, assets] =
-    useDataStoreItems<Asset>(AssetsCollectionNames.Assets, assetIds)
+    useDataStoreItems<AssetForList>(AssetsViewNames.GetAssetsForList, assetIds)
 
   let authorIds: string[] = assets
     ? (assets
@@ -164,8 +167,8 @@ const RepairAuthorsOperation = () => {
     : []
 
   const [isLoadingAuthors, lastErrorCodeAuthors, authors] =
-    useDataStoreItems<Author>(
-      AuthorsCollectionNames.Authors,
+    useDataStoreItems<AuthorForList>(
+      AuthorsViewNames.GetAuthorsForList,
       authorIds.length > 0 ? authorIds : false
     )
 
@@ -204,7 +207,7 @@ const RepairAuthorsOperation = () => {
     )
   }
 
-  const primaryAuthor: Author | null =
+  const primaryAuthor: AuthorForList | null =
     authors && primaryAuthorId !== null
       ? authors.find((a) => a.id === primaryAuthorId) || null
       : null

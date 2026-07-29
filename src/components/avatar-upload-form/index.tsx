@@ -18,6 +18,7 @@ import ErrorMessage from '@/components/error-message'
 import ImageUploader from '@/components/image-uploader'
 import Heading from '@/components/heading'
 import Avatar from '@/components/avatar'
+import NoResultsMessage from '../no-results-message'
 
 const AvatarUploadForm = ({
   onClick = undefined,
@@ -69,7 +70,11 @@ const AvatarUploadForm = ({
   return (
     <>
       <Heading variant="h3">Current Avatar</Heading>
-      <Avatar url={user.avatarurl} />
+      {user.avatarurl ? (
+        <Avatar url={user.avatarurl} />
+      ) : (
+        <NoResultsMessage>No avatar uploaded yet</NoResultsMessage>
+      )}
       <Heading variant="h3">Upload New Avatar</Heading>
       <ImageUploader
         onDone={onUploadedWithUrls}

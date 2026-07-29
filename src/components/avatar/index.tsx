@@ -71,7 +71,7 @@ const Avatar = ({
   lazy = true,
   noHat = false,
 }: {
-  url?: string
+  url?: string | null
   username?: string
   size?: string
   className?: string
