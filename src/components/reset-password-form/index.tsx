@@ -9,6 +9,7 @@ import SuccessMessage from '@/components/success-message'
 import Button from '@/components/button'
 import TextInput from '@/components/text-input'
 import FormControls from '@/components/form-controls'
+import { sendPasswordResetEmail } from 'firebase/auth'
 
 enum ErrorCode {
   Unknown,
@@ -30,7 +31,7 @@ const ResetPasswordForm = () => {
       setHasSent(false)
       setLastErrorCode(null)
 
-      await auth.sendPasswordResetEmail(emailValue)
+      await sendPasswordResetEmail(auth, emailValue)
 
       setIsSending(false)
       setHasSent(true)
