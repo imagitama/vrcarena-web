@@ -8,10 +8,12 @@ import RepairAuthorsOperation from './operations/repair-authors'
 import useBulkEdit from '@/hooks/useBulkEdit'
 import FormControls from '../form-controls'
 import RepairAssetsOperation from './operations/repair-assets'
+import ChangeSpeciesOperation from './operations/change-species'
 
 enum Operation {
   RepairAuthors = 'RepairAuthors',
   RepairAssets = 'RepairAssets',
+  ChangeSpecies = 'ChangeSpecies',
 }
 
 const Form = ({ operation }: { operation: Operation }) => {
@@ -20,6 +22,8 @@ const Form = ({ operation }: { operation: Operation }) => {
       return <RepairAuthorsOperation />
     case Operation.RepairAssets:
       return <RepairAssetsOperation />
+    case Operation.ChangeSpecies:
+      return <ChangeSpeciesOperation />
     default:
       return <>Unknown operation "{operation}"</>
   }
@@ -59,6 +63,7 @@ const BulkEditButton = () => {
               Operation
             </Heading>
             <div>
+              {/* TODO: use array for this */}
               <Button
                 color="secondary"
                 onClick={() => toggleOperation(Operation.RepairAuthors)}
@@ -78,6 +83,16 @@ const BulkEditButton = () => {
                   ) : undefined
                 }>
                 Repair Assets
+              </Button>{' '}
+              <Button
+                color="secondary"
+                onClick={() => toggleOperation(Operation.ChangeSpecies)}
+                icon={
+                  selectedOperation === Operation.ChangeSpecies ? (
+                    <CheckIcon />
+                  ) : undefined
+                }>
+                Change Species
               </Button>
             </div>
             <Heading variant="h2" noMargin>

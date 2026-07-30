@@ -24,7 +24,7 @@ const StatusText = ({
   className: extraClassName,
 }: {
   children: React.ReactNode
-  positivity: number
+  positivity?: number
   className?: string
 }) => {
   const classes = useStyles()
