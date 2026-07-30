@@ -138,6 +138,7 @@ const AssetsForSpecies = ({
           AssetCategory.Avatar
         }`
       }
+      showAreas={false}
       extraControls={[
         <Button
           icon={
