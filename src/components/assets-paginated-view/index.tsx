@@ -30,7 +30,11 @@ const Renderer = ({
     return <AssetResults shimmer shimmerCount={20} />
   }
 
-  if (selectedSubView === SubView.GroupByArea && categoryName) {
+  if (
+    selectedSubView === SubView.GroupByArea &&
+    categoryName &&
+    categoryName !== AssetCategory.Avatar
+  ) {
     return (
       <AssetsByArea
         assets={items}

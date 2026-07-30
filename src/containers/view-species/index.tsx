@@ -139,6 +139,7 @@ const AssetsForSpecies = ({
         }`
       }
       showAreas={false}
+      defaultGroupByArea={false}
       extraControls={[
         <Button
           icon={
