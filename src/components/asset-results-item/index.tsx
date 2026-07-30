@@ -415,14 +415,13 @@ const AssetResultsItem = ({
                   )}
                 </strong>
               )}{' '}
-              {asset?.category === AssetCategory.Avatar ||
-                (relation && (
-                  <SpeciesOutput
-                    asset={asset}
-                    relation={relation}
-                    showDivider={showCategory !== false}
-                  />
-                ))}
+              {asset?.category === AssetCategory.Avatar || relation ? (
+                <SpeciesOutput
+                  asset={asset}
+                  relation={relation}
+                  showDivider={showCategory !== false}
+                />
+              ) : null}
             </div>
             {Controls || actuallyShowMoreInfo || showState ? (
               <div className={classes.moreInfo}>
