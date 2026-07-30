@@ -1,3 +1,4 @@
+import SpeciesSelector from '@/components/species-selector'
 import { Helmet } from '@unhead/react/helmet'
 import React from 'react'
 
@@ -10,6 +11,10 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <SpeciesSelector
+          selectedSpeciesIds={[]}
+          onSelectedSpeciesIds={() => {}}
+        />
       </div>
     </>
   )

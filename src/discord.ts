@@ -42,3 +42,8 @@ export interface DiscordUser {
   avatar: string
   email: string
 }
+
+export enum FunctionNames {
+  ConnectWithDiscord = 'connectWithDiscord',
+  LoginWithDiscord = 'loginWithDiscord',
+}

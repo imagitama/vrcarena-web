@@ -17,6 +17,7 @@ import FormControls from '@/components/form-controls'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import Button from '@/components/button'
+import WarningMessage from '../warning-message'
 
 interface SyncUserWithDiscordPayload {
   userId: string
@@ -124,13 +125,15 @@ const SyncUserWithDiscordForm = ({
   if (lastSaveErrorCode !== null) {
     if (lastSaveErrorCode === DataStoreErrorCode.ViolateUniqueConstraint) {
       return (
-        <ErrorMessage>
-          Username is taken
-          <br />
-          <br />
-          <Button onClick={retryOnlyWithAvatar}>Only Use Avatar Image</Button>
-          <br />
-        </ErrorMessage>
+        <WarningMessage>
+          Your Discord profile was found but we could not use your username: it
+          is already taken.
+          <FormControls>
+            <Button onClick={retryOnlyWithAvatar}>
+              Update My Avatar Image Instead
+            </Button>
+          </FormControls>
+        </WarningMessage>
       )
     }
 
@@ -143,15 +146,19 @@ const SyncUserWithDiscordForm = ({
 
   return (
     <>
-      <InfoMessage>
-        Click the button below to sync your account's username and avatar with
+      <InfoMessage title="Sync With Discord">
+        Click the button below to sync your VRCArena username and avatar with
         your Discord account.
+        <FormControls>
+          <Button
+            size="large"
+            icon={<SyncIcon />}
+            onClick={() => performSync()}
+            color="secondary">
+            Sync Now
+          </Button>
+        </FormControls>
       </InfoMessage>
-      <FormControls>
-        <Button size="large" icon={<SyncIcon />} onClick={() => performSync()}>
-          Sync Now
-        </Button>
-      </FormControls>
     </>
   )
 }

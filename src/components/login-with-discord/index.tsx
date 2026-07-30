@@ -6,7 +6,7 @@ import { auth, callFunction } from '@/firebase'
 import { handleError } from '@/error-handling'
 import * as routes from '@/routes'
 import { loginWithDiscordUrl } from '@/config'
-import { DiscordUser } from '@/discord'
+import { DiscordUser, FunctionNames } from '@/discord'
 import { signInWithCustomToken, updateEmail } from 'firebase/auth'
 
 import LoadingIndicator from '@/components/loading-indicator'
@@ -28,34 +28,52 @@ const useStyles = makeStyles({
 // when you log in this component gets completely remounted so it tries to repeat a bunch of times
 let isAlreadyAuthenticated = false
 
-// TODO: Change backend to return strings for easier debugging
-enum BackendErrorCode {
-  BadAccessCode = 100,
-  Unknown = 999,
-}
-
 enum ErrorCode {
-  BadAccessCode,
-  FailedToUpdateEmail,
   Unknown,
+  BadCode,
 }
 
-const mapBackendErrorCode = (backendErrorCode: BackendErrorCode): ErrorCode => {
-  switch (backendErrorCode) {
-    case BackendErrorCode.BadAccessCode:
-      return ErrorCode.BadAccessCode
-    default:
-      return ErrorCode.Unknown
+const getErrorCodeFromError = (err: Error): ErrorCode => {
+  if (err instanceof LoginWithDiscordError) {
+    switch (err.errorCode) {
+      case LoginWithDiscordErrorCode.BadCode:
+        return ErrorCode.BadCode
+      default:
+        return ErrorCode.Unknown
+    }
   }
+  return ErrorCode.Unknown
 }
 
-// TODO: Verify if actually used
-interface LoginWithDiscordError {
-  errorCode: BackendErrorCode
+enum LoginWithDiscordErrorCode {
+  Unknown = 'Unknown',
+  BadCode = 'BadCode',
 }
 
-enum FunctionNames {
-  LoginWithDiscord = 'loginWithDiscord',
+interface LoginWithDiscordPayload {
+  code: string
+}
+
+interface LoginWithDiscordSuccessResponse {
+  token: string
+  discordUser: DiscordUser
+  hasAlreadySignedUp: boolean
+}
+
+interface LoginWithDiscordFailedResponse {
+  errorCode: LoginWithDiscordErrorCode
+}
+
+type LoginWithDiscordResponse =
+  | LoginWithDiscordSuccessResponse
+  | LoginWithDiscordFailedResponse
+
+class LoginWithDiscordError extends Error {
+  errorCode: LoginWithDiscordErrorCode
+  constructor(errorCode: LoginWithDiscordErrorCode) {
+    super()
+    this.errorCode = errorCode
+  }
 }
 
 export default ({
@@ -86,26 +104,21 @@ export default ({
         setIsLoading(true)
         setIsSuccess(false)
 
-        const {
-          data: { token, discordUser, hasAlreadySignedUp, errorCode },
-        } = await callFunction<
-          { code: string },
-          {
-            token: string
-            discordUser: DiscordUser
-            hasAlreadySignedUp: boolean
-            errorCode?: BackendErrorCode
-          }
+        const { data } = await callFunction<
+          LoginWithDiscordPayload,
+          LoginWithDiscordResponse
         >(FunctionNames.LoginWithDiscord, {
           code,
         })
 
-        if (errorCode !== undefined) {
-          setLastErrorCode(mapBackendErrorCode(errorCode))
-          setIsLoading(false)
-          setIsSuccess(false)
-          return
+        if ((data as LoginWithDiscordFailedResponse).errorCode !== undefined) {
+          throw new LoginWithDiscordError(
+            (data as LoginWithDiscordFailedResponse).errorCode
+          )
         }
+
+        const { token, discordUser, hasAlreadySignedUp } =
+          data as LoginWithDiscordSuccessResponse
 
         const { user: loggedInUser } = await signInWithCustomToken(auth, token)
 
@@ -135,11 +148,7 @@ export default ({
       } catch (err) {
         console.error(err)
         handleError(err)
-        setLastErrorCode(
-          (err as LoginWithDiscordError).errorCode
-            ? mapBackendErrorCode((err as LoginWithDiscordError).errorCode)
-            : ErrorCode.Unknown
-        )
+        setLastErrorCode(getErrorCodeFromError(err as Error))
         setIsLoading(false)
       }
     }
