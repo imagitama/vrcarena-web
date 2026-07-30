@@ -30,6 +30,7 @@ const useStyles = makeStyles({
 enum ErrorCode {
   Unknown,
   BadCode,
+  AlreadyConnected,
 }
 
 const getErrorCodeFromError = (err: Error): ErrorCode => {
@@ -37,6 +38,8 @@ const getErrorCodeFromError = (err: Error): ErrorCode => {
     switch (err.errorCode) {
       case ConnectWithDiscordErrorCode.BadCode:
         return ErrorCode.BadCode
+      case ConnectWithDiscordErrorCode.AlreadyConnected:
+        return ErrorCode.AlreadyConnected
       default:
         return ErrorCode.Unknown
     }
@@ -47,6 +50,7 @@ const getErrorCodeFromError = (err: Error): ErrorCode => {
 enum ConnectWithDiscordErrorCode {
   Unknown = 'Unknown',
   BadCode = 'BadCode',
+  AlreadyConnected = 'AlreadyConnected',
 }
 
 interface ConnectWithDiscordPayload {
@@ -138,23 +142,31 @@ const ConnectWithDiscordForm = ({ onDone }: { onDone: () => void }) => {
   }, [code])
 
   if (lastErrorCode !== null) {
-    if (lastErrorCode === ErrorCode.BadCode) {
-      return (
-        <WarningMessage>
-          The code that Discord gave you looks invalid or expired. Please try
-          again to get a new code.
-          <FormControls>
-            <Button onClick={onRetry}>Retry</Button>
-          </FormControls>
-        </WarningMessage>
-      )
+    switch (lastErrorCode) {
+      case ErrorCode.BadCode:
+        return (
+          <WarningMessage>
+            The code that Discord gave you looks invalid or expired. Please try
+            again to get a new code.
+            <FormControls>
+              <Button onClick={onRetry}>Retry</Button>
+            </FormControls>
+          </WarningMessage>
+        )
+      case ErrorCode.AlreadyConnected:
+        return (
+          <ErrorMessage>
+            Someone has already connected their VRCArena account with that
+            Discord account. Only one account can be linked together.
+          </ErrorMessage>
+        )
+      default:
+        return (
+          <ErrorMessage onRetry={onDone}>
+            Failed to get your details from Discord (code {lastErrorCode})
+          </ErrorMessage>
+        )
     }
-
-    return (
-      <ErrorMessage onRetry={onDone}>
-        Failed to get your details from Discord (code {lastErrorCode})
-      </ErrorMessage>
-    )
   }
 
   if (isLoading) {
