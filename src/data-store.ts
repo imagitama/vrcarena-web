@@ -284,6 +284,17 @@ export const getDataStoreErrorCodeFromError = (errorThing: unknown): string => {
   return DataStoreUnknownErrorCode
 }
 
+export const getUserFriendlyMessageFromCode = (
+  errorCode: string
+): string | null => {
+  switch (errorCode) {
+    case PostgresErrorCode.UniqueViolation:
+      return 'your record conflicts with another'
+  }
+
+  return null
+}
+
 export type GetQuery<TRecord> = PostgrestFilterBuilder<any, any, TRecord[]>
 
 export const escapeValue = (value: string): string => {

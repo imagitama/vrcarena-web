@@ -1,3 +1,5 @@
+import styled from '@emotion/styled'
+
 import {
   CollectionNames,
   GetMySurveyResponse,
@@ -22,6 +24,12 @@ import SuccessMessage from '../success-message'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
 import useGlobalState from '@/hooks/useGlobalState'
+import InfoMessage from '../info-message'
+
+const Question = styled.div`
+  font-size: 125%;
+  margin: 0.25rem 0;
+`
 
 const SurveyDialog = ({
   survey,
@@ -65,11 +73,13 @@ const SurveyDialog = ({
   return (
     <>
       <Dialog>
-        Every now and again we ask our signed up users to complete a 1 minute
-        survey. Every field is optional. Only staff can see your answers.
+        <InfoMessage noTopMargin>
+          Every now and again we ask our signed up users to complete a 1 minute
+          survey. Every field is optional. Only staff can see your answers.
+        </InfoMessage>
         {survey.questions.map((question) => (
           <div key={question.question}>
-            {question.question}
+            <Question>{question.question}</Question>
             <TextInput
               value={
                 newAnswers.find(
@@ -77,7 +87,7 @@ const SurveyDialog = ({
                 )!.answer
               }
               onChange={(e) => onAnswerChange(question, e.target.value)}
-              rows={2}
+              minRows={2}
               multiline
               fullWidth
               isDisabled={isBusy}

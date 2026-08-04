@@ -33,10 +33,10 @@ const TextInput = ({ button, ...props }: Props) => {
         [classes.fullWidth]: props.fullWidth,
       })}>
       <TextField
-        {...props}
         multiline={props.minRows !== undefined}
-        variant={props.variant || 'outlined'}
+        variant={'outlined'}
         disabled={props.isDisabled}
+        {...props}
       />
       {button
         ? React.cloneElement(button, { className: classes.button })

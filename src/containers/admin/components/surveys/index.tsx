@@ -98,7 +98,7 @@ const SurveysRenderer = ({
         </TableBody>
       </Table>
       {idBeingEdited && (
-        <Dialog>
+        <Dialog onClose={() => setIdBeingEdited(null)}>
           <WarningMessage>
             Your questions are stored with every response as plain text. If you
             change a question, any new responses will have the new wording (old

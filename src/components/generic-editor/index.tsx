@@ -40,6 +40,7 @@ import JsonInput from './components/json-input'
 import { GenericInput } from './types'
 import IntInput from './components/int-input'
 import FloatInput from './components/float-input'
+import { getUserFriendlyMessageFromCode } from '@/data-store'
 
 function getInputForFieldType<TRecord extends Record<string, any>>(
   type: keyof typeof fieldTypes
@@ -414,7 +415,9 @@ const GenericEditor = <TRecord extends Record<string, any>>({
 
       {lastErrorCodeSaving !== null ? (
         <ErrorMessage>
-          Failed to save {itemTypeSingular} (code {lastErrorCodeSaving})
+          Failed to save: {itemTypeSingular}
+          {getUserFriendlyMessageFromCode(lastErrorCodeSaving)} (code{' '}
+          {lastErrorCodeSaving})
         </ErrorMessage>
       ) : null}
 
