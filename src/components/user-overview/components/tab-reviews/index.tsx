@@ -15,6 +15,8 @@ const ReviewsForUser = ({ userId }: { userId: string }) => {
     (query) => query.eq('createdby', userId),
     [userId]
   )
+
+  // TODO: migrate to useDataStoreItems or something else
   const [isLoading, lastErrorCode, reviews] = useSupabaseView<PublicReview>(
     ViewNames.GetPublicReviewsForPublicAssets,
     getQuery

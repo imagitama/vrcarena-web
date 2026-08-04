@@ -7,7 +7,6 @@ import TableRow from '@mui/material/TableRow'
 import SaveIcon from '@mui/icons-material/Save'
 import CreateIcon from '@mui/icons-material/Create'
 
-import useSupabaseView from '@/hooks/useSupabaseView'
 import { Author } from '@/modules/authors'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
@@ -18,7 +17,7 @@ import { makeStyles } from '@mui/styles'
 import { alpha } from '@mui/material'
 import { VRCArenaTheme, colorBrandLight } from '@/themes'
 import WarningMessage from '@/components/warning-message'
-import { DataStoreErrorCode } from '@/data-store'
+import { DataStoreErrorCode, DataStoreUnknownErrorCode } from '@/data-store'
 import SuccessMessage from '@/components/success-message'
 import useSupabaseClient from '@/hooks/useSupabaseClient'
 import FormattedDate from '@/components/formatted-date'
@@ -38,6 +37,7 @@ import { getLabelFromEditableFields } from '@/utils'
 import authorEditableFields from '@/editable-fields/authors'
 import Paper from '@/components/paper'
 import FormControls from '@/components/form-controls'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
 
 const getFieldsToUse = (
   dupeInfo: GetAuthorDupesResult,
@@ -115,7 +115,7 @@ const PlanMode = ({
       setIsSuccess(true)
     } catch (err) {
       console.error(err)
-      setLastErrorCode(DataStoreErrorCode.Unknown)
+      setLastErrorCode(DataStoreUnknownErrorCode) // TODO: finish
     }
   }
 
@@ -425,7 +425,7 @@ const DupeOutput = ({ dupeInfo }: { dupeInfo: GetAuthorDupesResult }) => {
 const AdminDupes = () => {
   // TODO: use enum for view name, use correct hook useDataStoreItems(...)
   const [isLoading, lastErrorCode, dupes] =
-    useSupabaseView<GetAuthorDupesResult>('getAuthorDupes')
+    useDataStoreItems<GetAuthorDupesResult>('getAuthorDupes')
 
   // TODO: do this better
   useEffect(() => {

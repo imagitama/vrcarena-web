@@ -46,6 +46,7 @@ import { DEFAULT_PAGE_DESC } from './config'
 import WelcomeMessage from './components/welcome-message'
 import FeaturedEvent from './components/featured-event'
 import EditorQueueMessage from './components/editor-queue-message'
+import SurveyMessage from './components/survey-message'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -658,6 +659,7 @@ export default () => {
       <main className="main">
         <div className={classes.mainContainer}>
           <ErrorBoundary>
+            <SurveyMessage />
             <BannedNotice />
             <Notices />
             <AccountVerificationMessage />

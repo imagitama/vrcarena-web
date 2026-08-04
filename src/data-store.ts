@@ -1,19 +1,8 @@
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
-import { getNameForAwardId } from './awards'
-import { getRouteForTopic, getSubscriptionMessage } from './subscriptions'
-import * as routes from './routes'
-import { getUserId } from './supabase'
-import { CollectionNames as SocialCollectionNames } from './modules/social'
-import {
-  Asset,
-  CollectionNames as AssetsCollectionNames,
-} from './modules/assets'
-import { Author } from './modules/authors'
-import { User, CollectionNames as UsersCollectionNames } from './modules/users'
-import { CollectionNames as AmendmentsCollectionNames } from './modules/amendments'
-import { CollectionNames as ReportsCollectionNames } from './modules/reports'
+import { CollectionNames as AssetsCollectionNames } from './modules/assets'
+import { CollectionNames as UsersCollectionNames } from './modules/users'
 import { CollectionNames as SpeciesCollectionNames } from './modules/species'
 import { CollectionNames as AuthorsCollectionNames } from './modules/authors'
 import { CollectionNames as CommentsCollectionNames } from './modules/comments'
@@ -236,11 +225,11 @@ export const deleteRecordsByUser = async (
 export interface DataStoreOptions {
   queryName?: string
   // these error codes are completely ignored
-  ignoreErrorCodes?: DataStoreErrorCode[]
+  ignoreErrorCodes?: string[]
   // these error codes won't be stored so won't cause re-renders
-  unstoreErrorCodes?: DataStoreErrorCode[]
+  unstoreErrorCodes?: string[]
   // these errors won't be captured by Sentry
-  uncatchErrorCodes?: DataStoreErrorCode[]
+  uncatchErrorCodes?: string[]
   // defaults to "id" but sometimes want to be quirky
   idField?: string | string[] // array of field names to .eq() on
   select?: string
@@ -248,80 +237,51 @@ export interface DataStoreOptions {
   uniqueConstraintFields?: string[]
 }
 
-/**
- * ERROR HANDLING STUFF...
- */
-
 // the standard way of passing around errors is the "Error" class (not the Postgres error object)
 // this just wraps it all up nicely
 export class DataStoreError extends Error {
-  postgrestError?: PostgrestError
-  constructor(message: string, postgrestError?: PostgrestError) {
+  postgrestError: PostgrestError
+  constructor(message: string, postgrestError: PostgrestError) {
     super(`${message}${postgrestError ? `: ${postgrestError.message}` : ''}`)
     this.postgrestError = postgrestError
   }
 }
 
-// handle a PATCH but postgres returns success with 0 results which is confusing
-export class DataStoreUpdateError extends DataStoreError {}
+export type DataStoreErrorCode = string
 
-// Source: https://docs.postgrest.org/en/v12/references/errors.html
-// NOTE: cannot have numeric keys so standard postgres errors prefixed with "PG" (vs "PGRST" for Postgrest)
-export enum PostgresErrorCode {
-  Custom = 'P0001', // custom exception
-  // code: "PGRST103", details: "An offset of 200 was requested, but there are only 33 rows.", hint: null, message: "Requested range not satisfiable"
-  PGRST103 = 'PGRST103',
-  'PGRST301' = 'PGRST301', // JWT expired
-  // code: "23505", details: null, hint: null, message: 'duplicate key value violates unique constraint "users_username_key"'
-  'PG23505' = '23505',
-  'PGRST303' = 'PGRST303', // code 'PGRST303' message 'JWT expired'
-}
+// Postgres SQLSTATE codes (https://www.postgresql.org/docs/current/errcodes-appendix.html)
+export const PostgresErrorCode = {
+  UniqueViolation: '23505',
+  // add more as needed
+} as const
+export type PostgresErrorCode =
+  (typeof PostgresErrorCode)[keyof typeof PostgresErrorCode]
 
-// we should never store complex objects in state (hard to persist, reference issues, etc.)
-// so we prefer error codes
-// we cannot use Supabase's error codes in case we switch providers (which we have done once before)
-// so use these internal error codes
-export enum DataStoreErrorCode {
-  AuthExpired,
-  ViolateUniqueConstraint,
-  BadRange,
-  Unknown,
-  ChannelError,
-  FailedToUpdate,
-}
+// PostgREST-specific codes (https://docs.postgrest.org/en/v12/references/errors.html)
+export const PostgRESTErrorCode = {
+  Custom: 'P0001',
+  RangeNotSatisfiable: 'PGRST103',
+  JwtExpiredOld: 'PGRST301',
+  JwtExpired: 'PGRST303',
+  SchemaCacheTableNotFound: 'PGRST205',
+} as const
+export type PostgRESTErrorCode =
+  (typeof PostgRESTErrorCode)[keyof typeof PostgRESTErrorCode]
 
-export const getDataStoreErrorCodeFromPostgrestError = (
-  postgresError: PostgrestError
-): DataStoreErrorCode => {
-  switch (postgresError.code) {
-    case PostgresErrorCode.PGRST103:
-      return DataStoreErrorCode.BadRange
-    case PostgresErrorCode.PG23505:
-      return DataStoreErrorCode.ViolateUniqueConstraint
-    case PostgresErrorCode.PGRST303:
-      return DataStoreErrorCode.AuthExpired
-  }
+export const DataStoreUnknownErrorCode = 'unknown'
 
-  return DataStoreErrorCode.Unknown
-}
-
-export const getDataStoreErrorCodeFromError = (
-  errorThing: unknown
-): DataStoreErrorCode => {
-  if (errorThing instanceof DataStoreUpdateError) {
-    return DataStoreErrorCode.FailedToUpdate
-  }
-
+export const getDataStoreErrorCodeFromError = (errorThing: unknown): string => {
   // must be 2nd as above error extends from it
   if (errorThing instanceof DataStoreError) {
-    return getDataStoreErrorCodeFromPostgrestError(errorThing.postgrestError!)
+    return errorThing.postgrestError.code
   }
 
-  if (errorThing instanceof PostgrestError) {
-    return getDataStoreErrorCodeFromPostgrestError(errorThing)
+  // handle weird cases where not an instance of the class but has a code
+  if ((errorThing as PostgrestError).code) {
+    return (errorThing as PostgrestError).code
   }
 
-  return DataStoreErrorCode.Unknown
+  return DataStoreUnknownErrorCode
 }
 
 export type GetQuery<TRecord> = PostgrestFilterBuilder<any, any, TRecord[]>

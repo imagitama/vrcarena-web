@@ -6,6 +6,7 @@ import {
   DataStoreErrorCode,
   DataStoreOptions,
   GetQuery,
+  PostgRESTErrorCode,
   PostgresErrorCode,
   getDataStoreErrorCodeFromError,
 } from '@/data-store'
@@ -108,8 +109,8 @@ export default <TRecord>(
         // TODO: Do this in a generic way
         if (
           Array.isArray(options.uncatchErrorCodes) &&
-          options.uncatchErrorCodes.includes(DataStoreErrorCode.BadRange) &&
-          (error as PostgrestError).code === PostgresErrorCode.PGRST103
+          (error as PostgrestError).code ===
+            PostgRESTErrorCode.RangeNotSatisfiable
         ) {
           if (isQuietHydrate) {
             setIsHydrating(false)
@@ -117,12 +118,10 @@ export default <TRecord>(
             setIsLoading(false)
           }
 
-          setLastErrorCode(DataStoreErrorCode.BadRange)
+          setLastErrorCode(PostgRESTErrorCode.RangeNotSatisfiable)
           return
         } else {
-          throw new Error(
-            `useDataStore failed run query "${queryName}": ${error.code}: ${error.message} (${error.hint})`
-          )
+          throw error
         }
       }
 

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import useSupabaseClient from './useSupabaseClient'
 import { handleError } from '@/error-handling'
 import { PostgrestError } from '@supabase/supabase-js'
-import { PostgresErrorCode } from '@/data-store'
+import { PostgresErrorCode, PostgRESTErrorCode } from '@/data-store'
 
 export enum ErrorCode {
   Unknown = 0,
@@ -14,7 +14,7 @@ const getErrorCodeFromSupabaseError = (
   err: PostgrestError,
   knownErrorCodes: string[]
 ): ErrorCode | string => {
-  if (err.code === PostgresErrorCode.Custom) {
+  if (err.code === PostgRESTErrorCode.Custom) {
     if (knownErrorCodes.includes(err.hint)) {
       return err.hint
     }
@@ -73,7 +73,7 @@ const useDataStoreFunction = <TPayload extends object, TResult>(
         console.error(
           `Failed to use data store function "${name}": ${error.message} ${error.hint}`
         )
-        if (error.code !== PostgresErrorCode.Custom) {
+        if (error.code !== PostgRESTErrorCode.Custom) {
           handleError(error)
         }
         setIsLoading(false)

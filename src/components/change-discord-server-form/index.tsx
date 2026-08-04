@@ -12,7 +12,6 @@ import { AssetFields } from '@/modules/assets'
 import {
   CollectionNames,
   DiscordServer,
-  DiscordServerFields,
   ViewNames,
 } from '@/modules/discordservers'
 import { AssetEditorProps } from '@/generic-forms'
@@ -215,14 +214,14 @@ const ChangeDiscordServerForm = ({
   actionCategory = undefined,
   onChange,
 }: {
-  value: string | null
+  value?: string | null
   collectionName?: string
   id?: string
   onChange?: (id: string | null) => void
 } & AssetEditorProps<DiscordServerId, DiscordServer>) => {
   const [selectedDiscordServerId, setSelectedDiscordServerId] = useState<
     string | null
-  >(value)
+  >(value || null)
   const [, , discordServer] = useDataStoreItem<DiscordServer>(
     CollectionNames.DiscordServers,
     selectedDiscordServerId || false
@@ -233,7 +232,9 @@ const ChangeDiscordServerForm = ({
   const [isBrowsingAll, setIsBrowsingAll] = useState(false)
 
   useEffect(() => {
-    setSelectedDiscordServerId(value)
+    if (value !== undefined) {
+      setSelectedDiscordServerId(value)
+    }
   }, [value])
 
   const onIdAndDetails = (id: string, data: DiscordServer) => {

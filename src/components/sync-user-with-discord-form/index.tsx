@@ -5,7 +5,7 @@ import { callFunction } from '@/firebase'
 import { handleError } from '@/error-handling'
 import { User } from '@/modules/users'
 import { CollectionNames } from '@/modules/users'
-import { DataStoreErrorCode } from '@/data-store'
+import { DataStoreErrorCode, PostgresErrorCode } from '@/data-store'
 import { DiscordUser } from '@/discord'
 
 import useUserId from '@/hooks/useUserId'
@@ -123,7 +123,7 @@ const SyncUserWithDiscordForm = ({
   }
 
   if (lastSaveErrorCode !== null) {
-    if (lastSaveErrorCode === DataStoreErrorCode.ViolateUniqueConstraint) {
+    if (lastSaveErrorCode === PostgresErrorCode.UniqueViolation) {
       return (
         <WarningMessage>
           Your Discord profile was found but we could not use your username: it

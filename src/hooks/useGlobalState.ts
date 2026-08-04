@@ -33,8 +33,6 @@ const useGlobalState = (): [
     shallowEqual
   )
 
-  // console.debug(`useGlobalState`, { isLoading, lastErrorCode, globalState })
-
   const dispatch = useDispatch<typeof store.dispatch>()
   const client = useSupabaseClient()
   const hydrate = () => dispatch(hydrateGlobalState(client))
@@ -42,7 +40,6 @@ const useGlobalState = (): [
   useEffect(() => {
     if (!isInitiallyHydrating) {
       isInitiallyHydrating = true
-      // console.debug(`useGlobalState.hydrate`)
       hydrate()
     }
   }, [])

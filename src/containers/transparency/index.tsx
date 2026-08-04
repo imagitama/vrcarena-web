@@ -10,16 +10,15 @@ import { CachedPatreonMember } from '@/modules/patreonmembercache'
 import { costs, patreonTax, totalCostPerMonth } from '@/costs'
 import { ViewNames } from '@/modules/patreonpledgecache'
 
-import useSupabaseView from '@/hooks/useSupabaseView'
-
 import Heading from '@/components/heading'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import Message from '@/components/message'
+import useDataStoreItems from '@/hooks/useDataStoreItems'
 
 const PatreonStatus = () => {
   const [isLoading, lastErrorCode, members] =
-    useSupabaseView<CachedPatreonMember>(ViewNames.GetAnonymousPatreonMembers)
+    useDataStoreItems<CachedPatreonMember>(ViewNames.GetAnonymousPatreonMembers)
 
   if (isLoading) {
     return <LoadingIndicator message="Loading Patreon supporters..." />

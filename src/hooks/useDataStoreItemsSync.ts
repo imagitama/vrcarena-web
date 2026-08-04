@@ -27,6 +27,8 @@ export interface QueryOptions<TItem> extends BaseQueryOptions<TItem> {
 
 type ClearFn = () => void
 
+export const DataStoreRealtimeError = 'realtime_error'
+
 /**
  * Subscribes to all INSERTs and UPDATEs in a collection.
  */
@@ -49,13 +51,17 @@ export default <TItem extends Record<string, any>>(
   // supabase realtime doesn't emit any signals for JWT expiry so we have to catch their uncaught error
   useEffect(() => {
     const handler = (event: PromiseRejectionEvent) => {
-      if (typeof event.reason === 'string' && event.reason.includes('InvalidJWTToken')) {
+      if (
+        typeof event.reason === 'string' &&
+        event.reason.includes('InvalidJWTToken')
+      ) {
         console.error(event)
-        event.preventDefault();
-
-        (async () => {
+        event.preventDefault()
+        ;(async () => {
           try {
-            console.debug(`JWT invalid/expired, refreshing and re-subscribing...`)
+            console.debug(
+              `JWT invalid/expired, refreshing and re-subscribing...`
+            )
 
             await refreshJwtParallel()
             await doIt()
@@ -141,11 +147,15 @@ export default <TItem extends Record<string, any>>(
           options.onUpdateInstead(updatedRecord)
         } else {
           setRecords((currentItems) => {
-            if (currentItems === null) return [updatedRecord];
-            const exists = currentItems.some((item) => item.id === updatedRecord.id);
+            if (currentItems === null) return [updatedRecord]
+            const exists = currentItems.some(
+              (item) => item.id === updatedRecord.id
+            )
             return exists
-              ? currentItems.map((item) => item.id === updatedRecord.id ? updatedRecord : item)
-              : [...currentItems, updatedRecord];
+              ? currentItems.map((item) =>
+                  item.id === updatedRecord.id ? updatedRecord : item
+                )
+              : [...currentItems, updatedRecord]
           })
         }
       }
@@ -160,7 +170,7 @@ export default <TItem extends Record<string, any>>(
             event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT,
             schema: 'public',
             table: collectionName,
-            filter
+            filter,
           },
           onInsert
         )
@@ -170,13 +180,15 @@ export default <TItem extends Record<string, any>>(
             event: REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.UPDATE,
             schema: 'public',
             table: collectionName,
-            filter
+            filter,
           },
           onUpdate
         )
         .subscribe((status, err) => {
           console.debug(
-            `useDataStoreItemsSync :: ${options.queryName} :: Status '${status}'${err ? ` :: Error '${err.message}'` : ''}`
+            `useDataStoreItemsSync :: ${
+              options.queryName
+            } :: Status '${status}'${err ? ` :: Error '${err.message}'` : ''}`
           )
 
           if (err) {
@@ -196,9 +208,11 @@ export default <TItem extends Record<string, any>>(
             case REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR:
             case REALTIME_SUBSCRIBE_STATES.TIMED_OUT:
               if (err?.message?.includes('InvalidJWTToken')) {
-                (async () => {
+                ;(async () => {
                   try {
-                    console.debug(`JWT expired, refreshing and re-subscribing...`)
+                    console.debug(
+                      `JWT expired, refreshing and re-subscribing...`
+                    )
 
                     await refreshJwtParallel()
                     await doIt()
@@ -212,7 +226,7 @@ export default <TItem extends Record<string, any>>(
                 return
               }
 
-              setLastErrorCode(DataStoreErrorCode.ChannelError)
+              setLastErrorCode(DataStoreRealtimeError)
               setIsSubscribed(false)
               break
 

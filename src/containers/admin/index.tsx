@@ -31,6 +31,7 @@ import Analytics from './components/analytics'
 import SiteSettingsForm from './components/site-settings-form'
 import AdminSpecies from './components/species'
 import AdminNotifications from './components/notifications'
+import AdminSurveys from './components/surveys'
 
 const View = () => {
   const [isLoading, lastErrorCode, user] = useUserRecord()
@@ -295,6 +296,11 @@ const View = () => {
             name: 'notifications',
             label: 'Notifications',
             contents: <AdminNotifications />,
+          },
+          {
+            name: 'surveys',
+            label: 'Surveys',
+            contents: <AdminSurveys />,
           },
         ]}
       />

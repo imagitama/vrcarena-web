@@ -3,7 +3,11 @@ import { useDispatch } from 'react-redux'
 
 import { handleError } from '@/error-handling'
 import { setIsSearching } from '@/modules/app'
-import { DataStoreErrorCode, GetQuery } from '@/data-store'
+import {
+  DataStoreErrorCode,
+  DataStoreUnknownErrorCode,
+  GetQuery,
+} from '@/data-store'
 
 import useSupabaseClient from './useSupabaseClient'
 import store from '@/store'
@@ -85,7 +89,7 @@ export default <TRecord>(
           err
         )
         setIsLoading(false)
-        setLastErrorCode(DataStoreErrorCode.Unknown) // TODO: Finish
+        setLastErrorCode(DataStoreUnknownErrorCode) // TODO: Finish
         handleError(err)
       }
     }

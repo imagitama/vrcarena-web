@@ -74,6 +74,8 @@ export interface GlobalState extends Record<string, any> {
 
   // home-only
   home: HomepageContent
+
+  activesurveyid: string | null
 }
 
 export interface GlobalStateSlice {

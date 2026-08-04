@@ -26,7 +26,7 @@ import {
   MultichoiceActiveFilter,
   NotEqualActiveFilter,
 } from '@/filters'
-import { DataStoreErrorCode, GetQuery } from '@/data-store'
+import { DataStoreErrorCode, GetQuery, PostgRESTErrorCode } from '@/data-store'
 import { getPathForQueryString } from '@/queries'
 
 import useFilters from '@/hooks/useFilters'
@@ -349,7 +349,7 @@ const Page = () => {
     hydrateDataStore,
   ] = useDataStore<any>(whereClauses ? null : pageGetQuery, {
     queryName: `paginated-view-${collectionName || viewName}`,
-    uncatchErrorCodes: [DataStoreErrorCode.BadRange],
+    uncatchErrorCodes: [PostgRESTErrorCode.RangeNotSatisfiable],
   })
 
   const [
@@ -379,7 +379,7 @@ const Page = () => {
   useScrollMemory()
 
   if (lastErrorCode !== null) {
-    if (lastErrorCode === DataStoreErrorCode.BadRange) {
+    if (lastErrorCode === PostgRESTErrorCode.RangeNotSatisfiable) {
       return (
         <NoResultsMessage>
           No {itemNamePlural || 'results'} found for page {currentPageNumber}
@@ -387,9 +387,7 @@ const Page = () => {
       )
     }
     return (
-      <ErrorMessage>
-        Failed to load page: error code {lastErrorCode}
-      </ErrorMessage>
+      <ErrorMessage>Failed to load page (code {lastErrorCode})</ErrorMessage>
     )
   }
 

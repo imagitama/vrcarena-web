@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
 import { handleError } from '@/error-handling'
-import { DataStoreErrorCode } from '@/data-store'
+import { DataStoreErrorCode, PostgresErrorCode } from '@/data-store'
 import { User } from '@/modules/users'
 import { CollectionNames } from '@/modules/users'
 
@@ -15,6 +15,7 @@ import useUserId from '@/hooks/useUserId'
 import Button from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
+import StatusText from '../status-text'
 
 const useStyles = makeStyles({
   root: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles({
 })
 
 const getMessageForErrorCode = (errorCode: DataStoreErrorCode): string => {
-  if (errorCode === DataStoreErrorCode.ViolateUniqueConstraint) {
+  if (errorCode === PostgresErrorCode.UniqueViolation) {
     return 'Username is taken'
   }
   return `Failed to save username (code ${errorCode})`
@@ -41,7 +42,7 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
     useUserRecord()
   const [isSaving, isSaveSuccess, lastSaveErrorCode, save] =
     useDataStoreEdit<User>(CollectionNames.Users, userId || false, {
-      uncatchErrorCodes: [DataStoreErrorCode.ViolateUniqueConstraint],
+      uncatchErrorCodes: [PostgresErrorCode.UniqueViolation],
     })
   const [fieldValue, setFieldValue] = useState('')
   const classes = useStyles()
@@ -99,13 +100,17 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
       <Button onClick={onSaveBtnClick} size="large" icon={<SaveIcon />}>
         Save
       </Button>{' '}
-      {isSaving
-        ? 'Saving...'
-        : isSaveSuccess
-        ? 'Saved!'
-        : lastSaveErrorCode
-        ? getMessageForErrorCode(lastSaveErrorCode)
-        : ''}
+      {isSaving ? (
+        'Saving...'
+      ) : isSaveSuccess ? (
+        <StatusText positivity={1}>Saved!</StatusText>
+      ) : lastSaveErrorCode ? (
+        <StatusText positivity={-1}>
+          {getMessageForErrorCode(lastSaveErrorCode)}
+        </StatusText>
+      ) : (
+        ''
+      )}
     </div>
   )
 }
