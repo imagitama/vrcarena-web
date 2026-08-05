@@ -47,6 +47,8 @@ import WelcomeMessage from './components/welcome-message'
 import FeaturedEvent from './components/featured-event'
 import EditorQueueMessage from './components/editor-queue-message'
 import SurveyMessage from './components/survey-message'
+import { useSelector } from 'react-redux'
+import { RootState } from './modules'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -86,7 +88,7 @@ const useStyles = makeStyles({
     left: '50%',
     transform: 'translate(-25%, -25%)',
     padding: '2rem',
-    background: 'rgba(0, 0, 0, 0.5)',
+    background: 'rgba(0, 0, 0, 0.25)',
     zIndex: 999,
   },
 })
@@ -276,6 +278,9 @@ const MainContent = () => {
   const firebaseUserId = useFirebaseUserId()
   const supabaseUserId = useSupabaseUserId()
   const classes = useStyles()
+  const isLoadingFirebaseUser = useSelector<RootState, boolean>(
+    ({ firebase }) => firebase.isLoading
+  )
 
   if (searchTerm) {
     return <SearchResults />
@@ -283,7 +288,7 @@ const MainContent = () => {
 
   return (
     <Suspense fallback={<LoadingIndicator message={getLoadingNiceness()} />}>
-      {firebaseUserId && !supabaseUserId ? (
+      {(firebaseUserId && !supabaseUserId) || isLoadingFirebaseUser ? (
         <div className={classes.floatingLoadingIndicator}>
           <LoadingIndicator message="Waiting for auth..." />
         </div>

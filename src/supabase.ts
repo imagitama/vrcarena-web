@@ -6,6 +6,7 @@ import { saveLastLoggedInDate } from './users'
 import { auth } from './firebase'
 import { store } from './store'
 import {
+  FIREBASE_USER_IS_LOADING,
   FIREBASE_USER_LOADED,
   FIREBASE_USER_UNLOADED,
 } from './modules/firebase'
@@ -168,8 +169,14 @@ auth.onAuthStateChanged(async (user) => {
       user,
     })
 
-    const userId = user.uid
-    loggedInUserId = userId
+    loggedInUserId = user.uid
+
+    store.dispatch({
+      type: FIREBASE_USER_IS_LOADING,
+      data: {
+        userId: loggedInUserId,
+      },
+    })
 
     const { errorCode } = await refreshJwt()
 
@@ -201,13 +208,13 @@ auth.onAuthStateChanged(async (user) => {
     store.dispatch({
       type: FIREBASE_USER_LOADED,
       data: {
-        userId: user.uid,
+        userId: loggedInUserId,
       },
     })
 
-    await loadUserIntoStore(client, userId)
+    await loadUserIntoStore(client, loggedInUserId)
 
-    await saveLastLoggedInDate(userId)
+    await saveLastLoggedInDate(loggedInUserId)
   } catch (err) {
     console.error(err)
     handleError(err)
