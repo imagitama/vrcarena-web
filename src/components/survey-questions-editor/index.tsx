@@ -62,7 +62,9 @@ const SurveyQuestionsEditor = ({
           </Button>
         </div>
       ))}
-      <Button onClick={onClickAdd}>Add Question</Button>
+      <Button onClick={onClickAdd} color="secondary">
+        Add Question
+      </Button>
     </>
   )
 }

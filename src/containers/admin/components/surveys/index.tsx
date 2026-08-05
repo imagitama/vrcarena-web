@@ -216,7 +216,7 @@ const AdminSurveys = () => {
         <SurveysRenderer />
       </PaginatedView>
       {isOpen && (
-        <Dialog>
+        <Dialog onClose={() => setIsOpen(false)}>
           <GenericEditor
             collectionName={CollectionNames.Surveys}
             fields={editableFields}

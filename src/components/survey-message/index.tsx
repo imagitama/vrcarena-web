@@ -27,6 +27,7 @@ import useGlobalState from '@/hooks/useGlobalState'
 import InfoMessage from '../info-message'
 import useNotice from '@/hooks/useNotice'
 import { hideNoticeById } from '@/hooks/useNotices'
+import useIsEditor from '@/hooks/useIsEditor'
 
 const MessageText = styled.div`
   font-size: 125%;
@@ -147,17 +148,17 @@ const SurveyMessage = () => {
     user && globalState && globalState.activesurveyid ? undefined : false
   )
   const [isOpen, setIsOpen] = useState(false)
-  const [] = useNotice()
-
-  console.debug('DATE', user ? user.createdat : null)
+  const isEditor = useIsEditor()
 
   if (
     !isLoggedIn ||
     !user ||
     !user.username ||
+    !user.createdat ||
     getIsUserTooYoung(user.createdat) ||
     !results ||
-    !results.length
+    !results.length ||
+    !isEditor
   )
     return null
 
