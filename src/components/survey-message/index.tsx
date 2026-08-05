@@ -148,7 +148,6 @@ const SurveyMessage = () => {
     user && globalState && globalState.activesurveyid ? undefined : false
   )
   const [isOpen, setIsOpen] = useState(false)
-  const isEditor = useIsEditor()
 
   if (
     !isLoggedIn ||
@@ -157,8 +156,7 @@ const SurveyMessage = () => {
     !user.createdat ||
     getIsUserTooYoung(user.createdat) ||
     !results ||
-    !results.length ||
-    !isEditor
+    !results.length
   )
     return null
 
