@@ -860,7 +860,7 @@ const AiEvaluateBotScoreQueueCell = () => {
       </CellHeading>
       <PaginatedView<AiEvaluateQueuedItem>
         collectionName={AiEvaluateCollectionNames.AiEvaluateQueue}
-        whereClauses={[['intent', Operators.EQUALS, Intent.BotScore]]}
+        getQuery={(query) => query.eq('intent', Intent.BotScore)}
         name="ai-evaluate-bot-score-queue"
         sortOptions={[
           {

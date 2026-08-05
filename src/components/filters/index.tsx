@@ -33,6 +33,7 @@ const useStyles = makeStyles({
   filter: {
     padding: '0.25rem',
     display: 'flex',
+    flexDirection: 'column',
   },
 })
 
@@ -40,7 +41,7 @@ const UserIdInput = ({
   onChange,
   value,
 }: {
-  onChange: (value: null | string) => void
+  onChange: (value: null | string, event: React.SyntheticEvent) => void
   value: any
 }) => {
   const myUserId = useUserId()
@@ -53,15 +54,15 @@ const UserIdInput = ({
         value={userIdText}
         onChange={(e) => {
           setUserIdText(e.target.value)
-          onChange(e.target.value)
+          onChange(e.target.value, e)
         }}
         size="small"
       />
       {myUserId ? (
         <Button
-          onClick={() => {
+          onClick={(e) => {
             setUserIdText(myUserId)
-            onChange(myUserId)
+            onChange(myUserId, e)
           }}
           color="secondary"
           size="small">
@@ -78,11 +79,13 @@ const EqualInput = ({
   value,
 }: {
   filter: EqualFilter<any>
-  onChange: (value: null | string) => void
+  onChange: (value: null | string, event: React.SyntheticEvent) => void
   value: any
 }) => {
   if (filter.subType === FilterSubType.UserId) {
-    return <UserIdInput value={value} onChange={(newId) => onChange(newId)} />
+    return (
+      <UserIdInput value={value} onChange={(newId, e) => onChange(newId, e)} />
+    )
   }
 
   return (
@@ -91,14 +94,14 @@ const EqualInput = ({
         label={filter.label || 'Equals'}
         value={value}
         onChange={(e) => {
-          onChange(e.target.value)
+          onChange(e.target.value, e)
         }}
         size="small"
       />
       {filter.suggestions ? (
         <Select label="Suggestions" size="small">
           {filter.suggestions.map((suggestion) => (
-            <MenuItem key={suggestion} onClick={() => onChange(suggestion)}>
+            <MenuItem key={suggestion} onClick={(e) => onChange(suggestion, e)}>
               {suggestion}
             </MenuItem>
           ))}
@@ -114,11 +117,16 @@ const NotEqualInput = ({
   value,
 }: {
   filter: EqualFilter<any>
-  onChange: (value: null | string | boolean) => void
+  onChange: (
+    value: null | string | boolean,
+    event: React.SyntheticEvent
+  ) => void
   value: any
 }) => {
   if (filter.subType === FilterSubType.UserId) {
-    return <UserIdInput value={value} onChange={(newId) => onChange(newId)} />
+    return (
+      <UserIdInput value={value} onChange={(newId, e) => onChange(newId, e)} />
+    )
   }
 
   if (filter.subType === FilterSubType.Null) {
@@ -129,7 +137,7 @@ const NotEqualInput = ({
     return (
       <CheckboxInput
         value={value}
-        onChange={() => onChange(!value)}
+        onChange={(newVal, e) => onChange(!value, e)}
         label="Enabled"
       />
     )
@@ -139,15 +147,13 @@ const NotEqualInput = ({
       <TextInput
         label={filter.label || 'Equals'}
         value={value}
-        onChange={(e) => {
-          onChange(e.target.value)
-        }}
+        onChange={(e) => onChange(e.target.value, e)}
         size="small"
       />
       {filter.suggestions ? (
         <Select label="Suggestions" size="small">
           {filter.suggestions.map((suggestion) => (
-            <MenuItem key={suggestion} onClick={() => onChange(suggestion)}>
+            <MenuItem key={suggestion} onClick={(e) => onChange(suggestion, e)}>
               {suggestion}
             </MenuItem>
           ))}
@@ -163,7 +169,7 @@ const FilterRenderer = ({
   value,
 }: {
   filter: Filter<any>
-  onChange: (value: null | any) => void
+  onChange: (value: null | any, event: React.SyntheticEvent) => void
   value: any
 }) => {
   switch (filter.type) {
@@ -203,15 +209,16 @@ const MultichoiceInput = ({
 }: {
   filter: MultichoiceFilter<any, any>
   value: any[]
-  onChange: (newVal: any[]) => void
+  onChange: (newVal: any[], event: React.SyntheticEvent) => void
 }) => {
   const actualValue = value || filter.defaultValue
 
-  const onSelect = (id: string) =>
+  const onSelect = (id: string, event: React.SyntheticEvent) =>
     onChange(
       actualValue.includes(id)
         ? actualValue.filter((subId) => subId !== id)
-        : actualValue.concat([id])
+        : actualValue.concat([id]),
+      event
     )
 
   return (
@@ -236,12 +243,14 @@ function FilterControl({
   isEnabled,
   onToggle,
   onChange,
+  onApply,
 }: {
   filter: Filter<any>
   value: any
   isEnabled: boolean
-  onToggle: () => void
-  onChange: (newVal: any) => void
+  onToggle: (event: React.SyntheticEvent) => void
+  onChange: (newVal: any, event: React.SyntheticEvent) => void
+  onApply: () => void
 }) {
   const classes = useStyles()
   return (
@@ -255,6 +264,9 @@ function FilterControl({
       {isEnabled ? (
         <FilterRenderer filter={filter} value={value} onChange={onChange} />
       ) : null}
+      <Button size="small" onClick={onApply}>
+        Apply Filter
+      </Button>
     </div>
   )
 }
@@ -269,7 +281,6 @@ const Filters = <T,>({
   const [activeFilters, setActiveFilters] = useFilters<T>(storageKey, filters)
   const [unappliedFilters, setUnappliedFilters] =
     useState<ActiveFilter<T>[]>(activeFilters)
-  const classes = useStyles()
 
   const toggleFilter = (filter: Filter<T>) => {
     const newFilters =
@@ -312,9 +323,15 @@ const Filters = <T,>({
   }
 
   return (
-    <div className={classes.root}>
-      <div className={classes.filters}>
-        {filters.map((filter) => (
+    <ButtonDropdown
+      label="Filters"
+      closeOnSelect={false}
+      color="secondary"
+      size="small"
+      onSelect={() => {}}
+      options={filters.map((filter) => ({
+        id: filter.fieldName,
+        label: (
           <FilterControl
             key={filter.fieldName as string}
             filter={filter}
@@ -332,19 +349,13 @@ const Filters = <T,>({
                   unappliedFilter.fieldName === filter.fieldName
               )?.value
             }
-            onToggle={() => toggleFilter(filter)}
-            onChange={(newVal) => changeFilter(filter, newVal)}
+            onToggle={(e) => toggleFilter(filter)}
+            onChange={(newVal, e) => changeFilter(filter, newVal)}
+            onApply={onApply}
           />
-        ))}
-      </div>
-      <Button
-        onClick={onApply}
-        size="small"
-        icon={<FilterIcon />}
-        color="secondary">
-        Apply Filters
-      </Button>
-    </div>
+        ),
+      }))}
+    />
   )
 }
 

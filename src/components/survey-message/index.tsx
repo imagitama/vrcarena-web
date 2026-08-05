@@ -25,6 +25,13 @@ import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
 import useGlobalState from '@/hooks/useGlobalState'
 import InfoMessage from '../info-message'
+import useNotice from '@/hooks/useNotice'
+import { hideNoticeById } from '@/hooks/useNotices'
+
+const MessageText = styled.div`
+  font-size: 125%;
+  text-align: center;
+`
 
 const Question = styled.div`
   font-size: 125%;
@@ -125,6 +132,12 @@ const SurveyDialog = ({
   )
 }
 
+const getIsUserTooYoung = (signupDate: string): boolean => {
+  const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000 // approx. 1 month
+  const accountAge = Date.now() - new Date(signupDate).getTime()
+  return accountAge < ONE_MONTH_MS
+}
+
 const SurveyMessage = () => {
   const [, , globalState] = useGlobalState()
   const isLoggedIn = useIsLoggedIn()
@@ -134,8 +147,18 @@ const SurveyMessage = () => {
     user && globalState && globalState.activesurveyid ? undefined : false
   )
   const [isOpen, setIsOpen] = useState(false)
+  const [] = useNotice()
 
-  if (!isLoggedIn || !user || !user.username || !results || !results.length)
+  console.debug('DATE', user ? user.createdat : null)
+
+  if (
+    !isLoggedIn ||
+    !user ||
+    !user.username ||
+    getIsUserTooYoung(user.createdat) ||
+    !results ||
+    !results.length
+  )
     return null
 
   const myResponse = results[0]
@@ -144,14 +167,22 @@ const SurveyMessage = () => {
 
   const onClickOpen = () => setIsOpen(true)
 
+  const hideId = `survey_${myResponse.survey}`
+
   return (
     <>
-      <Message hideId={`survey_${myResponse.survey}`}>
-        Hi {user.username}! Do you have 1 minute to complete a quick survey to
-        help us improve the site?
-        <FormControls>
-          <Button onClick={onClickOpen}>Take The Survey</Button>
-        </FormControls>
+      <Message
+        hideId={hideId}
+        controls={[
+          <Button onClick={onClickOpen}>Take The Survey</Button>,
+          <Button color="secondary" onClick={() => hideNoticeById(hideId)}>
+            No Thanks
+          </Button>,
+        ]}>
+        <MessageText>
+          Hi {user.username}! Do you have 1 minute to complete a quick survey to
+          help us improve the site?
+        </MessageText>
       </Message>
       {isOpen && (
         <SurveyDialog

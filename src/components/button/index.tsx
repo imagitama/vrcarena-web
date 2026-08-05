@@ -14,6 +14,7 @@ import ClearIcon from '@mui/icons-material/Clear'
 
 import Tooltip from '@/components/tooltip'
 import { VRCArenaTheme } from '@/themes'
+import { css, keyframes } from '@emotion/react'
 
 export interface ButtonProps {
   children?: React.ReactNode
@@ -23,25 +24,35 @@ export interface ButtonProps {
   isDisabled?: boolean
   className?: string
   iconSide?: 'left' | 'center' | 'right'
-  /**
-   * @deprecated use iconSide
-   */
-  switchIconSide?: boolean
+  isIconSpinning?: boolean
   isLoading?: boolean
   size?: 'small' | 'medium' | 'large'
   // everything after undefined is not standard
   color?: 'inherit' | 'primary' | 'secondary' | undefined | 'tertiary' | 'ai'
   title?: string
-  /**
-   * @deprecated Now checks if children undefined
-   */
-  iconOnly?: boolean
   checked?: boolean
   hollow?: boolean
   margin?: boolean // mainly for asset overview
   openInNewTab?: boolean
   downloadFilename?: string
+  /**
+   * @deprecated Now checks if children undefined
+   */
+  iconOnly?: boolean
+  /**
+   * @deprecated use iconSide
+   */
+  switchIconSide?: boolean
 }
+
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   root: {
@@ -82,6 +93,17 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       width: '1em',
       height: '1em',
       fill: 'currentColor', // fix custom icons (MUI icons work fine)
+    },
+  },
+  spinning: {
+    animation: '$spin 1s linear infinite',
+  },
+  '@keyframes spin': {
+    '0%': {
+      transform: 'rotate(0deg)',
+    },
+    '100%': {
+      transform: 'rotate(360deg)',
     },
   },
   small: {
@@ -220,6 +242,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       checked,
       hollow,
       iconSide = 'left',
+      isIconSpinning,
       ...props
     }: ButtonProps,
     ref
@@ -229,7 +252,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       hollow === true || (props.color === 'secondary' && hollow === undefined)
 
     const iconToUse = (
-      <span className={classes.icon}>
+      <span
+        className={classnames(classes.icon, {
+          [classes.spinning]: isIconSpinning,
+        })}>
         {checked === true ? (
           isHollow ? (
             <CheckBoxOutlinedIcon />

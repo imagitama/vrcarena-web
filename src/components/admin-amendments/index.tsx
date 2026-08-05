@@ -30,7 +30,7 @@ enum SubView {
 }
 
 export default () => {
-  const { tabName } = useParams<{ tabName?: string }>()
+  const { subViewName } = useParams<{ subViewName?: string }>()
 
   const getQuery = useCallback<GetQueryFn<FullAmendment<any>, SubView>>(
     (query, selectedSubView, activeFilters) => {
@@ -78,7 +78,7 @@ export default () => {
         },
       ]}
       defaultFieldName="createdat"
-      defaultSubView={tabName || SubView.Pending}
+      defaultSubView={subViewName || SubView.Pending}
       urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar.replace(
         ':tabName',
         'amendments'

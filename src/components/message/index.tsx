@@ -68,8 +68,11 @@ const useStyles = makeStyles(() => ({
   },
   children: {
     marginTop: '0.25rem',
-    '& p:first-child': {
+    '& > *:first-child': {
       marginTop: 0,
+    },
+    '& > *:last-child': {
+      marginBottom: 0,
     },
   },
   controls: {
@@ -77,7 +80,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'center',
     '& > *': {
-      margin: '0 0.25rem',
+      margin: '0 0.1rem !important', // important for button margin: 0px
     },
   },
   // at end to override
@@ -106,7 +109,7 @@ export interface MessageProps {
   children?: React.ReactNode
   title?: React.ReactNode
   icon?: React.ReactNode
-  controls?: React.ReactNode
+  controls?: React.ReactNode | React.ReactNode[]
   color?: string
   leftAlign?: boolean
   noMargin?: boolean

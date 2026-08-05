@@ -9,7 +9,7 @@ import { ChevronDown } from '@/icons'
 
 export interface DropdownOption {
   id: string
-  label: string
+  label: string | React.ReactElement
 }
 
 const ButtonDropdown = ({
@@ -27,7 +27,7 @@ const ButtonDropdown = ({
   selectedId?: string
   selectedIds?: string[]
   closeOnSelect?: boolean
-  onSelect: (newId: string) => void
+  onSelect: (newId: string, event: React.SyntheticEvent) => void
 } & ButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -36,8 +36,8 @@ const ButtonDropdown = ({
     setIsDropdownOpen(!isDropdownOpen)
   }
 
-  const onClickItem = (optionId: string) => {
-    onSelect(optionId)
+  const onClickItem = (optionId: string, event: React.SyntheticEvent) => {
+    onSelect(optionId, event)
 
     if (closeOnSelect) {
       onClose()
@@ -80,7 +80,7 @@ const ButtonDropdown = ({
           }}
           onClose={onClose}>
           {options.map(({ id, label }) => (
-            <MenuItem key={id} onClick={() => onClickItem(id)}>
+            <MenuItem key={id} onClick={(e) => onClickItem(id, e)}>
               {label}
               {selectedId === id || selectedIds.includes(id) ? (
                 <>

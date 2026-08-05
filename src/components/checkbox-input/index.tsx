@@ -24,7 +24,10 @@ const CheckboxInput = ({
   fullWidth = false,
   onClick,
 }: {
-  onChange?: (newVal: boolean) => void | Promise<void>
+  onChange?: (
+    newVal: boolean,
+    event: React.SyntheticEvent
+  ) => void | Promise<void>
   label?: string | React.ReactElement
   value: boolean
   isDisabled?: boolean
@@ -38,7 +41,7 @@ const CheckboxInput = ({
       className={`${classes.root} ${fullWidth ? classes.fullWidth : ''}`}
       control={
         <Checkbox
-          onChange={onChange ? () => onChange(!value) : undefined}
+          onChange={onChange ? (e) => onChange(!value, e) : undefined}
           checked={value}
           disabled={isDisabled}
           size="large"
