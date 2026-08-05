@@ -4,6 +4,8 @@ import { DISCORD_URL, EMAIL } from '@/config'
 import { base64EncodeString } from '@/utils'
 
 const getIsRefreshableError = (error: Error) =>
+  error &&
+  error.message &&
   error.message.includes('error loading dynamically imported module')
 const reloadPage = () => window.location.reload()
 
