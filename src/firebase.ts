@@ -3,7 +3,7 @@ import {
   getFunctions,
   httpsCallable,
 } from 'firebase/functions'
-import { initializeApp } from 'firebase/app'
+import { FirebaseError, initializeApp } from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import { inDevelopment } from './environment'
 import {
@@ -82,19 +82,31 @@ export const callFunction = async <TPayload, TResult>(
   data?: TPayload,
   inDevResult?: TResult
 ): Promise<HttpsCallableResult<TResult>> => {
-  // NOTE: do not dump payload as could contain sensitive info
-  console.debug(`calling function "${name}"`)
+  try {
+    // NOTE: do not dump payload as could contain sensitive info
+    console.debug(`calling function "${name}"`)
 
-  if (inDevelopment() && inDevResult) {
-    return Promise.resolve({ data: inDevResult })
+    if (inDevelopment() && inDevResult) {
+      return Promise.resolve({ data: inDevResult })
+    }
+
+    const callFunction = httpsCallable(functions, name)
+    const result = await callFunction(data)
+
+    console.debug(`function "${name}" complete`, result)
+
+    return result as HttpsCallableResult<TResult>
+  } catch (err) {
+    if ('code' in (err as Error)) {
+      console.error(
+        `Failed to call Firebase function "${name}" error code ${
+          (err as FirebaseError).code
+        }`,
+        err
+      )
+    }
+    throw err
   }
-
-  const callFunction = httpsCallable(functions, name)
-  const result = await callFunction(data)
-
-  console.debug(`function "${name}" complete`, result)
-
-  return result as HttpsCallableResult<TResult>
 }
 
 export const getFunctionUrl = (functionName: string): string => {
