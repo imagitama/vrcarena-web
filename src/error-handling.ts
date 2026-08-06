@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser'
+import { PostgresErrorCode, PostgRESTErrorCode } from './data-store'
 
 const messagesToIgnore = [
   // internal
@@ -37,4 +38,20 @@ export function handleError(err: unknown): void {
     return
   }
   Sentry.captureException(err)
+}
+
+export const getSuffixForErrorCode = (errorCode: string): string => {
+  switch (errorCode) {
+    case PostgresErrorCode.UniqueViolation:
+      return 'conflicts with another record'
+    case PostgRESTErrorCode.JwtExpired:
+    case PostgRESTErrorCode.JwtExpiredOld:
+      return 'your authentication has expired (refresh the page)'
+    case PostgRESTErrorCode.RangeNotSatisfiable:
+      return 'the requested range of records is invalid'
+    case PostgRESTErrorCode.SchemaCacheTableNotFound:
+      return 'the backend has been configured correctly (table not found)'
+  }
+
+  return `(code ${errorCode})`
 }
