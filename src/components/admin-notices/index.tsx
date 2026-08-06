@@ -16,6 +16,8 @@ import LoadingIndicator from '@/components/loading-indicator'
 import Markdown from '@/components/markdown'
 import Heading from '@/components/heading'
 import Paper from '@/components/paper'
+import { getShortId } from '@/utils/formatting'
+import StatusText from '../status-text'
 
 export default () => {
   const [isLoading, lastErrorCode, notices, hydrate] = useDatabaseQuery<Notice>(
@@ -65,13 +67,15 @@ export default () => {
           {notices.map((notice) => (
             <Fragment key={notice.id}>
               <TableRow>
-                <TableCell>{notice.id}</TableCell>
-                <TableCell>{notice.title}</TableCell>
-                <TableCell>
-                  <Markdown source={notice.message} />
+                <TableCell title={notice.id}>
+                  #{getShortId(notice.id)}
                 </TableCell>
+                <TableCell>{notice.title}</TableCell>
+                <TableCell>{notice.message.slice(0, 50)}...</TableCell>
                 <TableCell>
-                  {notice.isvisible ? 'Visible' : 'Not Visible'}
+                  <StatusText positivity={notice.isvisible ? 1 : 0}>
+                    {notice.isvisible ? 'Visible' : 'Not Visible'}
+                  </StatusText>
                 </TableCell>
                 <TableCell>{notice.orderby}</TableCell>
                 <TableCell>

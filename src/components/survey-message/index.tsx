@@ -25,9 +25,7 @@ import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
 import useGlobalState from '@/hooks/useGlobalState'
 import InfoMessage from '../info-message'
-import useNotice from '@/hooks/useNotice'
 import { hideNoticeById } from '@/hooks/useNotices'
-import useIsEditor from '@/hooks/useIsEditor'
 
 const MessageText = styled.div`
   font-size: 125%;
@@ -120,7 +118,7 @@ const SurveyDialog = ({
           </ErrorMessage>
         )}
         {isSuccess && (
-          <SuccessMessage>
+          <SuccessMessage noMargin>
             Your survey response has been submitted successfully. Thank you for
             helping make this site better! 🩷
             <FormControls>

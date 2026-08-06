@@ -27,6 +27,7 @@ import InfoMessage from '@/components/info-message'
 import UsernameLink from '@/components/username-link'
 import { HydrateFn } from '@/hooks/useDataStore'
 import WarningMessage from '@/components/warning-message'
+import NoValueLabel from '@/components/no-value-label'
 
 const SurveysRenderer = ({
   items,
@@ -178,7 +179,7 @@ const ResponsesRenderer = ({ items }: { items?: FullSurveyResponse[] }) => {
             <div key={answerData.question}>
               <strong>{answerData.question}</strong>
               <br />
-              {answerData.answer}
+              {answerData.answer || <NoValueLabel>No answer</NoValueLabel>}
             </div>
           ))}
         </Dialog>
