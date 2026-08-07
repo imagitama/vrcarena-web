@@ -29,6 +29,7 @@ import RelationsEditor from '@/components/relations-editor'
 import ChangeDiscordServerForm from '@/components/change-discord-server-form'
 import VrchatAvatarIdsForm from '@/components/vrchat-avatar-ids-form'
 import AttachmentsForm from '@/components/attachments-form'
+import NoResultsMessage from '@/components/no-results-message'
 
 const fields: EditableField<Asset>[] = [
   {
@@ -133,14 +134,17 @@ const fields: EditableField<Asset>[] = [
     label: 'Species',
     type: fieldTypes.custom,
     default: [],
-    renderer: ({ value, onChange }) => (
-      <ChangeSpeciesEditor
-        assetId={null}
-        activeSpeciesIds={value || []}
-        showControls={false}
-        onChange={(newIds) => onChange(newIds as any)} // TODO: fix up types
-      />
-    ),
+    renderer: ({ value, onChange, formFields }) =>
+      formFields.category === AssetCategory.Avatar ? (
+        <ChangeSpeciesEditor
+          assetId={null}
+          activeSpeciesIds={value || []}
+          showControls={false}
+          onChange={(newIds) => onChange(newIds as any)} // TODO: fix up types
+        />
+      ) : (
+        <NoResultsMessage>Only avatars can have a species</NoResultsMessage>
+      ),
   },
   {
     name: 'isadult',
