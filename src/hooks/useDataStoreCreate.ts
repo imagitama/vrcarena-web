@@ -20,7 +20,7 @@ const useDataStoreCreate = <
   boolean,
   boolean,
   null | DataStoreErrorCode,
-  (fields: Partial<TRecord>) => Promise<TRecord>,
+  (fields: Partial<TRecord>) => Promise<TRecord | null>,
   ClearFn,
   null | TRecord
 ] => {
@@ -42,7 +42,7 @@ const useDataStoreCreate = <
     setIsCreating(false)
   }
 
-  const create = async (fields: Partial<TRecord>): Promise<TRecord> => {
+  const create = async (fields: Partial<TRecord>): Promise<TRecord | null> => {
     try {
       setIsSuccess(false)
       setLastErrorCode(null)
@@ -71,13 +71,7 @@ const useDataStoreCreate = <
         throw new DataStoreError('useDataStoreCreate failed', error)
       }
 
-      if (!data || !Array.isArray(data)) throw new Error('')
-
-      if ((data as TRecord[]).length !== 1) {
-        throw new Error(`Count is ${(data as TRecord[]).length}`)
-      }
-
-      const createdRecord = data[0]
+      const createdRecord = Array.isArray(data) ? data[0] : null
 
       console.debug(
         `useDataStoreCreate :: ${
@@ -90,7 +84,9 @@ const useDataStoreCreate = <
       setIsSuccess(true)
       setLastErrorCode(null)
 
-      setCreatedRecord(data[0])
+      if (createdRecord) {
+        setCreatedRecord(createdRecord)
+      }
 
       return createdRecord
     } catch (err) {
