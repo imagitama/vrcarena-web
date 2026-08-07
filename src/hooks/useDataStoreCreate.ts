@@ -60,7 +60,7 @@ const useDataStoreCreate = <
         .insert([fields as TRecord])
 
       if (options.selectAfter !== false) {
-        // @ts-ignore
+        // @ts-ignore TODO: repair these types
         query = query.select<'*', TRecord>('*')
       }
 

@@ -19,7 +19,6 @@ const AssetEditorDialog = ({
       <DialogContent ref={dialogRef}>
         <AssetEditor
           assetId={assetId}
-          onDone={onClose}
           onAttemptSave={() => {
             // TODO: do this less fragile like
             scrollToTopOfElement(dialogRef.current! as HTMLElement)
