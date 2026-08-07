@@ -25,7 +25,7 @@ import { VRCArenaTheme } from '@/themes'
 import { Warning as WarningIcon } from '@/icons'
 import { cleanupSourceUrl, getCanSync } from '@/syncing'
 import { getFriendlyDate } from '@/utils/dates'
-import { capitalize } from '@/utils'
+import { capitalize, getQueryParam } from '@/utils'
 import { DISCORD_URL, colorPalette } from '@/config'
 import * as routes from '@/routes'
 import {
@@ -504,6 +504,12 @@ const BulkEditor = ({ onAdd }: { onAdd: (urls: string[]) => void }) => {
   )
 }
 
+const getInitialSourceUrl = () => {
+  const encodedUrl = getQueryParam('url')
+  if (!encodedUrl) return ''
+  return decodeURIComponent(encodedUrl)
+}
+
 const AssetSyncQueue = ({
   items,
   isLoading,
@@ -517,7 +523,7 @@ const AssetSyncQueue = ({
   hydrate?: () => void
   showMoreInfo?: boolean
 }) => {
-  const [newSourceUrls, setSourceUrls] = useState([''])
+  const [newSourceUrls, setSourceUrls] = useState([getInitialSourceUrl()])
   const [isCreating, , lastCreateErrorCode, create] =
     useDataStoreCreateBulk<AssetSyncQueueItem>(CollectionNames.AssetSyncQueue, {
       queryName: 'add-asset-sync-queue-items',

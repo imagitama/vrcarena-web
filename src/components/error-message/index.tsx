@@ -46,6 +46,8 @@ const ErrorMessage = ({
             </Button>
           ) : null}
         </>
+      ) : messageProps.controls ? (
+        messageProps.controls
       ) : undefined
     }>
     {title && children ? children : null}

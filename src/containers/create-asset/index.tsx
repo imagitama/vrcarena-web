@@ -7,8 +7,6 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 
 import * as routes from '@/routes'
-import { insertRecord } from '@/data-store'
-import { handleError } from '@/error-handling'
 import {
   CollectionNames as AssetsCollectionNames,
   Asset,
@@ -23,14 +21,11 @@ import {
 import useDatabaseQuery, {
   Operators,
   OrderDirections,
-  PossibleWhereClauses,
   WhereClause,
-  WhereOperators,
 } from '@/hooks/useDatabaseQuery'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 import useHistory from '@/hooks/useHistory'
 import useMyDrafts from '@/hooks/useMyDrafts'
-import useSupabaseClient from '@/hooks/useSupabaseClient'
 import usePermissions from '@/hooks/usePermissions'
 
 import LoadingIndicator from '@/components/loading-indicator'
@@ -83,7 +78,7 @@ const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
 }
 
 const ManualCreateView = () => {
-  const [isCreating, isSuccess, lastErrorCode, create] = useDataStoreCreate<
+  const [isCreating, , lastErrorCode, create] = useDataStoreCreate<
     AssetFields,
     Asset
   >(AssetsCollectionNames.Assets, {
