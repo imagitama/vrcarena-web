@@ -233,6 +233,8 @@ export interface DataStoreOptions {
   // defaults to "id" but sometimes want to be quirky
   idField?: string | string[] // array of field names to .eq() on
   select?: string
+  // set to false to disable .select() after .insert() when RLS policies prohibit
+  selectAfter?: boolean
   // for upserts
   uniqueConstraintFields?: string[]
 }

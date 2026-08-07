@@ -47,7 +47,9 @@ const SurveyDialog = ({
   const [isCreating, isSuccess, lastErrorCode, create] = useDataStoreCreate<
     SurveyResponseFields,
     SurveyResponse
-  >(CollectionNames.SurveyResponses)
+  >(CollectionNames.SurveyResponses, {
+    selectAfter: false, // only staff can .select()
+  })
   const [newAnswers, setNewAnswers] = useState<SurveyResponseAnswer[]>(
     survey.questions.map((question) => ({
       question: question.question,

@@ -55,18 +55,26 @@ const useDataStoreCreate = <
         fields
       )
 
-      const { data, error } = await supabase
+      let query = supabase
         .from<any, { Row1: TRecord; Insert: TRecord }>(collectionName)
         .insert([fields as TRecord])
-        .select<'*', TRecord>('*')
+
+      if (options.selectAfter !== false) {
+        // @ts-ignore
+        query = query.select<'*', TRecord>('*')
+      }
+
+      const { data, error } = await query
 
       if (error) {
         console.error(error)
         throw new DataStoreError('useDataStoreCreate failed', error)
       }
 
-      if (data.length !== 1) {
-        throw new Error(`Count is ${data.length}`)
+      if (!data || !Array.isArray(data)) throw new Error('')
+
+      if ((data as TRecord[]).length !== 1) {
+        throw new Error(`Count is ${(data as TRecord[]).length}`)
       }
 
       const createdRecord = data[0]
