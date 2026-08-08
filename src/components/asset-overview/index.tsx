@@ -430,9 +430,11 @@ const AssetOverview = ({
   ) {
     return (
       <ErrorMessage>
-        Failed to load asset. It could have been deleted, never existed or you
-        do not have permission to see it. If you think this is wrong please
-        contact us in Discord.
+        Failed to load asset (code {lastErrorCode})
+        <br />
+        <br />
+        It could have been deleted, never existed or you do not have permission
+        to see it. If you think this is wrong please contact us in Discord.
       </ErrorMessage>
     )
   }

@@ -4,6 +4,7 @@ export const loginWithVar = '/login?from=:currentPath'
 export const logout = '/logout'
 export const logoutWithVar = '/logout?from=:currentPath'
 export const createAsset = '/assets/create'
+export const createAssetWithUrlVar = '/assets/create?url=:url'
 export const editAssetWithVar = '/assets/:assetId/edit'
 export const editAssetWithVarAndTabNameVar = '/assets/:assetId/edit/:tabName'
 export const viewAssetWithVar = '/assets/:assetId'
@@ -56,6 +57,7 @@ export const viewAuthorsWithPageNumberVar = '/authors/page/:pageNumber'
 export const viewAuthorWithVar = '/authors/:authorId'
 export const editAuthorWithVar = '/authors/:authorId/edit'
 export const createAuthor = '/authors/create'
+export const createAuthorWithUrlVar = '/authors/create?url=:url'
 export const viewDiscordServersWithPageNumberVar =
   '/discord-servers/page/:pageNumber'
 export const viewDiscordServerWithVar = '/discord-servers/:discordServerId'
@@ -121,11 +123,13 @@ export const editAttachmentWithVar = '/attachments/:attachmentId/edit'
 export const viewReviewWithVar = '/reviews/:reviewId'
 export const editReviewWithVar = '/reviews/:reviewId/edit'
 export const createReview = '/reviews/create'
-
 export const createSupportTicket = '/support-tickets/create'
 export const createSupportTicketWithVar =
   '/support-tickets/create/:parentTable/:parentId'
 export const viewSupportTicketWithVar = '/support-tickets/:supportTicketId'
+export const backlog = '/backlog'
+export const backlogWithSubViewNameAndPageNumberVar =
+  '/backlog/:subViewName/page/:pageNumber'
 
 // admin - generic
 export const admin = '/admin'

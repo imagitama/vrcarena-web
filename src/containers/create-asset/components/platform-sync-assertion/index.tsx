@@ -92,7 +92,7 @@ const PlatformSyncAssertion = () => {
         title={
           <>
             The site automatically checks if all platforms are syncable every 24
-            hours
+            hours.
             <br />
             <br />
             Last checked{' '}
@@ -101,14 +101,14 @@ const PlatformSyncAssertion = () => {
             ) : (
               '(never)'
             )}
-            <ul>
+            <ul style={{ marginBottom: 0 }}>
               {Object.entries(value).map(([platformName, result]) => (
                 <li key={platformName}>
                   {platformName}{' '}
                   {result.status === PlatformSyncStatus.Success
                     ? 'Success'
                     : result.status === PlatformSyncStatus.Failed
-                    ? 'Failed'
+                    ? 'Failed (it might work anyway)'
                     : result.status}
                 </li>
               ))}

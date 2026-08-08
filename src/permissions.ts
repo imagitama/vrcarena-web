@@ -163,6 +163,7 @@ const permissions = {
     routes.compareWithVars,
     routes.cart,
     routes.tutorials,
+    routes.createAuthor,
   ],
   [UserRoles.Editor]: [
     routes.admin,
@@ -170,7 +171,6 @@ const permissions = {
     routes.adminWithTabNameVarAndPageNumberVar,
     routes.editUserWithVar,
     routes.editAuthorWithVar,
-    routes.createAuthor,
     routes.editDiscordServerWithVar,
     routes.createDiscordServer,
     routes.createSpecies,

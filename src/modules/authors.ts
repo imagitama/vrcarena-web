@@ -67,3 +67,7 @@ export enum ViewNames {
   GetFullAuthors = 'getfullauthors',
   GetPublicAuthors = 'getpublicauthors',
 }
+
+export enum FunctionNames {
+  GetAuthorsWithUrl = 'getauthorswithurl',
+}

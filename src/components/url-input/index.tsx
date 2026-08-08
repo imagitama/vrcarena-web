@@ -1,19 +1,22 @@
 import React, { useState } from 'react'
 
-import TextInput from '@/components/text-input'
+import TextInput, { Props as TextInputProps } from '@/components/text-input'
 
 const UrlInput = ({
   value,
+  defaultValue,
   onChange,
+  ...textInputProps
 }: {
-  value: string
+  value?: string
+  defaultValue?: string
   onChange: (newUrl: string) => void
-}) => {
-  const [userInput, setUserInput] = useState(value || '')
+} & Omit<TextInputProps, 'value' | 'onChange'>) => {
+  const [userInput, setUserInput] = useState(value || defaultValue || '')
 
   return (
     <TextInput
-      value={userInput}
+      value={value !== undefined ? value : userInput}
       placeholder="Enter a URL"
       onChange={(e) => {
         setUserInput(e.target.value)
@@ -21,6 +24,7 @@ const UrlInput = ({
       }}
       fullWidth
       label="URL"
+      {...textInputProps}
     />
   )
 }

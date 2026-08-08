@@ -36,7 +36,7 @@ const Editor = ({
   return (
     <>
       <UrlInput
-        value={newSourceInfo.url}
+        defaultValue={newSourceInfo.url}
         onChange={(newUrl) =>
           setNewSourceInfo((currentVal) => ({
             ...currentVal,

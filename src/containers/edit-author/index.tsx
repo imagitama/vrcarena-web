@@ -3,15 +3,17 @@ import { useParams } from 'react-router-dom'
 import { Helmet } from '@unhead/react/helmet'
 
 import * as routes from '@/routes'
-import { CollectionNames } from '@/modules/authors'
+import { Author, CollectionNames } from '@/modules/authors'
 
 import usePermissions from '@/hooks/usePermissions'
 
 import GenericEditor from '@/components/generic-editor'
 import Heading from '@/components/heading'
 import NoPermissionMessage from '@/components/no-permission-message'
+import useQueryParam from '@/hooks/useQueryParam'
 
 const View = () => {
+  const prefillUrl = useQueryParam('url')
   const { authorId } = useParams<{ authorId: string }>()
   const isCreating = !authorId || authorId === 'create'
 
@@ -24,7 +26,7 @@ const View = () => {
   return (
     <>
       <Heading variant="h1">{isCreating ? 'Create' : 'Edit'} Author</Heading>
-      <GenericEditor
+      <GenericEditor<Author>
         collectionName={CollectionNames.Authors}
         id={isCreating ? undefined : authorId}
         analyticsCategory={isCreating ? 'CreateAuthor' : 'EditAuthor'}
@@ -39,6 +41,9 @@ const View = () => {
             ? routes.authors
             : routes.viewAuthorWithVar.replace(':authorId', authorId)
         }
+        overrideFields={{
+          websiteurl: prefillUrl ? decodeURIComponent(prefillUrl) : null,
+        }}
       />
     </>
   )

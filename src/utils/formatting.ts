@@ -54,3 +54,13 @@ export const getUserFriendlyNumber = (num: number): string => {
 
 export const getShortId = (uuid: string): string =>
   uuid.substring(0, shortIdLength)
+
+export const capitalizeFirstLetter = (str: string): string =>
+  str.charAt(0).toUpperCase() + str.slice(1)
+
+export const stripQueryAndHash = (url: string): string => {
+  const u = new URL(url)
+  u.search = ''
+  u.hash = ''
+  return u.toString()
+}

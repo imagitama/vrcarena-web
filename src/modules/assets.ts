@@ -368,6 +368,7 @@ export enum FunctionNames {
   SearchAssets = 'searchassets',
   GetOrHydrateGetFullAssets = 'get_or_hydrate_getfullassets',
   GetMentions = 'getmentions',
+  GetAssetsWithSourceUrl = 'getassetswithsourceurl', // discordbot and backlog
 }
 
 export enum FirebaseFunctionNames {

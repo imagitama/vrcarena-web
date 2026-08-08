@@ -247,6 +247,9 @@ const ViewReview = lazy(() =>
 const EditReview = lazy(() =>
   catchChunkDeaths(() => import('./containers/edit-review'))
 )
+const Backlog = lazy(() =>
+  catchChunkDeaths(() => import('./containers/backlog'))
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -593,6 +596,11 @@ const MainContent = () => {
         <Route exact path={routes.reviews} component={Reviews} />
         <Route exact path={routes.transparency} component={Transparency} />
         <Route exact path={routes.unsubscribe} component={Unsubscribe} />
+        <Route
+          exact
+          path={[routes.backlog, routes.backlogWithSubViewNameAndPageNumberVar]}
+          component={Backlog}
+        />
         <Route
           exact
           path={routes.queryCheatsheet}

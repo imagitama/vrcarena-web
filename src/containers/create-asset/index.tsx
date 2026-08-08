@@ -227,6 +227,9 @@ const View = () => {
             size="small">
             Create Asset Manually
           </Button>{' '}
+          <Button url={routes.backlog} color="secondary" size="small">
+            Backlog
+          </Button>{' '}
           <ErrorBoundary>
             <PlatformSyncAssertion />
           </ErrorBoundary>

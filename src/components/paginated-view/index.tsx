@@ -196,6 +196,7 @@ export interface PaginatedViewProps<TRecord extends Record<string, any>> {
   allowRandomSort?: boolean
   itemNamePlural?: string
   onRefresh?: () => void
+  form?: (props: { hydrate: () => void }) => React.ReactElement // rendered above table
 }
 
 const PaginatedView = <TRecord extends Record<string, any>>({
@@ -221,6 +222,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
   allowRandomSort = false,
   itemNamePlural,
   onRefresh,
+  form,
 }: PaginatedViewProps<TRecord>) => {
   if (!renderer) {
     throw new Error('Cannot render paginated view without a renderer')
@@ -645,6 +647,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
               </div>
             </Suspense>
           </div>
+          {form && form({ hydrate })}
           <Page />
         </div>
       </PaginatedViewContext.Provider>
