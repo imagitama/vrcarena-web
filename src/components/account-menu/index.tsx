@@ -3,7 +3,6 @@ import { makeStyles } from '@mui/styles'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Badge from '@mui/material/Badge'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useLocation } from 'react-router'
 import { SupabaseClient } from '@supabase/supabase-js'
 

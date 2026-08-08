@@ -13,15 +13,53 @@ const useStyles = makeStyles({
     width: '100%',
   },
   button: {
-    height: '100%',
-    marginLeft: '0.5rem !important',
+    // height: '100%',
+    // marginLeft: '0.5rem !important',
+  },
+  textField: {},
+  input: {},
+  small: {
+    height: '24px',
+    '& $textField': {
+      height: '100%',
+    },
+    '& $input': {
+      height: '100%',
+      '& > *': {
+        paddingLeft: '8px',
+        paddingRight: '8px',
+      },
+    },
+    '&&': {
+      paddingLeft: '8px',
+      paddingRight: '8px',
+    },
+  },
+  large: {
+    height: '40px',
+    '&&': {
+      paddingLeft: '12px',
+      paddingRight: '12px',
+    },
+  },
+  withButton: {
+    '& $input': {
+      borderTopRightRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+    '& $button': {
+      borderLeft: 'none', // TODO: fix sometime
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+    },
   },
 })
 
-export type Props = TextFieldProps & {
+export type Props = Omit<TextFieldProps, 'size'> & {
   isDisabled?: boolean
   variant?: 'outlined'
   button?: React.ReactElement
+  size?: 'small' | 'large'
 }
 
 const TextInput = ({ button, ...props }: Props) => {
@@ -31,11 +69,23 @@ const TextInput = ({ button, ...props }: Props) => {
       className={classNames({
         [classes.root]: true,
         [classes.fullWidth]: props.fullWidth,
+        [classes.small]: props.size === 'small',
+        [classes.large]: props.size === 'large',
+        [classes.withButton]: button !== undefined,
       })}>
       <TextField
         multiline={props.minRows !== undefined}
         variant={'outlined'}
         disabled={props.isDisabled}
+        size={props.size as any}
+        classes={{
+          root: classes.textField,
+        }}
+        InputProps={{
+          classes: {
+            root: classes.input,
+          },
+        }}
         {...props}
       />
       {button

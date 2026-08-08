@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import CheckIcon from '@mui/icons-material/Check'
 
 import Button from '@/components/button'
 import TextInput from '@/components/text-input'
+import HintText from '../hint-text'
 
 const useStyles = makeStyles({
   root: {
@@ -18,7 +20,7 @@ const useStyles = makeStyles({
     margin: '0 0.25rem 0.25rem 0',
   },
   button: {
-    minWidth: '40px !important',
+    // minWidth: '40px !important',
   },
   selected: {
     '& > *': {
@@ -49,17 +51,19 @@ const PagesNavigation = ({
 
   return (
     <div className={classes.root}>
-      {pageCount > MAX_PAGES || true ? (
+      {pageCount > MAX_PAGES ? (
         <>
-          <div className={classes.control}>{pageCount} pages</div>
+          <div className={classes.control}>
+            <HintText>{pageCount} pages</HintText>
+          </div>
 
           <div className={classes.control}>
             <Button
-              color="primary"
+              color="secondary"
+              hollow
               onClick={() => onClickWithPageNumber(currentPageNumber - 1)}
               size="small"
               icon={<ChevronLeftIcon />}
-              iconOnly
               className={classes.button}
               isDisabled={currentPageNumber <= 1}
             />
@@ -76,11 +80,11 @@ const PagesNavigation = ({
           </div>
           <div className={classes.control}>
             <Button
-              color="primary"
+              color="secondary"
+              hollow
               onClick={() => onClickWithPageNumber(currentPageNumber + 1)}
               size="small"
               icon={<ChevronRightIcon />}
-              iconOnly
               className={classes.button}
               isDisabled={currentPageNumber === pageCount}
             />
@@ -93,17 +97,21 @@ const PagesNavigation = ({
               }}
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder="Page number"
+              placeholder="#"
               onKeyDown={(e) => (e.key === 'Enter' ? onGoToPage() : undefined)}
               button={
                 <Button
                   onClick={() => onGoToPage()}
                   color="secondary"
-                  hollow={false}>
-                  Go To Page
-                </Button>
+                  hollow={true}
+                  icon={<ChevronRightIcon />}
+                  size="small"
+                />
               }
               size="small"
+              style={{
+                width: '100px',
+              }}
             />
           </div>
         </>

@@ -267,8 +267,6 @@ const PaginatedView = <TRecord extends Record<string, any>>({
       ])
     : originalSortOptions
 
-  // NEW HOOKS
-
   const isEditor = useIsEditor()
   const [activeFilters] = useFilters(`${keyPrefix}_filters`, filters)
   const [sorting] = useSorting(
@@ -495,15 +493,6 @@ const PaginatedView = <TRecord extends Record<string, any>>({
             }}
           />
         ) : null}
-        <Suspense>
-          <RefreshIcon
-            className={classes.hydrateIcon}
-            onClick={() => {
-              hydrate()
-              if (onRefresh) onRefresh()
-            }}
-          />
-        </Suspense>
         {getQueryString ? (
           <Button
             url={getPathForQueryString(getQueryString())}
@@ -514,8 +503,6 @@ const PaginatedView = <TRecord extends Record<string, any>>({
       </>
     )
   }
-
-  // END NEW HOOKS
 
   return (
     <ErrorBoundary>
