@@ -5,6 +5,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import styled from '@emotion/styled'
 
 import * as routes from '@/routes'
 import {
@@ -57,6 +58,13 @@ const useStyles = makeStyles({
     padding: '2rem 0',
   },
 })
+
+const Controls = styled.div`
+  display: flex;
+  & > *:first-child {
+    width: 100%;
+  }
+`
 
 const RulesForm = ({ onAccept }: { onAccept: () => void }) => {
   const classes = useStyles()
@@ -182,6 +190,7 @@ const View = () => {
   const [showRules, setShowRules] = useState(true)
   const [isOldItemsShown, setIsOldItemsShown] = useState(false)
   const myUserId = useUserId()!
+  const [isDesc, setIsDesc] = useState(true)
   const [isLoading, lastErrorCode, queuedItems, hydrate] =
     useDatabaseQuery<AssetSyncQueueItem>(
       AssetsSyncQueueCollectionNames.AssetSyncQueue,
@@ -196,7 +205,10 @@ const View = () => {
       ),
       {
         queryName: 'get-my-asset-sync-queued-items',
-        orderBy: ['createdat', OrderDirections.DESC],
+        orderBy: [
+          'createdat',
+          isDesc ? OrderDirections.DESC : OrderDirections.ASC,
+        ],
       }
     )
 
@@ -212,27 +224,44 @@ const View = () => {
         <ManualCreateView />
       ) : (
         <>
-          <Button
-            onClick={() => setIsOldItemsShown((currentVal) => !currentVal)}
-            size="small"
-            color="secondary"
-            icon={
-              isOldItemsShown ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
-            }>
-            Show Old Queued Assets
-          </Button>{' '}
-          <Button
-            onClick={() => setIsCreatingManually(true)}
-            color="secondary"
-            size="small">
-            Create Asset Manually
-          </Button>{' '}
-          <Button url={routes.backlog} color="secondary" size="small">
-            Backlog
-          </Button>{' '}
-          <ErrorBoundary>
-            <PlatformSyncAssertion />
-          </ErrorBoundary>
+          <Controls>
+            <div>
+              <Button
+                onClick={() => setIsDesc((currentVal) => !currentVal)}
+                size="small"
+                color="secondary"
+                icon={isDesc ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}>
+                Order Desc
+              </Button>{' '}
+              <Button
+                onClick={() => setIsOldItemsShown((currentVal) => !currentVal)}
+                size="small"
+                color="secondary"
+                icon={
+                  isOldItemsShown ? (
+                    <CheckBoxIcon />
+                  ) : (
+                    <CheckBoxOutlineBlankIcon />
+                  )
+                }>
+                Show Old Queued Assets
+              </Button>{' '}
+              <Button
+                onClick={() => setIsCreatingManually(true)}
+                color="secondary"
+                size="small">
+                Create Asset Manually
+              </Button>{' '}
+              <Button url={routes.backlog} color="secondary" size="small">
+                Backlog
+              </Button>{' '}
+            </div>
+            <div>
+              <ErrorBoundary>
+                <PlatformSyncAssertion />
+              </ErrorBoundary>
+            </div>
+          </Controls>
           <AssetSyncQueue
             items={queuedItems}
             isLoading={isLoading}
@@ -262,11 +291,12 @@ export default () => {
         />
       </Helmet>
       <Heading variant="h1">Create Asset</Heading>
-      <InfoMessage hideId="create-asset-intro">
-        Anyone can add any product from Gumroad, Jinxxy, Booth and Itch.io using
-        the form below (even if you aren't the creator of the product!). If the
-        asset is not on one of those sites (or you must log in to see it like{' '}
-        <em>some</em> Jinxxy products) you can create it manually.
+      <InfoMessage title="How Sync Works" hideId="create-asset-intro">
+        Anyone can add any product from Gumroad, Jinxxy, Booth, PayHip, Kofi and
+        Itch.io using the form below (even if you aren't the creator of the
+        product!). If the asset is not on one of those sites (or you must log in
+        to see it like <em>some</em> Jinxxy products) you can create it
+        manually.
       </InfoMessage>
       {new Date() < tenthJuly2026 && (
         <SuccessMessage>Asset sync has been fixed (6 July 2026)</SuccessMessage>

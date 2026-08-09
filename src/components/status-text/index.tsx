@@ -6,6 +6,7 @@ import { colorPalette } from '@/config'
 const useStyles = makeStyles({
   status: {
     fontWeight: 'bold',
+    whiteSpace: 'nowrap',
   },
   good: {
     color: colorPalette.positive,

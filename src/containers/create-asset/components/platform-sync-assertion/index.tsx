@@ -63,7 +63,7 @@ const getLabel = (result: PlatformSyncAssertionResults): string => {
   )
 
   return failedPlatformCount === values.length
-    ? 'Sync unavailable'
+    ? 'Sync probably unavailable'
     : failedPlatformCount > 0
     ? 'Some sync platforms unavailable'
     : 'Sync should work'

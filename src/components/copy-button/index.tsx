@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import FileCopyIcon from '@mui/icons-material/FileCopy'
-import Button from '@/components/button'
+import Button, { ButtonProps } from '@/components/button'
 import { copyTextToClipboard } from '@/utils'
 import useTimer from '@/hooks/useTimer'
 
-const CopyButton = ({ text }: { text: string }) => {
+const CopyButton = ({
+  text,
+  ...buttonProps
+}: { text: string } & ButtonProps) => {
   const [hasCopied, setHasCopied] = useState(false)
   const startTimer = useTimer(() => setHasCopied(false), 2000)
 
@@ -17,7 +20,8 @@ const CopyButton = ({ text }: { text: string }) => {
         setHasCopied(true)
         startTimer()
       }}
-      isDisabled={!text}>
+      isDisabled={!text}
+      {...buttonProps}>
       {hasCopied ? 'Copied!' : 'Copy'}
     </Button>
   )

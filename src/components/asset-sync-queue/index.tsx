@@ -14,7 +14,6 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 
-import useIsEditor from '@/hooks/useIsEditor'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useSupabaseClient from '@/hooks/useSupabaseClient'
 import useDataStoreCreateBulk from '@/hooks/useDataStoreCreateBulk'
@@ -27,7 +26,6 @@ import { cleanupSourceUrl, getCanSync } from '@/syncing'
 import { getFriendlyDate } from '@/utils/dates'
 import { capitalize, getQueryParam } from '@/utils'
 import { DISCORD_URL, colorPalette } from '@/config'
-import * as routes from '@/routes'
 import {
   AssetSyncQueueItem,
   AssetSyncQueueItemFields,
@@ -306,7 +304,6 @@ const QueuedItemRow = ({
     ViewNames.GetFullAssets,
     queuedItem.createdassetid || false
   )
-  const isEditor = useIsEditor()
 
   const onDelete = () => setIsDeleted(true)
 

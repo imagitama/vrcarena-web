@@ -1,16 +1,23 @@
 import React, { useState } from 'react'
-import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { Helmet } from '@unhead/react/helmet'
 import AddIcon from '@mui/icons-material/Add'
+import DeleteIcon from '@mui/icons-material/Delete'
+import InfoIcon from '@mui/icons-material/Info'
 
 import * as routes from '@/routes'
-import { FullBacklogItem, BacklogItemType, ViewNames } from '@/modules/backlog'
-import { capitalizeFirstLetter, getShortId } from '@/utils/formatting'
+import {
+  FullBacklogItem,
+  BacklogItemType,
+  ViewNames,
+  CollectionNames,
+  BacklogItem,
+  BacklogItemMeta,
+} from '@/modules/backlog'
+import { capitalizeFirstLetter } from '@/utils/formatting'
 
 import useQueryParam from '@/hooks/useQueryParam'
 
@@ -27,84 +34,163 @@ import {
   CheckAuthorExistsButton,
 } from './components/buttons'
 import CopyButton from '@/components/copy-button'
+import {
+  ResponsiveTable,
+  ResponsiveTableCell,
+  ResponsiveTableHead,
+  ResponsiveTableRow,
+} from '@/components/responsive-table'
+import ShortId from '@/components/short-id'
+import useIsEditor from '@/hooks/useIsEditor'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import LoadingIndicator from '@/components/loading-indicator'
+import SuccessMessage from '@/components/success-message'
+import ErrorMessage from '@/components/error-message'
+import { AccessStatus } from '@/modules/common'
+import { HydrateFn } from '@/hooks/useDataStore'
+import StatusText from '@/components/status-text'
+import Tooltip from '@/components/tooltip'
 
 const URL_QUERY_PARAM_NAME = 'url'
 
-const Renderer = ({ items }: { items?: FullBacklogItem[] }) => (
-  <Table>
-    <TableHead>
-      <TableRow>
-        <TableCell />
-        <TableCell>Type</TableCell>
-        <TableCell>URL</TableCell>
-        <TableCell>Submitted</TableCell>
-        <TableCell></TableCell>
-        <TableCell></TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {items!.map((backlogItem) => {
-        const {
-          id,
-          type,
-          url,
-          createdat,
-          createdby,
-          createdbyusername,
-          createdbyavatarurl,
-        } = backlogItem
-        return (
-          <TableRow key={id}>
-            <TableCell>#{getShortId(id)}</TableCell>
-            <TableCell>{capitalizeFirstLetter(type)}</TableCell>
-            <TableCell>
-              <a href={url} target="_blank" rel="noopener noreferrer">
-                {url}
-                <OpenInNewIcon />
-              </a>
-              <CopyButton text={url} />
-            </TableCell>
-            <TableCell>
-              <FormattedDate date={createdat} /> by{' '}
-              <UsernameLink
-                id={createdby}
-                username={createdbyusername}
-                avatarUrl={createdbyavatarurl}
-              />
-            </TableCell>
-            <TableCell>
-              {type === BacklogItemType.Asset ? (
-                <CheckAssetExistsButton backlogItem={backlogItem} />
-              ) : (
-                <CheckAuthorExistsButton backlogItem={backlogItem} />
-              )}
-            </TableCell>
-            <TableCell>
-              <Button
-                title="Navigates to the asset sync queue prefilled with the URL"
-                url={
-                  type === BacklogItemType.Asset
-                    ? routes.createAssetWithUrlVar.replace(
-                        ':url',
-                        encodeURIComponent(url)
-                      )
-                    : routes.createAuthorWithUrlVar.replace(
-                        ':url',
-                        encodeURIComponent(url)
-                      )
-                }
-                size="small"
-                color="secondary"
-                icon={<AddIcon />}>
-                Create
-              </Button>
-            </TableCell>
-          </TableRow>
-        )
-      })}
-    </TableBody>
-  </Table>
-)
+const DeleteButton = ({ id, onDone }: { id: string; onDone: () => void }) => {
+  const [isSaving, isSuccess, lastErrorCode, save] =
+    useDataStoreEdit<BacklogItemMeta>(CollectionNames.BacklogItemsMeta, id)
+  const onClick = async () => {
+    await save({
+      accessstatus: AccessStatus.Deleted,
+    })
+    onDone()
+  }
+  return (
+    <>
+      {isSaving ? (
+        <LoadingIndicator message="Deleting..." />
+      ) : isSuccess ? (
+        <SuccessMessage>Item deleted</SuccessMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage>Failed (code {lastErrorCode})</ErrorMessage>
+      ) : null}
+      <Button
+        onClick={onClick}
+        icon={<DeleteIcon />}
+        size="small"
+        color="secondary">
+        Delete (Editors Only)
+      </Button>
+    </>
+  )
+}
+
+const Renderer = ({
+  items,
+  hydrate,
+}: {
+  items?: FullBacklogItem[]
+  hydrate?: HydrateFn
+}) => {
+  const isEditor = useIsEditor()
+
+  return (
+    <ResponsiveTable sx={{ tableLayout: 'fixed', width: '100%' }}>
+      <ResponsiveTableHead>
+        <TableRow>
+          <TableCell />
+          <TableCell>Type</TableCell>
+          <TableCell>URL</TableCell>
+          <TableCell>Meta</TableCell>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+        </TableRow>
+      </ResponsiveTableHead>
+      <TableBody>
+        {items!.map((backlogItem) => {
+          const {
+            id,
+            type,
+            url,
+            createdat,
+            createdby,
+            createdbyusername,
+            createdbyavatarurl,
+            accessstatus,
+          } = backlogItem
+          return (
+            <ResponsiveTableRow key={id}>
+              <ResponsiveTableCell>
+                <ShortId>{id}</ShortId>
+              </ResponsiveTableCell>
+              <ResponsiveTableCell label="Type">
+                {capitalizeFirstLetter(type)}
+              </ResponsiveTableCell>
+              <ResponsiveTableCell label="URL" mobileWidthPerc="100%">
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration:
+                      accessstatus === AccessStatus.Deleted
+                        ? 'line-through'
+                        : undefined,
+                  }}>
+                  {url}
+                  <OpenInNewIcon />
+                </a>
+                <CopyButton text={url} size="small" />
+              </ResponsiveTableCell>
+              <ResponsiveTableCell label="Meta">
+                Submitted <FormattedDate date={createdat} /> by{' '}
+                <UsernameLink
+                  id={createdby}
+                  username={createdbyusername}
+                  avatarUrl={createdbyavatarurl}
+                />
+              </ResponsiveTableCell>
+              <ResponsiveTableCell label="Status">
+                <StatusText
+                  positivity={accessstatus === AccessStatus.Deleted ? -1 : 0}>
+                  {accessstatus === AccessStatus.Deleted
+                    ? 'Deleted'
+                    : 'Pending'}{' '}
+                  <Tooltip title="Note: Staff must manually delete backlog items (WIP)">
+                    <InfoIcon />
+                  </Tooltip>
+                </StatusText>
+                {type === BacklogItemType.Asset ? (
+                  <CheckAssetExistsButton backlogItem={backlogItem} />
+                ) : (
+                  <CheckAuthorExistsButton backlogItem={backlogItem} />
+                )}
+              </ResponsiveTableCell>
+              <ResponsiveTableCell label="Controls">
+                <Button
+                  title="Navigates to the asset sync queue prefilled with the URL"
+                  url={
+                    type === BacklogItemType.Asset
+                      ? routes.createAssetWithUrlVar.replace(
+                          ':url',
+                          encodeURIComponent(url)
+                        )
+                      : routes.createAuthorWithUrlVar.replace(
+                          ':url',
+                          encodeURIComponent(url)
+                        )
+                  }
+                  size="small"
+                  color="secondary"
+                  icon={<AddIcon />}>
+                  Create
+                </Button>{' '}
+                {isEditor && <DeleteButton id={id} onDone={hydrate!} />}
+              </ResponsiveTableCell>
+            </ResponsiveTableRow>
+          )
+        })}
+      </TableBody>
+    </ResponsiveTable>
+  )
+}
 
 enum SubView {
   Pending = 'pending',

@@ -5,7 +5,6 @@ import useDatabaseQuery, {
   OrderDirections,
 } from '@/hooks/useDatabaseQuery'
 import {
-  FullAsset,
   CollectionNames as AssetsCollectionNames,
   AssetForList,
 } from '@/modules/assets'
