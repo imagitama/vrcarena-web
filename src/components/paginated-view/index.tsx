@@ -196,7 +196,10 @@ export interface PaginatedViewProps<TRecord extends Record<string, any>> {
   allowRandomSort?: boolean
   itemNamePlural?: string
   onRefresh?: () => void
-  form?: (props: { hydrate: () => void }) => React.ReactElement // rendered above table
+  form?: (props: {
+    items: TRecord[] | null
+    hydrate: () => void
+  }) => React.ReactElement // rendered above table
 }
 
 const PaginatedView = <TRecord extends Record<string, any>>({
@@ -411,12 +414,10 @@ const PaginatedView = <TRecord extends Record<string, any>>({
     ]
   )
 
-  const [isLoading, lastErrorCode, items, totalCount, hydrate] = useDataStore(
-    pageGetQuery,
-    {
+  const [isLoading, lastErrorCode, items, totalCount, hydrate] =
+    useDataStore<TRecord>(pageGetQuery, {
       queryName: `paginated-view`,
-    }
-  )
+    })
 
   useScrollMemory()
 
@@ -634,7 +635,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
               </div>
             </Suspense>
           </div>
-          {form && form({ hydrate })}
+          {form && form({ items, hydrate })}
           <Page />
         </div>
       </PaginatedViewContext.Provider>

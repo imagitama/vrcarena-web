@@ -26,6 +26,7 @@ import {
   CheckAssetExistsButton,
   CheckAuthorExistsButton,
 } from './components/buttons'
+import CopyButton from '@/components/copy-button'
 
 const URL_QUERY_PARAM_NAME = 'url'
 
@@ -37,6 +38,7 @@ const Renderer = ({ items }: { items?: FullBacklogItem[] }) => (
         <TableCell>Type</TableCell>
         <TableCell>URL</TableCell>
         <TableCell>Submitted</TableCell>
+        <TableCell></TableCell>
         <TableCell></TableCell>
       </TableRow>
     </TableHead>
@@ -60,6 +62,7 @@ const Renderer = ({ items }: { items?: FullBacklogItem[] }) => (
                 {url}
                 <OpenInNewIcon />
               </a>
+              <CopyButton text={url} />
             </TableCell>
             <TableCell>
               <FormattedDate date={createdat} /> by{' '}
@@ -74,7 +77,9 @@ const Renderer = ({ items }: { items?: FullBacklogItem[] }) => (
                 <CheckAssetExistsButton backlogItem={backlogItem} />
               ) : (
                 <CheckAuthorExistsButton backlogItem={backlogItem} />
-              )}{' '}
+              )}
+            </TableCell>
+            <TableCell>
               <Button
                 title="Navigates to the asset sync queue prefilled with the URL"
                 url={
@@ -134,7 +139,7 @@ const View = () => {
         itemNamePlural="backlog items"
         form={
           isFormVisible
-            ? ({ hydrate }) => (
+            ? ({ items, hydrate }) => (
                 <Form
                   onDone={() => {
                     setIsFormVisible(false)
