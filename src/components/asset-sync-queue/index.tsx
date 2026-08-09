@@ -150,7 +150,7 @@ const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
           </div>
         )}
       {getIsQueuedItemTakingTooLong(queuedItem) ? (
-        <StatusText positivity={0}>
+        <StatusText positivity={0} allowWrap>
           This queued item is taking too long to finish (which is very weird).
           Generally it should finish within a minute. Please report this to our
           Discord server for investigation.
@@ -620,7 +620,7 @@ const AssetSyncQueue = ({
           {newSourceUrls.map((newSourceUrl, i) => {
             return (
               <TableRow key={i}>
-                <TableCell>
+                <TableCell width="60%">
                   <TextInput
                     label="Source URL"
                     value={newSourceUrl}
@@ -630,7 +630,7 @@ const AssetSyncQueue = ({
                     isDisabled={isBusy}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell width="20%">
                   {getCanSync(newSourceUrl) ? (
                     <StatusText positivity={1}>
                       <CheckIcon /> Valid
@@ -639,13 +639,13 @@ const AssetSyncQueue = ({
                     </StatusText>
                   ) : newSourceUrl ? (
                     <Tooltip title="Only product URLs (such as Gumroad, Booth, Jinxxy, Itch, PayHip) can be synced">
-                      <StatusText positivity={-1}>
+                      <StatusText positivity={-1} allowWrap>
                         <ClearIcon /> Invalid - you must create it manually
                       </StatusText>
                     </Tooltip>
                   ) : null}
                 </TableCell>
-                <TableCell>
+                <TableCell width="20%">
                   <Button
                     color="secondary"
                     icon={<DeleteIcon />}
