@@ -150,11 +150,11 @@ const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
           </div>
         )}
       {getIsQueuedItemTakingTooLong(queuedItem) ? (
-        <WarningMessage title="Something went wrong">
-          This queued item is taking too long to finish which is weird.
+        <StatusText positivity={0}>
+          This queued item is taking too long to finish (which is very weird).
           Generally it should finish within a minute. Please report this to our
           Discord server for investigation.
-        </WarningMessage>
+        </StatusText>
       ) : null}
     </span>
   )
@@ -188,7 +188,10 @@ const DeleteButton = ({
         onClick={onClickDelete}
         title="Remove asset from queue (does not delete any asset drafts)"
         isDisabled={
-          isBusy || isDeleting || queuedItem.status === QueueStatus.Processing
+          isBusy ||
+          isDeleting ||
+          (queuedItem.status === QueueStatus.Processing &&
+            !getIsQueuedItemTakingTooLong(queuedItem))
         }
         hollow
       />
