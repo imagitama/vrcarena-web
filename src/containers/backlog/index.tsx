@@ -139,7 +139,7 @@ const View = () => {
         itemNamePlural="backlog items"
         form={
           isFormVisible
-            ? ({ items, hydrate }) => (
+            ? ({ hydrate }) => (
                 <Form
                   onDone={() => {
                     setIsFormVisible(false)

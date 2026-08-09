@@ -212,7 +212,8 @@ const AssetTree = ({
 
   return (
     <Root>
-      {parents.length ? (
+      {/* TODO: when > 1 show a couple of parents like we do children (a hotfix for assets with HEAPS of parents) */}
+      {parents.length === 1 ? (
         <Items>
           {parents.map(([relation, asset]) => (
             <ParentItem key={relation.asset}>
@@ -222,7 +223,8 @@ const AssetTree = ({
         </Items>
       ) : null}
       <Items>
-        <PrimaryItem style={{ paddingTop: parents.length ? undefined : 0 }}>
+        <PrimaryItem
+          style={{ paddingTop: parents.length === 1 ? undefined : 0 }}>
           {parents.length > 0 && <VerticalLine />}
           {nonParents.length ? <AssetResultsItem asset={activeAsset} /> : null}
           {nonParents.length > 0 && <VerticalLine bottom />}
