@@ -96,13 +96,16 @@ const getClassForStatus = (
   }
 }
 
-const twentyFourHours = Date.now() - 24 * 60 * 60 * 1000
-
 const getIsQueuedItemTakingTooLong = (
   queuedItem: AssetSyncQueueItem
-): boolean =>
-  queuedItem.status === QueueStatus.Queued &&
-  new Date(queuedItem.createdat).getTime() < twentyFourHours
+): boolean => {
+  const fiveMinutesMs = Date.now() - 5 * 60 * 1000
+  return (
+    (queuedItem.status === QueueStatus.Queued ||
+      queuedItem.status === QueueStatus.Processing) &&
+    new Date(queuedItem.createdat).getTime() < fiveMinutesMs
+  )
+}
 
 const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
   const classes = useStyles()
@@ -148,9 +151,9 @@ const QueuedStatus = ({ queuedItem }: { queuedItem: AssetSyncQueueItem }) => {
         )}
       {getIsQueuedItemTakingTooLong(queuedItem) ? (
         <WarningMessage title="Something went wrong">
-          This item has been waiting for more than 24 hours. Please open a
-          support ticket in our <a href={DISCORD_URL}>Discord</a> (with a
-          screenshot) or create the asset manually.
+          This queued item is taking too long to finish which is weird.
+          Generally it should finish within a minute. Please report this to our
+          Discord server for investigation.
         </WarningMessage>
       ) : null}
     </span>
