@@ -38,6 +38,7 @@ const useStyles = makeStyles({
     '& canvas': {
       display: 'block',
       width: '100%',
+      maxWidth: '512px',
       imageRendering: 'pixelated', // improve rendering
       background: '#000',
     },
