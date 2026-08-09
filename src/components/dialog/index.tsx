@@ -8,10 +8,10 @@ import CloseIcon from '@mui/icons-material/Close'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const useStyles = makeStyles({
-  contents: {
-    width: '50vw',
+  root: {
+    padding: '0.5rem',
     [mediaQueryForTabletsOrBelow]: {
-      width: '100%',
+      padding: '0.25rem',
     },
   },
   paper: {
@@ -19,6 +19,19 @@ const useStyles = makeStyles({
     padding: '0.5rem',
     [mediaQueryForTabletsOrBelow]: {
       width: '100%',
+      padding: '0.25rem',
+      '&&': {
+        margin: '0.25rem',
+        maxHeight: 'calc(100% - 0.5rem)',
+      },
+    },
+  },
+  content: {
+    '& > &&': {
+      padding: '0.5rem',
+      [mediaQueryForTabletsOrBelow]: {
+        padding: '0.25rem',
+      },
     },
   },
   fullWidth: {
@@ -70,7 +83,7 @@ const Dialog = forwardRef<HTMLDivElement, DialogProps>((props, ref) => {
           <CloseIcon />
         </div>
       )}
-      {props.children}
+      <div className={classes.content}>{props.children}</div>
     </MaterialDialog>
   )
 })

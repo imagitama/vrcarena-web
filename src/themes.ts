@@ -178,5 +178,15 @@ export const darkTheme: VRCArenaTheme = createTheme({
         },
       },
     },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          padding: '0.5rem',
+          [mediaQueryForTabletsOrBelow]: {
+            padding: '0.25rem',
+          },
+        },
+      },
+    },
   },
 })

@@ -13,12 +13,19 @@ import Heading from '@/components/heading'
 import Markdown from '@/components/markdown'
 import StatusText from '@/components/status-text'
 import { fieldTypes } from '@/generic-forms'
+import { mediaQueryForMobiles } from '@/media-queries'
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
+    [mediaQueryForMobiles]: {
+      flexWrap: 'wrap',
+    },
     '& > *:nth-child(2)': {
       width: '70%',
+      [mediaQueryForMobiles]: {
+        width: '100%',
+      },
     },
     '&&': {
       // TODO: replace inherited Paper somehow
@@ -34,6 +41,9 @@ const useStyles = makeStyles({
   },
   title: {
     width: '30%',
+    [mediaQueryForMobiles]: {
+      width: '100%',
+    },
     fontSize: '125%',
     '& > *': {
       display: 'flex',
