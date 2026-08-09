@@ -7,6 +7,7 @@ enum AssetSyncFailureInfoCode {
   ScrapeOther = 'ScrapeOther',
   ElementNotFound = 'ElementNotFound',
   InvalidProductUrl = 'InvalidProductUrl',
+  Stalled = 'Stalled', // firebase function times out / runs out of memory
 }
 
 enum AiErrorCode {
@@ -29,6 +30,8 @@ const getFriendlyMessageFromFailureInfo = (
       return 'We found the product but something stopped us from getting any data'
     case AssetSyncFailureInfoCode.InvalidProductUrl:
       return `The platform told us the URL is invalid: ${failureInfo.data.url}`
+    case AssetSyncFailureInfoCode.Stalled:
+      return 'We spent too long processing this asset (it might have some 4K images that caused us to run out of memory)'
     case AiErrorCode.PromptBlocked:
       return `The AI blocked our prompt: ${failureInfo.data.reason}`
     case AiErrorCode.PromptEndedEarly:
