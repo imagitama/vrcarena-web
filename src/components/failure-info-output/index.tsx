@@ -27,7 +27,7 @@ const getFriendlyMessageFromFailureInfo = (
     case AssetSyncFailureInfoCode.ElementNotFound:
       return 'We found the product but the page was missing some required data'
     case AssetSyncFailureInfoCode.ScrapeOther:
-      return 'We found the product but something stopped us from getting any data'
+      return 'We found the product but something stopped us from scraping all of the data (eg. they changed their HTML or security kicked in)'
     case AssetSyncFailureInfoCode.InvalidProductUrl:
       return `The platform told us the URL is invalid: ${failureInfo.data.url}`
     case AssetSyncFailureInfoCode.Stalled:

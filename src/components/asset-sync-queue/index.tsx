@@ -464,7 +464,13 @@ const QueuedItemRow = ({
 const oneWeekAgo = new Date()
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
-const BulkEditor = ({ onAdd }: { onAdd: (urls: string[]) => void }) => {
+const BulkEditor = ({
+  onAdd,
+  onCancel,
+}: {
+  onAdd: (urls: string[]) => void
+  onCancel: () => void
+}) => {
   const [textVal, setTextVal] = useState('')
 
   const onClickDone = () => {
@@ -496,10 +502,14 @@ const BulkEditor = ({ onAdd }: { onAdd: (urls: string[]) => void }) => {
         onChange={(e) => setTextVal(e.target.value)}
         placeholder={`Paste a list of product URLs here eg.\nhttps://reval.gumroad.com/l/furpaw\nhttps://jinxxy.com/LegacyTwoTails/Astrawolf\nhttps://tzapfronpresents.itch.io/furry-dog`}
       />{' '}
-      <br />
-      <Button onClick={() => onClickDone()} icon={<CheckIcon />}>
-        Bulk Add
-      </Button>
+      <FormControls>
+        <Button onClick={onCancel} color="secondary" hollow={false}>
+          Cancel
+        </Button>{' '}
+        <Button onClick={() => onClickDone()} icon={<CheckIcon />}>
+          Bulk Add
+        </Button>
+      </FormControls>
     </>
   )
 }
@@ -649,14 +659,20 @@ const AssetSyncQueue = ({
               </TableRow>
             )
           })}
-          <TableRow>
-            {isBulkEditorVisible ? (
+
+          {isBulkEditorVisible ? (
+            <TableRow>
               <TableCell colSpan={999}>
-                <BulkEditor onAdd={onBulkAdd} />
+                <BulkEditor
+                  onAdd={onBulkAdd}
+                  onCancel={() => setIsBulkEditorVisible(false)}
+                />
               </TableCell>
-            ) : null}
+            </TableRow>
+          ) : null}
+          <TableRow>
             <TableCell colSpan={999}>
-              <div>
+              <FormControls>
                 <Button
                   onClick={addEmptySource}
                   icon={<AddIcon />}
@@ -668,7 +684,7 @@ const AssetSyncQueue = ({
                 <Button onClick={toggleBulkAdd} color="secondary">
                   Add Bulk
                 </Button>
-              </div>
+              </FormControls>
               <FormControls>
                 <Button
                   onClick={processItems}
