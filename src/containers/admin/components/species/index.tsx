@@ -5,17 +5,16 @@ import { TableCell } from '@/components/responsive-table'
 import { TableHead } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
 
-import ErrorMessage from '@/components/error-message'
-import LoadingIndicator from '@/components/loading-indicator'
+import { getShortId } from '@/utils/formatting'
+import { routes } from '@/routes'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
 import { CollectionNames, FullSpecies, ViewNames } from '@/modules/species'
+
+import ErrorMessage from '@/components/error-message'
+import LoadingIndicator from '@/components/loading-indicator'
 import NoResultsMessage from '@/components/no-results-message'
-import { getShortId } from '@/utils/formatting'
 import EditorRecordManager from '@/components/editor-record-manager'
-import Button from '@/components/button'
-import { Edit as EditIcon } from '@/icons'
-import { routes } from '@/routes'
-import Link from '@/components/link'
+import ShortId from '@/components/short-id'
 
 const AdminSpecies = () => {
   const [isLoading, lastErrorCode, speciesItems, , hydrate] =
@@ -35,8 +34,7 @@ const AdminSpecies = () => {
       <TableHead>
         <TableCell></TableCell>
         <TableCell>Parent</TableCell>
-        <TableCell>Name (singular)</TableCell>
-        <TableCell>Name (plural)</TableCell>
+        <TableCell>Name</TableCell>
         <TableCell>Redirect To</TableCell>
         <TableCell>Thumbnail</TableCell>
         <TableCell>Controls</TableCell>
@@ -52,21 +50,24 @@ const AdminSpecies = () => {
           speciesItems.map((item) => (
             <TableRow key={item.id}>
               <TableCell title={item.id}>
-                <Link
-                  to={routes.viewSpeciesWithVar.replace(
+                <ShortId
+                  url={routes.viewSpeciesWithVar.replace(
                     ':speciesIdOrSlug',
                     item.id
                   )}>
-                  #{getShortId(item.id)}
-                </Link>
+                  {item.id}
+                </ShortId>
               </TableCell>
-              <TableCell label="PArent" title={item.parent || ''}>
+              <TableCell label="Parent" title={item.parent || ''}>
                 {item.parent
                   ? `${item.parentpluralname} (#${getShortId(item.parent)})`
                   : '-'}
               </TableCell>
-              <TableCell label="Name (singular)">{item.singularname}</TableCell>
-              <TableCell label="Name (plural)">{item.pluralname}</TableCell>
+              <TableCell label="Name">
+                {item.singularname}
+                <br />
+                {item.pluralname}
+              </TableCell>
               <TableCell label="Redirect To" title={item.redirectto || ''}>
                 {item.redirectto
                   ? `${item.redirectto} (#${getShortId(item.redirectto)})`

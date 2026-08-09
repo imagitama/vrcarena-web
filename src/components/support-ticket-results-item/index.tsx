@@ -45,13 +45,13 @@ export default ({
     <Fragment key={supportTicketId}>
       <TableRow key={supportTicketId} title={supportTicketId}>
         <TableCell title={supportTicketId}>
-          <Link
-            to={routes.viewSupportTicketWithVar.replace(
+          <ShortId
+            url={routes.viewSupportTicketWithVar.replace(
               ':supportTicketId',
               supportTicketId
             )}>
-            <ShortId>{supportTicketId}</ShortId>
-          </Link>
+            {supportTicketId}
+          </ShortId>
         </TableCell>
         {showRelatedDetails && (
           <TableCell label="Parent">

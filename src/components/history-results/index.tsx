@@ -19,10 +19,8 @@ import HistoryEntryLabel from '@/components/history-entry-label'
 import ToggleIcon from '../toggle-icon'
 import FieldOutput from '../field-output'
 import { getEditableField, getLabelForFieldName } from '@/editable-fields'
-import Tooltip from '../tooltip'
-import CopyThing from '../copy-thing'
-import { getShortId } from '@/utils/formatting'
 import LabelWithIcon from '../label-with-icon'
+import ShortId from '../short-id'
 
 const ExpandedData = ({
   parentType,
@@ -97,9 +95,7 @@ const HistoryResultsItem = ({
   return (
     <HistoryEntryTableRow isHighlighted={isHighlighted}>
       <TableCell>
-        <CopyThing text={entry.id} title={entry.id}>
-          #{getShortId(entry.id)}
-        </CopyThing>
+        <ShortId>{entry.id}</ShortId>
         <br />
         <MessageLabel entry={entry} />
       </TableCell>

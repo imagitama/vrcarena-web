@@ -11,14 +11,12 @@ import {
   NotificationQueuedItem,
   WebNotification,
 } from '@/modules/notificationqueue'
-import { getShortId } from '@/utils/formatting'
 import FailureInfoOutput from '@/components/failure-info-output'
 import { useState } from 'react'
 import Button from '@/components/button'
 import Dialog from '@/components/dialog'
 import { OrderDirections } from '@/hooks/useDatabaseQuery'
 import NoValueLabel from '@/components/no-value-label'
-import StatusText from '@/components/status-text'
 import QueueStatusLabel from '@/components/queue-status-label'
 import ShortId from '@/components/short-id'
 

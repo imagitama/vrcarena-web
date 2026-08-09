@@ -10,7 +10,6 @@ import NoResultsMessage from '@/components/no-results-message'
 import StatusText from '@/components/status-text'
 import FormattedDate from '@/components/formatted-date'
 import UsernameLink from '@/components/username-link'
-import { getShortId } from '@/utils/formatting'
 import ShortId from '../short-id'
 
 const RepChangeList = ({ repChanges }: { repChanges: FullRepChange[] }) => {

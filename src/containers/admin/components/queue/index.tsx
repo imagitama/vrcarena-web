@@ -76,7 +76,6 @@ import { getLabelForResult, getPositivityForResult } from '../audit'
 import { Renderer as AssetAuditResultRenderer } from '@/components/asset-audit-result'
 import ErrorBoundary from '@/components/error-boundary'
 import ShortDiff from '@/components/short-diff'
-import FailureInfoOutput from '@/components/failure-info-output'
 import { User } from '@/modules/users'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import PaginatedView, { RendererProps } from '@/components/paginated-view'
@@ -85,7 +84,6 @@ import ConnectionIndicator, {
   getConnectionStatusFromHookResult,
 } from '@/components/connection-indicator'
 import AiResultSummary from '@/components/ai-result-summary'
-import { getShortId } from '@/utils/formatting'
 import ShortId from '@/components/short-id'
 
 const fiveMinsAgo = new Date()

@@ -20,6 +20,7 @@ import AuthorResultsItem from '@/components/author-results-item'
 import UsernameLink from '@/components/username-link'
 import { HydrateFn } from '@/hooks/useDataStore'
 import useTimer from '@/hooks/useTimer'
+import ShortId from '../short-id'
 
 const useStyles = makeStyles({
   mainCell: {
@@ -79,6 +80,15 @@ const AmendmentResultsItem = ({
           </TableCell>
         )}
         <TableCell label="Fields" className={classes.mainCell}>
+          <ShortId
+            url={routes.viewAmendmentWithVar.replace(
+              ':amendmentId',
+              amendmentId
+            )}>
+            {amendmentId}
+          </ShortId>
+          <br />
+          <br />
           {Object.values(fields).length} fields modified <br />
           {comments ? (
             <>
@@ -89,22 +99,12 @@ const AmendmentResultsItem = ({
           )}
           <br />
           <br />
-          <Link
-            to={routes.viewAmendmentWithVar.replace(
-              ':amendmentId',
-              amendmentId
-            )}
-            color="secondary">
-            Go To Amendment
-          </Link>
-          <br />
-          <br />
           <Button onClick={() => setIsExpanded((currentVal) => !currentVal)}>
             Show Fields
           </Button>
         </TableCell>
         <TableCell label="Metadata" className={classes.mainCell}>
-          <FormattedDate date={createdAt} /> by{' '}
+          Submitted <FormattedDate date={createdAt} /> by{' '}
           <UsernameLink
             id={createdBy}
             username={createdByUsername}

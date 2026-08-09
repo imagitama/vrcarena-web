@@ -26,10 +26,10 @@ import SuccessMessage from '@/components/success-message'
 import WarningMessage from '@/components/warning-message'
 import useSupabaseClient from '@/hooks/useSupabaseClient'
 import { handleError } from '@/error-handling'
-import { getShortId } from '@/utils/formatting'
 import Columns from '@/components/columns'
 import Column from '@/components/column'
 import StatusText from '@/components/status-text'
+import ShortId from '@/components/short-id'
 
 enum Step {
   SelectSpecies,
@@ -297,7 +297,7 @@ const StepPreview = ({
               ([assetId, { isSaving, lastErrorCode, isSuccess }]) => (
                 <TableRow key={assetId}>
                   <TableCell>
-                    <strong>#{getShortId(assetId)}</strong>
+                    <ShortId>{assetId}</ShortId>
                   </TableCell>
                   <TableCell>
                     <StatusText

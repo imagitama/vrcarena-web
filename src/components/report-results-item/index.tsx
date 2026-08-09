@@ -11,8 +11,7 @@ import WarningMessage from '@/components/warning-message'
 import FormattedDate from '@/components/formatted-date'
 import GenericOutputItem from '@/components/generic-output-item'
 import ResolutionStatus from '@/components/resolution-status'
-import Button from '@/components/button'
-import { getShortId } from '@/utils/formatting'
+import ShortId from '../short-id'
 
 export default ({
   report,
@@ -47,9 +46,10 @@ export default ({
     <Fragment key={reportId}>
       <TableRow key={reportId} title={reportId}>
         <TableCell>
-          <Link to={routes.viewReportWithVar.replace(':reportId', reportId)}>
-            #{getShortId(reportId)}
-          </Link>
+          <ShortId
+            url={routes.viewReportWithVar.replace(':reportId', reportId)}>
+            {reportId}
+          </ShortId>
         </TableCell>
         {showParentDetails && (
           <TableCell>

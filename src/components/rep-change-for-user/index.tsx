@@ -14,7 +14,6 @@ import NoResultsMessage from '@/components/no-results-message'
 import StatusText from '@/components/status-text'
 import FormattedDate from '@/components/formatted-date'
 import useIsEditor from '@/hooks/useIsEditor'
-import { getShortId } from '@/utils/formatting'
 import ShortId from '../short-id'
 
 const getReasonLabel = (reason: string): string =>

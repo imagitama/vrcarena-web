@@ -4,7 +4,6 @@ import * as routes from '@/routes'
 import {
   FullSupportTicket,
   ResolutionStatus,
-  SupportTicket,
   ViewNames,
 } from '@/modules/support-tickets'
 

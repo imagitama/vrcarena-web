@@ -14,7 +14,6 @@ import {
   FullSurvey,
 } from '@/modules/surveys'
 import { routes } from '@/routes'
-import { getShortId } from '@/utils/formatting'
 import StatusText from '@/components/status-text'
 import FormattedDate from '@/components/formatted-date'
 import NoResultsMessage from '@/components/no-results-message'
@@ -28,6 +27,8 @@ import UsernameLink from '@/components/username-link'
 import { HydrateFn } from '@/hooks/useDataStore'
 import WarningMessage from '@/components/warning-message'
 import NoValueLabel from '@/components/no-value-label'
+import ShortId from '@/components/short-id'
+import { getShortId } from '@/utils/formatting'
 
 const SurveysRenderer = ({
   items,
@@ -53,7 +54,7 @@ const SurveysRenderer = ({
             items!.map((survey) => (
               <TableRow key={survey.id}>
                 <TableCell title={survey.id}>
-                  #{getShortId(survey.id)}
+                  <ShortId>{survey.id}</ShortId>
                 </TableCell>
                 <TableCell label="Active">
                   {survey.isactive ? (
@@ -143,9 +144,11 @@ const ResponsesRenderer = ({ items }: { items?: FullSurveyResponse[] }) => {
             items!.map((surveyResponse) => (
               <TableRow key={surveyResponse.id}>
                 <TableCell title={surveyResponse.id}>
-                  #{getShortId(surveyResponse.id)}
+                  <ShortId>{surveyResponse.id}</ShortId>
                 </TableCell>
-                <TableCell>#{getShortId(surveyResponse.survey)}</TableCell>
+                <TableCell>
+                  <ShortId>{surveyResponse.survey}</ShortId>
+                </TableCell>
                 <TableCell>
                   <Button
                     color="secondary"

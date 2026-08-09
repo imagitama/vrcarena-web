@@ -13,9 +13,7 @@ import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
 import FormattedDate from '@/components/formatted-date'
 import GenericOutputItem from '@/components/generic-output-item'
 import ResolutionStatusOutput from '@/components/resolution-status'
-import Link from '@/components/link'
 import UsernameLink from '@/components/username-link'
-import { getShortId } from '@/utils/formatting'
 import ShortId from '../short-id'
 
 function ReportsTable({ reports }: { reports?: FullReport[] }) {
@@ -52,9 +50,10 @@ function ReportsTable({ reports }: { reports?: FullReport[] }) {
             return (
               <TableRow key={id}>
                 <TableCell>
-                  <Link to={routes.viewReportWithVar.replace(':reportId', id)}>
-                    <ShortId>{id}</ShortId>
-                  </Link>
+                  <ShortId
+                    url={routes.viewReportWithVar.replace(':reportId', id)}>
+                    {id}
+                  </ShortId>
                 </TableCell>
                 <TableCell label="Reason">{reason || '-'}</TableCell>
                 <TableCell label="Parent">
