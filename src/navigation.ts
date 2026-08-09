@@ -137,6 +137,11 @@ const items: MenuItem[] = [
         label: 'Tags',
       },
       {
+        id: 'backlog',
+        url: routes.backlog,
+        label: 'Backlog',
+      },
+      {
         id: 'adult',
         url: routes.nsfw,
         label: 'NSFW Content',
