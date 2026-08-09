@@ -263,7 +263,7 @@ export type PostgresErrorCode =
 export const PostgRESTErrorCode = {
   Custom: 'P0001',
   RangeNotSatisfiable: 'PGRST103',
-  JwtExpiredOld: 'PGRST301',
+  JwtExpiredOld: 'PGRST301', // deprecated
   JwtExpired: 'PGRST303',
   SchemaCacheTableNotFound: 'PGRST205',
 } as const

@@ -32,6 +32,7 @@ import FormControls from '@/components/form-controls'
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
+import { PostgresErrorCode } from '@/data-store'
 
 const URL_QUERY_PARAM_NAME = 'url'
 
@@ -118,7 +119,10 @@ const Form = ({ onDone }: { onDone: () => void }) => {
         </SuccessMessage>
       ) : lastErrorCode !== null ? (
         <ErrorMessage>
-          Failed to add to backlog (code {lastErrorCode})
+          Failed to add to backlog:{' '}
+          {lastErrorCode === PostgresErrorCode.UniqueViolation
+            ? 'URL is already in the backlog'
+            : `code ${lastErrorCode}`}
         </ErrorMessage>
       ) : null}
     </Paper>
