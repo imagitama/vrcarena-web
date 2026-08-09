@@ -649,21 +649,11 @@ const AssetSyncQueue = ({
                       {cleanupSourceUrl(newSourceUrl)}
                     </StatusText>
                   ) : newSourceUrl ? (
-                    <>
-                      <Tooltip title="Only product URLs (such as Gumroad, Booth, Jinxxy, Itch, PayHip) can be synced">
-                        <StatusText positivity={-1}>
-                          <ClearIcon /> Invalid
-                        </StatusText>
-                      </Tooltip>
-                      <br />
-                      <Button
-                        url={routes.createAsset}
-                        icon={<EditIcon />}
-                        size="small"
-                        color="secondary">
-                        Create Asset Manually (redirects)
-                      </Button>
-                    </>
+                    <Tooltip title="Only product URLs (such as Gumroad, Booth, Jinxxy, Itch, PayHip) can be synced">
+                      <StatusText positivity={-1}>
+                        <ClearIcon /> Invalid - you must create it manually
+                      </StatusText>
+                    </Tooltip>
                   ) : null}
                 </TableCell>
                 <TableCell>
