@@ -607,27 +607,6 @@ const AssetSyncQueue = ({
     <>
       <Table>
         <TableBody>
-          {isLoading ? (
-            <>
-              <LoadingRow />
-              <LoadingRow />
-              <LoadingRow />
-            </>
-          ) : items ? (
-            items.map((queuedItem) => (
-              <QueuedItemRow
-                key={queuedItem.id}
-                queuedItem={queuedItem}
-                isBusy={isBusy}
-                showMoreInfo={showMoreInfo}
-                hydrate={hydrate}
-              />
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={999}>You have no assets queued</TableCell>
-            </TableRow>
-          )}
           {newSourceUrls.map((newSourceUrl, i) => {
             return (
               <TableRow key={i}>
@@ -671,40 +650,64 @@ const AssetSyncQueue = ({
             )
           })}
           <TableRow>
-            <TableCell>
-              {isBulkEditorVisible ? <BulkEditor onAdd={onBulkAdd} /> : null}
-            </TableCell>
-            <TableCell></TableCell>
-            <TableCell>
-              <Button
-                onClick={addEmptySource}
-                icon={<AddIcon />}
-                isDisabled={isBusy}
-                color="secondary"
-                switchIconSide>
-                Add Another
-              </Button>{' '}
-              <Button onClick={toggleBulkAdd} color="secondary">
-                Add Bulk
-              </Button>
+            {isBulkEditorVisible ? (
+              <TableCell colSpan={999}>
+                <BulkEditor onAdd={onBulkAdd} />
+              </TableCell>
+            ) : null}
+            <TableCell colSpan={999}>
+              <div>
+                <Button
+                  onClick={addEmptySource}
+                  icon={<AddIcon />}
+                  isDisabled={isBusy}
+                  color="secondary"
+                  switchIconSide>
+                  Add Another
+                </Button>{' '}
+                <Button onClick={toggleBulkAdd} color="secondary">
+                  Add Bulk
+                </Button>
+              </div>
+              <FormControls>
+                <Button
+                  onClick={processItems}
+                  size="large"
+                  icon={<CheckIcon />}
+                  isDisabled={isBusy || !validSourceUrls.length}>
+                  Add {validSourceUrls.length} Sources To Queue
+                </Button>
+                {lastCreateErrorCode !== null ? (
+                  <ErrorMessage>
+                    Failed to add to queue: {lastCreateErrorCode}
+                  </ErrorMessage>
+                ) : null}
+              </FormControls>
             </TableCell>
           </TableRow>
+          {isLoading ? (
+            <>
+              <LoadingRow />
+              <LoadingRow />
+              <LoadingRow />
+            </>
+          ) : items ? (
+            items.map((queuedItem) => (
+              <QueuedItemRow
+                key={queuedItem.id}
+                queuedItem={queuedItem}
+                isBusy={isBusy}
+                showMoreInfo={showMoreInfo}
+                hydrate={hydrate}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={999}>You have no assets queued</TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
-      <FormControls>
-        <Button
-          onClick={processItems}
-          size="large"
-          icon={<CheckIcon />}
-          isDisabled={isBusy || !validSourceUrls.length}>
-          Add {validSourceUrls.length} Sources To Queue
-        </Button>
-        {lastCreateErrorCode !== null ? (
-          <ErrorMessage>
-            Failed to add to queue: {lastCreateErrorCode}
-          </ErrorMessage>
-        ) : null}
-      </FormControls>
     </>
   )
 }
