@@ -8,7 +8,7 @@ export const render = (
   canvas: HTMLCanvasElement,
   dots: WhiteboardDot[]
 ): void => {
-  console.debug(`render`, { canvas, dots })
+  // console.debug(`render`, { canvas, dots })
 
   const ctx = canvas.getContext('2d')
   ctx!.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
@@ -32,7 +32,7 @@ export const renderNewDot = (
   canvas: HTMLCanvasElement,
   { x, y, r, g, b, a }: WhiteboardDot
 ) => {
-  console.debug(`renderNewDot`, { canvas, dot: { x, y, r, g, b, a } })
+  // console.debug(`renderNewDot`, { canvas, dot: { x, y, r, g, b, a } })
 
   const ctx = canvas.getContext('2d')
   const imageData = ctx!.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
@@ -51,7 +51,7 @@ export const renderNewDots = (
   canvas: HTMLCanvasElement,
   dots: WhiteboardDot[]
 ) => {
-  console.debug(`renderNewDots`, { canvas, dots })
+  // console.debug(`renderNewDots`, { canvas, dots })
 
   const ctx = canvas.getContext('2d')
   const imageData = ctx!.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)

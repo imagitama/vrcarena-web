@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import { makeStyles } from '@mui/styles'
 
 import * as routes from '@/routes'
@@ -74,11 +74,11 @@ const AmendmentResultsItem = ({
     <>
       <TableRow title={amendmentId}>
         {showParentDetails && (
-          <TableCell className={classes.mainCell}>
+          <TableCell label="Parent" className={classes.mainCell}>
             <ParentRenderer table={parentTable} data={parentData} />
           </TableCell>
         )}
-        <TableCell className={classes.mainCell}>
+        <TableCell label="Fields" className={classes.mainCell}>
           {Object.values(fields).length} fields modified <br />
           {comments ? (
             <>
@@ -103,7 +103,7 @@ const AmendmentResultsItem = ({
             Show Fields
           </Button>
         </TableCell>
-        <TableCell className={classes.mainCell}>
+        <TableCell label="Metadata" className={classes.mainCell}>
           <FormattedDate date={createdAt} /> by{' '}
           <UsernameLink
             id={createdBy}
@@ -112,7 +112,7 @@ const AmendmentResultsItem = ({
           />
         </TableCell>
         {isEditor ? (
-          <TableCell className={classes.mainCell}>
+          <TableCell label="Controls" className={classes.mainCell}>
             {isSuccess ? (
               <SuccessMessage>
                 Amendment has been updated successfully, refreshing...

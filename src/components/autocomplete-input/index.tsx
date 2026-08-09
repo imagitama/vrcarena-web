@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler } from 'react'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
-import type { AutocompleteRenderInputParams } from '@mui/material'
+import type { AutocompleteRenderInputParams } from '@mui/material/Autocomplete'
 import Autocomplete from '@mui/material/Autocomplete'
 import ClearIcon from '@mui/icons-material/Clear'
 import { makeStyles } from '@mui/styles'

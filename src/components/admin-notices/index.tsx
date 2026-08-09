@@ -1,9 +1,9 @@
 import React, { Fragment, useState } from 'react'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import EditIcon from '@mui/icons-material/Edit'
 
 import { Notice, CollectionNames } from '@/modules/notices'
@@ -18,6 +18,7 @@ import Heading from '@/components/heading'
 import Paper from '@/components/paper'
 import { getShortId } from '@/utils/formatting'
 import StatusText from '../status-text'
+import ShortId from '../short-id'
 
 export default () => {
   const [isLoading, lastErrorCode, notices, hydrate] = useDatabaseQuery<Notice>(
@@ -51,16 +52,12 @@ export default () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>#</TableCell>
-            <TableCell>Title</TableCell>
-            <TableCell>Message (Markdown)</TableCell>
-            <TableCell>Visibility</TableCell>
-            <TableCell>
-              Order #
-              <br />
-              (lower number is shown first)
-            </TableCell>
             <TableCell></TableCell>
+            <TableCell>Title</TableCell>
+            <TableCell>Message</TableCell>
+            <TableCell>Visibility</TableCell>
+            <TableCell>Order #</TableCell>
+            <TableCell>Controls</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -68,16 +65,20 @@ export default () => {
             <Fragment key={notice.id}>
               <TableRow>
                 <TableCell title={notice.id}>
-                  #{getShortId(notice.id)}
+                  <ShortId>{notice.id}</ShortId>
                 </TableCell>
-                <TableCell>{notice.title}</TableCell>
-                <TableCell>{notice.message.slice(0, 50)}...</TableCell>
-                <TableCell>
+                <TableCell label="Title">{notice.title}</TableCell>
+                <TableCell label="Message">
+                  {notice.message.slice(0, 50)}...
+                </TableCell>
+                <TableCell label="Visibility">
                   <StatusText positivity={notice.isvisible ? 1 : 0}>
                     {notice.isvisible ? 'Visible' : 'Not Visible'}
                   </StatusText>
                 </TableCell>
-                <TableCell>{notice.orderby}</TableCell>
+                <TableCell label="Order #" title="Lower number is shown first">
+                  {notice.orderby}
+                </TableCell>
                 <TableCell>
                   <Button
                     onClick={() => onClickEdit(notice)}

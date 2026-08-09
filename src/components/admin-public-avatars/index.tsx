@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import SaveIcon from '@mui/icons-material/Save'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
@@ -337,7 +337,7 @@ const Avatars = () => {
         <TableBody>
           {Object.entries(resultsByAssetId).map(([assetId, submissions]) => (
             <TableRow key={assetId}>
-              <TableCell>
+              <TableCell label="Asset">
                 {submissions[0].assetdata ? (
                   <AssetResultsItem asset={submissions[0].assetdata} />
                 ) : (
@@ -346,7 +346,7 @@ const Avatars = () => {
                   </ErrorMessage>
                 )}
               </TableCell>
-              <TableCell>
+              <TableCell label="Avatars">
                 <ApplyAvatarsForm
                   assetId={assetId}
                   existingAvatarIds={submissions[0].existingavatarids}

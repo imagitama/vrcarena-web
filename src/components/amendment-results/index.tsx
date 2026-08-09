@@ -1,9 +1,9 @@
 import React from 'react'
-import Table from '@mui/material/Table'
-import TableHead from '@mui/material/TableHead'
+import Table from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import useIsEditor from '@/hooks/useIsEditor'
 import { FullAmendment } from '@/modules/amendments'
@@ -27,8 +27,8 @@ const AmendmentResults = ({
         <TableRow>
           {showParentDetails && <TableCell>Parent</TableCell>}
           <TableCell />
-          <TableCell>Meta</TableCell>
-          {isEditor ? <TableCell>Status</TableCell> : null}
+          <TableCell>Metadata</TableCell>
+          {isEditor ? <TableCell>Controls</TableCell> : null}
         </TableRow>
       </TableHead>
       <TableBody>

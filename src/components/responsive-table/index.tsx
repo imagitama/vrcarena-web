@@ -1,20 +1,13 @@
 import React, { createContext, useContext } from 'react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableCellProps,
-  TableContainer,
+import Table, { TableProps } from '@mui/material/Table'
+import TableCell, { TableCellProps } from '@mui/material/TableCell'
+import TableContainer, {
   TableContainerProps,
-  TableHead,
-  TableHeadProps,
-  TableRow,
-  TableRowProps,
-  Paper,
-  Typography,
-  useTheme,
-  type Breakpoint,
-} from '@mui/material'
+} from '@mui/material/TableContainer'
+import TableHead, { TableHeadProps } from '@mui/material/TableHead'
+import TableRow, { TableRowProps } from '@mui/material/TableRow'
+import Typography from '@mui/material/Typography'
+import useTheme from '@mui/material/styles/useTheme'
 import {
   mediaQueryForDesktopsOnly,
   mediaQueryForTabletsOrBelow,
@@ -28,8 +21,7 @@ function useResponsiveTableMediaQuery() {
   return useContext(ResponsiveTableContext)
 }
 
-export interface ResponsiveTableProps
-  extends Omit<TableContainerProps, 'children'> {
+export interface ResponsiveTableProps extends Omit<TableProps, 'children'> {
   mediaQueryBreakpoint?: string
   children: React.ReactNode
 }
@@ -38,19 +30,22 @@ export const ResponsiveTable = ({
   mediaQueryBreakpoint = mediaQueryForTabletsOrBelow,
   children,
   sx,
-  ...containerProps
+  ...tableProps
 }: ResponsiveTableProps) => {
   return (
     <ResponsiveTableContext.Provider value={mediaQueryBreakpoint}>
-      <TableContainer sx={{ overflowX: 'auto', ...sx }} {...containerProps}>
-        <Table
-          sx={{
-            [mediaQueryForDesktopsOnly]: { display: 'table', minWidth: 650 },
-            [mediaQueryForTabletsOrBelow]: { display: 'block' },
-          }}>
-          {children}
-        </Table>
-      </TableContainer>
+      <Table
+        {...tableProps}
+        sx={{
+          [mediaQueryForDesktopsOnly]: {
+            display: 'table',
+            tableLayout: 'fixed',
+            minWidth: 650,
+          },
+          [mediaQueryForTabletsOrBelow]: { display: 'block' },
+        }}>
+        {children}
+      </Table>
     </ResponsiveTableContext.Provider>
   )
 }
@@ -66,7 +61,6 @@ export const ResponsiveTableHead = ({
   children,
   ...props
 }: ResponsiveTableHeadProps) => {
-  const theme = useTheme()
   const mediaQuery = useResponsiveTableMediaQuery()
   return (
     <TableHead
@@ -100,8 +94,6 @@ export const ResponsiveTableRow = ({
     </TableRow>
   )
 }
-
-// ---- cell: takes mobileWidth + optional inline label shown only on mobile ----
 
 export interface ResponsiveTableCellProps extends TableCellProps {
   mobileWidthPerc?: string
@@ -146,48 +138,9 @@ export const ResponsiveTableCell = ({
   )
 }
 
-/* ---------------- Example usage ----------------
-
-interface UserRow {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  status: string;
-  joined: string;
+export {
+  ResponsiveTableHead as TableHead,
+  ResponsiveTableCell as TableCell,
+  ResponsiveTableRow as TableRow,
 }
-
-const rows: UserRow[] = [
-  { id: 1, name: 'Ada Lovelace', email: 'ada@x.com', role: 'Admin', status: 'Active', joined: '2021' },
-  { id: 2, name: 'Alan Turing', email: 'alan@x.com', role: 'Editor', status: 'Invited', joined: '2022' },
-];
-
-function UsersTable() {
-  return (
-    <ResponsiveTable breakpoint="sm">
-      <ResponsiveTableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Email</TableCell>
-          <TableCell>Role</TableCell>
-          <TableCell>Status</TableCell>
-          <TableCell>Joined</TableCell>
-        </TableRow>
-      </ResponsiveTableHead>
-
-      <TableBody>
-        {rows.map((row) => (
-          <ResponsiveTableRow key={row.id}>
-            <ResponsiveTableCell label="Name" mobileWidth="50%">{row.name}</ResponsiveTableCell>
-            <ResponsiveTableCell label="Email" mobileWidth="50%">{row.email}</ResponsiveTableCell>
-            <ResponsiveTableCell label="Role" mobileWidth="33.33%">{row.role}</ResponsiveTableCell>
-            <ResponsiveTableCell label="Status" mobileWidth="33.33%">{row.status}</ResponsiveTableCell>
-            <ResponsiveTableCell label="Joined" mobileWidth="33.33%">{row.joined}</ResponsiveTableCell>
-          </ResponsiveTableRow>
-        ))}
-      </TableBody>
-    </ResponsiveTable>
-  );
-}
-
--------------------------------------------------- */
+export default ResponsiveTable

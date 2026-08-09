@@ -12,11 +12,10 @@ import useDataStoreItemsSync from '@/hooks/useDataStoreItemsSync'
 
 import ErrorMessage from '../error-message'
 import LoadingIndicator from '../loading-indicator'
-import ColorPickerButton, { Color, PURE_WHITE } from '../color-picker-button'
+import ColorPickerButton, { Color } from '../color-picker-button'
 import useStorage from '@/hooks/useStorage'
 import useUserId from '@/hooks/useUserId'
-import CheckboxInput from '../checkbox-input'
-import Button from '../button'
+import Button, { ButtonProps } from '../button'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import { User, CollectionNames as UsersCollectionNames } from '@/modules/users'
 import WarningMessage from '../warning-message'
@@ -52,6 +51,16 @@ const useStyles = makeStyles({
     height: '5px',
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
+  colorPickerBtn: {
+    '&&': {
+      margin: '0.25rem 0',
+    },
+  },
+  usernameCheckbox: {
+    '&&': {
+      margin: '0 0.25rem 0.25rem 0',
+    },
+  },
 })
 
 const KEY_COLOR = 'whiteboard'
@@ -60,21 +69,16 @@ interface StorageValue {
   color: Color
 }
 
-type CheckboxInputProps = React.ComponentProps<typeof CheckboxInput>
 const UsernameCheckbox = ({
   userId,
-  ...checkboxProps
-}: { userId: string } & CheckboxInputProps) => {
+  ...buttonProps
+}: { userId: string } & ButtonProps) => {
   const [, , user] = useDataStoreItem<User>(UsersCollectionNames.Users, userId)
   const myUserId = useUserId()
   return (
-    <CheckboxInput
-      key={userId}
-      label={
-        user ? (user.id === myUserId ? '(my pen)' : user.username) : 'loading'
-      }
-      {...checkboxProps}
-    />
+    <Button key={userId} color="secondary" size="small" {...buttonProps}>
+      {user ? (user.id === myUserId ? '(my pen)' : user.username) : 'loading'}
+    </Button>
   )
 }
 
@@ -153,10 +157,8 @@ const Whiteboard = () => {
   }
 
   useEffect(() => {
-    if (!enabledUserIds) return
-
     hydrate() // triggers re-render
-  }, [JSON.stringify(enabledUserIds)])
+  }, [JSON.stringify(enabledUserIds)]) // must subscribe to =>false after clicking on Show All
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -290,28 +292,31 @@ const Whiteboard = () => {
       <ColorPickerButton
         initialValue={newColorRgbaRef.current}
         onDone={onColorPicked}
+        className={classes.colorPickerBtn}
       />
-      <br />
-      Show:
-      {userIds.map((userId) => (
-        <UsernameCheckbox
-          key={userId}
-          userId={userId}
-          // checkbox props
-          value={
+      <div>
+        {userIds.map((userId) => {
+          const isChecked =
             enabledUserIds === false ? true : enabledUserIds.includes(userId)
-          }
-          onChange={(newVal) =>
-            setEnabledUserIds((currentIds) =>
-              currentIds === false
-                ? userIds.filter((id) => id !== userId)
-                : newVal
-                ? currentIds.concat([userId])
-                : currentIds.filter((id) => id !== userId)
-            )
-          }
-        />
-      ))}
+          return (
+            <UsernameCheckbox
+              key={userId}
+              userId={userId}
+              checked={isChecked}
+              onClick={() =>
+                setEnabledUserIds((currentIds) =>
+                  currentIds === false
+                    ? userIds.filter((id) => id !== userId)
+                    : !isChecked
+                    ? currentIds.concat([userId])
+                    : currentIds.filter((id) => id !== userId)
+                )
+              }
+              className={classes.usernameCheckbox}
+            />
+          )
+        })}
+      </div>
       <Button
         onClick={() => setEnabledUserIds(false)}
         color="secondary"

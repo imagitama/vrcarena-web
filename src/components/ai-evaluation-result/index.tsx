@@ -1,11 +1,11 @@
 import { makeStyles } from '@mui/styles'
 import React, { useState } from 'react'
-import { Chip } from '@mui/material'
+import Chip from '@mui/material/Chip'
 import MessageIcon from '@mui/icons-material/Message'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import useDataStoreItemSync from '@/hooks/useDataStoreItemSync'
 

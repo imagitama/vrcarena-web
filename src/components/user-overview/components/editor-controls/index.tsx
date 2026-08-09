@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 import CommentIcon from '@mui/icons-material/Comment'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import useIsEditor from '@/hooks/useIsEditor'
 import useUserRecord from '@/hooks/useUserRecord'

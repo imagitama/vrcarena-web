@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { Helmet } from '@unhead/react/helmet'
 import AddIcon from '@mui/icons-material/Add'
@@ -98,7 +98,7 @@ const Renderer = ({
           <TableCell />
           <TableCell>Type</TableCell>
           <TableCell>URL</TableCell>
-          <TableCell>Meta</TableCell>
+          <TableCell>Metadata</TableCell>
           <TableCell></TableCell>
           <TableCell></TableCell>
         </TableRow>

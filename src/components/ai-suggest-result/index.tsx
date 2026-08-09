@@ -1,11 +1,11 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import InfoIcon from '@mui/icons-material/Info'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
-import TableHead from '@mui/material/TableHead'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
 
 import {
   AiFieldSuggestions,
@@ -134,8 +134,8 @@ export const ConvoRenderer = ({
             {Object.entries(message.contents.suggestions).map(
               ([fieldName, suggestion]) => (
                 <TableRow key={fieldName}>
-                  <TableCell>{fieldName}</TableCell>
-                  <TableCell>
+                  <TableCell label="Field">{fieldName}</TableCell>
+                  <TableCell label="Suggestion">
                     <FieldOutput>{suggestion.suggestedValue}</FieldOutput>
                     {suggestion.options !== undefined && (
                       <>
@@ -151,7 +151,7 @@ export const ConvoRenderer = ({
                     <br />
                     <HintText>{suggestion.reason}</HintText>
                   </TableCell>
-                  <TableCell>
+                  <TableCell label="Confidence">
                     <ConfidenceScore
                       score={suggestion.confidence}
                       title={suggestion.reason}

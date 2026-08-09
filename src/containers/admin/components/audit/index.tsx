@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import SaveIcon from '@mui/icons-material/Save'
 import HelpIcon from '@mui/icons-material/Help'
 
@@ -274,12 +274,12 @@ const ApplyAuditButton = ({
             <TableBody>
               {fieldsToSave && isMainSource ? (
                 <TableRow>
-                  <TableCell>
+                  <TableCell label="URL">
                     <strong>Main: </strong> {asset.sourceurl}
                     {' => '}
                     {fieldsToSave.sourceurl || '(unchanged)'}
                   </TableCell>
-                  <TableCell>
+                  <TableCell label="Price">
                     {asset.price === null ? (
                       <NoValueLabel>No Price</NoValueLabel>
                     ) : (
@@ -292,7 +292,7 @@ const ApplyAuditButton = ({
                       fieldsToSave.price
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell label="Currency">
                     {asset.pricecurrency === null ? (
                       <NoValueLabel>No Currency</NoValueLabel>
                     ) : (
@@ -322,8 +322,8 @@ const ApplyAuditButton = ({
 
                   return (
                     <TableRow key={extraSourceToSave.url}>
-                      <TableCell>{extraSourceToSave.url}</TableCell>
-                      <TableCell>
+                      <TableCell label="URL">{extraSourceToSave.url}</TableCell>
+                      <TableCell label="Price">
                         {currentExtraSource.price === null ? (
                           <NoValueLabel>No Price</NoValueLabel>
                         ) : (
@@ -336,7 +336,7 @@ const ApplyAuditButton = ({
                           extraSourceToSave.price
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell label="Currency">
                         {currentExtraSource.pricecurrency === null ? (
                           <NoValueLabel>No Currency</NoValueLabel>
                         ) : (

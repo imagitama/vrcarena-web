@@ -1,12 +1,10 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 import FormControl from '@mui/material/FormControl'
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  FormHelperText,
-} from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import FormHelperText from '@mui/material/FormHelperText'
 
 import { EditableField } from '@/editable-fields'
 import { Warning as WarningIcon } from '@/icons'

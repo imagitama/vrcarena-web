@@ -1,8 +1,8 @@
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import EditIcon from '@mui/icons-material/Edit'
 
 import PaginatedView from '@/components/paginated-view'
@@ -45,7 +45,7 @@ const SurveysRenderer = ({
             <TableCell></TableCell>
             <TableCell>Active</TableCell>
             <TableCell>Questions</TableCell>
-            <TableCell>Meta</TableCell>
+            <TableCell>Metadata</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -55,7 +55,7 @@ const SurveysRenderer = ({
                 <TableCell title={survey.id}>
                   #{getShortId(survey.id)}
                 </TableCell>
-                <TableCell>
+                <TableCell label="Active">
                   {survey.isactive ? (
                     <StatusText positivity={1}>
                       Visible To Logged In Users
@@ -66,14 +66,14 @@ const SurveysRenderer = ({
                     </StatusText>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell label="Questions">
                   {survey.questions.map((questionData) => (
                     <div key={questionData.question}>
                       {questionData.question} ({questionData.type})
                     </div>
                   ))}
                 </TableCell>
-                <TableCell>
+                <TableCell label="Metadata">
                   Created <FormattedDate date={survey.createdat} /> by{' '}
                   <UsernameLink
                     id={survey.createdby}
@@ -135,7 +135,7 @@ const ResponsesRenderer = ({ items }: { items?: FullSurveyResponse[] }) => {
           <TableRow>
             <TableCell></TableCell>
             <TableCell>Survey</TableCell>
-            <TableCell>Meta</TableCell>
+            <TableCell>Metadata</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

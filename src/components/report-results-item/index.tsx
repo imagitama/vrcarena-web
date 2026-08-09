@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import Link from '@/components/link'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import * as routes from '@/routes'
 import { CollectionNames } from '@/modules/assets'

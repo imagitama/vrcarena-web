@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Table from '@mui/material/Table'
-import TableHead from '@mui/material/TableHead'
+import Table from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import styled from '@emotion/styled'
 
 import { FullHistoryEntry, HistoryEntry } from '@/modules/history'
@@ -43,10 +43,10 @@ const ExpandedData = ({
       <TableBody>
         {Object.entries(data).map(([fieldName, value]) => (
           <TableRow key={fieldName}>
-            <TableCell>
+            <TableCell label="Field">
               {getLabelForFieldName(fieldName, parentType) || fieldName}
             </TableCell>
-            <TableCell>
+            <TableCell label="Value">
               <FieldOutput
                 editableField={
                   getEditableField(fieldName, parentType) || undefined

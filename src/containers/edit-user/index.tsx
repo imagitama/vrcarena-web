@@ -34,7 +34,7 @@ const View = () => {
           userId,
         }}
       />
-      <Heading variant="h1">Edit Meta</Heading>
+      <Heading variant="h1">Edit Metadata</Heading>
       <GenericEditor
         collectionName={CollectionNames.UsersMeta}
         id={userId}

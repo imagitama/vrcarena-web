@@ -10,7 +10,7 @@ import MaterialTabs from '@mui/material/Tabs'
 import MaterialTab from '@mui/material/Tab'
 import { makeStyles } from '@mui/styles'
 import LazyLoad from '@/components/lazy-load'
-import { alpha } from '@mui/material' // TODO: specific
+import { alpha } from '@mui/material/styles'
 import { useParams } from 'react-router'
 
 import {

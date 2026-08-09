@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import EditIcon from '@mui/icons-material/Edit'
 import SaveIcon from '@mui/icons-material/Save'
 import CancelIcon from '@mui/icons-material/Cancel'
@@ -52,7 +52,7 @@ const RepReasonRow = ({ repReason }: { repReason: RepReason }) => {
   if (isEditing) {
     return (
       <TableRow key={repReason.name}>
-        <TableCell title={repReason.name}>
+        <TableCell label="Name" title={repReason.name}>
           <TextInput fullWidth size="small" value={newFields.name} isDisabled />
           <br />
           <em>(cannot be changed)</em>
@@ -64,7 +64,7 @@ const RepReasonRow = ({ repReason }: { repReason: RepReason }) => {
             <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
           ) : null}
         </TableCell>
-        <TableCell>
+        <TableCell label="Description">
           <TextInput
             fullWidth
             size="small"
@@ -73,7 +73,7 @@ const RepReasonRow = ({ repReason }: { repReason: RepReason }) => {
             isDisabled={isSaving}
           />
         </TableCell>
-        <TableCell>
+        <TableCell label="Delta">
           <TextInput
             type="number"
             size="small"
@@ -84,13 +84,13 @@ const RepReasonRow = ({ repReason }: { repReason: RepReason }) => {
           <br />
           <em>Whole positive numbers only</em>
         </TableCell>
-        <TableCell>
+        <TableCell label="Metadata">
           <FormattedDate date={repReason.createdat} />
           {repReason.createdby ? (
             <> by {repReason.createdby.substring(0, 5)}...</>
           ) : null}
         </TableCell>
-        <TableCell>
+        <TableCell label="Controls">
           <SaveIcon onClick={() => onClickSave()} />
           <CancelIcon onClick={() => setIsEditing(false)} />
         </TableCell>
@@ -99,20 +99,22 @@ const RepReasonRow = ({ repReason }: { repReason: RepReason }) => {
   } else {
     return (
       <TableRow key={repReason.name}>
-        <TableCell title={repReason.name}>{repReason.name}</TableCell>
-        <TableCell>{repReason.description}</TableCell>
-        <TableCell>
+        <TableCell label="Name" title={repReason.name}>
+          {repReason.name}
+        </TableCell>
+        <TableCell label="Description">{repReason.description}</TableCell>
+        <TableCell label="Delta">
           <StatusText positivity={repReason.delta > 0 ? 1 : -1}>
             {repReason.delta}
           </StatusText>
         </TableCell>
-        <TableCell>
+        <TableCell label="Metadata">
           <FormattedDate date={repReason.createdat} />
           {repReason.createdby ? (
             <> by {repReason.createdby.substring(0, 5)}...</>
           ) : null}
         </TableCell>
-        <TableCell>
+        <TableCell label="Controls">
           <EditIcon onClick={() => setIsEditing(true)} />
         </TableCell>
       </TableRow>
@@ -127,8 +129,8 @@ const RendererReasons = ({ items }: { items?: RepReason[] }) => (
         <TableCell>Name</TableCell>
         <TableCell>Description</TableCell>
         <TableCell>Delta</TableCell>
-        <TableCell>Meta</TableCell>
-        <TableCell> </TableCell>
+        <TableCell>Metadata</TableCell>
+        <TableCell>Controls</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>

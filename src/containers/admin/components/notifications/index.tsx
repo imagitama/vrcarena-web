@@ -1,8 +1,8 @@
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import PaginatedView from '@/components/paginated-view'
 import {
@@ -20,6 +20,7 @@ import { OrderDirections } from '@/hooks/useDatabaseQuery'
 import NoValueLabel from '@/components/no-value-label'
 import StatusText from '@/components/status-text'
 import QueueStatusLabel from '@/components/queue-status-label'
+import ShortId from '@/components/short-id'
 
 const WebDetails = ({ webDetails }: { webDetails: WebNotification<any> }) => {
   return (
@@ -122,8 +123,10 @@ const Renderer = ({ items }: { items?: NotificationQueuedItem<any>[] }) => (
     <TableBody>
       {items!.map((item) => (
         <TableRow key={item.id}>
-          <TableCell>#{getShortId(item.id)}</TableCell>
           <TableCell>
+            <ShortId>{item.id}</ShortId>
+          </TableCell>
+          <TableCell label="Status">
             <QueueStatusLabel id={item.id} status={item.status} />
             {item.failureinfo && (
               <>
@@ -133,9 +136,9 @@ const Renderer = ({ items }: { items?: NotificationQueuedItem<any>[] }) => (
             )}
             {item.result && JSON.stringify(item.result, null, '  ')}
           </TableCell>
-          <TableCell>{item.eventname}</TableCell>
-          <TableCell>{item.recipient}</TableCell>
-          <TableCell>
+          <TableCell label="Event">{item.eventname}</TableCell>
+          <TableCell label="Recipient">{item.recipient}</TableCell>
+          <TableCell label="Method">
             {item.overridemethod && (
               <>
                 Override method: {item.overridemethod}

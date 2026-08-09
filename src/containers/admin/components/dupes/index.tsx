@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import SaveIcon from '@mui/icons-material/Save'
 import CreateIcon from '@mui/icons-material/Create'
 
@@ -14,7 +14,7 @@ import Heading from '@/components/heading'
 import CheckboxInput from '@/components/checkbox-input'
 import Button from '@/components/button'
 import { makeStyles } from '@mui/styles'
-import { alpha } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 import { VRCArenaTheme, colorBrandLight } from '@/themes'
 import WarningMessage from '@/components/warning-message'
 import { DataStoreErrorCode, DataStoreUnknownErrorCode } from '@/data-store'
@@ -31,7 +31,6 @@ import {
 } from './types'
 import { routes } from '@/routes'
 import { OpenExternalLink as OpenExternalLinkIcon } from '@/icons'
-import InfoMessage from '@/components/info-message'
 import NoResultsMessage from '@/components/no-results-message'
 import { getLabelFromEditableFields } from '@/utils'
 import authorEditableFields from '@/editable-fields/authors'
@@ -387,8 +386,8 @@ const DupeOutput = ({ dupeInfo }: { dupeInfo: GetAuthorDupesResult }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>#</TableCell>
-            <TableCell>Meta</TableCell>
+            <TableCell></TableCell>
+            <TableCell>Metadata</TableCell>
             <TableCell>Fields</TableCell>
             <TableCell>Result</TableCell>
           </TableRow>

@@ -1,9 +1,9 @@
 import React from 'react'
 import moment from 'moment'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import DateTimeInput from '@/components/datetime-input'
 

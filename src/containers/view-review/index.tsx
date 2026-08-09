@@ -111,7 +111,7 @@ const View = () => {
           })}
         </div>
       ) : null}
-      <Heading variant="h2">Meta</Heading>
+      <Heading variant="h2">Metadata</Heading>
       Created <FormattedDate date={createdat} />{' '}
       {createdByUsername ? (
         <>

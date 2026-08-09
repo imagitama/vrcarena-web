@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import * as routes from '@/routes'
 import { FullReport, ResolutionStatus, ViewNames } from '@/modules/reports'
@@ -16,6 +16,7 @@ import ResolutionStatusOutput from '@/components/resolution-status'
 import Link from '@/components/link'
 import UsernameLink from '@/components/username-link'
 import { getShortId } from '@/utils/formatting'
+import ShortId from '../short-id'
 
 function ReportsTable({ reports }: { reports?: FullReport[] }) {
   return (
@@ -52,22 +53,22 @@ function ReportsTable({ reports }: { reports?: FullReport[] }) {
               <TableRow key={id}>
                 <TableCell>
                   <Link to={routes.viewReportWithVar.replace(':reportId', id)}>
-                    #{getShortId(id)}
+                    <ShortId>{id}</ShortId>
                   </Link>
                 </TableCell>
-                <TableCell>{reason || '-'}</TableCell>
-                <TableCell>
+                <TableCell label="Reason">{reason || '-'}</TableCell>
+                <TableCell label="Parent">
                   <GenericOutputItem
                     type={parenttable}
                     id={parent}
                     data={parentdata}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell label="Metadata">
                   <FormattedDate date={createdAt} /> by{' '}
                   <UsernameLink id={createdBy} username={createdByUsername} />
                 </TableCell>
-                <TableCell>
+                <TableCell label="Status">
                   <ResolutionStatusOutput
                     resolutionStatus={resolutionStatus}
                     resolvedAt={resolvedAt}

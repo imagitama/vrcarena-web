@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ClearIcon from '@mui/icons-material/Clear'
 
@@ -159,8 +159,8 @@ const CommentsByUser = ({
             <TableCell>User</TableCell>
             <TableCell>Parent</TableCell>
             <TableCell>Comment</TableCell>
-            <TableCell>Meta</TableCell>
-            <TableCell />
+            <TableCell>Date</TableCell>
+            <TableCell>Controls</TableCell>
             <TableCell>
               <CheckboxInput
                 value={isSelectingAll}
@@ -174,7 +174,7 @@ const CommentsByUser = ({
             <TableRow
               key={comment.id}
               selected={selectedCommentIds.includes(comment.id)}>
-              <TableCell>
+              <TableCell label="User">
                 <Avatar
                   url={comment.createdbyavatarurl}
                   size={AvatarSize.Tiny}
@@ -184,16 +184,16 @@ const CommentsByUser = ({
                   id={comment.createdby}
                 />
               </TableCell>
-              <TableCell>
+              <TableCell label="Parent">
                 <GenericOutputItem
                   type={comment.parenttable}
                   id={comment.parent}
                 />
               </TableCell>
-              <TableCell>
+              <TableCell label="Comment">
                 <Markdown source={comment.comment} />
               </TableCell>
-              <TableCell>
+              <TableCell label="Date">
                 <FormattedDate date={comment.createdat} />
               </TableCell>
               <TableCell>

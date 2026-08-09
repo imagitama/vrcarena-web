@@ -317,7 +317,7 @@ const View = () => {
         </>
       )}
 
-      <Heading variant="h2">Meta</Heading>
+      <Heading variant="h2">Metadata</Heading>
       {createdByUsername && (
         <div>
           Created by{' '}

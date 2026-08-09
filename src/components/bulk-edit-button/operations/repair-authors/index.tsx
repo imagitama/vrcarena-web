@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import { RootState } from '@/modules'
 import useDataStoreItems from '@/hooks/useDataStoreItems'

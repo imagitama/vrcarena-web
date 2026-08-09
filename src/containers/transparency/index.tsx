@@ -1,10 +1,10 @@
 import React from 'react'
 import { Helmet } from '@unhead/react/helmet'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import { CachedPatreonMember } from '@/modules/patreonmembercache'
 import { costs, patreonTax, totalCostPerMonth } from '@/costs'
@@ -93,13 +93,13 @@ export default () => (
       <TableBody>
         {costs.map(({ id, label, monthlyCost, yearlyCost, olderCosts }) => (
           <TableRow key={id}>
-            <TableCell>{label}</TableCell>
-            <TableCell>
+            <TableCell label="Name">{label}</TableCell>
+            <TableCell label="Cost (USD)">
               {monthlyCost
                 ? `$${monthlyCost} per month`
                 : `$${yearlyCost} per year`}
             </TableCell>
-            <TableCell>{olderCosts}</TableCell>
+            <TableCell label="Previous Months (USD)">{olderCosts}</TableCell>
           </TableRow>
         ))}
         <TableRow>

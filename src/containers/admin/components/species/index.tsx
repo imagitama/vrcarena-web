@@ -1,9 +1,9 @@
 import React from 'react'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
@@ -39,7 +39,7 @@ const AdminSpecies = () => {
         <TableCell>Name (plural)</TableCell>
         <TableCell>Redirect To</TableCell>
         <TableCell>Thumbnail</TableCell>
-        <TableCell></TableCell>
+        <TableCell>Controls</TableCell>
       </TableHead>
       <TableBody>
         {speciesItems.length === 0 ? (
@@ -60,19 +60,19 @@ const AdminSpecies = () => {
                   #{getShortId(item.id)}
                 </Link>
               </TableCell>
-              <TableCell title={item.parent || ''}>
+              <TableCell label="PArent" title={item.parent || ''}>
                 {item.parent
                   ? `${item.parentpluralname} (#${getShortId(item.parent)})`
                   : '-'}
               </TableCell>
-              <TableCell>{item.singularname}</TableCell>
-              <TableCell>{item.pluralname}</TableCell>
-              <TableCell title={item.redirectto || ''}>
+              <TableCell label="Name (singular)">{item.singularname}</TableCell>
+              <TableCell label="Name (plural)">{item.pluralname}</TableCell>
+              <TableCell label="Redirect To" title={item.redirectto || ''}>
                 {item.redirectto
                   ? `${item.redirectto} (#${getShortId(item.redirectto)})`
                   : '-'}
               </TableCell>
-              <TableCell>
+              <TableCell label="Thumbnail">
                 <img width="50" height="50" src={item.thumbnailurl} />
                 <br />
                 <small>
@@ -81,7 +81,7 @@ const AdminSpecies = () => {
                   </a>
                 </small>
               </TableCell>
-              <TableCell>
+              <TableCell label="Controls">
                 <EditorRecordManager
                   id={item.id}
                   metaCollectionName={CollectionNames.SpeciesMeta}

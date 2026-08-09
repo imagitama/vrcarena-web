@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import * as routes from '@/routes'
 import { FullSupportTicket } from '@/modules/support-tickets'
@@ -9,7 +9,7 @@ import Link from '@/components/link'
 import FormattedDate from '@/components/formatted-date'
 import GenericOutputItem from '@/components/generic-output-item'
 import ResolutionStatus from '@/components/resolution-status'
-import { getShortId } from '@/utils/formatting'
+import ShortId from '@/components/short-id'
 
 export default ({
   supportTicket,
@@ -50,11 +50,11 @@ export default ({
               ':supportTicketId',
               supportTicketId
             )}>
-            #{getShortId(supportTicketId)}
+            <ShortId>{supportTicketId}</ShortId>
           </Link>
         </TableCell>
         {showRelatedDetails && (
-          <TableCell>
+          <TableCell label="Parent">
             {relatedTable && relatedId ? (
               <GenericOutputItem
                 type={relatedTable}
@@ -66,8 +66,8 @@ export default ({
             )}
           </TableCell>
         )}
-        <TableCell>{category}</TableCell>
-        <TableCell>
+        <TableCell label="Category">{category}</TableCell>
+        <TableCell label="Created">
           <FormattedDate date={createdat} />{' '}
           {createdByUsername ? (
             <>
@@ -78,7 +78,7 @@ export default ({
             </>
           ) : null}
         </TableCell>
-        <TableCell>
+        <TableCell label="Status">
           <ResolutionStatus
             resolutionStatus={resolutionStatus}
             resolvedAt={resolvedAt}

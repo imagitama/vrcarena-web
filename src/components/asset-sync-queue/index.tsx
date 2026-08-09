@@ -9,10 +9,10 @@ import EditIcon from '@mui/icons-material/Edit'
 import InfoIcon from '@mui/icons-material/Info'
 import CheckIcon from '@mui/icons-material/Check'
 
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useSupabaseClient from '@/hooks/useSupabaseClient'

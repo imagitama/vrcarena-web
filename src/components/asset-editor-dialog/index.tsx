@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import AssetEditor from '@/components/asset-editor'
 import Dialog from '@/components/dialog'
-import { DialogContent } from '@mui/material'
+import DialogContent from '@mui/material/DialogContent'
 
 const scrollToTopOfElement = (element: HTMLElement) =>
   element.scrollTo({ top: 0, behavior: 'smooth' })

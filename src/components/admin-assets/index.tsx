@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { makeStyles } from '@mui/styles'
@@ -95,7 +95,7 @@ function AssetsTable({
             assets.map((asset) => {
               return (
                 <TableRow key={asset.id}>
-                  <TableCell>
+                  <TableCell label="Asset">
                     <AssetResultsItem asset={asset} showState />
                   </TableCell>
                   <TableCell>
@@ -110,7 +110,7 @@ function AssetsTable({
                       '-'
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell label="Controls">
                     <ErrorBoundary>
                       {asset && (
                         <AssetEditorRecordManager

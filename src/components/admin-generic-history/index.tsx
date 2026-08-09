@@ -119,7 +119,7 @@ const AdminGenericHistory = ({
     </Button>
     <Heading variant="h3">Basic Details</Heading>
     <History id={id} type={type} limit={limit} />
-    <Heading variant="h3">Meta</Heading>
+    <Heading variant="h3">Metadata</Heading>
     <MetaHistory id={id} type={metaType} limit={limit} />
   </>
 )

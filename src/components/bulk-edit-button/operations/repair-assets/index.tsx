@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import styled from '@emotion/styled'
 
 import { RootState } from '@/modules'
@@ -559,13 +559,13 @@ const RepairAssetsOperation = () => {
                                       <TableCell>
                                         <strong>{editableField.label}</strong>
                                       </TableCell>
-                                      <TableCell>
+                                      <TableCell label="Old">
                                         <FieldOutput
                                           editableField={editableField}>
                                           {primaryAsset[fieldName]}
                                         </FieldOutput>
                                       </TableCell>
-                                      <TableCell>
+                                      <TableCell label="New">
                                         <FieldOutput>{info.value}</FieldOutput>
                                       </TableCell>
                                     </TableRow>

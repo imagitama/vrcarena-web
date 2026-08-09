@@ -1,11 +1,11 @@
 import React from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 import {
   AdminQueueItem,
@@ -35,6 +35,8 @@ import Whiteboard from '@/components/whiteboard'
 import ErrorBoundary from '@/components/error-boundary'
 import Paper from '@/components/paper'
 import NoResultsMessage from '@/components/no-results-message'
+import ShortId from '@/components/short-id'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const parentName = 'admin'
 const pageName = 'notepad'
@@ -183,22 +185,24 @@ const AdminQueue = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>#</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Date</TableCell>
+            <TableCell width="10%"></TableCell>
+            <TableCell width="15%">Type</TableCell>
+            <TableCell width="55%">Item</TableCell>
+            <TableCell width="20%">Date</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {queueItems.length > 0 ? (
             queueItems.map((queueItem) => (
               <TableRow key={queueItem.record.id}>
-                <TableCell>{queueItem.id}</TableCell>
-                <TableCell>{capitalize(queueItem.type)}</TableCell>
                 <TableCell>
+                  <ShortId>{queueItem.id.toString()}</ShortId>
+                </TableCell>
+                <TableCell label="Type">{capitalize(queueItem.type)}</TableCell>
+                <TableCell label="Item">
                   <QueueItemLabel queueItem={queueItem} />
                 </TableCell>
-                <TableCell>
+                <TableCell label="Date">
                   <FormattedDate date={queueItem.createdat} />
                 </TableCell>
               </TableRow>
@@ -219,23 +223,17 @@ const AdminQueue = () => {
 export default () => {
   return (
     <>
-      <Columns padding>
-        <Column widthPerc={50} padding>
-          <Heading variant="h2">Queue Overview</Heading>
-          <ErrorBoundary>
-            <AdminQueue />
-          </ErrorBoundary>
-        </Column>
-        <Column widthPerc={50} padding>
-          <Heading variant="h2">Notepad</Heading>
-          <ErrorBoundary>
-            <Whiteboard />
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <Notepad />
-          </ErrorBoundary>
-        </Column>
-      </Columns>
+      <Heading variant="h2">Queue Overview</Heading>
+      <ErrorBoundary>
+        <AdminQueue />
+      </ErrorBoundary>
+      <Heading variant="h2">Notepad</Heading>
+      <ErrorBoundary>
+        <Whiteboard />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <Notepad />
+      </ErrorBoundary>
     </>
   )
 }

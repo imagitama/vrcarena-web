@@ -1,8 +1,8 @@
-import Table from '@mui/material/Table'
+import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 import styled from '@emotion/styled'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import LaunchIcon from '@mui/icons-material/Launch'
@@ -86,6 +86,7 @@ import ConnectionIndicator, {
 } from '@/components/connection-indicator'
 import AiResultSummary from '@/components/ai-result-summary'
 import { getShortId } from '@/utils/formatting'
+import ShortId from '@/components/short-id'
 
 const fiveMinsAgo = new Date()
 fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5)
@@ -498,14 +499,12 @@ const QueueTableRow = <TItem extends QueuedItem>({
             : undefined
         }>
         <TableCell>
-          <CopyThing text={item.id} title={item.id}>
-            {getShortId(item.id)}
-          </CopyThing>
+          <ShortId>{item.id}</ShortId>
         </TableCell>
-        <TableCell>
+        <TableCell label="Parent">
           <ParentRenderer item={item as any} index={index} />
         </TableCell>
-        <TableCell>
+        <TableCell label="Date">
           {item.lastmodifiedat ? (
             <Tooltip
               title={
@@ -530,13 +529,15 @@ const QueueTableRow = <TItem extends QueuedItem>({
             <FormattedDate date={item.createdat} />
           )}
         </TableCell>
-        <TableCell>
+        <TableCell label="Status">
           <AiResultSummary
             queuedItem={item}
             connectionStatus={connectionStatus}
           />
         </TableCell>
-        <TableCell style={{ display: 'flex', alignItems: 'center' }}>
+        <TableCell
+          label="Result"
+          style={{ display: 'flex', alignItems: 'center' }}>
           <Renderer item={item as any} index={index} />{' '}
           <KeyboardArrowUpIcon
             onClick={toggleExpanded}
@@ -546,7 +547,7 @@ const QueueTableRow = <TItem extends QueuedItem>({
             }}
           />
         </TableCell>
-        <TableCell>{item.notes || '-'}</TableCell>
+        <TableCell label="Notes">{item.notes || '-'}</TableCell>
         <TableCell></TableCell>
       </TableRow>
       {isExpanded && (

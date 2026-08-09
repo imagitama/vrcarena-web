@@ -5,7 +5,7 @@ import ColorLensIcon from '@mui/icons-material/ColorLens'
 
 import Dialog from '../dialog'
 import Heading from '../heading'
-import Button from '../button'
+import Button, { ButtonProps } from '../button'
 
 export interface RgbaColor {
   r: number
@@ -32,10 +32,11 @@ export const PURE_WHITE: RgbaColor = {
 const ColorPickerButton = ({
   initialValue,
   onDone,
+  ...buttonProps
 }: {
   initialValue: Color
   onDone: (newColorRgba: Color) => void
-}) => {
+} & ButtonProps) => {
   const [newColorRgba, setNewColorRgba] = useState<Color>(initialValue)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -71,15 +72,18 @@ const ColorPickerButton = ({
       <Button
         icon={<ColorLensIcon />}
         color="secondary"
-        onClick={() => setIsOpen(true)}>
-        Color
-        <div
-          style={{
-            width: '10px',
-            height: '10px',
-            marginLeft: '0.25rem',
-            backgroundColor: `rgba(${newColorRgba.r},${newColorRgba.g},${newColorRgba.b},${newColorRgba.a})`,
-          }}></div>
+        onClick={() => setIsOpen(true)}
+        {...buttonProps}>
+        <span style={{ display: 'flex', alignItems: 'center' }}>
+          Color
+          <div
+            style={{
+              width: '10px',
+              height: '10px',
+              marginLeft: '0.25rem',
+              backgroundColor: `rgba(${newColorRgba.r},${newColorRgba.g},${newColorRgba.b},${newColorRgba.a})`,
+            }}></div>
+        </span>
       </Button>
     </>
   )
