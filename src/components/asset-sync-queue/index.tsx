@@ -188,10 +188,7 @@ const DeleteButton = ({
         onClick={onClickDelete}
         title="Remove asset from queue (does not delete any asset drafts)"
         isDisabled={
-          isBusy ||
-          isDeleting ||
-          (queuedItem.status === QueueStatus.Processing &&
-            !getIsQueuedItemTakingTooLong(queuedItem))
+          isBusy || isDeleting || queuedItem.status === QueueStatus.Processing
         }
         hollow
       />
