@@ -33,7 +33,7 @@ function useStorage<TResult>(
     const [value, ...rest]: [TResult, (newValue: TResult) => void, () => void] =
       useLocalStorage(key)
 
-    if (!value && defaultValue) {
+    if (!value && defaultValue !== undefined) {
       return [defaultValue, ...rest]
     }
     return [value, ...rest]
