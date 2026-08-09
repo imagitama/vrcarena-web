@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import PaginatedView, {
   GetQueryFn,
   PaginatedViewProps,
@@ -8,6 +8,10 @@ import { AssetCategory, PublicAsset, ViewNames } from '@/modules/assets'
 import AssetResults from '@/components/asset-results'
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
 import AssetsByArea from '@/components/assets-by-area'
+import { FilterType } from '@/filters'
+import Button from '../button'
+import useFilters from '@/hooks/useFilters'
+import useStorage from '@/hooks/useStorage'
 
 interface ExtraRendererProps {
   categoryName?: string
@@ -47,6 +51,8 @@ const Renderer = ({
   }
 }
 
+const FILTER_FIELDNAME_FREE = 'free'
+
 /**
  * A paginated view but assets only with adult content filtered.
  * @param props
@@ -59,9 +65,14 @@ const AssetsPaginatedView = ({
   ...props
 }: ExtraRendererProps & PaginatedViewProps<PublicAsset>) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
+  const [isFree, setIsFree] = useStorage('AssetsPaginatedView.isFree', false)
 
   const getQuery = useCallback<GetQueryFn<PublicAsset>>(
     (query, selectedSubView, activeFilters) => {
+      if (isFree) {
+        query = query.contains('tags', ['free'])
+      }
+
       // always check for "true" to prevent accidental inclusion
       query =
         isAdultContentEnabled === true ? query : query.is('isadult', false)
@@ -72,7 +83,7 @@ const AssetsPaginatedView = ({
 
       return query
     },
-    [isAdultContentEnabled, props.getQuery]
+    [isAdultContentEnabled, props.getQuery, isFree]
   )
 
   return (
@@ -106,6 +117,12 @@ const AssetsPaginatedView = ({
           : undefined
       }
       {...props}
+      extraControls={[
+        <Button checked={isFree} onClick={() => setIsFree(!isFree)}>
+          Free
+        </Button>,
+        ...(props.extraControls || []),
+      ]}
       // NOTE: Do not override props with this as we do adult check
       getQuery={getQuery}
       isRendererForLoading
