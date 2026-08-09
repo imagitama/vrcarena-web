@@ -95,7 +95,11 @@ const Form = ({ onDone }: { onDone: () => void }) => {
         </ErrorMessage>
       )}
       <FormControls>
-        <Button icon={<ClearIcon />} color="secondary" isDisabled={isBusy}>
+        <Button
+          onClick={onDone}
+          icon={<ClearIcon />}
+          color="secondary"
+          isDisabled={isBusy}>
           Cancel
         </Button>
         <Button
