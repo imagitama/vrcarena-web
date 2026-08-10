@@ -4,7 +4,6 @@ import { TableRow } from '@/components/responsive-table'
 import { makeStyles } from '@mui/styles'
 
 import * as routes from '@/routes'
-import Link from '@/components/link'
 import useIsEditor from '@/hooks/useIsEditor'
 import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
@@ -124,10 +123,7 @@ const AmendmentResultsItem = ({
       </TableRow>
       {isExpanded ? (
         <TableRow>
-          <TableCell
-            width="100%"
-            colSpan={999}
-            style={{ marginBottom: '1rem' }}>
+          <TableCell colSpan={4} style={{ marginBottom: '1rem' }}>
             <ShortDiff
               type={parentTable as any}
               oldFields={parentData}

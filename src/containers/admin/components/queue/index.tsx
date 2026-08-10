@@ -376,7 +376,7 @@ const QueueTable = <TItem extends QueuedItem>({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={999}>
+            <TableCell colSpan={7}>
               <NoResultsMessage noMargin>No queued items</NoResultsMessage>
             </TableCell>
           </TableRow>
@@ -483,7 +483,7 @@ const QueueTableRow = <TItem extends QueuedItem>({
       </TableRow>
       {isExpanded && (
         <TableRow>
-          <TableCell colSpan={999}>
+          <TableCell colSpan={7}>
             <Box>
               <FullRenderer item={item as any} index={index} />
             </Box>

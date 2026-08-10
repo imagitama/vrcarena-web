@@ -209,7 +209,7 @@ const AdminQueue = () => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={999}>
+              <TableCell colSpan={4}>
                 <NoResultsMessage>No items in the queue</NoResultsMessage>
               </TableCell>
             </TableRow>

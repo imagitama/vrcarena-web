@@ -85,7 +85,7 @@ const RepChangeForUser = ({ userId }: { userId: string }) => {
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={999}>
+            <TableCell colSpan={isEditor ? 5 : 4}>
               <NoResultsMessage>No reputation changes found</NoResultsMessage>
             </TableCell>
           </TableRow>

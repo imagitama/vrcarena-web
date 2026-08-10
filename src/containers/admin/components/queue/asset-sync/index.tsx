@@ -205,7 +205,7 @@ const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => {
                 </TableRow>
                 {isExpanded && (
                   <TableRow>
-                    <TableCell colSpan={999}>
+                    <TableCell colSpan={5}>
                       <Box>
                         <AssetParentRenderer item={item as any} />
                       </Box>
@@ -217,7 +217,7 @@ const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => {
           })
         ) : (
           <TableRow>
-            <TableCell colSpan={999}>
+            <TableCell colSpan={5}>
               <NoResultsMessage noMargin>No queued items</NoResultsMessage>
             </TableCell>
           </TableRow>

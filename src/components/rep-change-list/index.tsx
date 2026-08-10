@@ -64,7 +64,7 @@ const RepChangeList = ({ repChanges }: { repChanges: FullRepChange[] }) => {
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={999}>
+            <TableCell colSpan={6}>
               <NoResultsMessage>No reputation changes found</NoResultsMessage>
             </TableCell>
           </TableRow>

@@ -142,7 +142,7 @@ const RendererReasons = ({ items }: { items?: RepReason[] }) => (
         ))
       ) : (
         <TableRow>
-          <TableCell colSpan={999}>
+          <TableCell colSpan={5}>
             <NoResultsMessage>No reasons found</NoResultsMessage>
           </TableCell>
         </TableRow>

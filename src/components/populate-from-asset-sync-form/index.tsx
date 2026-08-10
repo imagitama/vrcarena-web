@@ -260,7 +260,7 @@ const Form = ({ assetFields, onDone }: Props) => {
               )
             ) : (
               <TableRow>
-                <TableCell colSpan={999}>
+                <TableCell colSpan={3}>
                   <NoResultsMessage>No fields found</NoResultsMessage>
                 </TableCell>
               </TableRow>

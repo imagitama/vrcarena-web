@@ -316,7 +316,7 @@ const ApplyAuditButton = ({
                   if (!currentExtraSource) {
                     return (
                       <TableRow key={extraSourceToSave.url}>
-                        <TableCell colSpan={999}>No source found</TableCell>
+                        <TableCell colSpan={3}>No source found</TableCell>
                       </TableRow>
                     )
                   }
@@ -355,7 +355,7 @@ const ApplyAuditButton = ({
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={999}>(no data)</TableCell>
+                  <TableCell colSpan={3}>(no data)</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -397,7 +397,7 @@ const ApplyAuditButton = ({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={999}>(no data)</TableCell>
+                  <TableCell colSpan={3}>(no data)</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -686,7 +686,7 @@ const Renderer = ({
           })
         ) : (
           <TableRow>
-            <TableCell colSpan={999}>
+            <TableCell colSpan={3}>
               <LoadingIndicator message="Loading audits..." />
             </TableCell>
           </TableRow>

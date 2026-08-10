@@ -43,7 +43,7 @@ const View = () => {
       <TableBody>
         {speciesItems.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={999}>
+            <TableCell colSpan={6}>
               <NoResultsMessage>No species found</NoResultsMessage>
             </TableCell>
           </TableRow>

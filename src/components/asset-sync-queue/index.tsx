@@ -54,6 +54,7 @@ import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import Button from '@/components/button'
 import FailureInfoOutput from '@/components/failure-info-output'
+import NoResultsMessage from '../no-results-message'
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   queuedStatus: {
@@ -669,7 +670,7 @@ const AssetSyncQueue = ({
 
           {isBulkEditorVisible ? (
             <TableRow>
-              <TableCell colSpan={999}>
+              <TableCell colSpan={3}>
                 <BulkEditor
                   onAdd={onBulkAdd}
                   onCancel={() => setIsBulkEditorVisible(false)}
@@ -678,7 +679,7 @@ const AssetSyncQueue = ({
             </TableRow>
           ) : null}
           <TableRow>
-            <TableCell colSpan={999}>
+            <TableCell colSpan={3}>
               <FormControls>
                 <Button
                   onClick={addEmptySource}
@@ -726,7 +727,9 @@ const AssetSyncQueue = ({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={999}>You have no assets queued</TableCell>
+              <TableCell colSpan={3}>
+                <NoResultsMessage>You have no assets queued</NoResultsMessage>
+              </TableCell>
             </TableRow>
           )}
         </TableBody>

@@ -93,7 +93,7 @@ export default () => {
               </TableRow>
               {editingNotice && editingNotice.id === notice.id ? (
                 <TableRow>
-                  <TableCell colSpan={999}>
+                  <TableCell colSpan={6}>
                     <Heading variant="h2">Edit Notice</Heading>
                     <EditNoticeForm
                       id={notice.id}
