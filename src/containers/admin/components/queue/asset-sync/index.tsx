@@ -37,6 +37,8 @@ import FormattedDate from '@/components/formatted-date'
 import AiResultSummary from '@/components/ai-result-summary'
 import { VRCArenaTheme } from '@/themes'
 import { Operators } from '@/hooks/useDatabaseQuery'
+import { useParams, useRouteMatch } from 'react-router'
+import Heading from '@/components/heading'
 
 const AssetSyncQueueCellRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
   return (
@@ -234,48 +236,56 @@ enum SubView {
 }
 
 const AdminAssetSyncQueue = () => {
+  const routeMatch = useRouteMatch()
+  const params = useParams<any>()
+
+  console.debug(`AdminAssetSyncQueue.render`, { routeMatch, params })
+
   return (
-    <PaginatedView<AssetSyncQueueItem>
-      name="admin-amendments"
-      viewName={AssetsSyncQueueCollectionNames.AssetSyncQueue}
-      // getQuery={getQuery}
-      sortOptions={[
-        {
-          label: 'Queued At',
-          fieldName: 'createdat',
-        },
-      ]}
-      defaultFieldName="createdat"
-      // defaultSubView={subViewName || SubView.Pending}
-      urlWithSubViewNameAndPageNumberVar={
-        '/admin/queues/asset-sync/:subViewName/page/:pageNumber'
-      }
-      subViews={[
-        {
-          id: SubView.Queued,
-          label: 'Queued',
-          where: [['status', Operators.EQUALS, QueueStatus.Queued]],
-        },
-        {
-          id: SubView.Processing,
-          label: 'Processing',
-          where: [['status', Operators.EQUALS, QueueStatus.Processing]],
-        },
-        {
-          id: SubView.Processed,
-          label: 'Processed',
-          where: [['status', Operators.EQUALS, QueueStatus.Processed]],
-        },
-        {
-          id: SubView.Failed,
-          label: 'Failed',
-          where: [['status', Operators.EQUALS, QueueStatus.Failed]],
-        },
-      ]}
-      itemNamePlural="amendments">
-      {/* @ts-ignore */}
-      <Renderer />
-    </PaginatedView>
+    <>
+      <Heading variant="h1">Queues - Asset Sync</Heading>
+      <PaginatedView<AssetSyncQueueItem>
+        name="admin-amendments"
+        viewName={AssetsSyncQueueCollectionNames.AssetSyncQueue}
+        // getQuery={getQuery}
+        sortOptions={[
+          {
+            label: 'Queued At',
+            fieldName: 'createdat',
+          },
+        ]}
+        defaultFieldName="createdat"
+        // defaultSubView={subViewName || SubView.Pending}
+        urlWithSubViewNameAndPageNumberVar={
+          '/admin/queues/asset-sync/:subViewName/page/:pageNumber'
+        }
+        subViews={[
+          {
+            id: SubView.Queued,
+            label: 'Queued',
+            where: [['status', Operators.EQUALS, QueueStatus.Queued]],
+          },
+          {
+            id: SubView.Processing,
+            label: 'Processing',
+            where: [['status', Operators.EQUALS, QueueStatus.Processing]],
+          },
+          {
+            id: SubView.Processed,
+            label: 'Processed',
+            where: [['status', Operators.EQUALS, QueueStatus.Processed]],
+          },
+          {
+            id: SubView.Failed,
+            label: 'Failed',
+            where: [['status', Operators.EQUALS, QueueStatus.Failed]],
+          },
+        ]}
+        itemNamePlural="queued items">
+        {/* @ts-ignore */}
+        <Renderer />
+      </PaginatedView>
+    </>
   )
 }
 

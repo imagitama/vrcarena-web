@@ -51,6 +51,7 @@ import WarningMessage from '@/components/warning-message'
 import ErrorBoundary from '@/components/error-boundary'
 import Filters from '@/components/filters'
 import { getSuffixForErrorCode } from '@/error-handling'
+import FormControls from '../form-controls'
 
 const useStyles = makeStyles({
   root: {
@@ -238,10 +239,18 @@ const PaginatedView = <TRecord extends Record<string, any>>({
 
   const keyPrefix = name || viewName || collectionName
 
-  const { pageNumber = '1', subViewName: subViewNameFromUrl } = useParams<{
+  const {
+    pageNumber: pageNumberFromUrl = '1',
+    subViewName: subViewNameFromUrl,
+  } = useParams<{
     pageNumber: string
     subViewName: string
   }>()
+
+  console.debug(`PaginatedView.render`, {
+    pageNumberFromUrl,
+    subViewNameFromUrl,
+  })
 
   const [selectedSubView, setSelectedSubView] = useStorage<string | null>(
     `${keyPrefix}_subview`,
@@ -260,7 +269,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
   const classes = useStyles()
   const { push } = useHistory()
 
-  const currentPageNumber = parseInt(pageNumber)
+  const currentPageNumber = parseInt(pageNumberFromUrl)
 
   // for views that do not want to use the URL to track page number
   // eg users/abc/assets
@@ -445,9 +454,22 @@ const PaginatedView = <TRecord extends Record<string, any>>({
     if (lastErrorCode !== null) {
       if (lastErrorCode === PostgRESTErrorCode.RangeNotSatisfiable) {
         return (
-          <NoResultsMessage>
-            No {itemNamePlural || 'results'} found for page {currentPageNumber}
-          </NoResultsMessage>
+          <>
+            <NoResultsMessage>
+              No {itemNamePlural || 'results'} found for page{' '}
+              {currentPageNumber}
+            </NoResultsMessage>
+            <FormControls>
+              {urlWithSubViewNameAndPageNumberVar && (
+                <Button
+                  url={urlWithSubViewNameAndPageNumberVar
+                    .replace(':subViewName', selectedSubView || '')
+                    .replace(':pageNumber', '1')}>
+                  Go To Page 1
+                </Button>
+              )}
+            </FormControls>
+          </>
         )
       }
       return (
@@ -503,10 +525,9 @@ const PaginatedView = <TRecord extends Record<string, any>>({
             onClickWithPageNumber={(newPageNumber) => {
               if (urlWithSubViewNameAndPageNumberVar) {
                 push(
-                  urlWithSubViewNameAndPageNumberVar.replace(
-                    ':pageNumber',
-                    newPageNumber.toString()
-                  )
+                  urlWithSubViewNameAndPageNumberVar
+                    .replace(':subViewName', selectedSubView || '')
+                    .replace(':pageNumber', newPageNumber.toString())
                 )
               } else {
                 setInternalPageNumber(newPageNumber)
@@ -571,7 +592,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
                               if (urlWithSubViewNameAndPageNumberVar) {
                                 const url = urlWithSubViewNameAndPageNumberVar
                                   .replace(':subViewName', id)
-                                  .replace(':pageNumber', pageNumber.toString())
+                                  .replace(':pageNumber', pageNumberFromUrl)
                                 push(url, false)
                               }
                             }}

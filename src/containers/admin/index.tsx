@@ -1,9 +1,7 @@
 import React, { Fragment, Suspense } from 'react'
 import { Helmet } from '@unhead/react/helmet'
 import { Switch, Route, useRouteMatch, useParams } from 'react-router'
-import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import styled from '@emotion/styled'
@@ -35,7 +33,6 @@ import { UserRoles } from '@/modules/users'
 
 import useUserRecord from '@/hooks/useUserRecord'
 
-import Heading from '@/components/heading'
 import LoadingIndicator from '@/components/loading-indicator'
 import NoPermissionMessage from '@/components/no-permission-message'
 import ErrorMessage from '@/components/error-message'
@@ -92,7 +89,8 @@ const Content = styled.div`
 `
 
 interface NavItem {
-  path: string
+  subPath: string
+  subPaths?: string[]
   label: string
   icon: React.LazyExoticComponent<React.ComponentType<any>>
   component: React.ComponentType
@@ -101,61 +99,66 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    path: '/assets',
+    subPath: '/assets',
     label: 'Assets',
     icon: AssetsIcon,
     component: AdminAssets,
   },
   {
-    path: '/amendments',
+    subPath: '/amendments',
     label: 'Amendments',
     icon: AmendmentsIcon,
     component: AdminAmendments,
   },
   {
-    path: '/history',
+    subPath: '/history',
     label: 'History',
     icon: HistoryIcon,
     component: AdminHistory,
   },
   {
-    path: '/reports',
+    subPath: '/reports',
     label: 'Reports',
     icon: ReportIcon,
     component: AdminReports,
   },
   {
-    path: '/support-tickets',
+    subPath: '/support-tickets',
     label: 'Support Tickets',
     icon: SupportTicketsIcon,
     component: AdminSupportTickets,
   },
   {
-    path: '/public-avatars',
+    subPath: '/public-avatars',
     label: 'Public Avatars',
     icon: VrchatAvatarsIcon,
     component: AdminPublicAvatars,
   },
   {
-    path: '/notices',
+    subPath: '/notices',
     label: 'Notices',
     icon: NoticesIcon,
     component: AdminNotices,
   },
   {
-    path: '/comments',
+    subPath: '/comments',
     label: 'Comments',
     icon: CommentsIcon,
     component: AdminComments,
   },
   {
-    path: '/queues',
+    subPath: '/queues',
     label: 'Queues',
     icon: QueuesIcon,
     component: AdminQueues,
     children: [
       {
-        path: '/queues/asset-sync',
+        subPath: '/queues/asset-sync',
+        subPaths: [
+          '/queues/asset-sync/:subViewName/page/:pageNumber',
+          '/queues/asset-sync/:subViewName',
+          '/queues/asset-sync',
+        ],
         label: 'Asset Sync',
         icon: AssetSyncIcon,
         component: AdminAssetSyncQueue,
@@ -163,49 +166,49 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    path: '/audit',
+    subPath: '/audit',
     label: 'Audit',
     icon: AuditIcon,
     component: AdminAudit,
   },
   {
-    path: '/dupes',
+    subPath: '/dupes',
     label: 'Dupes',
     icon: DupesIcon,
     component: AdminDupes,
   },
   {
-    path: '/reputation',
+    subPath: '/reputation',
     label: 'Reputation',
     icon: ReputationIcon,
     component: AdminReputation,
   },
   {
-    path: '/analytics',
+    subPath: '/analytics',
     label: 'Analytics',
     icon: AnalyticsIcon,
     component: AdminAnalytics,
   },
   {
-    path: '/species',
+    subPath: '/species',
     label: 'Species',
     icon: SpeciesIcon,
     component: AdminSpecies,
   },
   {
-    path: '/notifications',
+    subPath: '/notifications',
     label: 'Notifications',
     icon: NotificationsIcon,
     component: AdminNotifications,
   },
   {
-    path: '/surveys',
+    subPath: '/surveys',
     label: 'Surveys',
     icon: SurveysIcon,
     component: AdminSurveys,
   },
   {
-    path: '/settings',
+    subPath: '/settings',
     label: 'Settings',
     icon: SiteSettingsIcon,
     component: SiteSettingsForm,
@@ -231,8 +234,8 @@ const Menu = () => {
         {navItems.map((item) => (
           <Fragment>
             <NavLink
-              key={item.path}
-              to={`${routes.admin}${item.path}`}
+              key={item.subPath}
+              to={`${routes.admin}${item.subPath}`}
               exact
               activeClassName="active"
               style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -246,8 +249,8 @@ const Menu = () => {
             </NavLink>
             {item.children?.map((child) => (
               <NavLink
-                key={child.path}
-                to={`${routes.admin}${child.path}`}
+                key={child.subPath}
+                to={`${routes.admin}${child.subPath}`}
                 exact
                 activeClassName="active"
                 style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -269,10 +272,10 @@ const Menu = () => {
 
 const View = () => {
   const [isLoading, lastErrorCode, user] = useUserRecord()
-  const resultA = useRouteMatch()
-  const resultB = useParams<any>()
+  const routeMatch = useRouteMatch()
+  const params = useParams<any>()
 
-  console.debug(`RENDER`, resultA, resultB)
+  console.debug(`Admin.render`, { routeMatch, params })
 
   if (isLoading) {
     return <LoadingIndicator message="Loading your user account..." />
@@ -297,7 +300,8 @@ const View = () => {
     <Root>
       <Menu />
       <Content>
-        <Suspense fallback={<LoadingIndicator />}>
+        <Suspense
+          fallback={<LoadingIndicator message="Loading admin section..." />}>
           <Switch>
             {navItems
               .reduce<NavItem[]>(
@@ -309,21 +313,30 @@ const View = () => {
               )
               .map((item) => (
                 <Route
-                  key={item.path}
-                  // exact
-                  path={`${routes.admin}${item.path}`}
+                  key={item.subPath}
+                  exact
+                  path={
+                    item.subPaths
+                      ? item.subPaths.map((path) => `${routes.admin}${path}`)
+                      : `${routes.admin}${item.subPath}`
+                  }
                   component={item.component}
                 />
               ))}
             {navItems.map((item) => (
               <Route
-                key={item.path}
-                // exact
-                path={`${routes.admin}${item.path}`}
+                key={item.subPath}
+                exact
+                path={
+                  item.subPaths
+                    ? item.subPaths.map((path) => `${routes.admin}${path}`)
+                    : `${routes.admin}${item.subPath}`
+                }
                 component={item.component}
               />
             ))}
             <Route exact path={routes.admin} component={AdminHome} />
+            <Route component={() => <>Failed to match</>} />
           </Switch>
         </Suspense>
       </Content>

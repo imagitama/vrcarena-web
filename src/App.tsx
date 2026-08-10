@@ -320,23 +320,7 @@ const MainContent = () => {
           path={[routes.viewAssetWithVar, routes.viewAssetWithVarAndTabVar]}
           component={ViewAsset}
         />
-        <Route
-          path={routes.admin}
-          // exact
-          // path={[
-          // old
-          // routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar,
-          // routes.adminWithTabNameVarAndSubViewNameVar,
-          // routes.adminWithTabNameVarAndPageNumberVar,
-          // routes.adminWithTabNameVar,
-          // // new
-          // routes.adminWithTabNameVarAndSubRouteNameVarAndSubViewNameVarAndPageNumberVar,
-          // routes.adminWithTabNameVarAndSubRouteNameVarAndSubViewNameVar,
-          // routes.adminWithTabNameVarAndSubRouteNameVar,
-          //   routes.admin,
-          // ]}
-          component={Admin}
-        />
+        <Route path={routes.admin} component={Admin} />
         <Route
           exact
           path={[
