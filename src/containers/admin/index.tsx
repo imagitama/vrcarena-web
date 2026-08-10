@@ -269,17 +269,19 @@ const Menu = () => {
 
 const View = () => {
   const [isLoading, lastErrorCode, user] = useUserRecord()
-  // const { path, url } = useRouteMatch()
-  // const { tabName, subViewName, pageNumber } = useParams<any>()
+  const resultA = useRouteMatch()
+  const resultB = useParams<any>()
+
+  console.debug(`RENDER`, resultA, resultB)
 
   if (isLoading) {
-    return <LoadingIndicator />
+    return <LoadingIndicator message="Loading your user account..." />
   }
 
   if (lastErrorCode !== null) {
     return (
       <ErrorMessage>
-        Failed to load your user (code {lastErrorCode})
+        Failed to load your user account (code {lastErrorCode})
       </ErrorMessage>
     )
   }

@@ -248,7 +248,7 @@ const AdminAssetSyncQueue = () => {
       defaultFieldName="createdat"
       // defaultSubView={subViewName || SubView.Pending}
       urlWithSubViewNameAndPageNumberVar={
-        '/admin/queue/asset-sync/:subViewName/page/:pageNumber'
+        '/admin/queues/asset-sync/:subViewName/page/:pageNumber'
       }
       subViews={[
         {
