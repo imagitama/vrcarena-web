@@ -2,6 +2,12 @@ import React, { Component, ErrorInfo } from 'react'
 import * as Sentry from '@sentry/browser'
 import ErrorBoundaryMessage from '@/components/error-boundary-message'
 
+const getIsRefreshableError = (error: Error) =>
+  error &&
+  error.message &&
+  error.message.includes('error loading dynamically imported module')
+const reloadPage = () => window.location.reload()
+
 interface ErrorBoundaryProps {
   children: React.ReactNode | React.ReactNode[]
 }
@@ -20,11 +26,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    if (
-      error.message.includes('Loading chunk') ||
-      error.message.includes('JWT expired')
-    ) {
-      window.location.reload()
+    if (getIsRefreshableError(error)) {
+      reloadPage()
       return
     }
 

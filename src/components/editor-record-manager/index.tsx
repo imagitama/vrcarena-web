@@ -26,7 +26,6 @@ import ArchiveButton from '@/components/archive-button'
 import MetaStatus from '@/components/meta-status'
 import ErrorBoundary from '@/components/error-boundary'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
-import { UserFromView } from '@/modules/users'
 
 const useStyles = makeStyles(() => ({
   root: {
