@@ -36,6 +36,7 @@ import MovableList from '../movable-list'
 import NoResultsMessage from '../no-results-message'
 import Tooltip from '../tooltip'
 import { VRCArenaTheme } from '@/themes'
+import useIsEditor from '@/hooks/useIsEditor'
 
 const Columns = styled.div`
   display: flex;
@@ -152,6 +153,7 @@ const EditAttachmentForm = ({
   const [newFields, setNewFields] = useState<null | Partial<AttachmentFields>>(
     null
   )
+  const isEditor = useIsEditor()
 
   useEffect(() => {
     if (!attachment) return
@@ -186,6 +188,7 @@ const EditAttachmentForm = ({
               newFields={newFields}
               onChange={(fields) => setNewFields(fields)}
               {...props}
+              isDisabled={!isEditor}
             />
           )}
         </Column>
@@ -200,9 +203,13 @@ const EditAttachmentForm = ({
             </ErrorMessage>
           ) : null}
           <FormControls>
-            <SaveButton color="secondary" onClick={onClickSave}>
+            <SaveButton
+              color="secondary"
+              onClick={onClickSave}
+              isDisabled={!isEditor}>
               Save
             </SaveButton>
+            {!isEditor && 'Only staff can edit attachment metadata'}
           </FormControls>
         </Column>
         <Column style={{ width: '5%' }}>
@@ -227,6 +234,7 @@ interface AttachmentFormProps {
   type?: AttachmentType
   parentTable: string
   parentId: string
+  isDisabled?: boolean
 }
 
 const AttachmentForm = ({
@@ -236,6 +244,7 @@ const AttachmentForm = ({
   type,
   parentTable,
   parentId,
+  isDisabled,
 }: AttachmentFormProps) => {
   const updateField = (fieldName: keyof AttachmentFields, newVal: any) => {
     if (!onChange) return
@@ -276,6 +285,7 @@ const AttachmentForm = ({
         label="Title (optional)"
         value={newFields.title || ''}
         onChange={(e) => updateField('title', e.target.value)}
+        isDisabled={isDisabled}
       />
       <TextInput
         fullWidth
@@ -283,12 +293,14 @@ const AttachmentForm = ({
         minRows={2}
         value={newFields.description || ''}
         onChange={(e) => updateField('description', e.target.value)}
+        isDisabled={isDisabled}
       />
       <TextInput
         fullWidth
         label="License (optional)"
         value={newFields.license || ''}
         onChange={(e) => updateField('license', e.target.value)}
+        isDisabled={isDisabled}
       />
       <CheckboxInput
         label={
@@ -303,12 +315,13 @@ const AttachmentForm = ({
         onChange={(newVal) =>
           updateField('isadult', newVal === true ? null : false)
         }
+        isDisabled={isDisabled}
       />
       <CheckboxInput
         label="Is adult"
         value={newFields.isadult === true}
         onChange={(newVal) => updateField('isadult', newVal)}
-        isDisabled={newFields.isadult === null}
+        isDisabled={isDisabled || newFields.isadult === null}
       />
     </Form>
   )
