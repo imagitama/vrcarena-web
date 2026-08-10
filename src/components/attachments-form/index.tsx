@@ -98,14 +98,14 @@ const CreateAttachmentForm = ({
             width="100%"
           />
         </Column>
-        <Column style={{ width: '60%' }}>
+        <Column style={{ width: '55%' }}>
           <AttachmentForm
             newFields={newFields}
             onChange={(fields) => setNewFields(fields)}
             {...props}
           />
         </Column>
-        <Column style={{ width: '15%' }}>
+        <Column style={{ width: '20%' }}>
           {isSaving ? (
             <LoadingIndicator />
           ) : isSuccess ? (
@@ -176,7 +176,7 @@ const EditAttachmentForm = ({
             <AttachmentOutput width="100%" attachment={attachment} />
           </Column>
         )}
-        <Column style={{ width: '60%' }}>
+        <Column style={{ width: '55%' }}>
           {isLoading ? (
             <LoadingIndicator message="Loading attachment..." />
           ) : lastErrorCodeLoading !== null ? (
@@ -193,7 +193,7 @@ const EditAttachmentForm = ({
             />
           )}
         </Column>
-        <Column style={{ width: '15%' }}>
+        <Column style={{ width: '20%' }}>
           {isSaving ? (
             <LoadingIndicator />
           ) : isSuccess ? (
@@ -204,18 +204,20 @@ const EditAttachmentForm = ({
             </ErrorMessage>
           ) : null}
           <FormControls>
-            <SaveButton
-              color="secondary"
-              onClick={onClickSave}
-              isDisabled={!isEditor}>
-              Save
-            </SaveButton>
-            {!isEditor && (
-              <>
-                <br />
-                <HintText>*Only staff can edit attachment metadata</HintText>
-              </>
-            )}
+            <div>
+              <SaveButton
+                color="secondary"
+                onClick={onClickSave}
+                isDisabled={!isEditor}>
+                Save
+              </SaveButton>
+              {!isEditor && (
+                <>
+                  <br />
+                  <HintText>*Only staff can edit attachment metadata</HintText>
+                </>
+              )}
+            </div>
           </FormControls>
         </Column>
         <Column style={{ width: '5%' }}>
