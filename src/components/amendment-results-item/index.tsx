@@ -124,7 +124,10 @@ const AmendmentResultsItem = ({
       </TableRow>
       {isExpanded ? (
         <TableRow>
-          <TableCell colSpan={999} style={{ marginBottom: '1rem' }}>
+          <TableCell
+            width="100%"
+            colSpan={999}
+            style={{ marginBottom: '1rem' }}>
             <ShortDiff
               type={parentTable as any}
               oldFields={parentData}

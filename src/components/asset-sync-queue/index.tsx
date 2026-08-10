@@ -9,7 +9,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import InfoIcon from '@mui/icons-material/Info'
 import CheckIcon from '@mui/icons-material/Check'
 
-import Table from '@/components/responsive-table'
+import Table, { TableHead } from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
 import { TableCell } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
@@ -616,6 +616,13 @@ const AssetSyncQueue = ({
   return (
     <>
       <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell width="60%"></TableCell>
+            <TableCell width="20%"></TableCell>
+            <TableCell width="20%"></TableCell>
+          </TableRow>
+        </TableHead>
         <TableBody>
           {newSourceUrls.map((newSourceUrl, i) => {
             return (

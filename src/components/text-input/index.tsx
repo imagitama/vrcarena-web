@@ -69,8 +69,8 @@ const TextInput = ({ button, ...props }: Props) => {
       className={classNames({
         [classes.root]: true,
         [classes.fullWidth]: props.fullWidth,
-        [classes.small]: props.size === 'small',
-        [classes.large]: props.size === 'large',
+        [classes.small]: props.size === 'small' && props.minRows === undefined,
+        [classes.large]: props.size === 'large' && props.minRows === undefined,
         [classes.withButton]: button !== undefined,
       })}>
       <TextField

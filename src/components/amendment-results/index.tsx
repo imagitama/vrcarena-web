@@ -25,10 +25,10 @@ const AmendmentResults = ({
     <Table>
       <TableHead>
         <TableRow>
-          {showParentDetails && <TableCell>Parent</TableCell>}
-          <TableCell />
-          <TableCell>Metadata</TableCell>
-          {isEditor ? <TableCell>Controls</TableCell> : null}
+          {showParentDetails && <TableCell width="30%">Parent</TableCell>}
+          <TableCell width="35%">Info</TableCell>
+          <TableCell width="10%">Metadata</TableCell>
+          {isEditor ? <TableCell width="25%">Controls</TableCell> : null}
         </TableRow>
       </TableHead>
       <TableBody>
