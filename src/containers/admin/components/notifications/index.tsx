@@ -19,6 +19,7 @@ import { OrderDirections } from '@/hooks/useDatabaseQuery'
 import NoValueLabel from '@/components/no-value-label'
 import QueueStatusLabel from '@/components/queue-status-label'
 import ShortId from '@/components/short-id'
+import Heading from '@/components/heading'
 
 const WebDetails = ({ webDetails }: { webDetails: WebNotification<any> }) => {
   return (
@@ -156,12 +157,15 @@ const Renderer = ({ items }: { items?: NotificationQueuedItem<any>[] }) => (
 
 const AdminNotifications = () => {
   return (
-    <PaginatedView<NotificationQueuedItem>
-      collectionName={CollectionNames.NotificationQueue}
-      defaultFieldName="createdat"
-      defaultDirection={OrderDirections.DESC}>
-      <Renderer />
-    </PaginatedView>
+    <>
+      <Heading variant="h1">Notifications</Heading>
+      <PaginatedView<NotificationQueuedItem>
+        collectionName={CollectionNames.NotificationQueue}
+        defaultFieldName="createdat"
+        defaultDirection={OrderDirections.DESC}>
+        <Renderer />
+      </PaginatedView>
+    </>
   )
 }
 

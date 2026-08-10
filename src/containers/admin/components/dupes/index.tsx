@@ -37,6 +37,7 @@ import authorEditableFields from '@/editable-fields/authors'
 import Paper from '@/components/paper'
 import FormControls from '@/components/form-controls'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
+import InfoMessage from '@/components/info-message'
 
 const getFieldsToUse = (
   dupeInfo: GetAuthorDupesResult,
@@ -421,7 +422,7 @@ const DupeOutput = ({ dupeInfo }: { dupeInfo: GetAuthorDupesResult }) => {
   )
 }
 
-const AdminDupes = () => {
+const View = () => {
   // TODO: use enum for view name, use correct hook useDataStoreItems(...)
   const [isLoading, lastErrorCode, dupes] =
     useDataStoreItems<GetAuthorDupesResult>('getAuthorDupes')
@@ -451,4 +452,17 @@ const AdminDupes = () => {
   return dupes.map((dupeInfo) => <DupeOutput dupeInfo={dupeInfo} />)
 }
 
-export default AdminDupes
+export default () => (
+  <>
+    <Heading variant="h1">Dupes</Heading>
+    <InfoMessage title="How Dupes Work" hideId="admin-dupes-info">
+      An interface for deleting duplicate authors while copying their data and
+      switching the assets to the "main" author.
+      <br />
+      <br />
+      Note you get a chance to "plan" what the site will do but any change you
+      do is somewhat permanent.
+    </InfoMessage>
+    <View />
+  </>
+)

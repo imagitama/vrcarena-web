@@ -38,6 +38,7 @@ import CheckboxInput from '@/components/checkbox-input'
 import NoResultsMessage from '@/components/no-results-message'
 import InfoMessage from '@/components/info-message'
 import SuccessMessage from '@/components/success-message'
+import Heading from '../heading'
 
 interface SyncMissingAvatarSubmissionsResult {
   success: boolean
@@ -364,5 +365,17 @@ const Avatars = () => {
 }
 
 export default () => {
-  return <Avatars />
+  return (
+    <>
+      <Heading variant="h1">Public Avatars</Heading>
+      <InfoMessage
+        title="How Public Avatars Work"
+        hideId="admin-public-avatars-info">
+        Anyone (including logged out users) can submit VRChat avatars for
+        assets. Try your best to verify if the avatar is actually for the asset
+        then add them.
+      </InfoMessage>
+      <Avatars />
+    </>
+  )
 }

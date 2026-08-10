@@ -15,6 +15,7 @@ import PaginatedView from '@/components/paginated-view'
 import { Filter, FilterSubType, FilterType } from '@/filters'
 import useQueryParam from '@/hooks/useQueryParam'
 import Button from '@/components/button'
+import Heading from '@/components/heading'
 
 const Renderer = ({
   items,
@@ -38,7 +39,7 @@ const isNullOrEmpty = (str: string | null): boolean => {
   return !str
 }
 
-const History = () => {
+const AdminHistory = () => {
   const createdByUserId = useQueryParam('userId')
   const parentType = useQueryParam('parentType')
   const parentId = useQueryParam('parentId')
@@ -77,21 +78,24 @@ const History = () => {
   ]
 
   return (
-    <PaginatedView
-      viewName={ViewNames.GetFullHistory}
-      name="admin-history"
-      sortOptions={[{ fieldName: 'createdat', label: 'Date' }]}
-      defaultFieldName="createdat"
-      defaultDirection={OrderDirections.DESC}
-      filters={filters}
-      extraControls={[
-        <Button onClick={() => setIsAllExpanded((currentVal) => !currentVal)}>
-          Expand All
-        </Button>,
-      ]}>
-      <Renderer isAllExpanded={isAllExpanded} />
-    </PaginatedView>
+    <>
+      <Heading variant="h1">History</Heading>
+      <PaginatedView
+        viewName={ViewNames.GetFullHistory}
+        name="admin-history"
+        sortOptions={[{ fieldName: 'createdat', label: 'Date' }]}
+        defaultFieldName="createdat"
+        defaultDirection={OrderDirections.DESC}
+        filters={filters}
+        extraControls={[
+          <Button onClick={() => setIsAllExpanded((currentVal) => !currentVal)}>
+            Expand All
+          </Button>,
+        ]}>
+        <Renderer isAllExpanded={isAllExpanded} />
+      </PaginatedView>
+    </>
   )
 }
 
-export default History
+export default AdminHistory

@@ -9,6 +9,8 @@ import { ApprovalStatus } from '@/modules/common'
 import { EqualActiveFilter } from '@/filters'
 import { HydrateFn } from '@/hooks/useDataStore'
 import { useParams } from 'react-router'
+import InfoMessage from '../info-message'
+import Heading from '../heading'
 
 const Renderer = ({
   items,
@@ -67,38 +69,52 @@ export default () => {
   )
 
   return (
-    <PaginatedView<FullAmendment<any>>
-      name="admin-amendments"
-      viewName={ViewNames.GetFullAmendments}
-      getQuery={getQuery}
-      sortOptions={[
-        {
-          label: 'Submission date',
-          fieldName: 'createdat',
-        },
-      ]}
-      defaultFieldName="createdat"
-      defaultSubView={subViewName || SubView.Pending}
-      urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar.replace(
-        ':tabName',
-        'amendments'
-      )}
-      subViews={[
-        {
-          id: SubView.Pending,
-          label: 'Pending',
-        },
-        {
-          id: SubView.Approved,
-          label: 'Approved',
-        },
-        {
-          id: SubView.Declined,
-          label: 'Declined',
-        },
-      ]}
-      itemNamePlural="amendments">
-      <Renderer />
-    </PaginatedView>
+    <>
+      <Heading variant="h1">Amendment Queue</Heading>
+      <InfoMessage title="How Amendments Work" hideId="admin-amendments-info">
+        Anyone can amend (edit) anything on the site. Try your best to verify
+        the new fields are correct and click approve.
+        <br />
+        <br />
+        <strong>
+          Amendments are auto-approved after 24 hours, if the creator has enough
+          rep (currently 100) and if they are the original creator of the
+          record.
+        </strong>
+      </InfoMessage>
+      <PaginatedView<FullAmendment<any>>
+        name="admin-amendments"
+        viewName={ViewNames.GetFullAmendments}
+        getQuery={getQuery}
+        sortOptions={[
+          {
+            label: 'Submission date',
+            fieldName: 'createdat',
+          },
+        ]}
+        defaultFieldName="createdat"
+        defaultSubView={subViewName || SubView.Pending}
+        urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar.replace(
+          ':tabName',
+          'amendments'
+        )}
+        subViews={[
+          {
+            id: SubView.Pending,
+            label: 'Pending',
+          },
+          {
+            id: SubView.Approved,
+            label: 'Approved',
+          },
+          {
+            id: SubView.Declined,
+            label: 'Declined',
+          },
+        ]}
+        itemNamePlural="amendments">
+        <Renderer />
+      </PaginatedView>
+    </>
   )
 }

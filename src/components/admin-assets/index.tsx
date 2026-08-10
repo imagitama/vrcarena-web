@@ -40,6 +40,8 @@ import { Intent } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
 import { OrderDirections } from '@/hooks/useDatabaseQuery'
 import AssetEditorRecordManager from '../asset-editor-record-manager'
+import InfoMessage from '../info-message'
+import Heading from '../heading'
 
 const useStyles = makeStyles({
   pass: {
@@ -334,6 +336,12 @@ const AdminAssets = () => {
 
   return (
     <>
+      <Heading variant="h1">Asset Queue</Heading>
+      <InfoMessage title="How Assets Work" hideId="admin-assets-info">
+        Assets are auto-approved after <strong>24</strong> hours, if the user
+        has over <strong>20</strong> rep (a month old account) and if the AI
+        evaluation is over <strong>60%</strong> confidence.
+      </InfoMessage>
       <PaginatedView<AssetForList_Editor>
         // cannot re-use other paginated views because "publishedat" field does not exist for them
         name="view-admin-assets"

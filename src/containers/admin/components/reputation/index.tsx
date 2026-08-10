@@ -28,6 +28,8 @@ import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import SuccessMessage from '@/components/success-message'
+import InfoMessage from '@/components/info-message'
+import Heading from '@/components/heading'
 
 const RendererChanges = ({ items }: { items?: FullRepChange[] }) => (
   <RepChangeList repChanges={items!} />
@@ -151,75 +153,82 @@ const RendererReasons = ({ items }: { items?: RepReason[] }) => (
 
 export default () => {
   return (
-    <Tabs
-      horizontal
-      items={[
-        {
-          name: 'list',
-          label: 'Changes',
-          contents: (
-            <PaginatedView<FullRepChange>
-              viewName={ViewNames.GetFullRepChanges}
-              name="view-rep-changes"
-              sortOptions={[
-                {
-                  label: 'Created at',
-                  fieldName: 'createdat',
-                },
-              ]}
-              defaultFieldName={'createdat'}
-              urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
-                ':tabName',
-                'reputation'
-              )}
-              filters={[
-                {
-                  fieldName: 'reason',
-                  label: 'Reason',
-                  type: FilterType.Equal,
-                },
-                {
-                  fieldName: 'createdby',
-                  label: 'Created By',
-                  type: FilterType.Equal,
-                  subType: FilterSubType.UserId,
-                },
-              ]}>
-              <RendererChanges />
-            </PaginatedView>
-          ),
-        },
-        {
-          name: 'editor',
-          label: 'Editor',
-          contents: (
-            <PaginatedView<RepReason>
-              viewName={CollectionNames.RepReasons}
-              name="view-rep-reasons"
-              sortOptions={[
-                {
-                  label: 'Created at',
-                  fieldName: 'createdat',
-                },
-              ]}
-              defaultFieldName={'createdat'}
-              urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
-                ':tabName',
-                'reputation'
-              )}
-              filters={[
-                {
-                  fieldName: 'createdby',
-                  label: 'Created By',
-                  type: FilterType.Equal,
-                  subType: FilterSubType.UserId,
-                },
-              ]}>
-              <RendererReasons />
-            </PaginatedView>
-          ),
-        },
-      ]}
-    />
+    <>
+      <Heading variant="h1">Reputation</Heading>
+      <InfoMessage title="How Reputation Works" hideId="admin-rep-info">
+        Users gain reputation from performing actions on the site: creating
+        assets, amendments, comments, having an old account, etc.
+      </InfoMessage>
+      <Tabs
+        horizontal
+        items={[
+          {
+            name: 'list',
+            label: 'Changes',
+            contents: (
+              <PaginatedView<FullRepChange>
+                viewName={ViewNames.GetFullRepChanges}
+                name="view-rep-changes"
+                sortOptions={[
+                  {
+                    label: 'Created at',
+                    fieldName: 'createdat',
+                  },
+                ]}
+                defaultFieldName={'createdat'}
+                urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+                  ':tabName',
+                  'reputation'
+                )}
+                filters={[
+                  {
+                    fieldName: 'reason',
+                    label: 'Reason',
+                    type: FilterType.Equal,
+                  },
+                  {
+                    fieldName: 'createdby',
+                    label: 'Created By',
+                    type: FilterType.Equal,
+                    subType: FilterSubType.UserId,
+                  },
+                ]}>
+                <RendererChanges />
+              </PaginatedView>
+            ),
+          },
+          {
+            name: 'editor',
+            label: 'Editor',
+            contents: (
+              <PaginatedView<RepReason>
+                viewName={CollectionNames.RepReasons}
+                name="view-rep-reasons"
+                sortOptions={[
+                  {
+                    label: 'Created at',
+                    fieldName: 'createdat',
+                  },
+                ]}
+                defaultFieldName={'createdat'}
+                urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+                  ':tabName',
+                  'reputation'
+                )}
+                filters={[
+                  {
+                    fieldName: 'createdby',
+                    label: 'Created By',
+                    type: FilterType.Equal,
+                    subType: FilterSubType.UserId,
+                  },
+                ]}>
+                <RendererReasons />
+              </PaginatedView>
+            ),
+          },
+        ]}
+      />
+    </>
   )
 }

@@ -7,6 +7,7 @@ import { TableRow } from '@/components/responsive-table'
 import { AnalyticsEntryForAsset, ViewNames } from '@/modules/analytics'
 import AssetResultsItem from '@/components/asset-results-item'
 import PaginatedView from '@/components/paginated-view'
+import Heading from '@/components/heading'
 
 const Columns = styled.div`
   display: flex;
@@ -51,10 +52,13 @@ const Renderer = ({ items }: { items?: AnalyticsEntryForAsset[] }) => {
 }
 
 const Analytics = () => (
-  <PaginatedView<AnalyticsEntryForAsset>
-    viewName={ViewNames.GetTopAssetAnalytics}>
-    <Renderer />
-  </PaginatedView>
+  <>
+    <Heading variant="h1">Analytics</Heading>
+    <PaginatedView<AnalyticsEntryForAsset>
+      viewName={ViewNames.GetTopAssetAnalytics}>
+      <Renderer />
+    </PaginatedView>
+  </>
 )
 
 export default Analytics

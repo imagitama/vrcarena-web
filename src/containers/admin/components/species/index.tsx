@@ -15,8 +15,9 @@ import LoadingIndicator from '@/components/loading-indicator'
 import NoResultsMessage from '@/components/no-results-message'
 import EditorRecordManager from '@/components/editor-record-manager'
 import ShortId from '@/components/short-id'
+import Heading from '@/components/heading'
 
-const AdminSpecies = () => {
+const View = () => {
   const [isLoading, lastErrorCode, speciesItems, , hydrate] =
     useDataStoreItems<FullSpecies>(ViewNames.GetFullSpecies, undefined, {
       orderBy: 'createdat',
@@ -107,4 +108,9 @@ const AdminSpecies = () => {
   )
 }
 
-export default AdminSpecies
+export default () => (
+  <>
+    <Heading variant="h1">Species</Heading>
+    <View />
+  </>
+)

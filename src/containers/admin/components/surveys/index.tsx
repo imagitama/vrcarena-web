@@ -195,12 +195,12 @@ const AdminSurveys = () => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
+      <Heading variant="h1">Surveys</Heading>
       <InfoMessage title="How Surveys Work" hideId="how_surveys_work">
         When a user logs in and a survey is active and they haven't submitted a
         response, the user will see a message asking them if they want to fill
         out the survey.
       </InfoMessage>
-      <Heading variant="h1">Surveys</Heading>
       <PaginatedView<FullSurvey>
         viewName={ViewNames.GetFullSurveys}
         name="admin-surveys"

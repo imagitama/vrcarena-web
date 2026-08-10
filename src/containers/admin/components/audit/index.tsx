@@ -50,6 +50,7 @@ import FormControls from '@/components/form-controls'
 import NoValueLabel from '@/components/no-value-label'
 import Tooltip from '@/components/tooltip'
 import LoadingMessage from '@/components/loading-message'
+import InfoMessage from '@/components/info-message'
 
 export const getPositivityForResult = (result: AuditResultResult) => {
   switch (result) {
@@ -696,39 +697,47 @@ const Renderer = ({
 }
 
 const AdminAudit = () => (
-  <PaginatedView<AuditQueueItemsByAsset>
-    viewName={ViewNames.GetAuditQueueItemsByAsset}
-    urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
-      ':tabName',
-      'audit'
-    )}
-    sortOptions={[
-      {
-        fieldName: 'lastmodifiedat',
-        label: 'Last Updated',
-      },
-    ]}
-    defaultFieldName="lastmodifiedat"
-    defaultDirection={OrderDirections.DESC}
-    filters={[
-      {
-        fieldName: 'lastmodifiedat',
-        type: FilterType.NotEqual,
-        subType: FilterSubType.Null,
-        label: 'Only processed',
-        defaultActive: true,
-      },
-      {
-        fieldName: 'id',
-        type: FilterType.Equal,
-        subType: FilterSubType.Id,
-        label: 'Asset ID',
-      },
-    ]}
-    isRendererForLoading>
-    {/* @ts-ignore */}
-    <Renderer />
-  </PaginatedView>
+  <>
+    <Heading variant="h1">Asset Auditing</Heading>
+    <InfoMessage title="How Auditing Works" hideId="admin-audit-info">
+      Auditing is using the auto-sync functionality to check if the source for
+      an asset is still available. It happens every 5 minutes for 1 asset that
+      either has never been audited or is the oldest.
+    </InfoMessage>
+    <PaginatedView<AuditQueueItemsByAsset>
+      viewName={ViewNames.GetAuditQueueItemsByAsset}
+      urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndPageNumberVar.replace(
+        ':tabName',
+        'audit'
+      )}
+      sortOptions={[
+        {
+          fieldName: 'lastmodifiedat',
+          label: 'Last Updated',
+        },
+      ]}
+      defaultFieldName="lastmodifiedat"
+      defaultDirection={OrderDirections.DESC}
+      filters={[
+        {
+          fieldName: 'lastmodifiedat',
+          type: FilterType.NotEqual,
+          subType: FilterSubType.Null,
+          label: 'Only processed',
+          defaultActive: true,
+        },
+        {
+          fieldName: 'id',
+          type: FilterType.Equal,
+          subType: FilterSubType.Id,
+          label: 'Asset ID',
+        },
+      ]}
+      isRendererForLoading>
+      {/* @ts-ignore */}
+      <Renderer />
+    </PaginatedView>
+  </>
 )
 
 export default AdminAudit

@@ -223,6 +223,7 @@ const AdminQueue = () => {
 export default () => {
   return (
     <>
+      <Heading variant="h1">Admin</Heading>
       <Heading variant="h2">Queue Overview</Heading>
       <ErrorBoundary>
         <AdminQueue />

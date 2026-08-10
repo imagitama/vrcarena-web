@@ -17,6 +17,7 @@ import Heading from '@/components/heading'
 import Paper from '@/components/paper'
 import StatusText from '../status-text'
 import ShortId from '../short-id'
+import InfoMessage from '../info-message'
 
 export default () => {
   const [isLoading, lastErrorCode, notices, hydrate] = useDatabaseQuery<Notice>(
@@ -43,6 +44,11 @@ export default () => {
 
   return (
     <>
+      <Heading variant="h1">Site Notices</Heading>
+      <InfoMessage title="How Notices Work" hideId="admin-notices-info">
+        Active notices are shown at the top of every page for everyone. Use them
+        for outages or friendly messages.
+      </InfoMessage>
       <Heading variant="h2">Create Notice</Heading>
       <Paper>
         <EditNoticeForm onSave={hydrate} onDone={clear} />

@@ -27,6 +27,7 @@ import { routes } from '@/routes'
 import PaginatedView, { RendererProps } from '@/components/paginated-view'
 import { FilterSubType, FilterType } from '@/filters'
 import { BanStatus } from '@/modules/users'
+import Heading from '@/components/heading'
 
 const BulkControls = ({
   ids,
@@ -233,6 +234,7 @@ const Renderer = ({ items, hydrate }: RendererProps<FullComment>) => {
 
 export default () => (
   <>
+    <Heading variant="h1">Comment Moderation</Heading>
     <PaginatedView<FullComment>
       name="admin-comments"
       viewName={ViewNames.GetFullComments}

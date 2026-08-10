@@ -34,7 +34,11 @@ import useHistory from '@/hooks/useHistory'
 import useSorting from '@/hooks/useSorting'
 import useDataStore from '@/hooks/useDataStore'
 import useIsEditor from '@/hooks/useIsEditor'
-import { OrderDirections } from '@/hooks/useDatabaseQuery'
+import {
+  Operators,
+  OrderDirections,
+  WhereClause,
+} from '@/hooks/useDatabaseQuery'
 import useScrollMemory from '@/hooks/useScrollMemory'
 
 import SortControls, { SortOption } from '@/components/sort-controls'
@@ -115,6 +119,7 @@ export type GetQueryFn<TRecord, SubViewEnum = any, TFilters = Filter<any>[]> = (
 interface SubViewConfig {
   id: string
   label: string
+  where?: WhereClause<any>[]
 }
 
 interface PaginatedViewData<TRecord extends Record<string, any>> {
@@ -243,6 +248,9 @@ const PaginatedView = <TRecord extends Record<string, any>>({
     defaultSubView ? defaultSubView : SUB_VIEW_ID_ALL
   )
 
+  const activeSubView: SubViewConfig | null =
+    subViews?.find((subView) => subView.id === selectedSubView) || null
+
   useEffect(() => {
     if (subViewNameFromUrl) {
       setSelectedSubView(subViewNameFromUrl)
@@ -327,6 +335,18 @@ const PaginatedView = <TRecord extends Record<string, any>>({
 
       if (getQuery) {
         query = getQuery(query, selectedSubView, activeFilters)
+      }
+
+      if (activeSubView && activeSubView.where) {
+        for (const whereClause of activeSubView.where) {
+          switch (whereClause[1]) {
+            case Operators.EQUALS:
+              query = query.eq(whereClause[0], whereClause[2])
+              break
+            default:
+              console.warn(`Sub view where clause not supported`, activeSubView)
+          }
+        }
       }
 
       for (const activeFilter of activeFilters) {

@@ -5,7 +5,6 @@ import { TableHead } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
 import styled from '@emotion/styled'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import LaunchIcon from '@mui/icons-material/Launch'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { keyframes } from '@mui/system'
 
@@ -106,72 +105,6 @@ const LoadingRow = () => (
     </TableCell>
   </TableRow>
 )
-
-const AssetSyncQueueCellRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
-  return (
-    <>
-      <a href={item.sourceurl} target="_blank" rel="noopener noreferrer">
-        {item.sourceurl} <LaunchIcon />
-      </a>
-      <br />
-      {item.syncedfields === null ? (
-        <NoValueLabel>(no synced fields)</NoValueLabel>
-      ) : item.createdassetid ? (
-        <>
-          Created asset{' '}
-          <Link
-            to={routes.viewAssetWithVar.replace(
-              ':assetId',
-              item.createdassetid
-            )}>
-            {item.createdassetid}
-          </Link>
-          <br />
-          {item.syncedfields.length} synced fields
-        </>
-      ) : null}
-    </>
-  )
-}
-
-const AssetSyncQueueFullRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
-  if (item.syncedfields === null) return null
-  return (
-    <>
-      Synced:
-      {item.syncedfields.map((fieldName) => (
-        <div>{fieldName}</div>
-      ))}
-    </>
-  )
-}
-
-const AssetSyncQueueParentRenderer = ({
-  item,
-}: {
-  item: AssetSyncQueueItem
-}) => {
-  const [isLoading, lastErrorCode, asset] = useDataStoreItem<FullAsset>(
-    AssetsViewNames.GetFullAssets,
-    item.createdassetid || false
-  )
-  if (lastErrorCode !== null)
-    return <ErrorMessage>Failed to load asset ({lastErrorCode})</ErrorMessage>
-  if (isLoading) return <NoValueLabel>Loading asset...</NoValueLabel>
-  if (asset === null) return '-'
-  if (asset === false)
-    return (
-      <NoResultsMessage>
-        Parent asset does not exist ({item.createdassetid})
-      </NoResultsMessage>
-    )
-
-  return (
-    <Link to={routes.viewAssetWithVar.replace(':assetId', asset.id)}>
-      {asset.title}
-    </Link>
-  )
-}
 
 const AiSuggestCellRenderer = ({ item }: { item: AiSuggestQueuedItem }) => {
   if (item.suggestions === null)
@@ -563,57 +496,6 @@ const QueueTableRow = <TItem extends QueuedItem>({
 
 const DEFAULT_LIMIT = 5
 
-const AssetSyncQueueCell = ({ fiveMinsAgo }: { fiveMinsAgo: Date }) => {
-  const [isLoading, lastErrorCode, items, hydrate] =
-    useDatabaseQuery<AssetSyncQueueItem>(
-      AssetsSyncQueueCollectionNames.AssetSyncQueue,
-      [],
-      {
-        queryName: 'asset-sync-queue-cell',
-        orderBy: ['createdat', OrderDirections.DESC],
-        limit: DEFAULT_LIMIT,
-      }
-    )
-
-  const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
-    useDataStoreItemsSync<AssetSyncQueueItem>(
-      AssetsSyncQueueCollectionNames.AssetSyncQueue,
-      {
-        queryName: 'asset-sync-queue_synced',
-      }
-    )
-
-  if (lastErrorCode !== null) {
-    return (
-      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
-    )
-  }
-
-  if (items === null) return null
-
-  return (
-    <Paper>
-      <CellHeading
-        isLoadingStale={isLoading}
-        isSubscribing={isSubscribing}
-        isSubscribed={isSubscribed}
-        lastErrorCode={lastErrorCodeSync}
-        onRefresh={hydrate}>
-        Asset Sync
-      </CellHeading>
-      <QueueTable<AssetSyncQueueItem>
-        collectionName={AssetsSyncQueueCollectionNames.AssetSyncQueue}
-        items={items}
-        newItems={liveResults}
-        isLoading={isLoading}
-        renderer={AssetSyncQueueCellRenderer}
-        fullRenderer={AssetSyncQueueFullRenderer}
-        parentRenderer={AssetSyncQueueParentRenderer}
-      />
-    </Paper>
-  )
-}
-
 const CellHeading = ({
   children,
   isLoadingStale = false,
@@ -983,11 +865,7 @@ const Queue = () => {
   const fiveMinsAgo = fiveMinsAgoRef.current
   return (
     <>
-      <Cell>
-        <ErrorBoundary>
-          <AssetSyncQueueCell fiveMinsAgo={fiveMinsAgo} />
-        </ErrorBoundary>
-      </Cell>
+      <Heading variant="h1">Queues</Heading>
       <Cell>
         <ErrorBoundary>
           <AiSuggestQueueCell />

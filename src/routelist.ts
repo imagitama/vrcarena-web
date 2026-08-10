@@ -141,6 +141,16 @@ export const adminWithTabNameVarAndSubViewNameVar =
 export const adminWithTabNameVarAndSubViewNameVarAndPageNumberVar =
   '/admin/:tabName/:subViewName/page/:pageNumber'
 
+// admin - new sub-routes
+export const adminWithTabNameVarAndSubRouteNameVar =
+  '/admin/:tabName/:subRouteName'
+export const adminWithTabNameVarAndSubRouteNameVarAndPageNumberVar =
+  '/admin/:tabName/:subRouteName/page/:pageNumber'
+export const adminWithTabNameVarAndSubRouteNameVarAndSubViewNameVar =
+  '/admin/:tabName/:subRouteName/:subViewName'
+export const adminWithTabNameVarAndSubRouteNameVarAndSubViewNameVarAndPageNumberVar =
+  '/admin/:tabName/:subRouteName/:subViewName/page/:pageNumber'
+
 // admin - specific
 export const adminHistoryWithQueryParamVars =
   '/admin/history?userId=:userId&parentType=:parentType&parentId=:parentId'
