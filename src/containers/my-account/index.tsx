@@ -307,10 +307,27 @@ const View = () => {
             contents: (
               <>
                 <Heading variant="h2">Reputation</Heading>
-                <InfoMessage>
-                  You gain rep as you perform actions on the site. Rep is used
-                  by our staff (and automated systems) to decide if to approve
-                  assets and amendments.
+                <InfoMessage title="What is reputation?" hideId="what-is-rep">
+                  Every user on the site gains reputation when they perform
+                  actions like submitting new assets, amendments, creating
+                  authors, commenting and more.
+                  <br />
+                  <br />
+                  Users also gain rep when their account ages. Staff may
+                  manually give rep as a reward.
+                  <br />
+                  <br />
+                  Staff of the site may use rep to determine if a user is
+                  trustworthy. The site may use rep to determine if it can
+                  automatically approve things they have submitted (like assets
+                  and amendments).
+                  <br />
+                  <br />
+                  <FormControls>
+                    <Button url={'/reputation'} color="secondary">
+                      Learn More
+                    </Button>
+                  </FormControls>
                 </InfoMessage>
                 <MyRep />
               </>
