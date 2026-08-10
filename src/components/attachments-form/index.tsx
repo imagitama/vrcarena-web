@@ -37,6 +37,7 @@ import NoResultsMessage from '../no-results-message'
 import Tooltip from '../tooltip'
 import { VRCArenaTheme } from '@/themes'
 import useIsEditor from '@/hooks/useIsEditor'
+import HintText from '../hint-text'
 
 const Columns = styled.div`
   display: flex;
@@ -158,7 +159,7 @@ const EditAttachmentForm = ({
   useEffect(() => {
     if (!attachment) return
     setNewFields(attachment)
-  }, [attachment !== null])
+  }, [attachment ? attachment.id : null])
 
   const onClickSave = async () => {
     if (!newFields) throw new Error('Need fields')
@@ -209,7 +210,12 @@ const EditAttachmentForm = ({
               isDisabled={!isEditor}>
               Save
             </SaveButton>
-            {!isEditor && 'Only staff can edit attachment metadata'}
+            {!isEditor && (
+              <>
+                <br />
+                <HintText>*Only staff can edit attachment metadata</HintText>
+              </>
+            )}
           </FormControls>
         </Column>
         <Column style={{ width: '5%' }}>
