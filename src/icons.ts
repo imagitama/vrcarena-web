@@ -60,8 +60,10 @@ export const Filter = React.lazy(() => import('@mui/icons-material/FilterList').
 export const Warning = React.lazy(() => import('@mui/icons-material/Warning').then(result => result.default))
 export const Refresh = React.lazy(() => import('@mui/icons-material/Refresh').then(result => result.default))
 export const Login = React.lazy(() => import('@mui/icons-material/LockOpen').then(result => result.default))
+export const ChevronUp = React.lazy(() => import('@mui/icons-material/KeyboardArrowUp').then(result => result.default))
 export const ChevronDown = React.lazy(() => import('@mui/icons-material/KeyboardArrowDown').then(result => result.default))
 export const Edit = React.lazy(() => import('@mui/icons-material/Edit').then(result => result.default))
+export const Info = React.lazy(() => import('@mui/icons-material/Info').then(result => result.default))
 
 // approval queue
 export const Decline = React.lazy(() => import('@mui/icons-material/Cancel').then(result => result.default))

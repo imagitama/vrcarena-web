@@ -1,229 +1,455 @@
-import React, { createContext, useContext, useState } from 'react'
-import { makeStyles } from '@mui/styles'
-import SaveIcon from '@mui/icons-material/Save'
+import { useEffect, useState } from 'react'
+import styled from '@emotion/styled'
 
-import useMissingDataStoreItems from '@/hooks/useMissingDataStoreItems'
-import { trackAction } from '@/analytics'
-import { handleError } from '@/error-handling'
-import { Attachment, AttachmentReason, ViewNames } from '@/modules/attachments'
+import useDataStoreEdit from '@/hooks/useDataStoreEdit'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
 
-import ItemsEditor from '@/components/items-editor'
-import AttachmentEditor from '@/components/attachment-editor'
-import AttachmentOutput from '@/components/attachment'
-import AttachmentMeta from '@/components/attachment-meta'
-import FormControls from '@/components/form-controls'
-import Button from '@/components/button'
+import {
+  CollectionNames,
+  AttachmentFields,
+  AttachmentReason,
+  AttachmentType,
+  Attachment,
+} from '@/modules/attachments'
+import {
+  ChevronUp as ChevronUpIcon,
+  ChevronDown as ChevronDownIcon,
+  Info as InfoIcon,
+} from '@/icons'
+import { bucketNames } from '@/file-uploading'
+import { getIsUrlAYoutubeVideo } from '@/utils'
 
-const useStyles = makeStyles({
-  output: {
-    overflow: 'hidden',
-    '& img': {
-      width: 'auto',
-      maxHeight: '300px',
-    },
-  },
-  item: {},
-})
+import TextInput from '../text-input'
+// import Select, { MenuItem } from '../select'
+import Button, { SaveButton } from '../button'
+import CheckboxInput from '../checkbox-input'
+import LoadingIndicator from '../loading-indicator'
+import SuccessMessage from '../success-message'
+import ErrorMessage from '../error-message'
+import UrlInput from '../url-input'
+import FormControls from '../form-controls'
+import ImageUploader from '../image-uploader'
+import AttachmentOutput from '../attachment'
+import Heading from '../heading'
+import MovableList from '../movable-list'
+import NoResultsMessage from '../no-results-message'
+import Tooltip from '../tooltip'
+import { VRCArenaTheme } from '@/themes'
 
-interface AttachmentFormContextValue {
-  storeAttachmentsData: (attachmentData: Attachment) => void
-}
-const AttachmentFormContext = createContext<AttachmentFormContextValue>(
-  undefined as any
-)
-const useAttachmentForm = () => useContext(AttachmentFormContext)
+const Columns = styled.div`
+  display: flex;
+  align-items: center;
+`
+const Column = styled.div`
+  padding: 0.25rem;
+`
+const Form = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+const Item = styled.div`
+  border-radius: ${({ theme }: { theme?: VRCArenaTheme }) =>
+    theme!.shape.borderRadius}px;
+  border-bottom: 0.25rem solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+`
 
-const Editor = ({
-  item,
-  reason,
-  parentTable,
-  parentId,
-  onChange,
-  onDone,
-  attachmentsData,
+const CreateAttachmentForm = ({
+  onCreate,
+  onMoveUp,
+  onMoveDown,
+  ...props
 }: {
-  item: string | null
-  onChange: (id: string) => void
-  onDone: (id: string) => void
-  // additional
+  url: string
+  onCreate: (id: string) => void
+  onMoveUp?: () => void
+  onMoveDown?: () => void
+} & Omit<AttachmentFormProps, 'newFields'>) => {
+  const [isSaving, isSuccess, lastErrorCode, create] = useDataStoreCreate<
+    AttachmentFields,
+    Attachment
+  >(CollectionNames.Attachments)
+  const [newFields, setNewFields] = useState<Partial<AttachmentFields>>({
+    url: props.url,
+    reason: props.reason,
+    type: props.type,
+    parenttable: props.parentTable,
+    parentid: props.parentId,
+    title: null,
+    description: null,
+    isadult: null,
+  })
+
+  const onClickCreate = async () => {
+    const result = await create(newFields)
+    if (!result) throw new Error('No result')
+    onCreate(result.id)
+  }
+
+  return (
+    <Item>
+      <Columns>
+        <Column style={{ width: '20%' }}>
+          <AttachmentOutput
+            attachment={{ url: props.url, type: props.type } as Attachment}
+            width="100%"
+          />
+        </Column>
+        <Column style={{ width: '60%' }}>
+          <AttachmentForm
+            newFields={newFields}
+            onChange={(fields) => setNewFields(fields)}
+            {...props}
+          />
+        </Column>
+        <Column style={{ width: '15%' }}>
+          {isSaving ? (
+            <LoadingIndicator />
+          ) : isSuccess ? (
+            <SuccessMessage>Attachment created successfully</SuccessMessage>
+          ) : lastErrorCode !== null ? (
+            <ErrorMessage>
+              Failed to create attachment (code {lastErrorCode})
+            </ErrorMessage>
+          ) : null}
+          <FormControls>
+            <SaveButton onClick={onClickCreate}>Create & Add</SaveButton>
+          </FormControls>
+        </Column>
+        {onMoveUp && onMoveDown && (
+          <Column style={{ width: '5%' }}>
+            <div>
+              <Button color="secondary" onClick={onMoveUp}>
+                <ChevronUpIcon />
+              </Button>
+              <Button color="secondary" onClick={onMoveDown}>
+                <ChevronDownIcon />
+              </Button>
+            </div>
+          </Column>
+        )}
+      </Columns>
+    </Item>
+  )
+}
+
+const EditAttachmentForm = ({
+  id,
+  onMoveUp,
+  onMoveDown,
+  ...props
+}: { id: string; onMoveUp: () => void; onMoveDown: () => void } & Omit<
+  AttachmentFormProps,
+  'newFields'
+>) => {
+  const [isLoading, lastErrorCodeLoading, attachment] =
+    useDataStoreItem<Attachment>(CollectionNames.Attachments, id)
+  const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<
+    AttachmentFields,
+    Attachment
+  >(CollectionNames.Attachments, id)
+  const [newFields, setNewFields] = useState<null | Partial<AttachmentFields>>(
+    null
+  )
+
+  useEffect(() => {
+    if (!attachment) return
+    setNewFields(attachment)
+  }, [attachment !== null])
+
+  const onClickSave = async () => {
+    if (!newFields) throw new Error('Need fields')
+    const result = await save(newFields)
+    if (!result) throw new Error('No result')
+    // onCreate(result.id)
+  }
+
+  return (
+    <Item>
+      <Columns>
+        {attachment && (
+          <Column style={{ width: '20%' }}>
+            <AttachmentOutput width="100%" attachment={attachment} />
+          </Column>
+        )}
+        <Column style={{ width: '60%' }}>
+          {isLoading ? (
+            <LoadingIndicator message="Loading attachment..." />
+          ) : lastErrorCodeLoading !== null ? (
+            <ErrorMessage>
+              Failed to load attachment (code {lastErrorCodeLoading})
+            </ErrorMessage>
+          ) : null}
+          {newFields && (
+            <AttachmentForm
+              newFields={newFields}
+              onChange={(fields) => setNewFields(fields)}
+              {...props}
+            />
+          )}
+        </Column>
+        <Column style={{ width: '15%' }}>
+          {isSaving ? (
+            <LoadingIndicator />
+          ) : isSuccess ? (
+            <SuccessMessage>Attachment saved successfully</SuccessMessage>
+          ) : lastErrorCode !== null ? (
+            <ErrorMessage>
+              Failed to save attachment (code {lastErrorCode})
+            </ErrorMessage>
+          ) : null}
+          <FormControls>
+            <SaveButton color="secondary" onClick={onClickSave}>
+              Save
+            </SaveButton>
+          </FormControls>
+        </Column>
+        <Column style={{ width: '5%' }}>
+          <div>
+            <Button color="secondary" onClick={onMoveUp}>
+              <ChevronUpIcon />
+            </Button>
+            <Button color="secondary" onClick={onMoveDown}>
+              <ChevronDownIcon />
+            </Button>
+          </div>
+        </Column>
+      </Columns>
+    </Item>
+  )
+}
+
+interface AttachmentFormProps {
+  newFields: Partial<AttachmentFields>
+  onChange?: (fields: Partial<AttachmentFields>) => void
   reason: AttachmentReason
+  type?: AttachmentType
   parentTable: string
   parentId: string
-  attachmentsData: Attachment[]
-}) => {
-  const { storeAttachmentsData } = useAttachmentForm()
-
-  const attachmentData = attachmentsData.find(
-    (attachmentItem) => attachmentItem.id === item
-  )
-
-  return (
-    <AttachmentEditor
-      reason={reason}
-      parentTable={parentTable}
-      parentId={parentId}
-      attachmentId={item || undefined}
-      existingAttachment={attachmentData}
-      onDone={(createdAttachment) => {
-        console.debug(`AttachmentsForm.Editor.onDone`, {
-          createdAttachment,
-        })
-
-        // after creating/editing a record we dont want to read it again
-        // instead we can store whatever we sent off for future re-renders
-        // NOTE: could mean stale data especially if two people edit at same time
-        storeAttachmentsData(createdAttachment)
-
-        onDone(createdAttachment.id)
-      }}
-    />
-  )
 }
 
-const Renderer = ({
-  item,
-  attachmentsData,
-}: {
-  item: string | null
-  attachmentsData: Attachment[]
-}) => {
-  const classes = useStyles()
-
-  if (!item) {
-    return <>Click the edit button to add attachment</>
-  }
-
-  const attachmentData = attachmentsData.find(
-    (attachmentItem) => attachmentItem.id === item
-  )
-
-  if (!attachmentData) {
-    return <>Attachment not found - are you sure it hasn't been deleted?</>
+const AttachmentForm = ({
+  newFields,
+  onChange,
+  reason,
+  type,
+  parentTable,
+  parentId,
+}: AttachmentFormProps) => {
+  const updateField = (fieldName: keyof AttachmentFields, newVal: any) => {
+    if (!onChange) return
+    onChange({
+      ...(newFields || {}),
+      [fieldName]: newVal,
+    })
   }
 
   return (
-    <div className={classes.output}>
-      <AttachmentOutput attachment={attachmentData} />
-      <br />
-      <AttachmentMeta attachment={attachmentData} />
-    </div>
+    <Form>
+      {/* <Select
+        label="Reason"
+        value={newFields.reason}
+        onChange={(e) =>
+          updateField('reason', e.target.value as AttachmentReason)
+        }
+        size="small">
+        {Object.values(AttachmentReason).map((reason) => (
+          <MenuItem key={reason} value={reason}>
+            {reason}
+          </MenuItem>
+        ))}
+      </Select>
+      <Select
+        label="Type"
+        value={newFields.type}
+        onChange={(e) => updateField('type', e.target.value as AttachmentType)}
+        size="small">
+        {Object.values(AttachmentType).map((type) => (
+          <MenuItem key={type} value={type}>
+            {type}
+          </MenuItem>
+        ))}
+      </Select> */}
+      <TextInput
+        fullWidth
+        label="Title (optional)"
+        value={newFields.title || ''}
+        onChange={(e) => updateField('title', e.target.value)}
+      />
+      <TextInput
+        fullWidth
+        label="Description (optional)"
+        minRows={2}
+        value={newFields.description || ''}
+        onChange={(e) => updateField('description', e.target.value)}
+      />
+      <TextInput
+        fullWidth
+        label="License (optional)"
+        value={newFields.license || ''}
+        onChange={(e) => updateField('license', e.target.value)}
+      />
+      <CheckboxInput
+        label={
+          <>
+            Do not specify adult or not (inherit from asset){' '}
+            <Tooltip title="If the parent asset is adult, this attachment is adult too.">
+              <InfoIcon />
+            </Tooltip>
+          </>
+        }
+        value={newFields.isadult === null}
+        onChange={(newVal) =>
+          updateField('isadult', newVal === true ? null : false)
+        }
+      />
+      <CheckboxInput
+        label="Is adult"
+        value={newFields.isadult === true}
+        onChange={(newVal) => updateField('isadult', newVal)}
+        isDisabled={newFields.isadult === null}
+      />
+    </Form>
   )
 }
 
-const isIdActuallyId = (thing: any): thing is string =>
-  thing !== '' && thing !== null
+function moveUp(ids: string[], id: string): string[] {
+  const index = ids.indexOf(id)
+  if (index <= 0) return ids // already first, or not found
+  const newIds = [...ids]
+  ;[newIds[index - 1], newIds[index]] = [newIds[index], newIds[index - 1]]
+  return newIds
+}
+
+function moveDown(ids: string[], id: string): string[] {
+  const index = ids.indexOf(id)
+  if (index === -1 || index === ids.length - 1) return ids // not found, or already last
+  const newIds = [...ids]
+  ;[newIds[index], newIds[index + 1]] = [newIds[index + 1], newIds[index]]
+  return newIds
+}
 
 const AttachmentsForm = ({
   reason,
-  ids,
   parentTable,
   parentId,
-  attachmentsData,
+  ids,
   onChange,
-  onSave,
-  actionCategory,
 }: {
   reason: AttachmentReason
-  ids: string[]
   parentTable: string
   parentId: string
-  attachmentsData?: Attachment[]
-  onChange?: (attachmentIds: string[], attachmentDatas: Attachment[]) => void
-  onSave?: (attachmentIds: string[], attachmentDatas: Attachment[]) => void
-  actionCategory?: string
+  ids?: string[]
+  onChange: (ids: string[]) => void
 }) => {
-  const [newAttachmentIds, setNewAttachmentIds] =
-    useState<(string | null)[]>(ids)
-  const [newAttachmentsDatas, setNewAttachmentDatas] = useState<Attachment[]>(
-    []
-  )
-  const [isLoading, lastErrorCode, attachments] =
-    useMissingDataStoreItems<Attachment>(
-      ViewNames.GetPublicAttachments,
-      ids,
-      attachmentsData || [],
-      { queryName: 'attachments-form-ids' }
-    )
-  const classes = useStyles()
-
-  const idsToUse = onChange ? ids : newAttachmentIds
-
-  const onEditorChange = (newIds: string[]) => {
-    if (onChange) {
-      onChange(newIds, newAttachmentsDatas)
-    } else {
-      setNewAttachmentIds(newIds)
-    }
-  }
-
-  const onClickSave = async () => {
-    try {
-      const newValue = newAttachmentIds.filter(isIdActuallyId)
-
-      console.debug(`AttachmentsForm.onSave`, { newValue })
-
-      if (actionCategory) {
-        trackAction(actionCategory, 'Click save attachments form button')
-      }
-
-      onSave!(newValue, newAttachmentsDatas)
-    } catch (err) {
-      console.error(err)
-      handleError(err)
-    }
-  }
-
-  const allAttachmentDatas = (attachmentsData || [])
-    .filter(
-      (existingDataItem) =>
-        !newAttachmentsDatas.find(
-          (newItem) => newItem.id === existingDataItem.id
-        )
-    )
-    .concat(newAttachmentsDatas)
-    .concat(attachments || [])
+  const [isInImageMode, setIsImageMode] = useState(true)
+  const [newUrls, setNewUrls] = useState<null | string[]>(null)
+  const [urlTextVal, setUrlTextVal] = useState('')
 
   return (
-    <AttachmentFormContext.Provider
-      value={{
-        storeAttachmentsData: (data) =>
-          setNewAttachmentDatas((currentDatas) =>
-            currentDatas
-              .filter((existingItem) => existingItem.id !== data.id)
-              .concat([data])
-          ),
-      }}>
-      <ItemsEditor<
-        string,
-        {
-          reason: AttachmentReason
-          parentTable: string
-          parentId: string
-          attachmentsData: Attachment[]
-        }
-      >
-        items={idsToUse as any} // TODO: fix up types
-        onChange={(newIds) => onEditorChange(newIds)}
-        editor={Editor}
-        renderer={Renderer}
-        commonProps={{
-          reason,
-          parentTable,
-          parentId,
-          attachmentsData: allAttachmentDatas,
-        }}
-        emptyItem={''}
-        itemClassName={classes.item}
-        nameSingular="attachment"
-      />
-      {onSave && (
-        <FormControls>
-          <Button icon={<SaveIcon />} onClick={onClickSave} size="large">
-            Save Asset
-          </Button>
-        </FormControls>
+    <>
+      <Heading variant="h4">New Attachment</Heading>
+      <FormControls>
+        <Button
+          checked={isInImageMode}
+          onClick={() => setIsImageMode(true)}
+          size="large"
+          color="secondary"
+          hollow={false}>
+          Images
+        </Button>{' '}
+        <Button
+          checked={!isInImageMode}
+          onClick={() => setIsImageMode(false)}
+          size="large"
+          color="secondary"
+          hollow={false}>
+          YouTube Video
+        </Button>
+      </FormControls>
+      {isInImageMode ? (
+        <ImageUploader
+          allowMultiple
+          allowCropping={false}
+          bucketName={bucketNames.attachments}
+          onDone={(urls) =>
+            setNewUrls((currentVal) => currentVal?.concat(urls) || urls)
+          }
+        />
+      ) : (
+        <UrlInput
+          label="YouTube video URL"
+          value={urlTextVal}
+          onChange={(newVal) => setUrlTextVal(newVal)}
+          button={
+            <Button
+              onClick={() =>
+                setNewUrls(
+                  (currentVal) =>
+                    currentVal?.concat(urlTextVal.trim()) || [urlTextVal.trim()]
+                )
+              }
+              isDisabled={!getIsUrlAYoutubeVideo(urlTextVal.trim())}>
+              Add
+            </Button>
+          }
+        />
       )}
-    </AttachmentFormContext.Provider>
+      {newUrls?.length ? (
+        <>
+          <Heading variant="h4">Add Attachments</Heading>
+          <MovableList>
+            {newUrls.map((url) => (
+              <div key={url}>
+                <CreateAttachmentForm
+                  url={url}
+                  reason={reason}
+                  type={
+                    getIsUrlAYoutubeVideo(url)
+                      ? AttachmentType.Url
+                      : AttachmentType.Image
+                  }
+                  parentTable={parentTable}
+                  parentId={parentId}
+                  onCreate={(id) => {
+                    onChange(ids?.concat(id) || [id])
+                    setNewUrls(
+                      (currentVal) => currentVal?.filter((v) => v !== url) || []
+                    )
+                  }}
+                  onMoveUp={() => setNewUrls(moveUp(newUrls, url))}
+                  onMoveDown={() => setNewUrls(moveDown(newUrls, url))}
+                />
+              </div>
+            ))}
+          </MovableList>
+        </>
+      ) : null}
+      {ids && (
+        <>
+          <Heading variant="h4">Edit Attachments</Heading>
+          {ids.length ? (
+            <MovableList>
+              {ids.map((id) => (
+                <div key={id}>
+                  <EditAttachmentForm
+                    id={id}
+                    reason={reason}
+                    parentTable={parentTable}
+                    parentId={parentId}
+                    onMoveUp={() => onChange(moveUp(ids, id))}
+                    onMoveDown={() => onChange(moveDown(ids, id))}
+                  />
+                </div>
+              ))}
+            </MovableList>
+          ) : (
+            <NoResultsMessage>No attachments</NoResultsMessage>
+          )}
+        </>
+      )}
+    </>
   )
 }
 

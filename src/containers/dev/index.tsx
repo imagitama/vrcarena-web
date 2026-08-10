@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Helmet } from '@unhead/react/helmet'
+import AttachmentsForm from '@/components/attachments-form'
+import { AttachmentReason } from '@/modules/attachments'
 
 export default () => {
+  const [ids, setIds] = useState<undefined | string[]>(undefined)
   return (
     <>
       <Helmet>
@@ -10,6 +13,13 @@ export default () => {
       </Helmet>
       <div>
         <h1>Components</h1>
+        <AttachmentsForm
+          reason={AttachmentReason.AssetFile}
+          parentTable="assets"
+          parentId="abc"
+          ids={ids}
+          onChange={(newIds) => setIds(newIds)}
+        />
       </div>
     </>
   )

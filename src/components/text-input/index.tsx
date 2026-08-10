@@ -28,11 +28,12 @@ const useStyles = makeStyles({
       '& > *': {
         paddingLeft: '8px',
         paddingRight: '8px',
+        fontSize: '75%',
       },
     },
     '&&': {
-      paddingLeft: '8px',
-      paddingRight: '8px',
+      // paddingLeft: '8px',
+      // paddingRight: '8px',
     },
   },
   large: {

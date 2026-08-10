@@ -343,7 +343,7 @@ export const ClearButton = (args: ButtonProps) => (
 
 export const SaveButton = (args: ButtonProps) => (
   <Button icon={<SaveIcon />} color="secondary" hollow {...args}>
-    Save
+    {args.children || 'Save'}
   </Button>
 )
 

@@ -5,8 +5,8 @@ export interface AttachmentFields extends Record<string, unknown> {
   url: string
   type: AttachmentType | null
   thumbnailurl: string
-  title: string
-  description: string
+  title: string | null
+  description: string | null
   license: string | null
   isadult: boolean | null // null means inherit
   tags: string[]
