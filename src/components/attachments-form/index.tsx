@@ -92,7 +92,7 @@ const CreateAttachmentForm = ({
   return (
     <Item>
       <Columns>
-        <Column style={{ width: '20%' }}>
+        <Column style={{ width: '40%' }}>
           <AttachmentOutput
             attachment={{ url: props.url, type: props.type } as Attachment}
             width="100%"
@@ -104,8 +104,6 @@ const CreateAttachmentForm = ({
             onChange={(fields) => setNewFields(fields)}
             {...props}
           />
-        </Column>
-        <Column style={{ width: '20%' }}>
           {isSaving ? (
             <LoadingIndicator />
           ) : isSuccess ? (
@@ -172,7 +170,7 @@ const EditAttachmentForm = ({
     <Item>
       <Columns>
         {attachment && (
-          <Column style={{ width: '20%' }}>
+          <Column style={{ width: '40%' }}>
             <AttachmentOutput width="100%" attachment={attachment} />
           </Column>
         )}
@@ -192,8 +190,6 @@ const EditAttachmentForm = ({
               isDisabled={!isEditor}
             />
           )}
-        </Column>
-        <Column style={{ width: '20%' }}>
           {isSaving ? (
             <LoadingIndicator />
           ) : isSuccess ? (

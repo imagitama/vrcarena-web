@@ -3,6 +3,8 @@ import ReactPlayer from 'react-player'
 import { BaseReactPlayerProps } from 'react-player/base'
 
 import { handleError } from '@/error-handling'
+import { getIsUrlAYoutubeVideo } from '@/utils'
+import YouTubePlayer from '../youtube-player'
 
 const errorStates = {
   ABORTED: 'aborted',
@@ -47,16 +49,15 @@ function getLabelForErrorState(errorState: string): string {
   }
 }
 
-export default ({
-  url,
-  onPlay = undefined,
-  config = {},
-  ...otherProps
-}: {
-  url: string
-  autoplay?: boolean
-  onPlay?: () => void
-} & BaseReactPlayerProps) => {
+export default (
+  props: {
+    url: string
+    autoplay?: boolean
+    onPlay?: () => void
+  } & BaseReactPlayerProps
+) => {
+  const { url, onPlay = undefined, config = {}, ...otherProps } = props
+
   const [errorState, setErrorState] = useState<string | null>(null)
 
   const configToUse = {
@@ -77,6 +78,8 @@ export default ({
       },
     },
   }
+
+  if (getIsUrlAYoutubeVideo(url)) return <YouTubePlayer {...props} />
 
   return (
     <>

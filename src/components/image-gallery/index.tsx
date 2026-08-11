@@ -4,15 +4,18 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useMediaQuery } from 'react-responsive'
 import InfoIcon from '@mui/icons-material/Info'
+import styled from '@emotion/styled'
 
-import { getImageUrlFromYouTubeUrl, getIsUrlAYoutubeVideo } from '@/utils'
+import { getIsUrlAYoutubeVideo } from '@/utils'
 import { mediaQueryForMobiles, queryForMobiles } from '@/media-queries'
 
 import VideoPlayer from '@/components/video-player'
 import Button from '@/components/button'
 import Link from '../link'
-import { routes } from '@/routes'
 import Tooltip from '../tooltip'
+import { routes } from '@/routes'
+import { Close as CloseIcon } from '@/icons'
+import { YouTubePlaceholder } from '../youtube-player'
 
 const useStyles = makeStyles({
   root: {
@@ -93,6 +96,9 @@ const useStyles = makeStyles({
   caption: {
     marginTop: '0.5rem',
   },
+  videoPlayerWrapper: {
+    width: '100%',
+  },
   videoPlayerControls: {
     marginTop: '0.25rem',
     display: 'flex',
@@ -142,24 +148,31 @@ export const Image = ({
         isExpanded && isYoutube ? classes.youtube : ''
       } ${isExpanded && !isSelected ? classes.hidden : ''} image`}>
       {isExpanded && isYoutube ? (
-        <>
+        <div className={classes.videoPlayerWrapper}>
           <VideoPlayer url={image.url} autoplay width="100%" height="500px" />
           {isMobile ? null : onClick ? (
             <div className={classes.videoPlayerControls}>
-              <Button onClick={() => onClick()}>Close Player</Button>
+              <Button
+                onClick={() => onClick()}
+                color="secondary"
+                icon={<CloseIcon />}>
+                Close Player
+              </Button>
             </div>
           ) : null}
-        </>
+        </div>
       ) : (
-        <img
-          src={
-            isYoutube
-              ? getImageUrlFromYouTubeUrl(image.url)
-              : image.thumbnailUrl || image.url
-          }
-          alt={image.alt || ''}
-          onClick={onClick}
-        />
+        <>
+          {!isYoutube || image.thumbnailUrl ? (
+            <img
+              src={image.thumbnailUrl || image.url}
+              alt={image.alt || ''}
+              onClick={onClick}
+            />
+          ) : (
+            <YouTubePlaceholder onClick={onClick} />
+          )}
+        </>
       )}
       {image.caption ? (
         <div className={classes.caption}>{image.caption}</div>

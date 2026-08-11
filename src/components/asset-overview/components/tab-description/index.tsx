@@ -33,21 +33,11 @@ export default () => {
   const classes = useStyles()
 
   var content = (
-    <div>
-      {asset && asset.sketchfabembedurl ? (
-        <div className={classes.sketchfabWrapper}>
-          <SketchfabEmbed
-            url={asset.sketchfabembedurl}
-            className={classes.sketchfab}
-          />
-        </div>
-      ) : null}
-      <div className={classes.description}>
-        <Markdown
-          source={asset ? asset.description : ''}
-          replaceImagesWithButtons
-        />
-      </div>
+    <div className={classes.description}>
+      <Markdown
+        source={asset ? asset.description : ''}
+        replaceImagesWithButtons
+      />
     </div>
   )
 
