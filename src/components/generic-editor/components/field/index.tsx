@@ -111,18 +111,15 @@ const Field = ({
       classes={{
         expanded: classes.expanded,
       }}>
-      <AccordionSummary className={classes.title}>
+      <AccordionSummary
+        className={classes.title}
+        expandIcon={<ChevronDownIcon />}>
         <span>{editableField.label || ''} </span>
         {editableField.isRequired && (
           <StatusText positivity={-1} className={classes.requiredLabel}>
             {' '}
             <WarningIcon /> Required
           </StatusText>
-        )}
-        {isExpanded === false && (
-          <ExpandHint>
-            <ChevronDownIcon />
-          </ExpandHint>
         )}
       </AccordionSummary>
       <AccordionDetails className={classes.content}>
