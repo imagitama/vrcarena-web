@@ -39,6 +39,7 @@ export interface SurveyResponseAnswer {
 export interface SurveyResponseFields extends Record<string, unknown> {
   survey: string // id
   answers: SurveyResponseAnswer[]
+  contactallowed: boolean // default true
 }
 
 export interface SurveyResponse extends SurveyResponseFields {

@@ -185,6 +185,11 @@ const ResponsesRenderer = ({ items }: { items?: FullSurveyResponse[] }) => {
               {answerData.answer || <NoValueLabel>No answer</NoValueLabel>}
             </div>
           ))}
+          <hr />
+          Allows contact (eg. via Discord):{' '}
+          <StatusText positivity={selectedResponse.contactallowed ? 1 : -1}>
+            {selectedResponse.contactallowed ? 'Yes' : 'No'}
+          </StatusText>
         </Dialog>
       )}
     </>

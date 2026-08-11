@@ -26,6 +26,7 @@ import useDataStoreItems from '@/hooks/useDataStoreItems'
 import useGlobalState from '@/hooks/useGlobalState'
 import InfoMessage from '../info-message'
 import { hideNoticeById } from '@/hooks/useNotices'
+import CheckboxInput from '../checkbox-input'
 
 const MessageText = styled.div`
   font-size: 125%;
@@ -56,6 +57,7 @@ const SurveyDialog = ({
       answer: '',
     }))
   )
+  const [allowContact, setAllowContact] = useState(true)
 
   const onClickSubmit = async () => {
     await create({
@@ -102,6 +104,11 @@ const SurveyDialog = ({
             />
           </div>
         ))}
+        <CheckboxInput
+          value={allowContact}
+          onChange={setAllowContact}
+          label="Allow staff to contact me privately about my survey response (eg. via Discord)"
+        />
         <FormControls>
           <Button onClick={onDone} color="secondary" isDisabled={isBusy}>
             Cancel
