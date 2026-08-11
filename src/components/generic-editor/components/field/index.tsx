@@ -5,9 +5,10 @@ import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import FormHelperText from '@mui/material/FormHelperText'
+import styled from '@emotion/styled'
 
 import { EditableField } from '@/editable-fields'
-import { Warning as WarningIcon } from '@/icons'
+import { ChevronDown as ChevronDownIcon, Warning as WarningIcon } from '@/icons'
 
 import Heading from '@/components/heading'
 import Markdown from '@/components/markdown'
@@ -17,6 +18,7 @@ import { mediaQueryForMobiles } from '@/media-queries'
 
 const useStyles = makeStyles({
   root: {
+    position: 'relative',
     display: 'flex',
     [mediaQueryForMobiles]: {
       flexWrap: 'wrap',
@@ -70,6 +72,15 @@ const useStyles = makeStyles({
   },
 })
 
+const ExpandHint = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 5px;
+  right: 0;
+  font-size: 150%;
+`
+
 const Field = ({
   editableField,
   children,
@@ -107,6 +118,11 @@ const Field = ({
             {' '}
             <WarningIcon /> Required
           </StatusText>
+        )}
+        {isExpanded === false && (
+          <ExpandHint>
+            <ChevronDownIcon />
+          </ExpandHint>
         )}
       </AccordionSummary>
       <AccordionDetails className={classes.content}>
