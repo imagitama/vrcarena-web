@@ -56,6 +56,7 @@ import AdminSpecies from './components/species'
 import AdminNotifications from './components/notifications'
 import AdminSurveys from './components/surveys'
 import AdminAssetSyncQueue from './components/queue/asset-sync'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const drawerWidth = 240
 
@@ -63,6 +64,18 @@ const StyledDrawer = styled.div`
   width: ${drawerWidth}px;
   flex-shrink: 0;
   margin-right: 0.5rem;
+  ${mediaQueryForTabletsOrBelow} {
+    width: 100%;
+    margin-right: 0;
+  }
+  & ul {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    ${mediaQueryForTabletsOrBelow} {
+      flex-direction: row;
+    }
+  }
 `
 
 const StyledListItem = styled.div`
@@ -78,14 +91,26 @@ const StyledListItem = styled.div`
   }
   ${({ isChild }: { isChild?: boolean }) =>
     isChild ? `margin-left: 1rem;` : ''}
+  ${mediaQueryForTabletsOrBelow} {
+    margin-right: 0.5rem;
+  }
 `
 
 const Root = styled.div`
   display: flex;
+  ${mediaQueryForTabletsOrBelow} {
+    flex-direction: column;
+  }
 `
 
 const Content = styled.div`
   width: 100%;
+`
+
+const StyledListItemIcon = styled(ListItemIcon)`
+  ${mediaQueryForTabletsOrBelow} {
+    min-width: 20px;
+  }
 `
 
 interface NavItem {
@@ -227,7 +252,7 @@ const Menu = () => {
           <StyledListItem
           // activeClassName={classes.active}
           >
-            <ListItemIcon></ListItemIcon>
+            <StyledListItemIcon />
             <ListItemText primary={'Overview'} />
           </StyledListItem>
         </NavLink>
@@ -243,7 +268,9 @@ const Menu = () => {
 
               // activeClassName={classes.active}
               >
-                <ListItemIcon>{React.createElement(item.icon)}</ListItemIcon>
+                <StyledListItemIcon>
+                  {React.createElement(item.icon)}
+                </StyledListItemIcon>
                 <ListItemText primary={item.label} />
               </StyledListItem>
             </NavLink>
@@ -258,7 +285,9 @@ const Menu = () => {
                   isChild
                   // activeClassName={classes.active}
                 >
-                  <ListItemIcon>{React.createElement(child.icon)}</ListItemIcon>
+                  <StyledListItemIcon>
+                    {React.createElement(child.icon)}
+                  </StyledListItemIcon>
                   <ListItemText primary={child.label} />
                 </StyledListItem>
               </NavLink>
