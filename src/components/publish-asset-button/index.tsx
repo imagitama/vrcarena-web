@@ -184,7 +184,8 @@ const PublishAssetButton = ({
   const isSuccess = lastResult?.success === true
 
   if (isSuccess) {
-    if (isAlreadyPublished) {
+    // flip
+    if (!isAlreadyPublished) {
       return (
         <SuccessMessage>
           Asset removed from the approval queue successfully. It is now a draft
