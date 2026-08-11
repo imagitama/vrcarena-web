@@ -76,18 +76,26 @@ const Field = ({
   isAccordion,
   isRequired,
   startExpanded,
+  isExpanded,
+  onExpandChange,
 }: {
   editableField: EditableField<any>
   children: React.ReactNode
   isAccordion?: boolean
   isRequired?: boolean
   startExpanded?: boolean
+  isExpanded?: boolean
+  onExpandChange?: (newVal: boolean) => void
 }) => {
   const classes = useStyles()
 
   return isAccordion ? (
     <Accordion
+      expanded={isExpanded}
       defaultExpanded={startExpanded}
+      onChange={(e, newVal) =>
+        onExpandChange ? onExpandChange(newVal) : undefined
+      }
       className={classes.root}
       classes={{
         expanded: classes.expanded,

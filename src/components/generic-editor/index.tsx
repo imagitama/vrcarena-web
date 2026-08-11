@@ -41,6 +41,7 @@ import { GenericInput } from './types'
 import IntInput from './components/int-input'
 import FloatInput from './components/float-input'
 import { getUserFriendlyMessageFromCode } from '@/data-store'
+import useStorage from '@/hooks/useStorage'
 
 function getInputForFieldType<TRecord extends Record<string, any>>(
   type: keyof typeof fieldTypes
@@ -134,9 +135,10 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   overrideFields = null,
   onFieldChanged = undefined,
   onFieldsChanged = undefined,
-  // asset editor mini
+  // asset editor
   isAccordion = false,
   startExpanded = false,
+  startExpandedKey,
   onDone = undefined,
   itemTypeSingular = '',
   showTopSaveBtn = false,
@@ -159,9 +161,10 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   onFieldChanged?: (fieldName: string, newValue: any) => void
   onFieldsChanged?: (fields: Partial<TRecord>) => void
   showControls?: boolean
-  // asset editor mini
+  // asset editor
   isAccordion?: boolean
   startExpanded?: boolean
+  startExpandedKey?: string // to persist
   onDone?: () => void
   itemTypeSingular?: string
   showTopSaveBtn?: boolean
@@ -197,6 +200,54 @@ const GenericEditor = <TRecord extends Record<string, any>>({
     []
   )
   const rootElementRef = useRef<HTMLDivElement>(null)
+  const [storedIsStartingExpanded, setStoredIsStartingExpanded] = useStorage<
+    boolean | null
+  >(startExpandedKey ? `generic-editor-expanded_${startExpandedKey}` : false)
+
+  const [fieldsExpansionState, setFieldsExpansionState] = useState<{
+    [fieldName: string]: boolean
+  }>(
+    editableFieldsToUse.reduce(
+      (finalState, { name }) => ({
+        ...finalState,
+        [name]:
+          storedIsStartingExpanded !== null ? storedIsStartingExpanded : true,
+      }),
+      {}
+    )
+  )
+
+  const expandAllFields = () => {
+    setFieldsExpansionState((currentVals) => {
+      const newVal = { ...currentVals }
+      for (const fieldName in currentVals) {
+        newVal[fieldName] = true
+      }
+      return newVal
+    })
+    setStoredIsStartingExpanded(true)
+  }
+
+  const collapseAllFields = () => {
+    setFieldsExpansionState((currentVals) => {
+      const newVal = { ...currentVals }
+      for (const fieldName in currentVals) {
+        newVal[fieldName] = false
+      }
+      return newVal
+    })
+    setStoredIsStartingExpanded(false)
+  }
+
+  const updateFieldExpanded = (fieldName: string, isExpanded: boolean) =>
+    setFieldsExpansionState((currentVals) => ({
+      ...currentVals,
+      [fieldName]: isExpanded,
+    }))
+
+  const isAllExpanded = Object.values(fieldsExpansionState).every(
+    (item) => item === true
+  )
 
   useEffect(() => {
     if (!rawRecord) {
@@ -344,14 +395,22 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   const mapEditableFieldToFieldOutput = (editableField: EditableField<any>) => {
     const Input = getInputForFieldType(editableField.type)
 
+    // console.debug(`GenericEditor.render`, {
+    //   startExpanded,
+    //   isStartingExpanded,
+    //   isForcingExpanded,
+    // })
+
     return (
       <Suspense fallback={<LoadingIndicator message="Loading field..." />}>
         <Field
           key={editableField.name as string}
           editableField={editableField}
-          // for mini editor
           isAccordion={isAccordion}
-          startExpanded={startExpanded}>
+          onExpandChange={(newVal) =>
+            updateFieldExpanded(editableField.name as string, newVal)
+          }
+          isExpanded={fieldsExpansionState[editableField.name as string]}>
           <Input
             editableField={editableField}
             value={formFields[editableField.name as string]}
@@ -379,10 +438,20 @@ const GenericEditor = <TRecord extends Record<string, any>>({
         size="large">
         {id ? 'Save' : 'Create'} {itemTypeSingular}
       </Button>
+      {isAccordion && (
+        <Button
+          color="secondary"
+          hollow
+          size="large"
+          onClick={isAllExpanded ? collapseAllFields : expandAllFields}>
+          {isAllExpanded ? 'Collapse' : 'Expand'} All
+        </Button>
+      )}
       {cancelUrl && (
         <Button
           url={cancelUrl}
           color="secondary"
+          hollow={false}
           size="large"
           onClick={() => {
             trackAction(analyticsCategory, cancelBtnAction, id)

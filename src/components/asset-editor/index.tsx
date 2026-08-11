@@ -112,7 +112,7 @@ const AssetEditor = ({
       <GenericEditor
         key={reRenderKey} // force re-render after sync
         isAccordion
-        startExpanded
+        startExpandedKey="asset-editor"
         collectionName={CollectionNames.Assets}
         id={assetId}
         onDone={() => {
