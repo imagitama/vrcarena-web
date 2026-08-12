@@ -46,9 +46,9 @@ const Renderer = ({
       <ResponsiveTableHead>
         <TableRow>
           <TableCell />
-          <TableCell>Tag 1</TableCell>
+          <TableCell>Tag</TableCell>
           <TableCell>Type</TableCell>
-          <TableCell>Tag 2</TableCell>
+          <TableCell>Related Tag</TableCell>
           <TableCell>Metadata</TableCell>
           <TableCell>Status</TableCell>
           {isEditor && <TableCell>Controls</TableCell>}
