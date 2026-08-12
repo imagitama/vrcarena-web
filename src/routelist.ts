@@ -130,6 +130,13 @@ export const viewSupportTicketWithVar = '/support-tickets/:supportTicketId'
 export const backlog = '/backlog'
 export const backlogWithSubViewNameAndPageNumberVar =
   '/backlog/:subViewName/page/:pageNumber'
+export const tagSuggestions = '/tag-suggestions'
+export const tagSuggestionsWithPageNumberVar =
+  '/tag-suggestions/page/:pageNumber'
+export const viewTagSuggestionWithVar = '/tag-suggestions/:tagSuggestionId'
+export const editTagSuggestionWithVar = '/tag-suggestions/:tagSuggestionId/edit'
+export const createTagSuggestion = '/tag-suggestions/create'
+export const createTagSuggestionWithVar = '/tag-suggestions/create?tag=:tagName'
 
 // admin - generic
 export const admin = '/admin'

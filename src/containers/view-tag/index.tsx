@@ -84,6 +84,9 @@ export default () => {
         </Heading>
       ) : null}
       {fullTag ? <BodyText>{fullTag.description}</BodyText> : null}
+      <Button url={routes.createTagSuggestionWithVar.replace(':tagName', tag)}>
+        Suggest Change
+      </Button>
       {isEditor && fullTag ? (
         <EditorRecordManager
           id={tag}

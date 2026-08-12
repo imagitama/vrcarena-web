@@ -4,18 +4,21 @@ import { categories } from '@/utils/tags'
 import * as icons from '@/icons'
 import { AccessStatus } from './common'
 
-export interface Tag extends Record<string, unknown> {
-  id: string // tag itself
+export interface TagFields extends Record<string, unknown> {
   label: string
   category: string
   description: string
   isadult: boolean
   oppositetag: string
   icon: string // svg
+}
+
+export interface Tag extends TagFields {
+  id: string // tag itself
   lastmodifiedat: string | null
   lastmodifiedby: string | null
   createdat: string
-  createdby: string | null // can be null
+  createdby: string | null // can be null - system
 }
 
 export interface TagMeta extends Record<string, unknown> {

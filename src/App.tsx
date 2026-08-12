@@ -250,6 +250,15 @@ const EditReview = lazy(() =>
 const Backlog = lazy(() =>
   catchChunkDeaths(() => import('./containers/backlog'))
 )
+const TagSuggestions = lazy(() =>
+  catchChunkDeaths(() => import('./containers/tag-suggestions'))
+)
+const ViewTagSuggestion = lazy(() =>
+  catchChunkDeaths(() => import('./containers/view-tag-suggestion'))
+)
+const EditTagSuggestion = lazy(() =>
+  catchChunkDeaths(() => import('./containers/edit-tag-suggestion'))
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -590,6 +599,21 @@ const MainContent = () => {
           exact
           path={[routes.backlog, routes.backlogWithSubViewNameAndPageNumberVar]}
           component={Backlog}
+        />
+        <Route
+          exact
+          path={[routes.editTagSuggestionWithVar, routes.createTagSuggestion]}
+          component={EditTagSuggestion}
+        />
+        <Route
+          exact
+          path={[routes.viewTagSuggestionWithVar]}
+          component={ViewTagSuggestion}
+        />
+        <Route
+          exact
+          path={[routes.tagSuggestions, routes.tagSuggestionsWithPageNumberVar]}
+          component={TagSuggestions}
         />
         <Route
           exact

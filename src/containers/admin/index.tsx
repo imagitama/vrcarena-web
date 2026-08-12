@@ -304,8 +304,6 @@ const View = () => {
   const routeMatch = useRouteMatch()
   const params = useParams<any>()
 
-  console.debug(`Admin.render`, { routeMatch, params })
-
   if (isLoading) {
     return <LoadingIndicator message="Loading your user account..." />
   }

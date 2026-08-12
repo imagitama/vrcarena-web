@@ -85,6 +85,8 @@ const ResolvableItem = ({
   item,
   url,
   hydrate,
+  children,
+  isAssignable = true,
 }: {
   collectionName: string
   metaCollectionName: string
@@ -92,6 +94,8 @@ const ResolvableItem = ({
   item: FullResolvableItem
   url: string
   hydrate: HydrateFn
+  children?: React.ReactNode | undefined
+  isAssignable?: boolean
 }) => {
   const isEditor = useIsEditor()
 
@@ -167,17 +171,21 @@ const ResolvableItem = ({
         <>
           <br />
           <EditorBox>
-            <Heading variant="h3" noTopMargin>
-              Assignment
-            </Heading>
-            <AssignForm
-              id={item.id}
-              metaCollectionName={metaCollectionName}
-              existingAssignedTo={item.assignedto}
-              existingAssignedToUsername={item.assignedtousername}
-              onlyStaff
-              onDone={hydrate}
-            />
+            {isAssignable && (
+              <>
+                <Heading variant="h3" noTopMargin>
+                  Assignment
+                </Heading>
+                <AssignForm
+                  id={item.id}
+                  metaCollectionName={metaCollectionName}
+                  existingAssignedTo={item.assignedto}
+                  existingAssignedToUsername={item.assignedtousername}
+                  onlyStaff
+                  onDone={hydrate}
+                />
+              </>
+            )}
             <Heading variant="h3" noMargin>
               Resolution
             </Heading>
@@ -212,6 +220,7 @@ const ResolvableItem = ({
           />
         </>
       ) : null}
+      {children}
       <Heading variant="h2">Submitter Notes</Heading>
       {item.comments ? (
         <Markdown source={item.comments} />
