@@ -10,7 +10,7 @@ import {
   FullTagSuggestion,
   CollectionNames,
 } from '@/modules/tagsuggestions'
-import { capitalizeFirstLetter } from '@/utils/formatting'
+import { capitalizeFirstLetter, getShortId } from '@/utils/formatting'
 
 import PaginatedView from '@/components/paginated-view'
 import FormattedDate from '@/components/formatted-date'
@@ -29,6 +29,8 @@ import { AccessStatus, ResolutionStatus } from '@/modules/common'
 import { HydrateFn } from '@/hooks/useDataStore'
 import StatusText from '@/components/status-text'
 import EditorRecordManager from '@/components/editor-record-manager'
+import NoValueLabel from '@/components/no-value-label'
+import Link from '@/components/link'
 
 const Renderer = ({
   items,
@@ -69,22 +71,22 @@ const Renderer = ({
           return (
             <ResponsiveTableRow key={id}>
               <ResponsiveTableCell>
-                <ShortId
-                  url={routes.viewTagSuggestionWithVar.replace(
+                <Link
+                  to={routes.viewTagSuggestionWithVar.replace(
                     ':tagSuggestionId',
                     id
                   )}>
-                  {id}
-                </ShortId>
+                  #{getShortId(id)}
+                </Link>
               </ResponsiveTableCell>
-              <ResponsiveTableCell label="Tag 1">
-                {targetTag || '(none)'}
+              <ResponsiveTableCell label="Tag">
+                {targetTag || '-'}
               </ResponsiveTableCell>
               <ResponsiveTableCell label="Type">
                 {capitalizeFirstLetter(type)}
               </ResponsiveTableCell>
-              <ResponsiveTableCell label="Tag 2">
-                {relatedTag || '(none)'}
+              <ResponsiveTableCell label="Related Tag">
+                {relatedTag || '-'}
               </ResponsiveTableCell>
               <ResponsiveTableCell label="Meta">
                 Submitted <FormattedDate date={createdat} /> by{' '}
@@ -113,13 +115,12 @@ const Renderer = ({
               </ResponsiveTableCell>
               {isEditor && (
                 <ResponsiveTableCell label="Controls">
-                  todo
-                  {/* <EditorRecordManager
+                  <EditorRecordManager
                     id={id}
                     metaCollectionName={CollectionNames.TagSuggestionsMeta}
                     showAccessButtons
-                    showRes
-                  /> */}
+                    onDone={hydrate}
+                  />
                 </ResponsiveTableCell>
               )}
             </ResponsiveTableRow>
