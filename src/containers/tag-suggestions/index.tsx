@@ -119,6 +119,7 @@ const Renderer = ({
                     id={id}
                     metaCollectionName={CollectionNames.TagSuggestionsMeta}
                     showAccessButtons
+                    existingAccessStatus={accessStatus}
                     onDone={hydrate}
                   />
                 </ResponsiveTableCell>
