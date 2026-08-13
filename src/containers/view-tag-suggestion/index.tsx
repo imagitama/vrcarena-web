@@ -21,6 +21,9 @@ import ResolvableItem, {
 } from '@/components/resolvable-item'
 import Heading from '@/components/heading'
 import { capitalize } from '@/utils'
+import TagDetails from '@/components/tag-details'
+import { Tag } from '@/modules/tags'
+import NoValueLabel from '@/components/no-value-label'
 
 const View = () => {
   const { tagSuggestionId } = useParams<{ tagSuggestionId: string }>()
@@ -53,7 +56,7 @@ const View = () => {
     return <NoResultsMessage>Tag suggestion not found</NoResultsMessage>
   }
 
-  const { targettag: targetTag, type, relatedtag: relatedTag } = item
+  const { targettag: targetTag, type, relatedtag: relatedTag, fields } = item
 
   return (
     <ResolvableItem
@@ -65,11 +68,17 @@ const View = () => {
       hydrate={hydrate}
       isAssignable={false}>
       <Heading variant="h2">Tag</Heading>
-      {targetTag || '(none)'}
+      {targetTag || <NoValueLabel>(none)</NoValueLabel>}
       <Heading variant="h2">Suggestion</Heading>
-      {capitalize(type) || '(none)'}
+      {capitalize(type) || <NoValueLabel>(none)</NoValueLabel>}
       <Heading variant="h2">Related Tag</Heading>
-      {relatedTag || '(none)'}
+      {relatedTag || <NoValueLabel>(none)</NoValueLabel>}
+      <Heading variant="h2">Suggested Fields</Heading>
+      {fields ? (
+        <TagDetails tag={fields as Tag} />
+      ) : (
+        <NoValueLabel>(none)</NoValueLabel>
+      )}
     </ResolvableItem>
   )
 }

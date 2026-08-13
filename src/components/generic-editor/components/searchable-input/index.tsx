@@ -5,6 +5,7 @@ import useDataStoreItem from '@/hooks/useDataStoreItem'
 import Button from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import SearchForIdForm from '@/components/search-for-id-form'
+import TextInput from '@/components/text-input'
 
 type SearchResult = { [prop: string]: any }
 
@@ -29,9 +30,10 @@ export default ({
 
   const [isFormVisible, setIsFormVisible] = useState(false)
   const [valueData, setValueData] = useState<null | { id: string }>(null)
+  const [manualEntryTextVal, setManualEntryTextVal] = useState('')
   const [, , existingItem] = useDataStoreItem<SearchResult>(
     editableField.collectionName,
-    value || false
+    (!manualEntryTextVal && value) || false
   )
 
   const clear = () => {
@@ -54,6 +56,8 @@ export default ({
           <br />
           {valueData || existingItem ? (
             <editableField.renderer item={valueData || existingItem} />
+          ) : editableField.allowManualEntry ? (
+            value
           ) : (
             <LoadingIndicator />
           )}
@@ -81,6 +85,22 @@ export default ({
             onChange(id)
           }}
         />
+      )}
+      {editableField.allowManualEntry === true && (
+        <>
+          <br />
+          <TextInput
+            label="Manual Entry"
+            fullWidth
+            value={manualEntryTextVal}
+            onChange={(e) => setManualEntryTextVal(e.target.value)}
+            button={
+              <Button onClick={() => onChange(manualEntryTextVal)}>
+                Use This
+              </Button>
+            }
+          />
+        </>
       )}
     </div>
   )

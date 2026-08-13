@@ -52,6 +52,11 @@ const useStyles = makeStyles({
       flexDirection: 'column',
     },
   },
+  small: {
+    '&&': {
+      fontSize: '100%',
+    },
+  },
   content: {
     '&&': {
       padding: '0.25rem',
@@ -89,6 +94,7 @@ const Field = ({
   startExpanded,
   isExpanded,
   onExpandChange,
+  size,
 }: {
   editableField: EditableField<any>
   children: React.ReactNode
@@ -97,6 +103,7 @@ const Field = ({
   startExpanded?: boolean
   isExpanded?: boolean
   onExpandChange?: (newVal: boolean) => void
+  size?: 'small'
 }) => {
   const classes = useStyles()
 
@@ -112,7 +119,7 @@ const Field = ({
         expanded: classes.expanded,
       }}>
       <AccordionSummary
-        className={classes.title}
+        className={`${classes.title} ${size === 'small' ? classes.small : ''}`}
         expandIcon={<ChevronDownIcon />}>
         <span>{editableField.label || ''} </span>
         {editableField.isRequired && (
@@ -134,7 +141,10 @@ const Field = ({
   ) : (
     <FormControl fullWidth style={{ marginBottom: '2rem' }}>
       {editableField.type !== fieldTypes.checkbox && (
-        <Heading variant="h3" noTopMargin>
+        <Heading
+          variant="h3"
+          noTopMargin
+          className={size === 'small' ? classes.small : ''}>
           {editableField.label || ''}
         </Heading>
       )}

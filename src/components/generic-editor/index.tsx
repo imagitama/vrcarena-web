@@ -145,6 +145,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   scrollToTopOfEditor = false,
   scrollDisabled = false,
   onAttemptSave = undefined,
+  size,
 }: {
   fields?: EditableField<any>[]
   collectionName?: string
@@ -171,6 +172,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   scrollToTopOfEditor?: boolean
   scrollDisabled?: boolean
   onAttemptSave?: () => void
+  size?: 'small'
 }) => {
   const editableFieldsToUse = fields || editableFields[collectionName!]
 
@@ -410,7 +412,8 @@ const GenericEditor = <TRecord extends Record<string, any>>({
           onExpandChange={(newVal) =>
             updateFieldExpanded(editableField.name as string, newVal)
           }
-          isExpanded={fieldsExpansionState[editableField.name as string]}>
+          isExpanded={fieldsExpansionState[editableField.name as string]}
+          size={size}>
           <Input
             editableField={editableField}
             value={formFields[editableField.name as string]}
@@ -430,37 +433,38 @@ const GenericEditor = <TRecord extends Record<string, any>>({
     )
   }
 
-  const controls = (
-    <FormControls>
-      <Button
-        onClick={onSaveBtnClick}
-        icon={id ? <SaveIcon /> : <AddIcon />}
-        size="large">
-        {id ? 'Save' : 'Create'} {itemTypeSingular}
-      </Button>
-      {isAccordion && (
+  const controls =
+    onFieldChanged || onFieldsChanged || !showControls ? null : (
+      <FormControls>
         <Button
-          color="secondary"
-          hollow
-          size="large"
-          onClick={isAllExpanded ? collapseAllFields : expandAllFields}>
-          {isAllExpanded ? 'Collapse' : 'Expand'} All
+          onClick={onSaveBtnClick}
+          icon={id ? <SaveIcon /> : <AddIcon />}
+          size="large">
+          {id ? 'Save' : 'Create'} {itemTypeSingular}
         </Button>
-      )}
-      {cancelUrl && (
-        <Button
-          url={cancelUrl}
-          color="secondary"
-          hollow={false}
-          size="large"
-          onClick={() => {
-            trackAction(analyticsCategory, cancelBtnAction, id)
-          }}>
-          Cancel
-        </Button>
-      )}
-    </FormControls>
-  )
+        {isAccordion && (
+          <Button
+            color="secondary"
+            hollow
+            size="large"
+            onClick={isAllExpanded ? collapseAllFields : expandAllFields}>
+            {isAllExpanded ? 'Collapse' : 'Expand'} All
+          </Button>
+        )}
+        {cancelUrl && (
+          <Button
+            url={cancelUrl}
+            color="secondary"
+            hollow={false}
+            size="large"
+            onClick={() => {
+              trackAction(analyticsCategory, cancelBtnAction, id)
+            }}>
+            Cancel
+          </Button>
+        )}
+      </FormControls>
+    )
 
   return (
     <div ref={rootElementRef}>
@@ -510,11 +514,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
         />
       ) : null}
 
-      {onFieldChanged || !showTopSaveBtn
-        ? null
-        : showControls
-        ? controls
-        : null}
+      {showTopSaveBtn && controls}
 
       {fieldsBySection ? (
         <Tabs
@@ -534,7 +534,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
           )
           .map(mapEditableFieldToFieldOutput)
       )}
-      {onFieldChanged ? null : showControls ? controls : null}
+      {controls}
     </div>
   )
 }

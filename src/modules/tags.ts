@@ -38,9 +38,9 @@ export interface TagStats extends Record<string, unknown> {
 
 export interface FullTag extends Tag, TagMeta, TagStats {}
 
-export const CollectionNames = {
-  Tags: 'tags',
-  TagsMeta: 'tagsmeta',
+export enum CollectionNames {
+  Tags = 'tags',
+  TagsMeta = 'tagsmeta',
 }
 
 export const editableFields: EditableField<Tag>[] = [

@@ -69,6 +69,7 @@ export interface SearchableEditableField<TRecord>
   collectionName: string
   fieldAsLabel: string
   renderer: (props: { item: any }) => React.ReactElement
+  allowManualEntry?: boolean // tag suggestion allow typing a custom tag
 }
 
 export interface CustomEditableField<

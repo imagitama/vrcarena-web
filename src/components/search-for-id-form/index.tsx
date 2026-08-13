@@ -9,6 +9,7 @@ import {
   CollectionNames as DiscordServersCollectionNames,
 } from '@/modules/discordservers'
 import { CollectionNames as UsersCollectionNames } from '@/modules/users'
+import { CollectionNames as TagsCollectionNames } from '@/modules/tags'
 import {
   ViewNames as AuthorsViewNames,
   CollectionNames as AuthorsCollectionNames,
@@ -66,6 +67,8 @@ const getSearchStatementForCollectionName = (collectionName: string) => {
       return 'name'
     case SpeciesCollectionNames.Species:
       return `pluralname`
+    case TagsCollectionNames.Tags:
+      return 'id'
     default:
       throw new Error(
         `Cannot get search statement: index ${collectionName} not configured!`
@@ -88,6 +91,8 @@ const getFieldsToSearchForCollectionName = (
       return ['name']
     case SpeciesCollectionNames.Species:
       return ['pluralname']
+    case TagsCollectionNames.Tags:
+      return ['id']
     default:
       throw new Error(
         `Cannot get search statement: index ${collectionName} not configured!`

@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from 'react'
 import Table, { TableProps } from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
 import TableCell, { TableCellProps } from '@mui/material/TableCell'
 import TableContainer, {
   TableContainerProps,
@@ -142,5 +143,6 @@ export {
   ResponsiveTableHead as TableHead,
   ResponsiveTableCell as TableCell,
   ResponsiveTableRow as TableRow,
+  TableBody,
 }
 export default ResponsiveTable
