@@ -22,6 +22,7 @@ import AutocompleteInput, {
 } from '@/components/autocomplete-input'
 import TagChips from '@/components/tag-chips'
 import NoResultsMessage from '../no-results-message'
+import { routes } from '@/routes'
 
 const useStyles = makeStyles({
   fullWidth: {
@@ -355,6 +356,11 @@ const TagInput = ({
           disabled: isDisabled,
         }}
       />
+      <div>
+        <Button url={routes.createTagSuggestion}>Suggest Tag Change</Button>
+        <br />
+        *redirects to page (ensure your asset is saved)
+      </div>
       {showRecommendedTags ? (
         isExpanded ? (
           <div className={classes.recommendedTags}>
