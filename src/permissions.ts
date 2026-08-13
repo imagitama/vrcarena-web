@@ -164,6 +164,7 @@ const permissions = {
     routes.cart,
     routes.tutorials,
     routes.createAuthor,
+    routes.createTagSuggestion,
   ],
   [UserRoles.Editor]: [
     routes.admin,
