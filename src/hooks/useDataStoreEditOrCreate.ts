@@ -19,7 +19,7 @@ type ClearFn = () => void
  */
 const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
   collectionName: string,
-  id: string | false,
+  id: string | undefined | false,
   options: DataStoreOptions = {
     ignoreErrorCodes: [],
   }
@@ -55,13 +55,16 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
     try {
       const fieldsForUpdate = mapFieldsForDatabase(fields) as TRecord
 
-      const idFieldName = Array.isArray(options.idField)
-        ? options.idField[0]
-        : options.idField
-        ? options.idField
-        : 'id'
-      // @ts-ignore investigate
-      fieldsForUpdate[idFieldName] = id
+      if (id) {
+        const idFieldName = Array.isArray(options.idField)
+          ? options.idField[0]
+          : options.idField
+          ? options.idField
+          : 'id'
+
+        // prevent users from editing a record ID (enforced by db too)
+        delete fieldsForUpdate[idFieldName]
+      }
 
       console.debug(
         `useDataStoreEditOrCreate :: ${options.queryName || '(unnamed)'} :: ${
