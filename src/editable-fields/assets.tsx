@@ -30,6 +30,7 @@ import ChangeDiscordServerForm from '@/components/change-discord-server-form'
 import VrchatAvatarIdsForm from '@/components/vrchat-avatar-ids-form'
 import AttachmentsForm from '@/components/attachments-form'
 import NoResultsMessage from '@/components/no-results-message'
+import AssetTranslationsForm from '@/components/asset-translations-form'
 
 const fields: EditableField<Asset>[] = [
   {
@@ -241,6 +242,24 @@ const fields: EditableField<Asset>[] = [
 - https://github.com/vrchat-community/template-package.git
 
 If the URL has no extension it is considered a Git repo.`,
+  },
+  {
+    name: 'translations',
+    label: 'Translations',
+    type: fieldTypes.custom,
+    default: null,
+    renderer: ({ value, onChange, formFields }) =>
+      formFields ? (
+        <AssetTranslationsForm
+          assetId={formFields.id}
+          title={formFields.title}
+          description={formFields.description}
+          value={value || null}
+          onChange={onChange}
+        />
+      ) : (
+        <>No asset ID</>
+      ),
   },
 ]
 

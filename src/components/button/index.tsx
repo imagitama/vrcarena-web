@@ -12,6 +12,8 @@ import AddIcon from '@mui/icons-material/Add'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ClearIcon from '@mui/icons-material/Clear'
 
+import { Delete as DeleteIcon } from '@/icons'
+
 import Tooltip from '@/components/tooltip'
 import { VRCArenaTheme } from '@/themes'
 import { css, keyframes } from '@emotion/react'
@@ -344,6 +346,12 @@ export const ClearButton = (args: ButtonProps) => (
 export const SaveButton = (args: ButtonProps) => (
   <Button icon={<SaveIcon />} color="secondary" hollow {...args}>
     {args.children || 'Save'}
+  </Button>
+)
+
+export const DeleteButton = (args: ButtonProps) => (
+  <Button icon={<DeleteIcon />} color="secondary" hollow {...args}>
+    {args.children || 'Delete'}
   </Button>
 )
 

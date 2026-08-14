@@ -65,6 +65,7 @@ export const ChevronDown = React.lazy(() => import('@mui/icons-material/Keyboard
 export const Edit = React.lazy(() => import('@mui/icons-material/Edit').then(result => result.default))
 export const Info = React.lazy(() => import('@mui/icons-material/Info').then(result => result.default))
 export const Close = React.lazy(() => import('@mui/icons-material/Close').then(result => result.default))
+export const Delete = React.lazy(() => import('@mui/icons-material/Delete').then(result => result.default))
 
 // approval queue
 export const Decline = React.lazy(() => import('@mui/icons-material/Cancel').then(result => result.default))

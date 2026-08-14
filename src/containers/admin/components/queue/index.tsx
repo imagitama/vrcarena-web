@@ -15,15 +15,7 @@ import { routes } from '@/routes'
 import { QueuedItem, QueuedItemForRecord } from '@/queues'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
 
-import {
-  ViewNames as AssetsViewNames,
-  Asset,
-  FullAsset,
-} from '@/modules/assets'
-import {
-  CollectionNames as AssetsSyncQueueCollectionNames,
-  AssetSyncQueueItem,
-} from '@/modules/assetsyncqueue'
+import { Asset } from '@/modules/assets'
 import {
   CollectionNames as AiSuggestCollectionNames,
   AiSuggestQueuedItem,
@@ -55,7 +47,6 @@ import useDataStoreItem from '@/hooks/useDataStoreItem'
 
 import LoadingShimmer from '@/components/loading-shimmer'
 import ErrorMessage from '@/components/error-message'
-import CopyThing from '@/components/copy-thing'
 import FormattedDate from '@/components/formatted-date'
 import NoResultsMessage from '@/components/no-results-message'
 import Heading from '@/components/heading'
@@ -561,7 +552,10 @@ const AiSuggestQueueCell = () => {
 
   const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
     useDataStoreItemsSync<AiSuggestQueuedItem>(
-      AiSuggestCollectionNames.AiSuggestQueue
+      AiSuggestCollectionNames.AiSuggestQueue,
+      {
+        queryName: 'ai-suggest-queue_sync',
+      }
     )
 
   if (lastErrorCode !== null) {
@@ -609,7 +603,8 @@ const AiSimilarQueueCell = () => {
 
   const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
     useDataStoreItemsSync<AiSimilarQueuedItem>(
-      AiSimilarCollectionNames.AiSimilarQueue
+      AiSimilarCollectionNames.AiSimilarQueue,
+      { queryName: 'ai-suggest-queue_sync' }
     )
 
   if (lastErrorCode !== null) {
@@ -659,7 +654,7 @@ const AiEvaluateAutoApproveQueueCell = () => {
     useDataStoreItemsSync<AiEvaluateQueuedItem>(
       AiEvaluateCollectionNames.AiEvaluateQueue,
       {
-        queryName: 'ai-suggest-queue_autoapprove_synced',
+        queryName: 'ai-suggest-queue_autoapprove_sync',
         filter: (record) => record.intent === Intent.AutoApprove,
       }
     )
@@ -726,7 +721,7 @@ const AiEvaluateBotScoreQueueCell = () => {
   ] = useDataStoreItemsSync<AiEvaluateQueuedItem>(
     AiEvaluateCollectionNames.AiEvaluateQueue,
     {
-      queryName: 'ai-suggest-queue_botscore_synced',
+      queryName: 'ai-suggest-queue_botscore_sync',
       filter: (record) => record.intent === Intent.BotScore,
     }
   )
@@ -769,7 +764,7 @@ const AssetAuditQueueCell = () => {
   const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
     useDataStoreItemsSync<AuditQueueItem>(
       AuditQueueCollectionNames.AuditQueue,
-      { queryName: 'asset-audit-queue-cell_synced' }
+      { queryName: 'asset-audit-queue-cell_sync' }
     )
 
   if (lastErrorCode !== null) {
@@ -822,7 +817,10 @@ const AssetAuditApplyQueueCell = () => {
 
   const [isSubscribing, isSubscribed, lastErrorCodeSync, liveResults] =
     useDataStoreItemsSync<AuditApplyQueueItem<Asset>>(
-      AuditApplyQueueCollectionNames.AuditApplyQueue
+      AuditApplyQueueCollectionNames.AuditApplyQueue,
+      {
+        queryName: 'audit-queue_sync',
+      }
     )
 
   if (lastErrorCode !== null) {

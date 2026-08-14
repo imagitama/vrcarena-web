@@ -148,6 +148,7 @@ const ManualCreateView = () => {
           <Button
             size="large"
             icon={<ChevronRightIcon />}
+            iconSide="right"
             onClick={() => createDraft()}>
             Create New Draft
           </Button>
@@ -174,6 +175,7 @@ const ManualCreateView = () => {
     <FormControls>
       <Button
         size="large"
+        iconSide="right"
         icon={<ChevronRightIcon />}
         onClick={() => createDraft()}>
         Create New Draft

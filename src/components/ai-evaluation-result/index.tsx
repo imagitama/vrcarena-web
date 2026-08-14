@@ -369,7 +369,8 @@ const AiEvaluationResult = ({
   const [isSubscribing, isSubscribed, lastErrorCode, lastResult] =
     useDataStoreItemSync<AiEvaluateQueuedItem>(
       AiEvaluationCollectionNames.AiEvaluateQueue,
-      staleQueuedItem.id
+      staleQueuedItem.id,
+      { queryName: `ai-evaluation_${staleQueuedItem.id}` }
     )
   const isExpanded = !isMain
 

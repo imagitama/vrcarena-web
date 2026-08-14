@@ -187,7 +187,10 @@ export const Renderer = ({
   const [isSubscribing, isSubscribed, lastErrorCode, lastResult] =
     useDataStoreItemSync<AiSuggestQueuedItem>(
       CollectionNames.AiSuggestQueue,
-      staleQueuedItem.id
+      staleQueuedItem.id,
+      {
+        queryName: `ai-suggest-result_${staleQueuedItem.id}`,
+      }
     )
   const isExpanded = !isMain
 

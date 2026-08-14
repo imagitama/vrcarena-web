@@ -296,7 +296,7 @@ const QueuedItemRow = ({
       CollectionNames.AssetSyncQueue,
       originalQueuedItem.id,
       {
-        queryName: `get-my-asset-sync-queued-item_${originalQueuedItem.id}_SYNCED`,
+        queryName: `get-my-asset-sync-queued-item_sync_${originalQueuedItem.id}`,
       }
     )
   const [isDeleted, setIsDeleted] = useState(false)

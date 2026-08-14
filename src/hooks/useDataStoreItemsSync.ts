@@ -29,11 +29,22 @@ type ClearFn = () => void
 
 export const DataStoreRealtimeError = 'realtime_error'
 
+const getErrorCodeFromRealtimeStatus = (
+  status: REALTIME_SUBSCRIBE_STATES
+): string => {
+  // switch (status) {
+  //   case REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR:
+  //   case REALTIME_SUBSCRIBE_STATES.CLOSED:
+  //   case REALTIME_SUBSCRIBE_STATES.TIMED_OUT:
+  // }
+  return status // TODO: map to an internal code or something?
+}
+
 /**
  * Subscribes to all INSERTs and UPDATEs in a collection.
  */
 export default <TItem extends Record<string, any>>(
-  collectionName: string,
+  collectionName: string | false,
   options: QueryOptions<TItem> = {
     queryName: '',
   }
@@ -226,7 +237,7 @@ export default <TItem extends Record<string, any>>(
                 return
               }
 
-              setLastErrorCode(DataStoreRealtimeError)
+              setLastErrorCode(getErrorCodeFromRealtimeStatus(status))
               setIsSubscribed(false)
               break
 

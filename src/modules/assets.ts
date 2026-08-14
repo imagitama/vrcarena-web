@@ -10,6 +10,7 @@ import {
 import { Tag, TagStats } from './tags'
 import { AiSimilarQueuedItem } from './aisimilar'
 import { DiscordServer, DiscordServerFields } from './discordservers'
+import { AssetTranslationResult } from './translatequeue'
 
 // TODO: Better func here as technically FullAsset has speciesnames
 export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
@@ -103,6 +104,8 @@ interface DeprecatedAssetFields {
   tutorialsteps: TutorialStep[]
 }
 
+export type AssetTranslation = { [locale: string]: AssetTranslationResult }
+
 export interface AssetFields
   extends DeprecatedAssetFields,
     CoreAssetFields,
@@ -117,6 +120,7 @@ export interface AssetFields
   extrasources: SourceInfo[]
   vccurl?: string
   sketchfabembedurl: string
+  translations: AssetTranslation | null
 }
 
 export interface Asset extends AssetFields, Record<string, unknown> {

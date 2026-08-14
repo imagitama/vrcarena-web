@@ -173,7 +173,10 @@ export const Renderer = ({
   const [isSubscribing, isSubscribed, lastErrorCode, lastResult] =
     useDataStoreItemSync<AiSimilarQueuedItem>(
       CollectionNames.AiSimilarQueue,
-      staleQueuedItem.id
+      staleQueuedItem.id,
+      {
+        queryName: `ai-similar-result_${staleQueuedItem.id}`,
+      }
     )
   const isExpanded = !isMain
 

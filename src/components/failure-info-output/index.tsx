@@ -18,8 +18,11 @@ enum AiErrorCode {
   Unknown = 'unknown',
 }
 
+type MessageMap = { [errorName: string]: string }
+
 const getFriendlyMessageFromFailureInfo = (
-  failureInfo: QueuedItemFailureInfo<any>
+  failureInfo: QueuedItemFailureInfo<any>,
+  messages?: MessageMap
 ): string => {
   // TODO: better type-safety for data
 
@@ -46,18 +49,24 @@ const getFriendlyMessageFromFailureInfo = (
         case 'AutoSyncErrorFailedToProcessImages':
           return 'Something failed with downloading images (the platform probably detected our attempt and blocked it)'
       }
+
+      if (messages && failureInfo.error in messages)
+        return messages[failureInfo.error]
+
       return `Error: ${failureInfo.error}`
   }
 }
 
 const FailureInfoOutput = ({
   failureInfo,
+  messages,
 }: {
   failureInfo: QueuedItemFailureInfo<any>
+  messages?: MessageMap
 }) => {
   return (
     <Tooltip title={JSON.stringify(failureInfo, null, '  ')}>
-      <span>{getFriendlyMessageFromFailureInfo(failureInfo)}</span>
+      <span>{getFriendlyMessageFromFailureInfo(failureInfo, messages)}</span>
     </Tooltip>
   )
 }

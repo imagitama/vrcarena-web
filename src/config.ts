@@ -141,3 +141,10 @@ export const loginWithDiscordUrl = `https://discord.com/api/oauth2/authorize?cli
 export const connectWithDiscordUrl = `https://discord.com/api/oauth2/authorize?client_id=${process.env.REACT_APP_DISCORD_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_DISCORD_CONNECT_REDIRECT_URI}&response_type=code&scope=identify%20email&prompt=none`
 
 export const shortIdLength = 4
+
+export const allowedLocales = {
+  'en-US': 'English (US)',
+  es: 'Spanish',
+  'zh-CN': 'Chinese', // simplified but shortened for output
+  ja: 'Japanese',
+}

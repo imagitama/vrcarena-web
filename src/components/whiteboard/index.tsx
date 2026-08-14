@@ -138,6 +138,7 @@ const Whiteboard = () => {
 
         hydrate()
       },
+      queryName: 'whiteboard-sync',
     })
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [persistedData, setPersistedData] = useStorage<StorageValue>(KEY_COLOR)

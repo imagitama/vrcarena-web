@@ -23,6 +23,8 @@ const getErrorCodeFromSupabaseError = (
   return ErrorCode.Unknown
 }
 
+type ClearFn = () => void
+
 /**
  * Used to call a Postgres RPC function. These functions can return *anything* including rows of records or a JSON object.
  *
@@ -38,7 +40,8 @@ const useDataStoreFunction = <TPayload extends object, TResult>(
   boolean,
   null | ErrorCode | string,
   null | TResult,
-  (payload?: TPayload) => Promise<null | TResult>
+  (payload?: TPayload) => Promise<null | TResult>,
+  clear: ClearFn
 ] => {
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode | string>(
@@ -102,7 +105,13 @@ const useDataStoreFunction = <TPayload extends object, TResult>(
     callFunction(autoCallPayload)
   }, [autoCall, JSON.stringify(autoCallPayload)])
 
-  return [isLoading, lastErrorCode, lastResult, callFunction]
+  const clear = () => {
+    setIsLoading(false)
+    setLastErrorCode(null)
+    setLastResult(null)
+  }
+
+  return [isLoading, lastErrorCode, lastResult, callFunction, clear]
 }
 
 export default useDataStoreFunction

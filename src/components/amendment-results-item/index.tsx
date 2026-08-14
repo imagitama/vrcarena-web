@@ -98,7 +98,10 @@ const AmendmentResultsItem = ({
           )}
           <br />
           <br />
-          <Button onClick={() => setIsExpanded((currentVal) => !currentVal)}>
+          <Button
+            onClick={() => setIsExpanded((currentVal) => !currentVal)}
+            color="secondary"
+            hollow>
             Show Fields
           </Button>
         </TableCell>

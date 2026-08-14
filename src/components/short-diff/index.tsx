@@ -5,7 +5,7 @@ import moment from 'moment'
 
 import { getCategoryMeta } from '@/category-meta'
 import authorsEditableFields from '@/editable-fields/authors'
-import { getDateFromString } from '@/utils'
+import { capitalize, getDateFromString } from '@/utils'
 import { fieldTypes } from '@/generic-forms'
 import { Asset, FullAsset, SourceInfo } from '@/modules/assets'
 import {
@@ -47,6 +47,14 @@ import NoValueLabel from '../no-value-label'
 import AttachmentCaption from '../attachment-caption'
 import { Image } from '../image-gallery'
 import { getHasFieldChanged } from '@/utils/equality'
+import FieldOutput from '../field-output'
+import { AssetTranslationOutput } from '../asset-translations-form'
+
+import Table from '@/components/responsive-table'
+import { TableBody } from '@/components/responsive-table'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
 
 const useStyles = makeStyles({
   output: {
@@ -581,14 +589,32 @@ const RenderersForFields: {
       label: 'VCC URL',
       type: fieldTypes.url,
     },
+    translations: {
+      label: 'Translations',
+      renderer: ({ fields }) =>
+        fields?.translations !== null &&
+        Object.keys(fields.translations).length > 0 ? (
+          <div>
+            {Object.entries(fields.translations).map(([locale, fields]) => (
+              <AssetTranslationOutput
+                key={locale}
+                locale={locale}
+                fields={fields}
+              />
+            ))}
+          </div>
+        ) : (
+          <NoResultsMessage>No translations</NoResultsMessage>
+        ),
+    },
   },
   // @ts-ignore
   authors: authorsEditableFields,
 }
 
 const getRendererByType = (
-  type: fieldTypes,
-  fieldName: string
+  fieldName: string,
+  type?: fieldTypes
 ): React.ComponentType<{ fields: FullAsset; rendererInfo?: any }> => {
   switch (type) {
     case fieldTypes.text:
@@ -679,7 +705,7 @@ const getRendererByType = (
     case fieldTypes.item:
       return ({ fields }) => <Value value={`ID: ${fields[fieldName]}`} />
     default:
-      throw new Error(`Cannot get renderer by type "${type}" - unsupported`)
+      return ({ fields }) => <FieldOutput>{fields[fieldName]}</FieldOutput>
   }
 }
 
@@ -691,14 +717,6 @@ const Divider = () => {
     </div>
   )
 }
-
-const textDiffFieldNames: (keyof Asset)[] = [
-  'title',
-  'description',
-  'sourceurl',
-  'name',
-  'description',
-]
 
 export default ({
   type,
@@ -728,76 +746,58 @@ export default ({
   }
 
   return (
-    <div className={classes.output}>
-      {keys.map((fieldNameThatChanged) => {
-        const fieldNameToUse = fieldNameThatChanged.toLowerCase()
-        const rendererInfo = Array.isArray(renderers)
-          ? renderers.find((renderer) => renderer.name === fieldNameToUse)
-          : renderers[fieldNameToUse]
+    <Table style={{ minWidth: 0 }}>
+      <TableHead>
+        <TableRow>
+          <TableCell width="15%">Field</TableCell>
+          <TableCell width="40%">Before</TableCell>
+          <TableCell width="5%"></TableCell>
+          <TableCell width="40%">After</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {keys.map((fieldNameThatChanged) => {
+          const fieldNameToUse = fieldNameThatChanged.toLowerCase()
+          const rendererInfo = Array.isArray(renderers)
+            ? renderers.find((renderer) => renderer.name === fieldNameToUse)
+            : renderers[fieldNameToUse]
 
-        if (fieldNameThatChanged === 'id') {
-          throw new Error('Cannot show diff for ID')
-        }
+          if (fieldNameThatChanged === 'id') {
+            throw new Error('Cannot show diff for ID')
+          }
 
-        if (!rendererInfo) {
-          console.warn(`No renderer found for "${fieldNameThatChanged}"`)
-          return null
-        }
+          const renderer =
+            rendererInfo?.renderer ||
+            getRendererByType(fieldNameToUse, rendererInfo?.type)
 
-        const renderer =
-          rendererInfo.renderer ||
-          getRendererByType(rendererInfo.type, fieldNameToUse)
-
-        if (textDiffFieldNames.includes(fieldNameToUse)) {
           return (
-            // @ts-ignore
-            <Field
-              name={fieldNameToUse}
-              label={rendererInfo.label}
-              hasChanged={!!onlyNewFields[fieldNameToUse]}>
-              <TextDiff
-                oldValue={oldFields[fieldNameToUse] || ''}
-                newValue={newFields[fieldNameToUse] || ''}
-              />
-            </Field>
+            <TableRow>
+              <TableCell label="Field">
+                {rendererInfo?.label || capitalize(fieldNameToUse)}
+              </TableCell>
+              <TableCell label="Before">
+                {React.cloneElement(
+                  renderer({
+                    fields: { ...oldFields },
+                    rendererInfo,
+                  })
+                )}
+              </TableCell>
+              <TableCell>
+                <Divider />
+              </TableCell>
+              <TableCell label="After">
+                {React.cloneElement(
+                  renderer({
+                    fields: { ...newFields, ...extraData },
+                    rendererInfo,
+                  })
+                )}
+              </TableCell>
+            </TableRow>
           )
-        }
-
-        const hasChanged = getHasFieldChanged(
-          oldFields[fieldNameToUse],
-          newFields[fieldNameToUse]
-        )
-
-        console.debug(`ShortDiff.renderField`, {
-          fieldNameToUse,
-          hasChanged,
-          old: oldFields[fieldNameToUse],
-          new: newFields[fieldNameToUse],
-        })
-
-        return (
-          <Field
-            name={fieldNameToUse}
-            label={rendererInfo.label}
-            oldFields={oldFields}
-            newFields={newFields}
-            hasChanged={hasChanged}>
-            {React.cloneElement(
-              renderer({
-                fields: { ...oldFields },
-                rendererInfo,
-              })
-            )}
-            <Divider />
-            {React.cloneElement(
-              renderer({
-                fields: { ...newFields, ...extraData },
-                rendererInfo,
-              })
-            )}
-          </Field>
-        )
-      })}
-    </div>
+        })}
+      </TableBody>
+    </Table>
   )
 }

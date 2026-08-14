@@ -12,6 +12,26 @@ export enum ConnectionStatus {
   Idle,
 }
 
+export const getConnectionLabel = (
+  status: ConnectionStatus,
+  lastErrorCode?: string | null
+): string => {
+  if (lastErrorCode !== null && lastErrorCode !== undefined)
+    return lastErrorCode
+  switch (status) {
+    case ConnectionStatus.Connected:
+      return 'Live Updates Enabled!'
+    case ConnectionStatus.Connecting:
+      return 'Connecting...'
+    case ConnectionStatus.Failed:
+      return 'Failed To Connect'
+    case ConnectionStatus.Idle:
+      return 'Disconnected'
+    default:
+      throw new Error(`Unknown status "${status}"`)
+  }
+}
+
 export const getConnectionStatusFromHookResult = (
   isSubscribing: boolean,
   isSubscribed: boolean,

@@ -90,7 +90,7 @@ const TabPanel = ({
     <></>
   )
 
-const getInitialTabIdx = (tabName: string, items: TabItem[]): number => {
+const getInitialTabIdx = (tabName: string | null, items: TabItem[]): number => {
   const idx = items.findIndex((item) => item.name === tabName)
 
   if (idx === -1) {
@@ -109,21 +109,26 @@ export interface TabItem {
 }
 
 const Tabs = ({
+  defaultTabName,
   items = [],
   urlWithTabNameVar = '',
   horizontal = false,
   children,
+  onSelectTab,
 }: {
+  defaultTabName?: string
   items?: TabItem[]
   urlWithTabNameVar?: string
   horizontal?: boolean
   children?: React.ReactNode
+  onSelectTab?: (tabName: string) => void
 }) => {
   const enabledItems = items
     .filter((item) => item)
     .filter(({ isEnabled }) => isEnabled !== false)
 
-  const { tabName } = useParams<{ tabName: string }>()
+  const { tabName: tabNameFromUrl } = useParams<{ tabName: string }>()
+  const tabName = tabNameFromUrl || defaultTabName || null
   const { push } = useHistory()
   const isMobile = useMediaQuery({ query: queryForTabletsOrBelow })
   const [activeTabIdx, setActiveTabIdx] = useState(0)
@@ -161,14 +166,12 @@ const Tabs = ({
               onChange={(event, newIdx) => {
                 setActiveTabIdx(newIdx)
 
+                const tabName = enabledItems[newIdx].name
+
+                if (onSelectTab) onSelectTab(tabName)
+
                 if (urlWithTabNameVar) {
-                  push(
-                    urlWithTabNameVar.replace(
-                      ':tabName',
-                      enabledItems[newIdx].name
-                    ),
-                    false
-                  )
+                  push(urlWithTabNameVar.replace(':tabName', tabName), false)
                 }
               }}
               className={classes.tabs}>

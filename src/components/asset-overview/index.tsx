@@ -96,6 +96,7 @@ import { TabName } from './tabs'
 import AddToMyCollectionButton from '../add-to-my-collection-button'
 import InfoMessage from '../info-message'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
+import useLocale from '@/hooks/useLocale'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -407,6 +408,7 @@ const AssetOverview = ({
   const isAdultContentEnabled = useIsAdultContentEnabled()
   const [bypassAdultFilterOnce, setBypassAdultFilterOnce] = useState(false)
   const [, setIsAlreadyOver18] = useStorage(alreadyOver18Key)
+  const [storedLocale] = useLocale()
 
   const hideBecauseAdult =
     asset && asset.isadult && !isAdultContentEnabled && !bypassAdultFilterOnce
@@ -551,6 +553,16 @@ const AssetOverview = ({
     asset !== false &&
     isLoading !== true
 
+  const assetTitleToDisplay =
+    storedLocale &&
+    asset &&
+    asset.translations &&
+    storedLocale in asset.translations
+      ? asset.translations[storedLocale].title
+      : asset
+      ? asset.title
+      : ''
+
   return (
     <>
       <AssetOverviewContext.Provider
@@ -676,7 +688,7 @@ const AssetOverview = ({
                   <LoadingShimmer width={200} height={40} />
                 ) : (
                   <>
-                    <Link to={urlToAsset}>{asset.title}</Link>
+                    <Link to={urlToAsset}>{assetTitleToDisplay}</Link>
                     <NsfwIcon />
                   </>
                 )}

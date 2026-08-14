@@ -550,6 +550,7 @@ const useAiSuggestion = (
       ],
       {
         orderBy: ['createdat', OrderDirections.DESC],
+        queryName: `ai-suggest-queue`,
       }
     )
 
@@ -561,7 +562,12 @@ const useAiSuggestion = (
   const [isSubscribing, isSubscribed, lastErrorCodeSync, lastSyncResult] =
     useDataStoreItemSync<AiSuggestQueuedItem>(
       AiSuggestCollectionNames.AiSuggestQueue,
-      lastStaleResult !== null ? lastStaleResult.id : false
+      lastStaleResult !== null ? lastStaleResult.id : false,
+      {
+        queryName: `ai-suggest-form_sync_${
+          lastStaleResult ? lastStaleResult.id : 'null'
+        }`,
+      }
     )
 
   const queuedItem: AiSuggestQueuedItem | null =

@@ -357,6 +357,13 @@ export function shuffle<TArray extends Array<any>>(array: TArray): TArray {
   return array
 }
 
+export function removeByIndex<T>(arr: T[], index: number): T[] {
+  if (index < 0 || index >= arr.length) {
+    return [...arr]
+  }
+  return [...arr.slice(0, index), ...arr.slice(index + 1)]
+}
+
 export const moveCursorToEnd = (element: HTMLElement) => {
   const range = document.createRange()
   const selection = window.getSelection()
