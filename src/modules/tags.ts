@@ -48,7 +48,7 @@ export const editableFields: EditableField<Tag>[] = [
     name: 'id',
     label: 'Tag',
     type: fieldTypes.text,
-    isEditable: false,
+    hint: 'Do not edit after creation',
   },
   {
     name: 'label',
