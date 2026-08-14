@@ -31,6 +31,7 @@ import StatusText from '@/components/status-text'
 import EditorRecordManager from '@/components/editor-record-manager'
 import NoValueLabel from '@/components/no-value-label'
 import Link from '@/components/link'
+import { Operators } from '@/hooks/useDatabaseQuery'
 
 const Renderer = ({
   items,
@@ -98,19 +99,12 @@ const Renderer = ({
               </ResponsiveTableCell>
               <ResponsiveTableCell label="Status">
                 <StatusText
-                  positivity={accessStatus === AccessStatus.Deleted ? -1 : 0}>
-                  {accessStatus === AccessStatus.Deleted
-                    ? 'Deleted'
-                    : 'Not Deleted'}
-                </StatusText>
-                <br />
-                <StatusText
                   positivity={
                     resolutionStatus === ResolutionStatus.Resolved ? 1 : 0
                   }>
                   {resolutionStatus === ResolutionStatus.Resolved
                     ? 'Resolved'
-                    : 'Not Resolved'}
+                    : 'Pending'}
                 </StatusText>
               </ResponsiveTableCell>
               {isEditor && (
@@ -141,6 +135,8 @@ const View = () => {
   // const urlFromQueryParam = useQueryParam(URL_QUERY_PARAM_NAME)
   // const [isFormVisible, setIsFormVisible] = useState(urlFromQueryParam !== null)
 
+  const isEditor = useIsEditor()
+
   return (
     <>
       <PaginatedView<FullTagSuggestion>
@@ -157,25 +153,28 @@ const View = () => {
           routes.tagSuggestionsWithPageNumberVar
         }
         createUrl={routes.createTagSuggestion}
-        // extraControls={[
-        //   <Button onClick={() => setIsFormVisible(true)}>
-        //     Add To Backlog
-        //   </Button>,
-        // ]}
-        // defaultSubView={SubView.Pending}
-        itemNamePlural="tag suggestions"
-        // form={
-        //   isFormVisible
-        //     ? ({ hydrate }) => (
-        //         <Form
-        //           onDone={() => {
-        //             setIsFormVisible(false)
-        //             hydrate()
-        //           }}
-        //         />
-        //       )
-        //     : undefined
-      >
+        defaultSubView="public"
+        subViews={
+          isEditor
+            ? [
+                {
+                  id: 'public',
+                  label: 'Un-deleted',
+                  where: [
+                    ['accessstatus', Operators.EQUALS, AccessStatus.Public],
+                  ],
+                },
+                {
+                  id: 'deleted',
+                  label: 'Deleted',
+                  where: [
+                    ['accessstatus', Operators.EQUALS, AccessStatus.Deleted],
+                  ],
+                },
+              ]
+            : undefined
+        }
+        itemNamePlural="tag suggestions">
         <Renderer />
       </PaginatedView>
     </>
