@@ -20,7 +20,7 @@ export default () => {
 
   return (
     <>
-      <Heading variant="h2">Comments</Heading>
+      <Heading variant="h2">Profile Comments</Heading>
       {getUserIsStaffMember(user) && isLoggedIn && (
         <WarningMessage>
           Please do not comment here asking staff for support questions. Please
