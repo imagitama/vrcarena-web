@@ -10,18 +10,15 @@ import useIsEditor from '@/hooks/useIsEditor'
 import UserOverview from '@/components/user-overview'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
+import UserOverviewForEditor from '@/components/user-overview-for-editor'
 
 export default () => {
   const { userId } = useParams<{ userId: string }>()
   const isEditor = useIsEditor()
   const [isLoadingUser, lastErrorCodeLoadingUser, user] =
-    useDataStoreItem<FullUser>(
-      isEditor ? ViewNames.GetFullUsers_Editor : ViewNames.GetFullUsers,
-      userId,
-      {
-        queryName: 'user-overview',
-      }
-    )
+    useDataStoreItem<FullUser>(ViewNames.GetFullUsers, userId, {
+      queryName: 'user-overview',
+    })
 
   if (isLoadingUser) {
     return <LoadingIndicator message="Loading user profile..." />
@@ -57,7 +54,11 @@ export default () => {
           member.
         </ErrorMessage>
       )}
-      <UserOverview user={user} />
+      {isEditor ? (
+        <UserOverviewForEditor user={user} />
+      ) : (
+        <UserOverview user={user} />
+      )}
     </>
   )
 }

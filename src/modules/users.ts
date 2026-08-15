@@ -2,6 +2,7 @@ import { NotificationEvent } from '@/notifications'
 import { AiEvaluateQueuedItem } from './aievaluation'
 import { AccessStatus } from './common'
 import { Species } from './species'
+import { RepChange, RepReason } from './reputation'
 
 // minimal data shared between ALL views
 export interface CoreUserFields extends Record<string, unknown> {
@@ -97,9 +98,23 @@ export interface UserAdminMeta {
   role: UserRoles
 }
 
+export interface UserStats {
+  assetcount: number
+  amendmentcount: number
+  commentcount: number
+}
+
+export interface FullUserRepChange {
+  reason: string
+  delta: number
+  reasondata: RepReason
+}
+
 export interface FullUser extends User, UserMeta, UserAdminMeta {
   ispatronpublic: boolean
   favoritespeciesdata: Species
+  stats: UserStats
+  repchanges: FullUserRepChange[]
 }
 
 export interface FullUser_Editor extends FullUser {

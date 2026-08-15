@@ -23,6 +23,8 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     },
   },
   imageWrapper: {
+    width: '100%',
+    height: '100%',
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
     display: 'flex',

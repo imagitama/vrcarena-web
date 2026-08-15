@@ -14,6 +14,7 @@ import {
   FullUser_Editor,
   UserRoles,
   User,
+  PatreonStatus,
 } from '@/modules/users'
 import {
   AiEvaluateQueuedItem,
@@ -71,105 +72,100 @@ const UserEditorControls = () => {
   const [isBotScoreExpanded, setIsBotScoreExpanded] = useState(false)
   if (!isEditor || !user) return null
   return (
-    <ViewControls>
-      <EditorBox>
-        <Heading variant="h3" noTopMargin>
-          User Info
-        </Heading>
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell>Signed up</TableCell>
-              <TableCell>
-                <FormattedDate date={user.createdat} />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Reputation</TableCell>
-              <TableCell>
-                <StatusText positivity={user.reputation > 0 ? 1 : -1}>
-                  {user.reputation}
-                </StatusText>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Bot Score</TableCell>
-              <TableCell>
-                {isBotScoreExpanded ? (
-                  <BotScoreInfo user={user as FullUser_Editor} />
-                ) : (
-                  <>
-                    {(user as unknown as FullUser_Editor).botscore !== null ? (
-                      <ConfidenceScore
-                        score={(user as unknown as FullUser_Editor).botscore!}
-                        title={
-                          <>
-                            We use AI to try and determine if a new user is a
-                            bot or not to combat spam.
-                            <br />
-                            <br />
-                            The AI gives us a score of how confident it is they
-                            are a real human and not a bot.
-                            <br />
-                            <br />
-                            See our AI policy in the footer.
-                          </>
-                        }
-                        onClick={() => setIsBotScoreExpanded(true)}
-                        label="human"
-                      />
-                    ) : (
-                      <NoValueLabel>No score yet</NoValueLabel>
-                    )}
-                    <Button
-                      size="small"
-                      color="secondary"
-                      hollow
-                      onClick={() => setIsBotScoreExpanded(true)}>
-                      Expand
-                    </Button>
-                  </>
-                )}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Patreon</TableCell>
-              <TableCell>
-                {user.patreonstatus || 'Not Patron'} (
-                {user.patreonrewardids?.length
-                  ? user.patreonrewardids.join(',')
-                  : 'no rewards'}
-                )
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>VRChat ID</TableCell>
-              <TableCell>{user.linkedvrchatuserid || 'Not Linked'}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Discord ID</TableCell>
-              <TableCell>{user.discorduserid || 'No ID'}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Button
-          icon={<EditIcon />}
-          color="secondary"
-          url={routes.editUserWithVar.replace(':userId', user.id)}>
-          Edit User
-        </Button>{' '}
-        <Button
-          icon={<CommentIcon />}
-          color="secondary"
-          url={`${routes.adminWithTabNameVar.replace(
-            ':tabName',
-            'users'
-          )}?userId=${user.id}`}>
-          View Comments
-        </Button>{' '}
-        {isAdmin && <AwardRepButton userId={user.id} />}
-      </EditorBox>
-    </ViewControls>
+    <>
+      <Table style={{ minWidth: 0 }}>
+        <TableBody>
+          <TableRow>
+            <TableCell>Signed up</TableCell>
+            <TableCell>
+              <FormattedDate date={user.createdat} />
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Reputation</TableCell>
+            <TableCell>
+              <StatusText positivity={user.reputation > 0 ? 1 : -1}>
+                {user.reputation}
+              </StatusText>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Bot Score</TableCell>
+            <TableCell>
+              {isBotScoreExpanded ? (
+                <BotScoreInfo user={user as FullUser_Editor} />
+              ) : (
+                <>
+                  {(user as unknown as FullUser_Editor).botscore !== null ? (
+                    <ConfidenceScore
+                      score={(user as unknown as FullUser_Editor).botscore!}
+                      title={
+                        <>
+                          We use AI to try and determine if a new user is a bot
+                          or not to combat spam.
+                          <br />
+                          <br />
+                          The AI gives us a score of how confident it is they
+                          are a real human and not a bot.
+                          <br />
+                          <br />
+                          See our AI policy in the footer.
+                        </>
+                      }
+                      onClick={() => setIsBotScoreExpanded(true)}
+                      label="human"
+                    />
+                  ) : (
+                    <NoValueLabel>No score yet</NoValueLabel>
+                  )}
+                  <Button
+                    size="small"
+                    color="secondary"
+                    hollow
+                    onClick={() => setIsBotScoreExpanded(true)}>
+                    Expand
+                  </Button>
+                </>
+              )}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Patreon</TableCell>
+            <TableCell>
+              {user.patreonstatus || PatreonStatus.Unknown} (
+              {user.patreonrewardids?.length
+                ? user.patreonrewardids.join(',')
+                : 'no rewards'}
+              )
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>VRChat ID</TableCell>
+            <TableCell>{user.linkedvrchatuserid || 'Not Linked'}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Discord ID</TableCell>
+            <TableCell>{user.discorduserid || 'Not Linked'}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Button
+        icon={<EditIcon />}
+        color="secondary"
+        url={routes.editUserWithVar.replace(':userId', user.id)}>
+        Edit User
+      </Button>{' '}
+      <Button
+        icon={<CommentIcon />}
+        color="secondary"
+        url={`${routes.adminWithTabNameVar.replace(
+          ':tabName',
+          'users'
+        )}?userId=${user.id}`}>
+        View Comments
+      </Button>{' '}
+      {isAdmin && <AwardRepButton userId={user.id} />}
+    </>
   )
 }
 

@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles(() => ({
   root: {
+    width: '100%',
     border: '1px dashed rgba(255, 255, 0, 0.5)',
     padding: '0.5rem',
   },

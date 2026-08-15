@@ -103,7 +103,7 @@ const getInitialTabIdx = (tabName: string | null, items: TabItem[]): number => {
 export interface TabItem {
   name: string // used in URL
   label: React.ReactNode
-  contents: React.ReactElement
+  contents: React.ReactElement | React.ComponentType
   noLazy?: boolean
   isEnabled?: boolean
 }
@@ -192,7 +192,11 @@ const Tabs = ({
                 index={index}
                 item={item}>
                 <Suspense fallback={<LoadingIndicator message="Loading..." />}>
-                  <ErrorBoundary>{item.contents}</ErrorBoundary>
+                  <ErrorBoundary>
+                    {React.isValidElement(item.contents)
+                      ? item.contents
+                      : React.createElement(item.contents as any)}
+                  </ErrorBoundary>
                 </Suspense>
               </TabPanel>
             ))}

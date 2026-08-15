@@ -92,11 +92,11 @@ interface SocialMediaItem {
 }
 
 function SocialMediaListItem({
-  actionCategory,
   item: { type, icon: Icon, iconClass, url, label },
+  actionCategory,
 }: {
-  actionCategory: string
   item: SocialMediaItem
+  actionCategory?: string
 }) {
   const classes = useStyles()
 
@@ -121,7 +121,9 @@ function SocialMediaListItem({
       target="_blank"
       rel="noopener noreferrer"
       onClick={() =>
-        trackAction(actionCategory, `Click "${type}" social media button`)
+        actionCategory
+          ? trackAction(actionCategory, `Click "${type}" social media button`)
+          : undefined
       }>
       {contents}
     </a>
@@ -157,7 +159,7 @@ const SocialMediaList = ({
   },
   className = '',
 }: {
-  actionCategory: string
+  actionCategory?: string
   socialMedia: {
     websiteUrl?: string | null
     email?: string | null

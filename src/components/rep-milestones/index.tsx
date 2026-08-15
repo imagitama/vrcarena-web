@@ -1,0 +1,123 @@
+import styled from '@emotion/styled'
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
+
+// milestones
+import StarIcon from '@mui/icons-material/Star'
+import GavelIcon from '@mui/icons-material/Gavel'
+
+import Tooltip from '../tooltip'
+import React from 'react'
+import { FullUserRepChange } from '@/modules/users'
+import { Patreon as PatreonIcon } from '@/icons'
+
+interface MilestoneInfo {
+  name: string
+  label: string
+  icon: React.ComponentType
+}
+
+// TODO: move to database as can be changed by staff?
+const milestones: MilestoneInfo[] = [
+  {
+    name: 'become_staff',
+    label: 'Staff',
+    icon: GavelIcon,
+  },
+  {
+    name: 'become_patron',
+    label: 'Patron',
+    icon: PatreonIcon,
+  },
+  {
+    name: 'assets_approved_tier1',
+    label: 'Submitter',
+    icon: StarIcon,
+  },
+]
+
+const getIsRepChangeMilestone = (repChange: FullUserRepChange): boolean =>
+  milestones.find((info) => info.name === repChange.reason) !== undefined
+
+const StyledRepMilestones = styled.div`
+  display: flex;
+  position: relative;
+  & > * {
+    margin-right: 0.5rem;
+  }
+`
+
+const StyledRepMilestone = styled.div`
+  width: 3rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`
+
+const Icons = styled.div`
+  width: 2rem;
+  height: 2rem;
+  position: relative;
+`
+
+const StyledEmojiEventsIcon = styled(EmojiEventsIcon)`
+  font-size: 400%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.2;
+`
+
+const Label = styled.div`
+  font-size: 75%;
+  text-align: center;
+  margin-top: 0.5rem;
+`
+
+const IconWrapper = styled.span`
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 100%;
+  & svg {
+    width: 1em;
+    height: 1em;
+    color: currentColor;
+    fill: currentColor;
+  }
+`
+
+const RepMilestone = ({
+  repChange,
+  milestone,
+}: {
+  repChange: FullUserRepChange
+  milestone: MilestoneInfo
+}) => (
+  <Tooltip title={`+${repChange.delta} - ${repChange.reasondata.description}`}>
+    <StyledRepMilestone>
+      <Icons>
+        <StyledEmojiEventsIcon />
+        <IconWrapper>{React.createElement(milestone.icon)}</IconWrapper>
+      </Icons>
+      <Label>{milestone.label}</Label>
+    </StyledRepMilestone>
+  </Tooltip>
+)
+
+const RepMilestones = ({ repChanges }: { repChanges: FullUserRepChange[] }) => (
+  <StyledRepMilestones>
+    {repChanges.filter(getIsRepChangeMilestone).map((repChange) => (
+      <RepMilestone
+        key={repChange.reason}
+        repChange={repChange}
+        milestone={milestones.find((info) => info.name === repChange.reason)!}
+      />
+    ))}
+  </StyledRepMilestones>
+)
+
+export default RepMilestones

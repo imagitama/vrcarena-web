@@ -5,6 +5,7 @@ import { mediaQueryForMobiles } from '@/media-queries'
 
 const useStyles = makeStyles({
   controls: {
+    width: '100%',
     display: 'flex',
     [mediaQueryForMobiles]: {
       position: 'relative',

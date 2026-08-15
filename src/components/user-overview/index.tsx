@@ -1,369 +1,206 @@
-import React from 'react'
-import Link from '@/components/link'
-import makeStyles from '@mui/styles/makeStyles'
+import styled from '@emotion/styled'
 
-import * as routes from '@/routes'
-import {
-  fixAccessingImagesUsingToken,
-  getPrefersBritishSpelling,
-} from '@/utils'
-import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
 import { BanStatus, FullUser, PatreonStatus } from '@/modules/users'
-import { AccessStatus } from '@/modules/common'
+import { VRCArenaTheme } from '@/themes'
 import {
   mediaQueryForMobiles,
   mediaQueryForTabletsOrBelow,
 } from '@/media-queries'
-import { VRCArenaTheme } from '@/themes'
-
+import Avatar from '../avatar'
+import UsernameLink from '../username-link'
+import { BannedBadge, PatronBadge, StaffBadge } from '../badge'
+import { getIsUserBanned, getUserIsStaffMember } from '@/utils/users'
+import DeletedBadge from '../deleted-badge'
+import { AccessStatus } from '@/modules/common'
+import SocialMediaList from '../social-media-list'
+import Rep from '../rep'
+import RepMilestones from '../rep-milestones'
+import Heading from '../heading'
+import Link from '../link'
+import { routes } from '@/routes'
+import {
+  fixAccessingImagesUsingToken,
+  getPrefersBritishSpelling,
+} from '@/utils'
+import Markdown from '../markdown'
+import NoResultsMessage from '../no-results-message'
+import Image from '../image'
 import useIsEditor from '@/hooks/useIsEditor'
+import UserEditorControls from './components/editor-controls'
 
-import Tabs from '@/components/tabs'
-import ErrorMessage from '@/components/error-message'
-import Heading from '@/components/heading'
-import SocialMediaList from '@/components/social-media-list'
-import Avatar, { AvatarSize } from '@/components/avatar'
-import Markdown from '@/components/markdown'
-import { StaffBadge, BannedBadge, PatronBadge } from '@/components/badge'
-import Image from '@/components/image'
-import DeletedBadge from '@/components/deleted-badge'
-import RepChangeForUser from '@/components/rep-change-for-user'
-import Rep from '@/components/rep'
+import UserOverviewContext from './context'
 
-import Context from './context'
-import TabComments from './components/tab-comments'
-import TabCollection from './components/tab-collection'
-import TabWishlist from './components/tab-wishlist'
-import TabReviews from './components/tab-reviews'
-import TabAssets from './components/tab-assets'
-import TabAttachments from './components/tab-attachments'
-import TabEndorsements from './components/tab-endorsements'
-import TabHistory from './components/tab-history'
+const Sections = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
 
-const UserEditorControls = React.lazy(
-  () => import('./components/editor-controls')
+const StyledSection = styled.div`
+  width: calc(50% - 0.5rem);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${({ theme }: { theme?: VRCArenaTheme }) =>
+    theme!.shape.borderRadius}px;
+  padding: 0.5rem;
+  margin: 0.25rem;
+  ${mediaQueryForTabletsOrBelow} {
+    padding: 0.25rem;
+  }
+  ${mediaQueryForMobiles} {
+    width: 100%;
+  }
+`
+
+const PrimaryStyledSection = styled(StyledSection)`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const Badges = styled.div`
+  display: flex;
+  justify-content: center;
+  & > * {
+    margin-right: 0.1rem;
+  }
+`
+
+const StyledHeading = styled(Heading)`
+  margin: 1rem 0;
+  text-align: center;
+  ${({ isBanned }: { isBanned: boolean }) =>
+    isBanned && 'text-decoration: line-through;'}
+`
+
+const StatRow = styled.div``
+
+const StatNum = styled.span`
+  font-size: 125%;
+  font-weight: bold;
+`
+
+const Section = (
+  props: { isPrimary?: boolean } & React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  >
+) => (
+  <StyledSection {...props}>
+    {props.title && (
+      <Heading variant="h2" noMargin>
+        {props.title}
+      </Heading>
+    )}
+    {props.children}
+  </StyledSection>
 )
 
-const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
-  cols: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  col: {
-    width: 'calc(50% - 0.5rem)',
-    margin: '0 0.5rem 0 0',
-    '&:last-child': {
-      margin: '0 0 0 0.5rem',
-    },
-    '@media (max-width: 1200px)': {
-      // fix tabs pushing outside of boundary
-      width: '100%',
-      margin: 0,
-      '&:last-child': {
-        margin: 0,
-      },
-    },
-  },
-  title: {
-    textAlign: 'center',
-    '& h1': {
-      marginTop: '1rem !important',
-      [mediaQueryForTabletsOrBelow]: {
-        marginTop: '0.5rem',
-      },
-    },
-  },
-  avatar: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  username: {
-    marginTop: '1rem',
-    [mediaQueryForTabletsOrBelow]: {
-      marginTop: '0.5rem',
-    },
-  },
-  tile: {
-    marginTop: '1rem',
-    borderRadius: theme.shape.borderRadius,
-    padding: '1rem',
-    border: '1px solid rgba(255, 255, 255, 0.25)',
-
-    [mediaQueryForMobiles]: {
-      marginTop: '0.5rem',
-    },
-  },
-  bioTile: {
-    fontSize: '125%',
-    '& img': {
-      maxWidth: '100%',
-    },
-    [mediaQueryForTabletsOrBelow]: {},
-    [mediaQueryForMobiles]: {
-      fontSize: '100%',
-    },
-  },
-  isUnallowed: {
-    textDecoration: 'line-through',
-  },
-  favoriteSpeciesTile: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    '& span': {
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    '& img': {
-      width: '100px',
-      marginBottom: '0.25rem',
-    },
-    [mediaQueryForTabletsOrBelow]: {
-      marginTop: '0.5rem',
-    },
-  },
-  badge: {
-    marginLeft: '0.5rem',
-  },
-  socialMediaList: {
-    marginTop: '1rem',
-    [mediaQueryForTabletsOrBelow]: {
-      marginTop: '0.5rem',
-    },
-  },
-  repText: {
-    marginLeft: '0.25rem',
-  },
-  tiles: {
-    display: 'flex',
-    alignItems: 'center',
-    [mediaQueryForMobiles]: {
-      flexWrap: 'wrap',
-    },
-    '& > *': {
-      flex: 1,
-      width: 'calc(50% - 1rem)',
-      [mediaQueryForMobiles]: {
-        width: '100%',
-      },
-    },
-    '& > *:first-child': {
-      marginRight: '0.5rem',
-      [mediaQueryForMobiles]: {
-        marginRight: 0,
-      },
-    },
-    '& > *:last-child': {
-      marginLeft: '0.5rem',
-      [mediaQueryForMobiles]: {
-        marginLeft: 0,
-      },
-    },
-  },
-}))
-
-const UserOverview = ({
-  user,
-  small = false,
-}: {
-  user: FullUser
-  small?: boolean
-}) => {
-  const classes = useStyles()
+const UserOverview = ({ user }: { user: FullUser }) => {
   const isEditor = useIsEditor()
 
   const {
-    username,
-    avatarurl,
-    vrchatuserid: vrchatUserId,
-    vrchatusername: vrchatUsername,
-    discordusername: discordUsername,
-    twitterusername: twitterUsername,
-    telegramusername: telegramUsername,
-    youtubechannelid: youtubeChannelId,
-    twitchusername: twitchUsername,
     bio,
-    patreonusername: patreonUsername,
-    neosvrusername: neosVrUsername,
-    chilloutvrusername: chilloutVrUsername,
-    favoritespeciesdata: favoriteSpeciesData,
+    reputation,
+    repchanges,
     banstatus: banStatus,
     accessstatus: accessStatus,
     patreonstatus: patreonStatus,
     ispatronpublic: isPatronPublic,
+    favoritespecies: favSpeciesId,
+    favoritespeciesdata: favSpeciesData,
+    stats,
   } = user
 
   const isBanned = banStatus === BanStatus.Banned
   const isDeleted = accessStatus === AccessStatus.Deleted
   const isPatron = patreonStatus === PatreonStatus.Patron && isPatronPublic
 
-  if (!username) {
-    return <ErrorMessage>User does not appear to exist</ErrorMessage>
+  const socialMedia = {
+    vrchatUsername: user.vrchatusername,
+    neosVrUsername: user.neosvrusername,
+    chilloutVrUsername: user.chilloutvrusername,
+    vrchatUserId: user.vrchatuserid,
+    discordUsername: user.discordusername,
+    twitterUsername: user.twitterusername,
+    telegramUsername: user.telegramusername,
+    youtubeChannelId: user.youtubechannelid,
+    twitchUsername: user.twitchusername,
+    patreonUsername: user.patreonusername,
   }
 
   return (
-    <>
-      <Context.Provider value={{ userId: user.id, user }}>
-        <div className={classes.cols}>
-          <div className={classes.col}>
-            <div className={classes.title}>
-              <div className={classes.avatar}>
-                <Avatar
-                  username={username}
-                  url={avatarurl}
-                  lazy={false}
-                  size={AvatarSize.Large}
-                />
-              </div>
-              <Heading
-                variant="h1"
-                className={`${classes.username} ${
-                  isBanned || isDeleted ? classes.isUnallowed : ''
-                }`}
-                noMargin>
-                <Link
-                  to={routes.viewUserWithVar.replace(':userId', user.id)}
-                  title={
-                    isBanned
-                      ? 'User has been banned.'
-                      : isDeleted
-                      ? 'User has been deleted.'
-                      : ''
-                  }>
-                  {username}
-                </Link>{' '}
-                {isPatron && <PatronBadge />}
-                {getUserIsStaffMember(user) && (
-                  <StaffBadge className={classes.badge} />
-                )}
-                {getIsUserBanned(user) && (
-                  <BannedBadge className={classes.badge} />
-                )}
-                {isDeleted && <DeletedBadge className={classes.badge} />}
-              </Heading>
-            </div>
-            {favoriteSpeciesData && (
-              <>
-                <Heading variant="h2">
-                  Favo{getPrefersBritishSpelling() ? 'u' : ''}rite Species
-                </Heading>
-                <div
-                  className={`${classes.tile} ${classes.favoriteSpeciesTile}`}>
-                  <Link
-                    to={routes.viewSpeciesWithVar.replace(
-                      ':speciesIdOrSlug',
-                      favoriteSpeciesData.id
-                    )}>
-                    <Image
-                      src={fixAccessingImagesUsingToken(
-                        favoriteSpeciesData.thumbnailurl
-                      )}
-                      alt={`Image for species ${favoriteSpeciesData.pluralname}`}
-                    />
-                    {favoriteSpeciesData.pluralname}
-                  </Link>
-                </div>
-              </>
-            )}
-            <Heading variant="h2">Reputation</Heading>
-            <div className={classes.tile}>
-              <Rep reputation={user.reputation} />
-            </div>
-            {bio && (
-              <>
-                <Heading variant="h2">Bio</Heading>
-                <Markdown
-                  source={bio}
-                  className={`${classes.tile} ${classes.bioTile}`}
-                />
-              </>
-            )}
-            <SocialMediaList
-              socialMedia={{
-                vrchatUsername: vrchatUsername,
-                neosVrUsername: neosVrUsername,
-                chilloutVrUsername: chilloutVrUsername,
-                vrchatUserId: vrchatUserId,
-                discordUsername: discordUsername,
-                twitterUsername: twitterUsername,
-                telegramUsername: telegramUsername,
-                youtubeChannelId: youtubeChannelId,
-                twitchUsername: twitchUsername,
-                patreonUsername: patreonUsername,
-              }}
-              actionCategory="ViewUser"
-              className={classes.socialMediaList}
-            />
+    <UserOverviewContext.Provider value={{ userId: user.id, user }}>
+      <Sections>
+        <PrimaryStyledSection>
+          <div>
+            <Avatar url={user.avatarurl} />{' '}
+            <StyledHeading variant="h1" isBanned={isBanned}>
+              <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
+                {user.username}
+              </Link>
+            </StyledHeading>
+            <Badges>
+              {isPatron && <PatronBadge />}
+              {getUserIsStaffMember(user) && <StaffBadge />}
+              {getIsUserBanned(user) && <BannedBadge />}
+              {isDeleted && <DeletedBadge />}
+            </Badges>
           </div>
-          {!small && (
-            <div className={classes.col}>
-              <Tabs
-                items={[
-                  {
-                    name: 'comments',
-                    label: 'Comments',
-                    contents: <TabComments />,
-                    noLazy: true,
-                  },
-                  {
-                    name: 'assets',
-                    label: 'Assets',
-                    contents: <TabAssets />,
-                  },
-                  {
-                    name: 'collection',
-                    label: 'Collection',
-                    contents: <TabCollection />,
-                  },
-                  {
-                    name: 'wishlist',
-                    label: 'Wishlist',
-                    contents: <TabWishlist />,
-                  },
-                  {
-                    name: 'reviews',
-                    label: 'Reviews',
-                    contents: <TabReviews />,
-                  },
-                  {
-                    name: 'endorsements',
-                    label: 'Endorsements',
-                    contents: <TabEndorsements />,
-                  },
-                  {
-                    name: 'attachments',
-                    label: 'Attachments',
-                    contents: <TabAttachments />,
-                  },
-                ].concat(
-                  isEditor
-                    ? [
-                        {
-                          name: 'history',
-                          label: 'History',
-                          contents: <TabHistory />,
-                        },
-                        {
-                          name: 'reputation',
-                          label: 'Reputation',
-                          contents: <RepChangeForUser userId={user.id} />,
-                        },
-                      ]
-                    : []
-                )}
-                urlWithTabNameVar={routes.viewUserWithVarAndTabVar.replace(
-                  ':userId',
-                  user.id
-                )}
-                horizontal
-              />
-            </div>
+        </PrimaryStyledSection>
+        <Section title="Bio">
+          {bio ? (
+            <Markdown source={bio} />
+          ) : (
+            <NoResultsMessage>No bio set</NoResultsMessage>
           )}
-        </div>
-        {isEditor && <UserEditorControls />}
-      </Context.Provider>
-    </>
+        </Section>
+        <Section title="Social Media">
+          <SocialMediaList socialMedia={socialMedia} />
+        </Section>
+        <Section title="Reputation">
+          <Rep reputation={reputation} />
+          <RepMilestones repChanges={repchanges} />
+        </Section>
+        <Section
+          title={`Favo${getPrefersBritishSpelling() ? 'u' : ''}rite Species`}>
+          {favSpeciesId ? (
+            <Link
+              to={routes.viewSpeciesWithVar.replace(
+                ':speciesIdOrSlug',
+                favSpeciesData.id
+              )}>
+              <Image
+                src={fixAccessingImagesUsingToken(favSpeciesData.thumbnailurl)}
+                alt={`Image for species ${favSpeciesData.pluralname}`}
+              />
+              {favSpeciesData.pluralname}
+            </Link>
+          ) : (
+            <NoResultsMessage>
+              No favo{getPrefersBritishSpelling() ? 'u' : ''}rite species set
+            </NoResultsMessage>
+          )}
+        </Section>
+        <Section title="Stats">
+          <div>
+            <StatRow>
+              <StatNum>{stats.assetcount}</StatNum> assets
+            </StatRow>
+            <StatRow>
+              <StatNum>{stats.amendmentcount}</StatNum> amendments
+            </StatRow>
+            <StatRow>
+              <StatNum>{stats.commentcount}</StatNum> comments
+            </StatRow>
+          </div>
+        </Section>
+        {isEditor && (
+          <Section title="Staff Only">
+            <UserEditorControls />
+          </Section>
+        )}
+      </Sections>
+    </UserOverviewContext.Provider>
   )
 }
 
