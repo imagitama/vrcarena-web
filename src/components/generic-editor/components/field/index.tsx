@@ -110,7 +110,6 @@ const Field = ({
   return isAccordion ? (
     <Accordion
       expanded={isExpanded}
-      defaultExpanded={startExpanded}
       onChange={(e, newVal) =>
         onExpandChange ? onExpandChange(newVal) : undefined
       }

@@ -412,7 +412,9 @@ const GenericEditor = <TRecord extends Record<string, any>>({
           onExpandChange={(newVal) =>
             updateFieldExpanded(editableField.name as string, newVal)
           }
-          isExpanded={fieldsExpansionState[editableField.name as string]}
+          isExpanded={
+            fieldsExpansionState[editableField.name as string] !== false
+          }
           size={size}>
           <Input
             editableField={editableField}
