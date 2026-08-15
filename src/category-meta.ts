@@ -58,7 +58,7 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     optimizedImageUrl: avatarOptimizedImageUrl,
     icon: AccessibilityIcon,
     rules:
-      'The avatar must be basically ready for upload to a game (like VRChat) with minimal effort for the user. Unrigged meshes the user is expected to rig themselves are NOT allowed.',
+      'The avatar must be basically ready for upload to a game (like VRChat) with minimal effort for the user. Unrigged meshes the user is expected to rig themselves and VRM-only models are NOT allowed.',
   },
   [AssetCategory.Tool]: {
     id: AssetCategory.Tool,
