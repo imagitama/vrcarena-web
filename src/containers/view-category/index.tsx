@@ -20,7 +20,7 @@ function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
 
 function getDescriptionByCategoryName(categoryName: AssetCategory): string {
   const category = getCategoryMeta(categoryName)
-  return category.shortDescription
+  return category.description
 }
 
 const ViewCategoryView = () => {

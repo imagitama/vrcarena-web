@@ -18,7 +18,7 @@ function getDisplayNameByCategoryName(categoryName: AssetCategory): string {
 }
 
 function getDescriptionByCategoryName(categoryName: AssetCategory): string {
-  return getCategoryMeta(categoryName).shortDescription
+  return getCategoryMeta(categoryName).description
 }
 
 const categoryName = AssetCategory.Avatar

@@ -36,7 +36,7 @@ const UserOverviewForEditor = ({ user }: { user: FullUser }) => {
           },
           {
             name: 'collection',
-            label: 'Collection',
+            label: 'Owned Assets',
             contents: TabCollection,
           },
           {

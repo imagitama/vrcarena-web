@@ -4,6 +4,7 @@ import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
+import { CategoryMeta } from '@/category-meta'
 
 const useStyles = makeStyles({
   item: {
@@ -33,11 +34,11 @@ const useStyles = makeStyles({
 })
 
 export default ({
-  category: { name, nameSingular, optimizedImageUrl, shortDescription },
+  category: { name, nameSingular, optimizedImageUrl, description },
   onClick,
   isSelected = false,
 }: {
-  category: any
+  category: CategoryMeta
   onClick?: () => void
   isSelected?: boolean
 }) => {
@@ -58,7 +59,7 @@ export default ({
             <Typography variant="h5" component="h2">
               {nameSingular}
             </Typography>
-            <Typography component="p">{shortDescription}</Typography>
+            <Typography component="p">{description}</Typography>
           </CardContent>
         </CardActionArea>
       </Card>

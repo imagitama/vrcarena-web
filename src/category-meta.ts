@@ -23,9 +23,10 @@ export interface CategoryMeta {
   id: string
   name: string
   nameSingular: string
-  shortDescription: string
+  description: string
   optimizedImageUrl: string
   icon?: any
+  rules?: string
 }
 
 const categoryMetas: { [name: string]: CategoryMeta } = {
@@ -33,16 +34,19 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     id: AssetCategory.Accessory,
     name: 'Accessories',
     nameSingular: 'Accessory',
-    shortDescription: `Add clothes, jewelry, glasses and more to your avatar using these accessories.`,
+    description:
+      'Clothing, jewelry, hair, pens and more accessories designed specifically for VR avatars.',
     optimizedImageUrl: accessoryOptimizedImageUrl,
     icon: CheckroomIcon,
+    rules:
+      'The accessory must be designed with VR avatars in mind. For example an unrigged wristwatch is fine as it is can be dropped onto an avatar but a Toyota Camry is not as it requires significant work to adapt to an avatar.',
   },
   [AssetCategory.Animation]: {
     id: AssetCategory.Animation,
     name: 'Animations',
     nameSingular: 'Animation',
-    shortDescription:
-      'Make your avatar dance, wave or run on the spot using one of these pre-made animations.',
+    description:
+      'Animate your VR avatar using these pre-made animations designed specifically for VR avatars.',
     optimizedImageUrl: animationOptimizedImageUrl,
     icon: DirectionsRunIcon,
   },
@@ -50,23 +54,17 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     id: AssetCategory.Avatar,
     name: 'Avatars',
     nameSingular: 'Avatar',
-    shortDescription: `Find new avatars for you to use in your favorite VR game.`,
+    description: `Represent yourself using an avatar designed specifically for VR games.`,
     optimizedImageUrl: avatarOptimizedImageUrl,
     icon: AccessibilityIcon,
-  },
-  [AssetCategory.Tutorial]: {
-    id: AssetCategory.Tutorial,
-    name: 'Tutorials',
-    nameSingular: 'Tutorial',
-    shortDescription: `Learn how to create avatars and worlds, add accessories and more.`,
-    optimizedImageUrl: tutorialOptimizedImageUrl,
-    icon: SchoolIcon,
+    rules:
+      'The avatar must be basically ready for upload to a game (like VRChat) with minimal effort for the user. Unrigged meshes the user is expected to rig themselves are NOT allowed.',
   },
   [AssetCategory.Tool]: {
     id: AssetCategory.Tool,
     name: 'Tools',
     nameSingular: 'Tool',
-    shortDescription:
+    description:
       'Mods, scripts, Unity plugins and other tools to help users create content for VR games.',
     optimizedImageUrl: toolOptimizedImageUrl,
     icon: ConstructionIcon,
@@ -75,8 +73,7 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     id: AssetCategory.Shader,
     name: 'Shaders',
     nameSingular: 'Shader',
-    shortDescription:
-      'Shaders that modify the appearance of an avatar or world.',
+    description: 'Shaders that modify the appearance of an avatar or world.',
     optimizedImageUrl: shaderOptimizedImageUrl,
     icon: FormatColorFillIcon,
   },
@@ -84,7 +81,7 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     id: AssetCategory.Retexture,
     name: 'Retextures',
     nameSingular: 'Retexture',
-    shortDescription: 'New textures for existing avatars or accessories.',
+    description: 'New textures for existing avatars or accessories.',
     optimizedImageUrl: retextureOptimizedImageUrl,
     icon: BrushIcon,
   },
@@ -92,8 +89,17 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
     id: AssetCategory.WorldAsset,
     name: 'World Assets',
     nameSingular: 'World Asset',
-    shortDescription: `Assets designed specifically for VR games such as VRChat Udon prefabs, ProtoFlux prefabs etc.`,
+    description: `Assets designed specifically for VR games such as VRChat Udon prefabs, ProtoFlux prefabs etc.`,
     optimizedImageUrl: worldAssetOptimizedImageUrl,
+  },
+  // deprecated
+  [AssetCategory.Tutorial]: {
+    id: AssetCategory.Tutorial,
+    name: 'Tutorials',
+    nameSingular: 'Tutorial',
+    description: `Learn how to create avatars and worlds, add accessories and more.`,
+    optimizedImageUrl: tutorialOptimizedImageUrl,
+    icon: SchoolIcon,
   },
 }
 

@@ -52,7 +52,7 @@ const useStyles = makeStyles({
 const CategoryButton = ({
   onClick,
   isSelected,
-  meta: { optimizedImageUrl, nameSingular, shortDescription },
+  meta: { optimizedImageUrl, nameSingular, description, rules },
 }: {
   onClick: () => void
   isSelected: boolean
@@ -75,7 +75,8 @@ const CategoryButton = ({
             <Typography variant="h5" component="h2">
               {nameSingular}
             </Typography>
-            <Typography component="p">{shortDescription}</Typography>
+            <Typography component="p">{description}</Typography>
+            {rules && <Typography component="p">Note: {rules}</Typography>}
           </CardContent>
         </CardActionArea>
       </Card>
