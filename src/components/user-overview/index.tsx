@@ -95,6 +95,18 @@ const Section = (
   </StyledSection>
 )
 
+const FavSpecies = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+`
+
+const RepWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+`
+
 const UserOverview = ({ user }: { user: FullUser }) => {
   const isEditor = useIsEditor()
 
@@ -157,23 +169,30 @@ const UserOverview = ({ user }: { user: FullUser }) => {
           <SocialMediaList socialMedia={socialMedia} />
         </Section>
         <Section title="Reputation">
-          <Rep reputation={reputation} />
+          <RepWrapper>
+            <Rep reputation={reputation} />
+          </RepWrapper>
           <RepMilestones repChanges={repchanges} />
         </Section>
         <Section
           title={`Favo${getPrefersBritishSpelling() ? 'u' : ''}rite Species`}>
           {favSpeciesData ? (
-            <Link
-              to={routes.viewSpeciesWithVar.replace(
-                ':speciesIdOrSlug',
-                favSpeciesData.id
-              )}>
-              <Image
-                src={fixAccessingImagesUsingToken(favSpeciesData.thumbnailurl)}
-                alt={`Image for species ${favSpeciesData.pluralname}`}
-              />
-              {favSpeciesData.pluralname}
-            </Link>
+            <FavSpecies>
+              <Link
+                to={routes.viewSpeciesWithVar.replace(
+                  ':speciesIdOrSlug',
+                  favSpeciesData.id
+                )}>
+                <Image
+                  src={fixAccessingImagesUsingToken(
+                    favSpeciesData.thumbnailurl
+                  )}
+                  alt={`Image for species ${favSpeciesData.pluralname}`}
+                  width="100px"
+                />
+                {favSpeciesData.pluralname}
+              </Link>
+            </FavSpecies>
           ) : (
             <NoResultsMessage>
               No favo{getPrefersBritishSpelling() ? 'u' : ''}rite species set
