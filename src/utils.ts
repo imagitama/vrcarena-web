@@ -487,8 +487,6 @@ export function getUrlForBoothByUsername(username: string): string {
 export function getPrefersBritishSpelling() {
   const locales = navigator.languages || [navigator.language]
 
-  // console.debug('locales', locales)
-
   const britishLocales = [
     'en-GB', // United Kingdom
     'en-AU', // Australia

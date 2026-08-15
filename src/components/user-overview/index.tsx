@@ -85,7 +85,7 @@ const Section = (
     HTMLDivElement
   >
 ) => (
-  <StyledSection {...props}>
+  <StyledSection {...props} title={undefined}>
     {props.title && (
       <Heading variant="h2" noMargin>
         {props.title}
@@ -106,7 +106,6 @@ const UserOverview = ({ user }: { user: FullUser }) => {
     accessstatus: accessStatus,
     patreonstatus: patreonStatus,
     ispatronpublic: isPatronPublic,
-    favoritespecies: favSpeciesId,
     favoritespeciesdata: favSpeciesData,
     stats,
   } = user
@@ -163,7 +162,7 @@ const UserOverview = ({ user }: { user: FullUser }) => {
         </Section>
         <Section
           title={`Favo${getPrefersBritishSpelling() ? 'u' : ''}rite Species`}>
-          {favSpeciesId ? (
+          {favSpeciesData ? (
             <Link
               to={routes.viewSpeciesWithVar.replace(
                 ':speciesIdOrSlug',
