@@ -131,7 +131,7 @@ const AssetsForSpecies = ({
       getQuery={getQuery}
       categoryName={AssetCategory.Avatar} // hides controls
       urlWithSubViewNameAndPageNumberVar={routes.viewSpeciesCategoryWithVarAndPageNumberVar
-        .replace(':speciesIdOrSlug', species.id)
+        .replace(':speciesIdOrSlug', species.slug || species.id)
         .replace(':categoryName', AssetCategory.Avatar)}
       getQueryString={() =>
         `species:${prepareValueForQuery(species.pluralname)} category:${
@@ -325,7 +325,7 @@ const View = () => {
               <Link
                 to={routes.viewSpeciesWithVar.replace(
                   ':speciesIdOrSlug',
-                  species.parent
+                  species.parentslug || species.parent
                 )}>
                 {species.parentpluralname}
               </Link>
@@ -337,7 +337,7 @@ const View = () => {
           <Link
             to={routes.viewSpeciesWithVar.replace(
               ':speciesIdOrSlug',
-              species.id
+              species.slug || species.id
             )}>
             {species.thumbnailurl ? (
               <img src={species.thumbnailurl} alt="Thumbnail for species" />
