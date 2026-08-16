@@ -125,12 +125,17 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     subPath: '/assets',
+    subPaths: ['/assets/:subViewName/page/:pageNumber', '/assets/:subViewName'],
     label: 'Assets',
     icon: AssetsIcon,
     component: AdminAssets,
   },
   {
     subPath: '/amendments',
+    subPaths: [
+      '/amendments/:subViewName/page/:pageNumber',
+      '/amendments/:subViewName',
+    ],
     label: 'Amendments',
     icon: AmendmentsIcon,
     component: AdminAmendments,
@@ -143,12 +148,20 @@ const navItems: NavItem[] = [
   },
   {
     subPath: '/reports',
+    subPaths: [
+      '/reports/:subViewName/page/:pageNumber',
+      '/reports/:subViewName',
+    ],
     label: 'Reports',
     icon: ReportIcon,
     component: AdminReports,
   },
   {
     subPath: '/support-tickets',
+    subPaths: [
+      '/support-tickets/:subViewName/page/:pageNumber',
+      '/support-tickets/:subViewName',
+    ],
     label: 'Support Tickets',
     icon: SupportTicketsIcon,
     component: AdminSupportTickets,
@@ -301,8 +314,6 @@ const Menu = () => {
 
 const View = () => {
   const [isLoading, lastErrorCode, user] = useUserRecord()
-  const routeMatch = useRouteMatch()
-  const params = useParams<any>()
 
   if (isLoading) {
     return <LoadingIndicator message="Loading your user account..." />
@@ -344,7 +355,9 @@ const View = () => {
                   exact
                   path={
                     item.subPaths
-                      ? item.subPaths.map((path) => `${routes.admin}${path}`)
+                      ? item.subPaths
+                          .concat([item.subPath])
+                          .map((path) => `${routes.admin}${path}`)
                       : `${routes.admin}${item.subPath}`
                   }
                   component={item.component}
@@ -356,7 +369,9 @@ const View = () => {
                 exact
                 path={
                   item.subPaths
-                    ? item.subPaths.map((path) => `${routes.admin}${path}`)
+                    ? item.subPaths
+                        .concat([item.subPath])
+                        .map((path) => `${routes.admin}${path}`)
                     : `${routes.admin}${item.subPath}`
                 }
                 component={item.component}

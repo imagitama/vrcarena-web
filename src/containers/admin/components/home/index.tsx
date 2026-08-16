@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 
 import Table from '@/components/responsive-table'
@@ -225,16 +225,20 @@ export default () => {
     <>
       <Heading variant="h1">Admin</Heading>
       <Heading variant="h2">Queue Overview</Heading>
-      <ErrorBoundary>
-        <AdminQueue />
-      </ErrorBoundary>
+      <Suspense fallback={<LoadingIndicator message="Loading" />}>
+        <ErrorBoundary>
+          <AdminQueue />
+        </ErrorBoundary>
+      </Suspense>
       <Heading variant="h2">Notepad</Heading>
-      <ErrorBoundary>
-        <Whiteboard />
-      </ErrorBoundary>
-      <ErrorBoundary>
-        <Notepad />
-      </ErrorBoundary>
+      <Suspense fallback={<LoadingIndicator message="Loading" />}>
+        <ErrorBoundary>
+          <Whiteboard />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <Notepad />
+        </ErrorBoundary>
+      </Suspense>
     </>
   )
 }
