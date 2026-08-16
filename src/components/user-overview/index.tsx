@@ -111,6 +111,13 @@ const RepWrapper = styled.div`
   text-align: center;
 `
 
+const AvatarWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+`
+
 const UserOverview = ({ user }: { user: FullUser }) => {
   const isEditor = useIsEditor()
 
@@ -148,7 +155,9 @@ const UserOverview = ({ user }: { user: FullUser }) => {
       <Sections>
         <PrimaryStyledSection>
           <div>
-            <Avatar url={user.avatarurl} />{' '}
+            <AvatarWrapper>
+              <Avatar url={user.avatarurl} />{' '}
+            </AvatarWrapper>
             <StyledHeading variant="h1" isBanned={isBanned}>
               <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
                 {user.username}
