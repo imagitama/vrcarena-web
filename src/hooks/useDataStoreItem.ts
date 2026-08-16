@@ -36,21 +36,21 @@ export default <TResult extends Record<string, unknown>>(
     try {
       if (!collectionName || !id) {
         if (lastIdRef.current !== id) {
-          console.debug(
-            `useDataStoreItem :: ${
-              options.queryName || 'unnamed'
-            } :: ID changed to nothing - resetting`
-          )
+          // console.debug(
+          //   `useDataStoreItem :: ${
+          //     options.queryName || 'unnamed'
+          //   } :: ID changed to nothing - resetting`
+          // )
           setResult(null)
           lastIdRef.current = id
           return
         }
 
-        console.debug(
-          `useDataStoreItem :: ${
-            options.queryName || 'unnamed'
-          } :: no collection name or ID - skipping`
-        )
+        // console.debug(
+        //   `useDataStoreItem :: ${
+        //     options.queryName || 'unnamed'
+        //   } :: no collection name or ID - skipping`
+        // )
         return
       }
 

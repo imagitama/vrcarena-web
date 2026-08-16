@@ -41,16 +41,16 @@ export default <TItem>(
   const hydrate = async () => {
     try {
       if (!collectionName) {
-        console.debug(
-          `useDataStoreItems :: ${options.queryName} :: no collection name - skipping`
-        )
+        // console.debug(
+        //   `useDataStoreItems :: ${options.queryName} :: no collection name - skipping`
+        // )
         return
       }
 
       if (ids === false) {
-        console.debug(
-          `useDataStoreItems :: ${options.queryName} :: IDs false - skipping`
-        )
+        // console.debug(
+        //   `useDataStoreItems :: ${options.queryName} :: IDs false - skipping`
+        // )
         return
       }
 

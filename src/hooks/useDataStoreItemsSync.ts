@@ -93,9 +93,9 @@ export default <TItem extends Record<string, any>>(
   const doIt = async () => {
     try {
       if (!collectionName) {
-        console.debug(
-          `useDataStoreItemsSync :: ${options.queryName} :: no collection name - skipping`
-        )
+        // console.debug(
+        //   `useDataStoreItemsSync :: ${options.queryName} :: no collection name - skipping`
+        // )
         return
       }
 

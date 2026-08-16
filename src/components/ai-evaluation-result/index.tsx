@@ -360,16 +360,18 @@ const AiEvaluationResult = ({
   queuedItem: staleQueuedItem,
   onClick,
   isMain = false,
+  sync = true,
 }: {
   queuedItem: AiEvaluateQueuedItem
   onClick?: () => void
   isMain?: boolean
+  sync?: boolean
 }) => {
   const classes = useStyles()
   const [isSubscribing, isSubscribed, lastErrorCode, lastResult] =
     useDataStoreItemSync<AiEvaluateQueuedItem>(
       AiEvaluationCollectionNames.AiEvaluateQueue,
-      staleQueuedItem.id,
+      sync === false ? false : staleQueuedItem.id,
       { queryName: `ai-evaluation_${staleQueuedItem.id}` }
     )
   const isExpanded = !isMain

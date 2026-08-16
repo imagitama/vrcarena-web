@@ -130,7 +130,9 @@ function AssetsTable({
                         tooltip="The site has asked AI to evaluate the asset to determine if it can be auto-approved.">
                         <AiResult<AiEvaluateQueuedItem, AssetForList_Editor>
                           title="AI Evaluation"
-                          renderer={AiEvaluationResult}
+                          renderer={(props) => (
+                            <AiEvaluationResult {...props} sync={false} />
+                          )}
                           queueCollectionName={
                             AiEvaluateCollectionNames.AiEvaluateQueue
                           }
