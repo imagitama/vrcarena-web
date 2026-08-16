@@ -27,6 +27,7 @@ import useGlobalState from '@/hooks/useGlobalState'
 import InfoMessage from '../info-message'
 import { hideNoticeById } from '@/hooks/useNotices'
 import CheckboxInput from '../checkbox-input'
+import { inDevelopment } from '@/environment'
 
 const MessageText = styled.div`
   font-size: 125%;
@@ -141,6 +142,7 @@ const SurveyDialog = ({
 }
 
 const getIsUserTooYoung = (signupDate: string): boolean => {
+  if (inDevelopment()) return false
   const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000 // approx. 1 month
   const accountAge = Date.now() - new Date(signupDate).getTime()
   return accountAge < ONE_MONTH_MS

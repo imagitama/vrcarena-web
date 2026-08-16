@@ -206,6 +206,7 @@ export interface PaginatedViewProps<TRecord extends Record<string, any>> {
     items: TRecord[] | null
     hydrate: () => void
   }) => React.ReactElement // rendered above table
+  idFieldName?: string
 }
 
 const PaginatedView = <TRecord extends Record<string, any>>({
@@ -232,6 +233,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
   itemNamePlural,
   onRefresh,
   form,
+  idFieldName,
 }: PaginatedViewProps<TRecord>) => {
   if (!renderer) {
     throw new Error('Cannot render paginated view without a renderer')
@@ -247,10 +249,10 @@ const PaginatedView = <TRecord extends Record<string, any>>({
     subViewName: string
   }>()
 
-  console.debug(`PaginatedView.render`, {
-    pageNumberFromUrl,
-    subViewNameFromUrl,
-  })
+  // console.debug(`PaginatedView.render`, {
+  //   pageNumberFromUrl,
+  //   subViewNameFromUrl,
+  // })
 
   const [selectedSubView, setSelectedSubView] = useStorage<string | null>(
     `${keyPrefix}_subview`,
@@ -421,7 +423,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
 
       // sort by "ID" in case sort field name is identical (like users page)
       // TODO: probably put this behind a flag in case it breaks some views that dont use ID
-      query = query.order('id', { ascending: false })
+      query = query.order(idFieldName || 'id', { ascending: false })
 
       return query
     },

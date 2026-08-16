@@ -204,6 +204,7 @@ export default () => {
               <PaginatedView<RepReason>
                 viewName={CollectionNames.RepReasons}
                 name="view-rep-reasons"
+                idFieldName="name"
                 sortOptions={[
                   {
                     label: 'Created at',

@@ -4,6 +4,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 // milestones
 import StarIcon from '@mui/icons-material/Star'
 import GavelIcon from '@mui/icons-material/Gavel'
+import HowToVoteIcon from '@mui/icons-material/HowToVote'
 
 import Tooltip from '../tooltip'
 import React from 'react'
@@ -32,6 +33,11 @@ const milestones: MilestoneInfo[] = [
     name: 'assets_approved_tier1',
     label: 'Submitter',
     icon: StarIcon,
+  },
+  {
+    name: 'submit_survey_response',
+    label: 'Survey',
+    icon: HowToVoteIcon,
   },
 ]
 
