@@ -9,4 +9,7 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   testPathIgnorePatterns: ['<rootDir>/dist/'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
 }

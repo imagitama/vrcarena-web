@@ -1,83 +1,44 @@
 import { useEffect, useRef } from 'react'
-import { matchPath, useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 
-import { scrollTo, scrollToTop } from '@/utils'
-import { routes } from '@/routes'
+const scrollPositions = new Map<string, number>()
+const debounceMs = 100
+const getScrollTop = () => window.scrollY
+const setScrollTop = (value: number) => window.scrollTo(0, value)
 
-const scrollAmountsByUrl = new Map<string, number>()
+const useScrollMemory = (attemptKey: string | false) => {
+  const location = useLocation()
+  const key = location.pathname + location.search
 
-const getMatchedPattern = (pathname: string): string | null => {
-  for (const pattern of Object.values(routes)) {
-    if (matchPath(pathname, pattern)) {
-      return pattern
-    }
-  }
-  return null
-}
-
-const getHasNavigatedBetweenPages = (
-  lastPathname: string | null,
-  currentPathname: string | null
-): boolean => {
-  if (lastPathname === currentPathname) {
-    return false
-  }
-
-  if (lastPathname === null || currentPathname === null) {
-    return true
-  }
-
-  const lastPattern = getMatchedPattern(lastPathname)
-  const currentPattern = getMatchedPattern(currentPathname)
-
-  if (lastPattern !== null && lastPattern === currentPattern) {
-    return false
-  }
-
-  return true
-}
-
-const useScrollMemory = () => {
-  const lastPathname = useRef<string | null>(null)
-  const { pathname } = useLocation()
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    // console.debug(`useScrollMemory.page-nav`, {
-    //   old: lastPathname.current,
-    //   new: pathname,
-    // })
-
-    const hasNavigatedBetweenPages = getHasNavigatedBetweenPages(
-      lastPathname.current,
-      pathname
-    )
-
-    if (hasNavigatedBetweenPages) {
+    if (!attemptKey) return
+    const savedScrollPos = scrollPositions.get(key)
+    requestAnimationFrame(() => {
       console.debug(
-        `useScrollMemory.page-nav between pages -> scrolling to top`
+        `useScrollMemory :: ${key} :: restore to ${savedScrollPos || 'none'}`
       )
+      setScrollTop(savedScrollPos ?? 0)
+    })
+  }, [key, attemptKey])
 
-      scrollToTop(false)
-    } else if (scrollAmountsByUrl.has(pathname)) {
-      const amount = scrollAmountsByUrl.get(pathname)!
-
-      console.debug(
-        `useScrollMemory.page-nav NOT between pages and is stored -> scrolling to ${amount}`
-      )
-
-      scrollTo(amount, false)
-    }
-
-    lastPathname.current = pathname
-
+  useEffect(() => {
     const onScroll = () => {
-      scrollAmountsByUrl.set(pathname, Math.floor(window.scrollY))
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(() => {
+        const newScrollTop = getScrollTop()
+        scrollPositions.set(key, newScrollTop)
+        console.debug(`useScrollMemory :: ${key} :: store ${newScrollTop}`)
+      }, debounceMs)
     }
 
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
 
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [pathname])
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [key, debounceMs, getScrollTop])
 }
 
 export default useScrollMemory

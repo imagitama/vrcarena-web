@@ -448,7 +448,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
       queryName: `paginated-view`,
     })
 
-  useScrollMemory()
+  useScrollMemory(isLoading ? false : `p${currentPageNumber}`)
 
   const Page = () => {
     if (lastErrorCode !== null) {
