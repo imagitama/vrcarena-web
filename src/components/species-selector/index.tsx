@@ -123,6 +123,17 @@ const renderTreeItemChildren = (children: TreeItem[]) => {
   )
 }
 
+function getAllItemIds(items: any[]): string[] {
+  let ids: string[] = []
+  items.forEach((item) => {
+    ids.push(item.id)
+    if (item.children) {
+      ids = ids.concat(getAllItemIds(item.children))
+    }
+  })
+  return ids
+}
+
 const SpeciesSelector = ({
   selectedSpeciesIds,
   onSelectedSpeciesIds,
@@ -205,6 +216,7 @@ const SpeciesSelector = ({
         slots={{
           item: (props) => <CustomTreeItem {...props} />,
         }}
+        defaultExpandedItems={getAllItemIds(speciesTreeItems)} // start expanded as filtering doesn't show entire branch
       />
     </>
   )
