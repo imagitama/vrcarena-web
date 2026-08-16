@@ -114,57 +114,52 @@ export default ({
 
   return (
     <div>
-      <FormControl fullWidth variant="outlined" className={classes.formControl}>
-        <InputLabel id="fav-species-label">
-          Select your favorite species (optional)
-        </InputLabel>
-        <Select
-          fullWidth
-          labelId="fav-species-label"
-          value={newFavoriteSpeciesId}
-          onChange={(e) => {
-            const newSpeciesId = e.target.value as string
-            setNewFavoriteSpeciesId(newSpeciesId)
+      <Select
+        fullWidth
+        label="Select your favorite species (optional)"
+        value={newFavoriteSpeciesId}
+        onChange={(e) => {
+          const newSpeciesId = e.target.value as string
+          setNewFavoriteSpeciesId(newSpeciesId)
 
-            if (analyticsCategory) {
-              trackAction(
-                analyticsCategory,
-                'Select different species',
-                e.target.value
-              )
-            }
-
-            if (saveOnSelect) {
-              onSaveBtnClick(newSpeciesId)
-            }
-          }}
-          disabled={isSaving}>
-          {species
-            .filter(
-              (speciesItem) =>
-                speciesItem.singularname &&
-                !speciesItem.singularname.includes('DO NOT USE')
+          if (analyticsCategory) {
+            trackAction(
+              analyticsCategory,
+              'Select different species',
+              e.target.value
             )
-            .map((speciesItem) => (
-              <MenuItem key={speciesItem.id} value={speciesItem.id}>
-                {speciesItem.pluralname}
-                {speciesItem.singularname !== speciesItem.pluralname
-                  ? `/${speciesItem.singularname}`
-                  : ''}
+          }
 
-                {speciesItem.tags.length
-                  ? ` (${speciesItem.tags.join(', ')})`
-                  : ''}
-              </MenuItem>
-            ))}
-        </Select>
-        {isSaving && <LoadingIndicator message="Saving..." />}
-        {isSaveSuccess ? (
-          <SuccessMessage>Your favorite species has been saved</SuccessMessage>
-        ) : lastErrorCode ? (
-          <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
-        ) : null}
-      </FormControl>
+          if (saveOnSelect) {
+            onSaveBtnClick(newSpeciesId)
+          }
+        }}
+        disabled={isSaving}>
+        {species
+          .filter(
+            (speciesItem) =>
+              speciesItem.singularname &&
+              !speciesItem.singularname.includes('DO NOT USE')
+          )
+          .map((speciesItem) => (
+            <MenuItem key={speciesItem.id} value={speciesItem.id}>
+              {speciesItem.pluralname}
+              {speciesItem.singularname !== speciesItem.pluralname
+                ? `/${speciesItem.singularname}`
+                : ''}
+
+              {speciesItem.tags.length
+                ? ` (${speciesItem.tags.join(', ')})`
+                : ''}
+            </MenuItem>
+          ))}
+      </Select>
+      {isSaving && <LoadingIndicator message="Saving..." />}
+      {isSaveSuccess ? (
+        <SuccessMessage>Your favorite species has been saved</SuccessMessage>
+      ) : lastErrorCode ? (
+        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+      ) : null}
       {saveOnSelect !== true && (
         <FormControls>
           <Button
