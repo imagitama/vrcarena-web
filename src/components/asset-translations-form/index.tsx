@@ -387,8 +387,8 @@ const AssetTranslationsForm = ({
     <>
       <InfoMessage hideId="how-translations-work" title="How Translations Work">
         When you request a translation we send the title, description and locale
-        to Google for translating (just like using you browser). Shown as tabs
-        in the asset with a message explaining how we translate.
+        to Google for translating. Translations are shown as tabs in the asset
+        with a message explaining how we translated it.
       </InfoMessage>
       {value !== null ? (
         <>

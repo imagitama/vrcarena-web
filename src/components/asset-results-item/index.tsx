@@ -326,6 +326,11 @@ const NewIndicator = styled(NewReleasesIcon)`
     theme!.palette.tertiary.light};
 `
 
+const DateMetadata = styled.div`
+  margin-top: 0.25rem;
+  font-size: 75%;
+`
+
 const AssetResultsItem = ({
   asset,
   onClick,
@@ -451,10 +456,7 @@ const AssetResultsItem = ({
                 />
               ) : null}
             </div>
-            {Controls ||
-            actuallyShowMoreInfo ||
-            showState ||
-            showDateMetadata ? (
+            {Controls || actuallyShowMoreInfo || showState ? (
               <div className={classes.moreInfo}>
                 <div className={classes.controls}>
                   {Controls ? (
@@ -491,10 +493,24 @@ const AssetResultsItem = ({
                 {showState && asset && 'accessstatus' in asset && (
                   <AssetState asset={asset as AssetForList} />
                 )}
-                {showDateMetadata && asset && 'createdat' in asset && (
-                  <FormattedDate date={asset.createdat} />
-                )}
               </div>
+            ) : null}
+            {showDateMetadata &&
+            asset &&
+            'createdat' in asset &&
+            'approvedat' in asset &&
+            asset.approvedat ? (
+              <DateMetadata>
+                Created{' '}
+                <FormattedDate
+                  date={(asset as AssetForList).createdat as string}
+                />
+                <br />
+                Approved{' '}
+                <FormattedDate
+                  date={(asset as AssetForList).approvedat as string}
+                />
+              </DateMetadata>
             ) : null}
           </CardContent>{' '}
         </Link>

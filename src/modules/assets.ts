@@ -225,6 +225,7 @@ export interface AssetBasicMetadata {
 export interface AssetForList extends Asset, AssetBasicMetadata {
   authorname: string
   speciesnames: string[]
+  approvedat: string | null
 }
 
 export type PublicAsset = AssetForList
