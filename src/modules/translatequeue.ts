@@ -2,6 +2,8 @@ import { AiConvoMessage } from '@/ai'
 import { QueueStatus as TranslateQueuedItemStatus } from './common'
 import { QueuedItem } from '@/queues'
 
+export { QueueStatus } from './common'
+
 export interface AssetTranslationResult {
   title: string
   description: string

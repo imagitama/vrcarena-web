@@ -26,6 +26,7 @@ import {
   Species as SpeciesIcon,
   AssetSync as AssetSyncIcon,
   SupportTickets as SupportTicketsIcon,
+  Translate as TranslateIcon,
 } from '@/icons'
 
 import * as routes from '@/routes'
@@ -56,6 +57,7 @@ import AdminSpecies from './components/species'
 import AdminNotifications from './components/notifications'
 import AdminSurveys from './components/surveys'
 import AdminAssetSyncQueue from './components/queue/asset-sync'
+import AdminTranslateQueue from './components/queue/translate'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const drawerWidth = 240
@@ -200,6 +202,17 @@ const navItems: NavItem[] = [
         label: 'Asset Sync',
         icon: AssetSyncIcon,
         component: AdminAssetSyncQueue,
+      },
+      {
+        subPath: '/queues/translate',
+        subPaths: [
+          '/queues/translate/:subViewName/page/:pageNumber',
+          '/queues/translate/:subViewName',
+          '/queues/translate',
+        ],
+        label: 'Translate',
+        icon: TranslateIcon,
+        component: AdminTranslateQueue,
       },
     ],
   },

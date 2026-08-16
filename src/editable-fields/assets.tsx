@@ -154,6 +154,7 @@ const fields: EditableField<Asset>[] = [
           activeSpeciesIds={value || []}
           showControls={false}
           onChange={(newIds) => onChange(newIds as any)} // TODO: fix up types
+          startCollapsed={false}
         />
       ) : (
         <NoResultsMessage>Only avatars can have a species</NoResultsMessage>
