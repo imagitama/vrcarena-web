@@ -188,5 +188,23 @@ export const darkTheme: VRCArenaTheme = createTheme({
         },
       },
     },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: colorBrandLight,
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focused': {
+            color: colorBrandLight,
+          },
+        },
+      },
+    },
   },
 })

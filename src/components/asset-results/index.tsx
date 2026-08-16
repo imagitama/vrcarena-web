@@ -22,6 +22,7 @@ const AssetResults = ({
   shimmer = false,
   shimmerCount = 3,
   showStates = false,
+  showDateMetadata = false,
 }: {
   assets?: (AssetForList | Asset)[]
   selectedAssetIds?: string[]
@@ -33,6 +34,7 @@ const AssetResults = ({
   shimmer?: boolean
   shimmerCount?: number
   showStates?: boolean
+  showDateMetadata?: boolean
 }) => {
   const classes = useStyles()
   return (
@@ -62,6 +64,7 @@ const AssetResults = ({
                     : undefined
                 }
                 showState={showStates}
+                showDateMetadata={showDateMetadata}
               />
             </div>
           ))}

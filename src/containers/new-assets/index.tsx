@@ -7,12 +7,16 @@ import { PublicAsset, ViewNames } from '@/modules/assets'
 import Heading from '@/components/heading'
 import AssetResults from '@/components/asset-results'
 import AssetsPaginatedView from '@/components/assets-paginated-view'
-
-const Renderer = ({ items }: { items?: PublicAsset[] }) => {
-  return <AssetResults assets={items} />
-}
+import { OrderDirections } from '@/hooks/useDatabaseQuery'
+import useStorage from '@/hooks/useStorage'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
 
 const NewAssetsView = () => {
+  const [isViewingAll, setIsViewingAll] = useStorage<boolean>(
+    'new-assets-viewing-all',
+    false
+  )
   return (
     <>
       <Helmet>
@@ -24,16 +28,24 @@ const NewAssetsView = () => {
       </Helmet>
       <div>
         <Heading variant="h1">New Assets</Heading>
-        <p>
-          Assets that have been approved (not just created) in the past 7 days.
-        </p>
         <AssetsPaginatedView
-          viewName={ViewNames.GetNewPublicAssets}
-          urlWithSubViewNameAndPageNumberVar={
-            routes.newAssetsWithPageNumberVar
-          }>
-          <Renderer />
-        </AssetsPaginatedView>
+          viewName={
+            isViewingAll
+              ? ViewNames.GetPublicAssets
+              : ViewNames.GetNewPublicAssets
+          }
+          defaultFieldName="createdat"
+          defaultDirection={OrderDirections.DESC}
+          urlWithSubViewNameAndPageNumberVar={routes.newAssetsWithPageNumberVar}
+          showDateMetadata
+        />
+        <FormControls>
+          <Button
+            onClick={() => setIsViewingAll(!isViewingAll)}
+            checked={isViewingAll}>
+            View All Assets
+          </Button>
+        </FormControls>
       </div>
     </>
   )

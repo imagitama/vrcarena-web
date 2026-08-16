@@ -32,10 +32,12 @@ const AssetsByArea = ({
   assets,
   categoryName,
   hydrate,
+  showDateMetadata,
 }: {
   assets?: PublicAsset[]
   categoryName: string
   hydrate?: () => void
+  showDateMetadata?: boolean
 }) => {
   const classes = useStyles()
 
@@ -87,7 +89,7 @@ const AssetsByArea = ({
                 )}
               </span>
             </Heading>
-            <AssetResults assets={assets} />
+            <AssetResults assets={assets} showDateMetadata={showDateMetadata} />
           </div>
         ))}
     </div>

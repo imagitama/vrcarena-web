@@ -9,6 +9,8 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import LinkIcon from '@mui/icons-material/Link'
 import EditIcon from '@mui/icons-material/Edit'
 import Chip from '@mui/material/Chip'
+import styled from '@emotion/styled'
+import NewReleasesIcon from '@mui/icons-material/NewReleases'
 
 import * as routes from '@/routes'
 import {
@@ -34,10 +36,14 @@ import Tooltip from '@/components/tooltip'
 import classNames from 'classnames'
 import CheckboxInput from '../checkbox-input'
 import useBulkEdit from '@/hooks/useBulkEdit'
+import FormattedDate from '../formatted-date'
+import { VRCArenaTheme } from '@/themes'
 
 const useStyles = makeStyles({
   root: {
     width: '200px',
+    position: 'relative',
+
     transition: 'all 100ms',
     [mediaQueryForTabletsOrBelow]: {
       width: '160px',
@@ -47,6 +53,9 @@ const useStyles = makeStyles({
     },
     '&:hover $relation svg': {
       transform: 'rotate(360deg) !important',
+    },
+    '&&': {
+      overflow: 'visible', // for new indicator
     },
   },
   tiny: {
@@ -300,6 +309,23 @@ const SpeciesOutput = ({
   )
 }
 
+const getIsAssetNew = (date: string): boolean => {
+  const oneWeekMs = 7 * 24 * 60 * 60 * 1000
+  const assetDate = new Date(date).getTime()
+  const now = Date.now()
+  return now - assetDate <= oneWeekMs
+}
+
+const NewIndicator = styled(NewReleasesIcon)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(25%, -25%);
+  font-size: 300%;
+  color: ${({ theme }: { theme?: VRCArenaTheme }) =>
+    theme!.palette.tertiary.light};
+`
+
 const AssetResultsItem = ({
   asset,
   onClick,
@@ -315,6 +341,7 @@ const AssetResultsItem = ({
   showMoreInfo = undefined,
   className,
   showCategory = true,
+  showDateMetadata = false,
 }: {
   asset?: Asset | PublicAsset | FullAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
@@ -328,6 +355,7 @@ const AssetResultsItem = ({
   showMoreInfo?: boolean
   className?: string
   showCategory?: boolean // for <AssetTree />
+  showDateMetadata?: boolean // for view "new assets"
 }) => {
   const classes = useStyles()
   const [, , prefs] = useUserPreferences()
@@ -423,7 +451,10 @@ const AssetResultsItem = ({
                 />
               ) : null}
             </div>
-            {Controls || actuallyShowMoreInfo || showState ? (
+            {Controls ||
+            actuallyShowMoreInfo ||
+            showState ||
+            showDateMetadata ? (
               <div className={classes.moreInfo}>
                 <div className={classes.controls}>
                   {Controls ? (
@@ -460,11 +491,22 @@ const AssetResultsItem = ({
                 {showState && asset && 'accessstatus' in asset && (
                   <AssetState asset={asset as AssetForList} />
                 )}
+                {showDateMetadata && asset && 'createdat' in asset && (
+                  <FormattedDate date={asset.createdat} />
+                )}
               </div>
             ) : null}
           </CardContent>{' '}
         </Link>
       </CardActionArea>
+      {showDateMetadata &&
+        asset &&
+        'createdat' in asset &&
+        getIsAssetNew(asset.createdat) && (
+          <Tooltip title="New">
+            <NewIndicator />
+          </Tooltip>
+        )}
     </Card>
   )
 }

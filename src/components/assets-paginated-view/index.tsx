@@ -17,6 +17,7 @@ interface ExtraRendererProps {
   categoryName?: string
   defaultGroupByArea?: boolean
   showAreas?: boolean
+  showDateMetadata?: boolean
 }
 
 enum SubView {
@@ -27,6 +28,7 @@ const Renderer = ({
   items,
   hydrate,
   selectedSubView,
+  showDateMetadata,
   // extra
   categoryName,
 }: RendererProps<PublicAsset> & ExtraRendererProps) => {
@@ -44,10 +46,11 @@ const Renderer = ({
         assets={items}
         categoryName={categoryName}
         hydrate={hydrate}
+        showDateMetadata={showDateMetadata}
       />
     )
   } else {
-    return <AssetResults assets={items} />
+    return <AssetResults assets={items} showDateMetadata={showDateMetadata} />
   }
 }
 
@@ -62,6 +65,7 @@ const AssetsPaginatedView = ({
   categoryName,
   defaultGroupByArea = true,
   showAreas = true,
+  showDateMetadata = false,
   ...props
 }: ExtraRendererProps & PaginatedViewProps<PublicAsset>) => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
@@ -128,7 +132,10 @@ const AssetsPaginatedView = ({
       isRendererForLoading
       itemNamePlural="assets">
       {/* @ts-ignore */}
-      <Renderer categoryName={categoryName} />
+      <Renderer
+        categoryName={categoryName}
+        showDateMetadata={showDateMetadata}
+      />
     </PaginatedView>
   )
 }
