@@ -21,6 +21,10 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     '&:hover .hat': {
       top: '-5%',
     },
+    '& > *': {
+      width: '100%',
+      height: '100%',
+    },
   },
   imageWrapper: {
     width: '100%',

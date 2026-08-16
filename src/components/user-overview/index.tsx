@@ -60,14 +60,18 @@ const PrimaryStyledSection = styled(StyledSection)`
 const Badges = styled.div`
   display: flex;
   justify-content: center;
+  margin-left: 0.5rem;
   & > * {
-    margin-right: 0.1rem;
+    margin-left: 0.1rem;
   }
 `
 
 const StyledHeading = styled(Heading)`
-  margin: 1rem 0;
+  margin: 0.5rem 0 0;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   ${({ isBanned }: { isBanned: boolean }) =>
     isBanned && 'text-decoration: line-through;'}
 `
@@ -149,13 +153,13 @@ const UserOverview = ({ user }: { user: FullUser }) => {
               <Link to={routes.viewUserWithVar.replace(':userId', user.id)}>
                 {user.username}
               </Link>
+              <Badges>
+                {isPatron && <PatronBadge />}
+                {getUserIsStaffMember(user) && <StaffBadge />}
+                {getIsUserBanned(user) && <BannedBadge />}
+                {isDeleted && <DeletedBadge />}
+              </Badges>
             </StyledHeading>
-            <Badges>
-              {isPatron && <PatronBadge />}
-              {getUserIsStaffMember(user) && <StaffBadge />}
-              {getIsUserBanned(user) && <BannedBadge />}
-              {isDeleted && <DeletedBadge />}
-            </Badges>
           </div>
         </PrimaryStyledSection>
         <Section title="Bio">
