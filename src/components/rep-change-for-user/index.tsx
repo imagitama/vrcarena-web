@@ -15,6 +15,7 @@ import StatusText from '@/components/status-text'
 import FormattedDate from '@/components/formatted-date'
 import useIsEditor from '@/hooks/useIsEditor'
 import ShortId from '../short-id'
+import { RefreshButton } from '../button'
 
 const getReasonLabel = (reason: string): string =>
   `${reason.substring(0, 1).toUpperCase()}${reason
@@ -22,7 +23,7 @@ const getReasonLabel = (reason: string): string =>
     .replaceAll('_', ' ')}`
 
 const RepChangeForUser = ({ userId }: { userId: string }) => {
-  const [isLoading, lastErrorCode, repChanges] =
+  const [isLoading, lastErrorCode, repChanges, hydrate] =
     useDatabaseQuery<FullRepChange>(ViewNames.GetFullRepChanges, [
       ['userid', Operators.EQUALS, userId],
     ])
@@ -41,57 +42,60 @@ const RepChangeForUser = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <Table size="small">
-      <TableHead>
-        <TableRow>
-          <TableCell></TableCell>
-          <TableCell>Reason</TableCell>
-          <TableCell>Delta</TableCell>
-          {isEditor && <TableCell>Related Data</TableCell>}
-          <TableCell>Date</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {repChanges.length ? (
-          repChanges.map((repChange) => (
-            <TableRow key={repChange.id}>
-              <TableCell title={repChange.id}>
-                <ShortId>{repChange.id}</ShortId>
-              </TableCell>
-              <TableCell label="Reason">
-                {getReasonLabel(repChange.reason)}
-                <br />
-                <em>{repChange.reasoninfo.description}</em>
-              </TableCell>
-              <TableCell label="Delta">
-                <StatusText positivity={repChange.delta > 0 ? 1 : -1}>
-                  +{repChange.delta}
-                </StatusText>
-              </TableCell>
-              {isEditor && (
-                <TableCell label="Related Data">
-                  {repChange.relateddata
-                    ? JSON.stringify(repChange.relateddata)
-                    : '-'}
+    <>
+      <RefreshButton onClick={hydrate} />
+      <Table size="small" style={{ minWidth: 0 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell>Reason</TableCell>
+            <TableCell>Delta</TableCell>
+            {isEditor && <TableCell>Related Data</TableCell>}
+            <TableCell>Date</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {repChanges.length ? (
+            repChanges.map((repChange) => (
+              <TableRow key={repChange.id}>
+                <TableCell title={repChange.id}>
+                  <ShortId>{repChange.id}</ShortId>
                 </TableCell>
-              )}
-              <TableCell label="Date">
-                <FormattedDate date={repChange.createdat} />
-                {repChange.createdby ? (
-                  <> by {repChange.createdby.substring(0, 5)}...</>
-                ) : null}
+                <TableCell label="Reason">
+                  {getReasonLabel(repChange.reason)}
+                  <br />
+                  <em>{repChange.reasoninfo.description}</em>
+                </TableCell>
+                <TableCell label="Delta">
+                  <StatusText positivity={repChange.delta > 0 ? 1 : -1}>
+                    +{repChange.delta}
+                  </StatusText>
+                </TableCell>
+                {isEditor && (
+                  <TableCell label="Related Data">
+                    {repChange.relateddata
+                      ? JSON.stringify(repChange.relateddata)
+                      : '-'}
+                  </TableCell>
+                )}
+                <TableCell label="Date">
+                  <FormattedDate date={repChange.createdat} />
+                  {repChange.createdby ? (
+                    <> by {repChange.createdby.substring(0, 5)}...</>
+                  ) : null}
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={isEditor ? 5 : 4}>
+                <NoResultsMessage>No reputation changes found</NoResultsMessage>
               </TableCell>
             </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={isEditor ? 5 : 4}>
-              <NoResultsMessage>No reputation changes found</NoResultsMessage>
-            </TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+          )}
+        </TableBody>
+      </Table>
+    </>
   )
 }
 

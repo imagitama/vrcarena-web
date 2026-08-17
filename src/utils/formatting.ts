@@ -64,3 +64,9 @@ export const stripQueryAndHash = (url: string): string => {
   u.hash = ''
   return u.toString()
 }
+
+export const capitalizeWords = (str: string): string =>
+  str.replace(
+    /\w\S*/g,
+    (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+  )

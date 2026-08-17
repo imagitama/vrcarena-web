@@ -54,6 +54,9 @@ const useStyles = makeStyles({
       borderBottomLeftRadius: 0,
     },
   },
+  topMargin: {
+    marginTop: '0.5rem',
+  },
 })
 
 export type Props = Omit<TextFieldProps, 'size'> & {
@@ -61,9 +64,10 @@ export type Props = Omit<TextFieldProps, 'size'> & {
   variant?: 'outlined'
   button?: React.ReactElement
   size?: 'small' | 'large'
+  topMargin?: boolean
 }
 
-const TextInput = ({ button, ...props }: Props) => {
+const TextInput = ({ button, topMargin, ...props }: Props) => {
   const classes = useStyles()
   return (
     <span
@@ -73,6 +77,7 @@ const TextInput = ({ button, ...props }: Props) => {
         [classes.small]: props.size === 'small' && props.minRows === undefined,
         [classes.large]: props.size === 'large' && props.minRows === undefined,
         [classes.withButton]: button !== undefined,
+        [classes.topMargin]: topMargin !== undefined,
       })}>
       <TextField
         multiline={props.minRows !== undefined}

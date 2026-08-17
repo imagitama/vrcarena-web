@@ -37,6 +37,7 @@ import AiArea from '@/components/ai-area'
 
 import useUserOverview from '../../useUserOverview'
 import NoValueLabel from '@/components/no-value-label'
+import GiveUserRepForm from '@/components/give-user-rep-form'
 
 const useIsAdmin = (): boolean => {
   const [, , user] = useUserRecord()
@@ -87,6 +88,7 @@ const UserEditorControls = () => {
               <StatusText positivity={user.reputation > 0 ? 1 : -1}>
                 {user.reputation}
               </StatusText>
+              <GiveUserRepForm userId={user.id} />
             </TableCell>
           </TableRow>
           <TableRow>

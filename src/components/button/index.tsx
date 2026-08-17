@@ -1,10 +1,10 @@
 import React, { SyntheticEvent, forwardRef } from 'react'
-import Link from '@/components/link'
+import { keyframes } from '@emotion/react'
 import MaterialButton from '@mui/material/Button'
 import { makeStyles } from '@mui/styles'
 import classnames from 'classnames'
-import SaveIcon from '@mui/icons-material/Save'
 
+import SaveIcon from '@mui/icons-material/Save'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined'
@@ -12,11 +12,11 @@ import AddIcon from '@mui/icons-material/Add'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ClearIcon from '@mui/icons-material/Clear'
 
-import { Delete as DeleteIcon } from '@/icons'
-
-import Tooltip from '@/components/tooltip'
+import { Delete as DeleteIcon, Refresh as RefreshIcon } from '@/icons'
 import { VRCArenaTheme } from '@/themes'
-import { css, keyframes } from '@emotion/react'
+
+import Link from '@/components/link'
+import Tooltip from '@/components/tooltip'
 
 export interface ButtonProps {
   children?: React.ReactNode
@@ -352,6 +352,12 @@ export const SaveButton = (args: ButtonProps) => (
 export const DeleteButton = (args: ButtonProps) => (
   <Button icon={<DeleteIcon />} color="secondary" hollow {...args}>
     {args.children || 'Delete'}
+  </Button>
+)
+
+export const RefreshButton = (args: ButtonProps) => (
+  <Button icon={<RefreshIcon />} color="secondary" hollow {...args}>
+    {args.children || 'Refresh'}
   </Button>
 )
 

@@ -9,7 +9,8 @@ import HowToVoteIcon from '@mui/icons-material/HowToVote'
 import Tooltip from '../tooltip'
 import React from 'react'
 import { FullUserRepChange } from '@/modules/users'
-import { Patreon as PatreonIcon } from '@/icons'
+import * as icons from '@/icons'
+import { capitalizeWords } from '@/utils/formatting'
 
 interface MilestoneInfo {
   name: string
@@ -17,7 +18,7 @@ interface MilestoneInfo {
   icon: React.ComponentType
 }
 
-// TODO: move to database as can be changed by staff?
+// TODO: move to database `ismilestone` & `icon`
 const milestones: MilestoneInfo[] = [
   {
     name: 'become_staff',
@@ -27,7 +28,7 @@ const milestones: MilestoneInfo[] = [
   {
     name: 'become_patron',
     label: 'Patron',
-    icon: PatreonIcon,
+    icon: icons.Patreon,
   },
   {
     name: 'assets_approved_tier1',
@@ -42,6 +43,7 @@ const milestones: MilestoneInfo[] = [
 ]
 
 const getIsRepChangeMilestone = (repChange: FullUserRepChange): boolean =>
+  repChange.reasondata.ismilestone === true ||
   milestones.find((info) => info.name === repChange.reason) !== undefined
 
 const StyledRepMilestones = styled.div`
@@ -96,20 +98,34 @@ const IconWrapper = styled.span`
   }
 `
 
+const getLabelForReasonName = (name: string): string =>
+  capitalizeWords(name.replaceAll('_', ''))
+
 const RepMilestone = ({
   repChange,
   milestone,
 }: {
   repChange: FullUserRepChange
-  milestone: MilestoneInfo
+  milestone?: MilestoneInfo
 }) => (
   <Tooltip title={`+${repChange.delta} - ${repChange.reasondata.description}`}>
     <StyledRepMilestone>
       <Icons>
         <StyledEmojiEventsIcon />
-        <IconWrapper>{React.createElement(milestone.icon)}</IconWrapper>
+        <IconWrapper>
+          {milestone?.icon
+            ? React.createElement(milestone?.icon)
+            : repChange.reasondata.icon
+            ? // @ts-ignore
+              React.createElement(icons[repChange.reasondata.icon])
+            : null}
+        </IconWrapper>
       </Icons>
-      <Label>{milestone.label}</Label>
+      <Label>
+        {milestone?.label ||
+          repChange.reasondata.shortlabel ||
+          getLabelForReasonName(repChange.reasondata.name)}
+      </Label>
     </StyledRepMilestone>
   </Tooltip>
 )
@@ -120,7 +136,7 @@ const RepMilestones = ({ repChanges }: { repChanges: FullUserRepChange[] }) => (
       <RepMilestone
         key={repChange.reason}
         repChange={repChange}
-        milestone={milestones.find((info) => info.name === repChange.reason)!}
+        milestone={milestones.find((info) => info.name === repChange.reason)}
       />
     ))}
   </StyledRepMilestones>
