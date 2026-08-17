@@ -30,9 +30,9 @@ import {
 interface PublishAssetPayload {
   assetid: string
 }
-
 interface PublishAssetResponse {
   success: boolean
+  publishstatus: PublishStatus
 }
 
 enum PublishErrorCode {
@@ -111,6 +111,8 @@ const PublishAssetButton = ({
   const dispatch = useDispatch<typeof store.dispatch>()
   const refreshMyQueuedAssetsMessage = () =>
     dispatch(incrementPublishedAssetCount())
+  const [newPublishStatus, setNewPublishStatus] =
+    useState<null | PublishStatus>(null)
 
   if (isAlreadyPublished && !getCanAssetBeUnpublished(asset)) {
     return null
@@ -140,9 +142,14 @@ const PublishAssetButton = ({
       (!nonBlockingValidationErrorTypes.length ||
         (nonBlockingValidationErrorTypes.length && ignoreWarnings))
     ) {
-      await callFunc({
+      setNewPublishStatus(null)
+
+      const result = await callFunc({
         assetid: assetId,
       })
+      if (!result) throw new Error('No result')
+
+      setNewPublishStatus(result.publishstatus)
 
       refreshMyQueuedAssetsMessage()
 
@@ -153,9 +160,14 @@ const PublishAssetButton = ({
   const onClickUnpublish = async () => {
     console.debug(`onClickUnpublish`)
 
-    await callFunc({
+    setNewPublishStatus(null)
+
+    const result = await callFunc({
       assetid: assetId,
     })
+    if (!result) throw new Error('No result')
+
+    setNewPublishStatus(result.publishstatus)
 
     refreshMyQueuedAssetsMessage()
 
@@ -184,15 +196,9 @@ const PublishAssetButton = ({
   const isSuccess = lastResult?.success === true
 
   if (isSuccess) {
-    // flip
-    if (!isAlreadyPublished) {
-      return (
-        <SuccessMessage>
-          Asset removed from the approval queue successfully. It is now a draft
-          and you can edit it. You will need to publish it again.
-        </SuccessMessage>
-      )
-    } else {
+    if (newPublishStatus === null) return null
+
+    if (newPublishStatus === PublishStatus.Published) {
       return (
         <SuccessMessage>
           Asset has been published successfully. It is in the approval queue.
@@ -206,6 +212,13 @@ const PublishAssetButton = ({
             If it has been longer than 48 hours please open a support ticket to
             have it actioned.
           </strong>
+        </SuccessMessage>
+      )
+    } else {
+      return (
+        <SuccessMessage>
+          Asset removed from the approval queue successfully. It is now a draft
+          and you can edit it. You will need to publish it again.
         </SuccessMessage>
       )
     }
