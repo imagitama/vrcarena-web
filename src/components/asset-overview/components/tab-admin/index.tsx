@@ -32,6 +32,7 @@ import {
 } from '@/modules/aievaluation'
 import AssetEditorRecordManager from '@/components/asset-editor-record-manager'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
+import { capitalize } from '@/utils'
 
 const StatusChangeTimeline = ({
   statusChanges,
@@ -51,7 +52,7 @@ const StatusChangeTimeline = ({
       {Object.entries(statusChanges).map(
         ([colName, change]: [string, StatusChange]) => (
           <TableRow key={colName}>
-            <TableCell>{colName}</TableCell>
+            <TableCell>{capitalize(colName.replace('status', ''))}</TableCell>
             <TableCell>{change.value}</TableCell>
             <TableCell>
               {change && change.userid ? (
@@ -65,7 +66,11 @@ const StatusChangeTimeline = ({
               )}
             </TableCell>
             <TableCell>
-              <FormattedDate date={change.createdat!} />
+              {change.createdat ? (
+                <FormattedDate date={change.createdat} />
+              ) : (
+                '-'
+              )}
             </TableCell>
           </TableRow>
         )
