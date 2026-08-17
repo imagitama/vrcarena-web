@@ -6,6 +6,7 @@ import {
   ApprovalStatus,
   MetaRecord,
   PublishStatus,
+  StatusChange,
 } from './common'
 import { Tag, TagStats } from './tags'
 import { AiSimilarQueuedItem } from './aisimilar'
@@ -295,6 +296,15 @@ export interface FullAsset extends Asset, AssetMeta, AssetStats {
   tagscount: TagStats[] // different to tagsdata as that returns null if tag already in database
 }
 
+export interface AssetStatusChanges {
+  publishstatus: StatusChange | null
+  accessstatus: StatusChange | null
+  approvalstatus: StatusChange | null
+  pinnedstatus: StatusChange | null
+  featuredstatus: StatusChange | null
+  indicativeauditstatus: StatusChange | null
+}
+
 // data not necessary for viewing the asset - lazy loaded
 export interface FullAssetExtra extends Record<string, unknown> {
   id: string
@@ -303,6 +313,7 @@ export interface FullAssetExtra extends Record<string, unknown> {
   aisimilaritiesdata: PublicAsset[]
   mentionsdata: MentionForFullAsset[]
   mentionstotal: number
+  statuschanges: AssetStatusChanges
 }
 
 // data only relevant to editors

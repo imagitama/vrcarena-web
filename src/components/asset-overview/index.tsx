@@ -104,12 +104,6 @@ const LoggedInControls = React.lazy(
       /* webpackChunkName: "asset-overview-logged-in-controls" */ './components/logged-in-controls'
     )
 )
-const EditorControls = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "asset-overview-editor-controls" */ './components/editor-controls'
-    )
-)
 const CreatorControls = React.lazy(
   () =>
     import(
@@ -386,16 +380,23 @@ const AssetOverview = ({
 }) => {
   const isLoggedIn = useIsLoggedIn()
   const isEditor = useIsEditor()
-  const [isLoadingAsset, lastErrorCode, asset, hydrate] =
+  const [isLoadingAsset, lastErrorCode, asset, hydrateAsset] =
     useSluggedAsset(assetIdOrSlug)
-  const [, , assetExtra] = useDataStoreItem<FullAssetExtra>(
+  const [, , assetExtra, hydrateExtra] = useDataStoreItem<FullAssetExtra>(
     ViewNames.GetFullAssetsExtra,
     asset ? asset.id : false
   )
-  const [, , assetEditorData] = useDataStoreItem<FullAssetEditor>(
-    ViewNames.GetFullAssetsEditor,
-    asset && isEditor ? asset.id : false
-  )
+  const [, , assetEditorData, hydrateEditor] =
+    useDataStoreItem<FullAssetEditor>(
+      ViewNames.GetFullAssetsEditor,
+      asset && isEditor ? asset.id : false
+    )
+
+  const hydrate = () => {
+    hydrateAsset()
+    hydrateExtra()
+    if (isEditor) hydrateEditor()
+  }
 
   const isLoading = isLoadingAsset || asset === null
   const hasLoadedAndExists =

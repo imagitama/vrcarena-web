@@ -49,3 +49,11 @@ export enum ResolutionStatus {
   Pending = 'pending',
   Resolved = 'resolved',
 }
+
+export interface StatusChange {
+  value: string
+  userid: string | null
+  username: string | null
+  avatarurl: string | null
+  createdat: string | null // date
+}
