@@ -55,13 +55,13 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
     try {
       const fieldsForUpdate = mapFieldsForDatabase(fields) as TRecord
 
-      if (id) {
-        const idFieldName = Array.isArray(options.idField)
-          ? options.idField[0]
-          : options.idField
-          ? options.idField
-          : 'id'
+      const idFieldName = Array.isArray(options.idField)
+        ? options.idField[0]
+        : options.idField
+        ? options.idField
+        : 'id'
 
+      if (id) {
         // prevent users from editing a record ID (enforced by db too)
         delete fieldsForUpdate[idFieldName]
       }
@@ -81,7 +81,7 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
         ? await supabase
             .from(collectionName)
             .update<TRecord>(fieldsForUpdate)
-            .eq('id', id)
+            .eq(idFieldName, id)
             .select('*')
         : await supabase
             .from(collectionName)

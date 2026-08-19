@@ -68,6 +68,9 @@ export const Close = React.lazy(() => import('@mui/icons-material/Close').then(r
 export const Delete = React.lazy(() => import('@mui/icons-material/Delete').then(result => result.default))
 export const Translate = React.lazy(() => import('@mui/icons-material/Translate').then(result => result.default))
 export const CommunityChampion = React.lazy(() => import('@mui/icons-material/Favorite').then(result => result.default))
+export const Staff = React.lazy(() => import('@mui/icons-material/Gavel').then(result => result.default))
+export const Survey = React.lazy(() => import('@mui/icons-material/HowToVote').then(result => result.default))
+export const Submit = React.lazy(() => import('@mui/icons-material/Check').then(result => result.default))
 
 // approval queue
 export const Decline = React.lazy(() => import('@mui/icons-material/Cancel').then(result => result.default))

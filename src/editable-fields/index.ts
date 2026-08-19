@@ -47,6 +47,7 @@ export interface TextEditableField<TRecord>
   type: fieldTypes.text
   minLength?: number
   maxLength?: number
+  emptyAsNull?: boolean
 }
 
 export interface SelectEditableField<TRecord>

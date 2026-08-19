@@ -1,10 +1,13 @@
+import * as icons from '@/icons'
+
+export type IconName = keyof typeof icons
+
 export interface RepReason extends Record<string, any> {
   name: string // unique
-  shortlabel: string | null // for milestones
   delta: number // int
   description: string | null
-  icon: string | null
-  ismilestone: boolean // default false
+  icon: IconName | null
+  milestonelabel: string | null
   lastmodifiedat: string | null // date
   lastmodifiedby: string | null // id
   createdat: string // date

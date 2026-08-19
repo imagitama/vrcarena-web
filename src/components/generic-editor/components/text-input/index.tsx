@@ -10,11 +10,17 @@ export default ({
 }: {
   editableField: TextEditableField<any>
   value: string
-  onChange: (newStr: string) => void
+  onChange: (newStr: string | null) => void
 }) => (
   <TextInput
-    onChange={(e) => onChange(e.target.value)}
-    value={value}
+    onChange={(e) =>
+      onChange(
+        editableField.emptyAsNull && e.target.value === ''
+          ? null
+          : e.target.value
+      )
+    }
+    value={value || ''}
     multiline={editableField.multiline === true}
     minRows={editableField.multiline ? 3 : 0}
     fullWidth

@@ -146,6 +146,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   scrollDisabled = false,
   onAttemptSave = undefined,
   size,
+  idField,
 }: {
   fields?: EditableField<any>[]
   collectionName?: string
@@ -173,6 +174,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   scrollDisabled?: boolean
   onAttemptSave?: () => void
   size?: 'small'
+  idField?: keyof TRecord
 }) => {
   const editableFieldsToUse = fields || editableFields[collectionName!]
 
@@ -181,10 +183,13 @@ const GenericEditor = <TRecord extends Record<string, any>>({
     id || false,
     {
       queryName: `generic-editor-${viewName || collectionName}`,
+      idField: idField as string,
     }
   )
   const [isSaving, isSuccess, lastErrorCodeSaving, save, , updatedRecord] =
-    useDataStoreEditOrCreate<TRecord>(collectionName!, id || false)
+    useDataStoreEditOrCreate<TRecord>(collectionName!, id || false, {
+      idField: idField as string,
+    })
 
   const [formFields, setFormFields] = useState<null | Partial<TRecord>>(
     overrideFields

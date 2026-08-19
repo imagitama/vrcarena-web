@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
 import { TableCell } from '@/components/responsive-table'
 import { TableHead } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
 import EditIcon from '@mui/icons-material/Edit'
-import SaveIcon from '@mui/icons-material/Save'
-import CancelIcon from '@mui/icons-material/Cancel'
 
 import * as routes from '@/routes'
 import {
@@ -23,114 +21,78 @@ import Tabs from '@/components/tabs'
 import NoResultsMessage from '@/components/no-results-message'
 import FormattedDate from '@/components/formatted-date'
 import StatusText from '@/components/status-text'
-import TextInput from '@/components/text-input'
-import useDataStoreEdit from '@/hooks/useDataStoreEdit'
-import LoadingIndicator from '@/components/loading-indicator'
-import ErrorMessage from '@/components/error-message'
-import SuccessMessage from '@/components/success-message'
 import InfoMessage from '@/components/info-message'
 import Heading from '@/components/heading'
+import DialogButton from '@/components/dialog-button'
+import GenericEditor from '@/components/generic-editor'
+import editableFields from '@/editable-fields/rep-reasons'
+import Icon from '@/components/icon'
+import NoValueLabel from '@/components/no-value-label'
 
 const RendererChanges = ({ items }: { items?: FullRepChange[] }) => (
   <RepChangeList repChanges={items!} />
 )
 
 const RepReasonRow = ({ repReason }: { repReason: RepReason }) => {
-  const [isEditing, setIsEditing] = useState(false)
-  const [newFields, setNewFields] = useState<RepReason>(repReason)
-  const [isSaving, isSuccess, lastErrorCode, save] =
-    useDataStoreEdit<RepReason>(CollectionNames.RepReasons, repReason.name, {
-      idField: 'name',
-    })
-
-  const onFieldChange = (fieldName: keyof RepReason, value: any) =>
-    setNewFields((currentFields) => ({
-      ...currentFields,
-      [fieldName]: value,
-    }))
-
-  const onClickSave = () => save(newFields)
-
-  if (isEditing) {
-    return (
-      <TableRow key={repReason.name}>
-        <TableCell label="Name" title={repReason.name}>
-          <TextInput fullWidth size="small" value={newFields.name} isDisabled />
-          <br />
-          <em>(cannot be changed)</em>
-          {isSaving ? <LoadingIndicator message="Saving..." /> : null}
-          {isSuccess ? (
-            <SuccessMessage>Saved successfully</SuccessMessage>
-          ) : null}
-          {lastErrorCode !== null ? (
-            <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
-          ) : null}
-        </TableCell>
-        <TableCell label="Description">
-          <TextInput
-            fullWidth
-            size="small"
-            value={newFields.description}
-            onChange={(e) => onFieldChange('description', e.target.value)}
-            isDisabled={isSaving}
-          />
-        </TableCell>
-        <TableCell label="Delta">
-          <TextInput
-            type="number"
-            size="small"
-            value={newFields.delta}
-            onChange={(e) => onFieldChange('delta', e.target.value)}
-            isDisabled={isSaving}
-          />
-          <br />
-          <em>Whole positive numbers only</em>
-        </TableCell>
-        <TableCell label="Metadata">
-          <FormattedDate date={repReason.createdat} />
-          {repReason.createdby ? (
-            <> by {repReason.createdby.substring(0, 5)}...</>
-          ) : null}
-        </TableCell>
-        <TableCell label="Controls">
-          <SaveIcon onClick={() => onClickSave()} />
-          <CancelIcon onClick={() => setIsEditing(false)} />
-        </TableCell>
-      </TableRow>
-    )
-  } else {
-    return (
-      <TableRow key={repReason.name}>
-        <TableCell label="Name" title={repReason.name}>
-          {repReason.name}
-        </TableCell>
-        <TableCell label="Description">{repReason.description}</TableCell>
-        <TableCell label="Delta">
-          <StatusText positivity={repReason.delta > 0 ? 1 : -1}>
-            {repReason.delta}
-          </StatusText>
-        </TableCell>
-        <TableCell label="Metadata">
-          <FormattedDate date={repReason.createdat} />
-          {repReason.createdby ? (
-            <> by {repReason.createdby.substring(0, 5)}...</>
-          ) : null}
-        </TableCell>
-        <TableCell label="Controls">
-          <EditIcon onClick={() => setIsEditing(true)} />
-        </TableCell>
-      </TableRow>
-    )
-  }
+  return (
+    <TableRow key={repReason.name}>
+      <TableCell label="Name" title={repReason.name}>
+        {repReason.name}
+      </TableCell>
+      <TableCell label="Delta">
+        <StatusText positivity={repReason.delta > 0 ? 1 : -1}>
+          {repReason.delta}
+        </StatusText>
+      </TableCell>
+      <TableCell label="Desc">{repReason.description}</TableCell>
+      <TableCell label="Icon">
+        {repReason.icon ? <Icon name={repReason.icon} /> : '-'}
+      </TableCell>
+      <TableCell label="Milestone">
+        {repReason.milestonelabel === null ? (
+          <NoValueLabel>No</NoValueLabel>
+        ) : (
+          repReason.milestonelabel
+        )}
+      </TableCell>
+      <TableCell label="Metadata">
+        <FormattedDate date={repReason.createdat} />
+        {repReason.createdby ? (
+          <> by {repReason.createdby.substring(0, 5)}...</>
+        ) : null}
+      </TableCell>
+      <TableCell label="Controls">
+        <DialogButton
+          dialog={
+            <>
+              <Heading variant="h1">Edit Rep</Heading>
+              <GenericEditor
+                collectionName={CollectionNames.RepReasons}
+                id={repReason.name}
+                fields={editableFields}
+                idField="name"
+              />
+            </>
+          }
+          icon={<EditIcon />}
+          size="small"
+          color="secondary">
+          Edit
+        </DialogButton>
+      </TableCell>
+    </TableRow>
+  )
 }
 
 const RendererReasons = ({ items }: { items?: RepReason[] }) => (
   <Table>
     <TableHead>
       <TableRow>
-        <TableCell>Name</TableCell>
-        <TableCell>Description</TableCell>
+        <TableCell width="25%">Name</TableCell>
         <TableCell>Delta</TableCell>
+        <TableCell>Desc</TableCell>
+        <TableCell>Icon</TableCell>
+        <TableCell>Milestone</TableCell>
         <TableCell>Metadata</TableCell>
         <TableCell>Controls</TableCell>
       </TableRow>
@@ -199,7 +161,7 @@ export default () => {
           },
           {
             name: 'editor',
-            label: 'Editor',
+            label: 'Reasons',
             contents: (
               <PaginatedView<RepReason>
                 viewName={CollectionNames.RepReasons}
