@@ -4,9 +4,10 @@ import ReplayIcon from '@mui/icons-material/Replay'
 import CheckIcon from '@mui/icons-material/Check'
 
 import { DISCORD_URL, EMAIL } from '@/config'
-import { base64EncodeString } from '@/utils'
+import { base64EncodeString, capitalize } from '@/utils'
 import Message, { MessageProps } from '@/components/message'
 import Button from '@/components/button'
+import { getUserFriendlyMessageFromCode } from '@/data-store'
 
 const getErrorCodeForError = (error: Error): string =>
   base64EncodeString(error.message)
@@ -17,6 +18,7 @@ export interface ErrorMessageProps extends MessageProps {
   hintText?: false | string | React.ReactElement
   onRetry?: () => void
   onOkay?: () => void
+  errorCode?: string
 }
 
 const ErrorMessage = ({
@@ -26,6 +28,7 @@ const ErrorMessage = ({
   hintText,
   onRetry,
   onOkay,
+  errorCode,
   ...messageProps
 }: ErrorMessageProps) => (
   <Message
@@ -51,15 +54,23 @@ const ErrorMessage = ({
       ) : undefined
     }>
     {title && children ? children : null}
+    {errorCode && (
+      <div>
+        {capitalize(getUserFriendlyMessageFromCode(errorCode) || '')} (code
+        {errorCode})
+        <br />
+        <br />
+      </div>
+    )}
     {hintText || hintText === undefined ? (
       <>
         {hintText || (
-          <>
+          <em>
             If you believe this error is wrong or unexpected please{' '}
             <a href={DISCORD_URL}>join our Discord</a> or{' '}
             <a href={`mailto:${EMAIL}`}>email us</a> to report this error so we
             can fix it.
-          </>
+          </em>
         )}
       </>
     ) : null}

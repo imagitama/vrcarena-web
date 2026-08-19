@@ -227,7 +227,11 @@ const RequestTranslationForm = ({
     return <LoadingIndicator message="Requesting translation..." />
 
   if (lastErrorCode !== null)
-    return <ErrorMessage>Failed to request (code {lastErrorCode})</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode as string}>
+        Failed to request
+      </ErrorMessage>
+    )
 
   const isAllowedToRequest = selectedLocale && title && description
 
@@ -263,9 +267,9 @@ const RequestTranslationForm = ({
       ) : null}
       <FormControls>
         <Select
-          label="Locale"
+          label="Target Locale"
           size="small"
-          style={{ minWidth: '100px' }}
+          style={{ minWidth: '200px' }}
           value={selectedLocale}
           onChange={(e) => setSelectedLocale(e.target.value as string)}
           disabled={isRequesting}>

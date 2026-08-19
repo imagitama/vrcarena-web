@@ -185,7 +185,7 @@ This is a caption
         {
           name: 'preview',
           label: 'Preview',
-          contents: <Markdown source={content} />,
+          contents: <Markdown source={content} replaceImagesWithButtons />,
         },
       ]}
     />

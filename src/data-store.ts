@@ -266,6 +266,7 @@ export const PostgRESTErrorCode = {
   JwtExpiredOld: 'PGRST301', // deprecated
   JwtExpired: 'PGRST303',
   SchemaCacheTableNotFound: 'PGRST205',
+  ColumnNotFound: 'PGRST204',
 } as const
 export type PostgRESTErrorCode =
   (typeof PostgRESTErrorCode)[keyof typeof PostgRESTErrorCode]
@@ -292,6 +293,15 @@ export const getUserFriendlyMessageFromCode = (
   switch (errorCode) {
     case PostgresErrorCode.UniqueViolation:
       return 'your record conflicts with another'
+    case PostgRESTErrorCode.JwtExpired:
+    case PostgRESTErrorCode.JwtExpiredOld:
+      return 'your authentication has expired (you should reload the page)'
+    case PostgRESTErrorCode.RangeNotSatisfiable:
+      return 'the page screwed up'
+    case PostgRESTErrorCode.SchemaCacheTableNotFound:
+      return 'the database is missing a table (this should never happen)'
+    case PostgRESTErrorCode.ColumnNotFound:
+      return 'the database is missing a column (this should never happen)'
   }
 
   return null

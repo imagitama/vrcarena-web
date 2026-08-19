@@ -9,7 +9,10 @@ export { MenuItem }
 export default ({ label, id, ...props }: SelectProps & { label?: string }) => {
   const labelId = id ? `${id}-label` : undefined
   return (
-    <FormControl variant="outlined" fullWidth={props.fullWidth}>
+    <FormControl
+      variant="outlined"
+      fullWidth={props.fullWidth}
+      size={props.size}>
       {label && <InputLabel id={labelId}>{label}</InputLabel>}
       <Select labelId={labelId} id={id} label={label} {...props} />
     </FormControl>

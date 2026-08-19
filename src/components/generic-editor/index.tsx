@@ -490,14 +490,12 @@ const GenericEditor = <TRecord extends Record<string, any>>({
       ) : null}
 
       {lastErrorCode !== null ? (
-        <ErrorMessage>Failed to load (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to load</ErrorMessage>
       ) : null}
 
       {lastErrorCodeSaving !== null ? (
-        <ErrorMessage>
-          Failed to save: {itemTypeSingular}
-          {getUserFriendlyMessageFromCode(lastErrorCodeSaving)} (code{' '}
-          {lastErrorCodeSaving})
+        <ErrorMessage errorCode={lastErrorCodeSaving}>
+          Failed to save
         </ErrorMessage>
       ) : null}
 
