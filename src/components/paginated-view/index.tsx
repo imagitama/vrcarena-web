@@ -50,7 +50,6 @@ import Button, { ButtonProps } from '@/components/button'
 import WarningMessage from '@/components/warning-message'
 import ErrorBoundary from '@/components/error-boundary'
 import Filters from '@/components/filters'
-import { getSuffixForErrorCode } from '@/error-handling'
 import FormControls from '../form-controls'
 
 const useStyles = makeStyles({
@@ -475,8 +474,8 @@ const PaginatedView = <TRecord extends Record<string, any>>({
         )
       }
       return (
-        <ErrorMessage>
-          Failed to load page: {getSuffixForErrorCode(lastErrorCode)}
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to load page
         </ErrorMessage>
       )
     }
