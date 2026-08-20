@@ -6,7 +6,11 @@ import EditorRecordManager from '@/components/editor-record-manager'
 import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
-import { FullAmendment, CollectionNames } from '@/modules/amendments'
+import {
+  FullAmendment,
+  CollectionNames,
+  AmendmentFields,
+} from '@/modules/amendments'
 
 const AmendmentEditorRecordManager = ({
   amendment,
@@ -16,7 +20,7 @@ const AmendmentEditorRecordManager = ({
   onDone: () => void
 }) => {
   const [isSavingParent, isSavingParentSuccess, lastErrorCode, saveParent] =
-    useDataStoreEdit(amendment.parenttable, amendment.parent)
+    useDataStoreEdit<AmendmentFields>(amendment.parenttable, amendment.parent)
 
   const beforeApprove = async (): Promise<boolean> => {
     try {
@@ -49,10 +53,11 @@ const AmendmentEditorRecordManager = ({
         id={amendment.id}
         metaCollectionName={CollectionNames.AmendmentsMeta}
         showPublishButtons={false}
-        showAccessButtons={false}
         showDeclineReasons={false}
         showApprovalButtons
         existingApprovalStatus={amendment.approvalstatus}
+        showAccessButtons={true}
+        existingAccessStatus={amendment.accessstatus}
         showEditorNotes
         existingEditorNotes={amendment.editornotes}
         onDone={onDone}

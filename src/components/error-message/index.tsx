@@ -39,12 +39,12 @@ const ErrorMessage = ({
       onRetry || onOkay ? (
         <>
           {onRetry ? (
-            <Button onClick={onRetry} icon={<ReplayIcon />}>
+            <Button onClick={onRetry} icon={<ReplayIcon />} color="secondary">
               Retry
             </Button>
           ) : null}{' '}
           {onOkay ? (
-            <Button onClick={onOkay} icon={<CheckIcon />}>
+            <Button onClick={onOkay} icon={<CheckIcon />} color="secondary">
               Okay
             </Button>
           ) : null}
@@ -52,11 +52,12 @@ const ErrorMessage = ({
       ) : messageProps.controls ? (
         messageProps.controls
       ) : undefined
-    }>
+    }
+    {...messageProps}>
     {title && children ? children : null}
     {errorCode && (
       <div>
-        {capitalize(getUserFriendlyMessageFromCode(errorCode) || '')} (code
+        {capitalize(getUserFriendlyMessageFromCode(errorCode) || '')} (code{' '}
         {errorCode})
         <br />
         <br />

@@ -1,4 +1,4 @@
-import { ApprovalStatus } from './common'
+import { AccessStatus, ApprovalStatus } from './common'
 
 export interface Amendment extends AmendmentFields {
   id: string
@@ -16,17 +16,22 @@ export interface AmendmentFields extends Record<string, unknown> {
 }
 
 export interface AmendmentMeta {
+  accessstatus: AccessStatus
   approvalstatus: ApprovalStatus
   approvedat: string | null // date
   approvedby: string | null // id
   editornotes: string | null
+  lastmodifiedby: string | null
+  lastmodifiedat: Date | null
+  createdby: string
+  createdat: Date
 }
 
 export interface FullAmendment<T> extends Amendment, AmendmentMeta {
-  approvalstatus: ApprovalStatus
   parentdata: T
   createdbyusername: string
   createdbyreputation: number
+  lastmodifiedbyusername: string | null
 }
 
 export enum CollectionNames {
@@ -37,4 +42,8 @@ export enum CollectionNames {
 export enum ViewNames {
   GetFullAmendments = 'getfullamendments',
   GetAmendmentsWaitingForApproval = 'getamendmentswaitingforapproval',
+}
+
+export enum FunctionNames {
+  DeleteMyAmendment = 'deletemyamendment',
 }

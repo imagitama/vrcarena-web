@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, forwardRef } from 'react'
+import React, { Suspense, SyntheticEvent, forwardRef } from 'react'
 import { keyframes } from '@emotion/react'
 import MaterialButton from '@mui/material/Button'
 import { makeStyles } from '@mui/styles'
@@ -254,22 +254,24 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       hollow === true || (props.color === 'secondary' && hollow === undefined)
 
     const iconToUse = (
-      <span
-        className={classnames(classes.icon, {
-          [classes.spinning]: isIconSpinning,
-        })}>
-        {checked === true ? (
-          isHollow ? (
-            <CheckBoxOutlinedIcon />
+      <Suspense>
+        <span
+          className={classnames(classes.icon, {
+            [classes.spinning]: isIconSpinning,
+          })}>
+          {checked === true ? (
+            isHollow ? (
+              <CheckBoxOutlinedIcon />
+            ) : (
+              <CheckBoxIcon />
+            )
+          ) : checked === false ? (
+            <CheckBoxOutlineBlankIcon />
           ) : (
-            <CheckBoxIcon />
-          )
-        ) : checked === false ? (
-          <CheckBoxOutlineBlankIcon />
-        ) : (
-          icon
-        )}
-      </span>
+            icon
+          )}
+        </span>
+      </Suspense>
     )
 
     const isIconOnly = children === undefined

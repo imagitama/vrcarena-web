@@ -102,7 +102,7 @@ const EditorRecordManager = ({
   // conditions
   showApprovalButtons?: boolean
   showPublishButtons?: boolean
-  showAccessButtons?: boolean
+  showAccessButtons?: boolean // TODO: rename to showDeleteButton ?
   showArchiveButton?: boolean
   showEditorNotes?: boolean
   showFeatureButtons?: boolean

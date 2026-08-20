@@ -5,7 +5,7 @@ import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
 import AmendmentResults from '@/components/amendment-results'
 import { FullAmendment, ViewNames } from '@/modules/amendments'
 import NoResultsMessage from '@/components/no-results-message'
-import { ApprovalStatus } from '@/modules/common'
+import { AccessStatus, ApprovalStatus } from '@/modules/common'
 import { EqualActiveFilter } from '@/filters'
 import { HydrateFn } from '@/hooks/useDataStore'
 import { useParams } from 'react-router'
@@ -52,14 +52,18 @@ export default () => {
           break
 
         case SubView.Declined:
-          query = query.eq('approvalstatus', ApprovalStatus.Declined)
+          query = query.or(
+            `approvalstatus.eq.${ApprovalStatus.Declined},accessstatus.eq.${AccessStatus.Deleted}`
+          )
           break
 
         case SubView.Pending:
         default:
-          query = query.or(
-            `approvalstatus.eq.${ApprovalStatus.Waiting},approvalstatus.eq.${ApprovalStatus.Quarantined}`
-          )
+          query = query
+            .or(
+              `approvalstatus.eq.${ApprovalStatus.Waiting},approvalstatus.eq.${ApprovalStatus.Quarantined}`
+            )
+            .eq('accessstatus', AccessStatus.Public)
           break
       }
 
@@ -109,7 +113,7 @@ export default () => {
           },
           {
             id: SubView.Declined,
-            label: 'Declined',
+            label: 'Declined/Deleted',
           },
         ]}
         itemNamePlural="amendments">

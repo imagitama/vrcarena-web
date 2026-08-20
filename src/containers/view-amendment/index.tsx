@@ -17,8 +17,9 @@ import {
   ViewNames as AmendmentsViewNames,
   FullAmendment,
   CollectionNames as AmendmentsCollectionNames,
+  CollectionNames,
 } from '@/modules/amendments'
-import { ApprovalStatus } from '@/modules/common'
+import { AccessStatus, ApprovalStatus } from '@/modules/common'
 
 import useIsEditor from '@/hooks/useIsEditor'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
@@ -38,6 +39,10 @@ import ShortDiff from '@/components/short-diff'
 import PageControls from '@/components/page-controls'
 import UsernameLink from '@/components/username-link'
 import CommentList from '@/components/comment-list'
+import DeleteMyAmendmentButton from '@/components/delete-my-amendment-button'
+import { capitalize } from '@/utils'
+import FormattedDate from '@/components/formatted-date'
+import AdminGenericHistory from '@/components/admin-generic-history'
 
 const AssetOutput = ({ assetId }: { assetId: string }) => {
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
@@ -193,6 +198,7 @@ const View = () => {
     fields: fields,
     comments: comments,
     createdby: createdBy,
+    accessstatus: accessStatus,
     approvalstatus: approvalStatus,
     editornotes: editorNotes,
     createdbyusername: createdByUsername,
@@ -220,7 +226,23 @@ const View = () => {
       <UsernameLink id={createdBy} username={createdByUsername} />
       <Heading variant="h2">Original Comments</Heading>
       {comments || '(none)'}
-      <Heading variant="h2">Status</Heading>
+      <Heading variant="h2">Access Status</Heading>
+      {capitalize(accessStatus)}
+      {createdBy === userId ? (
+        <>
+          <br />
+          <br />
+          <DeleteMyAmendmentButton
+            amendmentId={amendmentId}
+            isDisabled={
+              accessStatus === AccessStatus.Deleted ||
+              approvalStatus !== ApprovalStatus.Waiting
+            }
+            onDone={hydrate}
+          />
+        </>
+      ) : null}
+      <Heading variant="h2">Approval Status</Heading>
       {approvalStatus === ApprovalStatus.Declined
         ? 'Declined'
         : approvalStatus === ApprovalStatus.Waiting
@@ -230,6 +252,24 @@ const View = () => {
         : approvalStatus === ApprovalStatus.Approved
         ? 'Approved & applied'
         : 'Unknown'}
+      <Heading variant="h2">Metadata</Heading>
+      Created <FormattedDate date={amendment.createdat} /> by{' '}
+      <UsernameLink
+        id={amendment.createdby}
+        username={amendment.createdbyusername}
+        // avatarUrl={amendment.createdbyavatarurl}
+      />
+      {amendment.lastmodifiedby && amendment.lastmodifiedat && (
+        <>
+          <br />
+          Modified <FormattedDate date={amendment.lastmodifiedat} /> by{' '}
+          <UsernameLink
+            id={amendment.lastmodifiedby}
+            username={amendment.lastmodifiedbyusername || '(no username)'}
+            // avatarUrl={amendment.lastmodifiedbyavatarurl}
+          />
+        </>
+      )}
       <Heading variant="h2">Changes</Heading>
       <Changes parentTable={parentTable} parentId={parentId} fields={fields} />
       <Heading variant="h2">Comments</Heading>
@@ -238,12 +278,19 @@ const View = () => {
         parentId={amendmentId}
       />
       {isEditor && (
-        <PageControls>
-          <AmendmentEditorRecordManager
-            amendment={amendment}
-            onDone={hydrate}
+        <>
+          <PageControls>
+            <AmendmentEditorRecordManager
+              amendment={amendment}
+              onDone={hydrate}
+            />
+          </PageControls>
+          <AdminGenericHistory
+            id={amendment.id}
+            type={CollectionNames.Amendments}
+            metaType={CollectionNames.AmendmentsMeta}
           />
-        </PageControls>
+        </>
       )}
     </>
   )
