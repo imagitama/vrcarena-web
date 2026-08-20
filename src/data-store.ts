@@ -267,6 +267,7 @@ export const PostgRESTErrorCode = {
   JwtExpired: 'PGRST303',
   SchemaCacheTableNotFound: 'PGRST205',
   ColumnNotFound: 'PGRST204',
+  FunctionNotFound: 'PGRST202',
 } as const
 export type PostgRESTErrorCode =
   (typeof PostgRESTErrorCode)[keyof typeof PostgRESTErrorCode]
@@ -302,6 +303,8 @@ export const getUserFriendlyMessageFromCode = (
       return 'the database is missing a table (this should never happen)'
     case PostgRESTErrorCode.ColumnNotFound:
       return 'the database is missing a column (this should never happen)'
+    case PostgRESTErrorCode.FunctionNotFound:
+      return 'the database is missing a function (this should never happen)'
   }
 
   return null

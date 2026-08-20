@@ -55,14 +55,14 @@ const ErrorMessage = ({
     }
     {...messageProps}>
     {title && children ? children : null}
-    {errorCode && (
+    {errorCode !== undefined ? (
       <div>
         {capitalize(getUserFriendlyMessageFromCode(errorCode) || '')} (code{' '}
         {errorCode})
         <br />
         <br />
       </div>
-    )}
+    ) : null}
     {hintText || hintText === undefined ? (
       <>
         {hintText || (
