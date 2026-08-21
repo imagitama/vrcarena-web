@@ -2,7 +2,7 @@ import { AccessStatus, ApprovalStatus } from './common'
 
 export interface AttachmentFields extends Record<string, unknown> {
   reason: AttachmentReason
-  url: string
+  url: string | null // null if needing image convert in background (sourceurl should be set)
   type: AttachmentType | null
   thumbnailurl: string
   title: string | null
@@ -10,6 +10,7 @@ export interface AttachmentFields extends Record<string, unknown> {
   license: string | null
   isadult: boolean | null // null means inherit
   tags: string[]
+  sourceurl: string | null // used for image convert
   // these arent needed as assets can connect to attachments
   parenttable?: string
   parentid?: string

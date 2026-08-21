@@ -157,6 +157,7 @@ const AttachmentEditor = ({
     isadult: allowEmptyIsAdult ? null : false, // null to inherit
     license: null,
     tags: [],
+    sourceurl: null,
     parenttable: parentTable,
     parentid: parentId,
   }
@@ -173,6 +174,7 @@ const AttachmentEditor = ({
           license: existingAttachment.license,
           isadult: existingAttachment.isadult,
           tags: existingAttachment.tags,
+          sourceurl: existingAttachment.sourceurl,
           parenttable: existingAttachment.parenttable,
           parentid: existingAttachment.parentid,
         }
@@ -335,7 +337,11 @@ const AttachmentEditor = ({
         <div className={classes.content}>
           <div>
             <div className={classes.outputWrapper}>
-              <AttachmentOutput attachment={fields} showFileUrls />
+              <AttachmentOutput
+                attachmentId={attachmentId}
+                attachment={fields}
+                showFileUrls
+              />
             </div>
             <div className={classes.typeData}>
               {/* @ts-ignore */}

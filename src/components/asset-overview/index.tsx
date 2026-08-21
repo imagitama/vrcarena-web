@@ -392,7 +392,7 @@ const AssetOverview = ({
       asset && isEditor ? asset.id : false
     )
 
-  const hydrate = () => {
+  const hydrate = async () => {
     hydrateAsset()
     hydrateExtra()
     if (isEditor) hydrateEditor()
@@ -737,7 +737,7 @@ const AssetOverview = ({
                   />
                 </ErrorBoundary>
               ) : null}
-              <PrimaryImage />
+              <PrimaryImage hydrate={hydrate} />
               {isMobile && VisitSourceButtons}
               <Area name="desc" label="Description">
                 <TabDescription />
@@ -845,7 +845,9 @@ const AssetOverview = ({
               {firstFileAttachment ? (
                 <ControlGroup>
                   <Control>
-                    <Button url={firstFileAttachment.url}>Download</Button>
+                    <Button url={firstFileAttachment.url || undefined}>
+                      Download
+                    </Button>
                   </Control>
                 </ControlGroup>
               ) : null}

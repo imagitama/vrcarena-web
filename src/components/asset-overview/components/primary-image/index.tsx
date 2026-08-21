@@ -9,6 +9,9 @@ import ImageGallery from '@/components/image-gallery'
 
 import useAssetOverview from '../../useAssetOverview'
 import ErrorMessage from '@/components/error-message'
+import WarningMessage from '@/components/warning-message'
+import { RefreshButton } from '@/components/button'
+import { HydrateFn } from '@/hooks/useDataStore'
 
 const useStyles = makeStyles({
   root: {
@@ -52,7 +55,7 @@ const analyticsCategoryName = 'ViewAsset'
 const cleanupAttachmentUrl = (url: string) =>
   url.replace('host.docker.internal:54321', 'localhost:54321')
 
-const PrimaryImage = () => {
+const PrimaryImage = ({ hydrate }: { hydrate: HydrateFn }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false)
   const { asset, isLoading } = useAssetOverview()
   const classes = useStyles()
@@ -120,14 +123,24 @@ const PrimaryImage = () => {
   return (
     <div className={classes.root}>
       <div className={classes.primary} onClick={() => setIsGalleryOpen(true)}>
-        <img
-          src={
-            bestImageAttachment.url
-              ? cleanupAttachmentUrl(bestImageAttachment.url)
-              : undefined
-          }
-          alt="Attachment for asset"
-        />
+        {bestImageAttachment.url ? (
+          <img
+            src={
+              bestImageAttachment.url
+                ? cleanupAttachmentUrl(bestImageAttachment.url)
+                : undefined
+            }
+            alt="Attachment for asset"
+          />
+        ) : (
+          <WarningMessage>
+            This attachment is being downloaded, converted and uploaded to our
+            servers.
+            <br />
+            <br />
+            <RefreshButton onClick={hydrate}>Refresh Asset</RefreshButton>
+          </WarningMessage>
+        )}
       </div>
     </div>
   )

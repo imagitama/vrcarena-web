@@ -1,22 +1,18 @@
-export enum ImageConvertQueueItemStatus {
-  Queued = 'queued',
-  // Processing = 'processing',
-  Processed = 'processed',
-  Failed = 'failed',
-}
+import { QueuedItem } from '../queues'
 
 interface ImageConvertQueueItemField {
-  imageurl: string | string[] // thumbnailurl or fileurls
+  imageurl: string | string[] // thumbnailurl or fileurls TODO: More complex structures
   fieldname: string // eg. thumbnailurl
+  bucketname: string
 }
 
-export interface ImageConvertQueueItem {
-  id: string // uuidv4
-  status: ImageConvertQueueItemStatus
+export type ImageConvertQueueResult = { [fieldName: string]: string | string[] }
+
+export interface ImageConvertQueueItem extends QueuedItem {
   parent: string
   parenttable: string
   fields: ImageConvertQueueItemField[]
-  queuedat: Date
+  result: ImageConvertQueueResult | null // url
 }
 
 export enum CollectionNames {

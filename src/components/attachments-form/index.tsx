@@ -143,7 +143,7 @@ const EditAttachmentForm = ({
   AttachmentFormProps,
   'newFields'
 >) => {
-  const [isLoading, lastErrorCodeLoading, attachment] =
+  const [isLoading, lastErrorCodeLoading, attachment, hydrate] =
     useDataStoreItem<Attachment>(CollectionNames.Attachments, id)
   const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<
     AttachmentFields,
@@ -163,7 +163,6 @@ const EditAttachmentForm = ({
     if (!newFields) throw new Error('Need fields')
     const result = await save(newFields)
     if (!result) throw new Error('No result')
-    // onCreate(result.id)
   }
 
   return (
@@ -171,7 +170,13 @@ const EditAttachmentForm = ({
       <Columns>
         {attachment && (
           <Column style={{ width: '40%' }}>
-            <AttachmentOutput width="100%" attachment={attachment} />
+            <AttachmentOutput
+              width="100%"
+              attachment={attachment}
+              // for queue
+              attachmentId={id}
+              onRefresh={hydrate}
+            />
           </Column>
         )}
         <Column style={{ width: '55%' }}>
@@ -196,7 +201,7 @@ const EditAttachmentForm = ({
             <SuccessMessage>Attachment saved successfully</SuccessMessage>
           ) : lastErrorCode !== null ? (
             <ErrorMessage errorCode={lastErrorCode}>
-              Failed to save attachment (code {lastErrorCode})
+              Failed to save attachment
             </ErrorMessage>
           ) : null}
           <FormControls>

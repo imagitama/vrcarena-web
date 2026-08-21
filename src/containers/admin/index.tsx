@@ -7,6 +7,8 @@ import ListItemText from '@mui/material/ListItemText'
 import styled from '@emotion/styled'
 import { NavLink } from 'react-router-dom'
 
+import CompareIcon from '@mui/icons-material/Compare'
+
 import {
   Comments as CommentsIcon,
   History as HistoryIcon,
@@ -58,6 +60,7 @@ import AdminNotifications from './components/notifications'
 import AdminSurveys from './components/surveys'
 import AdminAssetSyncQueue from './components/queue/asset-sync'
 import AdminTranslateQueue from './components/queue/translate'
+import AdminImageConvertQueue from './components/queue/image-convert'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const drawerWidth = 240
@@ -119,7 +122,9 @@ interface NavItem {
   subPath: string
   subPaths?: string[]
   label: string
-  icon: React.LazyExoticComponent<React.ComponentType<any>>
+  icon:
+    | React.LazyExoticComponent<React.ComponentType<any>>
+    | React.ComponentType
   component: React.ComponentType
   children?: NavItem[]
 }
@@ -213,6 +218,17 @@ const navItems: NavItem[] = [
         label: 'Translate',
         icon: TranslateIcon,
         component: AdminTranslateQueue,
+      },
+      {
+        subPath: '/queues/image-convert',
+        subPaths: [
+          '/queues/image-convert/:subViewName/page/:pageNumber',
+          '/queues/image-convert/:subViewName',
+          '/queues/image-convert',
+        ],
+        label: 'Image Convert',
+        icon: CompareIcon,
+        component: AdminImageConvertQueue,
       },
     ],
   },

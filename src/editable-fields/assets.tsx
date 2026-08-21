@@ -199,9 +199,8 @@ const fields: EditableField<Asset>[] = [
         parentTable={CollectionNames.Assets}
         parentId={formFields.id} // TODO: support creating without ID
         reason={AttachmentReason.AssetFile}
-        ids={(value as any) || []}
-        attachmentsData={(formFields as FullAsset).attachmentsdata || undefined}
-        onChange={(newAttachmentIds) => onChange(newAttachmentIds as any)} // TODO: fix up types
+        ids={value || []}
+        onChange={(newAttachmentIds) => onChange(newAttachmentIds)}
       />
     ),
     hint: 'Images to help promote the asset. The first image is the most important and will always be shown to users.',
