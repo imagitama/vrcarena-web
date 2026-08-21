@@ -67,8 +67,8 @@ export default ({ assetId }: { assetId: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to create amendment (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to create amendment
       </ErrorMessage>
     )
   }

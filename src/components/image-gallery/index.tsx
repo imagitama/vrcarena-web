@@ -140,7 +140,7 @@ export const Image = ({
 }) => {
   const classes = useStyles()
   const isMobile = useMediaQuery({ query: queryForMobiles })
-  const isYoutube = getIsUrlAYoutubeVideo(image.url)
+  const isYoutube = image.url ? getIsUrlAYoutubeVideo(image.url) : false
 
   return (
     <div
@@ -149,7 +149,7 @@ export const Image = ({
       } ${isExpanded && !isSelected ? classes.hidden : ''} image`}>
       {isExpanded && isYoutube ? (
         <div className={classes.videoPlayerWrapper}>
-          <VideoPlayer url={image.url} autoplay width="100%" height="500px" />
+          <VideoPlayer url={image.url!} autoplay width="100%" height="500px" />
           {isMobile ? null : onClick ? (
             <div className={classes.videoPlayerControls}>
               <Button
@@ -165,7 +165,7 @@ export const Image = ({
         <>
           {!isYoutube || image.thumbnailUrl ? (
             <img
-              src={image.thumbnailUrl || image.url}
+              src={image.thumbnailUrl || image.url || undefined}
               alt={image.alt || ''}
               onClick={onClick}
             />
@@ -212,7 +212,7 @@ export interface ImageDetails {
   id?: string
   alt?: string // alt
   caption?: string | React.ReactElement
-  url: string
+  url: string | null // null if image needs background converting
   thumbnailUrl?: string
 }
 

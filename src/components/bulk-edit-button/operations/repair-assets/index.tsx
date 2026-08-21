@@ -253,15 +253,15 @@ const RepairAssetsOperation = () => {
 
   if (lastErrorCodeAssetsForList !== null) {
     return (
-      <ErrorMessage>
-        Failed to load asset list (code {lastErrorCodeAssetsForList})
+      <ErrorMessage errorCode={lastErrorCodeAssetsForList}>
+        Failed to load asset list
       </ErrorMessage>
     )
   }
   if (lastErrorCodeAssets !== null) {
     return (
-      <ErrorMessage>
-        Failed to load assets (code {lastErrorCodeAssets})
+      <ErrorMessage errorCode={lastErrorCodeAssets}>
+        Failed to load assets
       </ErrorMessage>
     )
   }

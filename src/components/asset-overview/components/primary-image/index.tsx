@@ -99,7 +99,7 @@ const PrimaryImage = () => {
         startSelected
         images={asset.attachmentsdata?.slice(0, 3).map((attachment) => ({
           id: attachment.id,
-          url: cleanupAttachmentUrl(attachment.url),
+          url: attachment.url ? cleanupAttachmentUrl(attachment.url) : null,
         }))}
         onClickImage={() =>
           trackAction(
@@ -121,7 +121,11 @@ const PrimaryImage = () => {
     <div className={classes.root}>
       <div className={classes.primary} onClick={() => setIsGalleryOpen(true)}>
         <img
-          src={cleanupAttachmentUrl(bestImageAttachment.url)}
+          src={
+            bestImageAttachment.url
+              ? cleanupAttachmentUrl(bestImageAttachment.url)
+              : undefined
+          }
           alt="Attachment for asset"
         />
       </div>

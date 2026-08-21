@@ -186,7 +186,9 @@ export const Renderer = ({
     <div className={`${classes.item} ${onClick ? classes.clickable : ''}`}>
       {isSubscribing && <LoadingIndicator message="Subscribing..." />}
       {lastErrorCode !== null && (
-        <ErrorMessage>Failed to subscribe: {lastErrorCode}</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to subscribe
+        </ErrorMessage>
       )}
       <div className={classes.cells}>
         <div className={classes.cell}>

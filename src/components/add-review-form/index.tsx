@@ -269,8 +269,8 @@ export default ({
 
   if (lastErrorCodeSaving !== null) {
     return (
-      <ErrorMessage onRetry={clear}>
-        Error adding or editing your review (code {lastErrorCodeSaving})
+      <ErrorMessage errorCode={lastErrorCodeSaving} onRetry={clear}>
+        Error adding or editing your review
       </ErrorMessage>
     )
   }

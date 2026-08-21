@@ -174,7 +174,7 @@ const CollectionListItem = ({
         }
       />
       {lastErrorCode !== null ? (
-        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
       ) : null}
     </>
   )
@@ -274,17 +274,14 @@ const OwnedAssetsCollectionListItem = ({
         }
       />
       {lastLoadingErrorCode !== null ? (
-        <ErrorMessage>
+        <ErrorMessage errorCode={lastLoadingErrorCode}>
           Failed to load (code {lastLoadingErrorCode})
         </ErrorMessage>
       ) : null}
       {lastSavingErrorCode || lastCreatingErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to save (code{' '}
-          {lastSavingErrorCode !== null
-            ? lastSavingErrorCode
-            : lastCreatingErrorCode}
-          )
+        <ErrorMessage
+          errorCode={lastSavingErrorCode! || lastCreatingErrorCode!}>
+          Failed to save
         </ErrorMessage>
       ) : null}
     </>

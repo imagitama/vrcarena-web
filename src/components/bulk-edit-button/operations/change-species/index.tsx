@@ -407,7 +407,9 @@ const ChangeSpeciesOperation = () => {
   if (isLoading) return <LoadingIndicator message="Loading assets..." />
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to load assets (code{lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load assets
+      </ErrorMessage>
     )
   if (!assets) return null
 

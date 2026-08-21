@@ -109,8 +109,8 @@ const CreateAttachmentForm = ({
           ) : isSuccess ? (
             <SuccessMessage>Attachment created successfully</SuccessMessage>
           ) : lastErrorCode !== null ? (
-            <ErrorMessage>
-              Failed to create attachment (code {lastErrorCode})
+            <ErrorMessage errorCode={lastErrorCode}>
+              Failed to create attachment
             </ErrorMessage>
           ) : null}
           <FormControls>
@@ -178,8 +178,8 @@ const EditAttachmentForm = ({
           {isLoading ? (
             <LoadingIndicator message="Loading attachment..." />
           ) : lastErrorCodeLoading !== null ? (
-            <ErrorMessage>
-              Failed to load attachment (code {lastErrorCodeLoading})
+            <ErrorMessage errorCode={lastErrorCodeLoading}>
+              Failed to load attachment
             </ErrorMessage>
           ) : null}
           {newFields && (
@@ -195,7 +195,7 @@ const EditAttachmentForm = ({
           ) : isSuccess ? (
             <SuccessMessage>Attachment saved successfully</SuccessMessage>
           ) : lastErrorCode !== null ? (
-            <ErrorMessage>
+            <ErrorMessage errorCode={lastErrorCode}>
               Failed to save attachment (code {lastErrorCode})
             </ErrorMessage>
           ) : null}

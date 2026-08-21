@@ -359,7 +359,9 @@ export const RequeueButton = <TRecord,>({
       {isSuccess && <SuccessMessage>Added to queue</SuccessMessage>}
       {isLoading && <LoadingIndicator message="Adding to queue..." />}
       {lastErrorCode !== null && (
-        <ErrorMessage>Failed: {lastErrorCode}</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to add to queue
+        </ErrorMessage>
       )}
       <Button
         onClick={onRequeue}

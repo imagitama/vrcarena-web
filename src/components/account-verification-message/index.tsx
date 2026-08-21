@@ -12,7 +12,7 @@ import { sendEmailVerification } from 'firebase/auth'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 
 enum ErrorCode {
-  Unknown,
+  Unknown = 'unknown',
 }
 
 const AccountVerificationMessage = () => {
@@ -43,7 +43,7 @@ const AccountVerificationMessage = () => {
       } catch (err) {
         console.error(err)
         handleError(err)
-        setLastErrorCode(ErrorCode.Unknown)
+        setLastErrorCode(ErrorCode.Unknown) // TODO: get error code from Error
         setIsSending(false)
         setIsSuccess(false)
       }
@@ -64,7 +64,7 @@ const AccountVerificationMessage = () => {
       email (you may need to check your spam) and perform the verification.
       {isSending ? <LoadingIndicator message="Sending..." /> : null}
       {lastErrorCode !== null ? (
-        <ErrorMessage>Failed to send (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to send</ErrorMessage>
       ) : null}
       {isSuccess ? <SuccessMessage>Email sent</SuccessMessage> : null}
       <br />

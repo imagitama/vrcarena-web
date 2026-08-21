@@ -127,9 +127,9 @@ const DeleteAccountForm = () => {
         </li>
       </ul>
       {lastErrorCode !== null ? (
-        <ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
           Failed to delete your account - please contact us directly to have
-          this fixed and/or manually delete your account (code {lastErrorCode})
+          this fixed and/or manually delete your account
         </ErrorMessage>
       ) : isDeleting ? (
         <LoadingIndicator message="Deleting your account..." />

@@ -162,8 +162,10 @@ const ConnectWithDiscordForm = ({ onDone }: { onDone: () => void }) => {
         )
       default:
         return (
-          <ErrorMessage onRetry={onDone}>
-            Failed to get your details from Discord (code {lastErrorCode})
+          <ErrorMessage
+            errorCode={lastErrorCode as unknown as string}
+            onRetry={onDone}>
+            Failed to get your details from Discord
           </ErrorMessage>
         )
     }

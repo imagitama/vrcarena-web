@@ -114,8 +114,8 @@ const CheckExistingAuthorForm = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to search authors (code{lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to search authors
       </ErrorMessage>
     )
   }
@@ -347,8 +347,8 @@ const CreateForm = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage onRetry={restart}>
-        Failed to create the author: error code {lastErrorCode}
+      <ErrorMessage errorCode={lastErrorCode} onRetry={restart}>
+        Failed to create the author
       </ErrorMessage>
     )
   }
@@ -498,8 +498,8 @@ const ChangeAuthorForm = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage onOkay={restart}>
-        Failed to save the resource (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode} onOkay={restart}>
+        Failed to save the resource
       </ErrorMessage>
     )
   }
@@ -522,8 +522,8 @@ const ChangeAuthorForm = ({
           {isLoading ? (
             <>Loading author...</>
           ) : lastErrorCodeLoading !== null ? (
-            <ErrorMessage>
-              Failed to load author (code {lastErrorCodeLoading})
+            <ErrorMessage errorCode={lastErrorCodeLoading}>
+              Failed to load author
             </ErrorMessage>
           ) : existingAuthor ? (
             <AuthorResultsItem author={existingAuthor} />

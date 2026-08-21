@@ -71,8 +71,8 @@ const AddCommentForm = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage onRetry={clear}>
-        Error adding your comment (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode} onRetry={clear}>
+        Error adding your comment
       </ErrorMessage>
     )
   }

@@ -43,8 +43,8 @@ const AmendmentEditorRecordManager = ({
       {isSavingParent ? (
         <LoadingIndicator message="Applying..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to apply to parent (code {lastErrorCode})
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to apply to parent
         </ErrorMessage>
       ) : isSavingParentSuccess ? (
         <SuccessMessage>Parent has been updated successfully</SuccessMessage>

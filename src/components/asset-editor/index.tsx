@@ -58,7 +58,9 @@ const AssetEditor = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load asset
+      </ErrorMessage>
     )
   }
 

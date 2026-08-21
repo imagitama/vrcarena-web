@@ -121,7 +121,11 @@ export const FullAssetTree = ({ activeAsset }: { activeAsset: FullAsset }) => {
     ])
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to load mentions: {lastErrorCode}</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load mentions
+      </ErrorMessage>
+    )
   }
 
   if (isLoading || !results) {

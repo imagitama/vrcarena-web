@@ -256,8 +256,8 @@ const AttachmentEditor = ({
 
   if (lastErrorCodeSaving !== null) {
     return (
-      <ErrorMessage>
-        Failed to save attachment (code {lastErrorCodeSaving})
+      <ErrorMessage errorCode={lastErrorCodeSaving}>
+        Failed to save attachment
       </ErrorMessage>
     )
   }

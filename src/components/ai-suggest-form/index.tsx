@@ -481,8 +481,8 @@ const Form = ({
                 </SuccessMessage>
               )}
               {lastErrorCode !== null && (
-                <ErrorMessage>
-                  Failed to save asset (code {lastErrorCode})
+                <ErrorMessage errorCode={lastErrorCode}>
+                  Failed to save asset
                 </ErrorMessage>
               )}
               <FormControls>

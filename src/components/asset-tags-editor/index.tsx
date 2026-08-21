@@ -72,7 +72,7 @@ const AssetTagsEditor = ({
       ) : isSaveSuccess ? (
         <SuccessMessage>Tags saved successfully</SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
       ) : null}
       <div>
         <TagInput
@@ -86,7 +86,7 @@ const AssetTagsEditor = ({
       ) : isSaveSuccess ? (
         <SuccessMessage>Tags saved successfully</SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
       ) : null}
       <FormControls>
         <Button onClick={onSaveBtnClick} size="large" icon={<SaveIcon />}>

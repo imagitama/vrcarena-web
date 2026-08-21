@@ -54,8 +54,8 @@ export default ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to save asset thumbnail (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save asset thumbnail
       </ErrorMessage>
     )
   }

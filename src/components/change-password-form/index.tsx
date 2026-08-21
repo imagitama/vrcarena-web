@@ -77,10 +77,10 @@ const ChangePasswordForm = () => {
       ) : isSuccess ? (
         <SuccessMessage>Your password has been changed</SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to change your password (code {lastErrorCode}). If it keeps
-          happening please contact us on our Discord server and we can
-          investigate and potentially manually update your account.
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to change your password. If it keeps happening please contact
+          us on our Discord server and we can investigate and potentially
+          manually update your account.
         </ErrorMessage>
       ) : null}
     </>

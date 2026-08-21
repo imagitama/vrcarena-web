@@ -194,15 +194,15 @@ const RepairAuthorsOperation = () => {
 
   if (lastErrorCodeAssets !== null) {
     return (
-      <ErrorMessage>
-        Failed to load assets (code {lastErrorCodeAssets})
+      <ErrorMessage errorCode={lastErrorCodeAssets}>
+        Failed to load assets
       </ErrorMessage>
     )
   }
   if (lastErrorCodeAuthors !== null) {
     return (
-      <ErrorMessage>
-        Failed to load authors (code {lastErrorCodeAuthors})
+      <ErrorMessage errorCode={lastErrorCodeAuthors}>
+        Failed to load authors
       </ErrorMessage>
     )
   }

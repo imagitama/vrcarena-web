@@ -8,6 +8,7 @@ import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import AmendmentResults from '@/components/amendment-results'
+import NoResultsMessage from '../no-results-message'
 
 const AmendmentsForAsset = ({ assetId }: { assetId: string }) => {
   const getQuery = useCallback(
@@ -29,11 +30,15 @@ const AmendmentsForAsset = ({ assetId }: { assetId: string }) => {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to load amendments</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load amendments
+      </ErrorMessage>
+    )
   }
 
   if (!results.length) {
-    return <ErrorMessage>No amendments</ErrorMessage>
+    return <NoResultsMessage>No amendments</NoResultsMessage>
   }
 
   return <AmendmentResults results={results} showParentDetails={false} />

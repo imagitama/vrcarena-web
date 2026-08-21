@@ -68,8 +68,8 @@ const BioEditor = ({
 
   if (lastErrorCodeLoadingProfile !== null) {
     return (
-      <ErrorMessage>
-        Failed to lookup your user profile (code {lastErrorCodeLoadingProfile})
+      <ErrorMessage errorCode={lastErrorCodeLoadingProfile}>
+        Failed to lookup your user profile
       </ErrorMessage>
     )
   }
@@ -99,8 +99,8 @@ const BioEditor = ({
       {isSuccess ? (
         <SuccessMessage>Your bio has been saved</SuccessMessage>
       ) : lastErrorCodeSaving !== null ? (
-        <ErrorMessage>
-          Failed to save bio (code {lastErrorCodeSaving})
+        <ErrorMessage errorCode={lastErrorCodeSaving}>
+          Failed to save bio
         </ErrorMessage>
       ) : null}
       {showPreview === true && <Markdown source={bioValue} />}

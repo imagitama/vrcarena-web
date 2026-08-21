@@ -13,7 +13,7 @@ import store from '@/store'
 const defaultLimit = 50
 
 export enum ErrorCode {
-  Unknown,
+  Unknown = 'unknown',
 }
 
 const useAssetSearch = (
@@ -76,7 +76,7 @@ const useAssetSearch = (
 
   return [
     usingSimpleSearch ? isLoading : isSimpleLoading,
-    hasErrorCode ? ErrorCode.Unknown : null,
+    hasErrorCode ? ErrorCode.Unknown : null, // TODO: better error code
     assets,
     usingSimpleSearch,
   ]

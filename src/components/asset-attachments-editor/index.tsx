@@ -77,7 +77,9 @@ const AssetAttachmentsEditor = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save asset
+      </ErrorMessage>
     )
   }
 
@@ -91,6 +93,7 @@ const AssetAttachmentsEditor = ({
       parentTable={CollectionNames.Assets}
       parentId={assetId}
       ids={ids}
+      // TODO: fix
       attachmentsData={attachmentsData}
       onSave={onSave}
     />

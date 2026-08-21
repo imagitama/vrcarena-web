@@ -61,8 +61,8 @@ const AvatarUploadForm = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to upload your avatar (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to upload your avatar
       </ErrorMessage>
     )
   }

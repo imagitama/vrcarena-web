@@ -215,9 +215,8 @@ const AmendmentEditor = ({
 
   if (lastErrorCodeSaving !== null) {
     return (
-      <ErrorMessage>
-        Failed to {amendmentId ? 'save' : 'create'} amendment (code{' '}
-        {lastErrorCodeSaving})
+      <ErrorMessage errorCode={lastErrorCodeSaving}>
+        Failed to {amendmentId ? 'save' : 'create'} amendment
       </ErrorMessage>
     )
   }

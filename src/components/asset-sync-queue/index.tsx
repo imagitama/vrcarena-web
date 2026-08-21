@@ -196,7 +196,9 @@ const DeleteButton = ({
       {isSuccess ? (
         <SuccessMessage>Item removed from queue</SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to remove item from queue</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to remove item from queue
+        </ErrorMessage>
       ) : isDeleting ? (
         <LoadingIndicator message="Removing..." />
       ) : null}
@@ -602,9 +604,11 @@ const AssetSyncQueue = ({
     }
   }
 
-  if (lastErrorCode && lastErrorCode !== null) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load queued assets: {lastErrorCode}</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load queued assets
+      </ErrorMessage>
     )
   }
 

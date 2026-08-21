@@ -53,8 +53,8 @@ export default ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to save short description (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save short description
       </ErrorMessage>
     )
   }

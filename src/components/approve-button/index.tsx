@@ -74,7 +74,9 @@ const ApproveButton = ({
 
   if (lastErrorCodeLoading !== null) {
     return (
-      <ErrorMessage>Failed to load (code {lastErrorCodeLoading})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCodeLoading}>
+        Failed to load
+      </ErrorMessage>
     )
   }
 
@@ -84,8 +86,8 @@ const ApproveButton = ({
 
   if (lastErrorCodeSaving !== null) {
     return (
-      <ErrorMessage>
-        Failed to save meta record (code {lastErrorCodeSaving})
+      <ErrorMessage errorCode={lastErrorCodeSaving}>
+        Failed to save meta record
       </ErrorMessage>
     )
   }

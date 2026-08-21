@@ -432,8 +432,8 @@ const AssetOverview = ({
     (!isLoading && asset === false)
   ) {
     return (
-      <ErrorMessage>
-        Failed to load asset (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode || undefined}>
+        Failed to load asset
         <br />
         <br />
         It could have been deleted, never existed or you do not have permission

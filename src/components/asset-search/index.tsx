@@ -63,7 +63,7 @@ const AssetSearch = ({
       {isSearching ? (
         <LoadingIndicator message="Searching..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to search (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to search</ErrorMessage>
       ) : null}
       {results || selectedAsset ? (
         <AssetResults

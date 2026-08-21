@@ -115,8 +115,8 @@ const CreateForm = ({
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage onOkay={restart}>
-        Failed to create the Discord Server (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode} onOkay={restart}>
+        Failed to create the Discord server
       </ErrorMessage>
     )
   }
@@ -177,8 +177,8 @@ const AllDiscordServers = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage onOkay={onCancel}>
-        Failed to find Discord Servers (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode} onOkay={onCancel}>
+        Failed to find Discord servers
       </ErrorMessage>
     )
   }
@@ -309,8 +309,8 @@ const ChangeDiscordServerForm = ({
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to save the resource (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save the resource
       </ErrorMessage>
     )
   }

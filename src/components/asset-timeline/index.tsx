@@ -321,7 +321,11 @@ const AssetTimeline = ({ assetId }: { assetId: string }) => {
   }
 
   if (lastErrorCode) {
-    return <ErrorMessage>Failed to load timeline</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load timeline
+      </ErrorMessage>
+    )
   }
 
   const events = timelineData.assethistory

@@ -83,7 +83,9 @@ const AwardRepButton = ({ userId }: { userId: string }) => {
           />
           <HintText>Dumped into the "extra data" field</HintText>
           {lastErrorCode !== null && (
-            <ErrorMessage>Failed to award (code {lastErrorCode})</ErrorMessage>
+            <ErrorMessage errorCode={lastErrorCode}>
+              Failed to award rep
+            </ErrorMessage>
           )}
           {isSuccess === true && (
             <SuccessMessage>Awarded user successfully</SuccessMessage>

@@ -115,7 +115,7 @@ const AddToAssetButton = ({
   newAvatarIds: string[]
   onDone: () => void
 }) => {
-  const [isSavingAsset, isSavingSuccessAsset, isSavingErrorAsset, saveAsset] =
+  const [isSavingAsset, isSavingSuccessAsset, lastErrorCode, saveAsset] =
     useDataStoreEdit<Asset>(AssetsCollectionNames.Assets, assetId)
 
   const add = async () => {
@@ -135,8 +135,12 @@ const AddToAssetButton = ({
     return <LoadingIndicator message={'Adding to asset...'} />
   }
 
-  if (isSavingErrorAsset) {
-    return <ErrorMessage>Failed to edit asset</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to edit asset
+      </ErrorMessage>
+    )
   }
 
   if (isSavingSuccessAsset) {
@@ -298,7 +302,9 @@ const Avatars = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load avatars (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load avatars
+      </ErrorMessage>
     )
   }
 

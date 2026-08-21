@@ -68,7 +68,7 @@ const CommentList = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
         Failed to load{getPrivate ? ' private' : ''} comments
       </ErrorMessage>
     )

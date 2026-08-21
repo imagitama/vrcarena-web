@@ -53,8 +53,8 @@ const CreateCollectionForm = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage noMargin>
-        Failed to create collection (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode} noMargin>
+        Failed to create collection
       </ErrorMessage>
     )
   }

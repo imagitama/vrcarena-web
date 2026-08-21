@@ -54,12 +54,12 @@ const AssignForm = ({
 
   if (lastErrorCodeSave !== null)
     return (
-      <ErrorMessage>Failed to save (code {lastErrorCodeSave})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCodeSave}>Failed to save</ErrorMessage>
     )
   if (lastErrorCodeUsers !== null)
     return (
-      <ErrorMessage>
-        Failed to load users (code {lastErrorCodeUsers})
+      <ErrorMessage errorCode={lastErrorCodeUsers}>
+        Failed to load users
       </ErrorMessage>
     )
 

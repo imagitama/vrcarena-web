@@ -14,7 +14,7 @@ const ClearIndicativeStatusButton = ({
   assetId: string
   onDone?: () => void
 }) => {
-  const [isSaving, isSavingSuccess, lastSavingErrorCode, save] =
+  const [isSaving, isSuccess, lastErrorCode, save] =
     useDataStoreEdit<AssetMeta>(CollectionNames.AssetsMeta, assetId, {
       queryName: 'clear-indicative-status',
     })
@@ -38,13 +38,13 @@ const ClearIndicativeStatusButton = ({
       <Button color="secondary" onClick={onSaveClick} isLoading={isSaving}>
         Clear Status
       </Button>
-      {isSavingSuccess ? (
+      {isSuccess ? (
         <SuccessMessage>
           Asset saved, refreshing after a delay...
         </SuccessMessage>
-      ) : lastSavingErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to save asset (code {lastSavingErrorCode})
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to save asset
         </ErrorMessage>
       ) : null}
     </>

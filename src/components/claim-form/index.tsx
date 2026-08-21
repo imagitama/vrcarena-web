@@ -129,8 +129,8 @@ const ClaimForm = <TData,>({
       {isCreating ? (
         <LoadingIndicator message="Creating claim..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to insert claim: error code {lastErrorCode}
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to insert claim
         </ErrorMessage>
       ) : isSuccess ? (
         <SuccessMessage controls={<Button onClick={onDone}>Close This</Button>}>

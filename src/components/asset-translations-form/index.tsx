@@ -109,8 +109,8 @@ const QueueItem = ({
 
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>
-        Failed to load queued item (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load queued item
       </ErrorMessage>
     )
 

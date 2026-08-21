@@ -44,7 +44,9 @@ const History = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load history (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load history
+      </ErrorMessage>
     )
   }
 
@@ -85,7 +87,9 @@ const MetaHistory = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load history (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load history
+      </ErrorMessage>
     )
   }
 

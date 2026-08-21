@@ -116,16 +116,16 @@ const AssetAuditResult = ({ asset }: { asset: AssetForList }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to get queue for asset (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to get queue for asset
       </ErrorMessage>
     )
   }
 
   if (lastErrorCodeCreating !== null) {
     return (
-      <ErrorMessage>
-        Failed to re-queue (code {lastErrorCodeCreating})
+      <ErrorMessage errorCode={lastErrorCodeCreating}>
+        Failed to re-queue
       </ErrorMessage>
     )
   }

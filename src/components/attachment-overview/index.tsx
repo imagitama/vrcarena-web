@@ -102,8 +102,8 @@ const AttachmentOverview = ({ attachmentId }: { attachmentId: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load attachment (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load attachment
       </ErrorMessage>
     )
   }

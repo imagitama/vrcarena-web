@@ -81,10 +81,10 @@ const ChangeEmailForm = () => {
       ) : isSuccess ? (
         <SuccessMessage>Your email has been changed</SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to change your email (code {lastErrorCode}). If it keeps
-          happening please contact us on our Discord server and we can
-          investigate and potentially manually update your account.
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to change your email. If it keeps happening please contact us
+          on our Discord server and we can investigate and potentially manually
+          update your account.
         </ErrorMessage>
       ) : null}
     </>
