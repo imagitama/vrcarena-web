@@ -5,46 +5,41 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import styled from '@emotion/styled'
 
-import PaginatedView, { RendererProps } from '@/components/paginated-view'
-
-import {
-  ViewNames as AssetsViewNames,
-  Asset,
-  FullAsset,
-  AssetForList,
-} from '@/modules/assets'
+import { ViewNames as AssetsViewNames, AssetForList } from '@/modules/assets'
 import {
   CollectionNames as AssetsSyncQueueCollectionNames,
   AssetSyncQueueItem,
   QueueStatus,
 } from '@/modules/assetsyncqueue'
 import { routes } from '@/routes'
-import ResponsiveTable, {
+import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
+import { VRCArenaTheme } from '@/themes'
+
+import { Operators } from '@/hooks/useDatabaseQuery'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+
+import Table, {
+  TableBody,
   TableCell,
   TableHead,
   TableRow,
 } from '@/components/responsive-table'
-import { TableBody } from '@mui/material'
 import ShortId from '@/components/short-id'
 import NoResultsMessage from '@/components/no-results-message'
-import useDataStoreItem from '@/hooks/useDataStoreItem'
 import ErrorMessage from '@/components/error-message'
 import NoValueLabel from '@/components/no-value-label'
 import Link from '@/components/link'
 import Tooltip from '@/components/tooltip'
-import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
 import FormattedDate from '@/components/formatted-date'
 import AiResultSummary from '@/components/ai-result-summary'
-import { VRCArenaTheme } from '@/themes'
-import { Operators } from '@/hooks/useDatabaseQuery'
-import { useParams, useRouteMatch } from 'react-router'
 import Heading from '@/components/heading'
+import PaginatedView, { RendererProps } from '@/components/paginated-view'
 
 const AssetSyncQueueCellRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
   return (
     <>
       {item.syncedfields === null ? (
-        <NoValueLabel>(no synced fields)</NoValueLabel>
+        '-'
       ) : item.createdassetid ? (
         <>
           Created asset:{' '}
@@ -59,20 +54,6 @@ const AssetSyncQueueCellRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
           {item.syncedfields.length} synced fields
         </>
       ) : null}
-    </>
-  )
-}
-
-const AssetSyncQueueFullRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
-  if (item.syncedfields === null) return null
-  return (
-    <>
-      Synced:
-      <ul>
-        {item.syncedfields.map((fieldName) => (
-          <li>{fieldName}</li>
-        ))}
-      </ul>
     </>
   )
 }
@@ -116,7 +97,7 @@ const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => {
   const toggleExpandedId = (id: string) =>
     setExpandedId((currentVal) => (currentVal === id ? null : id))
   return (
-    <ResponsiveTable>
+    <Table>
       <TableHead>
         <TableRow>
           <TableCell></TableCell>
@@ -177,7 +158,9 @@ const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => {
                           </>
                         }>
                         <span>
-                          <FormattedDate date={item.lastmodifiedat} />*
+                          Queued <FormattedDate date={item.createdat} />
+                          <br />
+                          Updated <FormattedDate date={item.lastmodifiedat} />
                         </span>
                       </Tooltip>
                     ) : (
@@ -185,10 +168,7 @@ const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => {
                     )}
                   </TableCell>
                   <TableCell label="Status">
-                    <AiResultSummary
-                      queuedItem={item}
-                      // connectionStatus={connectionStatus}
-                    />
+                    <AiResultSummary queuedItem={item} />
                   </TableCell>
                   <TableCell label="Result">
                     <AssetSyncQueueCellRenderer item={item} />{' '}
@@ -200,7 +180,7 @@ const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => {
                       }}
                     />
                     <br />
-                    {item.notes || <NoValueLabel>(no notes)</NoValueLabel>}
+                    {item.notes ? <>Notes: {item.notes}</> : null}
                   </TableCell>
                 </TableRow>
                 {isExpanded && (
@@ -223,7 +203,7 @@ const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => {
           </TableRow>
         )}
       </TableBody>
-    </ResponsiveTable>
+    </Table>
   )
 }
 
@@ -236,18 +216,12 @@ enum SubView {
 }
 
 const AdminAssetSyncQueue = () => {
-  const routeMatch = useRouteMatch()
-  const params = useParams<any>()
-
-  console.debug(`AdminAssetSyncQueue.render`, { routeMatch, params })
-
   return (
     <>
       <Heading variant="h1">Queues - Asset Sync</Heading>
       <PaginatedView<AssetSyncQueueItem>
         name="admin-amendments"
         viewName={AssetsSyncQueueCollectionNames.AssetSyncQueue}
-        // getQuery={getQuery}
         sortOptions={[
           {
             label: 'Queued At',
@@ -255,7 +229,6 @@ const AdminAssetSyncQueue = () => {
           },
         ]}
         defaultFieldName="createdat"
-        // defaultSubView={subViewName || SubView.Pending}
         urlWithSubViewNameAndPageNumberVar={
           '/admin/queues/asset-sync/:subViewName/page/:pageNumber'
         }
