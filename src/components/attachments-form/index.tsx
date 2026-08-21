@@ -38,6 +38,7 @@ import Tooltip from '../tooltip'
 import { VRCArenaTheme } from '@/themes'
 import useIsEditor from '@/hooks/useIsEditor'
 import HintText from '../hint-text'
+import { nsfwRules } from '@/config'
 
 const Columns = styled.div`
   display: flex;
@@ -311,26 +312,30 @@ const AttachmentForm = ({
         onChange={(e) => updateField('license', e.target.value)}
         isDisabled={isDisabled}
       />
+      <div
+        style={{ marginTop: '0.25rem', fontSize: '125%', fontWeight: 'bold' }}>
+        Is it adult?{' '}
+        <Tooltip title={nsfwRules}>
+          <InfoIcon />
+        </Tooltip>
+      </div>
       <CheckboxInput
-        label={
-          <>
-            Do not specify adult or not (inherit from asset){' '}
-            <Tooltip title="If the parent asset is adult, this attachment is adult too.">
-              <InfoIcon />
-            </Tooltip>
-          </>
-        }
+        label="Copy from asset (recommended)"
         value={newFields.isadult === null}
-        onChange={(newVal) =>
-          updateField('isadult', newVal === true ? null : false)
-        }
+        onChange={() => updateField('isadult', null)}
         isDisabled={isDisabled}
       />
       <CheckboxInput
-        label="Is adult"
+        label="Yes"
         value={newFields.isadult === true}
-        onChange={(newVal) => updateField('isadult', newVal)}
-        isDisabled={isDisabled || newFields.isadult === null}
+        onChange={(newVal) => updateField('isadult', true)}
+        isDisabled={isDisabled}
+      />
+      <CheckboxInput
+        label="No"
+        value={newFields.isadult === false}
+        onChange={(newVal) => updateField('isadult', false)}
+        isDisabled={isDisabled}
       />
     </Form>
   )

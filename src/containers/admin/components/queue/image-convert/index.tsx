@@ -173,11 +173,10 @@ enum SubView {
 const AdminAssetSyncQueue = () => {
   return (
     <>
-      <Heading variant="h1">Queues - Asset Sync</Heading>
+      <Heading variant="h1">Queues - Image Convert</Heading>
       <PaginatedView<ImageConvertQueueItem>
         name="admin-translate-queue"
         viewName={ImageConvertQueueCollectionNames.ImageConvertQueue}
-        // getQuery={getQuery}
         sortOptions={[
           {
             label: 'Queued At',
