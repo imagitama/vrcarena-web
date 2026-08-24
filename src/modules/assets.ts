@@ -357,6 +357,7 @@ export enum CollectionNames {
   Assets = 'assets',
   AssetsMeta = 'assetmeta',
   TagStats = 'tagstats',
+  SimilarAssets = 'similarassets',
 }
 
 export enum ViewNames {

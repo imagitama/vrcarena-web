@@ -12,15 +12,11 @@ import store from '@/store'
 
 const defaultLimit = 50
 
-export enum ErrorCode {
-  Unknown = 'unknown',
-}
-
 const useAssetSearch = (
   searchTerm: string,
   filtersByFieldName: { [fieldName: string]: string[] } = {},
   limit = defaultLimit
-): [boolean, null | ErrorCode, AssetSearchResult[] | null, boolean] => {
+): [boolean, null | string, AssetSearchResult[] | null, boolean] => {
   const isAdultContentEnabled = useIsAdultContentEnabled()
 
   // always start with this filter to minimize chance of mistakenly showing it
@@ -42,8 +38,7 @@ const useAssetSearch = (
       limit
     )
 
-  const usingSimpleSearch =
-    lastAlgoliaErrorCode !== null || process.env.NODE_ENV === 'development'
+  const usingSimpleSearch = lastAlgoliaErrorCode !== null
 
   const [isSimpleLoading, lastSimpleErrorCode, simpleResults] =
     useDataStoreFunction<
@@ -67,7 +62,6 @@ const useAssetSearch = (
   const lastErrorCode = usingSimpleSearch
     ? lastSimpleErrorCode
     : lastAlgoliaErrorCode
-  const hasErrorCode = lastErrorCode !== null
   const assets = usingSimpleSearch ? simpleResults : algoliaResults
 
   useEffect(() => {
@@ -76,7 +70,7 @@ const useAssetSearch = (
 
   return [
     usingSimpleSearch ? isLoading : isSimpleLoading,
-    hasErrorCode ? ErrorCode.Unknown : null, // TODO: better error code
+    lastErrorCode as string,
     assets,
     usingSimpleSearch,
   ]

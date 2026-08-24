@@ -26,7 +26,7 @@ import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
 import useDataStoreItems from '@/hooks/useDataStoreItems'
 import useSearching, { GetQueryFn } from '@/hooks/useSearching'
-import useAssetSearch, { ErrorCode } from '@/hooks/useAssetSearch'
+import useAssetSearch from '@/hooks/useAssetSearch'
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
 
 import ErrorMessage from '@/components/error-message'
@@ -97,7 +97,7 @@ function Results({
   hits,
 }: {
   isLoading: boolean
-  lastErrorCode: ErrorCode | DataStoreErrorCode | null
+  lastErrorCode: string | DataStoreErrorCode | null
   tableName: string
   hits: any[] | null
 }) {

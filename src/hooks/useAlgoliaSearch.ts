@@ -1,10 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
-import createAlgoliaSearchClient, {
-  SearchClient,
-  SearchIndex,
-} from 'algoliasearch'
+import { algoliasearch, type SearchClient } from 'algoliasearch'
 import { Hit } from '@algolia/client-search'
 import { AssetCategory } from '@/modules/assets'
+import { AlgoliaAssetRecord } from '@/algolia'
 
 export const Indexes = {
   Assets: `${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}_ASSETS`,
@@ -14,21 +12,6 @@ const appId = process.env.REACT_APP_ALGOLIA_APP_ID || ''
 const apiKey = process.env.REACT_APP_ALGOLIA_SEARCH_API_KEY || ''
 
 let client: SearchClient
-
-interface AlgoliaAssetRecord {
-  title: string
-  // display only
-  slug: string
-  thumbnailUrl: string
-  isAdult: boolean
-  category: string // AssetCategory
-  species: string[]
-  // joined data
-  authorName: string
-  speciesNames: string[]
-  // searchable only
-  description: string
-}
 
 export interface AssetSearchResult {
   id: string
@@ -71,15 +54,13 @@ interface AlgoliaApiError {
   status: number // 403
 }
 
-interface AlgoliaClientError {
-  name: string
-  message: string
+export enum ErrorCode {
+  InvalidClient = 'invalid-client',
+  ApiError = 'api-error',
+  Unknown = 'unknown',
 }
 
-export enum ErrorCode {
-  ApiError,
-  Unknown,
-}
+class InvalidClientError extends Error {}
 
 export default <T>(
   indexName: string,
@@ -91,21 +72,14 @@ export default <T>(
   const [isLoading, setIsLoading] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
   const timerRef = useRef<NodeJS.Timeout>()
-  const indexRef = useRef<SearchIndex>()
 
   useEffect(() => {
-    if (!client) {
-      client = createAlgoliaSearchClient(appId, apiKey)
-    }
-
-    if (!indexRef.current) {
-      indexRef.current = client.initIndex(indexName)
-    }
-
     async function doIt() {
       try {
-        if (!indexRef.current) {
-          throw new Error('useAlgoliaSearch - no index')
+        if (!client) {
+          if (!appId || !apiKey) throw new InvalidClientError()
+
+          client = algoliasearch(appId, apiKey)
         }
 
         if (!keywords) {
@@ -120,14 +94,15 @@ export default <T>(
           filters,
         })
 
-        const { hits } = await indexRef.current.search<AlgoliaAssetRecord>(
-          keywords,
-          {
+        const { hits } = await client.searchSingleIndex<AlgoliaAssetRecord>({
+          indexName,
+          searchParams: {
+            query: keywords,
             filters,
             offset: 0,
             length: limit,
-          }
-        )
+          },
+        })
 
         console.debug(`useAlgoliaSearch searching with algolia complete`, {
           hits,
@@ -145,6 +120,8 @@ export default <T>(
         setLastErrorCode(
           err && (err as AlgoliaApiError).status
             ? ErrorCode.ApiError
+            : err instanceof InvalidClientError
+            ? ErrorCode.InvalidClient
             : ErrorCode.Unknown
         )
       }

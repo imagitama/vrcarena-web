@@ -68,8 +68,9 @@ export const getErrorMessageForCode = (
 
     case UnpublishErrorCode.USER_NOT_VERIFIED:
       return 'Your account is not verified'
-    case UnpublishErrorCode.ASSET_NOT_FOUND:
-      return 'Asset not found'
+    // [WARNING] This case clause will never be evaluated because it duplicates an earlier case clause [duplicate-case]
+    // case UnpublishErrorCode.ASSET_NOT_FOUND:
+    //   return 'Asset not found'
     case UnpublishErrorCode.NOT_PUBLISHED:
       return 'Asset has not been published yet'
     case UnpublishErrorCode.NOT_PUBLISHER:
