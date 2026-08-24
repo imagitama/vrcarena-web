@@ -14,7 +14,6 @@ import {
   BacklogItemType,
   ViewNames,
   CollectionNames,
-  BacklogItem,
   BacklogItemMeta,
 } from '@/modules/backlog'
 import { capitalizeFirstLetter } from '@/utils/formatting'
@@ -50,6 +49,7 @@ import { AccessStatus } from '@/modules/common'
 import { HydrateFn } from '@/hooks/useDataStore'
 import StatusText from '@/components/status-text'
 import Tooltip from '@/components/tooltip'
+import { Operators } from '@/hooks/useDatabaseQuery'
 
 const URL_QUERY_PARAM_NAME = 'url'
 
@@ -194,7 +194,7 @@ const Renderer = ({
 
 enum SubView {
   Pending = 'pending',
-  Completed = 'completed',
+  Deleted = 'deleted',
 }
 
 const View = () => {
@@ -206,6 +206,19 @@ const View = () => {
       <PaginatedView<FullBacklogItem>
         viewName={ViewNames.GetFullBacklogItems}
         name="view-backlog"
+        subViews={[
+          {
+            id: SubView.Pending,
+            label: 'Pending',
+            where: [['accessstatus', Operators.EQUALS, AccessStatus.Public]],
+          },
+          {
+            id: SubView.Deleted,
+            label: 'Deleted',
+            where: [['accessstatus', Operators.EQUALS, AccessStatus.Deleted]],
+          },
+        ]}
+        defaultSubView={SubView.Pending}
         sortOptions={[
           {
             label: 'Logged at',
@@ -221,7 +234,6 @@ const View = () => {
             Add To Backlog
           </Button>,
         ]}
-        defaultSubView={SubView.Pending}
         itemNamePlural="backlog items"
         form={
           isFormVisible
