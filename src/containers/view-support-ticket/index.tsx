@@ -6,6 +6,7 @@ import * as routes from '@/routes'
 import {
   CollectionNames,
   FullSupportTicket,
+  supportTicketCategoryMeta,
   ViewNames,
 } from '@/modules/support-tickets'
 import { getViewNameForParentTable } from '@/utils/reports'
@@ -55,7 +56,10 @@ const View = () => {
       collectionName={CollectionNames.SupportTickets}
       metaCollectionName={CollectionNames.SupportTicketsMeta}
       title="Support ticket"
-      item={supportTicket}
+      item={{
+        ...supportTicket,
+        category: supportTicketCategoryMeta[supportTicket.category]?.label,
+      }}
       url={routes.viewSupportTicketWithVar.replace(
         ':supportTicketId',
         supportTicketId

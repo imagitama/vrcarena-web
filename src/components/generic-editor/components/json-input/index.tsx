@@ -10,7 +10,7 @@ const JsonInput = ({
   onChange,
   formFields,
 }: GenericInputProps<JsonValue, any, JsonEditableField<any>>) => {
-  console.debug(`JsonInput`, { formFields })
+  // console.debug(`JsonInput`, { formFields })
   return (
     <GenericEditor
       fields={editableField.json}

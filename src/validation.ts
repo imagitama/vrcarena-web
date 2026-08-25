@@ -24,10 +24,8 @@ export const getValidationIssues = <TRecord extends Record<string, any>>(
 ): ValidationIssue[] => {
   const issues: ValidationIssue[] = []
 
-  for (const fieldName in fields) {
-    const editableField = editableFields.find(
-      (field) => field.name === fieldName
-    )
+  for (const editableField of editableFields) {
+    const fieldName = editableField.name as string
     const fieldValue = fields[fieldName]
 
     if (editableField) {

@@ -54,7 +54,7 @@ export interface SelectEditableField<TRecord>
   extends ImageUploaderConfig,
     EditableFieldBase<TRecord> {
   type: fieldTypes.singlechoice | fieldTypes.multichoice | fieldTypes.dropdown
-  options: Option[]
+  options: Option[] | ((fields: Partial<TRecord>) => Option[])
 }
 
 export interface ImageUploadEditableField<TRecord>

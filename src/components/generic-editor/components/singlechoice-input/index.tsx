@@ -7,14 +7,20 @@ export default ({
   editableField,
   onChange,
   value = null,
+  formFields,
 }: {
   editableField: SelectEditableField<any>
   value: string | null
   onChange: (newVal: string | null) => void
-}) => (
-  <>
-    {(editableField.options || []).map(
-      ({ value: optionValue, label, subLabel }) => {
+  formFields: any
+}) => {
+  const options = Array.isArray(editableField.options)
+    ? editableField.options
+    : editableField.options(formFields)
+
+  return (
+    <>
+      {options.map(({ value: optionValue, label, subLabel }) => {
         const isChecked = value === optionValue
         return (
           <CheckboxInput
@@ -33,7 +39,7 @@ export default ({
             value={isChecked}
           />
         )
-      }
-    )}
-  </>
-)
+      })}
+    </>
+  )
+}

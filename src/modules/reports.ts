@@ -18,18 +18,31 @@ export const reportReasonsKeysByCollection = {
   },
 }
 
+export const getLabelForReason = (
+  reason: string,
+  collectionName: string
+): string => {
+  const reasons = getReasonsForCollectionName(collectionName)
+  const meta = reasons.find((item) => item.value === reason)
+  if (!meta) return reason
+  return meta.label
+}
+
 const commonReasons: ReportReason[] = [
   {
     value: commonReportReasonKeys.OFFENSIVE_CONTENT,
     label: 'Offensive content',
+    description: 'The content contains profanity or other offensive content',
   },
   {
     value: commonReportReasonKeys.SPAM,
     label: 'Spam or bot message',
+    description: 'The message is spam or comes from a bot',
   },
   {
     value: commonReportReasonKeys.OTHER,
-    label: 'Other/custom reason (use comments field)',
+    label: 'Other/custom reason',
+    description: 'Other/custom reason (use comments field)',
   },
 ]
 
@@ -39,19 +52,22 @@ const reasonsByCollectionName: { [collectionName: string]: ReportReason[] } = {
       value:
         reportReasonsKeysByCollection[AssetsCollectionNames.Assets]
           .BROKEN_SOURCE,
-      label: 'Broken or invalid source',
+      label: 'Broken/Invalid Source',
+      description: 'Broken or invalid source',
     },
     {
       value:
         reportReasonsKeysByCollection[AssetsCollectionNames.Assets]
           .OUTDATED_CONTENT,
-      label:
+      label: 'Outdated Content',
+      description:
         'Outdated content (eg. thumbnail, attachments, etc.). Please provide a link to the correct content',
     },
     {
       value:
         reportReasonsKeysByCollection[AssetsCollectionNames.Assets].TAKEDOWN,
-      label:
+      label: 'Takedown Request',
+      description:
         'I am the creator of this asset and I have read the takedown policy and want it to be taken down',
     },
   ],
@@ -62,6 +78,7 @@ const reasonsByCollectionName: { [collectionName: string]: ReportReason[] } = {
 interface ReportReason {
   value: string
   label: string
+  description: string
 }
 
 export const getReasonsForCollectionName = (
@@ -86,7 +103,6 @@ export interface Report extends Record<string, any> {
   parent: string
   reason: string
   comments: string
-  assignedto: string | null
   lastmodifiedat: string | null // Date
   lastmodifiedby: string | null
   createdat: string // Date
@@ -96,6 +112,7 @@ export interface Report extends Record<string, any> {
 export { ResolutionStatus }
 
 export interface ReportMeta extends Record<string, unknown> {
+  assignedto: string | null
   editornotes: string | null
   resolutionstatus: ResolutionStatus
   resolvedat: string | null // Date

@@ -3,7 +3,10 @@ import { TableCell } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
 
 import * as routes from '@/routes'
-import { FullSupportTicket } from '@/modules/support-tickets'
+import {
+  FullSupportTicket,
+  supportTicketCategoryMeta,
+} from '@/modules/support-tickets'
 
 import Link from '@/components/link'
 import FormattedDate from '@/components/formatted-date'
@@ -66,7 +69,9 @@ export default ({
             )}
           </TableCell>
         )}
-        <TableCell label="Category">{category}</TableCell>
+        <TableCell label="Category">
+          {supportTicketCategoryMeta[category]?.label || '-'}
+        </TableCell>
         <TableCell label="Created">
           <FormattedDate date={createdat} />{' '}
           {createdByUsername ? (

@@ -33,6 +33,12 @@ const dateText = 'In format DD/MM/YYYY or similar'
 const errorCodeQuestion =
   'What is the error code (if provided)? Either a single digit or a long string of letters, numbers and symbols'
 
+export const getSupportTicketCategoryMeta = (
+  category: SupportTicketCategory
+): SupportTicketCategoryMeta => {
+  return supportTicketCategoryMeta[category]
+}
+
 export const supportTicketCategoryMeta: Record<
   SupportTicketCategory,
   SupportTicketCategoryMeta

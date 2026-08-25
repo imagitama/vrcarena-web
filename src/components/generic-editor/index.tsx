@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add'
 import editableFields, { EditableField } from '@/editable-fields'
 import { fieldTypes } from '@/generic-forms'
 import { trackAction } from '@/analytics'
-import { scrollToElement, scrollToTop } from '@/utils'
+import { capitalize, scrollToElement, scrollToTop } from '@/utils'
 import { handleError } from '@/error-handling'
 import { ValidationIssue, getValidationIssues } from '@/validation'
 
@@ -147,6 +147,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   onAttemptSave = undefined,
   size,
   idField,
+  successMessage,
 }: {
   fields?: EditableField<any>[]
   collectionName?: string
@@ -175,6 +176,7 @@ const GenericEditor = <TRecord extends Record<string, any>>({
   onAttemptSave?: () => void
   size?: 'small'
   idField?: keyof TRecord
+  successMessage?: React.ReactNode
 }) => {
   const editableFieldsToUse = fields || editableFields[collectionName!]
 
@@ -506,8 +508,15 @@ const GenericEditor = <TRecord extends Record<string, any>>({
               ? getSuccessUrl(updatedRecord.id)
               : successUrl
           }>
-          {itemTypeSingular ? `${itemTypeSingular} saved` : 'Saved'}{' '}
-          successfully
+          {itemTypeSingular ? capitalize(itemTypeSingular) : 'Record'}{' '}
+          {id ? 'saved' : 'created'} successfully
+          {successMessage && (
+            <>
+              <br />
+              <br />
+              {successMessage}
+            </>
+          )}
         </SuccessMessage>
       ) : null}
 

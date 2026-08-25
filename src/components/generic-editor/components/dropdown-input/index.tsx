@@ -10,22 +10,30 @@ const DropdownInput = ({
   onChange,
   value = null,
   selectProps = {},
+  formFields,
 }: {
   editableField: SelectEditableField<any>
   onChange: (newVal: any) => void
   value: string | null
   selectProps?: SelectProps
-}) => (
-  <Select
-    value={value}
-    onChange={(e: any) => onChange(e.target.value)}
-    {...selectProps}>
-    {(editableField as SelectEditableField<any>).options.map((option) => (
-      <MenuItem key={option.value} value={option.value || undefined}>
-        {option.label}
-      </MenuItem>
-    ))}
-  </Select>
-)
+  formFields: any
+}) => {
+  const options = Array.isArray(editableField.options)
+    ? editableField.options
+    : editableField.options(formFields)
+
+  return (
+    <Select
+      value={value}
+      onChange={(e: any) => onChange(e.target.value)}
+      {...selectProps}>
+      {options.map((option) => (
+        <MenuItem key={option.value} value={option.value || undefined}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </Select>
+  )
+}
 
 export default DropdownInput

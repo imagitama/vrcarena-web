@@ -3,7 +3,12 @@ import { Helmet } from '@unhead/react/helmet'
 import { useParams } from 'react-router'
 
 import * as routes from '@/routes'
-import { CollectionNames, FullReport, ViewNames } from '@/modules/reports'
+import {
+  CollectionNames,
+  FullReport,
+  getLabelForReason,
+  ViewNames,
+} from '@/modules/reports'
 
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
@@ -52,7 +57,7 @@ const View = () => {
       title="Report"
       item={{
         ...report,
-        category: report.reason,
+        category: getLabelForReason(report.reason, report.parenttable),
         relateddata: report.parentdata,
         relatedid: report.parent,
         relatedtable: report.parenttable,

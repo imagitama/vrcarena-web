@@ -19,16 +19,26 @@ import AssetResultsItem from '@/components/asset-results-item'
 import Comment from '@/components/comment'
 import Link from '@/components/link'
 import ReviewResultsItem from '@/components/review-results-item'
+import useDataStoreItem from '@/hooks/useDataStoreItem'
+
+type Data = Asset | FullComment | FullReview
 
 export default ({
   type,
   id,
-  data,
+  data: incomingData,
 }: {
   type: string
   id: string
-  data?: Asset | FullComment | FullReview
+  data?: Data
 }) => {
+  const [isLoading, lastErrorCode, result] = useDataStoreItem<Data>(
+    type,
+    incomingData ? false : id
+  )
+
+  const data = incomingData || result
+
   if (!data) {
     return (
       <Link to={getUrlForParent(type, id)}>

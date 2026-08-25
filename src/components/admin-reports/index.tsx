@@ -6,7 +6,12 @@ import { TableHead } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
 
 import * as routes from '@/routes'
-import { FullReport, ResolutionStatus, ViewNames } from '@/modules/reports'
+import {
+  FullReport,
+  getLabelForReason,
+  ResolutionStatus,
+  ViewNames,
+} from '@/modules/reports'
 import { FilterSubType, FilterType } from '@/filters'
 
 import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
@@ -58,7 +63,9 @@ function ReportsTable({ reports }: { reports?: FullReport[] }) {
                     {id}
                   </ShortId>
                 </TableCell>
-                <TableCell label="Reason">{reason || '-'}</TableCell>
+                <TableCell label="Reason">
+                  {getLabelForReason(reason, parenttable) || '-'}
+                </TableCell>
                 <TableCell label="Parent">
                   <GenericOutputItem
                     type={parenttable}
