@@ -24,6 +24,7 @@ export default ({
     <Table>
       <TableHead>
         <TableRow>
+          <TableCell></TableCell>
           {showParentDetails && <TableCell>Parent</TableCell>}
           <TableCell>Reason</TableCell>
           <TableCell>Metadata</TableCell>

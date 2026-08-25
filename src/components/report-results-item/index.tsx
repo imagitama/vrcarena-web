@@ -5,7 +5,11 @@ import { TableRow } from '@/components/responsive-table'
 
 import * as routes from '@/routes'
 import { CollectionNames } from '@/modules/assets'
-import { FullReport, reportReasonsKeysByCollection } from '@/modules/reports'
+import {
+  FullReport,
+  getLabelForReason,
+  reportReasonsKeysByCollection,
+} from '@/modules/reports'
 
 import WarningMessage from '@/components/warning-message'
 import FormattedDate from '@/components/formatted-date'
@@ -50,6 +54,10 @@ export default ({
             url={routes.viewReportWithVar.replace(':reportId', reportId)}>
             {reportId}
           </ShortId>
+          <br />
+          <Link to={routes.viewReportWithVar.replace(':reportId', reportId)}>
+            View Report
+          </Link>
         </TableCell>
         {showParentDetails && (
           <TableCell>
@@ -57,11 +65,12 @@ export default ({
               type={parenttable}
               id={parent}
               data={parentdata}
+              small
             />
           </TableCell>
         )}
         <TableCell>
-          {reason}
+          {getLabelForReason(reason, parenttable) || '-'}
           {reason ===
             reportReasonsKeysByCollection[CollectionNames.Assets].TAKEDOWN && (
             <WarningMessage>

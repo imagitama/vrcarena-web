@@ -20,6 +20,8 @@ import Comment from '@/components/comment'
 import Link from '@/components/link'
 import ReviewResultsItem from '@/components/review-results-item'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
+import LoadingIndicator from '../loading-indicator'
+import ErrorMessage from '../error-message'
 
 type Data = Asset | FullComment | FullReview
 
@@ -27,10 +29,12 @@ export default ({
   type,
   id,
   data: incomingData,
+  small,
 }: {
   type: string
   id: string
   data?: Data
+  small?: boolean
 }) => {
   const [isLoading, lastErrorCode, result] = useDataStoreItem<Data>(
     type,
@@ -38,6 +42,14 @@ export default ({
   )
 
   const data = incomingData || result
+
+  if (!incomingData) {
+    if (isLoading) return <LoadingIndicator message="Loading..." />
+    if (lastErrorCode !== null)
+      return (
+        <ErrorMessage errorCode={lastErrorCode}>Failed to load</ErrorMessage>
+      )
+  }
 
   if (!data) {
     return (
@@ -48,7 +60,7 @@ export default ({
   }
   switch (type) {
     case AssetsCollectionNames.Assets:
-      return <AssetResultsItem asset={data as Asset} />
+      return <AssetResultsItem asset={data as Asset} isTiny={small} />
     case CommentsCollectionNames.Comments:
       return (
         <Comment comment={data as FullComment} showControls={false} shorten />

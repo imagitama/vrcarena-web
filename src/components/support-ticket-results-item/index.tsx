@@ -55,6 +55,14 @@ export default ({
             )}>
             {supportTicketId}
           </ShortId>
+          <br />
+          <Link
+            to={routes.viewSupportTicketWithVar.replace(
+              ':supportTicketId',
+              supportTicketId
+            )}>
+            View Support Ticket
+          </Link>
         </TableCell>
         {showRelatedDetails && (
           <TableCell label="Parent">
@@ -63,6 +71,7 @@ export default ({
                 type={relatedTable}
                 id={relatedId}
                 data={parentdata}
+                small
               />
             ) : (
               '-'
