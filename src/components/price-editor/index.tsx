@@ -112,7 +112,9 @@ const PriceEditor = ({
       ) : isSaveSuccess ? (
         <SuccessMessage>Price saved successfully</SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to save price (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to save price
+        </ErrorMessage>
       ) : null}
 
       <FormControls>

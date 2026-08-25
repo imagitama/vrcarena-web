@@ -102,7 +102,7 @@ const VrchatAvatarIdsForm = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Error saving asset (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed saving asset</ErrorMessage>
     )
   }
 

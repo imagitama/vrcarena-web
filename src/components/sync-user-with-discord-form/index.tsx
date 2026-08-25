@@ -107,9 +107,11 @@ const SyncUserWithDiscordForm = ({
 
   if (lastSyncErrorCode !== null) {
     return (
-      <ErrorMessage onOkay={onDone}>
-        Failed to sync with Discord (code {lastSyncErrorCode}). Are you sure you
-        have signed in with Discord before?
+      <ErrorMessage
+        errorCode={lastSyncErrorCode as unknown as string}
+        onOkay={onDone}>
+        Failed to sync with Discord. Are you sure you have signed in with
+        Discord before?
       </ErrorMessage>
     )
   }

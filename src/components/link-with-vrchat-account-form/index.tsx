@@ -109,8 +109,8 @@ const Form = () => {
 
   if (lastErrorCodeGeneratingCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to generate link code (code {lastErrorCodeGeneratingCode})
+      <ErrorMessage errorCode={lastErrorCodeGeneratingCode}>
+        Failed to generate link code
       </ErrorMessage>
     )
   }

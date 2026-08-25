@@ -122,9 +122,8 @@ const SurveyDialog = ({
           <LoadingIndicator message="Submitting survey response..." />
         )}
         {lastErrorCode !== null && (
-          <ErrorMessage>
-            Failed to submit your response. Please try again later. Code{' '}
-            {lastErrorCode}
+          <ErrorMessage errorCode={lastErrorCode}>
+            Failed to submit your survey response
           </ErrorMessage>
         )}
         {isSuccess && (

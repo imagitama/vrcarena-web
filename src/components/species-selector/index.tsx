@@ -150,7 +150,9 @@ const SpeciesSelector = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load species (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load species
+      </ErrorMessage>
     )
   }
 

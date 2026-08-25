@@ -41,7 +41,9 @@ const Patrons = () => {
 
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to get patrons (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to get patrons
+      </ErrorMessage>
     )
 
   if (isLoading || !patrons)

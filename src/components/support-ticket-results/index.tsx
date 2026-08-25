@@ -45,5 +45,6 @@ export default ({
       </TableBody>
     </Table>
   ) : (
+    // TODO: change to TableRow with colSpan
     <ErrorMessage>No support tickets</ErrorMessage>
   )

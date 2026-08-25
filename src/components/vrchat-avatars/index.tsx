@@ -52,7 +52,9 @@ export default ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to get avatars (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to get avatars
+      </ErrorMessage>
     )
   }
 

@@ -66,8 +66,8 @@ const DescriptionEditor = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to save description (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save description
       </ErrorMessage>
     )
   }

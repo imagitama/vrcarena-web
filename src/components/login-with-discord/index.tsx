@@ -187,8 +187,10 @@ export default ({
         )
       default:
         return (
-          <ErrorMessage onRetry={onFail}>
-            Failed to get your details from Discord (code {lastErrorCode})
+          <ErrorMessage
+            errorCode={lastErrorCode as unknown as string}
+            onRetry={onFail}>
+            Failed to get your details from Discord
           </ErrorMessage>
         )
     }

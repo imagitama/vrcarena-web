@@ -94,17 +94,17 @@ const Form = ({
 
   if (lastErrorCodeLoadingParent !== null) {
     return (
-      <ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCodeLoadingParent}>
         Failed to load the related item for this support ticket - are you sure
-        it exists? (code {lastErrorCodeLoadingParent})
+        it exists?
       </ErrorMessage>
     )
   }
 
   if (lastErrorCodeCreating !== null) {
     return (
-      <ErrorMessage>
-        Failed to create the support ticket (code {lastErrorCodeCreating})
+      <ErrorMessage errorCode={lastErrorCodeCreating}>
+        Failed to create the support ticket
       </ErrorMessage>
     )
   }

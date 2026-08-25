@@ -116,7 +116,9 @@ const AssetParentRenderer = ({ item }: { item: QueuedItemForRecord }) => {
   )
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load asset
+      </ErrorMessage>
     )
   if (isLoading || asset === null)
     return <NoValueLabel>Loading asset...</NoValueLabel>
@@ -137,7 +139,9 @@ const AutoApproveFullRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
   )
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load asset
+      </ErrorMessage>
     )
   if (isLoading || asset === null)
     return <NoValueLabel>Loading asset...</NoValueLabel>
@@ -154,7 +158,7 @@ const UserParentRenderer = ({ item }: { item: QueuedItemForRecord }) => {
   )
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to load user (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to load user</ErrorMessage>
     )
   if (isLoading || user === null)
     return <NoValueLabel>Loading asset...</NoValueLabel>
@@ -175,7 +179,7 @@ const BotScoreFullRenderer = ({ item }: { item: AiEvaluateQueuedItem }) => {
   )
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to load user (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to load user</ErrorMessage>
     )
   if (isLoading || user === null)
     return <NoValueLabel>Loading asset...</NoValueLabel>
@@ -560,7 +564,7 @@ const AiSuggestQueueCell = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to get items</ErrorMessage>
     )
   }
 
@@ -609,7 +613,7 @@ const AiSimilarQueueCell = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to get items</ErrorMessage>
     )
   }
 
@@ -661,7 +665,7 @@ const AiEvaluateAutoApproveQueueCell = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to get items</ErrorMessage>
     )
   }
 
@@ -769,7 +773,7 @@ const AssetAuditQueueCell = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to get items</ErrorMessage>
     )
   }
 
@@ -825,7 +829,7 @@ const AssetAuditApplyQueueCell = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to get items (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to get items</ErrorMessage>
     )
   }
 

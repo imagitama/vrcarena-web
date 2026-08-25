@@ -278,11 +278,13 @@ const Whiteboard = () => {
       </div>
       {isLoadingSync && <LoadingIndicator message="Subscribing to dots..." />}
       {lastErrorCode !== null && (
-        <ErrorMessage>Failed to load dots (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to load dots
+        </ErrorMessage>
       )}
       {lastErrorCodeSync !== null && (
-        <ErrorMessage>
-          Failed to subscribe to dots (code {lastErrorCodeSync})
+        <ErrorMessage errorCode={lastErrorCodeSync}>
+          Failed to subscribe to dots
         </ErrorMessage>
       )}
       {!Array.isArray(whiteboardRecordsForUsers) && (

@@ -98,16 +98,16 @@ export default ({
 
   if (lastErrorCodeLoadingUser !== null) {
     return (
-      <ErrorMessage>
-        Failed to lookup your profile (code {lastErrorCodeLoadingUser})
+      <ErrorMessage errorCode={lastErrorCodeLoadingUser}>
+        Failed to lookup your profile
       </ErrorMessage>
     )
   }
 
   if (lastErrorCodeLoadingSpecies !== null) {
     return (
-      <ErrorMessage>
-        Failed to load species (code {lastErrorCodeLoadingSpecies})
+      <ErrorMessage errorCode={lastErrorCodeLoadingSpecies}>
+        Failed to load species
       </ErrorMessage>
     )
   }
@@ -158,7 +158,7 @@ export default ({
       {isSaveSuccess ? (
         <SuccessMessage>Your favorite species has been saved</SuccessMessage>
       ) : lastErrorCode ? (
-        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
       ) : null}
       {saveOnSelect !== true && (
         <FormControls>

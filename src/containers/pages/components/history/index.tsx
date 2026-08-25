@@ -34,7 +34,9 @@ const PageHistoryOutput = ({ pageName }: { pageName: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load history (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load history
+      </ErrorMessage>
     )
   }
 

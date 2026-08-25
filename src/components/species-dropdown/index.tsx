@@ -37,7 +37,9 @@ const SpeciesDropdown = ({
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage>Failed to load species (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load species
+      </ErrorMessage>
     )
   }
 

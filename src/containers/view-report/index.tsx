@@ -35,7 +35,9 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load report (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load report
+      </ErrorMessage>
     )
   }
 

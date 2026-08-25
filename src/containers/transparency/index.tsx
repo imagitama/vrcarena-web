@@ -26,8 +26,8 @@ const PatreonStatus = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load Patreon supporters (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load Patreon supporters
       </ErrorMessage>
     )
   }

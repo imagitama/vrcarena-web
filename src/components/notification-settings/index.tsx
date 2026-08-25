@@ -271,8 +271,8 @@ const NotificationSettings = ({
 
   if (lastErrorCodeLoadingPreferences !== null) {
     return (
-      <ErrorMessage>
-        Failed to load your profile (code {lastErrorCodeLoadingPreferences})
+      <ErrorMessage errorCode={lastErrorCodeLoadingPreferences}>
+        Failed to load your profile
       </ErrorMessage>
     )
   }
@@ -380,15 +380,16 @@ const NotificationSettings = ({
         <LoadingIndicator message="Saving..." />
       ) : null}
       {lastAnonymouslySaveErrorCode !== null ? (
-        <ErrorMessage>
+        <ErrorMessage
+          errorCode={lastAnonymouslySaveErrorCode as unknown as string}>
           Failed to save your preferences
           {lastAnonymouslySaveErrorCode === ErrorCode.UserNotFound
             ? `: your account could not be found with the link you clicked on (${anonymousDetails?.userId}, ${anonymousDetails?.email})`
             : ` (code ${lastAnonymouslySaveErrorCode})`}
         </ErrorMessage>
       ) : lastErrorCodeSaving !== null ? (
-        <ErrorMessage>
-          Failed to save your preferences (code {lastErrorCodeSaving})
+        <ErrorMessage errorCode={lastErrorCodeSaving}>
+          Failed to save your preferences
         </ErrorMessage>
       ) : null}
       {isSaveSuccess || isAnonymouslySaveSuccess ? (

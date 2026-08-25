@@ -23,8 +23,8 @@ export default () => {
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to load your reports (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load your reports
       </ErrorMessage>
     )
   }

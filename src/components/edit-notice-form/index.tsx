@@ -74,8 +74,8 @@ const EditNoticeForm = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to {id ? 'edit' : 'create'} notice (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to {id ? 'edit' : 'create'} notice
       </ErrorMessage>
     )
   }

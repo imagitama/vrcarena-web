@@ -157,7 +157,7 @@ const DiscordServerWidget = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode as unknown as string}>
         Failed to get Discord widget:{' '}
         {getErrorMessageForErrorCode(lastErrorCode)}
       </ErrorMessage>

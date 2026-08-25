@@ -38,8 +38,8 @@ const TagBlacklistEditor = () => {
 
   if (lastErrorCodeLoading !== null) {
     return (
-      <ErrorMessage>
-        Failed to load blacklist (code {lastErrorCodeLoading})
+      <ErrorMessage errorCode={lastErrorCodeLoading}>
+        Failed to load blacklist
       </ErrorMessage>
     )
   }
@@ -50,8 +50,8 @@ const TagBlacklistEditor = () => {
 
   if (lastErrorCodeSaving !== null) {
     return (
-      <ErrorMessage>
-        Failed to save blacklist (code {lastErrorCodeSaving})
+      <ErrorMessage errorCode={lastErrorCodeSaving}>
+        Failed to save blacklist
       </ErrorMessage>
     )
   }

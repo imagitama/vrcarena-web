@@ -30,8 +30,8 @@ export default () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to find your collection (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to find your collection
       </ErrorMessage>
     )
   }

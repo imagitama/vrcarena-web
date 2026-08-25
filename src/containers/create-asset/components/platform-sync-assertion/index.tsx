@@ -77,7 +77,11 @@ const PlatformSyncAssertion = () => {
     )
 
   if (lastErrorCode !== null)
-    return <ErrorMessage>Failed (code {lastErrorCode})</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load assertion
+      </ErrorMessage>
+    )
 
   if (isLoading) return <>...</>
 

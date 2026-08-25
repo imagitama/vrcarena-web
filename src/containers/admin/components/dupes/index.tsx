@@ -123,7 +123,7 @@ const PlanMode = ({
     <Paper>
       {isLoading ? <LoadingIndicator message="Working..." /> : null}
       {lastErrorCode !== null ? (
-        <ErrorMessage>Failed to apply (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to apply</ErrorMessage>
       ) : null}
       {isSuccess ? <SuccessMessage>Apply successful!</SuccessMessage> : null}
       <Heading variant="h3" noTopMargin>
@@ -441,7 +441,9 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to find dupes (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to find dupes
+      </ErrorMessage>
     )
   }
 

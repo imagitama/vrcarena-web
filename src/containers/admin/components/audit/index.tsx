@@ -143,7 +143,9 @@ const ArchiveButtons = ({
       {isSaving ? (
         <LoadingMessage>Saving asset...</LoadingMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to save asset
+        </ErrorMessage>
       ) : isSaveSuccess ? (
         <SuccessMessage>Asset archived successfully</SuccessMessage>
       ) : null}
@@ -405,8 +407,8 @@ const ApplyAuditButton = ({
           {isSaving ? (
             <LoadingMessage>Saving...</LoadingMessage>
           ) : lastErrorCode !== null ? (
-            <ErrorMessage>
-              Failed to save asset (code {lastErrorCode})
+            <ErrorMessage errorCode={lastErrorCode}>
+              Failed to save asset
             </ErrorMessage>
           ) : isSaveSuccess ? (
             <SuccessMessage>
@@ -483,8 +485,8 @@ const RetryButton = ({
       {isCreating ? (
         <LoadingMessage>Inserting back into queue...</LoadingMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage onOkay={clear}>
-          Failed to retry (code {lastErrorCode})
+        <ErrorMessage errorCode={lastErrorCode} onOkay={clear}>
+          Failed to retry
         </ErrorMessage>
       ) : isSuccess ? (
         <SuccessMessage>Retry successful, refreshing view...</SuccessMessage>

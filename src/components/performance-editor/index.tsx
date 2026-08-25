@@ -181,7 +181,7 @@ const PerformanceEditor = ({
   overrideSave?: (newTags: string[]) => void
 }) => {
   const [newTags, setNewTags] = useState<string[]>(currentTags)
-  const [isSaving, isSaveSuccess, isSaveError, save, clear] =
+  const [isSaving, isSaveSuccess, lastErrorCode, save, clear] =
     useDataStoreEdit<Asset>(CollectionNames.Assets, assetId || false)
   const classes = useStyles()
 
@@ -197,8 +197,10 @@ const PerformanceEditor = ({
     )
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save tags</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>Failed to save tags</ErrorMessage>
+    )
   }
 
   const onSaveClick = async () => {

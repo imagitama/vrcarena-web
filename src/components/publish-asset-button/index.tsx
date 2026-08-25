@@ -185,11 +185,10 @@ const PublishAssetButton = ({
     )
   }
 
-  if (lastErrorCode) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to publish:{' '}
-        {getErrorMessageForCode(lastErrorCode as PublishFlowErrorCode)}
+      <ErrorMessage errorCode={lastErrorCode as string}>
+        Failed to publish
       </ErrorMessage>
     )
   }

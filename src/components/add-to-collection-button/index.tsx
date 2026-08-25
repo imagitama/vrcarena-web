@@ -36,6 +36,7 @@ import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import NoResultsMessage from '@/components/no-results-message'
 import { routes } from '@/routes'
 import Link from '../link'
+import LoadingIndicator from '../loading-indicator'
 
 const useStyles = makeStyles({
   root: {
@@ -275,7 +276,7 @@ const OwnedAssetsCollectionListItem = ({
       />
       {lastLoadingErrorCode !== null ? (
         <ErrorMessage errorCode={lastLoadingErrorCode}>
-          Failed to load (code {lastLoadingErrorCode})
+          Failed to load
         </ErrorMessage>
       ) : null}
       {lastSavingErrorCode || lastCreatingErrorCode !== null ? (
@@ -307,10 +308,14 @@ const CollectionsList = ({
   const [isLoading, lastErrorCode, collections, , hydrate] = useMyCollections()
   const classes = useStyles()
 
+  if (isLoading) {
+    return <LoadingIndicator message="Loading your collections..." />
+  }
+
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load your collection (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load your collections
       </ErrorMessage>
     )
   }

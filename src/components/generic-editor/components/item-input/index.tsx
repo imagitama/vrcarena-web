@@ -36,7 +36,9 @@ export default ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load items (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load items
+      </ErrorMessage>
     )
   }
 

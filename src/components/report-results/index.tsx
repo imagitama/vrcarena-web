@@ -43,5 +43,6 @@ export default ({
       </TableBody>
     </Table>
   ) : (
+    // TODO: use TableRow with colSpan
     <ErrorMessage>No reports</ErrorMessage>
   )

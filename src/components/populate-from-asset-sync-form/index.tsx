@@ -204,12 +204,14 @@ const Form = ({ assetFields, onDone }: Props) => {
         />
       ) : null}
       {lastErrorCode !== null && (
-        <ErrorMessage>Failed to get sync (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to get sync
+        </ErrorMessage>
       )}
       {isCreating && <LoadingIndicator message="Queueing..." />}
       {lastErrorCodeSaving !== null && (
-        <ErrorMessage>
-          Failed to queue (code {lastErrorCodeSaving})
+        <ErrorMessage errorCode={lastErrorCodeSaving}>
+          Failed to queue
         </ErrorMessage>
       )}
       {isSuccess && (

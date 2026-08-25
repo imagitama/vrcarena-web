@@ -265,7 +265,7 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
           Your social media accounts have been saved
         </SuccessMessage>
       ) : lastErrorCode ? (
-        <ErrorMessage>Failed to save (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
       ) : null}
       <FormControls>
         <Button

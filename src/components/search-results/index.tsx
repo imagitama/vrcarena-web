@@ -106,8 +106,8 @@ function Results({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to perform search: error code {lastErrorCode}
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to perform search
       </ErrorMessage>
     )
   }

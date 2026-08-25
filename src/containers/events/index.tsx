@@ -44,7 +44,11 @@ function Events() {
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to load events</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load events
+      </ErrorMessage>
+    )
   }
 
   const { pastEvents, currentEvents, futureEvents } = events.reduce<{

@@ -46,8 +46,8 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load tag suggestion (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load tag suggestion
       </ErrorMessage>
     )
   }

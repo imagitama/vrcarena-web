@@ -698,8 +698,8 @@ const AiSuggestForm = ({
       ) : (
         <div>
           {lastErrorCodeFunction !== null && (
-            <ErrorMessage>
-              Failed to request suggestions (code {lastErrorCodeFunction})
+            <ErrorMessage errorCode={lastErrorCodeFunction as string}>
+              Failed to request suggestions
             </ErrorMessage>
           )}
           <div className={classes.title}>Use AI to suggest fields</div>

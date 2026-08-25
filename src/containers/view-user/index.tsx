@@ -26,8 +26,8 @@ export default () => {
 
   if (lastErrorCodeLoadingUser !== null) {
     return (
-      <ErrorMessage>
-        Failed to the user (code {lastErrorCodeLoadingUser})
+      <ErrorMessage errorCode={lastErrorCodeLoadingUser}>
+        Failed to the user
       </ErrorMessage>
     )
   }

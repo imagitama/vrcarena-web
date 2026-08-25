@@ -33,8 +33,8 @@ const SelectRepReason = ({
 
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>
-        Failed to load rep reasons (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load rep reasons
       </ErrorMessage>
     )
 
@@ -106,7 +106,9 @@ const Form = ({ userId }: { userId: string }) => {
       {isSaving ? (
         <LoadingIndicator message="Giving user rep..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed to give rep (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to give rep
+        </ErrorMessage>
       ) : isSuccess ? (
         <SuccessMessage>User has been given rep successfully</SuccessMessage>
       ) : null}

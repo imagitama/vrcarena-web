@@ -59,7 +59,11 @@ const LinkedAccessories = ({
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to load accessories</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load accessories
+      </ErrorMessage>
+    )
   }
 
   if (!results.length) {

@@ -27,8 +27,8 @@ export default () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load featured assets (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load featured assets
       </ErrorMessage>
     )
   }

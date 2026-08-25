@@ -386,8 +386,8 @@ function AttachmentsOutput({ fields }: { fields: Asset }) {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load attachments (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load attachments
       </ErrorMessage>
     )
   }

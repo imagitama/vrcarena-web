@@ -113,8 +113,8 @@ const GetVrchatAvatarDetails = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to get VRChat avatar. Error code: {lastErrorCode}
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to get VRChat avatar.
         <br />
         <br />
         Are you sure the VRChat avatar exists? Please try again later.

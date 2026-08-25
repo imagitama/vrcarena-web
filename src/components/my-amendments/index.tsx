@@ -25,8 +25,8 @@ const MyAmendments = () => {
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to load amendments (code {lastErrorCode}
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load amendments
       </ErrorMessage>
     )
   }

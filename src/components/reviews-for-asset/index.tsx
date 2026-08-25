@@ -31,16 +31,14 @@ export default ({
   )
 
   if (isLoading || shimmer) {
-    return (
-      <>
-        <ReviewResults shimmer />
-      </>
-    )
+    return <ReviewResults shimmer />
   }
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load reviews (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load reviews
+      </ErrorMessage>
     )
   }
 

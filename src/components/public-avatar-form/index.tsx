@@ -110,9 +110,9 @@ const Form = ({ assetId }: { assetId: string }) => {
           The avatar has been sent to our team! Would you like to add another?
         </SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to send. This shouldn't happen. Please come back tomorrow to
-          try again. Code {lastErrorCode}
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to send. This shouldn't happen. Please come back later to try
+          again.
         </ErrorMessage>
       ) : null}
 

@@ -46,8 +46,8 @@ const UserPreferenceEditor = ({
 
   if (lastErrorCodeLoadingUser !== null) {
     return (
-      <ErrorMessage>
-        Failed to load user account (code {lastErrorCodeLoadingUser})
+      <ErrorMessage errorCode={lastErrorCodeLoadingUser}>
+        Failed to load user account
       </ErrorMessage>
     )
   }

@@ -28,8 +28,8 @@ export default ({ userId }: { userId: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to find the wishlist (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to find the wishlist
       </ErrorMessage>
     )
   }

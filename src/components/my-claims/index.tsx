@@ -22,8 +22,8 @@ const MyClaims = () => {
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to load your claims (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load your claims
       </ErrorMessage>
     )
   }

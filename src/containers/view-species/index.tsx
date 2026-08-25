@@ -274,14 +274,18 @@ const View = () => {
     return <LoadingIndicator message="Loading species..." />
   }
 
-  if (
-    lastErrorCodeLoadingSpecies !== null ||
-    lastErrorCodeLoadingChildren !== null
-  ) {
+  if (lastErrorCodeLoadingSpecies !== null) {
     return (
-      <ErrorMessage>
-        Failed to load species (code{' '}
-        {lastErrorCodeLoadingSpecies || lastErrorCodeLoadingChildren})
+      <ErrorMessage errorCode={lastErrorCodeLoadingSpecies}>
+        Failed to load species
+      </ErrorMessage>
+    )
+  }
+
+  if (lastErrorCodeLoadingChildren !== null) {
+    return (
+      <ErrorMessage errorCode={lastErrorCodeLoadingChildren}>
+        Failed to load species children
       </ErrorMessage>
     )
   }

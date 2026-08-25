@@ -47,7 +47,9 @@ const Notices = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load notices (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load notices
+      </ErrorMessage>
     )
   }
 

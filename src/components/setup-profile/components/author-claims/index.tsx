@@ -65,9 +65,7 @@ const AuthorClaims = () => {
       {isLoading ? (
         <LoadingIndicator message="Searching authors..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to search: error code {lastErrorCode}
-        </ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to search</ErrorMessage>
       ) : hits ? (
         <AuthorResults
           authors={hits as any} // TODO: repair type sometime

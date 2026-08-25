@@ -168,7 +168,9 @@ export default ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to save asset (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save asset
+      </ErrorMessage>
     )
   }
 

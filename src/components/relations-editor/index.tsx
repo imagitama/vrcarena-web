@@ -168,14 +168,14 @@ const Renderer = ({ item }: { item: Item<Relation> }) => {
 
   if (lastErrorCodeLoadingAsset !== null) {
     return (
-      <ErrorMessage>
-        Failed to load asset (code {lastErrorCodeLoadingAsset})
+      <ErrorMessage errorCode={lastErrorCodeLoadingAsset}>
+        Failed to load asset
       </ErrorMessage>
     )
   }
 
   if (!asset) {
-    return <ErrorMessage>Failed to load asset (none found)</ErrorMessage>
+    return <ErrorMessage>Failed to load asset: not found</ErrorMessage>
   }
 
   return <RelationItem asset={asset} relation={item} />
@@ -281,8 +281,8 @@ const RelationsEditor = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to save relations (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save relations
       </ErrorMessage>
     )
   }

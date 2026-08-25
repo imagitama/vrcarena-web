@@ -10,9 +10,8 @@ import categoryMeta from '@/category-meta'
 import { FullUser } from '@/modules/users'
 import { CollectionNames } from '@/modules/authors'
 import { ViewNames as ClaimViewNames, FullClaim } from '@/modules/claims'
-import { trackAction } from '@/analytics'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
-import { FullAuthor } from '@/modules/authors'
+import { FullAuthor, ViewNames as AuthorsViewNames } from '@/modules/authors'
 import { PublicAsset, ViewNames } from '@/modules/assets'
 import { AccessStatus } from '@/modules/common'
 
@@ -108,7 +107,9 @@ const Claims = ({ authorId }: { authorId: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load claims (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load claims
+      </ErrorMessage>
     )
   }
 
@@ -153,7 +154,7 @@ const View = () => {
   const { authorId } = useParams<{ authorId: string }>()
   const isLoggedIn = useIsLoggedIn()
   const [isLoading, lastErrorCode, author, hydrate] =
-    useDataStoreItem<FullAuthor>('getfullauthors', authorId, {
+    useDataStoreItem<FullAuthor>(AuthorsViewNames.GetFullAuthors, authorId, {
       queryName: 'view-author',
     })
   const classes = useStyles()
@@ -165,7 +166,9 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to get author (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load author
+      </ErrorMessage>
     )
   }
 

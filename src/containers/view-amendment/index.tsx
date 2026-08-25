@@ -57,7 +57,9 @@ const AssetOutput = ({ assetId }: { assetId: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load asset
+      </ErrorMessage>
     )
   }
 
@@ -81,7 +83,9 @@ const AuthorOutput = ({ authorId }: { authorId: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load author (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load author
+      </ErrorMessage>
     )
   }
 
@@ -124,7 +128,9 @@ const Changes = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load parent (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load parent
+      </ErrorMessage>
     )
   }
 
@@ -182,14 +188,16 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load amendment (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load amendment
       </ErrorMessage>
     )
   }
 
   if (!amendment) {
-    return <ErrorMessage>Failed to load amendment: does not exist</ErrorMessage>
+    return (
+      <ErrorMessage>Failed to load amendment: it does not exist</ErrorMessage>
+    )
   }
 
   const {

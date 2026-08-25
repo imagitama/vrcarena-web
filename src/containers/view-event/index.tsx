@@ -145,7 +145,7 @@ const Assets = ({ tagsToSearch }: { tagsToSearch: string[] }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
         Failed to get assets with tags {tagsToSearch.join(', ')}
       </ErrorMessage>
     )
@@ -194,7 +194,9 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load event (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load event
+      </ErrorMessage>
     )
   }
 

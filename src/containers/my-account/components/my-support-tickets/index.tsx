@@ -22,8 +22,8 @@ export default () => {
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to load your support tickets (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load your support tickets
       </ErrorMessage>
     )
   }

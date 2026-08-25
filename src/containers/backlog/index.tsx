@@ -69,7 +69,7 @@ const DeleteButton = ({ id, onDone }: { id: string; onDone: () => void }) => {
       ) : isSuccess ? (
         <SuccessMessage>Item deleted</SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to delete</ErrorMessage>
       ) : null}
       <Button
         onClick={onClick}

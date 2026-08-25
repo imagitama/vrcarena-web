@@ -56,7 +56,11 @@ export default ({
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Failed to load linked assets</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load linked assets
+      </ErrorMessage>
+    )
   }
 
   if (!results.length) {

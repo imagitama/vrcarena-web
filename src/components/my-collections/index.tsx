@@ -20,8 +20,8 @@ const MyCollections = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load your owned assets collections (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load your owned assets collections
       </ErrorMessage>
     )
   }

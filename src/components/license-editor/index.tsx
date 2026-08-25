@@ -23,10 +23,8 @@ export default ({
   onDone: () => void
 }) => {
   const [newTags, setNewTags] = useState<string[]>(tags)
-  const [isSaving, isSaveSuccess, isSaveError, save] = useDataStoreEdit<Asset>(
-    CollectionNames.Assets,
-    assetId
-  )
+  const [isSaving, isSaveSuccess, lastErrorCode, save] =
+    useDataStoreEdit<Asset>(CollectionNames.Assets, assetId)
 
   if (isSaving) {
     return <LoadingIndicator />
@@ -36,8 +34,12 @@ export default ({
     return <SuccessMessage>License saved</SuccessMessage>
   }
 
-  if (isSaveError) {
-    return <ErrorMessage>Failed to save license</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save license
+      </ErrorMessage>
+    )
   }
 
   const updateTag = (tagName: string, newValue: boolean) =>

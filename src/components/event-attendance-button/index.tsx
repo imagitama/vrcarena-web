@@ -40,8 +40,8 @@ const EventAttendenceButton = ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to save your attendance (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to save your attendance
       </ErrorMessage>
     )
   }

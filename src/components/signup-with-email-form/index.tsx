@@ -225,7 +225,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       </FormControls>
       {isWorking && <LoadingIndicator message="Signing up..." />}
       {lastErrorCode !== null ? (
-        <ErrorMessage>Failed to sign up (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>Failed to sign up</ErrorMessage>
       ) : null}
       {lastResult !== null && lastResult.code !== undefined ? (
         <ErrorMessage>

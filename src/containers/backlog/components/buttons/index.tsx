@@ -56,7 +56,7 @@ export const CheckAssetExistsButton = ({
       {isCalling ? (
         <LoadingIndicator message="Searching..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode as string}>Failed</ErrorMessage>
       ) : lastResult !== null ? (
         lastResult.length ? (
           <WarningMessage>
@@ -129,7 +129,7 @@ export const CheckAuthorExistsButton = ({
       {isCalling ? (
         <LoadingIndicator message="Searching..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>Failed (code {lastErrorCode})</ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode as string}>Failed</ErrorMessage>
       ) : lastResult !== null ? (
         lastResult.length ? (
           <WarningMessage>

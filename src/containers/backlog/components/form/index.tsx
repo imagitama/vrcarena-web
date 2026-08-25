@@ -122,7 +122,7 @@ const Form = ({ onDone }: { onDone: () => void }) => {
           Added to backlog successfully!
         </SuccessMessage>
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>
+        <ErrorMessage errorCode={lastErrorCode}>
           Failed to add to backlog:{' '}
           {lastErrorCode === PostgresErrorCode.UniqueViolation
             ? 'URL is already in the backlog'

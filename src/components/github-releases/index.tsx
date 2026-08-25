@@ -213,7 +213,7 @@ export default ({
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode as unknown as string}>
         Failed to get details from GitHub (
         {lastErrorCode === ErrorCode.NotFound
           ? 'repo not found'

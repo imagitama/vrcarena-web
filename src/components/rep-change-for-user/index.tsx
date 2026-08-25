@@ -35,8 +35,8 @@ const RepChangeForUser = ({ userId }: { userId: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load reputation changes (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load reputation changes
       </ErrorMessage>
     )
   }

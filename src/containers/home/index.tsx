@@ -186,8 +186,8 @@ const Tiles = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load homepage content (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load homepage content
       </ErrorMessage>
     )
   }

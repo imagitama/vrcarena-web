@@ -70,12 +70,17 @@ const AssetParentRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
     AssetsViewNames.GetAssetsForList,
     item.createdassetid || false
   )
+
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to load asset (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load asset
+      </ErrorMessage>
     )
+
   if (isLoading || asset === null)
     return <NoValueLabel>Loading asset...</NoValueLabel>
+
   if (asset === false)
     return <NoResultsMessage>Asset does not exist</NoResultsMessage>
 

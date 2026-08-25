@@ -33,8 +33,8 @@ const EndorsementList = ({ assetId }: { assetId: string }) => {
 
   if (lastErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to load endorsements (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load endorsements
       </ErrorMessage>
     )
   }

@@ -144,7 +144,9 @@ function SearchForm({
   }
 
   if (lastErrorCode !== null) {
-    return <ErrorMessage>Faileld to search (code {lastErrorCode})</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>Faileld to search</ErrorMessage>
+    )
   }
 
   if (!results) {

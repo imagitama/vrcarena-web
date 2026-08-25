@@ -58,8 +58,10 @@ const ResetPasswordForm = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage onRetry={reset}>
-        Failed to send password reset email (code {lastErrorCode})
+      <ErrorMessage
+        errorCode={lastErrorCode as unknown as string}
+        onRetry={reset}>
+        Failed to send password reset email
       </ErrorMessage>
     )
   }

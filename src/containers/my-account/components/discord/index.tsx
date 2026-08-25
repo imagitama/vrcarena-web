@@ -20,8 +20,8 @@ const Discord = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load Discord details (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load Discord details
       </ErrorMessage>
     )
   }

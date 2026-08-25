@@ -706,8 +706,8 @@ const AssetSyncQueue = ({
                   Add {validSourceUrls.length} Sources To Queue
                 </Button>
                 {lastCreateErrorCode !== null ? (
-                  <ErrorMessage>
-                    Failed to add to queue: {lastCreateErrorCode}
+                  <ErrorMessage errorCode={lastCreateErrorCode}>
+                    Failed to add to queue
                   </ErrorMessage>
                 ) : null}
               </FormControls>

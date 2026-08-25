@@ -45,7 +45,9 @@ const CreateButton = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to create page (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to create page
+      </ErrorMessage>
     )
   }
 

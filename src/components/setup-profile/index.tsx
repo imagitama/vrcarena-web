@@ -169,8 +169,8 @@ const SetupProfile = ({
 
   if (lastCreateErrorCode) {
     return (
-      <ErrorMessage>
-        Failed to create your profile (code {lastCreateErrorCode})
+      <ErrorMessage errorCode={lastCreateErrorCode}>
+        Failed to create your profile
       </ErrorMessage>
     )
   }

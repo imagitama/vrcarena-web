@@ -28,8 +28,8 @@ export default ({ userId }: { userId: string }) => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to find the endorsements (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to find the endorsements
       </ErrorMessage>
     )
   }

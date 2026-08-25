@@ -350,8 +350,8 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load your user account (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load your user account
       </ErrorMessage>
     )
   }

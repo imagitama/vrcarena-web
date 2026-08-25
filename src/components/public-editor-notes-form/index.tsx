@@ -73,16 +73,16 @@ const PublicEditorNotesForm = ({
 
   if (lastErrorCodeLoadingMeta !== null) {
     return (
-      <ErrorMessage>
-        Failed to load meta (code {lastErrorCodeLoadingMeta})
+      <ErrorMessage errorCode={lastErrorCodeLoadingMeta}>
+        Failed to load meta
       </ErrorMessage>
     )
   }
 
   if (lastErrorCodeSavingMeta !== null) {
     return (
-      <ErrorMessage>
-        Failed to save meta (code {lastErrorCodeSavingMeta})
+      <ErrorMessage errorCode={lastErrorCodeSavingMeta}>
+        Failed to save meta
       </ErrorMessage>
     )
   }

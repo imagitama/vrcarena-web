@@ -178,11 +178,21 @@ const PatreonConnectForm = () => {
     return <LoadingIndicator message="Loading data..." />
   }
 
-  if (lastErrorCode !== null || lastErrorCodeLoadingMeta !== null) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to talk to Patreon (code{' '}
-        {lastErrorCode !== null ? lastErrorCode : lastErrorCodeLoadingMeta})
+      <ErrorMessage errorCode={lastErrorCode as unknown as string}>
+        Failed to talk to Patreon
+        <br />
+        <br />
+        <TryAgainButton />
+      </ErrorMessage>
+    )
+  }
+
+  if (lastErrorCodeLoadingMeta !== null) {
+    return (
+      <ErrorMessage errorCode={lastErrorCodeLoadingMeta}>
+        Failed to talk to Patreon (meta)
         <br />
         <br />
         <TryAgainButton />

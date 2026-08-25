@@ -407,7 +407,9 @@ const QueuedItemsList = <
 
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to query the queue: {lastErrorCode}</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to query the queue
+      </ErrorMessage>
     )
 
   if (isLoading) {

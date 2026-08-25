@@ -77,8 +77,8 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to get Discord server (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load Discord server
       </ErrorMessage>
     )
   }

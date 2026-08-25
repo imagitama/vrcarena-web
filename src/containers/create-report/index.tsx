@@ -84,17 +84,16 @@ const Form = ({
 
   if (lastErrorCodeLoadingParent !== null) {
     return (
-      <ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCodeLoadingParent}>
         Failed to load whatever you want to report - are you sure it exists?
-        (code {lastErrorCodeLoadingParent})
       </ErrorMessage>
     )
   }
 
   if (lastErrorCodeCreating !== null) {
     return (
-      <ErrorMessage>
-        Failed to create the report (code {lastErrorCodeCreating})
+      <ErrorMessage errorCode={lastErrorCodeCreating}>
+        Failed to create the report
       </ErrorMessage>
     )
   }

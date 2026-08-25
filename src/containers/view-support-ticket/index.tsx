@@ -40,8 +40,8 @@ const View = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>
-        Failed to load support ticket (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load support ticket
       </ErrorMessage>
     )
   }

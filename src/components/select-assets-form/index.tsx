@@ -61,8 +61,8 @@ export default ({
       {isSearching ? (
         <LoadingIndicator message="Searching..." />
       ) : lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to perform search (code {lastErrorCode})
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to perform search
         </ErrorMessage>
       ) : hits && hits.length ? (
         <AssetResults

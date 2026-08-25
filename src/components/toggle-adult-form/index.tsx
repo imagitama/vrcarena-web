@@ -56,10 +56,10 @@ export default ({
     }
   }
 
-  if (lastErrorCode) {
+  if (lastErrorCode !== null) {
     return (
-      <ErrorMessage onOkay={clear}>
-        Failed to save asset (code {lastErrorCode})
+      <ErrorMessage errorCode={lastErrorCode} onOkay={clear}>
+        Failed to save asset
       </ErrorMessage>
     )
   }

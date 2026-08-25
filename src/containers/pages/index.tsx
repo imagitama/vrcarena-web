@@ -84,7 +84,7 @@ const PagesContainer = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to load page (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to load page</ErrorMessage>
     )
   }
 

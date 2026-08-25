@@ -223,9 +223,8 @@ const AmendmentEditor = ({
 
   if (lastErrorCodeLoadingParent !== null) {
     return (
-      <ErrorMessage>
-        Failed to load parent - are you sure it exists? (code{' '}
-        {lastErrorCodeLoadingParent})
+      <ErrorMessage errorCode={lastErrorCodeLoadingParent}>
+        Failed to load parent - are you sure it exists?
       </ErrorMessage>
     )
   }

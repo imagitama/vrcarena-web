@@ -50,7 +50,9 @@ const Content = () => {
 
   if (lastErrorCode !== null)
     return (
-      <ErrorMessage>Failed to load stats (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load stats
+      </ErrorMessage>
     )
 
   if (!statResults || !statResults.length)

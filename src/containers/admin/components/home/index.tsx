@@ -52,8 +52,14 @@ const Notepad = () => {
     return <LoadingIndicator />
   }
 
-  if (lastErrorCode || !page) {
-    return <ErrorMessage>Failed to load page</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>Failed to load page</ErrorMessage>
+    )
+  }
+
+  if (!page) {
+    return <ErrorMessage>Failed to load page: not found</ErrorMessage>
   }
 
   return (
@@ -176,8 +182,16 @@ const AdminQueue = () => {
     return <LoadingIndicator message="Loading queue..." />
   }
 
-  if (lastErrorCode || !queueItems) {
-    return <ErrorMessage>Failed to load queue</ErrorMessage>
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load queue
+      </ErrorMessage>
+    )
+  }
+
+  if (!queueItems) {
+    return <ErrorMessage>Failed to load queue: no items</ErrorMessage>
   }
 
   return (

@@ -59,7 +59,11 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
   }
 
   if (lastErrorCodeLoadingUser !== null) {
-    return <ErrorMessage>Failed to load your user account</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCodeLoadingUser}>
+        Failed to load your user account
+      </ErrorMessage>
+    )
   }
 
   const onSaveBtnClick = async () => {

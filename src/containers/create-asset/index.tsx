@@ -115,8 +115,8 @@ const ManualCreateView = () => {
 
   if (lastErrorCodeLoadingDrafts !== null) {
     return (
-      <ErrorMessage>
-        Failed to load existing drafts (code {lastErrorCodeLoadingDrafts})
+      <ErrorMessage errorCode={lastErrorCodeLoadingDrafts}>
+        Failed to load existing drafts
       </ErrorMessage>
     )
   }
@@ -167,7 +167,9 @@ const ManualCreateView = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage>Failed to create draft (code {lastErrorCode})</ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to create draft
+      </ErrorMessage>
     )
   }
 

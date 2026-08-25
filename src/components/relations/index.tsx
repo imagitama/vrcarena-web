@@ -132,7 +132,11 @@ const Relations = ({ relations }: { relations: Relation[] }) => {
   )
 
   if (lastErrorCodeLoadingAssets !== null) {
-    return <ErrorMessage>Failed to load relations</ErrorMessage>
+    return (
+      <ErrorMessage errorCode={lastErrorCodeLoadingAssets}>
+        Failed to load relations
+      </ErrorMessage>
+    )
   }
 
   if (hasRelations && (isLoadingAssets || !assets)) {
