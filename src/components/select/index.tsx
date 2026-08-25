@@ -6,7 +6,11 @@ import MenuItem from '@mui/material/MenuItem'
 
 export { MenuItem }
 
-export default ({ label, id, ...props }: SelectProps & { label?: string }) => {
+export default ({
+  label,
+  id,
+  ...props
+}: SelectProps & { label?: React.ReactNode }) => {
   const labelId = id ? `${id}-label` : undefined
   return (
     <FormControl

@@ -55,14 +55,14 @@ const useDataStoreCreate = <
         fields
       )
 
-      let query = supabase
-        .from<any, { Row1: TRecord; Insert: TRecord }>(collectionName)
+      const baseQuery = supabase
+        .from<any, { Row: TRecord; Insert: TRecord }>(collectionName)
         .insert([fields as TRecord])
 
-      if (options.selectAfter !== false) {
-        // @ts-ignore TODO: repair these types
-        query = query.select<'*', TRecord>('*')
-      }
+      const query =
+        options.selectAfter !== false
+          ? baseQuery.select<'*', TRecord>('*')
+          : baseQuery
 
       const { data, error } = await query
 

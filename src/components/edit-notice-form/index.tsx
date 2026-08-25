@@ -13,6 +13,7 @@ import FormControls from '@/components/form-controls'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import TextInput from '@/components/text-input'
+import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
 
 const EditNoticeForm = ({
   id = undefined,
@@ -32,10 +33,8 @@ const EditNoticeForm = ({
     orderby: 0,
     isvisible: false,
   })
-  // TODO: replace with useDataStoreEditOrCreate
-  const [isSaving, isSuccess, lastErrorCode, createOrEdit] = id
-    ? useDataStoreEdit<Notice>(CollectionNames.Notices, id)
-    : useDataStoreCreate<Notice>(CollectionNames.Notices)
+  const [isSaving, isSuccess, lastErrorCode, createOrEdit] =
+    useDataStoreEditOrCreate<Notice>(CollectionNames.Notices, id)
 
   useEffect(() => {
     if (!id || !notice) {

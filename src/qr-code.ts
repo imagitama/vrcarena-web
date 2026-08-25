@@ -17,7 +17,8 @@ export const getDataUrl = async (
 
 // import { default as logoUrl } from '@/assets/images/logo.svg?raw'
 
-import { patreonGold, patreonGoldDark } from '@/themes'
+import { colorBrand, patreonGold, patreonGoldDark } from '@/themes'
+import { colors } from './brand'
 
 interface Options {
   textLines?: string[]
@@ -33,7 +34,6 @@ export const renderIntoCanvas = async (
   canvasElem: HTMLCanvasElement,
   opts?: Options
 ): Promise<string> => {
-  // const canvasWidth = opts?.widthPx || canvasElem.width
   const canvasHeight = opts?.heightPx || canvasElem.height
 
   const borderWidth = 2
@@ -49,10 +49,6 @@ export const renderIntoCanvas = async (
   const textAreaWidth = opts?.textLines
     ? (opts?.widthPx || canvasElem.width) - qrCodeTotalWidth - qrCodeMargin
     : 0
-
-  // const canvasWidth = opts?.textLines
-  //   ? opts?.widthPx || canvasElem.width
-  //   : qrCodeTotalWidth + borderWidth * 2 + qrCodeMargin
 
   const canvasWidth = opts?.textLines
     ? opts?.widthPx || canvasElem.width
@@ -70,8 +66,7 @@ export const renderIntoCanvas = async (
 
   console.debug(`creating badge...`, { url, opts, dpr })
 
-  // TODO: use theme
-  const purple = '#6E4A9E'
+  const purple = colorBrand
 
   if (opts?.patreon === true) {
     ctx.beginPath()

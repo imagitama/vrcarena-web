@@ -1,3 +1,4 @@
+// TODO: replace with theme.ts
 export const colors = {
   Brand: '#6E4A9E', // eg. primary buttons
   BrandLight: '#9E85C4',
@@ -9,5 +10,5 @@ export const colors = {
   Grey2: '#383838',
   Grey3: '#5A5A5A',
   Grey9: '#E0E0E0',
-  Grey10: '#FFFFFF'
+  Grey10: '#FFFFFF',
 }

@@ -31,20 +31,10 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     width: '100%',
     display: 'flex',
     flexWrap: 'nowrap',
-    // TODO: Some day get this table layout to work - tried subgrid, tried auto-fill, nothing
-    // display: 'grid',
-    // gridTemplateColumns:
-    //   '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
-    // gridTemplateColumns: 'repeat(auto-fill, minmax(25%, 1fr))',
-    // gap: '0.25rem',
   },
   item: {
     width: '400px',
     height: '100%',
-    // display: 'grid',
-    // gridTemplateRows:
-    //   '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
-    // gap: '0.25rem',
     '&:nth-child(even)': {
       backgroundColor: 'rgba(0,0,0,0.1)',
     },
@@ -202,19 +192,18 @@ const AttachmentRenderer = ({
 }: {
   attachment: Attachment
 }) => {
-  const classes = useStyles()
-
   switch (type) {
     case AttachmentType.Image:
-      return <img src={url} />
+      return url ? <img src={url} /> : '(no image)'
     case AttachmentType.Url:
-      if (getIsUrlAYoutubeVideo(url)) {
+      if (url && getIsUrlAYoutubeVideo(url)) {
         return <div>YouTube Video: {url}</div>
       }
     default:
       console.warn(`Cannot render attachment type ${type}`)
-      return null
   }
+
+  return null
 }
 
 const Renderer = ({

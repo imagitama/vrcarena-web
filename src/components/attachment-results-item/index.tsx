@@ -13,11 +13,11 @@ const AttachmentResultsItem = ({
       ':attachmentId',
       attachment.id
     )}
-    title={attachment.title}
+    title={attachment.title || undefined}
     thumbnailUrl={attachment.thumbnailurl}
     isadult={attachment.isadult || false}
     createdbyusername={attachment.createdbyusername}
-    description={attachment.description}
+    description={attachment.description || undefined}
   />
 )
 

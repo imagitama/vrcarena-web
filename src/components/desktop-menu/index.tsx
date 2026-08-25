@@ -13,7 +13,6 @@ import navItems, {
   getLabelForMenuItem,
 } from '@/navigation'
 import { trackAction } from '@/analytics'
-import useUserPreferences from '@/hooks/useUserPreferences'
 import Link from '@/components/link'
 
 const useStyles = makeStyles({

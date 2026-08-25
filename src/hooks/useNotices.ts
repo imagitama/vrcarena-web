@@ -1,18 +1,17 @@
 import { trackAction } from '@/analytics'
 import { read, write as writeStorage } from '@/utils/storage'
-import useStorage, { keys as storageKeys } from './useStorage'
+import useStorage from './useStorage'
+
+export const STORAGE_KEY = 'hiddenNotices'
 
 export const hideNoticeById = (hideId: string) => {
-  const hiddenNoticeIds = read<string[]>(storageKeys.hiddenNotices)
-  writeStorage(
-    storageKeys.hiddenNotices,
-    (hiddenNoticeIds || []).concat([hideId])
-  )
+  const hiddenNoticeIds = read<string[]>(STORAGE_KEY)
+  writeStorage(STORAGE_KEY, (hiddenNoticeIds || []).concat([hideId]))
   trackAction('Global', 'Click hide notice', hideId)
 }
 
 const useNotices = (): [string[], (idToHide: string) => void] => {
-  const [hiddenNoticeIds] = useStorage<string[]>(storageKeys.hiddenNotices, [])
+  const [hiddenNoticeIds] = useStorage<string[]>(STORAGE_KEY, [])
   return [hiddenNoticeIds || [], hideNoticeById]
 }
 

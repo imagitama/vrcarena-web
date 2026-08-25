@@ -34,6 +34,7 @@ import Button from '@/components/button'
 import Markdown from '@/components/markdown'
 import TagChips from '@/components/tag-chips'
 import HistoryEntryLabel from '@/components/history-entry-label'
+import { colorPalette } from '@/config'
 
 enum Positivity {
   Positive = 'positive',
@@ -65,10 +66,10 @@ interface TimelineData extends Record<string, unknown> {
 
 const useStyles = makeStyles({
   positive: {
-    backgroundColor: 'green',
+    backgroundColor: colorPalette.positive,
   },
   negative: {
-    backgroundColor: 'red',
+    backgroundColor: colorPalette.negative,
   },
   neutral: {},
   expander: {

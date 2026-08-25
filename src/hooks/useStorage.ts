@@ -1,15 +1,5 @@
 import { useLocalStorage } from '@rehooks/local-storage'
 
-// TODO: Move to each module/component who cares about them
-export const keys = {
-  hiddenNotices: 'hiddenNotices',
-  assetsSortByFieldName: 'assetsSortByFieldName',
-  assetsSortByDirection: 'assetsSortByDirection',
-  hiddenSpecialEventNames: 'hiddenSpecialEventNames',
-  useTabbedAssetOverview: 'useTabbedAssetOverview',
-  seenQueuedAssets: 'seenQueuedAssets',
-}
-
 /**
  * A hook that lets us tap into storage on the device (browser). Only local right now.
  */

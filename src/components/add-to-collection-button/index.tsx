@@ -6,18 +6,24 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import MenuItem from '@mui/material/MenuItem'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
+import { routes } from '@/routes'
 import {
   CollectionNames,
   CollectionForUser,
   Collection,
   CollectionItem,
 } from '@/modules/collections'
+import { handleError } from '@/error-handling'
+import { getRandomInt } from '@/utils'
+import { getFriendlyDate } from '@/utils/dates'
+import { mediaQueryForTabletsOrBelow } from '@/media-queries'
+
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useMyCollections from '@/hooks/useMyCollections'
-import { handleError } from '@/error-handling'
 import useUserId from '@/hooks/useUserId'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 
 import CreateCollectionForm from '@/components/create-collection-form'
 import Button from '@/components/button'
@@ -28,15 +34,10 @@ import Tooltip from '@/components/tooltip'
 import ErrorBoundary from '@/components/error-boundary'
 import useTimer from '@/hooks/useTimer'
 import LoadingShimmer from '@/components/loading-shimmer'
-import { getRandomInt } from '@/utils'
 import StatusText from '@/components/status-text'
-import { getFriendlyDate } from '@/utils/dates'
-import { mediaQueryForTabletsOrBelow } from '@/media-queries'
-import useDataStoreCreate from '@/hooks/useDataStoreCreate'
 import NoResultsMessage from '@/components/no-results-message'
-import { routes } from '@/routes'
-import Link from '../link'
-import LoadingIndicator from '../loading-indicator'
+import Link from '@/components/link'
+import LoadingIndicator from '@/components/loading-indicator'
 
 const useStyles = makeStyles({
   root: {

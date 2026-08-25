@@ -30,7 +30,6 @@ const useStyles = makeStyles({
       },
     },
     '&&': {
-      // TODO: replace inherited Paper somehow
       margin: 0,
       background: 'none',
       border: 'none',
@@ -38,7 +37,6 @@ const useStyles = makeStyles({
       '&:nth-child(even)': {
         background: 'rgba(0,0,0,0.1)',
       },
-      // borderBottom: '1px solid rgba(255,255,255,0.15)',
     },
   },
   title: {

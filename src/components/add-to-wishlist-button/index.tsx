@@ -12,6 +12,7 @@ import { DataStoreErrorCode } from '@/data-store'
 import Button from '@/components/button'
 import { CollectionNames, WishlistForUser } from '@/modules/wishlists'
 import useDataStoreCreate from '@/hooks/useDataStoreCreate'
+import useDataStoreEditOrCreate from '@/hooks/useDataStoreEditOrCreate'
 
 const getLabel = (
   isLoggedIn: boolean,
@@ -111,13 +112,11 @@ export default ({
       userId || false,
       { queryName: 'add-to-wishlist-button' }
     )
-  // TODO: replace with useDataStoreEditOrCreate
-  const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] = myWishlist
-    ? useDataStoreEdit<WishlistForUser>(
-        CollectionNames.WishlistsForUsers,
-        userId!
-      )
-    : useDataStoreCreate<WishlistForUser>(CollectionNames.WishlistsForUsers)
+  const [isSaving, isSavingSuccess, lastSavingError, saveOrCreate] =
+    useDataStoreEditOrCreate<WishlistForUser>(
+      CollectionNames.WishlistsForUsers,
+      myWishlist ? userId! : undefined
+    )
   const isLoggedIn = !!userId
   const isAssetInWishlist =
     myWishlist && myWishlist.assets && myWishlist.assets.includes(assetId)

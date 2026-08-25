@@ -24,6 +24,7 @@ import SuccessMessage from '@/components/success-message'
 import Dialog from '@/components/dialog'
 import ChatMessage from '@/components/chat-message'
 import Tooltip from '../tooltip'
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles({
   root: {
@@ -83,10 +84,10 @@ const useStyles = makeStyles({
     whiteSpace: 'nowrap',
   },
   bad: {
-    color: 'red', // TODO: use config
+    color: colorPalette.negative,
   },
   good: {
-    color: 'green', // TODO: use config
+    color: colorPalette.positive,
   },
   noResultsMessage: {
     padding: '0.5rem',

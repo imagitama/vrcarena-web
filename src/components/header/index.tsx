@@ -30,6 +30,7 @@ import AccountMenu from '@/components/account-menu'
 import Searchbar from '@/components/searchbar'
 import DesktopMenu from '@/components/desktop-menu'
 import VrchatGroupButton from '@/components/vrchat-group-button'
+import { colorBrandLight } from '@/themes'
 
 // when the navigation starts obstructing the logo
 const mediaQueryForMenuLogoCollision = '@media (max-width: 1280px)'
@@ -118,7 +119,7 @@ const useStyles = makeStyles({
   twitterIcon: {},
   logo: {
     '& path': {
-      fill: colors.BrandLight,
+      fill: colorBrandLight,
     },
     height: '75px',
     width: 'auto',

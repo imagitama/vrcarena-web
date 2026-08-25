@@ -28,6 +28,7 @@ import PaginatedView, { RendererProps } from '@/components/paginated-view'
 import { FilterSubType, FilterType } from '@/filters'
 import { BanStatus } from '@/modules/users'
 import Heading from '@/components/heading'
+import { getDataStoreErrorCodeFromError } from '@/data-store'
 
 const BulkControls = ({
   ids,
@@ -40,9 +41,7 @@ const BulkControls = ({
 }) => {
   const [wantsToDelete, setWantsToDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-
-  // TODO: Store last error code
-  const [isError, setIsError] = useState(false)
+  const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
   const supabase = useSupabaseClient()
 
   if (!ids.length) {
@@ -52,10 +51,11 @@ const BulkControls = ({
   const performBulkDelete = async () => {
     try {
       setIsDeleting(true)
-      setIsError(false)
+      setLastErrorCode(null)
 
       console.debug(`Deleting ${ids.length} comments...`)
 
+      // TODO: use hook or something
       const { error } = await supabase
         .from(CollectionNames.CommentsMeta)
         .update({
@@ -64,15 +64,13 @@ const BulkControls = ({
         .in('id', ids)
 
       if (error) {
-        throw new Error(
-          `Failed to set access status to deleted: ${error.message}`
-        )
+        throw error
       }
 
       onDone()
     } catch (err) {
       setIsDeleting(false)
-      setIsError(true)
+      setLastErrorCode(getDataStoreErrorCodeFromError(err))
       console.error(err)
       handleError(err)
     }
@@ -82,8 +80,12 @@ const BulkControls = ({
     return <LoadingIndicator message="Bulk deleting..." />
   }
 
-  if (isError) {
-    return <ErrorMessage>Failed to bulk delete</ErrorMessage>
+  if (lastErrorCode !== null) {
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to bulk delete
+      </ErrorMessage>
+    )
   }
 
   if (wantsToDelete) {

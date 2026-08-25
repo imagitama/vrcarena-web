@@ -1,7 +1,6 @@
 import { createTheme, Theme } from '@mui/material/styles'
 import { mediaQueryForTabletsOrBelow } from './media-queries'
 
-// TODO: Take from src/brand.ts
 export const colorBrand = '#6e4a9e'
 export const colorBrandLight = '#9E85C4'
 export const colorEditor = '#a67250'
@@ -51,14 +50,6 @@ export const darkTheme: VRCArenaTheme = createTheme({
     },
   },
   components: {
-    MuiTableHead: {
-      styleOverrides: {
-        root: {
-          color: 'green !important',
-          // color: `${colorGreyedOut} !important`, // TODO: dont use important
-        },
-      },
-    },
     MuiTypography: {
       styleOverrides: {
         h1: {

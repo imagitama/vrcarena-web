@@ -10,7 +10,6 @@ import { Event, PublicEvent, ViewNames } from '@/modules/events'
 import { getIsDateInFuture, getIsDateInPast } from '@/utils/dates'
 
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
-import useDataStore from '@/hooks/useDataStore'
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
 
 import Heading from '@/components/heading'

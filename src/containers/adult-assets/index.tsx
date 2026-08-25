@@ -86,7 +86,8 @@ const AdultAssetsView = () => {
   const [, , userPreferences] = useUserPreferences()
   const [isAdult, setIsAdult] = useState(false)
   const classes = useStyles()
-  const [isAlreadyOver18, setIsAlreadyOver18] = useStorage(alreadyOver18Key)
+  const [isAlreadyOver18, setIsAlreadyOver18] =
+    useStorage<boolean>(alreadyOver18Key)
 
   useEffect(() => {
     if (!userPreferences) {

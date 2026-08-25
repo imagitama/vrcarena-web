@@ -16,9 +16,9 @@ const useScrollMemory = (attemptKey: string | false) => {
     if (!attemptKey) return
     const savedScrollPos = scrollPositions.get(key)
     requestAnimationFrame(() => {
-      console.debug(
-        `useScrollMemory :: ${key} :: restore to ${savedScrollPos || 'none'}`
-      )
+      // console.debug(
+      //   `useScrollMemory :: ${key} :: restore to ${savedScrollPos || 'none'}`
+      // )
       setScrollTop(savedScrollPos ?? 0)
     })
   }, [key, attemptKey])
@@ -29,7 +29,7 @@ const useScrollMemory = (attemptKey: string | false) => {
       timeoutRef.current = setTimeout(() => {
         const newScrollTop = getScrollTop()
         scrollPositions.set(key, newScrollTop)
-        console.debug(`useScrollMemory :: ${key} :: store ${newScrollTop}`)
+        // console.debug(`useScrollMemory :: ${key} :: store ${newScrollTop}`)
       }, debounceMs)
     }
 

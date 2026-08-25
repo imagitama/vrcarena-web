@@ -87,11 +87,10 @@ const CreateCollectionForm = ({
           }
         }}
         label="Name"
-        size="small"
         fullWidth
       />
-      <br />
       <TextInput
+        topMargin
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         label="Description (optional)"

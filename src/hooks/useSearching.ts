@@ -6,6 +6,7 @@ import { setIsSearching } from '@/modules/app'
 import {
   DataStoreErrorCode,
   DataStoreUnknownErrorCode,
+  getDataStoreErrorCodeFromError,
   GetQuery,
 } from '@/data-store'
 
@@ -89,7 +90,7 @@ export default <TRecord>(
           err
         )
         setIsLoading(false)
-        setLastErrorCode(DataStoreUnknownErrorCode) // TODO: Finish
+        setLastErrorCode(getDataStoreErrorCodeFromError(err))
         handleError(err)
       }
     }

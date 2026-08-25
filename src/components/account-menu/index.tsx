@@ -20,7 +20,7 @@ import useUserRecord from '@/hooks/useUserRecord'
 import useSupabaseClient from '@/hooks/useSupabaseClient'
 
 import Menu, { MenuItemData } from '@/components/menu'
-import Button, { GoToButton } from '@/components/button'
+import { GoToButton } from '@/components/button'
 import Avatar, { AvatarSize } from '@/components/avatar'
 import classNames from 'classnames'
 
@@ -192,7 +192,7 @@ const getMenu = (
     subscribe: (callback) => {
       setInterval(() => {
         callback()
-      }, 30 * 60 * 1000) // 30 seconds
+      }, 30 * 60 * 1000) // 30 seconds TODO: replace with sync?
     },
   },
   user: {

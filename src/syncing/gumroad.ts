@@ -1,7 +1,7 @@
 import { FullAsset } from '@/modules/assets'
 import { SyncFieldTypes, SyncPlatformName, SyncPlatformInfo } from './'
 
-const gumroad: SyncPlatformInfo<FullAsset> = {
+const platformInfo: SyncPlatformInfo<FullAsset> = {
   platformName: SyncPlatformName.Gumroad,
   fields: [
     {
@@ -44,4 +44,4 @@ const gumroad: SyncPlatformInfo<FullAsset> = {
   ],
 }
 
-export default gumroad
+export default platformInfo

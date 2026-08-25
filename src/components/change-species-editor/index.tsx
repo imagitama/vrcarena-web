@@ -77,11 +77,11 @@ export default ({
   }
 
   if (lastErrorCode !== null) {
-    return <>Error loading resource (code {lastErrorCode})</>
+    return <>Failed to load resource (code {lastErrorCode})</>
   }
 
   if (!activeSpeciesIds && !asset) {
-    return <>Error loading resource (invalid data)</>
+    return <>Failed to load resource (invalid data)</>
   }
 
   if (isSaving) {

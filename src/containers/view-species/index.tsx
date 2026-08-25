@@ -213,7 +213,6 @@ const View = () => {
       client
         .from(ViewNames.GetFullSpecies)
         .select<string, FullSpecies>('*')
-        // TODO: Type safe this
         .or(`id.eq.${speciesIdOrSlug},slug.eq.${speciesIdOrSlug}`),
     [speciesIdOrSlug]
   )

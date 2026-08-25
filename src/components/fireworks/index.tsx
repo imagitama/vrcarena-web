@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
 
-import useStorage, { keys } from '@/hooks/useStorage'
+import useStorage from '@/hooks/useStorage'
 import { trackAction } from '@/analytics'
 
 import Message from '@/components/message'
@@ -24,6 +24,8 @@ const useStyles = makeStyles({
   },
 })
 
+const STORAGE_KEY = 'hiddenSpecialEventNames'
+
 export default ({
   eventName,
   message,
@@ -33,7 +35,7 @@ export default ({
 }) => {
   const [hiddenSpecialEventNames, setHiddenSpecialEventNames] = useStorage<
     string[]
-  >(keys.hiddenSpecialEventNames, [])
+  >(STORAGE_KEY, [])
   const classes = useStyles()
 
   if (eventName && hiddenSpecialEventNames.includes(eventName)) {

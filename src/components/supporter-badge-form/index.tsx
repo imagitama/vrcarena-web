@@ -27,6 +27,15 @@ const getTextLines = (usingAlternateText: boolean, patreon: boolean) => {
   return textLines
 }
 
+enum ErrorCode {
+  Unknown = 'unknown',
+}
+
+const getErrorCodeFromError = (err: Error): ErrorCode => {
+  // handle specific errors?
+  return ErrorCode.Unknown
+}
+
 const SupporterBadgeForm = ({
   url,
   route,
@@ -45,7 +54,7 @@ const SupporterBadgeForm = ({
   )
   const [isPreviewingPatreonStyle, setIsPreviewingPatreonStyle] =
     useState(false)
-  const [lastError, setLastError] = useState<null | Error>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
   const [usingAlternateText, setUsingAlternateText] = useState(false)
 
   const onClickApplyOverrideUrl = () => setOverrideUrl(overrideUrlText.trim())
@@ -60,7 +69,7 @@ const SupporterBadgeForm = ({
 
   const onCanvas = async (canvas: HTMLCanvasElement) => {
     try {
-      setLastError(null)
+      setLastErrorCode(null)
 
       if (!qrCodeUrl) throw new Error('Need a URL or route')
 
@@ -79,7 +88,7 @@ const SupporterBadgeForm = ({
       setDownloadUrl(createdUrl)
     } catch (err) {
       console.error('Failed to create badge', err)
-      setLastError(err as Error)
+      setLastErrorCode(getErrorCodeFromError(err as Error))
     }
   }
 
@@ -98,7 +107,7 @@ const SupporterBadgeForm = ({
   ])
 
   const reset = () => {
-    setLastError(null)
+    setLastErrorCode(null)
     setIsGenerating(false)
   }
 
@@ -134,9 +143,9 @@ const SupporterBadgeForm = ({
           </WarningMessage>
         )}
       </InfoMessage>
-      {lastError !== null && (
-        <ErrorMessage onOkay={reset}>
-          Failed to generate badge ({lastError.name})
+      {lastErrorCode !== null && (
+        <ErrorMessage errorCode={lastErrorCode} onOkay={reset}>
+          Failed to generate badge
         </ErrorMessage>
       )}
       {isGenerating ? (

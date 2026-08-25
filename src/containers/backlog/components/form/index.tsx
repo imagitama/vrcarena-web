@@ -74,17 +74,13 @@ const Form = ({ onDone }: { onDone: () => void }) => {
       <Heading variant="h2" noTopMargin>
         Add To Backlog
       </Heading>
-      {/* TODO: move FormControl stuff to <Select> */}
-      <FormControl>
-        <InputLabel>Type</InputLabel>
-        <Select
-          label="Type"
-          onChange={(e) => setSelectedType(e.target.value as BacklogItemType)}
-          value={selectedType}>
-          <MenuItem value={BacklogItemType.Asset}>Asset</MenuItem>
-          <MenuItem value={BacklogItemType.Author}>Author</MenuItem>
-        </Select>
-      </FormControl>
+      <Select
+        label="Type"
+        onChange={(e) => setSelectedType(e.target.value as BacklogItemType)}
+        value={selectedType}>
+        <MenuItem value={BacklogItemType.Asset}>Asset</MenuItem>
+        <MenuItem value={BacklogItemType.Author}>Author</MenuItem>
+      </Select>
       <br />
       <br />
       <UrlInput value={urlTextVal} onChange={(val) => setUrlTextVal(val)} />

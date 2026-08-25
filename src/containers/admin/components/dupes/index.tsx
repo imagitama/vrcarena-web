@@ -17,7 +17,11 @@ import { makeStyles } from '@mui/styles'
 import { alpha } from '@mui/material/styles'
 import { VRCArenaTheme, colorBrandLight } from '@/themes'
 import WarningMessage from '@/components/warning-message'
-import { DataStoreErrorCode, DataStoreUnknownErrorCode } from '@/data-store'
+import {
+  DataStoreErrorCode,
+  DataStoreUnknownErrorCode,
+  getDataStoreErrorCodeFromError,
+} from '@/data-store'
 import SuccessMessage from '@/components/success-message'
 import useSupabaseClient from '@/hooks/useSupabaseClient'
 import FormattedDate from '@/components/formatted-date'
@@ -110,12 +114,13 @@ const PlanMode = ({
         authorIdsToDelete
       )
 
-      setIsSuccess(true)
       setIsLoading(false)
       setIsSuccess(true)
     } catch (err) {
       console.error(err)
-      setLastErrorCode(DataStoreUnknownErrorCode) // TODO: finish
+      setIsSuccess(false)
+      setIsLoading(false)
+      setLastErrorCode(getDataStoreErrorCodeFromError(err))
     }
   }
 
@@ -422,10 +427,13 @@ const DupeOutput = ({ dupeInfo }: { dupeInfo: GetAuthorDupesResult }) => {
   )
 }
 
+enum ViewNames {
+  GetAuthorDupes = 'getAuthorDupes',
+}
+
 const View = () => {
-  // TODO: use enum for view name, use correct hook useDataStoreItems(...)
   const [isLoading, lastErrorCode, dupes] =
-    useDataStoreItems<GetAuthorDupesResult>('getAuthorDupes')
+    useDataStoreItems<GetAuthorDupesResult>(ViewNames.GetAuthorDupes)
 
   // TODO: do this better
   useEffect(() => {

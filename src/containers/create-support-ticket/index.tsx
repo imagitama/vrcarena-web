@@ -156,6 +156,7 @@ const Form = ({
     trackAction(analyticsCategory, 'Click create support ticket button')
 
     // TODO: Output this invalid data to user
+    // TODO: replace this form with generic form which handles validation for us
     if (!fieldData.category || !fieldData.comments) {
       return
     }
@@ -194,24 +195,6 @@ const Form = ({
         our <a href={DISCORD_URL}>Discord server</a> or email us at {EMAIL}{' '}
         (Discord preferred)
       </WarningMessage>
-      {/* <WarningMessage>
-        Have an issue with another person's asset or comment? Want to takedown
-        your asset? Please{' '}
-        <Link
-          to={routes.createReportWithVar
-            .replace(':parentTable', parentTable)
-            .replace(':parentId', parentId)}>
-          create a report
-        </Link>{' '}
-        instead.
-      </WarningMessage> */}
-      {/* {parentTable && parentId && (
-        <GenericOutputItem
-          type={parentTable}
-          id={parentId}
-          data={parent as any}
-        />
-      )} */}
       <Heading variant="h2">Related Item</Heading>
       <p>
         Copy and paste the URL to the user account, asset, author, or whatever

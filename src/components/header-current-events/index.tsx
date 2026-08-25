@@ -81,7 +81,7 @@ const useStyles = makeStyles({
     transform: 'translate(10%, -10%)',
   },
   onNow: {
-    background: 'red',
+    background: 'rgb(255,0,0)',
   },
 })
 

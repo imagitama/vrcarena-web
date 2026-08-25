@@ -129,6 +129,7 @@ const Form = ({
     trackAction(analyticsCategory, 'Click create report button')
 
     // TODO: Output this invalid data to user
+    // TODO: replace this form with generic form which handles validation for us
     if (!fieldData.reason) {
       return
     }

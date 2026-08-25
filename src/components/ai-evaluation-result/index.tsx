@@ -29,6 +29,7 @@ import AiResultSummary from '../ai-result-summary'
 import { getConnectionStatusFromHookResult } from '../connection-indicator'
 import Expander from '../expander'
 import Button from '../button'
+import { colorPalette } from '@/config'
 
 const useStyles = makeStyles({
   root: {
@@ -89,10 +90,10 @@ const useStyles = makeStyles({
     whiteSpace: 'nowrap',
   },
   bad: {
-    color: 'red',
+    color: colorPalette.negative,
   },
   good: {
-    color: 'green',
+    color: colorPalette.positive,
   },
   noResultsMessage: {
     padding: '0.5rem',

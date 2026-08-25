@@ -16,6 +16,7 @@ import { Filter, FilterSubType, FilterType } from '@/filters'
 import useQueryParam from '@/hooks/useQueryParam'
 import Button from '@/components/button'
 import Heading from '@/components/heading'
+import { getIsNullOrEmpty } from '@/utils'
 
 const Renderer = ({
   items,
@@ -34,11 +35,6 @@ const Renderer = ({
   )
 }
 
-// TODO: move to central
-const isNullOrEmpty = (str: string | null): boolean => {
-  return !str
-}
-
 const AdminHistory = () => {
   const createdByUserId = useQueryParam('userId')
   const parentType = useQueryParam('parentType')
@@ -52,7 +48,7 @@ const AdminHistory = () => {
       subType: FilterSubType.UserId,
       label: 'Logged By',
       defaultValue: createdByUserId,
-      defaultActive: !isNullOrEmpty(createdByUserId),
+      defaultActive: !getIsNullOrEmpty(createdByUserId),
     },
     {
       fieldName: 'parenttable',
@@ -60,14 +56,14 @@ const AdminHistory = () => {
       label: 'Parent Type',
       suggestions: [UsersCollectionNames.Users, AssetsCollectionNames.Assets],
       defaultValue: parentType,
-      defaultActive: !isNullOrEmpty(parentType),
+      defaultActive: !getIsNullOrEmpty(parentType),
     },
     {
       fieldName: 'parent',
       type: FilterType.Equal,
       label: 'Parent ID',
       defaultValue: parentId,
-      defaultActive: !isNullOrEmpty(parentId),
+      defaultActive: !getIsNullOrEmpty(parentId),
     },
     {
       fieldName: 'message',

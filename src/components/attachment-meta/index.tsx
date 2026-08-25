@@ -74,9 +74,11 @@ const AttachmentMeta = ({
         <dt>Type</dt>
         <dd>
           {attachment.type ? <Type type={attachment.type} /> : '(none)'}{' '}
-          <a href={attachment.url} target="_blank" rel="noopener noreferrer">
-            <LaunchIcon />
-          </a>
+          {attachment.url ? (
+            <a href={attachment.url} target="_blank" rel="noopener noreferrer">
+              <LaunchIcon />
+            </a>
+          ) : null}
         </dd>
         <dt>Title</dt>
         <dd>{attachment.title || '(none)'}</dd>

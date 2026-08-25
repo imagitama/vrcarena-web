@@ -302,6 +302,7 @@ const CreateForm = ({
       }
 
       const createdAuthor = await create(newFields)
+      if (!createdAuthor) throw new Error('No author')
 
       if (isClaiming) {
         await createClaim({

@@ -13,9 +13,8 @@ import { AiSimilarQueuedItem } from './aisimilar'
 import { DiscordServer, DiscordServerFields } from './discordservers'
 import { AssetTranslationResult } from './translatequeue'
 
-// TODO: Better func here as technically FullAsset has speciesnames
 export const getIsPublicAsset = (asset: any): asset is PublicAsset =>
-  asset && 'speciesnames' in asset
+  asset && 'speciesnames' in asset && !('discordserverdata' in asset)
 
 export const getIsFullAsset = (asset: any): asset is FullAsset =>
   asset && 'createdbyusername' in asset

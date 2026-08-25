@@ -128,7 +128,7 @@ export const reducer = (
 
 export const hydrateGlobalState =
   (client: SupabaseClient) =>
-  async (dispatch: Dispatch, getState: () => RootState): Promise<void> => {
+  async (dispatch: Dispatch): Promise<void> => {
     try {
       dispatch(setIsLoading(true))
 
@@ -140,8 +140,6 @@ export const hydrateGlobalState =
       if (!results || results.length !== 1) {
         throw new Error(`Failed to hydrate global state: invalid results`)
       }
-
-      // TODO: store in a single payload
 
       dispatch(setIsLoading(false))
       dispatch(setGlobalState(results[0]))

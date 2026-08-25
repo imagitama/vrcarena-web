@@ -284,35 +284,15 @@ const AmendmentEditor = ({
     }))
   }
 
-  const storeFieldsForOutput = (fields: { [fieldName: string]: any }) => {
-    console.debug(`AmendmentEditor.storeFieldsForOutput`, { fields })
-
-    // TODO: do this in generic way (quick fix)
-    if (fields.attachmentsdata) {
-      setNewFieldsForOutput((currentVal) => ({
-        ...currentVal,
-        attachmentsdata: currentVal.attachmentsdata
-          ? currentVal.attachmentsdata.concat(fields.attachmentsdata)
-          : fields.attachmentsdata,
-      }))
-      return
-    }
-
-    setNewFieldsForOutput((currentVal) => ({
-      ...currentVal,
-      ...fields,
-    }))
-  }
-
   const parentWithNewFields = mergeNewFieldsIntoParent(
     newFieldsForOutput,
     parent
   )
 
-  console.debug(`AmendmentEditor.render`, {
-    newFieldsForOutput,
-    newFieldsForSaving,
-  })
+  // console.debug(`AmendmentEditor.render`, {
+  //   newFieldsForOutput,
+  //   newFieldsForSaving,
+  // })
 
   const oldFields = getOldFields(parent, newFieldsForSaving)
 

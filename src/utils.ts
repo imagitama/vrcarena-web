@@ -4,17 +4,17 @@ import { validate as validateUuid } from 'uuid'
 import { EditableField } from './editable-fields'
 
 export function scrollToTop(isSmooth: boolean = true): void {
-  console.debug(`scrolling to top...`)
+  // console.debug(`scrolling to top...`)
   return scrollTo(0, isSmooth)
 }
 
 export function smoothScrollToTop(): void {
-  console.debug(`smooth scrolling to top...`)
+  // console.debug(`smooth scrolling to top...`)
   return scrollTo(0, true)
 }
 
 export function snapScrollToTop(): void {
-  console.debug(`snap scrolling to top...`)
+  // console.debug(`snap scrolling to top...`)
   return scrollTo(0, false)
 }
 
@@ -44,7 +44,7 @@ export function scrollToSide(
   y: number,
   isSmooth: boolean = true
 ): void {
-  console.debug(`scrolling to ${x},${y}...`)
+  // console.debug(`scrolling to ${x},${y}...`)
   try {
     window.scrollTo({
       top: y,
@@ -69,7 +69,7 @@ export function scrollToElement(
   isSmooth = true,
   padding = 0
 ): void {
-  console.debug(`scrolling to element...`, element)
+  // console.debug(`scrolling to element...`, element)
   return scrollTo(element.getBoundingClientRect().top - padding, isSmooth)
 }
 
@@ -502,4 +502,8 @@ export function getPrefersBritishSpelling() {
       locale.toLowerCase().startsWith(british.toLowerCase())
     )
   )
+}
+
+export const getIsNullOrEmpty = (str: string | null): boolean => {
+  return !str
 }

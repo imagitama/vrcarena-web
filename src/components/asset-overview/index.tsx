@@ -420,7 +420,6 @@ const AssetOverview = ({
   )
 
   useEffect(() => {
-    console.debug('asset loaded, scrolling to top...')
     scrollToTop()
   }, [asset ? asset.id : undefined])
 

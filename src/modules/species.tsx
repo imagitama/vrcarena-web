@@ -52,7 +52,6 @@ export enum SpeciesDeclinedReason {
   inferior = 'inferior',
 }
 
-// TODO: make other interfaces extend from this
 export interface SpeciesMeta extends Record<string, any> {
   editornotes: string | null
 

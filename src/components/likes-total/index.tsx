@@ -23,7 +23,7 @@ export default ({
   const classes = useStyles()
 
   if (lastErrorCode !== null) {
-    return <>Error loading likes (code {lastErrorCode})</>
+    return <>Failed to load likes (code {lastErrorCode})</>
   }
 
   if (!results || !results.length) {
