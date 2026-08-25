@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
+import { NavState } from './useHistory'
 
 const scrollPositions = new Map<string, number>()
 const debounceMs = 100
@@ -14,11 +15,18 @@ const useScrollMemory = (attemptKey: string | false) => {
 
   useEffect(() => {
     if (!attemptKey) return
+
+    const skip = (location.state as NavState)?.shouldScroll === false
+
+    if (skip) {
+      return
+    }
+
     const savedScrollPos = scrollPositions.get(key)
     requestAnimationFrame(() => {
-      // console.debug(
-      //   `useScrollMemory :: ${key} :: restore to ${savedScrollPos || 'none'}`
-      // )
+      console.debug(
+        `useScrollMemory :: ${key} :: restore to ${savedScrollPos || 'none'}`
+      )
       setScrollTop(savedScrollPos ?? 0)
     })
   }, [key, attemptKey])

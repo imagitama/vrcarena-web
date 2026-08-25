@@ -2,6 +2,8 @@ import { useHistory } from 'react-router'
 import { smoothScrollToTop } from '@/utils'
 import { LocationDescriptor } from 'history'
 
+export type NavState = { shouldScroll?: boolean }
+
 // this hook exists because on tab click we want to push() but we dont want to scroll which is annoying
 
 export default () => {
@@ -14,7 +16,7 @@ export default () => {
     console.debug(`useHistory.pushWithScroll`, { url, shouldScroll })
 
     // attach some state so useScrollMemory doesn't kick in
-    useHistoryResult.push(url, { state: { shouldScroll } })
+    useHistoryResult.push(url, { shouldScroll })
 
     // TODO: investigate if actually needed as useScrollMemory does it for us
     if (shouldScroll) {

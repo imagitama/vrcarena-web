@@ -24,19 +24,15 @@ import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import Button from '@/components/button'
 import Heading from '@/components/heading'
-import Column from '@/components/column'
-import Columns from '@/components/columns'
 import Link from '@/components/link'
 import FormattedDate from '@/components/formatted-date'
 import UsernameLink from '@/components/username-link'
 import GenericOutputLabel from '@/components/generic-output-label'
-import FormControls from '@/components/form-controls'
 import Whiteboard from '@/components/whiteboard'
 import ErrorBoundary from '@/components/error-boundary'
 import Paper from '@/components/paper'
 import NoResultsMessage from '@/components/no-results-message'
 import ShortId from '@/components/short-id'
-import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 
 const parentName = 'admin'
 const pageName = 'notepad'
@@ -239,13 +235,17 @@ export default () => {
     <>
       <Heading variant="h1">Admin</Heading>
       <Heading variant="h2">Queue Overview</Heading>
-      <Suspense fallback={<LoadingIndicator message="Loading" />}>
+      <Suspense
+        fallback={<LoadingIndicator message="Loading admin queue..." />}>
         <ErrorBoundary>
           <AdminQueue />
         </ErrorBoundary>
       </Suspense>
       <Heading variant="h2">Notepad</Heading>
-      <Suspense fallback={<LoadingIndicator message="Loading" />}>
+      <Suspense
+        fallback={
+          <LoadingIndicator message="Loading whiteboard and notepad..." />
+        }>
         <ErrorBoundary>
           <Whiteboard />
         </ErrorBoundary>
