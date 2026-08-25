@@ -56,7 +56,8 @@ export default () => (
     <Heading variant="h1">Create Support Ticket</Heading>
     <WarningMessage>
       Have you seen your asset on this site and want it taken down? Please read
-      our <Link to={routes.takedownPolicy}>takedown policy</Link>.
+      our <Link to={routes.takedownPolicy}>takedown policy</Link> then if needed
+      click the Report button when viewing the asset.
     </WarningMessage>
     <WarningMessage>
       Having trouble submitting this support ticket? You can message us via our{' '}
