@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 
 import { PublicReview, ViewNames } from '@/modules/reviews'
-import useSupabaseView, { GetQueryFn } from '@/hooks/useSupabaseView'
 
 import ReviewResults from '@/components/review-results'
 import LoadingIndicator from '@/components/loading-indicator'
@@ -9,17 +8,12 @@ import ErrorMessage from '@/components/error-message'
 import NoResultsMessage from '@/components/no-results-message'
 
 import useUserOverview from '../../useUserOverview'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
 
 const ReviewsForUser = ({ userId }: { userId: string }) => {
-  const getQuery = useCallback<GetQueryFn<PublicReview>>(
-    (query) => query.eq('createdby', userId),
-    [userId]
-  )
-
-  // TODO: migrate to useDataStoreItems or something else
-  const [isLoading, lastErrorCode, reviews] = useSupabaseView<PublicReview>(
+  const [isLoading, lastErrorCode, reviews] = useDatabaseQuery<PublicReview>(
     ViewNames.GetPublicReviewsForPublicAssets,
-    getQuery
+    [['createdby', Operators.EQUALS, userId]]
   )
 
   if (lastErrorCode !== null) {

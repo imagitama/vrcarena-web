@@ -1,7 +1,10 @@
 import { AnyAction, Dispatch } from 'redux'
-import { Asset, CollectionNames as AssetsCollectionNames } from './assets'
-import { CollectionNames as UsersCollectionNames } from './users'
-import { CollectionNames as AuthorsCollectionNames } from './authors'
+import {
+  Asset,
+  CollectionNames as AssetsCollectionNames,
+} from '@/modules/assets'
+import { CollectionNames as UsersCollectionNames } from '@/modules/users'
+import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
 import { Event } from '@/modules/events'
 
 export const searchIndexNameLabels = {
@@ -76,22 +79,22 @@ const initialState: AppState = {
   publishedAssetCount: 0,
 }
 
-const OPEN_MENU = 'OPEN_MENU'
-const CLOSE_MENU = 'CLOSE_MENU'
-const CHANGE_SEARCH_TERM = 'CHANGE_SEARCH_TERM'
-const CHANGE_SEARCH_TABLE_NAME = 'CHANGE_SEARCH_TABLE_NAME'
-const OVERRIDE_SEARCH_FILTER = 'OVERRIDE_SEARCH_FILTER'
-const ADD_SEARCH_FILTER = 'ADD_SEARCH_FILTER'
-const REMOVE_SEARCH_FILTER = 'REMOVE_SEARCH_FILTER'
-const CLEAR_SEARCH_FILTERS = 'CLEAR_SEARCH_FILTERS'
-const IS_SEARCHING = 'IS_SEARCHING'
-const ENTER_BULK_EDIT_MODE = 'ENTER_BULK_EDIT_MODE'
-const LEAVE_BULK_EDIT_MODE = 'LEAVE_BULK_EDIT_MODE'
-const TOGGLE_BULK_EDIT_ID = 'TOGGLE_BULK_EDIT_ID'
-const SELECT_BULK_EDIT_ID = 'SELECT_BULK_EDIT_ID'
-const SET_SELECT_ALL = 'SET_SELECT_ALL'
-const SET_PREVIEW_FEATURED_EVENT = 'SET_PREVIEW_FEATURED_EVENT'
-const INCREMENT_PUBLISHED_ASSET_COUNT = 'INCREMENT_PUBLISHED_ASSET_COUNT'
+const OPEN_MENU = 'app/OPEN_MENU'
+const CLOSE_MENU = 'app/CLOSE_MENU'
+const CHANGE_SEARCH_TERM = 'app/CHANGE_SEARCH_TERM'
+const CHANGE_SEARCH_TABLE_NAME = 'app/CHANGE_SEARCH_TABLE_NAME'
+const OVERRIDE_SEARCH_FILTER = 'app/OVERRIDE_SEARCH_FILTER'
+const ADD_SEARCH_FILTER = 'app/ADD_SEARCH_FILTER'
+const REMOVE_SEARCH_FILTER = 'app/REMOVE_SEARCH_FILTER'
+const CLEAR_SEARCH_FILTERS = 'app/CLEAR_SEARCH_FILTERS'
+const IS_SEARCHING = 'app/IS_SEARCHING'
+const ENTER_BULK_EDIT_MODE = 'app/ENTER_BULK_EDIT_MODE'
+const LEAVE_BULK_EDIT_MODE = 'app/LEAVE_BULK_EDIT_MODE'
+const TOGGLE_BULK_EDIT_ID = 'app/TOGGLE_BULK_EDIT_ID'
+const SELECT_BULK_EDIT_ID = 'app/SELECT_BULK_EDIT_ID'
+const SET_SELECT_ALL = 'app/SET_SELECT_ALL'
+const SET_PREVIEW_FEATURED_EVENT = 'app/SET_PREVIEW_FEATURED_EVENT'
+const INCREMENT_PUBLISHED_ASSET_COUNT = 'app/INCREMENT_PUBLISHED_ASSET_COUNT'
 
 export default (
   state: AppState = initialState,

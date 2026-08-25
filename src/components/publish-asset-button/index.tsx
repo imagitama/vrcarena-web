@@ -21,7 +21,7 @@ import WarningMessage from '@/components/warning-message'
 import FormControls from '@/components/form-controls'
 import Tooltip from '@/components/tooltip'
 import store from '@/store'
-import { incrementPublishedAssetCount } from '@/modules/app'
+import { incrementPublishedAssetCount } from '@/slices/app'
 import {
   getCanAssetBePublished,
   getCanAssetBeUnpublished,

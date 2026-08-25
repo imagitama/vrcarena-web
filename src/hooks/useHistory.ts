@@ -13,7 +13,7 @@ export default () => {
     url: LocationDescriptor<unknown>,
     shouldScroll: boolean = true
   ): void => {
-    console.debug(`useHistory.pushWithScroll`, { url, shouldScroll })
+    // console.debug(`useHistory.pushWithScroll`, { url, shouldScroll })
 
     // attach some state so useScrollMemory doesn't kick in
     useHistoryResult.push(url, { shouldScroll })

@@ -1,9 +1,10 @@
-import { store } from './store'
-import { USER_IS_LOADING, USER_LOADED, USER_UNLOADED } from './modules/user'
-import { readRecord } from './data-store'
 import { SupabaseClient } from '@supabase/supabase-js'
-import { FirebaseUser } from './firebase'
-import { MyUser, ViewNames } from './modules/users'
+
+import { store } from '@/store'
+import { USER_IS_LOADING, USER_LOADED, USER_UNLOADED } from '@/slices/user'
+import { readRecord } from '@/data-store'
+import { FirebaseUser } from '@/firebase'
+import { MyUser, ViewNames } from '@/modules/users'
 
 export const loadUserIntoStore = async (
   supabase: SupabaseClient,

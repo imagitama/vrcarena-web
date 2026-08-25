@@ -6,7 +6,7 @@ import TableBody from '@mui/material/TableBody'
 import { TableCell } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
 
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
 import {
   Asset,

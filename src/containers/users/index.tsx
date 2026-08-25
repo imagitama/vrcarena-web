@@ -1,13 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Helmet } from '@unhead/react/helmet'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router'
 
 import * as routes from '@/routes'
-import { trackAction } from '@/analytics'
-import { changeSearchTableName } from '@/modules/app'
+import { changeSearchTableName } from '@/slices/app'
 import {
   User,
   CollectionNames,
@@ -19,11 +16,9 @@ import {
 import UserList from '@/components/user-list'
 import Heading from '@/components/heading'
 import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
-import Button from '@/components/button'
 import store from '@/store'
 
 const sortKey = 'view-users'
-const analyticsCategory = 'view-users'
 
 const Renderer = ({ items }: { items?: User[] }) => <UserList users={items!} />
 

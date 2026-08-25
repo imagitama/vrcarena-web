@@ -9,7 +9,7 @@ import {
   searchIndexNameLabels,
   changeSearchTableName,
   AppState,
-} from '@/modules/app'
+} from '@/slices/app'
 import * as routes from '@/routes'
 import { trackAction } from '@/analytics'
 import { mediaQueryForMobiles } from '@/media-queries'
@@ -40,7 +40,7 @@ import UserList from '@/components/user-list'
 import SearchFilters from '@/components/search-filters'
 import WarningMessage from '@/components/warning-message'
 import LoadingIndicator from '@/components/loading-indicator'
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 import store from '@/store'
 
 const useStyles = makeStyles({

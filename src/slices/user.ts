@@ -1,5 +1,5 @@
 import { AnyAction } from 'redux'
-import { MyUser } from './users'
+import { MyUser } from '@/modules/users'
 import { DataStoreErrorCode } from '@/data-store'
 
 export const USER_IS_LOADING = 'user/USER_IS_LOADING'

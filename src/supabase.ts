@@ -9,7 +9,7 @@ import {
   FIREBASE_USER_IS_LOADING,
   FIREBASE_USER_LOADED,
   FIREBASE_USER_UNLOADED,
-} from './modules/firebase'
+} from './slices/firebase'
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
 const supabaseKey = process.env.REACT_APP_SUPABASE_API_KEY

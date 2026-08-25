@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
 import { createBrowserHistory as createHistory } from 'history'
-import createRootReducer, { RootState } from './modules'
+import createRootReducer, { RootState } from '@/slices'
 
 export const history = createHistory()
 

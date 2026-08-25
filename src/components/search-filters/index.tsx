@@ -9,10 +9,10 @@ import {
   removeSearchFilter,
   addSearchFilter,
   clearSearchFilters,
-} from '@/modules/app'
+} from '@/slices/app'
 import categoryMeta from '@/category-meta'
 import { AssetCategory } from '@/modules/assets'
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 
 import Button from '@/components/button'
 import store from '@/store'

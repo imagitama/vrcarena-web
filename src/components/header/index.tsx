@@ -7,7 +7,7 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 
 import store from '@/store'
 import * as routes from '@/routes'
-import { openMenu } from '@/modules/app'
+import { openMenu } from '@/slices/app'
 import { ReactComponent as Logo } from '@/assets/images/logo.svg'
 import { ReactComponent as DiscordIcon } from '@/assets/images/icons/discord.svg'
 import { ReactComponent as PatreonIcon } from '@/assets/images/icons/patreon.svg'

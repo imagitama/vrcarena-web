@@ -1,11 +1,7 @@
-import {
-  getHasUserVerifiedTheirEmail,
-  getSignedUpWithDiscord,
-  getSignedUpWithEmail,
-} from '@/auth'
+import { getHasUserVerifiedTheirEmail, getSignedUpWithEmail } from '@/auth'
 import useFirebaseUser from './useFirebaseUser'
 
-// returns true/false if email
+// returns true/false if signed up with email
 // otherwise null
 export const useAccountVerification = (): boolean | null => {
   const firebaseUser = useFirebaseUser()

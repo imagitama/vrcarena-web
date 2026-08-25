@@ -2,10 +2,9 @@ import { useEffect, useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { handleError } from '@/error-handling'
-import { setIsSearching } from '@/modules/app'
+import { setIsSearching } from '@/slices/app'
 import {
   DataStoreErrorCode,
-  DataStoreUnknownErrorCode,
   getDataStoreErrorCodeFromError,
   GetQuery,
 } from '@/data-store'

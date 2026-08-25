@@ -14,7 +14,7 @@ import useStorage from '@/hooks/useStorage'
 
 import Link from '@/components/link'
 import { useSelector } from 'react-redux'
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 import { Event } from '@/modules/events'
 import { getRelativeTime } from '@/utils/dates'
 

@@ -2,10 +2,12 @@ import React, { useEffect, useRef } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { matchPath, useLocation } from 'react-router'
 
-import { AppState, changeSearchTerm, overrideSearchFilter } from '@/modules/app'
+import { AppState, changeSearchTerm, overrideSearchFilter } from '@/slices/app'
+import { RootState } from '@/slices'
 import * as routes from '@/routes'
 import { convertSearchTermToUrlPath } from '@/utils'
 import { trackAction } from '@/analytics'
+import store from '@/store'
 import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
 import { CollectionNames as UsersCollectionNames } from '@/modules/users'
@@ -13,8 +15,6 @@ import { CollectionNames as UsersCollectionNames } from '@/modules/users'
 import useHistory from '@/hooks/useHistory'
 
 import BigSearchInput from '@/components/big-search-input'
-import { RootState } from '@/modules'
-import store from '@/store'
 
 function getPlaceholderForSearchIndexName(searchTableName: string): string {
   switch (searchTableName) {

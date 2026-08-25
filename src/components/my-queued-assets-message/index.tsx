@@ -9,7 +9,7 @@ import {
   Quarantine as QuarantineIcon,
   Queue as QueueIcon,
 } from '@/icons'
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 import { ApprovalStatus } from '@/modules/common'
 import { AssetForList, ViewNames } from '@/modules/assets'
 

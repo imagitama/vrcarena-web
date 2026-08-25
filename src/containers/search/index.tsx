@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router'
 import { useDispatch } from 'react-redux'
 
-import { changeSearchTerm } from '@/modules/app'
+import { changeSearchTerm } from '@/slices/app'
 import { parseSearchTermFromUrlPath } from '@/utils'
 import { trackAction } from '@/analytics'
 

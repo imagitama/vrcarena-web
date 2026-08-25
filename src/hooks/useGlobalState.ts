@@ -1,6 +1,6 @@
 import { DataStoreErrorCode } from '@/data-store'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 import {
   GlobalState,
   GlobalStateSlice,

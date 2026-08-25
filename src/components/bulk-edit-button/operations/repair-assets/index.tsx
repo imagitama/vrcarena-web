@@ -8,7 +8,7 @@ import { TableHead } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
 import styled from '@emotion/styled'
 
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
 import {
   Asset,

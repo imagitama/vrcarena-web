@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 import { FirebaseUser, loggedInUser } from '@/firebase'
 
 export default (): FirebaseUser | null => {

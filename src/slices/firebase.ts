@@ -1,5 +1,4 @@
 import { AnyAction } from 'redux'
-import { User as FirebaseUser } from 'firebase/auth'
 
 export const FIREBASE_USER_IS_LOADING = 'firebase/USER_IS_LOADING'
 export const FIREBASE_USER_IS_DONE_LOADING = 'firebase/USER_IS_DONE_LOADING'

@@ -5,9 +5,9 @@ import {
   setSelectingAll as setSelectingAllAction,
   enterBulkEditMode,
   leaveBulkEditMode,
-} from '@/modules/app'
+} from '@/slices/app'
 import { Asset } from '@/modules/assets'
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 
 const useBulkEdit = (): {
   ids: null | string[]
@@ -66,7 +66,7 @@ const useBulkEdit = (): {
     setSelectingAll,
     isInMode,
     enter,
-    leave
+    leave,
   }
 }
 

@@ -12,7 +12,6 @@ import {
 import { CachedDiscordMessage } from '@/modules/discordmessagecache'
 import { AssetCategory } from '@/modules/assets'
 import { handleError } from '@/error-handling'
-import { RootState } from '@/modules'
 
 export interface StatsForHomepage {
   assets: {
@@ -88,9 +87,9 @@ enum ViewNames {
   GetGlobalState = 'getglobalstate',
 }
 
-const SET_IS_LOADING = 'SET_IS_LOADING'
-const SET_ERROR_CODE = 'SET_ERROR_CODE'
-const SET_GLOBAL_STATE = 'SET_GLOBAL_STATE'
+const SET_IS_LOADING = 'globalState/SET_IS_LOADING'
+const SET_ERROR_CODE = 'globalState/SET_ERROR_CODE'
+const SET_GLOBAL_STATE = 'globalState/SET_GLOBAL_STATE'
 
 const initialState: GlobalStateSlice = {
   isLoading: false,

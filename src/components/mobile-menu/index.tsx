@@ -13,13 +13,13 @@ import Typography from '@mui/material/Typography'
 import ListItemIcon from '@mui/material/ListItemIcon'
 
 import useUserRecord from '@/hooks/useUserRecord'
-import { closeMenu } from '@/modules/app'
+import { closeMenu } from '@/slices/app'
 import navItems, { canShowMenuItem, getLabelForMenuItem } from '@/navigation'
 import { trackAction } from '@/analytics'
 import useUserPreferences from '@/hooks/useUserPreferences'
 
 import AccountMenu from '@/components/account-menu'
-import { RootState } from '@/modules'
+import { RootState } from '@/slices'
 import store from '@/store'
 
 const useStyles = makeStyles({

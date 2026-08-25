@@ -1,14 +1,16 @@
+import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+
+import { setIsSearching } from '@/slices/app'
+import { FunctionNames } from '@/modules/assets'
+import store from '@/store'
+
 import useAlgoliaSearch, {
   AssetSearchResult,
   Indexes,
 } from './useAlgoliaSearch'
-import { setIsSearching } from '@/modules/app'
-import { useEffect } from 'react'
 import useIsAdultContentEnabled from './useIsAdultContentEnabled'
 import useDataStoreFunction from './useDataStoreFunction'
-import { FunctionNames } from '@/modules/assets'
-import store from '@/store'
 
 const defaultLimit = 50
 

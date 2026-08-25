@@ -48,7 +48,7 @@ import FeaturedEvent from './components/featured-event'
 import EditorQueueMessage from './components/editor-queue-message'
 import SurveyMessage from './components/survey-message'
 import { useSelector } from 'react-redux'
-import { RootState } from './modules'
+import { RootState } from './slices'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
