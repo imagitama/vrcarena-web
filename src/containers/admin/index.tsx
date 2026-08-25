@@ -19,7 +19,7 @@ import {
   VrchatAvatars as VrchatAvatarsIcon,
   Audit as AuditIcon,
   Reputation as ReputationIcon,
-  Dupes as DupesIcon,
+  // Dupes as DupesIcon,
   Analytics as AnalyticsIcon,
   Surveys as SurveysIcon,
   Notifications as NotificationsIcon,
@@ -51,7 +51,7 @@ import AdminHistory from './components/history'
 import AdminSupportTickets from './components/support-tickets'
 import AdminQueues from './components/queue'
 import AdminAudit from './components/audit'
-import AdminDupes from './components/dupes'
+// import AdminDupes from './components/dupes'
 import AdminReputation from './components/reputation'
 import AdminAnalytics from './components/analytics'
 import SiteSettingsForm from './components/site-settings-form'
@@ -238,12 +238,13 @@ const navItems: NavItem[] = [
     icon: AuditIcon,
     component: AdminAudit,
   },
-  {
-    subPath: '/dupes',
-    label: 'Dupes',
-    icon: DupesIcon,
-    component: AdminDupes,
-  },
+  // not working as of aug 2026 - do we fix?
+  // {
+  //   subPath: '/dupes',
+  //   label: 'Dupes',
+  //   icon: DupesIcon,
+  //   component: AdminDupes,
+  // },
   {
     subPath: '/reputation',
     label: 'Reputation',

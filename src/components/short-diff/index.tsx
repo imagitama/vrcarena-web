@@ -746,7 +746,7 @@ export default ({
   }
 
   return (
-    <Table style={{ minWidth: 0 }}>
+    <Table noMinWidth>
       <TableHead>
         <TableRow>
           <TableCell width="15%">Field</TableCell>

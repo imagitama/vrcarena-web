@@ -74,7 +74,7 @@ const UserEditorControls = () => {
   if (!isEditor || !user) return null
   return (
     <>
-      <Table style={{ minWidth: 0 }}>
+      <Table noMinWidth>
         <TableBody>
           <TableRow>
             <TableCell>Signed up</TableCell>

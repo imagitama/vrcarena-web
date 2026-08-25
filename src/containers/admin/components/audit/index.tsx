@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import Table from '@/components/responsive-table'
 import TableBody from '@mui/material/TableBody'
 import { TableCell } from '@/components/responsive-table'
@@ -266,7 +266,7 @@ const ApplyAuditButton = ({
           <Heading variant="h3" noTopMargin>
             New Data
           </Heading>
-          <Table>
+          <Table noMinWidth>
             <TableHead>
               <TableRow>
                 <TableCell>URL</TableCell>
@@ -513,7 +513,6 @@ const Renderer = ({
       <TableHead>
         <TableRow>
           <TableCell>Asset</TableCell>
-          <TableCell>Audit Result</TableCell>
           <TableCell>Controls</TableCell>
         </TableRow>
       </TableHead>
@@ -523,167 +522,173 @@ const Renderer = ({
             const isAnythingDifferent = getIsAnythingDifferent(asset)
 
             return (
-              <TableRow
-                key={asset.id}
-                style={{ opacity: isAnythingDifferent ? 1 : 0.5 }}>
-                <TableCell>
-                  <AssetResultsItem asset={asset} showState />
-                </TableCell>
-                <TableCell>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>URL</TableCell>
-                        <TableCell>Current Price</TableCell>
-                        <TableCell>Audit Result</TableCell>
-                        <TableCell>Actual URL</TableCell>
-                        <TableCell>Latest Price</TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {items.map((queueItem) => {
-                        const isMainSource = queueItem.url === asset.sourceurl
+              <Fragment key={asset.id}>
+                <TableRow style={{ opacity: isAnythingDifferent ? 1 : 0.5 }}>
+                  <TableCell>
+                    <AssetResultsItem asset={asset} showState />
+                  </TableCell>
+                  <TableCell>
+                    <ArchiveButtons assetId={asset.id} onDone={hydrate} />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={2}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>URL</TableCell>
+                          <TableCell>Current Price</TableCell>
+                          <TableCell>Audit Result</TableCell>
+                          <TableCell>Actual URL</TableCell>
+                          <TableCell>Latest Price</TableCell>
+                          <TableCell></TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {items.map((queueItem) => {
+                          const isMainSource = queueItem.url === asset.sourceurl
 
-                        const sourceInfo: SourceInfo | undefined = isMainSource
-                          ? {
-                              url: asset.sourceurl,
-                              price: asset.price,
-                              pricecurrency: asset.pricecurrency,
-                              comments: '',
-                            }
-                          : asset.extrasources.find(
-                              (extraSource) => extraSource.url === queueItem.url
-                            )
+                          const sourceInfo: SourceInfo | undefined =
+                            isMainSource
+                              ? {
+                                  url: asset.sourceurl,
+                                  price: asset.price,
+                                  pricecurrency: asset.pricecurrency,
+                                  comments: '',
+                                }
+                              : asset.extrasources.find(
+                                  (extraSource) =>
+                                    extraSource.url === queueItem.url
+                                )
 
-                        const auditResult = queueItem.result
+                          const auditResult = queueItem.result
 
-                        return (
-                          <TableRow key={queueItem.id}>
-                            <TableCell>
-                              {isMainSource ? <strong>Main: </strong> : null}
-                              <Link to={queueItem.url} inNewTab>
-                                {queueItem.url}
-                              </Link>
-                              {!sourceInfo && (
-                                <NoValueLabel>
-                                  <br />
-                                  Source URL was audited but it is no longer in
-                                  the list of sources (was it removed?)
-                                </NoValueLabel>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {sourceInfo ? (
-                                sourceInfo.price === null ? (
-                                  <NoValueLabel>No price</NoValueLabel>
-                                ) : sourceInfo.price !== undefined ? (
-                                  <Price
-                                    price={sourceInfo.price}
-                                    priceCurrency={sourceInfo.pricecurrency}
-                                    small
-                                  />
-                                ) : null
-                              ) : (
-                                '-'
-                              )}
-                            </TableCell>
-                            <TableCell
-                              title={`Queued at ${queueItem.queuedat}, last modified at ${queueItem.lastmodifiedat}`}>
-                              {auditResult ? (
-                                <StatusText
-                                  positivity={getPositivityForResult(
-                                    auditResult.result
-                                  )}>
-                                  {getLabelForResult(auditResult.result)} (
-                                  {queueItem.lastmodifiedat
-                                    ? getFriendlyDate(queueItem.lastmodifiedat)
-                                    : 'not audited yet'}
-                                  )
-                                </StatusText>
-                              ) : asset.lastauditedat ? (
-                                '(asset was audited but no data found for this URL)'
-                              ) : (
-                                '(no audit performed yet)'
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {auditResult && auditResult.actualurl ? (
-                                <Link to={auditResult.actualurl} inNewTab>
-                                  {auditResult.actualurl}
+                          return (
+                            <TableRow key={queueItem.id}>
+                              <TableCell>
+                                {isMainSource ? <strong>Main: </strong> : null}
+                                <Link to={queueItem.url} inNewTab>
+                                  {queueItem.url}
                                 </Link>
-                              ) : (
-                                <NoValueLabel>Same</NoValueLabel>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {auditResult && auditResult.price !== null ? (
-                                <>
-                                  <Price
-                                    price={auditResult.price}
-                                    priceCurrency={auditResult.pricecurrency}
-                                    small
-                                  />
-                                  {auditResult.pricecurrency ? (
-                                    ''
-                                  ) : (
-                                    <StatusText positivity={-1}>
-                                      (no currency detected)
-                                    </StatusText>
-                                  )}
-                                </>
-                              ) : (
-                                ''
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <ApplyAuditButton
-                                asset={asset}
-                                queueItem={queueItem}
-                                onDone={hydrate}
-                              />
-                              {queueItem.applystatus ? (
-                                <>
-                                  <br />
-                                  <br />
+                                {!sourceInfo && (
+                                  <NoValueLabel>
+                                    <br />
+                                    Source URL was audited but it is no longer
+                                    in the list of sources (was it removed?)
+                                  </NoValueLabel>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {sourceInfo ? (
+                                  sourceInfo.price === null ? (
+                                    <NoValueLabel>No price</NoValueLabel>
+                                  ) : sourceInfo.price !== undefined ? (
+                                    <Price
+                                      price={sourceInfo.price}
+                                      priceCurrency={sourceInfo.pricecurrency}
+                                      small
+                                    />
+                                  ) : null
+                                ) : (
+                                  '-'
+                                )}
+                              </TableCell>
+                              <TableCell
+                                title={`Queued at ${queueItem.queuedat}, last modified at ${queueItem.lastmodifiedat}`}>
+                                {auditResult ? (
                                   <StatusText
-                                    positivity={getPositivityForQueueStatus(
-                                      queueItem.applystatus
+                                    positivity={getPositivityForResult(
+                                      auditResult.result
                                     )}>
-                                    {getLabelForQueueStatus(
-                                      queueItem.applystatus
+                                    {getLabelForResult(auditResult.result)}
+                                    <br />(
+                                    {queueItem.lastmodifiedat
+                                      ? getFriendlyDate(
+                                          queueItem.lastmodifiedat
+                                        )
+                                      : 'not audited yet'}
+                                    )
+                                  </StatusText>
+                                ) : asset.lastauditedat ? (
+                                  '(asset was audited but no data found for this URL)'
+                                ) : (
+                                  '(no audit performed yet)'
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {auditResult && auditResult.actualurl ? (
+                                  <Link to={auditResult.actualurl} inNewTab>
+                                    {auditResult.actualurl}
+                                  </Link>
+                                ) : (
+                                  <NoValueLabel>Same</NoValueLabel>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {auditResult && auditResult.price !== null ? (
+                                  <>
+                                    <Price
+                                      price={auditResult.price}
+                                      priceCurrency={auditResult.pricecurrency}
+                                      small
+                                    />
+                                    {auditResult.pricecurrency ? (
+                                      ''
+                                    ) : (
+                                      <StatusText positivity={-1}>
+                                        (no currency detected)
+                                      </StatusText>
                                     )}
-                                    {queueItem.applystatus ===
-                                    QueueStatus.Processed ? (
-                                      <Tooltip
-                                        title={JSON.stringify({
-                                          old: queueItem.old,
-                                          new: queueItem.new,
-                                        })}>
-                                        <HelpIcon />
-                                      </Tooltip>
-                                    ) : null}
-                                  </StatusText>{' '}
-                                  <br />
-                                </>
-                              ) : null}
-                              <RetryButton
-                                assetId={asset.id}
-                                sourceUrl={queueItem.url}
-                                onDone={hydrate}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        )
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableCell>
-                <TableCell>
-                  <Heading variant="h3">Archive</Heading>
-                  <ArchiveButtons assetId={asset.id} onDone={hydrate} />
-                </TableCell>
-              </TableRow>
+                                  </>
+                                ) : (
+                                  ''
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <ApplyAuditButton
+                                  asset={asset}
+                                  queueItem={queueItem}
+                                  onDone={hydrate}
+                                />
+                                {queueItem.applystatus ? (
+                                  <>
+                                    <br />
+                                    <br />
+                                    <StatusText
+                                      positivity={getPositivityForQueueStatus(
+                                        queueItem.applystatus
+                                      )}>
+                                      {getLabelForQueueStatus(
+                                        queueItem.applystatus
+                                      )}
+                                      {queueItem.applystatus ===
+                                      QueueStatus.Processed ? (
+                                        <Tooltip
+                                          title={JSON.stringify({
+                                            old: queueItem.old,
+                                            new: queueItem.new,
+                                          })}>
+                                          <HelpIcon />
+                                        </Tooltip>
+                                      ) : null}
+                                    </StatusText>{' '}
+                                    <br />
+                                  </>
+                                ) : null}
+                                <RetryButton
+                                  assetId={asset.id}
+                                  sourceUrl={queueItem.url}
+                                  onDone={hydrate}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          )
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableCell>
+                </TableRow>
+              </Fragment>
             )
           })
         ) : (

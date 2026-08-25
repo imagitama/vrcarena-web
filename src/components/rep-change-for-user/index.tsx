@@ -44,7 +44,7 @@ const RepChangeForUser = ({ userId }: { userId: string }) => {
   return (
     <>
       <RefreshButton onClick={hydrate} />
-      <Table size="small" style={{ minWidth: 0 }}>
+      <Table size="small" noMinWidth>
         <TableHead>
           <TableRow>
             <TableCell></TableCell>

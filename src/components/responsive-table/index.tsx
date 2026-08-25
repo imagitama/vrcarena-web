@@ -25,12 +25,14 @@ function useResponsiveTableMediaQuery() {
 export interface ResponsiveTableProps extends Omit<TableProps, 'children'> {
   mediaQueryBreakpoint?: string
   children: React.ReactNode
+  noMinWidth?: boolean
 }
 
 export const ResponsiveTable = ({
   mediaQueryBreakpoint = mediaQueryForTabletsOrBelow,
   children,
   sx,
+  noMinWidth,
   ...tableProps
 }: ResponsiveTableProps) => {
   return (
@@ -41,7 +43,7 @@ export const ResponsiveTable = ({
           [mediaQueryForDesktopsOnly]: {
             display: 'table',
             tableLayout: 'fixed',
-            minWidth: 650,
+            minWidth: noMinWidth ? 0 : 650,
           },
           [mediaQueryForTabletsOrBelow]: { display: 'block' },
         }}>

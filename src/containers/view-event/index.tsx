@@ -39,7 +39,6 @@ import EventDateRange from '@/components/event-date-range'
 
 const useStyles = makeStyles({
   root: { position: 'relative' },
-  // columns
   cols: {
     maxWidth: '100vw',
     display: 'flex',
