@@ -525,7 +525,7 @@ const Renderer = ({
               <Fragment key={asset.id}>
                 <TableRow style={{ opacity: isAnythingDifferent ? 1 : 0.5 }}>
                   <TableCell>
-                    <AssetResultsItem asset={asset} showState />
+                    <AssetResultsItem asset={asset} showState isTiny />
                   </TableCell>
                   <TableCell>
                     <ArchiveButtons assetId={asset.id} onDone={hydrate} />

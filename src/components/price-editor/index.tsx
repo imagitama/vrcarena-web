@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
 import { handleError } from '@/error-handling'
@@ -16,19 +15,6 @@ import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import ErrorMessage from '@/components/error-message'
 import PriceAndCurrencyInput from '@/components/price-and-currency-input'
-
-const useStyles = makeStyles({
-  inputWrapper: {
-    margin: '0.5rem 0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  currencySymbol: {
-    fontSize: '200%',
-    marginRight: '0.5rem',
-  },
-})
 
 const PriceEditor = ({
   assetId,
@@ -95,10 +81,6 @@ const PriceEditor = ({
 
   return (
     <>
-      <WarningMessage>
-        If automatic syncing with Gumroad is enabled (and the currency is USD)
-        this price will be automatically updated regularly.
-      </WarningMessage>
       <PriceAndCurrencyInput
         price={newPrice}
         priceCurrency={newPriceCurrency}
@@ -107,16 +89,6 @@ const PriceEditor = ({
           setNewPriceCurrency(newPriceCurrency)
         }}
       />
-      {isSaving ? (
-        <LoadingIndicator message="Saving..." />
-      ) : isSaveSuccess ? (
-        <SuccessMessage>Price saved successfully</SuccessMessage>
-      ) : lastErrorCode !== null ? (
-        <ErrorMessage errorCode={lastErrorCode}>
-          Failed to save price
-        </ErrorMessage>
-      ) : null}
-
       <FormControls>
         <Button
           onClick={onSaveBtnClick}
@@ -133,6 +105,15 @@ const PriceEditor = ({
           </Button>
         ) : null}
       </FormControls>
+      {isSaving ? (
+        <LoadingIndicator message="Saving..." />
+      ) : isSaveSuccess ? (
+        <SuccessMessage>Price saved successfully</SuccessMessage>
+      ) : lastErrorCode !== null ? (
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to save price
+        </ErrorMessage>
+      ) : null}
     </>
   )
 }

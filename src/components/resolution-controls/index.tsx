@@ -122,6 +122,7 @@ export default ({
         value={newResolutionNotes}
       />
       <Button
+        marginTop
         color="secondary"
         onClick={toggle}
         icon={
@@ -132,9 +133,9 @@ export default ({
           ) : undefined
         }>
         {resolutionStatus === ResolutionStatus.Pending
-          ? 'Resolve (With Notes)'
+          ? 'Resolve (with notes)'
           : resolutionStatus === ResolutionStatus.Resolved
-          ? 'Return To Pending (With Notes)'
+          ? 'Return To Pending (with notes)'
           : `Unknown status: ${resolutionStatus}`}
       </Button>
     </>

@@ -15,7 +15,6 @@ import TabContext from '../../context'
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: '50%',
     margin: '0 auto',
     [mediaQueryForTabletsOrBelow]: {
       maxWidth: '100%',

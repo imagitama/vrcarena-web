@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react'
 import { Helmet } from '@unhead/react/helmet'
 import { makeStyles } from '@mui/styles'
+import CheckIcon from '@mui/icons-material/Check'
 
 import * as routes from '@/routes'
 import { alreadyOver18Key } from '@/config'
@@ -122,9 +123,11 @@ const AdultAssetsView = () => {
         <Assets />
       ) : (
         <Paper className={classes.over18message}>
-          <Heading variant="h2">Over 18 Check</Heading>
+          <Heading variant="h2" noTopMargin>
+            Over 18 Check
+          </Heading>
           <p>This area requires that you are over the age of 18.</p>
-          <Button onClick={onOver18ButtonClick}>
+          <Button onClick={onOver18ButtonClick} icon={<CheckIcon />}>
             I am over 18 please show me this content
           </Button>
         </Paper>

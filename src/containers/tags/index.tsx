@@ -9,6 +9,7 @@ import useIsEditor from '@/hooks/useIsEditor'
 import AllTagsBrowser from '@/components/all-tags-browser'
 import Button from '@/components/button'
 import Heading from '@/components/heading'
+import EditorBox from '@/components/editor-box'
 
 export default () => {
   const isEditor = useIsEditor()
@@ -22,11 +23,13 @@ export default () => {
         />
       </Helmet>
       <Heading variant="h1">Browse tags</Heading>
-      {isEditor ? (
-        <Button url={routes.createTag} icon={<AddIcon />}>
-          Create
-        </Button>
-      ) : null}
+      {isEditor && (
+        <EditorBox title="Editor Controls">
+          <Button url={routes.createTag} icon={<AddIcon />} color="secondary">
+            Create Tag
+          </Button>
+        </EditorBox>
+      )}
       <AllTagsBrowser />
     </>
   )

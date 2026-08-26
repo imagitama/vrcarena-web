@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
+import Heading from '../heading'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -10,10 +11,12 @@ const useStyles = makeStyles(() => ({
 }))
 
 const EditorBox = ({
+  title,
   children,
   className,
   show = true,
 }: {
+  title?: string
   children: React.ReactNode
   className?: string
   show?: boolean
@@ -21,6 +24,11 @@ const EditorBox = ({
   const classes = useStyles()
   return (
     <div className={`${show ? classes.root : ''} ${className || ''}`}>
+      {title && (
+        <Heading variant="h4" noTopMargin>
+          {title}
+        </Heading>
+      )}
       {children}
     </div>
   )

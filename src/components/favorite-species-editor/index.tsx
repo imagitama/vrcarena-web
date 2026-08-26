@@ -154,12 +154,6 @@ export default ({
             </MenuItem>
           ))}
       </Select>
-      {isSaving && <LoadingIndicator message="Saving..." />}
-      {isSaveSuccess ? (
-        <SuccessMessage>Your favorite species has been saved</SuccessMessage>
-      ) : lastErrorCode ? (
-        <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
-      ) : null}
       {saveOnSelect !== true && (
         <FormControls>
           <Button
@@ -170,6 +164,12 @@ export default ({
           </Button>
         </FormControls>
       )}
+      {isSaving && <LoadingIndicator message="Saving..." />}
+      {isSaveSuccess ? (
+        <SuccessMessage>Your favorite species has been saved</SuccessMessage>
+      ) : lastErrorCode ? (
+        <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
+      ) : null}
     </div>
   )
 }

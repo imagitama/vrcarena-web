@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Markdown from '@/components/markdown'
-import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
 import useUserId from '@/hooks/useUserId'
@@ -14,24 +12,14 @@ import SuccessMessage from '@/components/success-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import Button from '@/components/button'
-import TextInput from '@/components/text-input'
-
-const useStyles = makeStyles({
-  bioTextField: {
-    width: '100%',
-  },
-  controls: {
-    textAlign: 'center',
-    marginTop: '0.5rem',
-  },
-})
+import MarkdownEditor from '../markdown-editor'
+import FormControls from '../form-controls'
 
 const BioEditor = ({
   onSaveClick = undefined,
 }: {
   onSaveClick?: () => void
 }) => {
-  const classes = useStyles()
   const userId = useUserId()
   const [isLoadingProfile, lastErrorCodeLoadingProfile, profile] =
     useDataStoreItem<User>(CollectionNames.Users, userId ? userId : false, {
@@ -42,7 +30,6 @@ const BioEditor = ({
     userId!
   )
   const [bioValue, setBioValue] = useState('')
-  const [showPreview, setShowPreview] = useState(false)
 
   useEffect(() => {
     if (!profile || !profile.bio) {
@@ -76,25 +63,19 @@ const BioEditor = ({
 
   return (
     <>
-      <TextInput
-        value={bioValue}
-        onChange={(e) => setBioValue(e.target.value)}
-        minRows={5}
-        multiline
-        variant="outlined"
-        className={classes.bioTextField}
+      <MarkdownEditor
+        content={bioValue}
+        onChange={(newVal) => setBioValue(newVal)}
         isDisabled={isSaving || isLoadingProfile}
       />
-      <p>
-        You can use markdown to <strong>format</strong> <em>your</em> content.
-        It is the same as Discord. A guide is here:{' '}
-        <a
-          href="https://www.markdownguide.org/basic-syntax/"
-          target="_blank"
-          rel="noopener noreferrer">
-          Markdown
-        </a>
-      </p>
+      <FormControls>
+        <Button
+          onClick={onSaveBtnClick}
+          isDisabled={isSaving || isLoadingProfile}
+          icon={<SaveIcon />}>
+          Save
+        </Button>
+      </FormControls>
       {isSaving && <LoadingIndicator message="Saving..." />}
       {isSuccess ? (
         <SuccessMessage>Your bio has been saved</SuccessMessage>
@@ -103,22 +84,6 @@ const BioEditor = ({
           Failed to save bio
         </ErrorMessage>
       ) : null}
-      {showPreview === true && <Markdown source={bioValue} />}
-      <div className={classes.controls}>
-        {showPreview === false && (
-          <>
-            <Button onClick={() => setShowPreview(true)} color="secondary">
-              Show Preview
-            </Button>{' '}
-          </>
-        )}
-        <Button
-          onClick={onSaveBtnClick}
-          isDisabled={isSaving || isLoadingProfile}
-          icon={<SaveIcon />}>
-          Save
-        </Button>
-      </div>
     </>
   )
 }

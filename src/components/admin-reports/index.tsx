@@ -71,6 +71,7 @@ function ReportsTable({ reports }: { reports?: FullReport[] }) {
                     type={parenttable}
                     id={parent}
                     data={parentdata}
+                    small
                   />
                 </TableCell>
                 <TableCell label="Metadata">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { handleError } from '@/error-handling'
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
-import Button from '@/components/button'
+import Button, { SaveButton } from '@/components/button'
 import CheckboxInput from '@/components/checkbox-input'
 import ErrorMessage from '@/components/error-message'
 import FormControls from '@/components/form-controls'
@@ -85,7 +85,7 @@ export default ({
         applicable).
       </p>
       <FormControls>
-        <Button onClick={onSaveClick}>Save</Button>
+        <SaveButton onClick={onSaveClick}>Save</SaveButton>
       </FormControls>
     </>
   )

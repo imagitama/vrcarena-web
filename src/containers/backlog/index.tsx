@@ -95,12 +95,12 @@ const Renderer = ({
     <ResponsiveTable sx={{ tableLayout: 'fixed', width: '100%' }}>
       <ResponsiveTableHead>
         <TableRow>
-          <TableCell />
-          <TableCell>Type</TableCell>
-          <TableCell>URL</TableCell>
-          <TableCell>Metadata</TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
+          <TableCell width="10%" />
+          <TableCell width="10%">Type</TableCell>
+          <TableCell width="20%">URL</TableCell>
+          <TableCell width="20%">Metadata</TableCell>
+          <TableCell width="20%">Status</TableCell>
+          <TableCell width="20%"></TableCell>
         </TableRow>
       </ResponsiveTableHead>
       <TableBody>
@@ -157,6 +157,7 @@ const Renderer = ({
                     <InfoIcon />
                   </Tooltip>
                 </StatusText>
+                <br />
                 {type === BacklogItemType.Asset ? (
                   <CheckAssetExistsButton backlogItem={backlogItem} />
                 ) : (

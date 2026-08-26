@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import TextField from '@mui/material/TextField'
-import { makeStyles } from '@mui/styles'
-import SaveIcon from '@mui/icons-material/Save'
 
 import { handleError } from '@/error-handling'
 import { DataStoreErrorCode, PostgresErrorCode } from '@/data-store'
@@ -12,40 +9,30 @@ import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useUserRecord from '@/hooks/useUserRecord'
 import useUserId from '@/hooks/useUserId'
 
-import Button from '@/components/button'
+import { SaveButton } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
-import StatusText from '../status-text'
-
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    '& button': {
-      height: '100%',
-      margin: '0 0.25rem',
-    },
-  },
-})
+import TextInput from '../text-input'
+import SuccessMessage from '../success-message'
+import useTimer from '@/hooks/useTimer'
 
 const getMessageForErrorCode = (errorCode: DataStoreErrorCode): string => {
   if (errorCode === PostgresErrorCode.UniqueViolation) {
     return 'Username is taken'
   }
-  return `Failed to save username (code ${errorCode})`
+  return `code ${errorCode}`
 }
 
 const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
   const userId = useUserId()
   const [isLoadingUser, lastErrorCodeLoadingUser, user, hydrateUser] =
     useUserRecord()
-  const [isSaving, isSaveSuccess, lastSaveErrorCode, save] =
+  const [isSaving, isSuccess, lastErrorCode, save, clear] =
     useDataStoreEdit<User>(CollectionNames.Users, userId || false, {
       uncatchErrorCodes: [PostgresErrorCode.UniqueViolation],
     })
   const [fieldValue, setFieldValue] = useState('')
-  const classes = useStyles()
+  const clearAfterDelay = useTimer(clear)
 
   useEffect(() => {
     if (!user) {
@@ -77,11 +64,15 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
         return
       }
 
-      await save({
+      const result = await save({
         username: fieldValue,
       })
 
-      hydrateUser()
+      if (result) {
+        hydrateUser()
+
+        clearAfterDelay()
+      }
     } catch (err) {
       console.error(
         'Failed to edit username',
@@ -93,25 +84,35 @@ const UsernameEditor = ({ onSaveClick }: { onSaveClick?: () => void }) => {
   }
 
   return (
-    <div className={classes.root}>
-      <TextField
+    <div>
+      <TextInput
         value={fieldValue}
         onChange={(event) => setFieldValue(event.target.value)}
+        onKeyDown={(event) =>
+          event.key === 'Enter' ? onSaveBtnClick() : undefined
+        }
         variant="outlined"
         fullWidth
         label="Enter a username"
+        button={
+          <SaveButton onClick={onSaveBtnClick} color="primary" hollow={false}>
+            Save
+          </SaveButton>
+        }
       />{' '}
-      <Button onClick={onSaveBtnClick} size="large" icon={<SaveIcon />}>
-        Save
-      </Button>{' '}
       {isSaving ? (
-        'Saving...'
-      ) : isSaveSuccess ? (
-        <StatusText positivity={1}>Saved!</StatusText>
-      ) : lastSaveErrorCode ? (
-        <StatusText positivity={-1}>
-          {getMessageForErrorCode(lastSaveErrorCode)}
-        </StatusText>
+        <LoadingIndicator message="Saving..." />
+      ) : isSuccess ? (
+        <SuccessMessage>Username changed successfully</SuccessMessage>
+      ) : lastErrorCode ? (
+        <ErrorMessage
+          errorCode={
+            lastErrorCode !== PostgresErrorCode.UniqueViolation
+              ? lastErrorCode
+              : undefined
+          }>
+          Failed to change username: {getMessageForErrorCode(lastErrorCode)}
+        </ErrorMessage>
       ) : (
         ''
       )}

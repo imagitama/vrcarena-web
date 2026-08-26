@@ -19,7 +19,7 @@ export function snapScrollToTop(): void {
 }
 
 export function scrollTo(x: number, isSmooth: boolean = true): void {
-  console.debug(`scrolling to ${x}...`)
+  // console.debug(`scrolling to ${x}...`)
   try {
     window.scrollTo({
       top: x,

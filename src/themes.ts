@@ -131,6 +131,20 @@ export const darkTheme: VRCArenaTheme = createTheme({
         },
       },
     },
+    MuiSelect: {
+      styleOverrides: {
+        root: {},
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          '&:hover fieldset': {
+            borderColor: 'rgb(150,150,150) !important',
+          },
+        },
+      },
+    },
     MuiSvgIcon: {
       styleOverrides: {
         root: {

@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import InputLabel from '@mui/material/InputLabel'
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 
 import { ViewNames, UserRoles, UserForList } from '@/modules/users'
 
@@ -10,7 +8,6 @@ import useDatabaseQuery, {
   WhereOperators,
 } from '@/hooks/useDatabaseQuery'
 
-import UsernameLink from '@/components/username-link'
 import Select, { MenuItem } from '@/components/select'
 import LoadingIndicator from '@/components/loading-indicator'
 import { SaveButton } from '@/components/button'
@@ -52,10 +49,6 @@ const AssignForm = ({
   )
   const [selectedUserId, setSelectedUserId] = useState(existingAssignedTo)
 
-  if (lastErrorCodeSave !== null)
-    return (
-      <ErrorMessage errorCode={lastErrorCodeSave}>Failed to save</ErrorMessage>
-    )
   if (lastErrorCodeUsers !== null)
     return (
       <ErrorMessage errorCode={lastErrorCodeUsers}>
@@ -80,9 +73,8 @@ const AssignForm = ({
     <>
       <InfoMessage>Please only assign to yourself</InfoMessage>
       <div style={{ margin: '0.5rem 0' }}>
-        <InputLabel>Assign To</InputLabel>
         <Select
-          label="Assign"
+          label="Select a user"
           value={selectedUserId !== null ? selectedUserId : VALUE_NO_USER}
           onChange={(e) =>
             setSelectedUserId(
@@ -92,7 +84,14 @@ const AssignForm = ({
             )
           }
           disabled={isBusy}
-          size="small">
+          size="small"
+          style={{ width: '300px' }}
+          button={
+            <SaveButton
+              isDisabled={!hasChanged || isBusy}
+              onClick={onClickSave}
+            />
+          }>
           <MenuItem value={VALUE_NO_USER}>No user assigned</MenuItem>
           {users.map((user) => (
             <MenuItem key={user.id} value={user.id}>
@@ -100,15 +99,18 @@ const AssignForm = ({
             </MenuItem>
           ))}
         </Select>
-        <SaveButton isDisabled={!hasChanged || isBusy} onClick={onClickSave} />
       </div>
-      {isSaveSuccess && (
+      {isSaveSuccess ? (
         <SuccessMessage>
           {selectedUserId !== null
             ? 'User assigned successfully'
             : 'Assignment cleared successfully'}
         </SuccessMessage>
-      )}
+      ) : lastErrorCodeSave ? (
+        <ErrorMessage errorCode={lastErrorCodeSave}>
+          Failed to save
+        </ErrorMessage>
+      ) : null}
     </>
   )
 }

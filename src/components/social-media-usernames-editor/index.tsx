@@ -76,7 +76,7 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
     userId || false,
     { queryName: 'social-media-usernames-editor' }
   )
-  const [isSaving, isSaveSuccess, lastErrorCode, save] = useDataStoreEdit<User>(
+  const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<User>(
     CollectionNames.Users,
     userId!
   )
@@ -99,7 +99,7 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
       return
     }
 
-    console.debug(`Updating editor with fields...`, profile)
+    // console.debug(`Updating editor with fields...`, profile)
 
     setFormFieldValues({
       vrchatuserid: profile.vrchatuserid || '',
@@ -259,23 +259,23 @@ export default ({ onSaveClick }: { onSaveClick?: () => void }) => {
           <Hint>The name in the URL like https://patreon.com/[username]</Hint>
         </Input>
       </Field>
-      {isSaving && <LoadingIndicator message="Saving..." />}
-      {isSaveSuccess ? (
+      <FormControls>
+        <Button
+          onClick={onSaveBtnClick}
+          isDisabled={isSaving}
+          icon={<SaveIcon />}>
+          Save
+        </Button>
+      </FormControls>
+      {isSaving ? (
+        <LoadingIndicator message="Saving..." />
+      ) : isSuccess ? (
         <SuccessMessage>
           Your social media accounts have been saved
         </SuccessMessage>
       ) : lastErrorCode ? (
         <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
       ) : null}
-      <FormControls>
-        <Button
-          onClick={onSaveBtnClick}
-          isDisabled={isSaving}
-          icon={<SaveIcon />}
-          size="large">
-          Save
-        </Button>
-      </FormControls>
     </>
   )
 }

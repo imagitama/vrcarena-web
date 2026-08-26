@@ -35,6 +35,7 @@ export interface ButtonProps {
   checked?: boolean
   hollow?: boolean
   margin?: boolean // mainly for asset overview
+  marginTop?: boolean
   openInNewTab?: boolean
   downloadFilename?: string
   /**
@@ -194,6 +195,11 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       margin: '0 0.25rem 0.25rem 0',
     },
   },
+  marginTop: {
+    '&&': {
+      marginTop: '0.25rem',
+    },
+  },
   disabled: {
     '&&': {
       borderColor: 'transparent',
@@ -294,6 +300,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           [classes.small]: props.size === 'small',
           [classes.large]: props.size === 'large',
           [classes.margin]: props.margin,
+          [classes.marginTop]: props.marginTop,
           [classes.iconLeft]: iconSide === 'left' && !isIconOnly,
           [classes.iconCenter]: iconSide === 'center' || isIconOnly,
           [classes.iconRight]: iconSide === 'right' && !isIconOnly,
@@ -346,19 +353,19 @@ export const ClearButton = (args: ButtonProps) => (
 )
 
 export const SaveButton = (args: ButtonProps) => (
-  <Button icon={<SaveIcon />} color="secondary" hollow {...args}>
+  <Button icon={<SaveIcon />} color="secondary" {...args}>
     {args.children || 'Save'}
   </Button>
 )
 
 export const DeleteButton = (args: ButtonProps) => (
-  <Button icon={<DeleteIcon />} color="secondary" hollow {...args}>
+  <Button icon={<DeleteIcon />} color="secondary" {...args}>
     {args.children || 'Delete'}
   </Button>
 )
 
 export const RefreshButton = (args: ButtonProps) => (
-  <Button icon={<RefreshIcon />} color="secondary" hollow {...args}>
+  <Button icon={<RefreshIcon />} color="secondary" {...args}>
     {args.children || 'Refresh'}
   </Button>
 )

@@ -341,12 +341,6 @@ export default ({
           </div>
         </>
       )}
-      {isSaving && <LoadingIndicator message="Saving..." />}
-      {isSaveSuccess ? (
-        <SuccessMessage>Your VR platforms have been saved</SuccessMessage>
-      ) : lastErrorCode ? (
-        <ErrorMessage errorCode={lastErrorCode}>Failed to save</ErrorMessage>
-      ) : null}
       <FormControls>
         <Button
           onClick={() => onSaveBtnClick()}
@@ -355,6 +349,15 @@ export default ({
           Save
         </Button>{' '}
       </FormControls>
+      {isSaving ? (
+        <LoadingIndicator message="Saving..." />
+      ) : isSaveSuccess ? (
+        <SuccessMessage>Your VR platforms have been saved</SuccessMessage>
+      ) : lastErrorCode ? (
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to save your VR platforms
+        </ErrorMessage>
+      ) : null}
       <br />
       <FormControls>
         <VrchatGroupButton />

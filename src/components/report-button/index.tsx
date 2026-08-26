@@ -39,7 +39,7 @@ const ReportButton = ({
       title="Report"
       iconOnly={small}
       {...buttonProps}>
-      {small ? '' : 'Report'}
+      {small ? undefined : 'Report'}
     </Button>
   )
 }

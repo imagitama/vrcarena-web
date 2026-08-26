@@ -357,7 +357,13 @@ const TagInput = ({
         }}
       />
       <div>
-        <Button url={routes.createTagSuggestion}>Suggest Tag Change</Button>
+        <Button
+          url={routes.createTagSuggestion}
+          color="secondary"
+          hollow={false}
+          title="Do you have an idea for a new official tag? Or dislike an existing one? You can suggest it by clicking this button.">
+          Suggest Tag Change
+        </Button>
         <br />
         *redirects to page (ensure your asset is saved)
       </div>

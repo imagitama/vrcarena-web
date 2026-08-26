@@ -4,11 +4,9 @@ import EditIcon from '@mui/icons-material/Edit'
 
 import {
   ArchivedReason,
-  CollectionNames as AssetsCollectionNames,
   DeclinedReason,
   DeletionReason,
 } from '@/modules/assets'
-import { CollectionNames as AmendmentsCollectionNames } from '@/modules/amendments'
 import {
   AccessStatus,
   ApprovalStatus,
@@ -40,6 +38,9 @@ const useStyles = makeStyles(() => ({
     marginBottom: '0.75rem',
     [mediaQueryForTabletsOrBelow]: {
       flexWrap: 'wrap',
+    },
+    '&:last-child': {
+      marginBottom: 0,
     },
   },
   cell: {

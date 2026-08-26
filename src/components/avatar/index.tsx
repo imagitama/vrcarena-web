@@ -79,7 +79,7 @@ const Avatar = ({
 }: {
   url?: string | null
   username?: string
-  size?: string
+  size?: AvatarSize
   className?: string
   lazy?: boolean
   noHat?: boolean

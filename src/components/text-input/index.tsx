@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles'
+import FormControl from '@mui/material/FormControl'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 import classNames from 'classnames'
 
@@ -12,12 +13,11 @@ const useStyles = makeStyles({
   fullWidth: {
     width: '100%',
   },
-  button: {
-    // height: '100%',
-    // marginLeft: '0.5rem !important',
-  },
   textField: {},
   input: {},
+  button: {
+    height: '40px !important', // to match 100%
+  },
   small: {
     height: '24px',
     '& $textField': {
@@ -30,10 +30,6 @@ const useStyles = makeStyles({
         paddingRight: '8px',
         fontSize: '75%',
       },
-    },
-    '&&': {
-      // paddingLeft: '8px',
-      // paddingRight: '8px',
     },
   },
   large: {
@@ -49,7 +45,7 @@ const useStyles = makeStyles({
       borderBottomRightRadius: 0,
     },
     '& $button': {
-      borderLeft: 'none', // TODO: fix sometime
+      borderLeft: 'none',
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
     },
@@ -57,47 +53,54 @@ const useStyles = makeStyles({
   topMargin: {
     marginTop: '0.5rem',
   },
+  inputGroup: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 })
 
 export type Props = Omit<TextFieldProps, 'size'> & {
+  label?: string
   isDisabled?: boolean
   variant?: 'outlined'
   button?: React.ReactElement
-  size?: 'small' | 'large'
+  size?: 'small' | 'medium'
   topMargin?: boolean
 }
 
-const TextInput = ({ button, topMargin, ...props }: Props) => {
+const TextInput = ({ id, button, label, topMargin, ...props }: Props) => {
   const classes = useStyles()
   return (
-    <span
+    <FormControl
       className={classNames({
         [classes.root]: true,
-        [classes.fullWidth]: props.fullWidth,
-        [classes.small]: props.size === 'small' && props.minRows === undefined,
-        [classes.large]: props.size === 'large' && props.minRows === undefined,
         [classes.withButton]: button !== undefined,
         [classes.topMargin]: topMargin !== undefined,
-      })}>
-      <TextField
-        multiline={props.minRows !== undefined}
-        variant={'outlined'}
-        disabled={props.isDisabled}
-        size={props.size as any}
-        classes={{
-          root: classes.textField,
-        }}
-        InputProps={{
-          classes: {
-            root: classes.input,
-          },
-        }}
-        {...props}
-      />
-      {button
-        ? React.cloneElement(button, { className: classes.button })
-        : null}
-    </span>
+      })}
+      variant="outlined"
+      fullWidth={props.fullWidth}
+      size="small">
+      <div className={classes.inputGroup}>
+        <TextField
+          id={id}
+          label={label}
+          multiline={props.minRows !== undefined}
+          disabled={props.isDisabled}
+          size="small"
+          InputProps={{
+            classes: {
+              root: classes.input,
+            },
+          }}
+          {...props}
+        />
+        {button
+          ? React.cloneElement(button, { className: classes.button })
+          : null}
+      </div>
+    </FormControl>
   )
 }
 

@@ -376,10 +376,16 @@ const NotificationSettings = ({
           />
         </>
       ) : null}
+      <FormControls>
+        <Button onClick={onSaveClick} isDisabled={isBusy} icon={<SaveIcon />}>
+          Save
+        </Button>
+      </FormControls>
       {isAnonymouslySaving || isBusy ? (
         <LoadingIndicator message="Saving..." />
-      ) : null}
-      {lastAnonymouslySaveErrorCode !== null ? (
+      ) : isSaveSuccess || isAnonymouslySaveSuccess ? (
+        <SuccessMessage>Your preferences have been saved</SuccessMessage>
+      ) : lastAnonymouslySaveErrorCode !== null ? (
         <ErrorMessage
           errorCode={lastAnonymouslySaveErrorCode as unknown as string}>
           Failed to save your preferences
@@ -392,14 +398,6 @@ const NotificationSettings = ({
           Failed to save your preferences
         </ErrorMessage>
       ) : null}
-      {isSaveSuccess || isAnonymouslySaveSuccess ? (
-        <SuccessMessage>Preferences saved successfully</SuccessMessage>
-      ) : null}
-      <FormControls>
-        <Button onClick={onSaveClick} isDisabled={isBusy} icon={<SaveIcon />}>
-          Save
-        </Button>
-      </FormControls>
     </div>
   )
 }

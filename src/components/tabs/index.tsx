@@ -171,7 +171,7 @@ const Tabs = ({
                 if (onSelectTab) onSelectTab(tabName)
 
                 if (urlWithTabNameVar) {
-                  push(urlWithTabNameVar.replace(':tabName', tabName), false)
+                  push(urlWithTabNameVar.replace(':tabName', tabName))
                 }
               }}
               className={classes.tabs}>

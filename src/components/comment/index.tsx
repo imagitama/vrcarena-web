@@ -10,12 +10,11 @@ import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import { CollectionNames, FullComment } from '@/modules/comments'
 import { BanStatus } from '@/modules/users'
 
-import useUserRecord from '@/hooks/useUserRecord'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 import useIsEditor from '@/hooks/useIsEditor'
 
 import FormattedDate from '@/components/formatted-date'
-import Avatar from '@/components/avatar'
+import Avatar, { AvatarSize } from '@/components/avatar'
 import { StaffBadge, BannedBadge } from '@/components/badge'
 import LoadingShimmer from '@/components/loading-shimmer'
 import EditorRecordManager from '@/components/editor-record-manager'
@@ -33,7 +32,7 @@ const useStyles = makeStyles({
   },
   colLeft: {
     width: '50px',
-    marginRight: '1rem',
+    marginRight: '0.75rem',
     [mediaQueryForTabletsOrBelow]: {
       marginRight: '0.5rem',
     },
@@ -113,7 +112,6 @@ export default ({
   showControls?: boolean
   shorten?: boolean
 }) => {
-  const [, , user] = useUserRecord()
   const classes = useStyles()
   const htmlElementRef = useRef(null)
   const isLoggedIn = useIsLoggedIn()
@@ -125,7 +123,7 @@ export default ({
       return
     }
 
-    console.debug(`Scrolling to comment "${id}"...`)
+    console.debug(`scrolling to comment "${id}"...`)
 
     if (htmlElementRef.current) {
       scrollToElement(htmlElementRef.current)
@@ -162,8 +160,7 @@ export default ({
         {shimmer ? (
           <LoadingShimmer width={50} height={50} />
         ) : (
-          /* @ts-ignore */
-          <Avatar url={createdByAvatarUrl} size={null} />
+          <Avatar url={createdByAvatarUrl} size={AvatarSize.Tiny} />
         )}
       </div>
       <div className={classes.colRight}>
