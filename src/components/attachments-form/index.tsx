@@ -16,6 +16,7 @@ import {
   ChevronUp as ChevronUpIcon,
   ChevronDown as ChevronDownIcon,
   Info as InfoIcon,
+  Delete as DeleteIcon,
 } from '@/icons'
 import { bucketNames } from '@/file-uploading'
 import { getIsUrlAYoutubeVideo } from '@/utils'
@@ -62,12 +63,14 @@ const CreateAttachmentForm = ({
   onCreate,
   onMoveUp,
   onMoveDown,
+  onRemove,
   ...props
 }: {
   url: string
   onCreate: (id: string) => void
   onMoveUp?: () => void
   onMoveDown?: () => void
+  onRemove?: () => void
 } & Omit<AttachmentFormProps, 'newFields'>) => {
   const [isSaving, isSuccess, lastErrorCode, create] = useDataStoreCreate<
     AttachmentFields,
@@ -118,11 +121,14 @@ const CreateAttachmentForm = ({
             <SaveButton onClick={onClickCreate}>Create & Add</SaveButton>
           </FormControls>
         </Column>
-        {onMoveUp && onMoveDown && (
+        {onMoveUp && onMoveDown && onRemove && (
           <Column style={{ width: '5%' }}>
             <div>
               <Button color="secondary" onClick={onMoveUp}>
                 <ChevronUpIcon />
+              </Button>
+              <Button color="secondary" onClick={onRemove}>
+                <DeleteIcon />
               </Button>
               <Button color="secondary" onClick={onMoveDown}>
                 <ChevronDownIcon />
@@ -139,11 +145,14 @@ const EditAttachmentForm = ({
   id,
   onMoveUp,
   onMoveDown,
+  onRemove,
   ...props
-}: { id: string; onMoveUp: () => void; onMoveDown: () => void } & Omit<
-  AttachmentFormProps,
-  'newFields'
->) => {
+}: {
+  id: string
+  onMoveUp: () => void
+  onMoveDown: () => void
+  onRemove: () => void
+} & Omit<AttachmentFormProps, 'newFields'>) => {
   const [isLoading, lastErrorCodeLoading, attachment, hydrate] =
     useDataStoreItem<Attachment>(CollectionNames.Attachments, id)
   const [isSaving, isSuccess, lastErrorCode, save] = useDataStoreEdit<
@@ -226,6 +235,9 @@ const EditAttachmentForm = ({
           <div>
             <Button color="secondary" onClick={onMoveUp}>
               <ChevronUpIcon />
+            </Button>
+            <Button color="secondary" onClick={onRemove}>
+              <DeleteIcon />
             </Button>
             <Button color="secondary" onClick={onMoveDown}>
               <ChevronDownIcon />
@@ -357,6 +369,10 @@ function moveDown(ids: string[], id: string): string[] {
   return newIds
 }
 
+function removeByValue<T>(arr: T[], value: T): T[] {
+  return arr.filter((item) => item !== value)
+}
+
 const AttachmentsForm = ({
   reason,
   parentTable,
@@ -447,6 +463,7 @@ const AttachmentsForm = ({
                   }}
                   onMoveUp={() => setNewUrls(moveUp(newUrls, url))}
                   onMoveDown={() => setNewUrls(moveDown(newUrls, url))}
+                  onRemove={() => setNewUrls(removeByValue(newUrls, url))}
                 />
               </div>
             ))}
@@ -467,6 +484,7 @@ const AttachmentsForm = ({
                     parentId={parentId}
                     onMoveUp={() => onChange(moveUp(ids, id))}
                     onMoveDown={() => onChange(moveDown(ids, id))}
+                    onRemove={() => onChange(removeByValue(ids, id))}
                   />
                 </div>
               ))}
