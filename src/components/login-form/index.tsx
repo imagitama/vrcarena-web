@@ -332,7 +332,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         </div>
       </FormControls>
       {isWorking && <LoadingIndicator message="Logging in..." />}
-      {lastErrorCode != null ? (
+      {lastErrorCode !== null ? (
         <ErrorMessage>
           Failed to login: {getMessageForFirebaseErrorCode(lastErrorCode)}
         </ErrorMessage>

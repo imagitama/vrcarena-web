@@ -33,7 +33,7 @@ const MultiFactorAuthCodeInput = ({
   const [codeTextVal, setCodeTextVal] = useState('')
   const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
 
-  const submit = () => {
+  const onSubmit = () => {
     const code = codeTextVal.trim()
 
     if (!code) {
@@ -50,6 +50,8 @@ const MultiFactorAuthCodeInput = ({
       setLastErrorCode(ErrorCode.InvalidLength)
       return
     }
+
+    setLastErrorCode(null)
 
     onCode(code)
   }
@@ -68,13 +70,13 @@ const MultiFactorAuthCodeInput = ({
         }}
         onKeyDown={(e) => {
           if (e.key == 'Enter') {
-            submit()
+            onSubmit()
           }
         }}
         button={
           <Button
             icon={<CheckIcon />}
-            onClick={submit}
+            onClick={onSubmit}
             isDisabled={textInputProps.isDisabled}>
             Submit
           </Button>
