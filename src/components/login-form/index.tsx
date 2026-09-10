@@ -236,7 +236,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
         onSuccess()
       } catch (err) {
-        console.error(err)
+        console.error('Failed to login:', err)
         handleError(err)
         setIsWorking(false)
         setLastErrorCode(getErrorCodeFromError(err as Error))
@@ -248,6 +248,13 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <Heading variant="h2">Two-Factor Authentication</Heading>
         <p>Enter the code from your MFA app:</p>
         <MultiFactorAuthCodeInput onCode={onCode} isDisabled={isWorking} />
+        {isWorking && <LoadingIndicator message="Using your MFA code..." />}
+        {lastErrorCode !== null ? (
+          <ErrorMessage>
+            Failed to use your MFA code:{' '}
+            {getMessageForFirebaseErrorCode(lastErrorCode)}
+          </ErrorMessage>
+        ) : null}
       </div>
     )
   }
