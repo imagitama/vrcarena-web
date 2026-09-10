@@ -3,6 +3,7 @@ import { Helmet } from '@unhead/react/helmet'
 import Select, { MenuItem } from '@/components/select'
 import Button from '@/components/button'
 import TextInput from '@/components/text-input'
+import TagInput from '@/components/tag-input'
 
 export default () => {
   return (
@@ -13,6 +14,8 @@ export default () => {
       </Helmet>
       <div>
         <h1>Forms</h1>
+        <h2>Tag Editor</h2>
+        <TagInput />
         <h2>Basic Components (Default Size)</h2>
         <Button>Click Me</Button>{' '}
         <Select label="Here We Go" button={<Button>Click Me</Button>}>

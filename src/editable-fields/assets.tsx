@@ -3,12 +3,7 @@ import React from 'react'
 import categoryMetas from '@/category-meta'
 import type { EditableField } from './'
 import { fieldTypes } from '@/generic-forms'
-import {
-  Asset,
-  AssetCategory,
-  CollectionNames,
-  FullAsset,
-} from '@/modules/assets'
+import { Asset, AssetCategory, CollectionNames } from '@/modules/assets'
 import {
   ASSET_TITLE_MAX_LENGTH,
   ASSET_TITLE_MIN_LENGTH,

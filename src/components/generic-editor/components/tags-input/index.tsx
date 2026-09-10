@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { TagEditableField } from '@/editable-fields'
-import TagInput, { TagInputSettings } from '@/components/tag-input'
+import TagsInput, { TagsInputSettings } from '@/components/tags-input'
 
 export default ({
   editableField,
@@ -11,8 +11,8 @@ export default ({
   editableField: TagEditableField<any>
   value: string[]
   onChange: (newTags: string[]) => void
-} & TagInputSettings) => (
-  <TagInput
+} & TagsInputSettings) => (
+  <TagsInput
     onChange={(newTags) => onChange(newTags)}
     currentTags={value}
     {...editableField}

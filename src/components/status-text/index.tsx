@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 
 import { colorPalette } from '@/config'
 import classNames from 'classnames'
+import { AccessStatus, ApprovalStatus } from '@/modules/common'
 
 const useStyles = makeStyles({
   status: {
@@ -23,6 +24,36 @@ const useStyles = makeStyles({
   },
 })
 
+export type Positivity = 1 | 0 | -1
+
+export const getPositivityForAccessStatus = (
+  accessStatus: AccessStatus
+): Positivity => {
+  switch (accessStatus) {
+    case AccessStatus.Public:
+      return 1
+    case AccessStatus.Deleted:
+      return -1
+    default:
+      return 0
+  }
+}
+
+export const getPositivityForApprovalStatus = (
+  approvalStatus: ApprovalStatus
+): Positivity => {
+  switch (approvalStatus) {
+    case ApprovalStatus.Approved:
+    case ApprovalStatus.AutoApproved:
+      return 1
+    case ApprovalStatus.Declined:
+    case ApprovalStatus.Quarantined:
+      return -1
+    default:
+      return 0
+  }
+}
+
 const StatusText = ({
   children,
   positivity,
@@ -30,7 +61,7 @@ const StatusText = ({
   allowWrap,
 }: {
   children: React.ReactNode
-  positivity?: number
+  positivity?: Positivity
   className?: string
   allowWrap?: boolean
 }) => {

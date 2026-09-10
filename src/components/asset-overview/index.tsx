@@ -77,7 +77,6 @@ import AddToVccButton from '@/components/add-to-vcc-button'
 import RequiresVerificationNotice from '@/components/requires-verification-notice'
 import LoadingIndicator from '@/components/loading-indicator'
 import PrimaryImage from './components/primary-image'
-import TagChip from '@/components/tag-chip'
 import Tooltip from '@/components/tooltip'
 import AssetTree, { FullAssetTree } from '@/components/asset-tree'
 import ErrorBoundary from '@/components/error-boundary'
@@ -133,7 +132,7 @@ const useStyles = makeStyles({
     minWidth: 0, // fix flex shrink issue
   },
   rightCol: {
-    maxWidth: '200px',
+    maxWidth: '220px',
     flexShrink: 0,
     marginLeft: '1rem',
     [mediaQueryForWideDesktops]: {
@@ -265,11 +264,6 @@ const useStyles = makeStyles({
   saleTitle: {
     fontSize: '150%',
     marginBottom: '0.25rem',
-  },
-  count: {
-    marginLeft: '0.5rem',
-    fontSize: '75%',
-    color: colorGreyedOut,
   },
 })
 
@@ -929,35 +923,16 @@ const AssetOverview = ({
                 </ControlGroup>
               ) : null}
               <ControlGroup>
-                {asset && (
-                  <ControlGroup>
-                    {asset.tags
-                      .sort((a, b) => a.localeCompare(b))
-                      .map((tag, i) => {
-                        const stats = asset.tagscount?.find(
-                          (stats) => stats.tag === tag
-                        )
-                        return (
-                          <div key={tag}>
-                            <TagChip
-                              tagName={tag}
-                              label={
-                                <>
-                                  {tag}
-                                  {stats ? (
-                                    <span className={classes.count}>
-                                      {stats.count}
-                                    </span>
-                                  ) : null}
-                                </>
-                              }
-                              isFilled
-                            />
-                          </div>
-                        )
-                      })}
-                  </ControlGroup>
-                )}
+                <ControlGroup>
+                  <TagChips
+                    shimmer={isLoadingAsset}
+                    tags={asset ? asset.tags : []}
+                    counts={asset ? asset.tagscount : undefined}
+                    // editor
+                    assetId={assetId}
+                    hydrate={hydrate}
+                  />
+                </ControlGroup>
                 <Control>
                   <EndorseAssetButton
                     isAssetLoading={!isAssetLoaded}

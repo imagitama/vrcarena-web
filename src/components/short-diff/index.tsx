@@ -55,6 +55,7 @@ import { TableBody } from '@/components/responsive-table'
 import { TableCell } from '@/components/responsive-table'
 import { TableHead } from '@/components/responsive-table'
 import { TableRow } from '@/components/responsive-table'
+import TagChips from '../tag-chips'
 
 const useStyles = makeStyles({
   output: {
@@ -247,7 +248,7 @@ function TagOutput({ fields }: { fields: Asset }) {
   return (
     <div>
       {fields.tags && fields.tags.length ? (
-        fields.tags.map((tag) => <TagChip key={tag} tagName={tag} />)
+        <TagChips tags={fields.tags} />
       ) : (
         <NoValueLabel>(no tags)</NoValueLabel>
       )}

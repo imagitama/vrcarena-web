@@ -2,16 +2,25 @@ import React, { useContext } from 'react'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CreateIcon from '@mui/icons-material/Create'
-import { Decline as DeclineIcon, Queue as QueueIcon } from '@/icons'
 
-import { IndicativeAuditStatus } from '@/modules/assets'
 import useIsEditor from '@/hooks/useIsEditor'
+import useIsLoggedIn from '@/hooks/useIsLoggedIn'
+
+import {
+  IndicativeAuditStatus,
+  CollectionNames as AssetsCollectionNames,
+} from '@/modules/assets'
+import {
+  ViewNames as AmendmentsViewNames,
+  AmendmentWithMeta,
+} from '@/modules/amendments'
 import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
 import {
   getArchivedReasonLabel,
   getDeclinedReasonLabel,
   getDeletionReasonLabel,
 } from '@/utils/assets'
+import { Decline as DeclineIcon, Queue as QueueIcon } from '@/icons'
 
 import Message from '@/components/message'
 import PublicEditorNotes from '@/components/public-editor-notes'
@@ -20,10 +29,53 @@ import WarningMessage from '@/components/warning-message'
 import ClearIndicativeStatusButton from '@/components/clear-indicative-status-button'
 
 import AssetOverviewContext from '../../context'
+import useDatabaseQuery, {
+  Operators,
+  OrderDirections,
+} from '@/hooks/useDatabaseQuery'
+import { routes } from '@/routes'
+import {
+  ResponsiveTable as Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@/components/responsive-table'
+import useUserId from '@/hooks/useUserId'
+import FormattedDate from '@/components/formatted-date'
+import StatusText, {
+  getPositivityForAccessStatus,
+  getPositivityForApprovalStatus,
+} from '@/components/status-text'
+import ShortId from '@/components/short-id'
+import { capitalize } from '@/utils'
+
+const useActiveAmendmentsForAsset = (assetId: string): AmendmentWithMeta[] => {
+  const myUserId = useUserId()
+  const [, , results] = useDatabaseQuery<AmendmentWithMeta>(
+    AmendmentsViewNames.GetAmendmentsWithMeta,
+    myUserId
+      ? [
+          ['parent', Operators.EQUALS, assetId],
+          ['parenttable', Operators.EQUALS, AssetsCollectionNames.Assets],
+          ['approvalstatus', Operators.EQUALS, 'waiting'],
+          ['accessstatus', Operators.EQUALS, 'public'],
+          ['createdby', Operators.EQUALS, myUserId],
+        ]
+      : false,
+    {
+      orderBy: ['createdat', OrderDirections.DESC],
+    }
+  )
+
+  return results || []
+}
 
 const AssetOverviewMessages = () => {
-  const { asset, isLoading, hydrate } = useContext(AssetOverviewContext)
+  const { assetId, asset, isLoading, hydrate } =
+    useContext(AssetOverviewContext)
   const isEditor = useIsEditor()
+  const activeAmendmentsForAsset = useActiveAmendmentsForAsset(assetId)
 
   if (!asset || isLoading) {
     return null
@@ -129,6 +181,52 @@ const AssetOverviewMessages = () => {
           </Message>
         )
     }
+  }
+
+  if (activeAmendmentsForAsset.length) {
+    messages.push(
+      <Message>
+        You have {activeAmendmentsForAsset.length} active amendments for this
+        asset:
+        <Table>
+          <TableHead></TableHead>
+          <TableBody>
+            {activeAmendmentsForAsset.map((amendment) => (
+              <TableRow key={amendment.id}>
+                <TableCell>
+                  <ShortId
+                    url={routes.viewAmendmentWithVar.replace(
+                      ':amendmentId',
+                      amendment.id
+                    )}>
+                    {amendment.id}
+                  </ShortId>
+                </TableCell>
+                <TableCell>
+                  <StatusText
+                    positivity={getPositivityForAccessStatus(
+                      amendment.accessstatus
+                    )}>
+                    {capitalize(amendment.accessstatus)}
+                  </StatusText>
+                </TableCell>
+                <TableCell>
+                  <StatusText
+                    positivity={getPositivityForApprovalStatus(
+                      amendment.approvalstatus
+                    )}>
+                    {capitalize(amendment.approvalstatus)}
+                  </StatusText>
+                </TableCell>
+                <TableCell>
+                  <FormattedDate date={amendment.createdat} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Message>
+    )
   }
 
   return <>{messages}</>

@@ -201,8 +201,8 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         autoFocus
         onKeyDown={onKeyDown}
       />
-      <br />
       <TextInput
+        topMargin
         fullWidth
         value={passwordVal}
         onChange={(e) => setPasswordVal(e.target.value)}

@@ -51,7 +51,9 @@ const useStyles = makeStyles({
     },
   },
   topMargin: {
-    marginTop: '0.5rem',
+    '&&': {
+      marginTop: '0.5rem',
+    },
   },
   inputGroup: {
     width: '100%',
@@ -77,7 +79,7 @@ const TextInput = ({ id, button, label, topMargin, ...props }: Props) => {
       className={classNames({
         [classes.root]: true,
         [classes.withButton]: button !== undefined,
-        [classes.topMargin]: topMargin !== undefined,
+        [classes.topMargin]: topMargin === true,
       })}
       variant="outlined"
       fullWidth={props.fullWidth}

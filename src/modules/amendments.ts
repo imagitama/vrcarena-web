@@ -16,6 +16,7 @@ export interface AmendmentFields extends Record<string, unknown> {
 }
 
 export interface AmendmentMeta {
+  id: string
   accessstatus: AccessStatus
   approvalstatus: ApprovalStatus
   approvedat: string | null // date
@@ -34,6 +35,9 @@ export interface FullAmendment<T> extends Amendment, AmendmentMeta {
   lastmodifiedbyusername: string | null
 }
 
+// AssetOverview
+export interface AmendmentWithMeta extends Amendment, AmendmentMeta {}
+
 export enum CollectionNames {
   Amendments = 'amendments',
   AmendmentsMeta = 'amendmentsmeta',
@@ -42,6 +46,7 @@ export enum CollectionNames {
 export enum ViewNames {
   GetFullAmendments = 'getfullamendments',
   GetAmendmentsWaitingForApproval = 'getamendmentswaitingforapproval',
+  GetAmendmentsWithMeta = 'getamendmentswithmeta', // AssetOverview
 }
 
 export enum FunctionNames {
