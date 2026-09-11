@@ -13,7 +13,7 @@ import {
 } from '@/modules/assetsyncqueue'
 import { routes } from '@/routes'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
-import { VRCArenaTheme } from '@/themes'
+import { colorGrey, VRCArenaTheme } from '@/themes'
 
 import { Operators } from '@/hooks/useDatabaseQuery'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
@@ -63,7 +63,6 @@ const fadeBackground = (color: string) => keyframes`
   50% { background-color: ${color}; }
   100%   { background-color: transparent; }
 `
-const colorNew = `rgba(100,100,100)`
 
 const AssetParentRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<AssetForList>(
@@ -93,7 +92,7 @@ const AssetParentRenderer = ({ item }: { item: AssetSyncQueueItem }) => {
 
 const Box = styled.div`
   padding: 0.25rem;
-  border: 1px solid rgb(100, 100, 100);
+  border: 1px solid ${colorGrey};
   border-radius: ${({ theme }) => (theme as VRCArenaTheme).shape.borderRadius};
 `
 
@@ -125,7 +124,7 @@ const Renderer = ({ items, hydrate }: RendererProps<AssetSyncQueueItem>) => {
                     false
                       ? {
                           animation: `${fadeBackground(
-                            colorNew
+                            colorGrey
                           )} 4s ease-out forwards`,
                         }
                       : undefined

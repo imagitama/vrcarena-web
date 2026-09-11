@@ -40,7 +40,7 @@ export interface FullAttachment extends Attachment {
 }
 
 export enum AttachmentReason {
-  AssetFile = 'asset-file',
+  AssetFile = 'asset-file', // TODO: rename away from "asset" to support other datas
   UserAdded = 'user-added',
   Tutorial = 'tutorial',
 }

@@ -4,7 +4,7 @@ import LazyLoad from '@/components/lazy-load'
 
 import { FullSpecies, Species } from '@/modules/species'
 import * as routes from '@/routes'
-import { VRCArenaTheme } from '@/themes'
+import { colorGrey, VRCArenaTheme } from '@/themes'
 import { getRandomInt } from '@/utils'
 import { colorPalette } from '@/config'
 
@@ -52,7 +52,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     width: '80px',
     height: '80px',
     marginRight: '0.5rem',
-    backgroundColor: 'rgba(100, 100, 100)',
+    backgroundColor: colorGrey,
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
     '& img': {
@@ -90,7 +90,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     borderRadius: `0 0 0 ${theme.shape.borderRadius * 2}px`,
     zIndex: -5,
     position: 'relative',
-    border: '2px solid rgba(100, 100, 100)',
+    border: `2px solid ${colorGrey}`,
     borderTop: 'none',
     borderRight: 'none',
   },
@@ -99,7 +99,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     top: '-100px',
     left: '20px',
     height: '200%',
-    borderLeft: '2px solid rgba(100, 100, 100)',
+    borderLeft: `2px solid ${colorGrey}`,
   },
   children: {
     width: '100%',
@@ -114,7 +114,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   },
   line: {
     width: '2px',
-    backgroundColor: 'rgba(100, 100, 100)',
+    backgroundColor: colorGrey,
     height: '50px',
     position: 'absolute',
     left: '20px',

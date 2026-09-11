@@ -138,6 +138,14 @@ export const editTagSuggestionWithVar = '/tag-suggestions/:tagSuggestionId/edit'
 export const createTagSuggestion = '/tag-suggestions/create'
 export const createTagSuggestionWithVar = '/tag-suggestions/create?tag=:tagName'
 
+export const createArticle = '/articles/create'
+export const createArticleWithVars =
+  '/articles/create?parentTable=:parentTable&parentId=:parentId'
+export const editArticleWithVar = '/articles/edit/:articleId'
+export const viewArticleWithVar = '/articles/:articleId'
+export const articlesWithPageNumberVar = '/articles/page/:pageNumber'
+export const articles = '/articles'
+
 // admin - generic
 export const admin = '/admin'
 export const adminWithTabNameVar = '/admin/:tabName'

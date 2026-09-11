@@ -12,6 +12,7 @@ import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import { CONTENT_MAX_WIDTH_PX } from '@/config'
 import { useState } from 'react'
 import ExpandIcon from '../expand-icon'
+import { colorGrey } from '@/themes'
 
 const WELCOME_MESSAGE_HIDE_ID = 'welcome_may2026'
 
@@ -31,7 +32,7 @@ const WelcomeMessageRoot = styled.div`
 
 const SpeechBubble = styled.div`
   border-radius: 0.5rem;
-  border: 1px solid rgb(255, 255, 255, 0.1);
+  border: 1px solid ${colorGrey};
   padding: 0.5rem;
   position: relative;
   & > p {
@@ -50,7 +51,7 @@ const SpeechBubbleTriangleOuter = styled.div`
   height: 0;
   border-style: solid;
   border-width: 0.6rem 1.1rem 0.6rem 0;
-  border-color: transparent rgba(255, 255, 255, 0.1) transparent transparent;
+  border-color: transparent ${colorGrey} transparent transparent;
   position: absolute;
   top: 0.9rem;
   left: -1.1rem;

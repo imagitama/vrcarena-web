@@ -1,8 +1,6 @@
 import React, { Fragment, useState } from 'react'
-import LaunchIcon from '@mui/icons-material/Launch'
 import { keyframes } from '@mui/system'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import styled from '@emotion/styled'
 
 import PaginatedView, { RendererProps } from '@/components/paginated-view'
@@ -20,17 +18,13 @@ import ResponsiveTable, {
 import { TableBody } from '@mui/material'
 import ShortId from '@/components/short-id'
 import NoResultsMessage from '@/components/no-results-message'
-import NoValueLabel from '@/components/no-value-label'
-import Link from '@/components/link'
 import Tooltip from '@/components/tooltip'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
 import FormattedDate from '@/components/formatted-date'
 import AiResultSummary from '@/components/ai-result-summary'
-import { VRCArenaTheme } from '@/themes'
+import { colorGrey, VRCArenaTheme } from '@/themes'
 import { Operators } from '@/hooks/useDatabaseQuery'
 import Heading from '@/components/heading'
-import { AssetTranslationOutput } from '@/components/asset-translations-form'
-import DialogButton from '@/components/dialog-button'
 import { QueueStatus } from '@/modules/common'
 
 const fadeBackground = (color: string) => keyframes`
@@ -38,11 +32,10 @@ const fadeBackground = (color: string) => keyframes`
   50% { background-color: ${color}; }
   100%   { background-color: transparent; }
 `
-const colorNew = `rgba(100,100,100)`
 
 const Box = styled.div`
   padding: 0.25rem;
-  border: 1px solid rgb(100, 100, 100);
+  border: 1px solid ${colorGrey};
   border-radius: ${({ theme }) => (theme as VRCArenaTheme).shape.borderRadius};
 `
 
@@ -75,7 +68,7 @@ const Renderer = ({ items }: RendererProps<ImageConvertQueueItem>) => {
                     false
                       ? {
                           animation: `${fadeBackground(
-                            colorNew
+                            colorGrey
                           )} 4s ease-out forwards`,
                         }
                       : undefined

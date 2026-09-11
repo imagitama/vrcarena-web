@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import TagChip from '@/components/tag-chip'
 import { TagStats } from '@/modules/tags'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
-import { Edit as EditIcon } from '@/icons'
+import { Add as AddIcon, Edit as EditIcon } from '@/icons'
 import TagChipsEditor from '../tag-chips-editor'
 
 export const StyledTagChips = styled.div`
@@ -24,6 +24,7 @@ type TagChipsBaseProps = {
   shimmer?: boolean
   isFilled?: boolean
   onDelete?: (tag: string) => void
+  onAdd?: (tag: string) => void
   noLink?: boolean
   counts?: TagStats[]
 }
@@ -44,6 +45,7 @@ const TagChips = ({
   shimmer = false,
   isFilled = true,
   onDelete,
+  onAdd,
   noLink = false,
   counts,
   assetId,
@@ -84,8 +86,11 @@ const TagChips = ({
                 count={stats?.count}
                 isFilled={isFilled}
                 onDelete={onDelete ? () => onDelete(tagName) : undefined}
-                onClick={onDelete ? () => {} : undefined}
+                onClick={
+                  onAdd ? () => onAdd(tagName) : onDelete ? () => {} : undefined
+                }
                 noLink={noLink}
+                icon={onAdd ? <AddIcon /> : undefined}
               />
             )
           })

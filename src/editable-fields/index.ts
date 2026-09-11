@@ -9,7 +9,7 @@ import { CollectionNames as PagesCollectionNames } from '@/modules/pages'
 import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
 import { ImageUploaderConfig } from '@/components/image-uploader'
-import { TagInputSettings } from '@/components/tag-input'
+import { TagsInputSettings } from '@/components/tags-input'
 
 import attachments from './attachments'
 import assets from './assets'
@@ -108,13 +108,14 @@ export interface UrlEditableField<TRecord> extends EditableFieldBase<TRecord> {
 }
 
 export interface TagEditableField<TRecord>
-  extends TagInputSettings,
+  extends TagsInputSettings,
     EditableFieldBase<TRecord> {
   type: fieldTypes.tags
+  suggestedTags?: string[]
 }
 
 export interface MarkdownEditableField<TRecord>
-  extends TagInputSettings,
+  extends TagsInputSettings,
     EditableFieldBase<TRecord> {
   type: fieldTypes.textMarkdown
   allowImages?: boolean

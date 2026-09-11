@@ -25,6 +25,7 @@ import Dialog from '@/components/dialog'
 import ChatMessage from '@/components/chat-message'
 import Tooltip from '../tooltip'
 import { colorPalette } from '@/config'
+import { colorGrey } from '@/themes'
 
 const useStyles = makeStyles({
   root: {
@@ -198,7 +199,7 @@ const useStyles = makeStyles({
   iconWrapper: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgb(100,100,100)',
+    backgroundColor: colorGrey,
     textAlign: 'center',
   },
   icon: {

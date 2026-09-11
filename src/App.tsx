@@ -259,6 +259,15 @@ const ViewTagSuggestion = lazy(() =>
 const EditTagSuggestion = lazy(() =>
   catchChunkDeaths(() => import('./containers/edit-tag-suggestion'))
 )
+const Articles = lazy(() =>
+  catchChunkDeaths(() => import('./containers/articles'))
+)
+const ViewArticle = lazy(() =>
+  catchChunkDeaths(() => import('./containers/view-article'))
+)
+const EditArticle = lazy(() =>
+  catchChunkDeaths(() => import('./containers/edit-article'))
+)
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -614,6 +623,21 @@ const MainContent = () => {
           exact
           path={[routes.tagSuggestions, routes.tagSuggestionsWithPageNumberVar]}
           component={TagSuggestions}
+        />
+        <Route
+          exact
+          path={[routes.editArticleWithVar, routes.createArticle]}
+          component={EditArticle}
+        />
+        <Route
+          exact
+          path={[routes.viewArticleWithVar]}
+          component={ViewArticle}
+        />
+        <Route
+          exact
+          path={[routes.articles, routes.articlesWithPageNumberVar]}
+          component={Articles}
         />
         <Route
           exact

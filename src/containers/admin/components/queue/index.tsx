@@ -10,7 +10,7 @@ import { keyframes } from '@mui/system'
 
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-import { VRCArenaTheme } from '@/themes'
+import { colorGrey, VRCArenaTheme } from '@/themes'
 import { routes } from '@/routes'
 import { QueuedItem, QueuedItemForRecord } from '@/queues'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
@@ -292,8 +292,6 @@ const AssetAuditApplyParentRenderer = ({
   )
 }
 
-const colorNew = `rgba(100,100,100)`
-
 interface RowProps<TItem extends QueuedItem> {
   item: TItem & QueuedItem
   index: number
@@ -389,7 +387,7 @@ const fadeBackground = (color: string) => keyframes`
 
 const Box = styled.div`
   padding: 0.25rem;
-  border: 1px solid rgb(100, 100, 100);
+  border: 1px solid ${colorGrey};
   border-radius: ${({ theme }) => (theme as VRCArenaTheme).shape.borderRadius};
 `
 
@@ -420,7 +418,7 @@ const QueueTableRow = <TItem extends QueuedItem>({
         sx={
           isNew
             ? {
-                animation: `${fadeBackground(colorNew)} 4s ease-out forwards`,
+                animation: `${fadeBackground(colorGrey)} 4s ease-out forwards`,
               }
             : undefined
         }>

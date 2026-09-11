@@ -165,6 +165,7 @@ const permissions = {
     routes.tutorials,
     routes.createAuthor,
     routes.createTagSuggestion,
+    routes.createArticle,
   ],
   [UserRoles.Editor]: [
     routes.admin,
@@ -182,6 +183,7 @@ const permissions = {
     routes.editPageWithParentAndPageVar,
     routes.createPageWithParentAndPageVar,
     routes.editAttachmentWithVar,
+    routes.editArticleWithVar,
   ],
   [UserRoles.Admin]: [
     routes.admin,

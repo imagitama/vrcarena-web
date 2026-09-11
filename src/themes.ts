@@ -6,6 +6,7 @@ export const colorBrandLight = '#9E85C4'
 export const colorEditor = '#a67250'
 export const colorEditorDark = '#6e4c35'
 
+export const colorGrey = 'rgb(75, 75, 75)'
 export const colorGreyedOut = 'rgb(180, 180, 180)'
 
 export const colorFree = 'rgb(100, 150, 100)'
@@ -155,10 +156,10 @@ export const darkTheme: VRCArenaTheme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: 'rgb(100, 100, 100)',
+          backgroundColor: colorGrey,
         },
         arrow: {
-          color: 'rgb(100, 100, 100)',
+          color: colorGrey,
         },
       },
     },

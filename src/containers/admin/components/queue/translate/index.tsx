@@ -27,7 +27,7 @@ import Tooltip from '@/components/tooltip'
 import { getFriendlyDate, getFriendlyDuration } from '@/utils/dates'
 import FormattedDate from '@/components/formatted-date'
 import AiResultSummary from '@/components/ai-result-summary'
-import { VRCArenaTheme } from '@/themes'
+import { colorGrey, VRCArenaTheme } from '@/themes'
 import { Operators } from '@/hooks/useDatabaseQuery'
 import Heading from '@/components/heading'
 import { AssetTranslationOutput } from '@/components/asset-translations-form'
@@ -51,11 +51,10 @@ const fadeBackground = (color: string) => keyframes`
   50% { background-color: ${color}; }
   100%   { background-color: transparent; }
 `
-const colorNew = `rgba(100,100,100)`
 
 const Box = styled.div`
   padding: 0.25rem;
-  border: 1px solid rgb(100, 100, 100);
+  border: 1px solid ${colorGrey};
   border-radius: ${({ theme }) => (theme as VRCArenaTheme).shape.borderRadius};
 `
 
@@ -88,7 +87,7 @@ const Renderer = ({ items }: RendererProps<TranslateQueuedItem>) => {
                     false
                       ? {
                           animation: `${fadeBackground(
-                            colorNew
+                            colorGrey
                           )} 4s ease-out forwards`,
                         }
                       : undefined

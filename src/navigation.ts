@@ -97,6 +97,11 @@ const items: MenuItem[] = [
         label: 'Events',
       },
       {
+        id: 'articles',
+        url: routes.articles,
+        label: 'Articles',
+      },
+      {
         id: 'collections',
         url: routes.viewCollections,
         label: 'Collections',

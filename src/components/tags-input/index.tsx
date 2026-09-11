@@ -142,6 +142,8 @@ const RecommendedTags = ({
 export interface TagsInputSettings {
   showRecommendedTags?: boolean
   autoComplete?: boolean
+  showSuggestButton?: boolean
+  suggestedTags?: string[]
 }
 
 const TagsInput = ({
@@ -153,6 +155,8 @@ const TagsInput = ({
   isDisabled = false,
   fullWidth = false,
   autoComplete = true,
+  showSuggestButton = true,
+  suggestedTags,
 }: {
   currentTags?: string[]
   onChange?: (newTags: string[]) => void
@@ -205,17 +209,25 @@ const TagsInput = ({
         <NoResultsMessage>No tags yet</NoResultsMessage>
       )}
       <TagInput onNewTag={addTag} />
-      <div>
-        <Button
-          url={routes.createTagSuggestion}
-          color="secondary"
-          hollow={false}
-          title="Do you have an idea for a new official tag? Or dislike an existing one? You can suggest it by clicking this button.">
-          Suggest Tag Change
-        </Button>
-        <br />
-        *redirects to page (ensure your asset is saved)
-      </div>
+      {showSuggestButton && (
+        <div>
+          <Button
+            url={routes.createTagSuggestion}
+            color="secondary"
+            hollow={false}
+            title="Do you have an idea for a new official tag? Or dislike an existing one? You can suggest it by clicking this button.">
+            Suggest Tag Change
+          </Button>
+          <br />
+          *redirects to page (ensure your asset is saved)
+        </div>
+      )}
+      {suggestedTags && (
+        <>
+          Suggested tags:{' '}
+          <TagChips tags={suggestedTags} onAdd={(tag) => addTag(tag)} />
+        </>
+      )}
       {showRecommendedTags ? (
         isExpanded ? (
           <div className={classes.recommendedTags}>
