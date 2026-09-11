@@ -69,7 +69,13 @@ const useStyles = makeStyles({
   },
 })
 
-const UserListItem = ({ user }: { user: UserForList }) => {
+const UserListItem = ({
+  user,
+  showSignupDate = true,
+}: {
+  user: UserForList
+  showSignupDate?: boolean
+}) => {
   const classes = useStyles()
   return (
     <div
@@ -95,7 +101,7 @@ const UserListItem = ({ user }: { user: UserForList }) => {
             {user.username || '(no name set)'}
           </span>
           <div className={classes.meta}>
-            {user.createdat && (
+            {user.createdat && showSignupDate && (
               <HintText small>
                 <FormattedDate date={user.createdat} />
               </HintText>

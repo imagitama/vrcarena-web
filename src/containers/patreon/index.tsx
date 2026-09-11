@@ -74,9 +74,9 @@ const Patrons = () => {
   return (
     <>
       <Heading variant="h2">Active Patrons</Heading>
-      <UserList users={active} />
+      <UserList users={active} showSignupDate={false} />
       <Heading variant="h2">Previous Patrons</Heading>
-      <UserList users={previous} />
+      <UserList users={previous} showSignupDate={false} />
     </>
   )
 }

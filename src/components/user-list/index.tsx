@@ -12,12 +12,24 @@ const useStyles = makeStyles({
 })
 
 // TODO: rename to UserResults
-const UserList = ({ users }: { users?: UserForList[] }) => {
+const UserList = ({
+  users,
+  showSignupDate = true,
+}: {
+  users?: UserForList[]
+  showSignupDate?: boolean
+}) => {
   const classes = useStyles()
   return (
     <div className={classes.container}>
       {users
-        ? users.map((user) => <UserListItem key={user.id} user={user} />)
+        ? users.map((user) => (
+            <UserListItem
+              key={user.id}
+              user={user}
+              showSignupDate={showSignupDate}
+            />
+          ))
         : null}
     </div>
   )
