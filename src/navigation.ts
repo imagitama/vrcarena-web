@@ -96,11 +96,12 @@ const items: MenuItem[] = [
         url: routes.events,
         label: 'Events',
       },
-      {
-        id: 'articles',
-        url: routes.articles,
-        label: 'Articles',
-      },
+      // WIP
+      // {
+      //   id: 'articles',
+      //   url: routes.articles,
+      //   label: 'Articles',
+      // },
       {
         id: 'collections',
         url: routes.viewCollections,
