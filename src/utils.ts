@@ -146,6 +146,9 @@ export const getYouTubeVideoIdFromUrl = (url: string): string => {
   return url.match(/([a-z0-9_-]{11})/gim)[0]
 }
 
+export const getIsVrchatNewsArticleUrl = (url: string): boolean =>
+  url.includes('steamcommunity')
+
 export function getIsUrlNotAnImageOrVideo(url: string): boolean {
   const validUrl = getValidUrl(url)
   return !getIsUrlAnImage(validUrl) && !getIsUrlAVideo(validUrl)

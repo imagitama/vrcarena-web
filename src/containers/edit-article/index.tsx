@@ -67,9 +67,18 @@ export default () => {
         />
       </Helmet>
       <Heading variant="h1">{isCreating ? 'Create' : 'Edit'} Article</Heading>
-      <InfoMessage title="What is an article?" hideId="what-is-article">
-        News from third party sites, news about VRCArena, updates for a specific
-        asset (shown on the asset page).
+      <InfoMessage title="How articles work" hideId="what-is-article">
+        <p>
+          Anyone can submit news articles about <em>anything</em> VR related.
+          Use tags.
+        </p>
+        <ul>
+          <li>VRChat/ChilloutVR/Resonite news</li>
+          <li>updates to assets like sales or bug fixes</li>
+          <li>VR hardware and software news (like SteamVR updates)</li>
+          <li>site news</li>
+        </ul>
+        <p>Only approved articles will be shown on the homepage.</p>
       </InfoMessage>
       <View />
     </>

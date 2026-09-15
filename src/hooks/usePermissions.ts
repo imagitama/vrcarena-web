@@ -19,6 +19,8 @@ function usePermissions<TRecord extends CommonRecordFields = never>(
   const firebaseUser = useFirebaseUser()
   const isVerified = useAccountVerification()
 
+  console.debug('HOOK', routeOrRecord, user)
+
   if (!user || !firebaseUser) {
     return false
   }

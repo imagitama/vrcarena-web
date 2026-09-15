@@ -15,18 +15,22 @@ interface RecordWithMetadata {
   createdbyavatarurl: string
 }
 
-const StyledMetadata = styled.div`
+export const StyledMetadata = styled.div`
   font-size: 75%;
 `
 
 const Metadata = ({ item }: { item: RecordWithMetadata }) => (
   <StyledMetadata>
     Created <FormattedDate date={item.createdat} /> by{' '}
-    <UsernameLink
-      id={item.createdby}
-      username={item.createdbyusername}
-      avatarUrl={item.createdbyavatarurl}
-    />
+    {item.createdby ? (
+      <UsernameLink
+        id={item.createdby}
+        username={item.createdbyusername}
+        avatarUrl={item.createdbyavatarurl}
+      />
+    ) : (
+      'system'
+    )}
     {item.lastmodifiedby &&
       item.lastmodifiedat &&
       item.lastmodifiedat !== item.createdat && (

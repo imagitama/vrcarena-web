@@ -196,7 +196,11 @@ const ApproveButton = ({
           approvalStatus === ApprovalStatus.Approved ||
           isQuarantined
         }
-        title="Notifies publisher, shows in search results, etc.">
+        title={
+          metaCollectionName === AssetsCollectionNames.AssetsMeta
+            ? 'Notifies publisher, shows in search results, etc.'
+            : undefined
+        }>
         Approve
       </Button>{' '}
       {isAsset && (
@@ -259,7 +263,11 @@ const ApproveButton = ({
             approvalStatus === ApprovalStatus.Declined ||
             isQuarantined
           }
-          title="Notifies publisher, they must now un-publish and make changes">
+          title={
+            metaCollectionName === AssetsCollectionNames.AssetsMeta
+              ? 'Notifies publisher, they must now un-publish and make changes'
+              : undefined
+          }>
           Decline
           {hasChangedReasons ? ` with ${selectedReasons.length} reasons` : ''}
         </Button>

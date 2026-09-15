@@ -22,7 +22,6 @@ import {
   GITHUB_REPO_URL,
   PATREON_BECOME_PATRON_URL,
 } from '@/config'
-import { colors } from '@/brand'
 
 import Link from '@/components/link'
 import MobileMenu from '@/components/mobile-menu'

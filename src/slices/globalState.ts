@@ -12,67 +12,15 @@ import {
 import { CachedDiscordMessage } from '@/modules/discordmessagecache'
 import { AssetCategory } from '@/modules/assets'
 import { handleError } from '@/error-handling'
-
-export interface StatsForHomepage {
-  assets: {
-    totalcount: number
-    categories: {
-      [AssetCategory.Avatar]: number
-      [AssetCategory.Accessory]: number
-      [AssetCategory.Animation]: number
-      [AssetCategory.Tutorial]: number
-      [AssetCategory.Shader]: number
-      [AssetCategory.Retexture]: number
-      [AssetCategory.WorldAsset]: number
-      [AssetCategory.Tool]: number
-    }
-    freecount: number
-  }
-  collections: {
-    count: number
-  }
-  wishlists: {
-    count: number
-  }
-  reviews: {
-    count: number
-  }
-  authors: {
-    count: number
-  }
-  users: {
-    count: number // unbanned and verified
-  }
-  patreon: {
-    activepatroncount: number
-    totalpatroncount: number
-  }
-  species: {
-    speciescount: number
-  }
-  // vrchatgroup: {
-  //   count: number
-  // }
-}
-
-export interface HomepageContent {
-  stats: StatsForHomepage
-  recentdiscordannouncement: CachedDiscordMessage | null
-  recentdiscordtechchanges: CachedDiscordMessage | null
-  featuredspecies: Species | null
-}
+import { FullArticle } from '@/modules/articles'
 
 export interface GlobalState extends Record<string, any> {
   // global
   notices: Notice[]
   featuredevents: BasicEvent[]
 
-  // anywhere you can select a species:
-  // - home
+  // anywhere you can view a list of species or select one (like asset editor)
   species: PublicSpeciesForCache[]
-
-  // home-only
-  home: HomepageContent
 
   activesurveyid: string | null
 }

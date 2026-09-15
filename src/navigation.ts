@@ -2,12 +2,7 @@ import React from 'react'
 import * as routes from './routes'
 import categoriesMeta from './category-meta'
 import { AssetCategory } from './modules/assets'
-import {
-  MyUser,
-  UserAdminMeta,
-  UserPreferences,
-  UserRoles,
-} from './modules/users'
+import { MyUser, UserRoles } from './modules/users'
 
 export interface MenuItem {
   id: string
@@ -67,6 +62,11 @@ export function getLabelForMenuItem(Label: string | React.ReactElement): any {
 }
 
 const items: MenuItem[] = [
+  {
+    id: 'species',
+    label: 'Species',
+    url: routes.viewAllSpecies,
+  },
   ...Object.entries(categoriesMeta)
     .filter(([name]) => name !== AssetCategory.Tutorial)
     .map(([name, meta]) => ({
@@ -74,11 +74,6 @@ const items: MenuItem[] = [
       label: meta.name,
       url: routes.viewCategoryWithVar.replace(':categoryName', name),
     })),
-  {
-    id: 'species',
-    label: 'Species',
-    url: routes.viewAllSpecies,
-  },
   {
     id: 'more',
     label: 'More',
@@ -96,12 +91,11 @@ const items: MenuItem[] = [
         url: routes.events,
         label: 'Events',
       },
-      // WIP
-      // {
-      //   id: 'articles',
-      //   url: routes.articles,
-      //   label: 'Articles',
-      // },
+      {
+        id: 'articles',
+        url: routes.articles,
+        label: 'Articles',
+      },
       {
         id: 'collections',
         url: routes.viewCollections,

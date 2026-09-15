@@ -57,3 +57,7 @@ export interface StatusChange {
   avatarurl: string | null
   createdat: string | null // date
 }
+
+export type StatusChanges = {
+  [columnname: string]: StatusChange
+}

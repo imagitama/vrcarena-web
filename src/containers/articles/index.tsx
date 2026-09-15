@@ -8,7 +8,8 @@ import PaginatedView from '@/components/paginated-view'
 import Heading from '@/components/heading'
 import BodyText from '@/components/body-text'
 import { HydrateFn } from '@/hooks/useDataStore'
-import ArticleResultsItem from '@/components/article-results-item'
+import ArticleResults from '@/components/article-results'
+import { OrderDirections } from '@/hooks/useDatabaseQuery'
 
 const Renderer = ({
   items,
@@ -16,33 +17,27 @@ const Renderer = ({
 }: {
   items: FullArticle[]
   hydrate: HydrateFn
-}) =>
-  items.map((article) => (
-    <ArticleResultsItem key={article.id} article={article} hydrate={hydrate} />
-  ))
+}) => <ArticleResults articles={items} hydrate={hydrate} />
 
-const View = () => {
-  return (
-    <>
-      <PaginatedView<FullArticle>
-        viewName={ViewNames.GetFullArticles}
-        name="articles"
-        sortOptions={[
-          {
-            label: 'Created at',
-            fieldName: 'createdat',
-          },
-        ]}
-        defaultFieldName={'createdat'}
-        urlWithSubViewNameAndPageNumberVar={routes.articlesWithPageNumberVar}
-        createUrl={routes.createArticle}
-        itemNamePlural="articles">
-        {/* @ts-ignore */}
-        <Renderer />
-      </PaginatedView>
-    </>
-  )
-}
+const View = () => (
+  <PaginatedView<FullArticle>
+    viewName={ViewNames.GetFullArticles}
+    name="articles"
+    sortOptions={[
+      {
+        label: 'Created at',
+        fieldName: 'createdat',
+      },
+    ]}
+    defaultFieldName={'createdat'}
+    defaultDirection={OrderDirections.DESC}
+    urlWithSubViewNameAndPageNumberVar={routes.articlesWithPageNumberVar}
+    createUrl={routes.createArticle}
+    itemNamePlural="articles">
+    {/* @ts-ignore */}
+    <Renderer />
+  </PaginatedView>
+)
 
 export default () => (
   <>

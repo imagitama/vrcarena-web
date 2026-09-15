@@ -30,6 +30,16 @@ export interface CategoryMeta {
 }
 
 const categoryMetas: { [name: string]: CategoryMeta } = {
+  [AssetCategory.Avatar]: {
+    id: AssetCategory.Avatar,
+    name: 'Avatars',
+    nameSingular: 'Avatar',
+    description: `Represent yourself using an avatar designed specifically for VR games.`,
+    optimizedImageUrl: avatarOptimizedImageUrl,
+    icon: AccessibilityIcon,
+    rules:
+      'The avatar must be basically ready for upload to a game (like VRChat) with minimal effort for the user. Unrigged meshes the user is expected to rig themselves and VRM-only models are NOT allowed.',
+  },
   [AssetCategory.Accessory]: {
     id: AssetCategory.Accessory,
     name: 'Accessories',
@@ -49,16 +59,6 @@ const categoryMetas: { [name: string]: CategoryMeta } = {
       'Animate your VR avatar using these pre-made animations designed specifically for VR avatars.',
     optimizedImageUrl: animationOptimizedImageUrl,
     icon: DirectionsRunIcon,
-  },
-  [AssetCategory.Avatar]: {
-    id: AssetCategory.Avatar,
-    name: 'Avatars',
-    nameSingular: 'Avatar',
-    description: `Represent yourself using an avatar designed specifically for VR games.`,
-    optimizedImageUrl: avatarOptimizedImageUrl,
-    icon: AccessibilityIcon,
-    rules:
-      'The avatar must be basically ready for upload to a game (like VRChat) with minimal effort for the user. Unrigged meshes the user is expected to rig themselves and VRM-only models are NOT allowed.',
   },
   [AssetCategory.Tool]: {
     id: AssetCategory.Tool,

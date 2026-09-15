@@ -1,4 +1,4 @@
-import { Article, CollectionNames } from '@/modules/articles'
+import { Article, CollectionNames, tags } from '@/modules/articles'
 import { EditableField } from '.'
 import { fieldTypes } from '@/generic-forms'
 import AttachmentsForm from '@/components/attachments-form'
@@ -25,7 +25,7 @@ const editableFields: EditableField<Article>[] = [
     type: fieldTypes.tags,
     showRecommendedTags: false,
     showSuggestButton: false,
-    suggestedTags: ['site', 'vrchat', 'resonite', 'hardware', 'steamvr'],
+    suggestedTags: tags,
     hint: "Some tags shown below the article content to help the user know what it's related to.",
     isRequired: true,
   },

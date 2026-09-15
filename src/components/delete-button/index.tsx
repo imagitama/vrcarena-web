@@ -173,9 +173,11 @@ const DeleteButton = ({
         color="secondary"
         hollow={false}
         title={
-          accessStatus === AccessStatus.Deleted
-            ? 'Does not do any notification'
-            : 'Notifies creator, prevents edits'
+          metaCollectionName === AssetCollectionNames.AssetsMeta
+            ? accessStatus === AccessStatus.Deleted
+              ? 'Does not do any notification'
+              : 'Notifies creator, prevents edits'
+            : undefined
         }
         {...buttonProps}>
         {accessStatus === AccessStatus.Deleted
