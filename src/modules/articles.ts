@@ -28,6 +28,7 @@ export interface ArticleFields<TExtraData = null> extends Record<string, any> {
   tags: string[]
   sourceurl: string | null
   extradata: TExtraData
+  slug: string | null
 }
 
 export interface Article extends ArticleFields {

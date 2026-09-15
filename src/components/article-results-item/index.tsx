@@ -3,25 +3,22 @@ import styled from '@emotion/styled'
 import {
   Article,
   ARTICLE_TAG_SITE,
-  CollectionNames,
   FullArticle,
   getIsVrchatNewsArticle,
   VrchatNewsArticleMetadata,
 } from '@/modules/articles'
 import { colorGrey } from '@/themes'
-import useIsEditor from '@/hooks/useIsEditor'
-import { mediaQueryForMobiles } from '@/media-queries'
-import EditorRecordManager from '../editor-record-manager'
+import { AccessStatus, ApprovalStatus } from '@/modules/common'
+import { routes } from '@/routes'
+import { trimDescription } from '@/utils/formatting'
+
 import Heading from '../heading'
 import Markdown from '../markdown'
 import Attachments from '../attachments'
 import Metadata, { StyledMetadata } from '../metadata'
-import { AccessStatus, ApprovalStatus } from '@/modules/common'
 import WarningMessage from '../warning-message'
 import FormattedDate from '../formatted-date'
-import { trimDescription } from '@/utils/formatting'
 import Link from '../link'
-import { routes } from '@/routes'
 import ErrorMessage from '../error-message'
 
 const StyledArticleResultsItem = styled.div`
@@ -29,9 +26,6 @@ const StyledArticleResultsItem = styled.div`
   border-radius: 1rem;
   overflow: hidden;
   border: 1px solid ${colorGrey};
-  ${mediaQueryForMobiles} {
-    padding: 0.25rem;
-  }
 `
 
 const VrchatMetadata = ({
@@ -118,7 +112,10 @@ const ArticleResultsItem = ({
         </SourceBar>
         <Heading noMargin variant="h2">
           <Link
-            to={routes.viewArticleWithVar.replace(':articleId', article.id)}>
+            to={routes.viewArticleWithVar.replace(
+              ':articleId',
+              article.slug || article.id
+            )}>
             {article.title}
           </Link>
         </Heading>

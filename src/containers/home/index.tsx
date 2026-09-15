@@ -85,21 +85,36 @@ const PrimaryTiles = styled.div`
     &:nth-child(2) {
       margin: 0 0.5rem;
     }
+    ${mediaQueryForMobiles} {
+      width: 100%;
+      &:nth-child(2) {
+        margin: 0.5rem 0;
+      }
+    }
   }
 `
 
 const Columns = styled.div`
   display: flex;
   flex-wrap: wrap;
+  ${mediaQueryForMobiles} {
+    flex-direction: column;
+  }
 `
 const ColumnLeft = styled.div`
   width: 70%;
   padding-right: 0.5rem;
+  ${mediaQueryForMobiles} {
+    width: 100%;
+  }
 `
 const ColumnRight = styled.div`
   width: 30%;
   > * {
     margin-bottom: 0.5rem;
+  }
+  ${mediaQueryForMobiles} {
+    width: 100%;
   }
 `
 
@@ -111,9 +126,6 @@ const StyledTile = styled.div`
   overflow: hidden;
   border: 1px solid ${colorGrey};
   padding: 0.5rem;
-  ${mediaQueryForMobiles} {
-    padding: 0.25rem;
-  }
 `
 
 const StatNum = styled.span`
