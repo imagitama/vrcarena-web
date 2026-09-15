@@ -54,8 +54,6 @@ const Renderer = ({
   }
 }
 
-const FILTER_FIELDNAME_FREE = 'free'
-
 /**
  * A paginated view but assets only with adult content filtered.
  * @param props

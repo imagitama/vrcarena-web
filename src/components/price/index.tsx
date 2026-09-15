@@ -72,22 +72,22 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
     filter: 'blur(3px)',
   },
   small: {
-    height: '24px',
-    marginLeft: '12px',
-    lineHeight: '24px',
-    padding: '0 7px 0 7px',
+    height: '18px',
+    marginLeft: '9px',
+    lineHeight: '18px',
+    padding: '0 5px 0 5px',
 
     '&:before': {
-      left: '-12px',
-      'border-top': '12px solid transparent',
-      'border-bottom': '12px solid transparent',
+      left: '-9px',
+      'border-top': '9px solid transparent',
+      'border-bottom': '9px solid transparent',
       // @ts-ignore
-      'border-right': `12px solid ${theme.palette.tertiary.main}`,
+      'border-right': `9px solid ${theme.palette.tertiary.main}`,
     },
 
     '&:after': {
-      left: '-6px',
-      top: '11px',
+      left: '-4px',
+      top: '7px',
     },
 
     '& .price': {

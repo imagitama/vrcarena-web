@@ -480,15 +480,12 @@ const AssetResultsItem = ({
                 {actuallyShowMoreInfo &&
                 asset &&
                 'price' in asset &&
-                asset.price ? (
-                  asset.price > 0 ||
-                  (getIsPublicAsset(asset) && asset.isfree) ? (
-                    <Price
-                      price={asset.price}
-                      priceCurrency={asset.pricecurrency}
-                      small
-                    />
-                  ) : null
+                asset.price !== null ? (
+                  <Price
+                    price={asset.price}
+                    priceCurrency={asset.pricecurrency}
+                    small
+                  />
                 ) : null}
                 {showState && asset && 'accessstatus' in asset && (
                   <AssetState asset={asset as AssetForList} />

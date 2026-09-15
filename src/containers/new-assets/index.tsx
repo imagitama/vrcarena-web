@@ -34,7 +34,7 @@ const NewAssetsView = () => {
               ? ViewNames.GetPublicAssets
               : ViewNames.GetNewPublicAssets
           }
-          defaultFieldName="createdat"
+          defaultFieldName="createdat" // TODO: sort by approved at (note: migrating away from this column)
           defaultDirection={OrderDirections.DESC}
           urlWithSubViewNameAndPageNumberVar={routes.newAssetsWithPageNumberVar}
           showDateMetadata
