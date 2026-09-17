@@ -20,15 +20,43 @@ import FormControls from '@/components/form-controls'
 import Button from '@/components/button'
 import CommentList from '@/components/comment-list'
 import Heading from '@/components/heading'
+import { DataStoreErrorCode } from '@/data-store'
+import { HydrateFn } from '@/hooks/useDataStore'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
+import { getIsUuid } from '@/utils'
+
+const useSluggedArticle = (
+  idOrSlug: string
+): [
+  boolean,
+  DataStoreErrorCode | null,
+  FullArticle | null | false,
+  HydrateFn
+] => {
+  const isSlug = getIsUuid(idOrSlug) === false && idOrSlug.includes('-')
+
+  const [isLoading, lastErrorCode, results, hydrate] =
+    useDatabaseQuery<FullArticle>(
+      ViewNames.GetFullArticles,
+      [[isSlug ? 'slug' : 'id', Operators.EQUALS, idOrSlug]],
+      { queryName: `view-article-${idOrSlug}` }
+    )
+
+  const result = Array.isArray(results)
+    ? results.length === 1
+      ? results[0]
+      : false
+    : null
+
+  return [isLoading, lastErrorCode, result, hydrate]
+}
 
 const View = () => {
   const { articleId } = useParams<{ articleId: string }>()
   const isEditor = useIsEditor()
 
   const [isLoading, lastErrorCode, article, hydrate] =
-    useDataStoreItem<FullArticle>(ViewNames.GetFullArticles, articleId, {
-      queryName: 'view-article',
-    })
+    useSluggedArticle(articleId)
 
   if (isLoading) {
     return <LoadingIndicator message="Loading article..." />

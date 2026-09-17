@@ -1025,13 +1025,6 @@ const AssetOverview = ({
               ) : null}
               {isEditor && (
                 <ControlGroup>
-                  <InfoMessage>
-                    Editor controls moved to end of page
-                  </InfoMessage>
-                </ControlGroup>
-              )}
-              {isEditor && (
-                <ControlGroup>
                   {asset && asset.createdat ? (
                     <div>
                       Uploaded <FormattedDate date={asset.createdat} /> by{' '}
