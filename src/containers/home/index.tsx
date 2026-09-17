@@ -31,6 +31,7 @@ import { DataStoreErrorCode } from '@/data-store'
 import InfoMessage from '@/components/info-message'
 import AssetResults from '@/components/asset-results'
 import NoResultsMessage from '@/components/no-results-message'
+import LoadingIndicator from '@/components/loading-indicator'
 
 const useStyles = makeStyles({
   root: {},
@@ -95,6 +96,7 @@ const PrimaryTiles = styled.div`
 `
 
 const Columns = styled.div`
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   ${mediaQueryForMobiles} {
@@ -172,12 +174,18 @@ const NewAssetsTileWrapper = styled.div`
   margin-bottom: 0.5rem;
 `
 
-const LoadingTile = () => (
+const LoadingTile = ({
+  children,
+}: {
+  children?: React.ReactNode | React.ReactNode[]
+}) => (
   <Tile title={<LoadingShimmer width="100%" height="10px" />}>
-    <div style={{ width: '100%' }}>
-      <LoadingShimmer width="100%" height="15px" />
-      <LoadingShimmer width="100%" height="15px" />
-    </div>
+    {children || (
+      <div style={{ width: '100%' }}>
+        <LoadingShimmer width="100%" height="15px" />
+        <LoadingShimmer width="100%" height="15px" />
+      </div>
+    )}
   </Tile>
 )
 
@@ -313,9 +321,26 @@ const Tiles = () => {
   if (isLoading || !homepageContent) {
     return (
       <>
-        <LoadingTile />
-        <LoadingTile />
-        <LoadingTile />
+        <PrimaryTiles>
+          <LoadingTile />
+          <LoadingTile />
+          <LoadingTile />
+        </PrimaryTiles>
+        <NewAssetsTileWrapper>
+          <LoadingTile>
+            <AssetResults shimmer shimmerCount={6} isTiny />
+          </LoadingTile>
+        </NewAssetsTileWrapper>
+        <Columns>
+          <ColumnLeft>
+            <LoadingIndicator message="Loading articles..." />
+          </ColumnLeft>
+          <ColumnRight>
+            <LoadingTile />
+            <LoadingTile />
+            <LoadingTile />
+          </ColumnRight>
+        </Columns>
       </>
     )
   }

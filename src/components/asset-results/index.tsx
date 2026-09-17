@@ -44,7 +44,7 @@ const AssetResults = ({
       {shimmer
         ? new Array(shimmerCount).fill(undefined).map((item, i) => (
             <div key={i} className={classes.item}>
-              <AssetResultsItem />
+              <AssetResultsItem isTiny={isTiny} />
             </div>
           ))
         : assets.map((asset) => (
