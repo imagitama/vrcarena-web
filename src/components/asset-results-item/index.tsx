@@ -38,6 +38,7 @@ import CheckboxInput from '../checkbox-input'
 import useBulkEdit from '@/hooks/useBulkEdit'
 import FormattedDate from '../formatted-date'
 import { VRCArenaTheme } from '@/themes'
+import useSpeciesNames from '@/hooks/useSpeciesNames'
 
 const useStyles = makeStyles({
   root: {
@@ -267,10 +268,12 @@ const SpeciesOutput = ({
   asset,
   relation,
   showDivider = true,
+  speciesNames,
 }: {
   asset?: Asset | PublicAsset | AssetSearchResult
   relation?: Relation
   showDivider?: boolean
+  speciesNames?: string[] | null
 }) => {
   const classes = useStyles()
 
@@ -294,10 +297,10 @@ const SpeciesOutput = ({
     return null
   }
 
-  if ('speciesnames' in asset && asset.speciesnames !== null) {
+  if (speciesNames) {
     return (
       <>
-        {showDivider && divider} {(asset as FullAsset).speciesnames.join(', ')}
+        {showDivider && divider} {speciesNames.join(', ')}
       </>
     )
   }
@@ -367,6 +370,7 @@ const AssetResultsItem = ({
   const actuallyShowMoreInfo =
     (prefs && prefs.showmoreinfo) || showMoreInfo === true
   const bulkEdit = useBulkEdit()
+  const [, , speciesNames] = useSpeciesNames(asset?.species)
 
   if (Controls === undefined && bulkEdit.isInMode && asset) {
     Controls = (
@@ -453,6 +457,7 @@ const AssetResultsItem = ({
                   asset={asset}
                   relation={relation}
                   showDivider={showCategory !== false}
+                  speciesNames={speciesNames}
                 />
               ) : null}
             </div>

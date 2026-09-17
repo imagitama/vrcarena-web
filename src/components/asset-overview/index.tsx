@@ -96,6 +96,7 @@ import AddToMyCollectionButton from '../add-to-my-collection-button'
 import InfoMessage from '../info-message'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useLocale from '@/hooks/useLocale'
+import useSpeciesNames from '@/hooks/useSpeciesNames'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -404,6 +405,7 @@ const AssetOverview = ({
   const [bypassAdultFilterOnce, setBypassAdultFilterOnce] = useState(false)
   const [, setIsAlreadyOver18] = useStorage(alreadyOver18Key)
   const [storedLocale] = useLocale()
+  const [, , speciesNames] = useSpeciesNames(asset ? asset.species : undefined)
 
   const hideBecauseAdult =
     asset && asset.isadult && !isAdultContentEnabled && !bypassAdultFilterOnce
@@ -643,9 +645,7 @@ const AssetOverview = ({
                     {' / '}
                     <SpeciesList
                       speciesIds={asset.species ? asset.species : []}
-                      speciesNames={
-                        asset.speciesnames ? asset.speciesnames : []
-                      }
+                      speciesNames={speciesNames}
                     />
                   </>
                 ) : null

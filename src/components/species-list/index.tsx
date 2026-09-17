@@ -8,9 +8,9 @@ export default ({
   speciesNames,
 }: {
   speciesIds: string[]
-  speciesNames: string[]
+  speciesNames: string[] | null
 }) => {
-  if (!speciesIds.length) {
+  if (!speciesIds.length || !speciesNames) {
     return null
   }
 
