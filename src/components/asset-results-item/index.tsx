@@ -485,9 +485,9 @@ const AssetResultsItem = ({
                 {actuallyShowMoreInfo &&
                 asset &&
                 'price' in asset &&
-                asset.price !== null ? (
+                (asset.price !== null || asset.tags.includes('free')) ? (
                   <Price
-                    price={asset.price}
+                    price={asset.price === null ? 0 : asset.price}
                     priceCurrency={asset.pricecurrency}
                     small
                   />
