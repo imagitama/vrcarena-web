@@ -26,6 +26,7 @@ import ReviewRating from '@/components/review-rating'
 
 import LoadingIndicator from '@/components/loading-indicator'
 import ReportButton from '@/components/report-button'
+import Metadata from '@/components/metadata'
 
 const View = () => {
   const { reviewId } = useParams<{ reviewId: string }>()
@@ -82,15 +83,20 @@ const View = () => {
           content={`Read more information about review #${reviewId} on the site.`}
         />
       </Helmet>
-      <AssetResultsItem asset={assetData} />
-      <Heading variant="h1">
-        Review By{' '}
+      <Heading variant="h1" noMargin>
+        Review of "{assetData.title}" by{' '}
         <UsernameLink
           id={createdby}
           username={createdByUsername}
           avatarUrl={createdByAvatarUrl}
         />
       </Heading>
+      <Metadata item={review} />
+      <br />
+      <ReportButton type={CollectionNames.Reviews} id={review.id} />
+      <br />
+      <br />
+      <AssetResultsItem asset={assetData} />
       <Heading variant="h2">Overall Rating</Heading>
       {shimmer ? (
         <LoadingShimmer width={200} height={50} />
@@ -113,19 +119,6 @@ const View = () => {
           })}
         </div>
       ) : null}
-      <Heading variant="h2">Metadata</Heading>
-      Created <FormattedDate date={createdat} />{' '}
-      {createdByUsername ? (
-        <>
-          by{' '}
-          <Link to={routes.viewUserWithVar.replace(':userId', createdby)}>
-            {createdByUsername}
-          </Link>
-        </>
-      ) : null}
-      <br />
-      <br />
-      <ReportButton type={CollectionNames.Reviews} id={review.id} />
       <Heading variant="h2">Comments</Heading>
       <CommentList
         collectionName={CollectionNames.Reviews}

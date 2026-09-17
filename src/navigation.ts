@@ -79,14 +79,6 @@ const items: MenuItem[] = [
     label: 'More',
     children: [
       {
-        id: AssetCategory.Retexture,
-        url: routes.viewCategoryWithVar.replace(
-          ':categoryName',
-          AssetCategory.Retexture
-        ),
-        label: categoriesMeta[AssetCategory.Retexture].name,
-      },
-      {
         id: 'events',
         url: routes.events,
         label: 'Events',

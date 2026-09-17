@@ -10,9 +10,10 @@ import Heading from '@/components/heading'
 import PaginatedView, { GetQueryFn } from '@/components/paginated-view'
 import ReviewResults from '@/components/review-results'
 import Button from '@/components/button'
+import { OrderDirections } from '@/hooks/useDatabaseQuery'
 
 const Renderer = ({ items }: { items?: PublicReview[] }) => (
-  <ReviewResults reviews={items} includeAssets />
+  <ReviewResults reviews={items} />
 )
 
 const ReviewsView = () => {
@@ -42,8 +43,19 @@ const ReviewsView = () => {
           viewName={ViewNames.GetPublicReviewsForPublicAssets}
           getQuery={getQuery}
           defaultFieldName="createdat"
+          defaultDirection={OrderDirections.DESC}
           extraControls={[
             <Button url={routes.createReview}>Create Review</Button>,
+          ]}
+          sortOptions={[
+            {
+              label: 'Overall Rating',
+              fieldName: 'overallrating',
+            },
+            {
+              label: 'Submission date',
+              fieldName: 'createdat',
+            },
           ]}>
           <Renderer />
         </PaginatedView>

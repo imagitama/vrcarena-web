@@ -78,9 +78,9 @@ export const getUrlForParent = (
     case SpeciesCollectionNames.Species:
       return routes.viewSpeciesWithVar.replace(':speciesIdOrSlug', parentId)
     case SocialCollectionNames.SocialPostMeta:
-      return routes.socialWithPostVar.replace(':postId', parentData.id)
+      return routes.socialWithPostVar.replace(':postId', parentId)
     case ReviewsCollectionNames.Reviews:
-      return routes.viewReviewWithVar.replace(':reviewId', parentData.id)
+      return routes.viewReviewWithVar.replace(':reviewId', parentId)
     case SupportTicketCollectionNames.SupportTickets:
       return routes.viewSupportTicketWithVar.replace(
         ':supportTicketId',

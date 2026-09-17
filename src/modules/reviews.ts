@@ -11,11 +11,17 @@ export interface ReviewFields extends Record<string, any> {
 
 export interface Review extends ReviewFields {
   id: string
+  lastmodifiedat: string | null
+  lastmodifiedby: string | null
+  createdat: string
+  createdby: string
 }
 
 // @ts-ignore
 export interface FullReview extends Review {
   assetdata: Asset
+  lastmodifiedbyusername: string
+  lastmodifiedbyavatarurl: string
   createdbyusername: string
   createdbyavatarurl: string
 }
