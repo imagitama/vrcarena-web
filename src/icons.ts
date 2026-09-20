@@ -74,6 +74,7 @@ export const Submit = React.lazy(() => import('@mui/icons-material/Check').then(
 export const Add = React.lazy(() => import('@mui/icons-material/Add').then(result => result.default))
 export const Remove = React.lazy(() => import('@mui/icons-material/Remove').then(result => result.default))
 export const Article = React.lazy(() => import('@mui/icons-material/Newspaper').then(result => result.default))
+export const SubEditor = React.lazy(() => import('@mui/icons-material/Rule').then(result => result.default))
 
 // approval queue
 export const Decline = React.lazy(() => import('@mui/icons-material/Cancel').then(result => result.default))

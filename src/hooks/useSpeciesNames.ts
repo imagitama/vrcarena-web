@@ -14,12 +14,6 @@ const useSpeciesNames = (
       return species?.singularname || ''
     }) || null
 
-  console.debug(`useSpeciesNames`, {
-    speciesIds,
-    species: globalState?.species,
-    speciesNames,
-  })
-
   return [isLoading, lastErrorCode, speciesNames]
 }
 

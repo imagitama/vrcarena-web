@@ -10,9 +10,13 @@ import {
 } from '@/modules/comments'
 import {
   FullReview,
-  Review,
   CollectionNames as ReviewsCollectionNames,
 } from '@/modules/reviews'
+import {
+  Amendment,
+  CollectionNames as AmendmentsCollectionNames,
+  FullAmendment,
+} from '@/modules/amendments'
 import { getUrlForParent } from '@/relations'
 
 import AssetResultsItem from '@/components/asset-results-item'
@@ -22,19 +26,22 @@ import ReviewResultsItem from '@/components/review-results-item'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import LoadingIndicator from '../loading-indicator'
 import ErrorMessage from '../error-message'
+import AmendmentResultsItem from '../amendment-results-item'
 
-type Data = Asset | FullComment | FullReview
+type Data = Asset | FullComment | FullReview | FullAmendment<any>
 
 export default ({
   type,
   id,
   data: incomingData,
   small,
+  extraProps,
 }: {
   type: string
   id: string
   data?: Data
   small?: boolean
+  extraProps?: any
 }) => {
   const [isLoading, lastErrorCode, result] = useDataStoreItem<Data>(
     type,
@@ -60,7 +67,20 @@ export default ({
   }
   switch (type) {
     case AssetsCollectionNames.Assets:
-      return <AssetResultsItem asset={data as Asset} isTiny={small} />
+      return (
+        <AssetResultsItem
+          asset={data as Asset}
+          isTiny={small}
+          {...extraProps}
+        />
+      )
+    case AmendmentsCollectionNames.Amendments:
+      return (
+        <AmendmentResultsItem
+          result={data as FullAmendment<any>}
+          {...extraProps}
+        />
+      )
     case CommentsCollectionNames.Comments:
       return (
         <Comment comment={data as FullComment} showControls={false} shorten />

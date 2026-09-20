@@ -38,6 +38,7 @@ import MyUserOverview from '@/components/my-user-overview'
 import SupporterBadgeForm from '@/components/supporter-badge-form'
 import VrchatGroupButton from '@/components/vrchat-group-button'
 import Button from '@/components/button'
+import SubEditorToggle from '@/components/sub-editor-toggle'
 
 import Features from './components/features'
 import MyRep from './components/my-rep'
@@ -149,6 +150,8 @@ const View = () => {
                 <Features />
                 <Heading variant="h3">Notifications</Heading>
                 <NotificationSettings />
+                <Heading variant="h3">Community Editor</Heading>
+                <SubEditorToggle />
               </>
             ),
           },

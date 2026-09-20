@@ -17,13 +17,97 @@ import ButtonDropdown from '@/components/button-dropdown'
 import LoadingIndicator from '@/components/loading-indicator'
 import Button from '@/components/button'
 
+// TODO: update <ArchiveButton /> to use this
+export const ArchiveButtonBase = ({
+  isAsset,
+  existingAccessStatus,
+  existingArchivedReason,
+  onArchive,
+  onUnarchive,
+  onReasonChange,
+}: {
+  isAsset?: boolean
+  existingAccessStatus: AccessStatus | null
+  existingArchivedReason?: ArchivedReason | null
+  onArchive: (reason: ArchivedReason | null) => void
+  onUnarchive: () => void
+  onReasonChange: (reason: ArchivedReason | null) => void
+}) => {
+  const [selectedReason, setSelectedReason] = useState<ArchivedReason | null>(
+    existingArchivedReason || null
+  )
+
+  const onClickButton = () => {
+    if (existingAccessStatus === AccessStatus.Archived) {
+      onUnarchive()
+    } else {
+      onArchive(selectedReason)
+    }
+  }
+
+  const hasChangedReason = selectedReason !== existingArchivedReason
+
+  const onClickUpdate = () => {
+    onReasonChange(selectedReason)
+  }
+
+  return (
+    <ButtonGroup>
+      {isAsset && (
+        <>
+          <ButtonDropdown
+            options={archivedReasonMeta
+              .map((meta) => ({
+                id: meta.reason as string,
+                label: meta.label,
+              }))
+              .concat([
+                {
+                  id: '',
+                  label: '(none)',
+                },
+              ])}
+            selectedId={selectedReason || ''}
+            onSelect={(newReason: string) =>
+              setSelectedReason(
+                newReason ? (newReason as ArchivedReason) : null
+              )
+            }
+            closeOnSelect={true}
+            size="small"
+            hollow
+            label="Reasons"
+            iconSide="right"
+          />
+          {existingAccessStatus === AccessStatus.Archived &&
+            hasChangedReason && (
+              <Button onClick={onClickUpdate} size="small">
+                Save Reason
+              </Button>
+            )}
+        </>
+      )}
+      <Button
+        onClick={onClickButton}
+        icon={<BusinessCenterIcon />}
+        size="small"
+        color="secondary"
+        hollow={false}>
+        {existingAccessStatus === AccessStatus.Archived
+          ? 'Un-archive'
+          : `Archive${hasChangedReason ? ` (${selectedReason})` : ''}`}
+      </Button>
+    </ButtonGroup>
+  )
+}
+
 const ArchiveButton = ({
   id,
   metaCollectionName,
-  existingAccessStatus = undefined,
-  existingArchivedReason = undefined,
-  onClick = undefined,
-  onDone = undefined,
+  existingAccessStatus,
+  existingArchivedReason,
+  onClick,
+  onDone,
 }: {
   id: string
   metaCollectionName: string

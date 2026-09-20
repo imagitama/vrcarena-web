@@ -13,16 +13,21 @@ import useDataStoreItems from '@/hooks/useDataStoreItems'
 import Link from '@/components/link'
 import ErrorMessage from '@/components/error-message'
 import Message from '@/components/message'
+import useUserRecord from '@/hooks/useUserRecord'
+import { SubEditorStatus } from '@/modules/users'
 
 const EditorQueueMessage = () => {
   const isEditor = useIsEditor()
+  const [, , user] = useUserRecord()
+  const isAllowed =
+    isEditor || user?.subeditorstatus === SubEditorStatus.Accepted
   const [isLoading, lastErrorCode, queueItems] =
     useDataStoreItems<AdminQueueItem>(
       ViewNames.GetAdminQueue,
-      isEditor ? undefined : false
+      isAllowed ? undefined : false
     )
 
-  if (!isEditor || isLoading || !queueItems || !queueItems.length) {
+  if (!isAllowed || isLoading || !queueItems || !queueItems.length) {
     return null
   }
 
@@ -70,11 +75,11 @@ const EditorQueueMessage = () => {
   )
 
   return (
-    <Message title="Editor Message">
-      There are {queueItems.length} items in the admin queue ({tally.assets}{' '}
-      assets, {tally.amendments} amendments, {tally.reports} reports,{' '}
-      {tally.avatars} avatars). Click <Link to={routes.admin}>here</Link> to
-      review.
+    <Message title={`${isEditor ? 'Editor' : 'Community Editor'} Message`}>
+      There are {queueItems.length} items in the queue ({tally.assets} assets,{' '}
+      {tally.amendments} amendments, {tally.reports} reports, {tally.avatars}{' '}
+      avatars). Click{' '}
+      <Link to={isEditor ? routes.admin : routes.queue}>here</Link> to review.
     </Message>
   )
 }

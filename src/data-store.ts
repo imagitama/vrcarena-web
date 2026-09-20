@@ -249,11 +249,14 @@ export class DataStoreError extends Error {
   }
 }
 
+export class DataStoreCountZeroError extends Error {}
+
 export type DataStoreErrorCode = string
 
 // Postgres SQLSTATE codes (https://www.postgresql.org/docs/current/errcodes-appendix.html)
 export const PostgresErrorCode = {
   UniqueViolation: '23505',
+  ColumnDoesntExist: '42703',
   // add more as needed
 } as const
 export type PostgresErrorCode =
@@ -273,6 +276,7 @@ export type PostgRESTErrorCode =
   (typeof PostgRESTErrorCode)[keyof typeof PostgRESTErrorCode]
 
 export const DataStoreUnknownErrorCode = 'unknown'
+export const DataStoreCountZeroErrorCode = 'count-zero'
 
 export const getDataStoreErrorCodeFromError = (errorThing: unknown): string => {
   // must be 2nd as above error extends from it
@@ -285,6 +289,10 @@ export const getDataStoreErrorCodeFromError = (errorThing: unknown): string => {
     return (errorThing as PostgrestError).code
   }
 
+  if (errorThing instanceof DataStoreCountZeroError) {
+    return DataStoreCountZeroErrorCode
+  }
+
   return DataStoreUnknownErrorCode
 }
 
@@ -294,6 +302,8 @@ export const getUserFriendlyMessageFromCode = (
   switch (errorCode) {
     case PostgresErrorCode.UniqueViolation:
       return 'your record conflicts with another'
+    case PostgresErrorCode.ColumnDoesntExist:
+      return 'the database is missing a column (this should never happen)'
     case PostgRESTErrorCode.JwtExpired:
     case PostgRESTErrorCode.JwtExpiredOld:
       return 'your authentication has expired (you should reload the page)'

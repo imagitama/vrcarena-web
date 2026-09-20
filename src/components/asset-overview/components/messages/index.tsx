@@ -4,7 +4,6 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import CreateIcon from '@mui/icons-material/Create'
 
 import useIsEditor from '@/hooks/useIsEditor'
-import useIsLoggedIn from '@/hooks/useIsLoggedIn'
 
 import {
   IndicativeAuditStatus,
@@ -14,13 +13,21 @@ import {
   ViewNames as AmendmentsViewNames,
   AmendmentWithMeta,
 } from '@/modules/amendments'
+import {
+  ViewNames as SubEditorResponsesViewNames,
+  FullSubEditorResponse,
+} from '@/modules/subeditorresponses'
 import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
 import {
   getArchivedReasonLabel,
   getDeclinedReasonLabel,
   getDeletionReasonLabel,
 } from '@/utils/assets'
-import { Decline as DeclineIcon, Queue as QueueIcon } from '@/icons'
+import {
+  Decline as DeclineIcon,
+  Queue as QueueIcon,
+  SubEditor as SubEditorIcon,
+} from '@/icons'
 
 import Message from '@/components/message'
 import PublicEditorNotes from '@/components/public-editor-notes'
@@ -49,6 +56,7 @@ import StatusText, {
 } from '@/components/status-text'
 import ShortId from '@/components/short-id'
 import { capitalize } from '@/utils'
+import SubEditorResults from '@/components/sub-editor-results'
 
 const useActiveAmendmentsForAsset = (assetId: string): AmendmentWithMeta[] => {
   const myUserId = useUserId()
@@ -71,11 +79,35 @@ const useActiveAmendmentsForAsset = (assetId: string): AmendmentWithMeta[] => {
   return results || []
 }
 
+const useSubEditorResponsesForAsset = (
+  assetId: string | false,
+  cacheKey?: string
+): FullSubEditorResponse[] => {
+  const [, , results] = useDatabaseQuery<FullSubEditorResponse>(
+    SubEditorResponsesViewNames.GetFullSubEditorResponses,
+    [
+      ['parenttable', Operators.EQUALS, AssetsCollectionNames.Assets],
+      ['parentid', Operators.EQUALS, assetId],
+    ],
+    {
+      cacheKey,
+      orderBy: ['createdat', OrderDirections.DESC],
+    }
+  )
+
+  return results || []
+}
+
 const AssetOverviewMessages = () => {
-  const { assetId, asset, isLoading, hydrate } =
+  const { assetId, asset, isLoading, hydrate, cacheKey } =
     useContext(AssetOverviewContext)
+
   const isEditor = useIsEditor()
   const activeAmendmentsForAsset = useActiveAmendmentsForAsset(assetId)
+  const subEditorResponsesForAsset = useSubEditorResponsesForAsset(
+    asset && asset.approvalstatus === ApprovalStatus.Waiting ? asset.id : false,
+    cacheKey
+  )
 
   if (!asset || isLoading) {
     return null
@@ -225,6 +257,19 @@ const AssetOverviewMessages = () => {
             ))}
           </TableBody>
         </Table>
+      </Message>
+    )
+  }
+
+  if (subEditorResponsesForAsset.length) {
+    messages.push(
+      <Message icon={<SubEditorIcon />}>
+        There are {subEditorResponsesForAsset.length} community responses for
+        this asset:
+        <SubEditorResults
+          items={subEditorResponsesForAsset}
+          showParents={false}
+        />
       </Message>
     )
   }

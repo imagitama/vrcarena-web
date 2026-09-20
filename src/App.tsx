@@ -49,6 +49,7 @@ import EditorQueueMessage from './components/editor-queue-message'
 import SurveyMessage from './components/survey-message'
 import { useSelector } from 'react-redux'
 import { RootState } from './slices'
+import SubEditorMessage from './components/sub-editor-message'
 
 const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
   functionToImport().catch((err) => {
@@ -268,6 +269,10 @@ const ViewArticle = lazy(() =>
 const EditArticle = lazy(() =>
   catchChunkDeaths(() => import('./containers/edit-article'))
 )
+const SubEditorResponses = lazy(() =>
+  catchChunkDeaths(() => import('./containers/sub-editor-responses'))
+)
+const Queue = lazy(() => catchChunkDeaths(() => import('./containers/queue')))
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -596,6 +601,14 @@ const MainContent = () => {
           path={routes.newAssetsWithPageNumberVar}
           component={NewAssets}
         />
+        <Route
+          exact
+          path={[
+            routes.subEditorResponses,
+            routes.subEditorResponsesWithPageNumberVar,
+          ]}
+          component={SubEditorResponses}
+        />
         <Route exact path={routes.newAssets} component={NewAssets} />
         <Route exact path={'/dev'} component={Dev} />
         <Route exact path={routes.createReview} component={EditReview} />
@@ -653,6 +666,7 @@ const MainContent = () => {
           ]}
           component={Query}
         />
+        <Route exact path={routes.queue} component={Queue} />
         <Route exact path={routes.promos} component={DeprecatedRouteView} />
         <Route
           exact
@@ -716,6 +730,7 @@ export default () => {
             <AccountVerificationMessage />
             <EditorQueueMessage />
             <MyQueuedAssetsMessage />
+            {/* <SubEditorMessage /> */}
           </ErrorBoundary>
           <ErrorBoundary>
             <MainContent />

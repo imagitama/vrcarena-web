@@ -145,6 +145,10 @@ export const editArticleWithVar = '/articles/edit/:articleId'
 export const viewArticleWithVar = '/articles/:articleId'
 export const articlesWithPageNumberVar = '/articles/page/:pageNumber'
 export const articles = '/articles'
+export const subEditorResponses = '/community-responses'
+export const subEditorResponsesWithPageNumberVar =
+  '/community-responses/page/:pageNumber'
+export const queue = '/queue'
 
 // admin - generic
 export const admin = '/admin'

@@ -636,6 +636,7 @@ const PaginatedView = <TRecord extends Record<string, any>>({
                       size="small"
                       color="secondary"
                       isDisabled={isLoading}
+                      title="Refresh"
                     />
                   </Control>
                 </ControlGroup>

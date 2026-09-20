@@ -1,10 +1,5 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { makeStyles } from '@mui/styles'
-
-import { Asset, FunctionNames } from '@/modules/assets'
-
-import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
-import useDataStoreFunction from '@/hooks/useDataStoreFunction'
 
 import { RelationItem, RelationsItems } from '@/components/relations'
 

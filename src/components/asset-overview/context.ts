@@ -10,6 +10,7 @@ export interface AssetOverviewContext {
   trackAction: (action: string, payload: any) => void
   hydrate: () => void
   analyticsCategoryName: string
+  cacheKey: string | undefined
 }
 
 // @ts-ignore

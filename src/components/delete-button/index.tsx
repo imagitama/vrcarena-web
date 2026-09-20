@@ -18,13 +18,100 @@ import Button, { ButtonProps } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import ButtonDropdown from '@/components/button-dropdown'
 
+// TODO: update <DeleteButton /> to use
+export const DeleteButtonBase = ({
+  isAsset,
+  existingAccessStatus,
+  existingReason,
+  onDelete,
+  onUndelete,
+  onReasonChange,
+}: {
+  isAsset: boolean
+  existingAccessStatus: AccessStatus | null
+  existingReason: DeletionReason | null
+  onDelete: (reason: DeletionReason | null) => void
+  onUndelete: () => void
+  onReasonChange: (reason: DeletionReason | null) => void
+}) => {
+  const [selectedReason, setSelectedReason] = useState<DeletionReason | null>(
+    existingReason || null
+  )
+
+  const toggle = () => {
+    if (existingAccessStatus === AccessStatus.Public) {
+      onDelete(selectedReason)
+    } else {
+      onUndelete()
+    }
+  }
+
+  const onClickUpdate = () => {
+    onReasonChange(selectedReason)
+  }
+
+  const hasChangedReason = selectedReason !== existingReason
+
+  return (
+    <ButtonGroup>
+      {isAsset && (
+        <>
+          <ButtonDropdown
+            options={deletionReasonMeta
+              .map((meta) => ({
+                id: meta.reason as string,
+                label: meta.label,
+              }))
+              .concat([
+                {
+                  id: '',
+                  label: '(none)',
+                },
+              ])}
+            selectedId={selectedReason || ''}
+            onSelect={(newReason: string) =>
+              setSelectedReason(
+                newReason ? (newReason as DeletionReason) : null
+              )
+            }
+            closeOnSelect={true}
+            size="small"
+            hollow
+            label="Reasons"
+            iconSide="right"
+          />
+          {existingAccessStatus === AccessStatus.Deleted &&
+          existingReason !== selectedReason ? (
+            <Button onClick={onClickUpdate} size="small">
+              Update Reason
+            </Button>
+          ) : null}
+        </>
+      )}
+      <Button
+        onClick={toggle}
+        icon={<DeleteIcon />}
+        size="small"
+        color="secondary"
+        hollow={false}>
+        {existingAccessStatus === AccessStatus.Deleted
+          ? 'Un-delete'
+          : `Delete${hasChangedReason ? ` (${selectedReason})` : ''}`}
+      </Button>
+    </ButtonGroup>
+  )
+}
+
 const DeleteButton = ({
   id,
   metaCollectionName,
-  existingAccessStatus = undefined,
-  existingDeletionReason = undefined,
-  onClick = undefined,
-  onDone = undefined,
+  existingAccessStatus,
+  existingDeletionReason,
+  onClick,
+  onDone,
+  onOverrideUndelete,
+  onOverrideDelete,
+  onOverrideUpdateReason,
   ...buttonProps
 }: {
   id: string
@@ -33,6 +120,9 @@ const DeleteButton = ({
   existingDeletionReason?: DeletionReason | null
   onClick?: ({ newValue }: { newValue: AccessStatus }) => void
   onDone?: () => void
+  onOverrideUndelete?: () => void
+  onOverrideDelete?: (reason: DeletionReason | null) => void
+  onOverrideUpdateReason?: (reason: DeletionReason | null) => void
 } & ButtonProps) => {
   const [isLoading, lastErrorCodeLoading, metaRecord] =
     useDataStoreItem<MetaRecord>(
@@ -96,6 +186,16 @@ const DeleteButton = ({
           } as AssetMeta)
         : {}
 
+      if (newAccessStatus === AccessStatus.Deleted && onOverrideDelete) {
+        onOverrideDelete(isAsset ? selectedReason : null)
+        return
+      }
+
+      if (newAccessStatus === AccessStatus.Public && onOverrideUndelete) {
+        onOverrideUndelete()
+        return
+      }
+
       await save({
         accessstatus: newAccessStatus,
         ...extraFields,
@@ -112,6 +212,11 @@ const DeleteButton = ({
 
   const onClickUpdate = async () => {
     try {
+      if (onOverrideUpdateReason) {
+        onOverrideUpdateReason(selectedReason)
+        return
+      }
+
       await save({
         deletionreason: selectedReason,
       } as AssetMeta)

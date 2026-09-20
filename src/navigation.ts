@@ -139,6 +139,16 @@ const items: MenuItem[] = [
         label: 'Tag Suggestions',
       },
       {
+        id: 'community-responses',
+        url: routes.subEditorResponses,
+        label: 'Community Responses',
+      },
+      {
+        id: 'queue',
+        url: routes.queue,
+        label: 'Queue',
+      },
+      {
         id: 'adult',
         url: routes.nsfw,
         label: 'NSFW Content',

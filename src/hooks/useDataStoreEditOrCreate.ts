@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { handleError } from '@/error-handling'
 import { mapFieldsForDatabase } from '@/utils'
 import {
+  DataStoreCountZeroError,
   DataStoreError,
   DataStoreErrorCode,
   DataStoreOptions,
@@ -94,7 +95,7 @@ const useDataStoreEditOrCreate = <TRecord extends Record<string, unknown>>(
       }
 
       if (data.length !== 1) {
-        throw new Error(`Count is ${data.length}`)
+        throw new DataStoreCountZeroError()
       }
 
       console.debug(

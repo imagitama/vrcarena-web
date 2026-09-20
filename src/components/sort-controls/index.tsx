@@ -54,13 +54,15 @@ const appendDirections = (options: SortOption<any>[]): SortOption<any>[] => {
 
     newOptions.push({
       fieldName,
-      label: `${label} (${OrderDirections[OrderDirections.ASC]})`,
+      label: `${label} (${OrderDirections[OrderDirections.ASC].toLowerCase()})`,
       direction: OrderDirections.ASC,
     })
 
     newOptions.push({
       fieldName,
-      label: `${label} (${OrderDirections[OrderDirections.DESC]})`,
+      label: `${label} (${OrderDirections[
+        OrderDirections.DESC
+      ].toLowerCase()})`,
       direction: OrderDirections.DESC,
     })
   }
@@ -104,7 +106,8 @@ const SortControls = <TRecord extends Record<string, any>>({
           icon={<SortIcon />}
           color="secondary"
           size="small"
-          switchIconSide>
+          switchIconSide
+          title="Change sort order">
           {getLabelForSelectedSortOption(sorting, optionsWithDirections)}
           <KeyboardArrowDownIcon />
         </Button>

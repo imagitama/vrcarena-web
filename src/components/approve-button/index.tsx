@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 import ButtonGroup from '@mui/material/ButtonGroup'
@@ -22,6 +22,149 @@ import { getAreArraysSame } from '@/utils'
 import Button from '@/components/button'
 import ErrorMessage from '@/components/error-message'
 import ButtonDropdown from '@/components/button-dropdown'
+
+// TODO: update <ApproveButton /> to use this
+export const ApproveButtonBase = ({
+  isAsset,
+  existingApprovalStatus,
+  existingDeclinedReasons,
+  onApprove,
+  onDecline,
+  onReasonsChange,
+}: {
+  isAsset: boolean
+  existingApprovalStatus: ApprovalStatus | null
+  existingDeclinedReasons: DeclinedReason[] | null
+  onApprove: () => void
+  onDecline: (reasons: DeclinedReason[]) => void
+  onReasonsChange: (reasons: DeclinedReason[]) => void
+}) => {
+  const [selectedReasons, setSelectedReasons] = useState<DeclinedReason[]>(
+    existingDeclinedReasons || []
+  )
+
+  useEffect(() => {
+    if (existingDeclinedReasons !== null)
+      setSelectedReasons(existingDeclinedReasons)
+  }, [JSON.stringify(existingDeclinedReasons)])
+
+  const onClickUpdate = () => {
+    onReasonsChange(selectedReasons)
+  }
+
+  const hasChangedReasons = !getAreArraysSame(
+    selectedReasons,
+    existingDeclinedReasons || []
+  )
+
+  return (
+    <>
+      <Button
+        onClick={() => onApprove()}
+        icon={<CheckCircleIcon />}
+        size="small"
+        color="secondary"
+        hollow={false}>
+        Approve
+      </Button>{' '}
+      {/* {isAsset && (
+        <Button
+          onClick={() =>
+            isQuarantined ? onClickUnquarantine() : onClickQuarantine()
+          }
+          icon={isQuarantined ? <UnquarantineIcon /> : <QuarantineIcon />}
+          size="small"
+          color="secondary"
+          hollow={false}
+          title={
+            isQuarantined
+              ? 'Returns to waiting in the queue'
+              : 'Prevents approval, notifies editors on Discord, shows notice at top of asset'
+          }
+          isDisabled={isDisabled}>
+          {isQuarantined ? 'Un-' : ''}Quarantine
+        </Button>
+      )} */}
+      <ButtonGroup style={{ width: '100%', marginTop: '0.25rem' }}>
+        {isAsset && (
+          <>
+            <ButtonDropdown
+              options={declinedReasonMeta.map((meta) => ({
+                id: meta.reason,
+                label: meta.label,
+              }))}
+              selectedIds={selectedReasons}
+              onSelect={(newReason: string) =>
+                setSelectedReasons((currentReasons) =>
+                  currentReasons.includes(newReason as DeclinedReason)
+                    ? currentReasons.filter((id) => id !== newReason)
+                    : currentReasons.concat([newReason as DeclinedReason])
+                )
+              }
+              closeOnSelect={false}
+              size="small"
+              hollow
+              label="Reasons"
+              iconSide="right"
+            />
+            {existingApprovalStatus === ApprovalStatus.Declined &&
+              hasChangedReasons && (
+                <Button onClick={onClickUpdate} size="small">
+                  Save {selectedReasons.length} Reasons
+                </Button>
+              )}
+          </>
+        )}
+        <Button
+          onClick={() => onDecline(selectedReasons)}
+          icon={<CancelIcon />}
+          size="small"
+          color="secondary"
+          hollow={false}>
+          Decline
+          {hasChangedReasons ? ` with ${selectedReasons.length} reasons` : ''}
+        </Button>
+      </ButtonGroup>
+    </>
+  )
+}
+
+type ApprovePayload = {
+  declinedreasons?: never[] | undefined
+  approvalstatus: ApprovalStatus.Approved
+  approvedat: string
+  approvedby: string
+}
+
+type DeclinePayload = {
+  declinedreasons?: DeclinedReason[] | undefined
+  approvalstatus: ApprovalStatus.Declined
+  approvedat: null
+  approvedby: null
+}
+
+type QuarantinePayload = {
+  approvalstatus: ApprovalStatus.Quarantined
+  approvedat: null
+  approvedby: null
+}
+
+type WaitingPayload = {
+  approvalstatus: ApprovalStatus.Waiting
+  approvedat: null
+  approvedby: null
+}
+
+type UpdateDeclinedReasonsPayload = {
+  declinedreasons: DeclinedReason[]
+}
+
+type SaveFields =
+  | ApprovePayload
+  | DeclinePayload
+  | QuarantinePayload
+  | WaitingPayload
+  | UpdateDeclinedReasonsPayload
 
 const ApproveButton = ({
   id,
@@ -120,35 +263,52 @@ const ApproveButton = ({
         }
       }
 
-      if (newApprovalStatus === ApprovalStatus.Approved) {
-        await save({
-          approvalstatus: ApprovalStatus.Approved,
-          approvedat: new Date().toISOString(),
-          approvedby: userId,
-          ...(showDeclineReasons
-            ? {
-                declinedreasons: [],
-              }
-            : {}),
-        })
-      } else if (newApprovalStatus === ApprovalStatus.Declined) {
-        await save({
-          approvalstatus: ApprovalStatus.Declined,
-          approvedat: null,
-          approvedby: null,
-          ...(showDeclineReasons
-            ? {
-                declinedreasons: selectedReasons,
-              }
-            : {}),
-        })
-      } else {
-        await save({
-          approvalstatus: newApprovalStatus,
-          approvedat: null,
-          approvedby: null,
-        })
+      let newFields: SaveFields | undefined = undefined
+
+      switch (newApprovalStatus) {
+        case ApprovalStatus.Approved:
+          newFields = {
+            approvalstatus: ApprovalStatus.Approved,
+            approvedat: new Date().toISOString(),
+            approvedby: userId,
+            ...(showDeclineReasons
+              ? {
+                  declinedreasons: [],
+                }
+              : {}),
+          }
+          break
+        case ApprovalStatus.Declined:
+          newFields = {
+            approvalstatus: ApprovalStatus.Declined,
+            approvedat: null,
+            approvedby: null,
+            ...(showDeclineReasons
+              ? {
+                  declinedreasons: selectedReasons,
+                }
+              : {}),
+          }
+          break
+        case ApprovalStatus.Quarantined:
+          newFields = {
+            approvalstatus: ApprovalStatus.Quarantined,
+            approvedat: null,
+            approvedby: null,
+          }
+          break
+        case ApprovalStatus.Waiting:
+          newFields = {
+            approvalstatus: ApprovalStatus.Waiting,
+            approvedat: null,
+            approvedby: null,
+          }
+          break
       }
+
+      if (!newFields) throw new Error('Need fields')
+
+      await save(newFields)
 
       if (onDone) {
         onDone()
@@ -161,9 +321,11 @@ const ApproveButton = ({
 
   const onClickUpdate = async () => {
     try {
-      await save({
+      const newFields = {
         declinedreasons: selectedReasons,
-      })
+      } as UpdateDeclinedReasonsPayload
+
+      await save(newFields)
 
       if (onDone) {
         onDone()

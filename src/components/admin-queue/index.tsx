@@ -1,0 +1,185 @@
+import React from 'react'
+
+import Table from '@/components/responsive-table'
+import TableBody from '@mui/material/TableBody'
+import { TableCell } from '@/components/responsive-table'
+import { TableHead } from '@/components/responsive-table'
+import { TableRow } from '@/components/responsive-table'
+
+import {
+  AdminQueueItem,
+  AdminQueueItemType,
+  ViewNames,
+} from '@/modules/admin-queue'
+import * as routes from '@/routes'
+import { capitalize } from '@/utils'
+
+import useDataStoreItems from '@/hooks/useDataStoreItems'
+
+import LoadingIndicator from '@/components/loading-indicator'
+import ErrorMessage from '@/components/error-message'
+import Link from '@/components/link'
+import FormattedDate from '@/components/formatted-date'
+import UsernameLink from '@/components/username-link'
+import GenericOutputLabel from '@/components/generic-output-label'
+import Paper from '@/components/paper'
+import NoResultsMessage from '@/components/no-results-message'
+import ShortId from '@/components/short-id'
+
+const QueueItemLabel = ({ queueItem }: { queueItem: AdminQueueItem }) => {
+  switch (queueItem.type) {
+    case AdminQueueItemType.Asset:
+      return (
+        <>
+          <Link
+            to={routes.viewAssetWithVar.replace(
+              ':assetId',
+              queueItem.record.id
+            )}>
+            {queueItem.record.title}
+          </Link>{' '}
+          by{' '}
+          <Link
+            to={routes.viewAuthorWithVar.replace(
+              ':authorId',
+              queueItem.record.author || 'NO_AUTHOR'
+            )}>
+            {queueItem.record.authorname}
+          </Link>
+          <br />
+          Created by{' '}
+          <UsernameLink
+            username={queueItem.record.createdbyusername}
+            id={queueItem.record.createdby}
+          />
+          <br />
+          Published by{' '}
+          <UsernameLink
+            username={queueItem.record.publishedbyusername}
+            id={queueItem.record.publishedby!}
+          />
+        </>
+      )
+    case AdminQueueItemType.Amendment:
+      return (
+        <>
+          <Link
+            to={routes.viewAmendmentWithVar.replace(
+              ':amendmentId',
+              queueItem.record.id
+            )}>
+            #{queueItem.record.id}
+          </Link>
+          <br />
+          <GenericOutputLabel
+            id={queueItem.record.parent}
+            type={queueItem.record.parenttable}
+            data={queueItem.record.parentdata}
+          />
+        </>
+      )
+    case AdminQueueItemType.Report:
+      return (
+        <>
+          <Link
+            to={routes.viewReportWithVar.replace(
+              ':reportId',
+              queueItem.record.id
+            )}>
+            #{queueItem.record.id}
+          </Link>{' '}
+          by{' '}
+          <UsernameLink
+            username={queueItem.record.createdbyusername}
+            id={queueItem.record.createdby}
+          />
+          <br />
+          <GenericOutputLabel
+            id={queueItem.record.parent}
+            type={queueItem.record.parenttable}
+            data={queueItem.record.parentdata}
+          />
+        </>
+      )
+    case AdminQueueItemType.Avatar:
+      return (
+        <>
+          {queueItem.record.vrchatavatarid}
+          <br />
+          for{' '}
+          <Link
+            to={routes.viewAssetWithVar.replace(
+              ':assetId',
+              queueItem.record.asset
+            )}>
+            {queueItem.record.assetdata?.title || '(untitled asset)'}
+          </Link>
+        </>
+      )
+    default:
+      // @ts-ignore
+      return <>Unknown type "{queueItem.type}"</>
+  }
+}
+
+const AdminQueue = () => {
+  const [isLoading, lastErrorCode, queueItems] =
+    useDataStoreItems<AdminQueueItem>(ViewNames.GetAdminQueue, undefined)
+
+  if (isLoading) {
+    return <LoadingIndicator message="Loading queue..." />
+  }
+
+  if (lastErrorCode) {
+    return (
+      <ErrorMessage errorCode={lastErrorCode}>
+        Failed to load queue
+      </ErrorMessage>
+    )
+  }
+
+  if (!queueItems) {
+    return <ErrorMessage>Failed to load queue: no items</ErrorMessage>
+  }
+
+  return (
+    <Paper>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell width="10%"></TableCell>
+            <TableCell width="15%">Type</TableCell>
+            <TableCell width="55%">Item</TableCell>
+            <TableCell width="20%">Date</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {queueItems.length > 0 ? (
+            queueItems.map((queueItem) => (
+              <TableRow key={queueItem.record.id}>
+                <TableCell>
+                  <ShortId>{queueItem.id.toString()}</ShortId>
+                </TableCell>
+                <TableCell label="Type">{capitalize(queueItem.type)}</TableCell>
+                <TableCell label="Item">
+                  <QueueItemLabel queueItem={queueItem} />
+                </TableCell>
+                <TableCell label="Date">
+                  <FormattedDate date={queueItem.createdat} />
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4}>
+                <NoResultsMessage>No items in the queue</NoResultsMessage>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </Paper>
+  )
+}
+
+export default AdminQueue

@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import useDataStore from '@/hooks/useDataStore'
 import { FullReview, ViewNames } from '@/modules/reviews'
 
 import ErrorMessage from '@/components/error-message'
 import NoResultsMessage from '@/components/no-results-message'
 import ReviewResults from '@/components/review-results'
+import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
 
 export default ({
   assetId,
@@ -15,19 +15,11 @@ export default ({
   assetId: string
   shimmer?: boolean
 }) => {
-  const getQuery = useCallback(
-    (supabase: SupabaseClient) =>
-      shimmer
-        ? null
-        : supabase
-            .from(ViewNames.GetPublicReviews)
-            .select('*')
-            .eq('asset', assetId),
-    [assetId, shimmer]
-  )
-  const [isLoading, lastErrorCode, reviews] = useDataStore<FullReview>(
-    getQuery,
-    'reviews-by-asset-id'
+  // TODO: move to getFullAssetsExtra
+  const [isLoading, lastErrorCode, reviews] = useDatabaseQuery<FullReview>(
+    ViewNames.GetPublicReviews,
+    [['asset', Operators.EQUALS, assetId]],
+    { queryName: 'reviews-by-asset-id' }
   )
 
   if (isLoading || shimmer) {
@@ -46,5 +38,5 @@ export default ({
     return <NoResultsMessage>No reviews found</NoResultsMessage>
   }
 
-  return <ReviewResults reviews={reviews} />
+  return <ReviewResults reviews={reviews} showAsset={false} />
 }

@@ -6,6 +6,7 @@ import LinkIcon from '@mui/icons-material/Link'
 import InfoIcon from '@mui/icons-material/Info'
 import styled from '@emotion/styled'
 import Typography from '@mui/material/Typography'
+import { v4 as uuidv4 } from 'uuid'
 
 import { Warning as WarningIcon } from '@/icons'
 import {
@@ -27,6 +28,7 @@ import {
 import { getCategoryMeta } from '@/category-meta'
 import {
   AssetCategory,
+  CollectionNames,
   FullAsset,
   FullAssetEditor,
   FullAssetExtra,
@@ -97,6 +99,8 @@ import InfoMessage from '../info-message'
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useLocale from '@/hooks/useLocale'
 import useSpeciesNames from '@/hooks/useSpeciesNames'
+import { SubEditorStatus } from '@/modules/users'
+import SubEditorResponseForm from '../sub-editor-response-form'
 
 const LoggedInControls = React.lazy(
   () =>
@@ -366,6 +370,8 @@ const useSluggedAsset = (
   return [isLoading, lastErrorCode, result, hydrate]
 }
 
+const getCacheKey = () => uuidv4()
+
 const AssetOverview = ({
   assetId: assetIdOrSlug,
   tabName,
@@ -386,8 +392,10 @@ const AssetOverview = ({
       ViewNames.GetFullAssetsEditor,
       asset && isEditor ? asset.id : false
     )
+  const [cacheKey, setCacheKey] = useState<undefined | string>()
 
   const hydrate = async () => {
+    setCacheKey(getCacheKey())
     hydrateAsset()
     hydrateExtra()
     if (isEditor) hydrateEditor()
@@ -572,6 +580,7 @@ const AssetOverview = ({
             trackAction(analyticsCategoryName, action, payload),
           hydrate,
           analyticsCategoryName,
+          cacheKey,
         }}>
         {!isAssetLoaded || !hasLoadedAndExists ? (
           <Helmet>
@@ -613,10 +622,26 @@ const AssetOverview = ({
         getIsAssetWaitingForApproval(asset) &&
         assetEditorData ? (
           <Suspense
-            fallback={<LoadingIndicator message="Loading component..." />}>
+            fallback={
+              <LoadingIndicator message="Loading queued asset info..." />
+            }>
             <QueuedAssetInfo
               asset={asset}
               assetEditorData={assetEditorData}
+              hydrate={hydrate}
+            />
+          </Suspense>
+        ) : null}
+        {isAssetLoaded &&
+        getIsAssetWaitingForApproval(asset) &&
+        user?.subeditorstatus === SubEditorStatus.Accepted ? (
+          <Suspense
+            fallback={
+              <LoadingIndicator message="Loading community response form..." />
+            }>
+            <SubEditorResponseForm
+              parentType={CollectionNames.Assets}
+              parentId={assetId}
               hydrate={hydrate}
             />
           </Suspense>

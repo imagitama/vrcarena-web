@@ -109,6 +109,7 @@ interface OptionsMap<TRecord> {
   }
   selectQuery?: string
   subscribe?: boolean // not supported in supabase (without setup)
+  cacheKey?: string // force re-fetch
 }
 
 export type PossibleWhereClauses<TRecord> =
@@ -321,6 +322,7 @@ export default <TRecord>(
     limitAsString,
     offset,
     options.supabase && options.supabase.foreignTable,
+    options.cacheKey,
   ])
 
   const hydrate = async () => {

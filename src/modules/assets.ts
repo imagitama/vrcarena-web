@@ -382,7 +382,6 @@ export enum FunctionNames {
   PublishAsset = 'publishasset',
   UnpublishAsset = 'unpublishasset',
   SearchAssets = 'searchassets',
-  GetOrHydrateGetFullAssets = 'get_or_hydrate_getfullassets',
   GetMentions = 'getmentions',
   GetAssetsWithSourceUrl = 'getassetswithsourceurl', // discordbot and backlog
 }

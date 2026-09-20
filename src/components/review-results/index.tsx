@@ -21,29 +21,37 @@ import Link from '../link'
 import { getShortId } from '@/utils/formatting'
 import NoValueLabel from '../no-value-label'
 
-export default ({ reviews = [] }: { reviews?: FullReview[] }) => {
+export default ({
+  reviews = [],
+  showAsset = true,
+}: {
+  reviews?: FullReview[]
+  showAsset?: boolean
+}) => {
   return (
     <Table>
       <TableHead>
-        <TableCell />
-        <TableCell>Asset</TableCell>
-        <TableCell></TableCell>
-        <TableCell>Overall Rating</TableCell>
-        <TableCell>Ratings</TableCell>
+        <TableCell width="10%" />
+        {showAsset && <TableCell width="25%">Asset</TableCell>}
+        <TableCell width={showAsset ? '20%' : '45%'}></TableCell>
+        <TableCell width="20%">Overall Rating</TableCell>
+        <TableCell width="20%">Ratings</TableCell>
       </TableHead>
       <TableBody>
         {reviews.map((review) => (
           <TableRow key={review.id}>
-            <TableCell>
+            <TableCell width="10%">
               <Link
                 to={routes.viewReviewWithVar.replace(':reviewId', review.id)}>
                 #{getShortId(review.id)}
               </Link>
             </TableCell>
-            <TableCell>
-              <AssetResultsItem asset={review.assetdata} isTiny />
-            </TableCell>
-            <TableCell>
+            {showAsset && (
+              <TableCell label="Asset" width="25%">
+                <AssetResultsItem asset={review.assetdata} isTiny />
+              </TableCell>
+            )}
+            <TableCell width={showAsset ? '20%' : '45%'}>
               Created by{' '}
               <UsernameLink
                 id={review.createdby}
@@ -53,10 +61,10 @@ export default ({ reviews = [] }: { reviews?: FullReview[] }) => {
               <br />
               <FormattedDate date={review.createdat} />
             </TableCell>
-            <TableCell>
+            <TableCell label="Overall Rating" width="20%">
               <StarRating ratingOutOf5={review.overallrating / 2} />
             </TableCell>
-            <TableCell>
+            <TableCell label="Ratings" width="20%">
               {review.ratings.length ? (
                 review.ratings.map((rating) => {
                   const ratingMeta = allowedRatings.find(

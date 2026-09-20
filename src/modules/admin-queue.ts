@@ -1,9 +1,6 @@
 import { FullAmendment } from './amendments'
 import { SmallAsset } from './assets'
-import {
-  FullPublicAvatarSubmission,
-  PublicAvatarSubmission,
-} from './public-avatar-submissions'
+import { FullPublicAvatarSubmission } from './public-avatar-submissions'
 import { FullReport } from './reports'
 
 export enum AdminQueueItemType {
