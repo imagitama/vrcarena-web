@@ -332,9 +332,9 @@ const Form = ({
               ...currentVal,
               approvalstatus: ApprovalStatus.Approved,
               declinedreasons: null,
-              accessstatus: null,
-              deletionreason: null,
-              archivedreason: null,
+              // accessstatus: null,
+              // deletionreason: null,
+              // archivedreason: null,
             }))
           }}
           onDecline={(reasons) => {
@@ -342,9 +342,9 @@ const Form = ({
               ...currentVal,
               approvalstatus: ApprovalStatus.Declined,
               declinedreasons: reasons,
-              accessstatus: null,
-              deletionreason: null,
-              archivedreason: null,
+              // accessstatus: null,
+              // deletionreason: null,
+              // archivedreason: null,
             }))
           }}
           onReasonsChange={(reasons) => {
