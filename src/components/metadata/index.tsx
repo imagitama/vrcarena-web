@@ -19,7 +19,13 @@ export const StyledMetadata = styled.div`
   font-size: 75%;
 `
 
-const Metadata = ({ item }: { item: RecordWithMetadata }) => (
+const Metadata = ({
+  item,
+  showModified = true,
+}: {
+  item: RecordWithMetadata
+  showModified?: boolean
+}) => (
   <StyledMetadata>
     Created <FormattedDate date={item.createdat} /> by{' '}
     {item.createdby ? (

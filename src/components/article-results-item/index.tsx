@@ -127,7 +127,7 @@ const ArticleResultsItem = ({
             }
           />
         ) : (
-          <Metadata item={article} />
+          <Metadata item={article} showModified={false} />
         )}
       </Header>
       <Desc>
