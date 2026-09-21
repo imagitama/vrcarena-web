@@ -314,6 +314,7 @@ const AmendmentEditor = ({
           value={comments}
           onChange={(e) => setComments(e.target.value)}
           className={classes.commentsField}
+          fullWidth
         />
         <FormControls>
           {amendmentId ? (

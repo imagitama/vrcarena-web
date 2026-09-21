@@ -43,6 +43,7 @@ import DeleteMyAmendmentButton from '@/components/delete-my-amendment-button'
 import { capitalize } from '@/utils'
 import FormattedDate from '@/components/formatted-date'
 import AdminGenericHistory from '@/components/admin-generic-history'
+import StatusChanges from '@/components/status-changes'
 
 const AssetOutput = ({ assetId }: { assetId: string }) => {
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
@@ -298,6 +299,7 @@ const View = () => {
             type={CollectionNames.Amendments}
             metaType={CollectionNames.AmendmentsMeta}
           />
+          <StatusChanges statusChanges={amendment.statuschanges || {}} />
         </>
       )}
     </>

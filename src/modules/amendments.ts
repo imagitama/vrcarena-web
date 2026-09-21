@@ -1,4 +1,4 @@
-import { AccessStatus, ApprovalStatus } from './common'
+import { AccessStatus, ApprovalStatus, StatusChanges } from './common'
 
 export interface Amendment extends AmendmentFields {
   id: string
@@ -31,8 +31,11 @@ export interface AmendmentMeta {
 export interface FullAmendment<T> extends Amendment, AmendmentMeta {
   parentdata: T
   createdbyusername: string
+  createdbyavatarurl: string | null
   createdbyreputation: number
   lastmodifiedbyusername: string | null
+  lastmodifiedbyavatarurl: string | null
+  statuschanges: StatusChanges | null
 }
 
 // AssetOverview
@@ -45,7 +48,6 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullAmendments = 'getfullamendments',
-  GetAmendmentsWaitingForApproval = 'getamendmentswaitingforapproval',
   GetAmendmentsWithMeta = 'getamendmentswithmeta', // AssetOverview
 }
 

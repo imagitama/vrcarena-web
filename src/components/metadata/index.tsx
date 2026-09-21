@@ -37,7 +37,8 @@ const Metadata = ({
     ) : (
       'system'
     )}
-    {item.lastmodifiedby &&
+    {showModified &&
+      item.lastmodifiedby &&
       item.lastmodifiedat &&
       item.lastmodifiedat !== item.createdat && (
         <>
