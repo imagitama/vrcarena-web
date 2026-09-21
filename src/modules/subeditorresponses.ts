@@ -11,10 +11,10 @@ export interface SubEditorResponseFields extends Record<string, any> {
   parenttable: string
   parentid: string
   fields: { [fieldName: string]: SubEditorResponseField } | null
-  accessstatus: AccessStatus | null
+  // accessstatus: AccessStatus | null
   approvalstatus: ApprovalStatus | null
-  deletionreason: DeletionReason | null
-  archivedreason: ArchivedReason | null
+  // deletionreason: DeletionReason | null
+  // archivedreason: ArchivedReason | null
   declinedreasons: DeclinedReason[] | null
   comments: string | null
 }

@@ -39,6 +39,9 @@ const View = ({ articleId }: { articleId?: string }) => {
         parenttable: parentTable || null,
         parentid: parentId || null,
       }}
+      getSuccessUrl={(id) =>
+        routes.viewArticleWithVar.replace(':articleId', id!)
+      }
       successMessage={
         <>
           Our staff have been notified of your article and our staff try to
