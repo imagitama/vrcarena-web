@@ -133,7 +133,7 @@ const MessageText = styled.div`
   text-align: center;
 `
 
-const SUB_EDITOR_REP_THRESHOLD = 100 // one year old OR patreon supporter
+const SUB_EDITOR_REP_THRESHOLD = 200 // 35 rows as of sep 2026
 const hideId = 'sub-editor-question'
 
 const SubEditorMessage = () => {
@@ -209,8 +209,9 @@ const SubEditorMessage = () => {
         </Button>,
       ]}>
       <MessageText>
-        Hi {user.username}! You have enough reputation to become a "community
-        editor" to help our staff with approving new assets and amendments.
+        Hi {user.username}! You have enough reputation to become a{' '}
+        <strong>community editor</strong> to help our staff with approving new
+        assets and amendments.
       </MessageText>
     </Message>
   )

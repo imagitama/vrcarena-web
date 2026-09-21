@@ -730,7 +730,7 @@ export default () => {
             <AccountVerificationMessage />
             <EditorQueueMessage />
             <MyQueuedAssetsMessage />
-            {/* <SubEditorMessage /> */}
+            <SubEditorMessage />
           </ErrorBoundary>
           <ErrorBoundary>
             <MainContent />

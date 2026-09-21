@@ -33,9 +33,7 @@ const EditorQueueMessage = () => {
 
   if (lastErrorCode !== null) {
     return (
-      <ErrorMessage errorCode={lastErrorCode}>
-        Failed to get admin queue
-      </ErrorMessage>
+      <ErrorMessage errorCode={lastErrorCode}>Failed to get queue</ErrorMessage>
     )
   }
 
