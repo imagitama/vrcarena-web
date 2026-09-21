@@ -93,7 +93,7 @@ const View = () => {
           View All Articles
         </Button>
       </FormControls>
-      {isEditor || (
+      {isEditor && (
         <EditorRecordManager
           id={article.id}
           collectionName={CollectionNames.Articles}
