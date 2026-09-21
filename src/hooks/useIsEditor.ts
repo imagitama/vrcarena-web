@@ -5,6 +5,8 @@ import { inDevelopment } from '@/environment'
 export default (): boolean | null => {
   const [, , user] = useUserRecord()
   return (
-    user && (user.role === UserRoles.Editor || user.role === UserRoles.Admin)
+    (user &&
+      (user.role === UserRoles.Editor || user.role === UserRoles.Admin)) ||
+    inDevelopment()
   )
 }

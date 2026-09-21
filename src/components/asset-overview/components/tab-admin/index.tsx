@@ -106,7 +106,12 @@ export default () => {
         {
           name: 'history',
           label: 'History',
-          contents: <AssetTimeline assetId={assetId} />,
+          contents: (
+            <AssetTimeline
+              assetId={assetId}
+              statusChanges={assetExtra.statuschanges}
+            />
+          ),
         },
         {
           name: 'ai-eval',
@@ -166,15 +171,6 @@ export default () => {
             <ErrorBoundary>
               <AssetAuditResult asset={asset} />
             </ErrorBoundary>
-          ),
-        },
-        {
-          name: 'status-changes',
-          label: 'Statuses',
-          contents: (
-            <>
-              <StatusChanges statusChanges={assetExtra.statuschanges} />
-            </>
           ),
         },
       ]}

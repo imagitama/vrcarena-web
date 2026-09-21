@@ -13,91 +13,26 @@ import {
   AmendmentMeta,
 } from '@/modules/amendments'
 import {
-  BanStatus,
   UserMeta,
   CollectionNames as UsersCollectionNames,
 } from '@/modules/users'
 import {
   FullReport,
   CollectionNames as ReportsCollectionNames,
-  ResolutionStatus,
 } from '@/modules/reports'
 import { CollectionNames as SupportTicketsCollectionNames } from '@/modules/support-tickets'
 import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
 import { CollectionNames as CollectionsCollectionNames } from '@/modules/collections'
 import { CollectionNames as WishlistsCollectionNames } from '@/modules/wishlists'
 import { CollectionNames as SpeciesCollectionNames } from '@/modules/species'
+import { ApprovalStatus, MetaRecord } from '@/modules/common'
 import {
-  AccessStatus,
-  ApprovalStatus,
-  MetaRecord,
-  PublishStatus,
-} from '@/modules/common'
-
-const getLabelForApprovalStatus = (approvalStatus: ApprovalStatus): string => {
-  switch (approvalStatus) {
-    case ApprovalStatus.Approved:
-      return 'approved'
-    case ApprovalStatus.Declined:
-      return 'declined'
-    case ApprovalStatus.Quarantined:
-      return 'quarantined'
-    case ApprovalStatus.Waiting:
-      return 'reverted back to waiting'
-    case ApprovalStatus.AutoApproved:
-      return 'auto-approved'
-    default:
-      return `${approvalStatus}*`
-  }
-}
-
-const getLabelForAccessStatus = (accessStatus: AccessStatus): string => {
-  switch (accessStatus) {
-    case AccessStatus.Deleted:
-      return 'moved to trash'
-    case AccessStatus.Public:
-      return 'moved out of trash'
-    case AccessStatus.Archived:
-      return 'archived'
-    default:
-      return `${accessStatus}*`
-  }
-}
-
-const getLabelForPublishStatus = (publishStatus: PublishStatus): string => {
-  switch (publishStatus) {
-    case PublishStatus.Draft:
-      return 'moved back to draft'
-    case PublishStatus.Published:
-      return 'published for approval'
-    default:
-      return `${publishStatus}*`
-  }
-}
-
-const getLabelForBanStatus = (banStatus: BanStatus): string => {
-  switch (banStatus) {
-    case BanStatus.Banned:
-      return 'banned'
-    case BanStatus.Unbanned:
-      return 'unbanned'
-    default:
-      return `${banStatus}*`
-  }
-}
-
-const getLabelForResolutionStatus = (
-  resolutionStatus: ResolutionStatus
-): string => {
-  switch (resolutionStatus) {
-    case ResolutionStatus.Pending:
-      return 'unresolved'
-    case ResolutionStatus.Resolved:
-      return 'resolved'
-    default:
-      return `${resolutionStatus}*`
-  }
-}
+  getLabelForAccessStatus,
+  getLabelForApprovalStatus,
+  getLabelForBanStatus,
+  getLabelForPublishStatus,
+  getLabelForResolutionStatus,
+} from '@/status-changes'
 
 const HistoryEntryLabel = ({
   entry: { message, data, parent, parenttable, createdby },

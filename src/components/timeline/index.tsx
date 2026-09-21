@@ -7,7 +7,6 @@ import {
 } from '@/modules/comments'
 import {
   createMessage,
-  EditHistoryEntry,
   editMessage,
   FullHistoryEntry,
   HistoryEntryChanges,
@@ -22,83 +21,27 @@ import {
   CollectionNames as AmendmentsCollectionNames,
 } from '@/modules/amendments'
 import {
-  BanStatus,
   UserMeta,
   CollectionNames as UsersCollectionNames,
 } from '@/modules/users'
 import {
   ReportMeta,
   CollectionNames as ReportsCollectionNames,
-  ResolutionStatus,
 } from '@/modules/reports'
 import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
-import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+import { ApprovalStatus } from '@/modules/common'
+import {
+  getLabelForAccessStatus,
+  getLabelForApprovalStatus,
+  getLabelForBanStatus,
+  getLabelForPublishStatus,
+  getLabelForResolutionStatus,
+} from '@/status-changes'
 
 import ErrorBoundary from '@/components/error-boundary'
 import Link from '@/components/link'
 import UsernameLink from '@/components/username-link'
 import FormattedDate from '@/components/formatted-date'
-
-const getLabelForApprovalStatus = (approvalStatus: string): string => {
-  switch (approvalStatus) {
-    case ApprovalStatus.Approved:
-      return 'approved'
-    case ApprovalStatus.Declined:
-      return 'declined'
-    case ApprovalStatus.Waiting:
-      return 'reverted back to waiting'
-    case ApprovalStatus.Quarantined:
-      return 'quarantined'
-    case ApprovalStatus.AutoApproved:
-      return 'auto-approved'
-    default:
-      throw new Error(`Unknown approval status: ${approvalStatus}`)
-  }
-}
-
-const getLabelForAccessStatus = (accessStatus: string): string => {
-  switch (accessStatus) {
-    case AccessStatus.Deleted:
-      return 'moved to trash'
-    case AccessStatus.Public:
-      return 'moved out of trash'
-    default:
-      throw new Error(`Unknown access status: ${accessStatus}`)
-  }
-}
-
-const getLabelForPublishStatus = (publishStatus: string): string => {
-  switch (publishStatus) {
-    case PublishStatus.Draft:
-      return 'moved back to draft'
-    case PublishStatus.Published:
-      return 'published for approval'
-    default:
-      throw new Error(`Unknown publish status: ${publishStatus}`)
-  }
-}
-
-const getLabelForBanStatus = (banStatus: string): string => {
-  switch (banStatus) {
-    case BanStatus.Banned:
-      return 'banned'
-    case BanStatus.Unbanned:
-      return 'unbanned'
-    default:
-      throw new Error(`Unknown publish status: ${banStatus}`)
-  }
-}
-
-const getLabelForResolutionStatus = (resolutionStatus: string): string => {
-  switch (resolutionStatus) {
-    case ResolutionStatus.Pending:
-      return 'unresolved'
-    case ResolutionStatus.Resolved:
-      return 'resolved'
-    default:
-      throw new Error(`Unknown publish status: ${resolutionStatus}`)
-  }
-}
 
 const useStyles = makeStyles({
   entry: {

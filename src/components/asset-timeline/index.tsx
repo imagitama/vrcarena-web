@@ -16,11 +16,13 @@ import {
   ApprovalStatus,
   MetaRecord,
   PublishStatus,
+  StatusChange,
+  StatusChanges,
 } from '@/modules/common'
 import assetEditableFields from '@/editable-fields/assets'
 import { fieldTypes } from '@/generic-forms'
-import { EditableField, EditableFieldBase } from '@/editable-fields'
-import { Message, HistoryEntry } from '@/modules/history'
+import { EditableFieldBase } from '@/editable-fields'
+import { Message, HistoryEntry, HistoryEntryChanges } from '@/modules/history'
 import { ViewNames } from '@/modules/assets'
 
 import useDataStoreItem from '@/hooks/useDataStoreItem'
@@ -35,6 +37,7 @@ import Markdown from '@/components/markdown'
 import TagChips from '@/components/tag-chips'
 import HistoryEntryLabel from '@/components/history-entry-label'
 import { colorPalette } from '@/config'
+import { StatusChangeLabel } from '../status-changes'
 
 enum Positivity {
   Positive = 'positive',
@@ -44,6 +47,7 @@ enum Positivity {
 
 enum TimelineEventType {
   History = 'HISTORY', // todo: all lowercase?
+  StatusChange = 'STATUS_CHANGE',
 }
 
 interface TimelineEvent<T> {
@@ -66,10 +70,14 @@ interface TimelineData extends Record<string, unknown> {
 
 const useStyles = makeStyles({
   positive: {
-    backgroundColor: colorPalette.positive,
+    '&&': {
+      backgroundColor: 'rgb(0, 255, 0)',
+    },
   },
   negative: {
-    backgroundColor: colorPalette.negative,
+    '&&': {
+      backgroundColor: 'rgb(255, 0, 0)',
+    },
   },
   neutral: {},
   expander: {
@@ -109,14 +117,6 @@ const useStyles = makeStyles({
     marginTop: '0.5rem',
   },
 })
-
-const getExpandedDataForJson = (event: TimelineEvent<any>): any => {
-  if (event.type === TimelineEventType.History) {
-    return pruneInternalFields(event.originalrecord.data)
-  }
-
-  return null
-}
 
 const pruneInternalFields = (record: any): any =>
   Object.entries(record).reduce(
@@ -243,7 +243,14 @@ const AssetTimelineItem = ({
               onClick={() => setIsExpanded((currentVal) => !currentVal)}
               className={classes.expander}>
               {event.username || DEFAULT_USERNAME}{' '}
-              <HistoryEntryLabel entry={event.originalrecord} />{' '}
+              {event.type === TimelineEventType.History ? (
+                <HistoryEntryLabel entry={event.originalrecord} />
+              ) : (
+                <StatusChangeLabel
+                  fieldName={event.originalrecord.fieldName}
+                  statusChange={event.originalrecord.statusChange}
+                />
+              )}{' '}
               {isActuallyExpanded ? (
                 <KeyboardArrowUpIcon />
               ) : (
@@ -307,12 +314,97 @@ const getPositivity = (event: TimelineEvent<any>): Positivity => {
   return Positivity.Neutral
 }
 
+interface StatusChangeWithFieldName {
+  fieldName: string
+  statusChange: StatusChange
+}
+
+const getPositivityForStatusChange = (
+  fieldName: string,
+  statusChange: StatusChange
+): Positivity => {
+  switch (fieldName) {
+    case 'approvalstatus':
+      switch (statusChange.value) {
+        case ApprovalStatus.Approved:
+        case ApprovalStatus.AutoApproved:
+          return Positivity.Positive
+        case ApprovalStatus.Declined:
+        case ApprovalStatus.Quarantined:
+          return Positivity.Negative
+      }
+  }
+
+  return Positivity.Neutral
+}
+
+const mapStatusChangesToTimelineEvents = (
+  statusChanges: StatusChanges
+): TimelineEvent<StatusChangeWithFieldName>[] => {
+  return Object.entries(statusChanges)
+    .filter(([, change]) => change.createdat)
+    .map(([fieldName, change]) => ({
+      id: `${fieldName}-${change.createdat}`,
+      date: new Date(change.createdat as string),
+      type: TimelineEventType.StatusChange,
+      message: `${change.username ?? 'Someone'} changed ${fieldName} to "${
+        change.value
+      }"`,
+      userid: change.userid ?? '',
+      username: change.username ?? '',
+      avatarurl: change.avatarurl ?? '',
+      positivity: getPositivityForStatusChange(fieldName, change),
+      originalrecord: {
+        fieldName,
+        statusChange: change,
+      },
+    }))
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+}
+
 const assignPositivity = (event: TimelineEvent<any>): TimelineEvent<any> => ({
   ...event,
   positivity: getPositivity(event),
 })
 
-const AssetTimeline = ({ assetId }: { assetId: string }) => {
+type AnyTimelineEvent = TimelineEvent<
+  HistoryEntry<any> | StatusChangeWithFieldName
+>
+
+const filterOldApprovedAtCols = (
+  event: TimelineEvent<HistoryEntry<any>>
+): boolean => {
+  if (!(event.originalrecord.data as HistoryEntryChanges).changes) return true
+
+  if (
+    'accessstatus' in (event.originalrecord.data as HistoryEntryChanges).changes
+  )
+    return false
+  if (
+    'publishstatus' in
+    (event.originalrecord.data as HistoryEntryChanges).changes
+  )
+    return false
+  if (
+    'approvalstatus' in
+    (event.originalrecord.data as HistoryEntryChanges).changes
+  )
+    return false
+  if (
+    'approvedat' in (event.originalrecord.data as HistoryEntryChanges).changes
+  )
+    return false
+
+  return true
+}
+
+const AssetTimeline = ({
+  assetId,
+  statusChanges,
+}: {
+  assetId: string
+  statusChanges: StatusChanges | null
+}) => {
   const [isLoading, lastErrorCode, timelineData] =
     useDataStoreItem<TimelineData>(ViewNames.GetAssetTimeline, assetId)
   const [isForceExpanded, setIsForceExpanded] = useState(false)
@@ -329,13 +421,18 @@ const AssetTimeline = ({ assetId }: { assetId: string }) => {
     )
   }
 
-  const events = timelineData.assethistory
-    .concat(timelineData.assetmetahistory)
-    .map((timelineEvent) => ({
-      ...timelineEvent,
-      date: new Date(timelineEvent.date),
+  const events: AnyTimelineEvent[] = ([] as AnyTimelineEvent[])
+    .concat(timelineData.assethistory)
+    // .concat(timelineData.assetmetahistory)
+    .map((event) => ({
+      ...event,
+      date: new Date(event.date),
     }))
     .map(assignPositivity)
+    .filter(filterOldApprovedAtCols)
+    .concat(
+      statusChanges ? mapStatusChangesToTimelineEvents(statusChanges) : []
+    )
     .sort((eventA, eventB) => eventB.date.getTime() - eventA.date.getTime())
 
   return (

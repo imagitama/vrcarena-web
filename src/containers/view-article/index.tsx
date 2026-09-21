@@ -8,7 +8,6 @@ import { Article as ArticleIcon } from '@/icons'
 import { CollectionNames, FullArticle, ViewNames } from '@/modules/articles'
 import { trimDescription } from '@/utils/formatting'
 
-import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useIsEditor from '@/hooks/useIsEditor'
 
 import NoResultsMessage from '@/components/no-results-message'
