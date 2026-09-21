@@ -93,20 +93,17 @@ const View = () => {
           View All Articles
         </Button>
       </FormControls>
-      {isEditor ||
-        (true && (
-          <>
-            <EditorRecordManager
-              id={article.id}
-              collectionName={CollectionNames.Articles}
-              metaCollectionName={CollectionNames.ArticlesMeta}
-              showAccessButtons
-              showApprovalButtons
-              showEditorNotes
-              onDone={hydrate}
-            />
-          </>
-        ))}
+      {isEditor || (
+        <EditorRecordManager
+          id={article.id}
+          collectionName={CollectionNames.Articles}
+          metaCollectionName={CollectionNames.ArticlesMeta}
+          showAccessButtons
+          showApprovalButtons
+          showEditorNotes
+          onDone={hydrate}
+        />
+      )}
     </>
   )
 }
