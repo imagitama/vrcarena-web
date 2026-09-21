@@ -132,27 +132,19 @@ export const ApproveButtonBase = ({
 type ApprovePayload = {
   declinedreasons?: never[] | undefined
   approvalstatus: ApprovalStatus.Approved
-  approvedat: string
-  approvedby: string
 }
 
 type DeclinePayload = {
   declinedreasons?: DeclinedReason[] | undefined
   approvalstatus: ApprovalStatus.Declined
-  approvedat: null
-  approvedby: null
 }
 
 type QuarantinePayload = {
   approvalstatus: ApprovalStatus.Quarantined
-  approvedat: null
-  approvedby: null
 }
 
 type WaitingPayload = {
   approvalstatus: ApprovalStatus.Waiting
-  approvedat: null
-  approvedby: null
 }
 
 type UpdateDeclinedReasonsPayload = {
@@ -269,8 +261,6 @@ const ApproveButton = ({
         case ApprovalStatus.Approved:
           newFields = {
             approvalstatus: ApprovalStatus.Approved,
-            approvedat: new Date().toISOString(),
-            approvedby: userId,
             ...(showDeclineReasons
               ? {
                   declinedreasons: [],
@@ -281,8 +271,6 @@ const ApproveButton = ({
         case ApprovalStatus.Declined:
           newFields = {
             approvalstatus: ApprovalStatus.Declined,
-            approvedat: null,
-            approvedby: null,
             ...(showDeclineReasons
               ? {
                   declinedreasons: selectedReasons,
@@ -293,15 +281,11 @@ const ApproveButton = ({
         case ApprovalStatus.Quarantined:
           newFields = {
             approvalstatus: ApprovalStatus.Quarantined,
-            approvedat: null,
-            approvedby: null,
           }
           break
         case ApprovalStatus.Waiting:
           newFields = {
             approvalstatus: ApprovalStatus.Waiting,
-            approvedat: null,
-            approvedby: null,
           }
           break
       }
