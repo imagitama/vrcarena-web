@@ -22,7 +22,6 @@ import { StatusChange } from '@/modules/common'
 import UsernameLink from '@/components/username-link'
 import FormattedDate from '@/components/formatted-date'
 import Tabs from '@/components/tabs'
-import WarningMessage from '@/components/warning-message'
 import AssetAuditResult from '@/components/asset-audit-result'
 import AiResult from '@/components/ai-result'
 import {
@@ -33,6 +32,7 @@ import {
 import AssetEditorRecordManager from '@/components/asset-editor-record-manager'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import { capitalize } from '@/utils'
+import StatusChanges from '@/components/status-changes'
 
 const StatusChangeTimeline = ({
   statusChanges,
@@ -173,8 +173,7 @@ export default () => {
           label: 'Statuses',
           contents: (
             <>
-              <WarningMessage>Experimental 17 aug 2026</WarningMessage>
-              <StatusChangeTimeline statusChanges={assetExtra.statuschanges} />
+              <StatusChanges statusChanges={assetExtra.statuschanges} />
             </>
           ),
         },

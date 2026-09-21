@@ -59,5 +59,5 @@ export interface StatusChange {
 }
 
 export type StatusChanges = {
-  [columnname: string]: StatusChange
+  [columnName: string]: StatusChange
 }

@@ -1,5 +1,6 @@
 import { UserRoles } from '@/modules/users'
 import useUserRecord from './useUserRecord'
+import { inDevelopment } from '@/environment'
 
 export default (): boolean | null => {
   const [, , user] = useUserRecord()

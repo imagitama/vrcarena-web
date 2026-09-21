@@ -55,7 +55,7 @@ export interface FullArticle extends Article, ArticleMeta {
   lastmodifiedbyavatarurl: string | null
   createdbyusername: string
   createdbyavatarurl: string
-  changes: StatusChanges
+  statuschanges: StatusChanges
 }
 
 export enum CollectionNames {

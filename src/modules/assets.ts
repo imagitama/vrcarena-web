@@ -7,6 +7,7 @@ import {
   MetaRecord,
   PublishStatus,
   StatusChange,
+  StatusChanges,
 } from './common'
 import { Tag, TagStats } from './tags'
 import { AiSimilarQueuedItem } from './aisimilar'
@@ -312,7 +313,7 @@ export interface FullAssetExtra extends Record<string, unknown> {
   aisimilaritiesdata: PublicAsset[]
   mentionsdata: MentionForFullAsset[]
   mentionstotal: number
-  statuschanges: AssetStatusChanges
+  statuschanges: StatusChanges
 }
 
 // data only relevant to editors

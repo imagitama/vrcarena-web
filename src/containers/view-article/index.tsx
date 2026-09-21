@@ -24,6 +24,7 @@ import { DataStoreErrorCode } from '@/data-store'
 import { HydrateFn } from '@/hooks/useDataStore'
 import useDatabaseQuery, { Operators } from '@/hooks/useDatabaseQuery'
 import { getIsUuid } from '@/utils'
+import StatusChanges from '@/components/status-changes'
 
 const useSluggedArticle = (
   idOrSlug: string
@@ -94,15 +95,18 @@ const View = () => {
         </Button>
       </FormControls>
       {isEditor && (
-        <EditorRecordManager
-          id={article.id}
-          collectionName={CollectionNames.Articles}
-          metaCollectionName={CollectionNames.ArticlesMeta}
-          showAccessButtons
-          showApprovalButtons
-          showEditorNotes
-          onDone={hydrate}
-        />
+        <>
+          <EditorRecordManager
+            id={article.id}
+            collectionName={CollectionNames.Articles}
+            metaCollectionName={CollectionNames.ArticlesMeta}
+            showAccessButtons
+            showApprovalButtons
+            showEditorNotes
+            onDone={hydrate}
+          />
+          <StatusChanges statusChanges={article.statuschanges} />
+        </>
       )}
     </>
   )
