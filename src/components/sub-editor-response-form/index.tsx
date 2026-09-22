@@ -257,70 +257,76 @@ const Form = ({
               Edit My Response
             </Button>
           }>
-          You have submitted a community response for this asset or amendment.
+          You have submitted a community response for this{' '}
+          {isAsset ? 'asset' : 'amendment'}.
         </SuccessMessage>
       </>
     )
 
   return (
     <>
-      <Row>
-        <Heading variant="h3">Field Review</Heading>
-        <Table size="small">
-          <TableBody>
-            {assetsEditableFields.map((editableField) => {
-              const value: SubEditorResponseField | null = formFields.fields
-                ? formFields.fields[editableField.name]
-                : null
-              const verdict: boolean | null =
-                value?.verdict !== undefined ? value.verdict : null
-              const isCommentFieldEnabled = verdict === false
-              return (
-                <TableRow key={editableField.name}>
-                  <TableCell width="25%">{editableField.label}</TableCell>
-                  <TableCell width="25%">
-                    <ButtonGroup>
-                      {/* <Button
+      {isAsset ? (
+        <Row>
+          <Heading variant="h3">Field Review</Heading>
+          <Table size="small">
+            <TableBody>
+              {assetsEditableFields.map((editableField) => {
+                const value: SubEditorResponseField | null = formFields.fields
+                  ? formFields.fields[editableField.name]
+                  : null
+                const verdict: boolean | null =
+                  value?.verdict !== undefined ? value.verdict : null
+                const isCommentFieldEnabled = verdict === false
+                return (
+                  <TableRow key={editableField.name}>
+                    <TableCell width="25%">{editableField.label}</TableCell>
+                    <TableCell width="25%">
+                      <ButtonGroup>
+                        {/* <Button
                         size="small"
                         icon={<DoneIcon />}
                         title="You approve this field"
                         onClick={() => approveVerdict(editableField.name)}
                         color={verdict === true ? 'primary' : 'secondary'}
                       /> */}
-                      <Button
+                        <Button
+                          size="small"
+                          icon={<DoneIcon />}
+                          title="Clear your approval"
+                          onClick={() => clearVerdict(editableField.name)}
+                          color={verdict === null ? 'primary' : 'secondary'}
+                        />
+                        <Button
+                          size="small"
+                          icon={<CloseIcon />}
+                          title="You decline this field"
+                          onClick={() => declineVerdict(editableField.name)}
+                          color={verdict === false ? 'primary' : 'secondary'}
+                        />
+                      </ButtonGroup>
+                    </TableCell>
+                    <TableCell width="50%">
+                      <TextInput
+                        fullWidth
+                        label="Reason For Decline"
                         size="small"
-                        icon={<DoneIcon />}
-                        title="Clear your approval"
-                        onClick={() => clearVerdict(editableField.name)}
-                        color={verdict === null ? 'primary' : 'secondary'}
+                        isDisabled={!isCommentFieldEnabled}
+                        value={value?.comments || ''}
+                        onChange={(e) =>
+                          updateVerdictComment(
+                            editableField.name,
+                            e.target.value
+                          )
+                        }
                       />
-                      <Button
-                        size="small"
-                        icon={<CloseIcon />}
-                        title="You decline this field"
-                        onClick={() => declineVerdict(editableField.name)}
-                        color={verdict === false ? 'primary' : 'secondary'}
-                      />
-                    </ButtonGroup>
-                  </TableCell>
-                  <TableCell width="50%">
-                    <TextInput
-                      fullWidth
-                      label="Reason For Decline"
-                      size="small"
-                      isDisabled={!isCommentFieldEnabled}
-                      value={value?.comments || ''}
-                      onChange={(e) =>
-                        updateVerdictComment(editableField.name, e.target.value)
-                      }
-                    />
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </Row>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </Row>
+      ) : null}
       <Row>
         <Heading variant="h3">Approval</Heading>
         <ApproveButtonBase

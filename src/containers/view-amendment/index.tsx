@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import { Helmet } from '@unhead/react/helmet'
+import { v4 as uuidv4 } from 'uuid'
 
 import {
   Asset,
@@ -44,6 +45,38 @@ import { capitalize } from '@/utils'
 import FormattedDate from '@/components/formatted-date'
 import AdminGenericHistory from '@/components/admin-generic-history'
 import StatusChanges from '@/components/status-changes'
+import {
+  FullSubEditorResponse,
+  ViewNames as SubEditorResponsesViewNames,
+} from '@/modules/subeditorresponses'
+import useDatabaseQuery, {
+  Operators,
+  OrderDirections,
+} from '@/hooks/useDatabaseQuery'
+import { SubEditor as SubEditorIcon } from '@/icons'
+import SubEditorResults from '@/components/sub-editor-results'
+import SubEditorResponseForm from '@/components/sub-editor-response-form'
+import { SubEditorStatus } from '@/modules/users'
+import useUserRecord from '@/hooks/useUserRecord'
+
+const useSubEditorResponsesForAmendment = (
+  amendmentId: string | false,
+  cacheKey?: string
+): FullSubEditorResponse[] => {
+  const [, , results] = useDatabaseQuery<FullSubEditorResponse>(
+    SubEditorResponsesViewNames.GetFullSubEditorResponses,
+    [
+      ['parenttable', Operators.EQUALS, AmendmentsCollectionNames.Amendments],
+      ['parentid', Operators.EQUALS, amendmentId],
+    ],
+    {
+      cacheKey,
+      orderBy: ['createdat', OrderDirections.DESC],
+    }
+  )
+
+  return results || []
+}
 
 const AssetOutput = ({ assetId }: { assetId: string }) => {
   const [isLoading, lastErrorCode, asset] = useDataStoreItem<Asset>(
@@ -164,6 +197,8 @@ const Parent = ({ table, id }: { table: string; id: string }) => {
   }
 }
 
+const getCacheKey = () => uuidv4()
+
 const View = () => {
   const { amendmentId } = useParams<{ amendmentId: string }>()
   const userId = useUserId()
@@ -173,7 +208,13 @@ const View = () => {
       userId ? amendmentId : false,
       { queryName: 'view-amendment' }
     )
+  const [cacheKey, setCacheKey] = useState('')
   const isEditor = useIsEditor()
+  const subEditorResponses = useSubEditorResponsesForAmendment(
+    amendmentId,
+    cacheKey
+  )
+  const [, , user] = useUserRecord()
 
   if (!userId) {
     return <NoPermissionMessage />
@@ -215,6 +256,24 @@ const View = () => {
 
   return (
     <>
+      {approvalStatus === ApprovalStatus.Waiting &&
+      user?.subeditorstatus === SubEditorStatus.Accepted ? (
+        <SubEditorResponseForm
+          parentType={AmendmentsCollectionNames.Amendments}
+          parentId={amendmentId}
+          hydrate={() => {
+            setCacheKey(getCacheKey)
+            hydrate()
+          }}
+        />
+      ) : null}
+      {subEditorResponses.length > 0 ? (
+        <Message icon={<SubEditorIcon />}>
+          There are {subEditorResponses.length} community responses for this
+          amendment:
+          <SubEditorResults items={subEditorResponses} showParents={false} />
+        </Message>
+      ) : null}
       {approvalStatus === ApprovalStatus.Declined && (
         <WarningMessage>
           This amendment has been declined. Please read our comments.
