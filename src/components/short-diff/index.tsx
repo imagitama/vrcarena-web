@@ -244,14 +244,16 @@ function DescriptionOutput({
   )
 }
 
-function TagOutput({ fields }: { fields: Asset }) {
+function TagOutput({
+  oldFields,
+  newFields,
+}: {
+  oldFields: Asset
+  newFields: Asset
+}) {
   return (
     <div>
-      {fields.tags && fields.tags.length ? (
-        <TagChips tags={fields.tags} />
-      ) : (
-        <NoValueLabel>(no tags)</NoValueLabel>
-      )}
+      <TagDiff oldTags={oldFields.tags} newTags={newFields.tags} />
     </div>
   )
 }
@@ -471,6 +473,10 @@ function VrchatClonableAvatarsOutput({ fields }: { fields: Asset }) {
 interface FieldConfig {
   label: string
   renderer?: React.ComponentType<{ fields: FullAsset }>
+  renderers?: React.ComponentType<{
+    oldFields: FullAsset
+    newFields: FullAsset
+  }>
   type?: any
 }
 
@@ -530,7 +536,9 @@ const RenderersForFields: {
     },
     tags: {
       label: 'Tags',
-      renderer: ({ fields }) => <TagOutput fields={fields} />,
+      renderers: ({ oldFields, newFields }) => (
+        <TagOutput oldFields={oldFields} newFields={newFields} />
+      ),
     },
     isadult: {
       label: 'Adult (NSFW)',
@@ -765,6 +773,26 @@ export default ({
 
           if (fieldNameThatChanged === 'id') {
             throw new Error('Cannot show diff for ID')
+          }
+
+          if (rendererInfo?.renderers) {
+            const renderer = rendererInfo?.renderers
+            return (
+              <TableRow>
+                <TableCell label="Field">
+                  {rendererInfo?.label || capitalize(fieldNameToUse)}
+                </TableCell>
+                <TableCell label="Diff" colSpan={2}>
+                  {React.cloneElement(
+                    renderer({
+                      oldFields,
+                      newFields,
+                      rendererInfo,
+                    })
+                  )}
+                </TableCell>
+              </TableRow>
+            )
           }
 
           const renderer =
