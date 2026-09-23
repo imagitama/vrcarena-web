@@ -29,11 +29,11 @@ export interface FullCollection extends Collection {
 }
 
 export enum CollectionNames {
-  Collections = 'playlists', // TODO: rename
+  Collections = 'collections', // TODO: rename
   CollectionsForUsers = 'collectionsforusers',
 }
 
 export enum ViewNames {
-  GetPublicCollections = 'getpublicplaylists',
-  GetFullCollections = 'getfullplaylists',
+  GetPublicCollections = 'getpubliccollections',
+  GetFullCollections = 'getfullcollections',
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import PaginatedView, {
   GetQueryFn,
   PaginatedViewProps,
@@ -8,9 +8,7 @@ import { AssetCategory, PublicAsset, ViewNames } from '@/modules/assets'
 import AssetResults from '@/components/asset-results'
 import useIsAdultContentEnabled from '@/hooks/useIsAdultContentEnabled'
 import AssetsByArea from '@/components/assets-by-area'
-import { FilterType } from '@/filters'
 import Button from '../button'
-import useFilters from '@/hooks/useFilters'
 import useStorage from '@/hooks/useStorage'
 
 interface ExtraRendererProps {

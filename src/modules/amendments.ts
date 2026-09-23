@@ -48,7 +48,7 @@ export enum CollectionNames {
 
 export enum ViewNames {
   GetFullAmendments = 'getfullamendments',
-  GetAmendmentsWithMeta = 'getamendmentswithmeta', // AssetOverview
+  GetAmendmentsForList = 'getamendmentsforlist',
 }
 
 export enum FunctionNames {

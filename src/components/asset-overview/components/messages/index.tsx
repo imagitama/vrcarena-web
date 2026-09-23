@@ -3,8 +3,6 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CreateIcon from '@mui/icons-material/Create'
 
-import useIsEditor from '@/hooks/useIsEditor'
-
 import {
   IndicativeAuditStatus,
   CollectionNames as AssetsCollectionNames,
@@ -28,19 +26,21 @@ import {
   Queue as QueueIcon,
   SubEditor as SubEditorIcon,
 } from '@/icons'
+import { capitalize } from '@/utils'
+import { routes } from '@/routes'
+
+import useIsEditor from '@/hooks/useIsEditor'
+import useUserId from '@/hooks/useUserId'
+import useDatabaseQuery, {
+  Operators,
+  OrderDirections,
+} from '@/hooks/useDatabaseQuery'
 
 import Message from '@/components/message'
 import PublicEditorNotes from '@/components/public-editor-notes'
 import ErrorMessage from '@/components/error-message'
 import WarningMessage from '@/components/warning-message'
 import ClearIndicativeStatusButton from '@/components/clear-indicative-status-button'
-
-import AssetOverviewContext from '../../context'
-import useDatabaseQuery, {
-  Operators,
-  OrderDirections,
-} from '@/hooks/useDatabaseQuery'
-import { routes } from '@/routes'
 import {
   ResponsiveTable as Table,
   TableBody,
@@ -48,20 +48,20 @@ import {
   TableHead,
   TableRow,
 } from '@/components/responsive-table'
-import useUserId from '@/hooks/useUserId'
 import FormattedDate from '@/components/formatted-date'
 import StatusText, {
   getPositivityForAccessStatus,
   getPositivityForApprovalStatus,
 } from '@/components/status-text'
 import ShortId from '@/components/short-id'
-import { capitalize } from '@/utils'
 import SubEditorResults from '@/components/sub-editor-results'
+
+import AssetOverviewContext from '../../context'
 
 const useActiveAmendmentsForAsset = (assetId: string): AmendmentWithMeta[] => {
   const myUserId = useUserId()
   const [, , results] = useDatabaseQuery<AmendmentWithMeta>(
-    AmendmentsViewNames.GetAmendmentsWithMeta,
+    AmendmentsViewNames.GetAmendmentsForList,
     myUserId
       ? [
           ['parent', Operators.EQUALS, assetId],

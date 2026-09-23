@@ -26,7 +26,12 @@ import useUserPreferences from '@/hooks/useUserPreferences'
 import { getCategoryMeta } from '@/category-meta'
 import { mediaQueryForTabletsOrBelow } from '@/media-queries'
 import { AssetSearchResult } from '@/hooks/useAlgoliaSearch'
-import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+  StatusChanges,
+} from '@/modules/common'
 
 import Link from '@/components/link'
 import DefaultThumbnail from '@/components/default-thumbnail'
@@ -351,7 +356,7 @@ const AssetResultsItem = ({
   showCategory = true,
   showDateMetadata = false,
 }: {
-  asset?: Asset | PublicAsset | FullAsset | AssetSearchResult
+  asset?: Asset | AssetForList | FullAsset | AssetSearchResult
   onClick?: (event: React.SyntheticEvent<HTMLElement>) => void | false
   relation?: Relation
   isTiny?: boolean // relation verification required
@@ -499,18 +504,15 @@ const AssetResultsItem = ({
             ) : null}
             {showDateMetadata &&
             asset &&
-            'createdat' in asset &&
-            'approvedat' in asset &&
-            asset.approvedat ? (
+            'statuschanges' in asset &&
+            asset.statuschanges ? (
               <DateMetadata>
-                Created{' '}
-                <FormattedDate
-                  date={(asset as AssetForList).createdat as string}
-                />
-                <br />
                 Approved{' '}
                 <FormattedDate
-                  date={(asset as AssetForList).approvedat as string}
+                  date={
+                    (asset.statuschanges as StatusChanges).approvalstatus
+                      .createdat!
+                  }
                 />
               </DateMetadata>
             ) : null}
