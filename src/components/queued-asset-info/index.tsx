@@ -36,6 +36,7 @@ import {
 } from '@/modules/aievaluation'
 import AiResult from '../ai-result'
 import AssetEditorRecordManager from '../asset-editor-record-manager'
+import { StatusChanges } from '@/modules/common'
 
 const useStyles = makeStyles({
   pass: {
@@ -109,11 +110,13 @@ const QueuedAssetInfo = ({
   assetEditorData,
   hydrate,
   showEditorControls = true,
+  statusChanges,
 }: {
   asset: FullAsset | AssetForList_Editor
   assetEditorData: FullAssetEditor
   hydrate?: () => void
   showEditorControls?: boolean
+  statusChanges: StatusChanges
 }) => {
   const isEditor = useIsEditor()
 
@@ -230,7 +233,7 @@ const QueuedAssetInfo = ({
               id={asset.id}
               asset={asset}
               onDone={hydrate!}
-              actions={assetEditorData.actions}
+              statusChanges={statusChanges}
             />
             <br />
             <ErrorBoundary>

@@ -107,6 +107,7 @@ function AssetsTable({
                         assetEditorData={asset} // view contains all the same fields
                         hydrate={hydrate}
                         showEditorControls={false}
+                        statusChanges={asset.statuschanges}
                       />
                     ) : (
                       '-'
@@ -119,7 +120,7 @@ function AssetsTable({
                           id={asset.id}
                           asset={asset}
                           onDone={hydrate!}
-                          actions={asset.actions}
+                          statusChanges={asset.statuschanges}
                         />
                       )}
                     </ErrorBoundary>
@@ -293,7 +294,6 @@ const AdminAssets = () => {
             .or(
               `approvalstatus.eq.${ApprovalStatus.Approved},approvalstatus.eq.${ApprovalStatus.AutoApproved}`
             )
-            .not('publishedat', 'is', null) // TODO: repair assets that don't have this
             .eq('accessstatus', AccessStatus.Public)
           break
 
@@ -322,9 +322,7 @@ const AdminAssets = () => {
           break
 
         case SubView.Declined:
-          query = query
-            .eq('approvalstatus', ApprovalStatus.Declined)
-            .not('publishedat', 'is', null)
+          query = query.eq('approvalstatus', ApprovalStatus.Declined)
           break
 
         default:
@@ -345,7 +343,6 @@ const AdminAssets = () => {
         evaluation is over <strong>60%</strong> confidence.
       </InfoMessage>
       <PaginatedView<AssetForList_Editor>
-        // cannot re-use other paginated views because "publishedat" field does not exist for them
         name="view-admin-assets"
         viewName={ViewNames.GetAssetsForList_Editor}
         getQuery={getQuery}

@@ -622,7 +622,8 @@ const AssetOverview = ({
         )}
         {isAssetLoaded &&
         getIsAssetWaitingForApproval(asset) &&
-        assetEditorData ? (
+        assetEditorData &&
+        assetExtra ? (
           <Suspense
             fallback={
               <LoadingIndicator message="Loading queued asset info..." />
@@ -631,6 +632,7 @@ const AssetOverview = ({
               asset={asset}
               assetEditorData={assetEditorData}
               hydrate={hydrate}
+              statusChanges={assetExtra.statuschanges}
             />
           </Suspense>
         ) : null}

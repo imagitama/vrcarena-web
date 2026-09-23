@@ -269,8 +269,7 @@ export interface AssetForList_Editor extends AssetForList {
   archivedreason: ArchivedReason | null
   declinedreasons: DeclinedReason[] | null
 
-  // actions
-  actions: AssetActions
+  statuschanges: StatusChanges
 }
 
 export type MentionForFullAsset = {
@@ -320,7 +319,6 @@ export interface FullAssetExtra extends Record<string, unknown> {
 export interface FullAssetEditor extends Record<string, unknown> {
   id: string
   aievaluation: AiEvaluateQueuedItem | null
-  actions: AssetActions
 }
 
 export interface SmallAsset extends Asset, AssetMeta {
