@@ -92,7 +92,7 @@ const AssetsPaginatedView = ({
       name="view-assets"
       sortOptions={[
         {
-          label: 'Submission date',
+          label: 'Submitted at',
           fieldName: 'createdat',
         },
         {

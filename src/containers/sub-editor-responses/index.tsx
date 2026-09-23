@@ -29,7 +29,7 @@ const SubEditorResponses = () => {
         name="sub-editor-responses"
         sortOptions={[
           {
-            label: 'Created on',
+            label: 'Created at',
             fieldName: 'createdat',
           },
         ]}

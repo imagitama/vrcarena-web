@@ -60,7 +60,7 @@ const Assets = () => {
       name="view-adult-assets"
       sortOptions={[
         {
-          label: 'Submission date',
+          label: 'Submitted at',
           fieldName: 'createdat',
         },
         {

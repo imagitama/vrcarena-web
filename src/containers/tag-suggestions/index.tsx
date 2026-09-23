@@ -126,15 +126,7 @@ const Renderer = ({
   )
 }
 
-enum SubView {
-  Pending = 'pending',
-  Completed = 'completed',
-}
-
 const View = () => {
-  // const urlFromQueryParam = useQueryParam(URL_QUERY_PARAM_NAME)
-  // const [isFormVisible, setIsFormVisible] = useState(urlFromQueryParam !== null)
-
   const isEditor = useIsEditor()
 
   return (

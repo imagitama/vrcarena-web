@@ -53,7 +53,7 @@ const ReviewsView = () => {
               fieldName: 'overallrating',
             },
             {
-              label: 'Submission date',
+              label: 'Submitted at',
               fieldName: 'createdat',
             },
           ]}>

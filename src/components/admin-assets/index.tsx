@@ -348,7 +348,7 @@ const AdminAssets = () => {
         getQuery={getQuery}
         sortOptions={[
           {
-            label: 'Submission date',
+            label: 'Created at',
             fieldName: 'createdat',
           },
           {

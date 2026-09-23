@@ -59,7 +59,7 @@ const ViewCategoryView = () => {
         getQuery={getQuery}
         sortOptions={[
           {
-            label: 'Submission date',
+            label: 'Submitted at',
             fieldName: 'createdat',
           },
           {

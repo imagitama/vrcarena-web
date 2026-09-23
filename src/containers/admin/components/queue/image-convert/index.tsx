@@ -172,7 +172,7 @@ const AdminAssetSyncQueue = () => {
         viewName={ImageConvertQueueCollectionNames.ImageConvertQueue}
         sortOptions={[
           {
-            label: 'Queued At',
+            label: 'Queued at',
             fieldName: 'createdat',
           },
         ]}

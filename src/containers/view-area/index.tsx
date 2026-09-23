@@ -86,7 +86,7 @@ const ViewAreaView = () => {
           name="view-area"
           sortOptions={[
             {
-              label: 'Submission date',
+              label: 'Submitted at',
               fieldName: 'createdat',
             },
             {

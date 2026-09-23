@@ -68,7 +68,7 @@ const MyUploads = () => {
       name="my-assets"
       sortOptions={[
         {
-          label: 'Submission date',
+          label: 'Submitted at',
           fieldName: 'createdat',
         },
         {

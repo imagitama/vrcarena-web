@@ -242,7 +242,7 @@ export default () => (
       viewName={ViewNames.GetFullComments}
       sortOptions={[
         {
-          label: 'Creation date',
+          label: 'Created at',
           fieldName: 'createdat',
         },
       ]}

@@ -211,7 +211,7 @@ const AdminSurveys = () => {
         name="admin-surveys"
         sortOptions={[
           {
-            label: 'Createdat at',
+            label: 'Created at',
             fieldName: 'createdat',
           },
         ]}
@@ -241,7 +241,7 @@ const AdminSurveys = () => {
         name="admin-survey-responses"
         sortOptions={[
           {
-            label: 'Createdat at',
+            label: 'Created at',
             fieldName: 'createdat',
           },
         ]}

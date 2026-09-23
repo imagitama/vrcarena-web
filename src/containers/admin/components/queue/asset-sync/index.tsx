@@ -228,7 +228,7 @@ const AdminAssetSyncQueue = () => {
         viewName={AssetsSyncQueueCollectionNames.AssetSyncQueue}
         sortOptions={[
           {
-            label: 'Queued At',
+            label: 'Queued at',
             fieldName: 'createdat',
           },
         ]}

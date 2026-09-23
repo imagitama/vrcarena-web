@@ -204,7 +204,7 @@ const AdminAssetSyncQueue = () => {
         // getQuery={getQuery}
         sortOptions={[
           {
-            label: 'Queued At',
+            label: 'Queued at',
             fieldName: 'createdat',
           },
         ]}
