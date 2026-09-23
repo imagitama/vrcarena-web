@@ -351,10 +351,6 @@ const AdminAssets = () => {
         getQuery={getQuery}
         sortOptions={[
           {
-            label: 'Publish date',
-            fieldName: 'publishedat',
-          },
-          {
             label: 'Submission date',
             fieldName: 'createdat',
           },
@@ -363,7 +359,7 @@ const AdminAssets = () => {
             fieldName: 'title',
           },
         ]}
-        defaultFieldName="publishedat"
+        defaultFieldName="createdat" // TODO: sort by publish at (using history)
         defaultDirection={OrderDirections.ASC}
         defaultSubView={SubView.Pending}
         urlWithSubViewNameAndPageNumberVar={routes.adminWithTabNameVarAndSubViewNameVarAndPageNumberVar.replace(
