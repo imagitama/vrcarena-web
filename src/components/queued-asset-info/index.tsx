@@ -122,12 +122,19 @@ const QueuedAssetInfo = ({
 
   return (
     <Message title="Queued Asset">
-      Published <FormattedDate date={asset.publishedat!} /> by{' '}
-      {asset.publishedby !== null ? (
+      Published{' '}
+      {statusChanges.publishstatus?.createdat ? (
+        <FormattedDate date={statusChanges.publishstatus.createdat} />
+      ) : (
+        '(no date)'
+      )}{' '}
+      by{' '}
+      {statusChanges.publishstatus?.userid ? (
         <UsernameLink
-          id={asset.publishedby}
-          username={asset.publishedbyusername || undefined}
-          reputation={asset.publishedbyreputation!}
+          id={statusChanges.publishstatus.userid}
+          username={statusChanges.publishstatus.username || undefined}
+          // TODO: return
+          // reputation={statusChanges.publishstatus.createdat}
         />
       ) : (
         '(unknown)'
