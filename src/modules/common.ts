@@ -56,6 +56,7 @@ export interface StatusChange {
   username: string | null
   avatarurl: string | null
   createdat: string | null // date
+  historyid: string
 }
 
 export type StatusChanges = {

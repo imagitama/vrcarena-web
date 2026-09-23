@@ -16,13 +16,11 @@ import {
   ApprovalStatus,
   MetaRecord,
   PublishStatus,
-  StatusChange,
-  StatusChanges,
 } from '@/modules/common'
 import assetEditableFields from '@/editable-fields/assets'
 import { fieldTypes } from '@/generic-forms'
 import { EditableFieldBase } from '@/editable-fields'
-import { Message, HistoryEntry, HistoryEntryChanges } from '@/modules/history'
+import { Message, HistoryEntry } from '@/modules/history'
 import { ViewNames } from '@/modules/assets'
 
 import useDataStoreItem from '@/hooks/useDataStoreItem'
@@ -36,8 +34,9 @@ import Button from '@/components/button'
 import Markdown from '@/components/markdown'
 import TagChips from '@/components/tag-chips'
 import HistoryEntryLabel from '@/components/history-entry-label'
-import { colorPalette } from '@/config'
 import { StatusChangeLabel } from '../status-changes'
+import Table, { TableCell, TableRow } from '../responsive-table'
+import GenericOutputItem from '../generic-output-item'
 
 enum Positivity {
   Positive = 'positive',
@@ -56,7 +55,7 @@ interface TimelineEvent<T> {
   type: TimelineEventType
   message: string
   userid: string
-  username: string
+  username: string | null
   avatarurl: string
   positivity: Positivity
   originalrecord: T
@@ -92,6 +91,10 @@ const useStyles = makeStyles({
   },
   // override material
   oppositeContent: {
+    '&&': {
+      flex: 'initial',
+      width: '30%',
+    },
     marginTop: '-5px',
   },
   content: {
@@ -171,9 +174,34 @@ interface PrettyField extends EditableFieldBase<any> {
   value: any
 }
 
+const PrettyFieldOutput = ({ prettyField }: { prettyField: PrettyField }) => {
+  switch (prettyField.type) {
+    case fieldTypes.imageUpload:
+      return <img src={prettyField.value} height="200" />
+    case fieldTypes.text:
+      return prettyField.value
+    case fieldTypes.tags:
+      return <TagChips tags={prettyField.value} />
+    case fieldTypes.textMarkdown:
+      return <Markdown source={prettyField.value} />
+    default:
+      return JSON.stringify(prettyField.value, null, '  ')
+  }
+}
+
 const PrettyExpandedData = ({ data }: { data: PrettyField[] }) => {
   return (
-    <>
+    <Table size="small" noMinWidth>
+      {data.map((prettyField) => (
+        <TableRow>
+          <TableCell>{prettyField.label}</TableCell>
+          <TableCell>
+            <PrettyFieldOutput prettyField={prettyField} />
+          </TableCell>
+        </TableRow>
+      ))}
+
+      {/* 
       {data.map((prettyField) => {
         switch (prettyField.type) {
           case fieldTypes.imageUpload:
@@ -187,8 +215,8 @@ const PrettyExpandedData = ({ data }: { data: PrettyField[] }) => {
           default:
             return JSON.stringify(prettyField.value, null, '  ')
         }
-      })}
-    </>
+      })} */}
+    </Table>
   )
 }
 
@@ -233,7 +261,7 @@ const AssetTimelineItem = ({
             <UsernameLink id={event.userid}>
               <Avatar
                 url={event.avatarurl}
-                username={event.username}
+                username={event.username || undefined}
                 size={AvatarSize.ExtraTiny}
               />
             </UsernameLink>
@@ -305,6 +333,7 @@ const getPositivity = (event: TimelineEvent<any>): Positivity => {
         case ApprovalStatus.Declined:
           return Positivity.Negative
         case ApprovalStatus.Approved:
+        case ApprovalStatus.AutoApproved:
           return Positivity.Positive
         default:
       }
@@ -314,99 +343,32 @@ const getPositivity = (event: TimelineEvent<any>): Positivity => {
   return Positivity.Neutral
 }
 
-interface StatusChangeWithFieldName {
-  fieldName: string
-  statusChange: StatusChange
-}
-
-const getPositivityForStatusChange = (
-  fieldName: string,
-  statusChange: StatusChange
-): Positivity => {
-  switch (fieldName) {
-    case 'approvalstatus':
-      switch (statusChange.value) {
-        case ApprovalStatus.Approved:
-        case ApprovalStatus.AutoApproved:
-          return Positivity.Positive
-        case ApprovalStatus.Declined:
-        case ApprovalStatus.Quarantined:
-          return Positivity.Negative
-      }
-  }
-
-  return Positivity.Neutral
-}
-
-const mapStatusChangesToTimelineEvents = (
-  statusChanges: StatusChanges
-): TimelineEvent<StatusChangeWithFieldName>[] => {
-  return Object.entries(statusChanges)
-    .filter(([, change]) => change.createdat)
-    .map(([fieldName, change]) => ({
-      id: `${fieldName}-${change.createdat}`,
-      date: new Date(change.createdat as string),
-      type: TimelineEventType.StatusChange,
-      message: `${change.username ?? 'Someone'} changed ${fieldName} to "${
-        change.value
-      }"`,
-      userid: change.userid ?? '',
-      username: change.username ?? '',
-      avatarurl: change.avatarurl ?? '',
-      positivity: getPositivityForStatusChange(fieldName, change),
-      originalrecord: {
-        fieldName,
-        statusChange: change,
-      },
-    }))
-    .sort((a, b) => a.date.getTime() - b.date.getTime())
-}
-
 const assignPositivity = (event: TimelineEvent<any>): TimelineEvent<any> => ({
   ...event,
   positivity: getPositivity(event),
 })
 
-type AnyTimelineEvent = TimelineEvent<
-  HistoryEntry<any> | StatusChangeWithFieldName
->
-
-const filterOldApprovedAtCols = (
-  event: TimelineEvent<HistoryEntry<any>>
-): boolean => {
-  if (!(event.originalrecord.data as HistoryEntryChanges).changes) return true
-
-  if (
-    'accessstatus' in (event.originalrecord.data as HistoryEntryChanges).changes
+// TODO: get their username somehow
+const findUsernameFromEvent = (event: TimelineEvent<any>): string | null => {
+  if (!event.originalrecord.data.changes) return null
+  return (
+    event.originalrecord.data.changes.publishedby ||
+    event.originalrecord.data.changes.approvedby ||
+    null
   )
-    return false
-  if (
-    'publishstatus' in
-    (event.originalrecord.data as HistoryEntryChanges).changes
-  )
-    return false
-  if (
-    'approvalstatus' in
-    (event.originalrecord.data as HistoryEntryChanges).changes
-  )
-    return false
-  if (
-    'approvedat' in (event.originalrecord.data as HistoryEntryChanges).changes
-  )
-    return false
-
-  return true
 }
 
-const AssetTimeline = ({
-  assetId,
-  statusChanges,
-}: {
-  assetId: string
-  statusChanges: StatusChanges | null
-}) => {
+const mapEvent = (event: TimelineEvent<any>): TimelineEvent<any> => ({
+  ...event,
+  date: new Date(event.date),
+  username: event.username || findUsernameFromEvent(event),
+})
+
+const AssetTimeline = ({ assetId }: { assetId: string }) => {
   const [isLoading, lastErrorCode, timelineData] =
-    useDataStoreItem<TimelineData>(ViewNames.GetAssetTimeline, assetId)
+    useDataStoreItem<TimelineData>(ViewNames.GetAssetTimeline, assetId, {
+      queryName: `get-asset-timeline_${assetId}`,
+    })
   const [isForceExpanded, setIsForceExpanded] = useState(false)
 
   if (isLoading || !timelineData) {
@@ -421,18 +383,10 @@ const AssetTimeline = ({
     )
   }
 
-  const events: AnyTimelineEvent[] = ([] as AnyTimelineEvent[])
-    .concat(timelineData.assethistory)
-    // .concat(timelineData.assetmetahistory)
-    .map((event) => ({
-      ...event,
-      date: new Date(event.date),
-    }))
+  const events = timelineData.assethistory
+    .concat(timelineData.assetmetahistory)
+    .map(mapEvent)
     .map(assignPositivity)
-    .filter(filterOldApprovedAtCols)
-    .concat(
-      statusChanges ? mapStatusChangesToTimelineEvents(statusChanges) : []
-    )
     .sort((eventA, eventB) => eventB.date.getTime() - eventA.date.getTime())
 
   return (

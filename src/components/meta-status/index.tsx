@@ -7,6 +7,7 @@ import {
   ApprovalStatus,
   FeaturedStatus,
   PublishStatus,
+  StatusChange,
 } from '@/modules/common'
 import { ActionUser, AssetAction } from '@/modules/assets'
 import { colorPalette } from '@/config'
@@ -105,7 +106,8 @@ const featuredStatusMetas: { [key in FeaturedStatus]: Meta } = {
 const MetaStatus = ({
   status,
   type,
-  action,
+  // action,
+  statusChange,
   parentType,
   parentId,
   reasonOrReasons,
@@ -114,7 +116,8 @@ const MetaStatus = ({
   type: any
   parentType?: string
   parentId?: string
-  action?: AssetAction
+  // action?: AssetAction
+  statusChange?: StatusChange
   reasonOrReasons?: string | string[]
 }) => {
   const classes = useStyles()
@@ -154,7 +157,7 @@ const MetaStatus = ({
   return (
     <div
       className={`${classes.status} ${className}`}
-      title={action ? action.at : ''}>
+      title={statusChange?.createdat!}>
       {meta.label}
       {reasonOrReasons ? (
         <>
@@ -166,15 +169,18 @@ const MetaStatus = ({
             : reasonOrReasons}
         </>
       ) : null}
-      {action ? (
+      {statusChange ? (
         <small>
           <br />
-          <FormattedDate date={action.at} />
-          {action.by ? (
+          <FormattedDate date={statusChange.createdat!} />
+          {statusChange.userid ? (
             <>
               {' '}
               by{' '}
-              <UsernameLink id={action.by.id} username={action.by.username} />
+              <UsernameLink
+                id={statusChange.userid}
+                username={statusChange.username!}
+              />
             </>
           ) : null}
           {parentId && parentType && (
@@ -184,7 +190,7 @@ const MetaStatus = ({
                   ':tabName',
                   'history'
                 )}?parentType=${parentType}&parentId=${parentId}&entryId=${
-                  action.history
+                  statusChange.historyid
                 }`}>
                 <InfoIcon />
               </Link>

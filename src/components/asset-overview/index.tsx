@@ -383,9 +383,13 @@ const AssetOverview = ({
   const isEditor = useIsEditor()
   const [isLoadingAsset, lastErrorCode, asset, hydrateAsset] =
     useSluggedAsset(assetIdOrSlug)
+  const assetId = asset ? asset.id : assetIdOrSlug
   const [, , assetExtra, hydrateExtra] = useDataStoreItem<FullAssetExtra>(
     ViewNames.GetFullAssetsExtra,
-    asset ? asset.id : false
+    asset ? asset.id : false,
+    {
+      queryName: `getfullassetsextra_${assetId}`,
+    }
   )
   const [, , assetEditorData, hydrateEditor] =
     useDataStoreItem<FullAssetEditor>(
@@ -404,8 +408,6 @@ const AssetOverview = ({
   const isLoading = isLoadingAsset || asset === null
   const hasLoadedAndExists =
     isLoading === false && asset !== null && asset !== false
-
-  const assetId = asset ? asset.id : assetIdOrSlug
 
   const classes = useStyles()
   const [, , user] = useUserRecord()
@@ -897,23 +899,19 @@ const AssetOverview = ({
                 </ControlGroup>
               )}
 
-              {asset && asset.publishedby && asset.publishedbyusername ? (
+              {asset &&
+              assetExtra &&
+              assetExtra.statuschanges &&
+              assetExtra.statuschanges.publishstatus ? (
                 <ControlGroup greyed>
                   <Control small>
                     Submitted by{' '}
                     <UsernameLink
-                      id={asset.publishedby}
-                      username={asset.publishedbyusername}
-                    />{' '}
-                    {asset.approvedby ? (
-                      <>
-                        approved by{' '}
-                        <UsernameLink
-                          id={asset.approvedby}
-                          username={asset.approvedbyusername}
-                        />
-                      </>
-                    ) : null}
+                      id={assetExtra.statuschanges.publishstatus.userid!}
+                      username={
+                        assetExtra.statuschanges.publishstatus.username!
+                      }
+                    />
                     <Tooltip
                       title={
                         <>
@@ -925,19 +923,24 @@ const AssetOverview = ({
                           {asset.publishedat
                             ? getFriendlyDate(asset.publishedat)
                             : '(no date)'}{' '}
-                          by {asset.publishedbyusername || '(no name)'}
+                          by{' '}
+                          {assetExtra.statuschanges.publishstatus.username ||
+                            '(no name)'}
                           {(asset.approvalstatus === ApprovalStatus.Approved ||
                             asset.approvalstatus ===
                               ApprovalStatus.AutoApproved) && (
                             <>
                               <br />
                               Approved{' '}
-                              {asset.approvedat
-                                ? getFriendlyDate(asset.approvedat)
+                              {assetExtra.statuschanges.approvalstatus
+                                ? getFriendlyDate(
+                                    assetExtra.statuschanges.approvalstatus
+                                      .createdat!
+                                  )
                                 : ''}{' '}
                               by{' '}
-                              {asset.approvedbyusername ||
-                                'our automated system'}
+                              {assetExtra.statuschanges.approvalstatus
+                                .username || 'our automated system'}
                             </>
                           )}
                         </>

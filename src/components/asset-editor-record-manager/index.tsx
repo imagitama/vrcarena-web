@@ -1,6 +1,11 @@
 import styled from '@emotion/styled'
 
-import { AccessStatus, ApprovalStatus, PublishStatus } from '@/modules/common'
+import {
+  AccessStatus,
+  ApprovalStatus,
+  PublishStatus,
+  StatusChanges,
+} from '@/modules/common'
 import {
   AssetActions,
   AssetForList_Editor,
@@ -30,12 +35,12 @@ const AssetEditorRecordManager = ({
   id,
   asset,
   onDone,
-  actions,
+  statusChanges,
 }: {
   id: string
   asset: AssetForList_Editor | FullAsset
   onDone: () => void
-  actions: AssetActions
+  statusChanges: StatusChanges
 }) => {
   // const isPublic = getIsAssetPublic(asset)
   // const isWaitingForApproval = getIsAssetWaitingForApproval(asset)
@@ -58,11 +63,13 @@ const AssetEditorRecordManager = ({
             parentId={id}
             status={asset.publishstatus}
             type={PublishStatus}
-            action={
-              asset.publishstatus === PublishStatus.Published &&
-              actions?.published
-                ? actions.published
-                : undefined
+            statusChange={
+              statusChanges.publishstatus
+
+              // asset.publishstatus === PublishStatus.Published &&
+              // actions?.published
+              //   ? actions.published
+              //   : undefined
             }
           />
         </LabelCell>
@@ -75,18 +82,19 @@ const AssetEditorRecordManager = ({
             parentId={id}
             status={asset.approvalstatus}
             type={ApprovalStatus}
-            action={
-              asset.approvalstatus === ApprovalStatus.Approved &&
-              actions?.approved
-                ? actions.approved
-                : asset.approvalstatus === ApprovalStatus.AutoApproved &&
-                  actions?.autoapproved
-                ? actions.autoapproved
-                : asset.approvalstatus === ApprovalStatus.Declined &&
-                  actions?.declined
-                ? actions.declined
-                : undefined
-            }
+            statusChange={statusChanges.approvalstatus}
+            // action={
+            //   asset.approvalstatus === ApprovalStatus.Approved &&
+            //   actions?.approved
+            //     ? actions.approved
+            //     : asset.approvalstatus === ApprovalStatus.AutoApproved &&
+            //       actions?.autoapproved
+            //     ? actions.autoapproved
+            //     : asset.approvalstatus === ApprovalStatus.Declined &&
+            //       actions?.declined
+            //     ? actions.declined
+            //     : undefined
+            // }
             reasonOrReasons={
               asset.approvalstatus === ApprovalStatus.Declined
                 ? asset.declinedreasons || []
@@ -111,14 +119,15 @@ const AssetEditorRecordManager = ({
             parentId={id}
             status={asset.accessstatus}
             type={AccessStatus}
-            action={
-              asset.accessstatus === AccessStatus.Deleted && actions?.deleted
-                ? actions.deleted
-                : asset.accessstatus === AccessStatus.Archived &&
-                  actions?.archived
-                ? actions.archived
-                : undefined
-            }
+            // action={
+            //   asset.accessstatus === AccessStatus.Deleted && actions?.deleted
+            //     ? actions.deleted
+            //     : asset.accessstatus === AccessStatus.Archived &&
+            //       actions?.archived
+            //     ? actions.archived
+            //     : undefined
+            // }
+            statusChange={statusChanges.accessstatus}
             reasonOrReasons={
               asset.accessstatus === AccessStatus.Archived
                 ? asset.archivedreason || []

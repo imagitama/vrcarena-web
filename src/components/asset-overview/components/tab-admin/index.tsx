@@ -98,7 +98,7 @@ export default () => {
                 id={assetId}
                 asset={asset}
                 onDone={hydrate}
-                actions={assetEditorData!.actions}
+                statusChanges={assetExtra.statuschanges}
               />
             </Suspense>
           ),
@@ -106,12 +106,7 @@ export default () => {
         {
           name: 'history',
           label: 'History',
-          contents: (
-            <AssetTimeline
-              assetId={assetId}
-              statusChanges={assetExtra.statuschanges}
-            />
-          ),
+          contents: <AssetTimeline assetId={assetId} />,
         },
         {
           name: 'ai-eval',
