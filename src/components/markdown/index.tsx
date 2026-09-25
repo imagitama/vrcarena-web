@@ -215,7 +215,12 @@ const TabContents = ({
 
 const Image = (props: { src: string }) => {
   return (
-    <Button url={props.src} icon={<ImageIcon />}>
+    <Button
+      url={props.src}
+      icon={<ImageIcon />}
+      color="secondary"
+      hollow
+      size="small">
       View Image
     </Button>
   )

@@ -934,7 +934,7 @@ const AssetOverview = ({
                             <>
                               <br />
                               Approved{' '}
-                              {assetExtra.statuschanges.approvalstatus
+                              {assetExtra.statuschanges?.approvalstatus
                                 ? getFriendlyDate(
                                     assetExtra.statuschanges.approvalstatus
                                       .createdat!
@@ -942,7 +942,12 @@ const AssetOverview = ({
                                 : ''}{' '}
                               by{' '}
                               {assetExtra.statuschanges.approvalstatus
-                                .username || 'our automated system'}
+                                ? assetExtra.statuschanges.approvalstatus
+                                    .username
+                                  ? assetExtra.statuschanges.approvalstatus
+                                      .username
+                                  : 'our automated system'
+                                : '...'}
                             </>
                           )}
                         </>
