@@ -209,6 +209,7 @@ const useStyles = makeStyles({
     },
     '& a': {
       color: 'inherit',
+      textDecoration: 'none',
     },
   },
   categoryForAvatar: {
@@ -217,7 +218,8 @@ const useStyles = makeStyles({
       fontSize: '100%', // match species
     },
     '& a': {
-      // color: 'inherit',
+      color: 'inherit',
+      textDecoration: 'none',
     },
   },
   thumbnailWrapper: {
