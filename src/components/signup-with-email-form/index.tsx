@@ -200,6 +200,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         label="Email"
         autoFocus
         onKeyDown={onKeyDown}
+        autoComplete="email"
       />
       <TextInput
         topMargin
@@ -209,6 +210,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         label="Password"
         type="password"
         onKeyDown={onKeyDown}
+        autoComplete="new-password"
       />
       <FormControls>
         <div>

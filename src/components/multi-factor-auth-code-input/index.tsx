@@ -81,6 +81,7 @@ const MultiFactorAuthCodeInput = ({
             Submit
           </Button>
         }
+        autoComplete="one-time-code"
       />
       {lastErrorCode !== null && (
         <ErrorMessage>{getMessageForErrorCode(lastErrorCode)}</ErrorMessage>

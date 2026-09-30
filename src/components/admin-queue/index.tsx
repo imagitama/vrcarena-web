@@ -46,18 +46,6 @@ const QueueItemLabel = ({ queueItem }: { queueItem: AdminQueueItem }) => {
             )}>
             {queueItem.record.authorname}
           </Link>
-          <br />
-          Created by{' '}
-          <UsernameLink
-            username={queueItem.record.createdbyusername}
-            id={queueItem.record.createdby}
-          />
-          <br />
-          Published by{' '}
-          <UsernameLink
-            username={queueItem.record.publishedbyusername}
-            id={queueItem.record.publishedby!}
-          />
         </>
       )
     case AdminQueueItemType.Amendment:
