@@ -5,7 +5,6 @@ import React, {
   useContext,
   useState,
 } from 'react'
-import FlipMove from 'react-flip-move'
 import { makeStyles } from '@mui/styles'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -25,6 +24,8 @@ import Price from '@/components/price'
 import AssetSearch from '@/components/asset-search'
 import TagChip from '@/components/tag-chip'
 import ErrorMessage from '@/components/error-message'
+
+const FlipMove = React.lazy(() => import('react-flip-move'))
 
 const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
   items: {

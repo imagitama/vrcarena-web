@@ -1,5 +1,4 @@
-import React, { HTMLProps } from 'react'
-import ExternalYouTubePlayer from 'react-player/youtube'
+import React from 'react'
 import styled from '@emotion/styled'
 
 import { YouTube as YouTubeIcon } from '@/icons'
@@ -11,6 +10,8 @@ import {
 import FormControls from '../form-controls'
 import Button from '../button'
 import { VRCArenaTheme } from '@/themes'
+
+const ExternalYouTubePlayer = React.lazy(() => import('react-player/youtube'))
 
 const ThirdPartyConsentThing = styled.div`
   padding: 0.25rem;

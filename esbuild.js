@@ -42,6 +42,7 @@ dotenv.config()
       splitting: true,
       format: 'esm',
       minify: isProd,
+      metafile: true
     }
 
     try {
@@ -72,7 +73,11 @@ dotenv.config()
       } else {
         const result = await context.rebuild()
 
-        console.log('Build success', result)
+        await fs.writeFile('./meta.json', JSON.stringify(result.metafile))
+
+        console.log('Build success!')
+        console.log('Errors:', result.errors)
+        console.log('Warnings:', result.warnings)
       }
 
       await context.dispose()

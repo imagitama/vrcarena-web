@@ -5,12 +5,13 @@ import { makeStyles } from '@mui/styles'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import AddIcon from '@mui/icons-material/Add'
-import FlipMove from 'react-flip-move'
 
 import { moveItemToLeft, moveItemToRight } from '@/utils'
 import { VRCArenaTheme } from '@/themes'
 import Button from '@/components/button'
 import classNames from 'classnames'
+
+const FlipMove = React.lazy(() => import('react-flip-move'))
 
 export type Item<T> = {} & T
 

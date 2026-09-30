@@ -1,11 +1,10 @@
 import React from 'react'
-import moment from 'moment'
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import DateFormatToggle from '../date-format-toggle'
 import useIsDateFormatUS from '@/hooks/useIsDateFormatUS'
 import Button from '../button'
+
+const { default: moment } = await import('moment')
+const LazyDateTimePicker = React.lazy(() => import('./lazy'))
 
 const DateTimeInput = ({
   onChange,
@@ -19,13 +18,11 @@ const DateTimeInput = ({
     <>
       <DateFormatToggle />
       <br />
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DateTimePicker
-          value={moment(value)}
-          onChange={(newVal) => onChange(newVal!.utc().toISOString())}
-          format={`${isDateFormatUS ? 'MM/DD' : 'DD/MM'}/YYYY hh:mm A`}
-        />
-      </LocalizationProvider>{' '}
+      <LazyDateTimePicker
+        value={moment(value)}
+        onChange={(newVal) => onChange(newVal!.utc().toISOString())}
+        format={`${isDateFormatUS ? 'MM/DD' : 'DD/MM'}/YYYY hh:mm A`}
+      />
       <Button
         onClick={() => onChange(new Date().toISOString())}
         color="secondary"

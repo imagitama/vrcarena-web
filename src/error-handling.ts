@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/browser'
-import { PostgresErrorCode, PostgRESTErrorCode } from './data-store'
 
 const messagesToIgnore = [
   // internal

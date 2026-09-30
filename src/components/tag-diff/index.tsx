@@ -1,7 +1,8 @@
 import React from 'react'
-import ReactTextDiff, { DiffMethod } from 'react-diff-viewer-continued'
 import TagDiffChips from '../tag-diff-chips'
+import type { DiffMethod } from 'react-diff-viewer-continued'
 
+const ReactTextDiff = React.lazy(() => import('react-diff-viewer-continued'))
 const tagsToStringForDiff = (tags: string[]): string => tags.sort().join('\n')
 
 export enum TagDiffMode {
@@ -25,7 +26,7 @@ const TagDiff = ({
       oldValue={tagsToStringForDiff(oldTags)}
       newValue={tagsToStringForDiff(newTags)}
       hideLineNumbers
-      compareMethod={DiffMethod.WORDS}
+      compareMethod={'diffWords' as DiffMethod}
       useDarkTheme
       splitView={false}
       showDiffOnly={false}

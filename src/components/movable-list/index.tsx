@@ -1,6 +1,6 @@
 import React from 'react'
-import FlipMove from 'react-flip-move'
-// import styled from '@emotion/styled'
+
+const FlipMove = React.lazy(() => import('react-flip-move'))
 
 // ensure each child is wrapped in a HTML element NOT a component
 const MovableList = ({
@@ -8,10 +8,5 @@ const MovableList = ({
 }: {
   children: React.ReactNode | React.ReactNode[]
 }) => <FlipMove>{children}</FlipMove>
-//   if (React.Children.count(children) > 1) {
-//     return <FlipMove>{children}</FlipMove>
-//   }
-//   return children
-// }
 
 export default MovableList

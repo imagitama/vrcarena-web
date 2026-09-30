@@ -1,5 +1,7 @@
 import React from 'react'
-import ReactTextDiff, { DiffMethod } from 'react-diff-viewer-continued'
+import type { DiffMethod } from 'react-diff-viewer-continued'
+
+const ReactTextDiff = React.lazy(() => import('react-diff-viewer-continued'))
 
 const TextDiff = ({
   oldValue,
@@ -15,7 +17,9 @@ const TextDiff = ({
       oldValue={oldValue || ''} // handle weird case when not strings
       newValue={newValue || ''} // handle weird case when not strings
       hideLineNumbers
-      compareMethod={isSingleLine ? DiffMethod.CHARS : DiffMethod.WORDS}
+      compareMethod={
+        isSingleLine ? ('diffChars' as DiffMethod) : ('diffWords' as DiffMethod)
+      }
       useDarkTheme
       // need this enabled otherwise single-line diffs don't render anything
       showDiffOnly={false}

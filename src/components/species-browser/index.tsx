@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { makeStyles } from '@mui/styles'
 
 import { trackAction } from '@/analytics'
@@ -20,6 +19,8 @@ import SpeciesResultItem from '@/components/species-result-item'
 import FormControls from '@/components/form-controls'
 import AutocompleteInput from '@/components/autocomplete-input'
 import useGlobalState from '@/hooks/useGlobalState'
+
+const Masonry = React.lazy(() => import('./lazy'))
 
 const analyticsCategory = 'ViewAllSpecies'
 
@@ -348,9 +349,9 @@ const SpeciesBrowser = ({
           }}
         />
       </div>
-      <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-        <Masonry>{isLoading ? loadingChildren : children}</Masonry>
-      </ResponsiveMasonry>
+      <Masonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
+        {isLoading ? loadingChildren : children}
+      </Masonry>
       <CreateButton />
     </>
   )

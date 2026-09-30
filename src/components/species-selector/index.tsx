@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
-import { TreeItem } from '@mui/x-tree-view/TreeItem'
+import type { TreeItemProps } from '@mui/x-tree-view'
 import styled from '@emotion/styled'
 
 import { PublicSpeciesForCache } from '@/modules/species'
@@ -10,9 +9,17 @@ import ErrorMessage from '@/components/error-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import AutocompleteInput from '@/components/autocomplete-input'
 import NoResultsMessage from '../no-results-message'
-import { TreeItemProps } from '@mui/x-tree-view'
 import useSpecies from '@/hooks/useSpecies'
 import { VRCArenaTheme } from '@/themes'
+
+const RichTreeView = React.lazy(() =>
+  import('@mui/x-tree-view/RichTreeView').then((m) => ({
+    default: m.RichTreeView,
+  }))
+)
+const TreeItem = React.lazy(() =>
+  import('@mui/x-tree-view/TreeItem').then((m) => ({ default: m.TreeItem }))
+)
 
 interface TreeItem {
   id: string
@@ -213,7 +220,7 @@ const SpeciesSelector = ({
         checkboxSelection
         selectedItems={selectedSpeciesIds}
         onSelectedItemsChange={(event, ids) => {
-          onSelectedSpeciesIds(ids)
+          onSelectedSpeciesIds(ids as string[]) // TODO: verify ids is always string[]
         }}
         slots={{
           item: (props) => <CustomTreeItem {...props} />,

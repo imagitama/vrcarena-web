@@ -1,11 +1,12 @@
-import { useState } from 'react'
-import Sketch from '@uiw/react-color-sketch'
+import React, { useState } from 'react'
 import { rgbaToHsva } from '@uiw/color-convert'
 import ColorLensIcon from '@mui/icons-material/ColorLens'
 
 import Dialog from '../dialog'
 import Heading from '../heading'
 import Button, { ButtonProps } from '../button'
+
+const Sketch = React.lazy(() => import('@uiw/react-color-sketch'))
 
 export interface RgbaColor {
   r: number

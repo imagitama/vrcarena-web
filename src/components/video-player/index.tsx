@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import ReactPlayer from 'react-player'
-import { BaseReactPlayerProps } from 'react-player/base'
+import type { BaseReactPlayerProps } from 'react-player/base'
+
+const ReactPlayer = React.lazy(() => import('react-player'))
 
 import { handleError } from '@/error-handling'
 import { getIsUrlAYoutubeVideo } from '@/utils'
@@ -93,7 +94,7 @@ export default (
             onPlay()
           }
         }}
-        onError={(e) => {
+        onError={(e: any) => {
           handleError(e.target.error)
           console.error(e.target.error)
           setErrorState(getErrorStateForEvent(e))

@@ -1,6 +1,5 @@
 import React, { KeyboardEventHandler, useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import { load as loadRecaptcha } from 'recaptcha-v3'
 import { signInWithCustomToken } from 'firebase/auth'
 
 import { Login as LoginIcon } from '@/icons'
@@ -104,6 +103,7 @@ const RECAPTCHA_SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY!
 const RECAPTCHA_ACTION_NAME = 'signup'
 
 const getRecaptchaToken = async () => {
+  const { load: loadRecaptcha } = await import('recaptcha-v3')
   const recaptcha = await loadRecaptcha(RECAPTCHA_SITE_KEY)
   const token = await recaptcha.execute(RECAPTCHA_ACTION_NAME)
   return token

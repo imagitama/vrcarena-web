@@ -15,10 +15,7 @@ export const getDataUrl = async (
   return dataUrl
 }
 
-// import { default as logoUrl } from '@/assets/images/logo.svg?raw'
-
 import { colorBrand, patreonGold, patreonGoldDark } from '@/themes'
-import { colors } from './brand'
 
 interface Options {
   textLines?: string[]

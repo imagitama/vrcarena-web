@@ -20,6 +20,12 @@ import ViewCategory from './containers/view-category'
 import ViewAvatars from './containers/view-avatars'
 import ViewAllSpecies from './containers/view-all-species'
 import Search from './containers/search'
+import Login from './containers/login'
+import SignUp from './containers/signup'
+import Logout from './containers/logout'
+import ErrorContainer from './containers/error'
+import ViewUser from './containers/view-user'
+import Users from './containers/users'
 
 import Header from './components/header'
 import Footer from './components/footer'
@@ -50,18 +56,28 @@ import SurveyMessage from './components/survey-message'
 import { useSelector } from 'react-redux'
 import { RootState } from './slices'
 import SubEditorMessage from './components/sub-editor-message'
+import { loadSecondary, Secondary } from './secondary-loader'
 
-const catchChunkDeaths = (functionToImport: () => Promise<any>) =>
-  functionToImport().catch((err) => {
-    if (err.message.includes('error loading dynamically imported module')) {
-      // Warning: this could cause an infinite loop :)
-      window.location.reload()
+const cache = new Map<string, React.ComponentType<any>>()
 
-      // we dont want these errors cluttering up Sentry
-      return
-    }
-    throw err
-  })
+export const Lazy = new Proxy(
+  {} as { [K in keyof Secondary]: React.ComponentType<any> },
+  {
+    get: (_, name: string) => {
+      if (!cache.has(name)) {
+        cache.set(
+          name,
+          lazy(async () => ({
+            default: (await loadSecondary())[
+              name as keyof Secondary
+            ] as React.ComponentType<any>,
+          }))
+        )
+      }
+      return cache.get(name)
+    },
+  }
+)
 
 const useStyles = makeStyles({
   mainContainer: {
@@ -93,186 +109,6 @@ const useStyles = makeStyles({
     zIndex: 999,
   },
 })
-
-// Lazy load these to improve performance (downloading and processing JS)
-const Stats = lazy(() => catchChunkDeaths(() => import('./containers/stats')))
-const Login = lazy(() => catchChunkDeaths(() => import('./containers/login')))
-const SignUp = lazy(() => catchChunkDeaths(() => import('./containers/signup')))
-const Logout = lazy(() => catchChunkDeaths(() => import('./containers/logout')))
-const CreateAsset = lazy(() =>
-  catchChunkDeaths(() => import('./containers/create-asset'))
-)
-const EditAsset = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-asset'))
-)
-const MyAccount = lazy(() =>
-  catchChunkDeaths(() => import('./containers/my-account'))
-)
-const Admin = lazy(() => catchChunkDeaths(() => import('./containers/admin')))
-const ErrorContainer = lazy(() =>
-  catchChunkDeaths(() => import('./containers/error'))
-)
-const Tags = lazy(() => catchChunkDeaths(() => import('./containers/tags')))
-const EditTag = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-tag'))
-)
-const ViewTag = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-tag'))
-)
-const ViewUser = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-user'))
-)
-const Users = lazy(() => catchChunkDeaths(() => import('./containers/users')))
-const Activity = lazy(() =>
-  catchChunkDeaths(() => import('./containers/activity'))
-)
-const AdultAssets = lazy(() =>
-  catchChunkDeaths(() => import('./containers/adult-assets'))
-)
-const ViewAuthor = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-author'))
-)
-const EditAuthor = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-author'))
-)
-const Authors = lazy(() =>
-  catchChunkDeaths(() => import('./containers/authors'))
-)
-const EditUser = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-user'))
-)
-const DiscordServers = lazy(() =>
-  catchChunkDeaths(() => import('./containers/discord-servers'))
-)
-const ViewDiscordServer = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-discord-server'))
-)
-const EditDiscordServer = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-discord-server'))
-)
-const EditSpecies = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-species'))
-)
-const Patreon = lazy(() =>
-  catchChunkDeaths(() => import('./containers/patreon'))
-)
-const ResetPassword = lazy(() =>
-  catchChunkDeaths(() => import('./containers/reset-password'))
-)
-const SetupProfile = lazy(() =>
-  catchChunkDeaths(() => import('./containers/setup-profile'))
-)
-const CreateReport = lazy(() =>
-  catchChunkDeaths(() => import('./containers/create-report'))
-)
-const ViewReport = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-report'))
-)
-const CreateSupportTicket = lazy(() =>
-  catchChunkDeaths(() => import('./containers/create-support-ticket'))
-)
-const ViewSupportTicket = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-support-ticket'))
-)
-const DmcaPolicy = lazy(() =>
-  catchChunkDeaths(() => import('./containers/dmca-policy'))
-)
-const ViewAmendment = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-amendment'))
-)
-const CreateAmendment = lazy(() =>
-  catchChunkDeaths(() => import('./containers/create-amendment'))
-)
-const Brand = lazy(() => catchChunkDeaths(() => import('./containers/brand')))
-// events
-const Events = lazy(() => catchChunkDeaths(() => import('./containers/events')))
-const EditEvent = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-event'))
-)
-const ViewEvent = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-event'))
-)
-const ViewArea = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-area'))
-)
-const Dev = lazy(() => catchChunkDeaths(() => import('./containers/dev')))
-const NewAssets = lazy(() =>
-  catchChunkDeaths(() => import('./containers/new-assets'))
-)
-const Reviews = lazy(() =>
-  catchChunkDeaths(() => import('./containers/reviews'))
-)
-// collections
-const ViewAllCollections = lazy(() =>
-  catchChunkDeaths(() => import('./containers/collections'))
-)
-const ViewCollection = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-collection'))
-)
-const EditCollection = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-collection'))
-)
-const Query = lazy(() => catchChunkDeaths(() => import('./containers/query')))
-const Transparency = lazy(() =>
-  catchChunkDeaths(() => import('./containers/transparency'))
-)
-const Unsubscribe = lazy(() =>
-  catchChunkDeaths(() => import('./containers/unsubscribe'))
-)
-// pages
-const Pages = lazy(() => catchChunkDeaths(() => import('./containers/pages')))
-const EditPage = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-page'))
-)
-const CreatePage = lazy(() =>
-  catchChunkDeaths(() => import('./containers/create-page'))
-)
-const RandomAvatars = lazy(() =>
-  catchChunkDeaths(() => import('./containers/random-avatars'))
-)
-const QueryCheatsheetContainer = lazy(() =>
-  catchChunkDeaths(() => import('./containers/query-cheatsheet'))
-)
-const ViewAttachment = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-attachment'))
-)
-const EditAttachment = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-attachment'))
-)
-const Attachments = lazy(() =>
-  catchChunkDeaths(() => import('./containers/attachments'))
-)
-const ViewReview = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-review'))
-)
-const EditReview = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-review'))
-)
-const Backlog = lazy(() =>
-  catchChunkDeaths(() => import('./containers/backlog'))
-)
-const TagSuggestions = lazy(() =>
-  catchChunkDeaths(() => import('./containers/tag-suggestions'))
-)
-const ViewTagSuggestion = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-tag-suggestion'))
-)
-const EditTagSuggestion = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-tag-suggestion'))
-)
-const Articles = lazy(() =>
-  catchChunkDeaths(() => import('./containers/articles'))
-)
-const ViewArticle = lazy(() =>
-  catchChunkDeaths(() => import('./containers/view-article'))
-)
-const EditArticle = lazy(() =>
-  catchChunkDeaths(() => import('./containers/edit-article'))
-)
-const SubEditorResponses = lazy(() =>
-  catchChunkDeaths(() => import('./containers/sub-editor-responses'))
-)
-const Queue = lazy(() => catchChunkDeaths(() => import('./containers/queue')))
 
 const useSetupProfileRedirect = () => {
   const [, , user] = useUserRecord()
@@ -324,26 +160,30 @@ const MainContent = () => {
         <Redirect from={'/privacy-policy'} to={routes.privacyPolicy} />
         <Redirect from={'/dcma-policy'} to={routes.dmcaPolicy} />
         <Route exact path={routes.home} component={Home} />
-        <Route exact path={routes.stats} component={Stats} />
+        <Route exact path={routes.stats} component={Lazy.Stats} />
         <Route exact path={routes.searchWithVar} component={Search} />
         <Route exact path={routes.cart} component={DeprecatedRouteView} />
         <Route exact path={routes.social} component={DeprecatedRouteView} />
         <Route exact path={routes.login} component={Login} />
         <Route exact path={routes.signUp} component={SignUp} />
         <Route exact path={routes.logout} component={Logout} />
-        <Route exact path={routes.createAsset} component={CreateAsset} />
+        <Route exact path={routes.createAsset} component={Lazy.CreateAsset} />
         <Route
           exact
           path={routes.editAssetWithVarAndTabNameVar}
-          component={EditAsset}
+          component={Lazy.EditAsset}
         />
-        <Route exact path={routes.editAssetWithVar} component={EditAsset} />
+        <Route
+          exact
+          path={routes.editAssetWithVar}
+          component={Lazy.EditAsset}
+        />
         <Route
           exact
           path={[routes.viewAssetWithVar, routes.viewAssetWithVarAndTabVar]}
           component={ViewAsset}
         />
-        <Route path={routes.admin} component={Admin} />
+        <Route path={routes.admin} component={Lazy.Admin} />
         <Route
           exact
           path={[
@@ -353,9 +193,13 @@ const MainContent = () => {
             routes.myAccountWithTabNameVar,
             routes.myAccount,
           ]}
-          component={MyAccount}
+          component={Lazy.MyAccount}
         />
-        <Route exact path={routes.randomAvatars} component={RandomAvatars} />
+        <Route
+          exact
+          path={routes.randomAvatars}
+          component={Lazy.RandomAvatars}
+        />
         <Route
           exact
           path={routes.viewAvatarsWithPageVar}
@@ -400,17 +244,17 @@ const MainContent = () => {
         <Route
           exact
           path={[routes.attachments, routes.attachmentsWithPageNumberVar]}
-          component={Attachments}
+          component={Lazy.Attachments}
         />
         <Route
           exact
           path={routes.editAttachmentWithVar}
-          component={EditAttachment}
+          component={Lazy.EditAttachment}
         />
         <Route
           exact
           path={routes.viewAttachmentWithVar}
-          component={ViewAttachment}
+          component={Lazy.ViewAttachment}
         />
         <Route
           exact
@@ -425,7 +269,7 @@ const MainContent = () => {
         <Route
           exact
           path={[routes.createSpecies, routes.editSpeciesWithVar]}
-          component={EditSpecies}
+          component={Lazy.EditSpecies}
         />
         <Route
           exact
@@ -441,7 +285,7 @@ const MainContent = () => {
           ]}
           component={ViewSpecies}
         />
-        <Route exact path={routes.editUserWithVar} component={EditUser} />
+        <Route exact path={routes.editUserWithVar} component={Lazy.EditUser} />
         <Route exact path={routes.staffUsers} component={Users} />
         <Route
           exact
@@ -454,100 +298,101 @@ const MainContent = () => {
           component={ViewUser}
         />
         <Route exact path={routes.users} component={Users} />
-        <Route exact path={routes.activity} component={Activity} />
+        <Route exact path={routes.activity} component={Lazy.Activity} />
         <Route
           exact
           path={routes.activityWithPageNumberVar}
-          component={Activity}
+          component={Lazy.Activity}
         />
         <Route exact path={routes.streams} component={DeprecatedRouteView} />
-        <Route exact path={routes.nsfw} component={AdultAssets} />
         <Route
           exact
-          path={routes.nsfwWithPageNumberVar}
-          component={AdultAssets}
-        />
-        <Route exact path={routes.authors} component={Authors} />
-        <Route
-          exact
-          path={routes.viewAuthorsWithPageNumberVar}
-          component={Authors}
-        />
-        <Route exact path={routes.createAuthor} component={EditAuthor} />
-        <Route exact path={routes.editAuthorWithVar} component={EditAuthor} />
-        <Route exact path={routes.viewAuthorWithVar} component={ViewAuthor} />
-        <Route
-          exact
-          path={routes.createDiscordServer}
-          component={EditDiscordServer}
+          path={[routes.nsfw, routes.nsfwWithPageNumberVar]}
+          component={Lazy.AdultAssets}
         />
         <Route
           exact
-          path={routes.editDiscordServerWithVar}
-          component={EditDiscordServer}
+          path={[routes.authors, routes.viewAuthorsWithPageNumberVar]}
+          component={Lazy.Authors}
+        />
+        <Route
+          exact
+          path={[routes.createAuthor, routes.editAuthorWithVar]}
+          component={Lazy.EditAuthor}
+        />
+        <Route
+          exact
+          path={routes.viewAuthorWithVar}
+          component={Lazy.ViewAuthor}
+        />
+        <Route
+          exact
+          path={[routes.createDiscordServer, routes.editDiscordServerWithVar]}
+          component={Lazy.EditDiscordServer}
         />
         <Route
           exact
           path={routes.viewDiscordServerWithVar}
-          component={ViewDiscordServer}
+          component={Lazy.ViewDiscordServer}
         />
-        <Route exact path={routes.discordServers} component={DiscordServers} />
         <Route
           exact
           path={[
             routes.discordServers,
             routes.viewDiscordServersWithPageNumberVar,
           ]}
-          component={DiscordServers}
+          component={Lazy.DiscordServers}
         />
-        <Route exact path={routes.patreon} component={Patreon} />
-        <Route exact path={routes.resetPassword} component={ResetPassword} />
+        <Route exact path={routes.patreon} component={Lazy.Patreon} />
+        <Route
+          exact
+          path={routes.resetPassword}
+          component={Lazy.ResetPassword}
+        />
         <Route
           exact
           path={[routes.createTag, routes.editTagWithVar]}
-          component={EditTag}
+          component={Lazy.EditTag}
         />
         <Route
           exact
-          path={routes.viewTagWithPageNumberVar}
-          component={ViewTag}
+          path={[routes.viewTagWithPageNumberVar, routes.viewTagWithVar]}
+          component={Lazy.ViewTag}
         />
-        <Route exact path={routes.viewTagWithVar} component={ViewTag} />
-        <Route exact path={routes.tags} component={Tags} />
-        <Route exact path={routes.setupProfile} component={SetupProfile} />
+        <Route exact path={routes.tags} component={Lazy.Tags} />
+        <Route exact path={routes.setupProfile} component={Lazy.SetupProfile} />
         <Route
           exact
           path={routes.createReportWithVar}
-          component={CreateReport}
-        />
-        <Route exact path={routes.viewReportWithVar} component={ViewReport} />
-        <Route
-          exact
-          path={routes.createSupportTicketWithVar}
-          component={CreateSupportTicket}
+          component={Lazy.CreateReport}
         />
         <Route
           exact
-          path={routes.createSupportTicket}
-          component={CreateSupportTicket}
+          path={routes.viewReportWithVar}
+          component={Lazy.ViewReport}
+        />
+        <Route
+          exact
+          path={[routes.createSupportTicketWithVar, routes.createSupportTicket]}
+          component={Lazy.CreateSupportTicket}
         />
         <Route
           exact
           path={routes.viewSupportTicketWithVar}
-          component={ViewSupportTicket}
+          component={Lazy.ViewSupportTicket}
         />
-        <Route exact path={routes.dmcaPolicy} component={DmcaPolicy} />
+        <Route exact path={routes.dmcaPolicy} component={Lazy.DmcaPolicy} />
         <Route
           exact
           path={routes.createAmendmentWithVar}
-          component={CreateAmendment}
+          component={Lazy.CreateAmendment}
         />
         <Route
           exact
           path={routes.viewAmendmentWithVar}
-          component={ViewAmendment}
+          component={Lazy.ViewAmendment}
         />
-        <Route exact path={routes.brand} component={Brand} />
+        <Route exact path={routes.brand} component={Lazy.Brand} />
         <Route
           exact
           path={routes.accessorizeWithVar}
@@ -566,40 +411,41 @@ const MainContent = () => {
         <Route
           exact
           path={[routes.editEventWithVar, routes.createEvent]}
-          component={EditEvent}
-        />
-        <Route exact path={routes.viewEventWithVar} component={ViewEvent} />
-        <Route exact path={routes.events} component={Events} />
-        <Route
-          exact
-          path={routes.viewCollections}
-          component={ViewAllCollections}
+          component={Lazy.EditEvent}
         />
         <Route
           exact
-          path={routes.viewCollectionsWithPageNumberVar}
-          component={ViewAllCollections}
+          path={routes.viewEventWithVar}
+          component={Lazy.ViewEvent}
+        />
+        <Route exact path={routes.events} component={Lazy.Events} />
+        <Route
+          exact
+          path={[
+            routes.viewCollections,
+            routes.viewCollectionsWithPageNumberVar,
+          ]}
+          component={Lazy.ViewAllCollections}
         />
         <Route
           exact
           path={routes.editCollectionWithVar}
-          component={EditCollection}
+          component={Lazy.EditCollection}
         />
         <Route
           exact
           path={routes.viewCollectionWithVar}
-          component={ViewCollection}
+          component={Lazy.ViewCollection}
         />
         <Route
           exact
-          path={routes.viewAreaWithPageNumberVar}
-          component={ViewArea}
+          path={[routes.viewAreaWithPageNumberVar, routes.viewAreaWithVar]}
+          component={Lazy.ViewArea}
         />
-        <Route exact path={routes.viewAreaWithVar} component={ViewArea} />
         <Route
           exact
           path={routes.newAssetsWithPageNumberVar}
-          component={NewAssets}
+          component={Lazy.NewAssets}
         />
         <Route
           exact
@@ -607,55 +453,65 @@ const MainContent = () => {
             routes.subEditorResponses,
             routes.subEditorResponsesWithPageNumberVar,
           ]}
-          component={SubEditorResponses}
+          component={Lazy.SubEditorResponses}
         />
-        <Route exact path={routes.newAssets} component={NewAssets} />
-        <Route exact path={'/dev'} component={Dev} />
-        <Route exact path={routes.createReview} component={EditReview} />
-        <Route exact path={routes.editReviewWithVar} component={EditReview} />
-        <Route exact path={routes.viewReviewWithVar} component={ViewReview} />
-        <Route exact path={routes.reviews} component={Reviews} />
-        <Route exact path={routes.transparency} component={Transparency} />
-        <Route exact path={routes.unsubscribe} component={Unsubscribe} />
+        <Route exact path={routes.newAssets} component={Lazy.NewAssets} />
+        <Route exact path={'/dev'} component={Lazy.Dev} />
+        <Route
+          exact
+          path={[routes.createReview, routes.editReviewWithVar]}
+          component={Lazy.EditReview}
+        />
+        <Route
+          exact
+          path={routes.viewReviewWithVar}
+          component={Lazy.ViewReview}
+        />
+        <Route exact path={routes.reviews} component={Lazy.Reviews} />
+        <Route exact path={routes.transparency} component={Lazy.Transparency} />
+        <Route exact path={routes.unsubscribe} component={Lazy.Unsubscribe} />
         <Route
           exact
           path={[routes.backlog, routes.backlogWithSubViewNameAndPageNumberVar]}
-          component={Backlog}
+          component={Lazy.Backlog}
         />
+        {/* tag suggestions */}
         <Route
           exact
           path={[routes.editTagSuggestionWithVar, routes.createTagSuggestion]}
-          component={EditTagSuggestion}
+          component={Lazy.EditTagSuggestion}
         />
         <Route
           exact
           path={[routes.viewTagSuggestionWithVar]}
-          component={ViewTagSuggestion}
+          component={Lazy.ViewTagSuggestion}
         />
         <Route
           exact
           path={[routes.tagSuggestions, routes.tagSuggestionsWithPageNumberVar]}
-          component={TagSuggestions}
+          component={Lazy.TagSuggestions}
         />
+        {/* articles */}
         <Route
           exact
           path={[routes.editArticleWithVar, routes.createArticle]}
-          component={EditArticle}
+          component={Lazy.EditArticle}
         />
         <Route
           exact
           path={[routes.viewArticleWithVar]}
-          component={ViewArticle}
+          component={Lazy.ViewArticle}
         />
         <Route
           exact
           path={[routes.articles, routes.articlesWithPageNumberVar]}
-          component={Articles}
+          component={Lazy.Articles}
         />
+        {/* queries */}
         <Route
           exact
           path={routes.queryCheatsheet}
-          component={QueryCheatsheetContainer}
+          component={Lazy.QueryCheatsheetContainer}
         />
         <Route
           exact
@@ -664,23 +520,23 @@ const MainContent = () => {
             routes.queryWithVar,
             routes.queryWithVarAndPageVar,
           ]}
-          component={Query}
+          component={Lazy.Query}
         />
-        <Route exact path={routes.queue} component={Queue} />
+        <Route exact path={routes.queue} component={Lazy.Queue} />
         <Route exact path={routes.promos} component={DeprecatedRouteView} />
         <Route
           exact
           path={[routes.compareWithVars, routes.compareWithVar]}
           component={DeprecatedRouteView}
         />
-        {/* these must always be at the end as catch all */}
+        {/* pages - these must always be at the end as catch all */}
         <Route
           exact
           path={[
             routes.createPageWithPageVar,
             routes.createPageWithParentAndPageVar,
           ]}
-          component={CreatePage}
+          component={Lazy.CreatePage}
         />
         <Route
           exact
@@ -688,12 +544,12 @@ const MainContent = () => {
             routes.editPageWithPageVar,
             routes.editPageWithParentAndPageVar,
           ]}
-          component={EditPage}
+          component={Lazy.EditPage}
         />
         <Route
           exact
           path={[routes.pagesWithParentVar, routes.pagesWithParentAndPageVar]}
-          component={Pages}
+          component={Lazy.Pages}
         />
         <Route
           component={() => (
