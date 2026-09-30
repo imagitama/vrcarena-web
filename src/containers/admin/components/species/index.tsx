@@ -81,7 +81,12 @@ const View = () => {
                     : '-'}
                 </TableCell>
                 <TableCell label="Thumbnail">
-                  <img width="50" height="50" src={item.thumbnailurl} />
+                  <img
+                    width="50"
+                    height="50"
+                    src={item.thumbnailurl}
+                    alt={`Thumbnail for species ${item.pluralname}`}
+                  />
                   <br />
                   <small>
                     <a href={item.thumbnailsourceurl} target="_blank">

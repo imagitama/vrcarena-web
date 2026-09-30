@@ -102,7 +102,7 @@ export default ({
                 <>
                   {imageUrl ? (
                     <div className={classes.labelWithImage}>
-                      <img src={imageUrl} /> {label}
+                      <img src={imageUrl} alt="Image for item" /> {label}
                     </div>
                   ) : (
                     label

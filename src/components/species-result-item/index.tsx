@@ -204,7 +204,10 @@ const SpeciesResultItem = ({
       <Wrapper>
         <LazyLoad placeholder={<div />} className={classes.thumbnail}>
           {speciesItem?.thumbnailurl ? (
-            <img src={speciesItem.thumbnailurl} />
+            <img
+              src={speciesItem.thumbnailurl}
+              alt={`Thumbnail for ${speciesItem.pluralname}`}
+            />
           ) : null}
         </LazyLoad>
         <div className={classes.text}>

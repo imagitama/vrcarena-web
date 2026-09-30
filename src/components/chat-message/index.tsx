@@ -77,7 +77,7 @@ const ChatMessage = ({
       <div className={classes.senderInfo}>
         <div className={classes.avatar}>
           {message.senderavatarurl ? (
-            <img src={message.senderavatarurl} />
+            <img src={message.senderavatarurl} alt="Sender avatar" />
           ) : message.senderavatar ? (
             createElement(message.senderavatar)
           ) : (

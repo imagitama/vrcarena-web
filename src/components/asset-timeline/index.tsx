@@ -177,7 +177,7 @@ interface PrettyField extends EditableFieldBase<any> {
 const PrettyFieldOutput = ({ prettyField }: { prettyField: PrettyField }) => {
   switch (prettyField.type) {
     case fieldTypes.imageUpload:
-      return <img src={prettyField.value} height="200" />
+      return <img src={prettyField.value} height="200" alt="Image uploaded" />
     case fieldTypes.text:
       return prettyField.value
     case fieldTypes.tags:
@@ -200,22 +200,6 @@ const PrettyExpandedData = ({ data }: { data: PrettyField[] }) => {
           </TableCell>
         </TableRow>
       ))}
-
-      {/* 
-      {data.map((prettyField) => {
-        switch (prettyField.type) {
-          case fieldTypes.imageUpload:
-            return <img src={prettyField.value} height="200" />
-          case fieldTypes.text:
-            return prettyField.value
-          case fieldTypes.tags:
-            return <TagChips tags={prettyField.value} />
-          case fieldTypes.textMarkdown:
-            return <Markdown source={prettyField.value} />
-          default:
-            return JSON.stringify(prettyField.value, null, '  ')
-        }
-      })} */}
     </Table>
   )
 }

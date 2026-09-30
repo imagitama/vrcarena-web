@@ -50,7 +50,7 @@ The font used in the website and all marketing materials is Roboto. View it [her
 
 ## Social Media
 
-<img src="${avatarUrl}" width="100px" height="100px" />
+<img src="${avatarUrl}" width="100px" height="100px" alt="Social media avatar" />
 
 The icons used for social media (Discord, etc.) is a square image with the white logo positioned in the center:
 

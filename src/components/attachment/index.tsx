@@ -105,7 +105,7 @@ const Attachment = ({
 
   switch (type) {
     case AttachmentType.Image:
-      return <img src={url} width={width} />
+      return <img src={url} width={width} alt="Attachment image" />
     case AttachmentType.Url:
       if (getIsUrlAYoutubeVideo(url)) {
         return (

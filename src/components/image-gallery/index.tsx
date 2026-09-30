@@ -166,7 +166,7 @@ export const Image = ({
           {!isYoutube || image.thumbnailUrl ? (
             <img
               src={image.thumbnailUrl || image.url || undefined}
-              alt={image.alt || ''}
+              alt={image.alt || 'Image in gallery'}
               onClick={onClick}
             />
           ) : (

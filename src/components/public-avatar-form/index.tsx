@@ -131,7 +131,7 @@ const Form = ({ assetId }: { assetId: string }) => {
           Send
         </Button>
       </div>
-      <img src={screenshotUrl} width="25%" />
+      <img src={screenshotUrl} alt="Example screenshot" width="25%" />
     </>
   )
 }

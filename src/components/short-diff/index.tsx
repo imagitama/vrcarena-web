@@ -672,7 +672,9 @@ const getRendererByType = (
     //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />
     case fieldTypes.imageUpload:
       return ({ fields }) => (
-        <Value value={<img src={fields[fieldName] as string} />} />
+        <Value
+          value={<img src={fields[fieldName] as string} alt="Image uploaded" />}
+        />
       )
     // case fieldTypes.hidden:
     //   return ({ fields }) => <Value value={`{fields[fieldName]}`} />

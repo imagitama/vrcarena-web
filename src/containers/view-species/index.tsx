@@ -343,7 +343,10 @@ const View = () => {
               species.slug || species.id
             )}>
             {species.thumbnailurl ? (
-              <img src={species.thumbnailurl} alt="Thumbnail for species" />
+              <img
+                src={species.thumbnailurl}
+                alt={`Thumbnail for species ${species.pluralname}`}
+              />
             ) : null}
             {species.pluralname}
           </Link>{' '}

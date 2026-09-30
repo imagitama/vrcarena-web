@@ -247,7 +247,7 @@ const ConvoRenderer = ({
           {message.image ? (
             isExpanded ? (
               <>
-                <img src={message.image.url} />
+                <img src={message.image.url} alt="Image for the message" />
                 <br />
                 Mime Type: {message.image.mimeType}
                 <br />

@@ -279,7 +279,10 @@ export default ({
                 />
               </div>
               <div className={classes.image}>
-                <img src={platform.imageUrl} />
+                <img
+                  src={platform.imageUrl}
+                  alt={`Logo for VR platform ${platform.name}`}
+                />
               </div>
               <CardContent className={classes.cardContent}>
                 <Typography gutterBottom variant="h5" component="h2">

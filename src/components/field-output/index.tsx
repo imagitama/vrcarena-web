@@ -35,7 +35,7 @@ const FieldOutput = ({
       (editableField && editableField.type === fieldTypes.imageUpload) ||
       getIsUrlAnImage(children)
     ) {
-      return <img src={children} width="200" />
+      return <img src={children} width="200" alt="Image uploaded" />
     }
 
     if (children === '') {

@@ -11,7 +11,7 @@ const ImageUploaderWithPreview = ({
     <>
       {value ? (
         <>
-          <img src={value} />
+          <img src={value} alt="Uploaded image" />
           <Button onClick={() => onClear()} color="secondary">
             Try Again
           </Button>

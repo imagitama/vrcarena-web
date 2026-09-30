@@ -188,13 +188,17 @@ export enum MultiDiffFieldRenderer {
 }
 
 const AttachmentRenderer = ({
-  attachment: { url, type },
+  attachment: { url, type, title },
 }: {
   attachment: Attachment
 }) => {
   switch (type) {
     case AttachmentType.Image:
-      return url ? <img src={url} /> : '(no image)'
+      return url ? (
+        <img src={url} alt={title || 'Attachment image'} />
+      ) : (
+        '(no image)'
+      )
     case AttachmentType.Url:
       if (url && getIsUrlAYoutubeVideo(url)) {
         return <div>YouTube Video: {url}</div>
@@ -249,7 +253,7 @@ const FieldOutput = <TItem,>({
 
   switch (fieldInfo.type) {
     case MultiDiffFieldType.ImageUrl:
-      return <img src={value} />
+      return <img src={value} alt="Field image" />
     case MultiDiffFieldType.Tags:
       return (
         <TagDiffChips
