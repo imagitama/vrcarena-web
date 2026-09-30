@@ -1,8 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import EmojiPickerReact, { EmojiStyle } from 'emoji-picker-react'
+import type { EmojiStyle } from 'emoji-picker-react'
 
 import useClickAway from '@/hooks/useClickAway'
+
+const EmojiPickerReact = React.lazy(() => import('emoji-picker-react')) // injects CSS
 
 const useStyles = makeStyles({
   root: {
@@ -59,7 +61,7 @@ const EmojiPicker = ({
               onSelectEmoji(emojiClickData.emoji)
             }
             previewConfig={{ showPreview: false }}
-            emojiStyle={EmojiStyle.NATIVE}
+            emojiStyle={'native' as EmojiStyle}
           />
         </div>
       )}

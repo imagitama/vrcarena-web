@@ -47,6 +47,7 @@ const useStyles = makeStyles({
     },
   },
   children: {
+    fontSize: '90%',
     marginTop: '0.5rem',
     height: '100%',
     display: 'flex',
@@ -135,7 +136,8 @@ const StatNum = styled.span`
   font-weight: 100;
 `
 
-const TileHeading = styled.div`
+const TileHeading = styled.h3`
+  margin: 0;
   font-size: 125%;
   font-weight: 100;
   cursor: default;
