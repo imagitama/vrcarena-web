@@ -133,7 +133,7 @@ const MessageText = styled.div`
   text-align: center;
 `
 
-const SUB_EDITOR_REP_THRESHOLD = 200 // 35 rows as of sep 2026
+const SUB_EDITOR_REP_THRESHOLD = 150 // 74 rows as of sep 2026
 const hideId = 'sub-editor-question'
 
 const SubEditorMessage = () => {

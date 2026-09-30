@@ -85,7 +85,7 @@ const Block = ({
       <LazyLoad>
         <div className={`${classes.root} ${className}`}>
           <div className={classes.titleWrapper}>
-            <div className={classes.title}>
+            <h2 className={classes.title}>
               {url ? (
                 getIsUrlAbsolute(url) ? (
                   <a href={url} target="_blank" rel="noopener noreferrer">
@@ -97,7 +97,7 @@ const Block = ({
               ) : (
                 titleToRender
               )}
-            </div>
+            </h2>
             <div className={classes.border} />
           </div>
           {children}

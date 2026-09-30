@@ -43,10 +43,9 @@ export default () => {
       <CommentList collectionName={CollectionNames.Assets} parentId={assetId} />
       {isEditor || isUserCreator ? (
         <>
-          <Heading variant="h2">Private Comments</Heading>
           <p>
             These comments are only visible to staff and the user who posted
-            this asset.
+            this asset:
           </p>
           <CommentList
             collectionName={CollectionNames.Assets}
