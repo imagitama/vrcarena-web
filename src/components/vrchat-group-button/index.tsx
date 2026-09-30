@@ -11,6 +11,7 @@ const Root = styled.a`
   display: inline-flex;
   align-items: center;
   transition: transform 200ms;
+  text-decoration: none;
   &:hover {
     transform: scale(1.1);
   }

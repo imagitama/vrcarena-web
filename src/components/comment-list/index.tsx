@@ -96,7 +96,7 @@ const CommentList = ({
             ))
         ) : (
           <NoResultsMessage>
-            No{getPrivate ? ' private' : ''} comments found
+            No{getPrivate ? ' private' : ''} comments yet
           </NoResultsMessage>
         )}
       </div>

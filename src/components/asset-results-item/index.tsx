@@ -20,7 +20,6 @@ import {
   FullAsset,
   PublicAsset,
   Relation,
-  getIsPublicAsset,
 } from '@/modules/assets'
 import useUserPreferences from '@/hooks/useUserPreferences'
 import { getCategoryMeta } from '@/category-meta'
@@ -56,6 +55,7 @@ const useStyles = makeStyles({
     },
     '& a': {
       color: 'inherit',
+      textDecoration: 'none',
     },
     '&:hover $relation svg': {
       transform: 'rotate(360deg) !important',

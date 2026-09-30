@@ -18,7 +18,6 @@ import { UnityPackage, VrchatAvatar } from '@/vrchat'
 import { VRCArenaTheme } from '@/themes'
 
 import FormattedDate from '@/components/formatted-date'
-import Button from '@/components/button'
 
 const chipMargin = '0.25rem'
 
@@ -32,6 +31,9 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       margin: '0.25rem',
     },
     overflow: 'visible',
+    '& a': {
+      textDecoration: 'none',
+    },
   },
   media: {
     height: '100px',

@@ -90,7 +90,9 @@ export const darkTheme: VRCArenaTheme = createTheme({
         },
         a: {
           color: colorBrandLight,
-          textDecoration: 'none',
+          textDecoration: 'underline', // relying on color alone is bad accessibility
+          textDecorationColor:
+            'color-mix(in srgb, currentColor 50%, transparent)',
         },
         strong: {
           fontWeight: 600,

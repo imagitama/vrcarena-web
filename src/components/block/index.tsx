@@ -37,6 +37,7 @@ const useStyles = makeStyles<VRCArenaTheme>((theme) => ({
       color: 'inherit',
       display: 'flex',
       alignItems: 'center',
+      textDecoration: 'none',
     },
     '&:hover $icon': {
       display: 'flex',

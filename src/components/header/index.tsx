@@ -44,6 +44,9 @@ const useStyles = makeStyles({
       padding: '0.5rem',
       flexDirection: 'column',
     },
+    '& a': {
+      textDecoration: 'none',
+    },
   },
   cols: {
     display: 'flex',

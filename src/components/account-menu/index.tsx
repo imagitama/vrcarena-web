@@ -53,6 +53,9 @@ const useStyles = makeStyles({
     '& svg': {
       fontSize: '150%',
     },
+    '& a': {
+      textDecoration: 'none',
+    },
   },
   iconItem: {
     '&:hover': {

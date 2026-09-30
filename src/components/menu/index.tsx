@@ -19,6 +19,7 @@ const useStyles = makeStyles({
     color: 'inherit',
     display: 'flex',
     flexWrap: 'wrap',
+    textDecoration: 'none',
   },
   labelWithImage: {
     display: 'flex',

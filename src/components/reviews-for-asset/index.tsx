@@ -35,7 +35,7 @@ export default ({
   }
 
   if (!reviews || !reviews.length) {
-    return <NoResultsMessage>No reviews found</NoResultsMessage>
+    return <NoResultsMessage>No reviews yet</NoResultsMessage>
   }
 
   return <ReviewResults reviews={reviews} showAsset={false} />
