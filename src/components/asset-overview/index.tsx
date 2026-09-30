@@ -102,22 +102,13 @@ import { SubEditorStatus } from '@/modules/users'
 import SubEditorResponseForm from '../sub-editor-response-form'
 
 const LoggedInControls = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "asset-overview-logged-in-controls" */ './components/logged-in-controls'
-    )
+  () => import('./components/logged-in-controls')
 )
 const CreatorControls = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "asset-overview-creator-controls" */ './components/creator-controls'
-    )
+  () => import('./components/creator-controls')
 )
 const QueuedAssetInfo = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "asset-overview-queued-asset-info" */ '@/components/queued-asset-info'
-    )
+  () => import('@/components/queued-asset-info')
 )
 
 const useStyles = makeStyles({
