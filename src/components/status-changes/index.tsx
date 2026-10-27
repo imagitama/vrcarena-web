@@ -14,6 +14,7 @@ import { TableRow } from '@/components/responsive-table'
 import { capitalize } from '@/utils'
 import UsernameLink from '../username-link'
 import FormattedDate from '../formatted-date'
+import NoResultsMessage from '../no-results-message'
 
 export const StatusChangeLabel = ({
   fieldName,
@@ -61,45 +62,48 @@ const StatusChanges = ({
   statusChanges,
 }: {
   statusChanges: StatusChangesType
-}) => (
-  <Table size="small">
-    <TableHead>
-      <TableRow>
-        <TableCell>Col</TableCell>
-        <TableCell>Value</TableCell>
-        <TableCell>Who</TableCell>
-        <TableCell>When</TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {Object.entries(statusChanges).map(
-        ([colName, change]: [string, StatusChange]) => (
-          <TableRow key={colName}>
-            <TableCell>{capitalize(colName.replace('status', ''))}</TableCell>
-            <TableCell>{change.value}</TableCell>
-            <TableCell>
-              {change && change.userid ? (
-                <UsernameLink
-                  id={change.userid}
-                  username={change.username!}
-                  avatarUrl={change.avatarurl!}
-                />
-              ) : (
-                '-'
-              )}
-            </TableCell>
-            <TableCell>
-              {change.createdat ? (
-                <FormattedDate date={change.createdat} />
-              ) : (
-                '-'
-              )}
-            </TableCell>
-          </TableRow>
-        )
-      )}
-    </TableBody>
-  </Table>
-)
+}) =>
+  statusChanges ? (
+    <Table size="small">
+      <TableHead>
+        <TableRow>
+          <TableCell>Col</TableCell>
+          <TableCell>Value</TableCell>
+          <TableCell>Who</TableCell>
+          <TableCell>When</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {Object.entries(statusChanges).map(
+          ([colName, change]: [string, StatusChange]) => (
+            <TableRow key={colName}>
+              <TableCell>{capitalize(colName.replace('status', ''))}</TableCell>
+              <TableCell>{change.value}</TableCell>
+              <TableCell>
+                {change && change.userid ? (
+                  <UsernameLink
+                    id={change.userid}
+                    username={change.username!}
+                    avatarUrl={change.avatarurl!}
+                  />
+                ) : (
+                  '-'
+                )}
+              </TableCell>
+              <TableCell>
+                {change.createdat ? (
+                  <FormattedDate date={change.createdat} />
+                ) : (
+                  '-'
+                )}
+              </TableCell>
+            </TableRow>
+          )
+        )}
+      </TableBody>
+    </Table>
+  ) : (
+    <NoResultsMessage>No changes</NoResultsMessage>
+  )
 
 export default StatusChanges
