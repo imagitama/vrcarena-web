@@ -42,6 +42,7 @@ const AttachmentCaption = ({
   className?: string
 }) => {
   const isEditor = useIsEditor()
+  if (!includeMeta && !includeParents) return null
   return (
     <Paper className={className} noPadding>
       {includeParents ? (

@@ -152,6 +152,7 @@ const ArticleResultsItem = ({
             ids={article.attachmentids}
             attachmentsData={article.attachmentsdata}
             includeMeta={false}
+            includeParents={false}
           />
         </>
       )}
