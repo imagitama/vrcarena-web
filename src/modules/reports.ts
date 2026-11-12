@@ -87,9 +87,10 @@ export const getReasonsForCollectionName = (
   const result = reasonsByCollectionName[collectionName]
 
   if (!result) {
-    throw new Error(
+    console.warn(
       `Could not find valid reasons for collection "${collectionName}"`
     )
+    return []
   }
 
   const withCommon = commonReasons.concat(result)
