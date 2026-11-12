@@ -26,9 +26,10 @@ const GenericOutputLabel = ({
   data?: Asset | FullComment | Author
 }) => {
   if (!data) {
+    // TODO: why is type blank
     return (
       <Link to={getUrlForParent(type, id)}>
-        View {type.substring(0, type.length - 1)}
+        View {type?.substring(0, type.length - 1)}
       </Link>
     )
   }
