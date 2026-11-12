@@ -58,7 +58,7 @@ export default ({
       )
   }
 
-  if (!data) {
+  if (!data && type) {
     return (
       <Link to={getUrlForParent(type, id)}>
         View {type.substring(0, type.length - 1)}
