@@ -569,7 +569,7 @@ export default () => {
       `${title || DEFAULT_PAGE_DESC} | The VRCArena Project`,
   })
   return (
-    <div>
+    <div style={{ textAlign: 'center' }}>
       <CssBaseline />
       <h1>VRCArena is down</h1>
       <p>We have suffered a seemingly random attack on our database.</p>
