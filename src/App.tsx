@@ -568,7 +568,17 @@ export default () => {
     titleTemplate: (title) =>
       `${title || DEFAULT_PAGE_DESC} | The VRCArena Project`,
   })
-  return <ErrorMessage>Website is down for maintenance {':)'}</ErrorMessage>
+  return (
+    <div>
+      <CssBaseline />
+      <h1>Website down for maintenance</h1>
+      <h2>This may take a few days {':('}</h2>
+      <p>
+        More details in our Discord:{' '}
+        <a href="https://discord.gg/UVs9V58">Join Here</a>
+      </p>
+    </div>
+  )
   // return (
   //   <ErrorBoundary>
   //     <CssBaseline />
