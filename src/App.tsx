@@ -57,6 +57,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from './slices'
 import SubEditorMessage from './components/sub-editor-message'
 import { loadSecondary, Secondary } from './secondary-loader'
+import ErrorMessage from './components/error-message'
 
 const cache = new Map<string, React.ComponentType<any>>()
 
@@ -567,33 +568,34 @@ export default () => {
     titleTemplate: (title) =>
       `${title || DEFAULT_PAGE_DESC} | The VRCArena Project`,
   })
-  return (
-    <ErrorBoundary>
-      <CssBaseline />
-      <ErrorBoundary>
-        <FeaturedEvent />
-      </ErrorBoundary>
-      <ErrorBoundary>
-        <Header />
-        <WelcomeMessage />
-      </ErrorBoundary>
-      <main className="main">
-        <div className={classes.mainContainer}>
-          <ErrorBoundary>
-            <SurveyMessage />
-            <BannedNotice />
-            <Notices />
-            <AccountVerificationMessage />
-            <EditorQueueMessage />
-            <MyQueuedAssetsMessage />
-            <SubEditorMessage />
-          </ErrorBoundary>
-          <ErrorBoundary>
-            <MainContent />
-          </ErrorBoundary>
-        </div>
-      </main>
-      <Footer />
-    </ErrorBoundary>
-  )
+  return <ErrorMessage>Website is down for maintenance {':)'}</ErrorMessage>
+  // return (
+  //   <ErrorBoundary>
+  //     <CssBaseline />
+  //     <ErrorBoundary>
+  //       <FeaturedEvent />
+  //     </ErrorBoundary>
+  //     <ErrorBoundary>
+  //       <Header />
+  //       <WelcomeMessage />
+  //     </ErrorBoundary>
+  //     <main className="main">
+  //       <div className={classes.mainContainer}>
+  //         <ErrorBoundary>
+  //           <SurveyMessage />
+  //           <BannedNotice />
+  //           <Notices />
+  //           <AccountVerificationMessage />
+  //           <EditorQueueMessage />
+  //           <MyQueuedAssetsMessage />
+  //           <SubEditorMessage />
+  //         </ErrorBoundary>
+  //         <ErrorBoundary>
+  //           <MainContent />
+  //         </ErrorBoundary>
+  //       </div>
+  //     </main>
+  //     <Footer />
+  //   </ErrorBoundary>
+  // )
 }
