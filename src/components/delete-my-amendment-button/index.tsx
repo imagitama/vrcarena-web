@@ -4,8 +4,6 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { handleError } from '@/error-handling'
 import { FunctionNames } from '@/modules/amendments'
 
-import useFirebaseFunction from '@/hooks/useFirebaseFunction'
-
 import { ButtonProps, DeleteButton } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'

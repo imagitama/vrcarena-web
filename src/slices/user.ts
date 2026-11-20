@@ -7,17 +7,20 @@ export const USER_IS_DONE_LOADING = 'user/USER_IS_DONE_LOADING'
 export const USER_IS_ERRORED = 'user/USER_IS_ERRORED'
 export const USER_LOADED = 'user/USER_LOADED'
 export const USER_UNLOADED = 'user/USER_UNLOADED'
+export const PASSWORD_NEEDS_CHANGING = 'user/PASSWORD_NEEDS_CHANGING'
 
 export interface UserState {
   isLoading: boolean
   lastErrorCode: DataStoreErrorCode | null
   user: null | MyUser
+  passwordNeedsChanging: boolean
 }
 
 const initialState: UserState = {
   isLoading: false,
   lastErrorCode: null,
   user: null,
+  passwordNeedsChanging: false,
 }
 
 export default (
@@ -57,6 +60,12 @@ export default (
         isLoading: false,
         lastErrorCode: null,
         user: null,
+      }
+
+    case PASSWORD_NEEDS_CHANGING:
+      return {
+        ...state,
+        passwordNeedsChanging: true,
       }
 
     default:

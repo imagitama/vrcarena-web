@@ -383,8 +383,6 @@ export enum FunctionNames {
   SearchAssets = 'searchassets',
   GetMentions = 'getmentions',
   GetAssetsWithSourceUrl = 'getassetswithsourceurl', // discordbot and backlog
-}
-
-export enum FirebaseFunctionNames {
+  // TODO: migrate func
   DeleteDraft = 'deleteDraft',
 }

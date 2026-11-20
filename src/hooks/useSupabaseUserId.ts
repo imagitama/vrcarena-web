@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
-import { onJwtTokenChanged, getUserId } from '@/supabase'
+import { getUserId, onAuthStateChanged } from '@/auth'
 
 export default (): string | null => {
   const [userId, setUserId] = useState(getUserId())
 
+  // console.debug(`useSupabaseUserId`, userId)
+
   useEffect(() => {
-    const unsub = onJwtTokenChanged((token) => {
-      setUserId(token ? getUserId() : null)
+    const unsub = onAuthStateChanged((isNowLoggedIn) => {
+      // console.debug(`useSupabaseUserId.onAuthStateChanged`, { isNowLoggedIn })
+      setUserId(isNowLoggedIn ? getUserId() : null)
     })
 
     return () => {

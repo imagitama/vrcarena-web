@@ -1,4 +1,4 @@
-import { callFunction } from './firebase'
+import { callFunction } from '@/supabase'
 
 enum FunctionName {
   DownloadAndOptimizeImage = 'downloadAndOptimizeImage',

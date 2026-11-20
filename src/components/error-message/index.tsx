@@ -8,6 +8,7 @@ import { base64EncodeString, capitalize } from '@/utils'
 import Message, { MessageProps } from '@/components/message'
 import Button from '@/components/button'
 import { getUserFriendlyMessageFromCode } from '@/data-store'
+import HintText from '../hint-text'
 
 const getErrorCodeForError = (error: Error): string =>
   base64EncodeString(error.message)
@@ -64,16 +65,17 @@ const ErrorMessage = ({
       </div>
     ) : null}
     {hintText || hintText === undefined ? (
-      <>
+      <div>
+        <br />
         {hintText || (
-          <em>
-            If you believe this error is wrong or unexpected please{' '}
+          <HintText>
+            If you believe this is wrong or unexpected please{' '}
             <a href={DISCORD_URL}>join our Discord</a> or{' '}
-            <a href={`mailto:${EMAIL}`}>email us</a> to report this error so we
-            can fix it.
-          </em>
+            <a href={`mailto:${EMAIL}`}>email us</a> to report it so we can fix
+            it.
+          </HintText>
         )}
-      </>
+      </div>
     ) : null}
     {error ? (
       <>

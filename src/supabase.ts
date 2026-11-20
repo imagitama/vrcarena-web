@@ -1,15 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
-import { callFunction } from './firebase'
-import { handleError } from './error-handling'
-import { loadUserIntoStore, unloadUserFromStore } from './auth'
-import { saveLastLoggedInDate } from './users'
-import { auth } from './firebase'
-import { store } from './store'
 import {
-  FIREBASE_USER_IS_LOADING,
-  FIREBASE_USER_LOADED,
-  FIREBASE_USER_UNLOADED,
-} from './slices/firebase'
+  createClient,
+  FunctionRegion,
+  User as SupabaseUser,
+} from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
 const supabaseKey = process.env.REACT_APP_SUPABASE_API_KEY
@@ -22,216 +15,65 @@ if (!supabaseKey) {
 }
 
 export let client = createClient(supabaseUrl, supabaseKey, {
-  accessToken: () => Promise.resolve(activeJwt),
+  // accessToken: () => Promise.resolve(activeJwt),
 })
 
-let loggedInUserId: null | string = null
-let onJwtTokenChangedCallbacks: ((newToken: string | null) => void)[] = []
-let activeJwt: string | null = null
-let nextJwtExpiryDate: Date | null = null
-const gapBeforeCheckingMs = 2000
-let jwtRefreshTimeout: NodeJS.Timeout
+export const callFunction = async <
+  TPayload extends Record<string, any>,
+  TResult
+>(
+  functionName: string,
+  payload?: TPayload
+): Promise<{ data: TResult }> => {
+  console.debug(`calling supabase edge function`, functionName, payload)
 
-const errorCodes = {
-  NO_USERADMINMETA: 'NO_USERADMINMETA',
-}
+  const { data, error } = await client.functions.invoke(functionName, {
+    body: payload,
+    // fix issues with VRChat API and different regions
+    region: FunctionRegion.UsEast1,
+  })
 
-interface GetSupabaseJwtResult {
-  token: string
-  expiryTimestamp: number
-  errorCode: string
-}
-
-export const getUserId = () => loggedInUserId
-
-enum FunctionNames {
-  GetSupabaseJwt = 'getSupabaseJwt',
-}
-
-interface RefreshJwtResult {
-  errorCode?: string
-}
-
-let refreshJwtPromise: Promise<RefreshJwtResult> | null = null
-
-export const refreshJwtParallel = async (): Promise<RefreshJwtResult> => {
-  if (refreshJwtPromise !== null) {
-    console.debug(`already refreshing JWT, chaining...`)
-    return await refreshJwtPromise
+  if (error) {
+    console.error(
+      'failed to call supabase edge function',
+      functionName,
+      payload,
+      data,
+      error
+    )
+    throw error
   }
 
-  console.debug(`not already refreshing JWT, starting...`)
-
-  refreshJwtPromise = refreshJwt()
-
-  const result = await refreshJwtPromise
-
-  refreshJwtPromise = null
-
-  console.debug(`parallel JWT all done`)
-
-  return result
+  return { data }
 }
 
-export const refreshJwt = async (): Promise<RefreshJwtResult> => {
-  console.debug(`refreshing JWT...`)
-
-  const {
-    data: { token, expiryTimestamp: expiryTimestampSec, errorCode },
-  } = await callFunction<void, GetSupabaseJwtResult>(
-    FunctionNames.GetSupabaseJwt
-  )
-
-  if (errorCode) {
-    console.error(`Error code from JWT function: ${errorCode}`)
-    return { errorCode }
-  }
-
-  if (!token) {
-    throw new Error(`No token in result`)
-  }
-
-  nextJwtExpiryDate = new Date(expiryTimestampSec * 1000)
-
-  //   console.debug(`token: ${token}
-  // expires: ${nextJwtExpiryDate} (${expiryTimestampSec})
-  // currently: ${new Date()}`)
-
-  activeJwt = token
-
-  client.realtime.setAuth(token)
-
-  // let our React hooks (like useSupabaseUserId()) know
-  onJwtTokenChangedCallbacks.forEach((cb) => cb(activeJwt))
-
-  console.debug(`JWT has been refreshed`)
-
-  return {}
-}
-
-// JWTs need to expire otherwise anyone who steals it can read/write forever
-// so we try and refresh the JWT just before it expires
-// so queries do not fail with a 401 error (which is hard to catch right now)
-const queueRefreshJwt = () => {
-  if (!nextJwtExpiryDate) {
-    return
-  }
-
-  // we need a "gap" just in case the user does a query while we are refreshing their JWT
-  // should equal the estimated roundtrip for getting a new JWT (2 sec?)
-  const delayMs =
-    nextJwtExpiryDate.getTime() - new Date().getTime() - gapBeforeCheckingMs
-
-  if (delayMs < 10000) {
-    throw new Error(
-      `Cannot queue: delay is way too small: ${nextJwtExpiryDate.getTime()} - ${new Date().getTime()} - ${gapBeforeCheckingMs} = ${delayMs})`
+const recordToFormData = <T extends Record<string, any>>(
+  payload: T
+): FormData => {
+  const fd = new FormData()
+  for (const [key, value] of Object.entries(payload)) {
+    if (value == null) continue
+    fd.append(
+      key,
+      value instanceof Blob
+        ? value
+        : typeof value === 'object'
+        ? JSON.stringify(value)
+        : String(value)
     )
   }
-
-  console.debug(`Refreshing JWT in ${delayMs / 1000} seconds...`)
-
-  jwtRefreshTimeout = setTimeout(async () => {
-    await refreshJwt()
-    queueRefreshJwt()
-  }, delayMs)
+  return fd
 }
 
-const stopRefreshingJwt = () => {
-  clearTimeout(jwtRefreshTimeout)
-  nextJwtExpiryDate = null
+export const callFunctionWithFile = async <
+  TPayload extends Record<string, any>,
+  TResult
+>(
+  functionName: string,
+  file: File,
+  payload?: TPayload
+): Promise<{ data: TResult }> => {
+  let formData = payload ? recordToFormData(payload) : new FormData()
+  formData.append('file', file) // TODO: customise field name?
+  return callFunction(functionName, formData)
 }
-
-let waitForUserAdminMetaTimeout
-
-auth.onAuthStateChanged(async (user) => {
-  try {
-    if (!user) {
-      console.debug(`Firebase user has signed out, signing out of Supabase...`)
-
-      activeJwt = null
-      loggedInUserId = null
-
-      stopRefreshingJwt()
-
-      // let our React hooks (like useSupabaseUserId()) know
-      onJwtTokenChangedCallbacks.forEach((cb) => cb(null))
-
-      store.dispatch({
-        type: FIREBASE_USER_UNLOADED,
-      })
-
-      await unloadUserFromStore()
-
-      return
-    }
-
-    console.debug(`Firebase user has signed in, getting a new JWT...`, {
-      user,
-    })
-
-    loggedInUserId = user.uid
-
-    store.dispatch({
-      type: FIREBASE_USER_IS_LOADING,
-      data: {
-        userId: loggedInUserId,
-      },
-    })
-
-    const { errorCode } = await refreshJwt()
-
-    // the only reportable error is userAdminMeta has not been created yet cause they just signed up
-    // TODO: Make this less fragile somehow
-    if (errorCode && errorCode === errorCodes.NO_USERADMINMETA) {
-      console.debug(`No user admin meta for user, waiting a few seconds...`)
-
-      await new Promise<void>((resolve) => {
-        const wait = () => {
-          waitForUserAdminMetaTimeout = setTimeout(async () => {
-            const { errorCode: newErrorCode } = await refreshJwt()
-
-            if (newErrorCode) {
-              console.debug(`Error code ${newErrorCode}, waiting again...`)
-              wait()
-            } else {
-              console.debug(`We finally found it! Proceeding...`)
-              resolve()
-            }
-          }, 2000)
-        }
-        wait()
-      })
-    }
-
-    queueRefreshJwt()
-
-    store.dispatch({
-      type: FIREBASE_USER_LOADED,
-      data: {
-        userId: loggedInUserId,
-      },
-    })
-
-    await loadUserIntoStore(client, loggedInUserId)
-
-    await saveLastLoggedInDate(loggedInUserId)
-  } catch (err) {
-    console.error(err)
-    handleError(err)
-  }
-})
-
-export const onJwtTokenChanged = (
-  callback: (newToken: string | null) => void
-) => {
-  onJwtTokenChangedCallbacks.push(callback)
-  return () => {
-    onJwtTokenChangedCallbacks = onJwtTokenChangedCallbacks.filter(
-      (cb) => cb !== callback
-    )
-  }
-}
-
-// JWTs need to expire otherwise anyone who steals it can read/write forever
-// so we try and refresh the JWT just before it expires
-// so queries do not fail with a 401 error (which is hard to catch right now)

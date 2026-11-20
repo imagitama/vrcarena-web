@@ -1,16 +1,6 @@
 import React, { useState } from 'react'
-import {
-  EmailAuthProvider,
-  FacebookAuthProvider,
-  GithubAuthProvider,
-  GoogleAuthProvider,
-  PhoneAuthProvider,
-  TwitterAuthProvider,
-} from 'firebase/auth'
 
 import useUserRecord from '@/hooks/useUserRecord'
-import useFirebaseUser from '@/hooks/useFirebaseUser'
-import { FirebaseUser } from '@/firebase'
 
 import Heading from '@/components/heading'
 import FormattedDate from '@/components/formatted-date'
@@ -21,37 +11,14 @@ import {
   getHasUserVerifiedTheirEmail,
   getSignedUpWithDiscord,
   getSignedUpWithEmail,
+  loggedInUser,
 } from '@/auth'
-
-const getSigninMethod = (firebaseUser: FirebaseUser): string => {
-  if (getSignedUpWithDiscord(firebaseUser)) {
-    return 'Discord'
-  }
-
-  switch (firebaseUser.providerData[0].providerId) {
-    case EmailAuthProvider.PROVIDER_ID:
-      return 'Email and password'
-    case FacebookAuthProvider.PROVIDER_ID:
-      return 'Facebook'
-    case GithubAuthProvider.PROVIDER_ID:
-      return 'GitHub'
-    case GoogleAuthProvider.PROVIDER_ID:
-      return 'Google'
-    case PhoneAuthProvider.PROVIDER_ID:
-      return 'Phone number'
-    case TwitterAuthProvider.PROVIDER_ID:
-      return 'Twitter'
-    default:
-      return 'Other'
-  }
-}
 
 const MyUserOverview = () => {
   const [, , user] = useUserRecord()
-  const firebaseUser = useFirebaseUser()
   const [isPrivateInfoRevealed, setIsPrivateInfoRevealed] = useState(false)
 
-  if (!user || !firebaseUser) {
+  if (!user) {
     return null
   }
 
@@ -61,44 +28,23 @@ const MyUserOverview = () => {
       <Heading variant="h1" style={{ marginTop: '0.5rem' }}>
         <UsernameLink username={user.username} id={user.id} />
       </Heading>
+      <Heading variant="h2">Sign-up Method</Heading>
+      {getSignedUpWithEmail(loggedInUser!)
+        ? 'Email'
+        : getSignedUpWithDiscord(loggedInUser!)
+        ? 'Discord'
+        : 'Unknown'}
       <Heading variant="h2">Email</Heading>
-      {!isPrivateInfoRevealed ? (
+      {isPrivateInfoRevealed ? (
+        loggedInUser!.email!
+      ) : (
         <Button
           onClick={() => setIsPrivateInfoRevealed(true)}
-          size="small"
-          color="secondary">
-          Reveal Email
+          color="secondary"
+          size="small">
+          Reveal
         </Button>
-      ) : (
-        `${firebaseUser.email || '(none)'}`
       )}
-      <Heading variant="h2">Signed Up</Heading>
-      {firebaseUser.metadata && firebaseUser.metadata.creationTime ? (
-        <FormattedDate
-          date={new Date(firebaseUser.metadata.creationTime)}
-          isRelative={false}
-        />
-      ) : (
-        '(not recorded)'
-      )}
-      <Heading variant="h2">Last Logged In</Heading>
-      {firebaseUser.metadata && firebaseUser.metadata.lastSignInTime ? (
-        <FormattedDate
-          date={new Date(firebaseUser.metadata.lastSignInTime)}
-          isRelative={false}
-        />
-      ) : (
-        '(not recorded)'
-      )}
-      <Heading variant="h2">Method</Heading>
-      {getSigninMethod(firebaseUser)}{' '}
-      {getSignedUpWithEmail(firebaseUser)
-        ? getHasUserVerifiedTheirEmail(firebaseUser)
-          ? ' (verified)'
-          : '(unverified)'
-        : null}
-      <Heading variant="h2">ID</Heading>
-      {firebaseUser.uid}
     </>
   )
 }

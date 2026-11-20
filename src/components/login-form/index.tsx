@@ -1,23 +1,7 @@
 import React, { KeyboardEventHandler, useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import {
-  EmailAuthProvider,
-  GoogleAuthProvider,
-  TwitterAuthProvider,
-  signInWithEmailAndPassword,
-  AuthErrorCodes,
-  MultiFactorSession,
-  MultiFactorInfo,
-  MultiFactorAssertion,
-  UserCredential,
-  getMultiFactorResolver,
-  MultiFactorError,
-  TotpMultiFactorGenerator,
-} from 'firebase/auth'
-import { FirebaseError } from 'firebase/app' // TODO: re-export from other file
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-
-import { auth } from '@/firebase'
+import { AuthApiError, AuthError } from '@supabase/supabase-js'
 
 import Button from '@/components/button'
 import {
@@ -40,9 +24,11 @@ import FormControls from '@/components/form-controls'
 import Center from '@/components/center'
 import SignUpWithEmailForm from '@/components/signup-with-email-form'
 
-import { signinWithProvider } from './utils'
 import Heading from '../heading'
 import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
+import { login, ProviderId } from '@/auth'
+import PasswordInput from '../password-input'
+import LoginWithOAuth from '../login-with-oauth'
 
 const useStyles = makeStyles({
   root: {
@@ -83,16 +69,15 @@ const useStyles = makeStyles({
     // default looking
   },
   google: {
-    color: '#000 !important',
-    backgroundColor: '#ffffff !important',
+    backgroundColor: '#4285f4 !important',
     '&:hover': {
-      backgroundColor: '#b0b0b0 !important',
+      backgroundColor: '#2f6bd6 !important',
     },
   },
   twitter: {
-    backgroundColor: '#55acee !important',
+    backgroundColor: '#1da1f2 !important',
     '&:hover': {
-      backgroundColor: '#3d7bab !important',
+      backgroundColor: '#0c85d0 !important',
     },
   },
   signUpButton: {
@@ -103,98 +88,32 @@ const useStyles = makeStyles({
   },
 })
 
-const LoginWithProviderForm = ({
-  providerId,
-  onSuccess,
-}: {
-  providerId: string
-  onSuccess: () => void
-}) => {
-  const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
-
-  useEffect(() => {
-    ;(async () => {
-      try {
-        let provider
-
-        switch (providerId) {
-          case EmailAuthProvider.PROVIDER_ID:
-            provider = new EmailAuthProvider()
-            break
-          case GoogleAuthProvider.PROVIDER_ID:
-            provider = new GoogleAuthProvider()
-            break
-          case TwitterAuthProvider.PROVIDER_ID:
-            provider = new TwitterAuthProvider()
-            break
-          default:
-            throw new Error(`Unknown provider ID: ${providerId}`)
-        }
-
-        const user = await signinWithProvider(provider)
-
-        onSuccess()
-      } catch (err) {
-        if (err instanceof FirebaseError) {
-          const code = err.code
-          setLastErrorCode(code)
-        } else {
-          console.error(err)
-          handleError(err)
-        }
-      }
-    })()
-  }, [])
-
-  if (lastErrorCode !== null) {
-    return (
-      <ErrorMessage>
-        Failed to login: {getMessageForFirebaseErrorCode(lastErrorCode)}
-      </ErrorMessage>
-    )
-  }
-
-  return <LoadingIndicator message="Showing popup..." />
-}
-
-const getMessageForFirebaseErrorCode = (errorCode: string) => {
-  switch (errorCode) {
-    case AuthErrorCodes.INVALID_EMAIL:
-      return 'invalid email'
-    case AuthErrorCodes.INVALID_PASSWORD:
-      return 'invalid password'
-    // not in TS?
-    case 'auth/missing-password':
-      return 'missing password'
-    case 'auth/user-not-found':
-      return 'email has never signed up here'
-    case AuthErrorCodes.MISSING_AUTH_DOMAIN: // needs REACT_APP_FIREBASE_AUTH_DOMAIN
-      return 'needs config'
-    default:
-      return `Error ${errorCode}`
-  }
-}
-
-enum FirebaseErrorCode {
-  'auth/multi-factor-auth-required' = 'auth/multi-factor-auth-required',
-}
-
-interface MultiFactorResolver {
-  readonly session: MultiFactorSession
-  readonly hints: MultiFactorInfo[]
-  resolveSignIn(assertion: MultiFactorAssertion): Promise<UserCredential>
-}
-
 enum LoginStep {
   UsernameAndPassword,
   Totp,
 }
 
 const getErrorCodeFromError = (err: Error): string => {
-  if (err instanceof FirebaseError) {
-    return err.code
+  if (err instanceof AuthApiError) {
+    // switch (err.code) {
+    //   case 'invalid_credentials':
+    //     return
+    // }
+    return err.code!
   }
   return 'unknown'
+}
+
+type AuthErrorCode = AuthError['code']
+
+const getUserFriendlyMessageFromCode = (code: AuthErrorCode): string => {
+  switch (code!) {
+    case 'invalid_credentials':
+      return 'username or password is incorrect'
+    case 'email_not_confirmed':
+      return 'your email has not been confirmed yet'
+  }
+  return code as string
 }
 
 const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
@@ -206,7 +125,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   // 2fa
   const [step, setStep] = useState<LoginStep>(LoginStep.UsernameAndPassword)
-  const [resolver, setResolver] = useState<null | MultiFactorResolver>(null)
+  // const [resolver, setResolver] = useState<null | MultiFactorResolver>(null)
 
   if (step === LoginStep.Totp) {
     const onCode = async (code: string) => {
@@ -215,22 +134,18 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
         setIsWorking(true)
 
-        if (!resolver) throw new Error('No resolver')
+        // if (!resolver) throw new Error('No resolver')
 
-        const totpFactor = resolver.hints.find((h) => h.factorId === 'totp')
+        // const totpFactor = resolver.hints.find((h) => h.factorId === 'totp')
 
-        if (!totpFactor) throw new Error('No factor')
+        // if (!totpFactor) throw new Error('No factor')
 
         console.debug(`totp assertion...`)
 
-        const assertion = TotpMultiFactorGenerator.assertionForSignIn(
-          totpFactor.uid,
-          code
-        )
-
+        throw new Error('noop')
         console.debug(`resolving sign in...`)
 
-        await resolver.resolveSignIn(assertion)
+        // await resolver.resolveSignIn(assertion)
 
         console.debug('user signed in!')
 
@@ -250,10 +165,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <MultiFactorAuthCodeInput onCode={onCode} isDisabled={isWorking} />
         {isWorking && <LoadingIndicator message="Using your MFA code..." />}
         {lastErrorCode !== null ? (
-          <ErrorMessage>
-            Failed to use your MFA code:{' '}
-            {getMessageForFirebaseErrorCode(lastErrorCode)}
-          </ErrorMessage>
+          <ErrorMessage>Failed to use your MFA code: </ErrorMessage>
         ) : null}
       </div>
     )
@@ -269,27 +181,11 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
       setIsWorking(true)
 
-      const user = await signInWithEmailAndPassword(
-        auth,
-        usernameVal,
-        passwordVal
-      )
-
-      console.debug(`signin success`, { email: usernameVal, user })
+      await login(usernameVal, passwordVal)
 
       setIsWorking(false)
       onSuccess()
     } catch (err) {
-      if (
-        err instanceof FirebaseError &&
-        err.code === FirebaseErrorCode['auth/multi-factor-auth-required']
-      ) {
-        setIsWorking(false)
-        setResolver(getMultiFactorResolver(auth, err as MultiFactorError))
-        setStep(LoginStep.Totp)
-        return
-      }
-
       console.error(err)
       handleError(err)
       setIsWorking(false)
@@ -315,15 +211,11 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         onKeyDown={onKeyDown}
         autoComplete="username"
       />
-      <TextInput
-        topMargin
-        fullWidth
+      <PasswordInput
         value={passwordVal}
-        onChange={(e) => setPasswordVal(e.target.value)}
-        label="Password"
-        type="password"
+        onChange={(val) => setPasswordVal(val)}
+        fullWidth
         onKeyDown={onKeyDown}
-        autoComplete="current-password"
       />
       <FormControls>
         <div>
@@ -342,8 +234,8 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       </FormControls>
       {isWorking && <LoadingIndicator message="Logging in..." />}
       {lastErrorCode !== null ? (
-        <ErrorMessage>
-          Failed to login: {getMessageForFirebaseErrorCode(lastErrorCode)}
+        <ErrorMessage errorCode={lastErrorCode}>
+          Failed to login: {getUserFriendlyMessageFromCode(lastErrorCode)}
         </ErrorMessage>
       ) : null}
     </form>
@@ -378,8 +270,6 @@ const LoginButton = ({
   )
 }
 
-const DISCORD_PROVIDER_ID = 'discord'
-
 const Form = ({
   selectedProviderId,
   setSelectedProviderId,
@@ -397,23 +287,19 @@ const Form = ({
 
   if (selectedProviderId != null) {
     switch (selectedProviderId) {
-      case DISCORD_PROVIDER_ID:
+      case ProviderId.Discord:
+      case ProviderId.Google:
+      case ProviderId.Twitter:
         return (
           <div className={classes.form}>
-            <LoginWithDiscord code={''} onFail={reset} onSuccess={onSuccess} />
-          </div>
-        )
-      case GoogleAuthProvider.PROVIDER_ID:
-      case TwitterAuthProvider.PROVIDER_ID:
-        return (
-          <div className={classes.form}>
-            <LoginWithProviderForm
-              providerId={selectedProviderId}
+            <LoginWithOAuth
+              provider={selectedProviderId}
               onSuccess={onSuccess}
+              onFail={reset}
             />
           </div>
         )
-      case EmailAuthProvider.PROVIDER_ID:
+      case ProviderId.Email:
         return (
           <div className={classes.form}>
             {isSignUp ? (
@@ -431,42 +317,43 @@ const Form = ({
       <LoginButton
         isSignUp={isSignUp}
         label="email"
-        providerId={EmailAuthProvider.PROVIDER_ID}
+        providerId={ProviderId.Email}
         icon={<EmailIcon />}
         className={classes.email}
-        onClick={() => setSelectedProviderId(EmailAuthProvider.PROVIDER_ID)}
+        onClick={() => setSelectedProviderId(ProviderId.Email)}
       />
       <LoginButton
         isSignUp={isSignUp}
         label="Discord"
-        providerId={DISCORD_PROVIDER_ID}
+        providerId={ProviderId.Discord}
         icon={<DiscordIcon />}
         className={classes.discord}
-        onClick={() => setSelectedProviderId(DISCORD_PROVIDER_ID)}
+        onClick={() => setSelectedProviderId(ProviderId.Discord)}
       />
       <LoginButton
         isSignUp={isSignUp}
         label="Google"
-        providerId={GoogleAuthProvider.PROVIDER_ID}
+        providerId={ProviderId.Google}
         icon={<GoogleIcon />}
         className={classes.google}
-        onClick={() => setSelectedProviderId(GoogleAuthProvider.PROVIDER_ID)}
+        onClick={() => setSelectedProviderId(ProviderId.Google)}
       />
       <LoginButton
         isSignUp={isSignUp}
-        label="Twitter/X"
-        providerId={TwitterAuthProvider.PROVIDER_ID}
+        label="Twitter"
+        providerId={ProviderId.Twitter}
         icon={<TwitterIcon />}
         className={classes.twitter}
-        onClick={() => setSelectedProviderId(TwitterAuthProvider.PROVIDER_ID)}
+        onClick={() => setSelectedProviderId(ProviderId.Twitter)}
       />
       <Button
         size="large"
         url={isSignUp ? routes.login : routes.signUp}
         className={classes.signUpButton}
         icon={<PersonAddIcon />}
-        switchIconSide>
-        {isSignUp ? 'Login' : 'Sign Up'}
+        switchIconSide
+        color="secondary">
+        {isSignUp ? 'Return To Login' : 'Sign Up'}
       </Button>
     </div>
   )

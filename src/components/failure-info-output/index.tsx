@@ -7,7 +7,7 @@ enum AssetSyncFailureInfoCode {
   ScrapeOther = 'ScrapeOther',
   ElementNotFound = 'ElementNotFound',
   InvalidProductUrl = 'InvalidProductUrl',
-  Stalled = 'Stalled', // firebase function times out / runs out of memory
+  Stalled = 'Stalled', // function times out / runs out of memory
 }
 
 enum AiErrorCode {

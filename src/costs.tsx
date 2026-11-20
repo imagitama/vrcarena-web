@@ -10,24 +10,6 @@ export interface Cost {
 
 export const costs: Cost[] = [
   {
-    id: 'firebase',
-    label: (
-      <>
-        <strong>Storage (images, videos, etc.), backend services</strong>
-        <br />
-        Google Firebase
-      </>
-    ),
-    monthlyCost: 13,
-    olderCosts: (
-      <>
-        Aug 2023 - $10.94
-        <br />
-        Jul 2023 - $12.31
-      </>
-    ),
-  },
-  {
     id: 'netlify',
     label: (
       <>

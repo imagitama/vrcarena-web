@@ -6,7 +6,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import { useLocation } from 'react-router'
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import { getUserId } from '@/supabase'
+import { getUserId } from '@/auth'
 import { trackAction } from '@/analytics'
 import * as routes from '@/routes'
 import { handleError } from '@/error-handling'
@@ -105,7 +105,7 @@ interface MenuItemDetails {
 const AvatarMenuItem = () => {
   const classes = useStyles()
   const [, , myUser] = useUserRecord()
-
+  const isLoggedIn = useIsLoggedIn()
   return (
     <>
       <Avatar
@@ -117,10 +117,12 @@ const AvatarMenuItem = () => {
         className={classNames(classes.username, {
           [classes.loggedIn]: myUser !== null,
         })}>
-        {myUser
-          ? myUser.username
+        {isLoggedIn
+          ? myUser
             ? myUser.username
-            : 'Logged in'
+              ? myUser.username
+              : 'Logged in'
+            : 'Logged in (no user)'
           : 'Logged out'}
       </span>
       <KeyboardArrowDownIcon />

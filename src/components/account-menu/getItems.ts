@@ -3,7 +3,7 @@ import { Asset, CollectionNames } from '@/modules/assets'
 import { handleError } from '@/error-handling'
 import { cartIdsStorageKey } from '@/cart'
 import { retrieveFromLocalStorage } from '@/storage'
-import { getUserId } from '@/supabase'
+import { getUserId } from '@/auth'
 import * as routes from '@/routes'
 import { getLabelForNotification, getLinkUrl } from '@/notifications'
 import {

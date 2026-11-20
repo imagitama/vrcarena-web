@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 
 import { handleError } from '@/error-handling'
-import { FirebaseFunctionNames } from '@/modules/assets'
+import { FunctionNames } from '@/modules/assets'
 
-import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+import useSupabaseFunction from '@/hooks/useSupabaseFunction'
 
 import Button, { ButtonProps } from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
@@ -26,10 +26,18 @@ const DeleteDraftButton = ({
 } & ButtonProps) => {
   const [isConfirming, setIsConfirming] = useState(false)
   const [isCalling, lastErrorCodeCalling, lastResult, call, clear] =
-    useFirebaseFunction<
+    useSupabaseFunction<
       { assetId: string },
       { errorCode?: ErrorCode; success?: true }
-    >(FirebaseFunctionNames.DeleteDraft)
+    >(FunctionNames.DeleteDraft)
+
+  return (
+    <Button
+      isDisabled
+      title="Unavailable: open a support ticket to delete this draft">
+      Delete Draft
+    </Button>
+  )
 
   if (isCalling) {
     return <LoadingIndicator message={'Deleting...'} />

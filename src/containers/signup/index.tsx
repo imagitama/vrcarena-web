@@ -14,6 +14,12 @@ export default () => {
   const [, , user] = useUserRecord()
   const { push } = useHistory()
 
+  return (
+    <ErrorMessage title="Sign up Unavailable">
+      No users can sign up. See Discord for more info.
+    </ErrorMessage>
+  )
+
   if (user) {
     return <ErrorMessage>You are already logged in</ErrorMessage>
   }

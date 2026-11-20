@@ -1,23 +1,18 @@
 import { useState } from 'react'
 import VpnKeyIcon from '@mui/icons-material/VpnKey'
 
-import { auth, getHasMfaEnabled } from '@/firebase'
-import SuccessMessage from '../success-message'
-import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
-import Button from '../button'
-import {
-  multiFactor,
-  TotpMultiFactorGenerator,
-  TotpSecret,
-} from 'firebase/auth'
 import { handleError } from '@/error-handling'
-import { FirebaseError } from 'firebase/app'
-import FormControls from '../form-controls'
-import ErrorMessage from '../error-message'
-import QrCode from '../qr-code'
-import { getHasUserVerifiedTheirEmail, getSignedUpWithEmail } from '@/auth'
-import useFirebaseUser from '@/hooks/useFirebaseUser'
-import Message from '../message'
+import { getSignedUpWithEmail } from '@/auth'
+
+import useSupabaseUser from '@/hooks/useSupabaseUser'
+
+import SuccessMessage from '@/components/success-message'
+import MultiFactorAuthCodeInput from '@/components/multi-factor-auth-code-input'
+import Button from '@/components/button'
+import FormControls from '@/components/form-controls'
+import ErrorMessage from '@/components/error-message'
+import QrCode from '@/components/qr-code'
+import Message from '@/components/message'
 
 enum Step {
   Start,
@@ -32,48 +27,39 @@ enum ErrorCode {
   EmailUnverified = 'email-unverified',
 }
 
-enum FirebaseErrorCode {
-  'auth/invalid-argument' = 'auth/invalid-argument', // when using emulator (https://github.com/firebase/firebase-tools/issues/6224)
-  'auth/requires-recent-login' = 'auth/requires-recent-login',
-  'auth/unsupported-first-factor' = 'auth/unsupported-first-factor', // when not using email
-}
-
 const getMessageForCode = (code: string): string => {
   switch (code) {
     case ErrorCode.NoEmail:
       return 'MFA is only allowed for email sign-ups at this time'
     case ErrorCode.EmailUnverified:
       return 'MFA can only be enabled for verified accounts'
-    case FirebaseErrorCode['auth/invalid-argument']:
-      return 'MFA unavailable'
-    case FirebaseErrorCode['auth/requires-recent-login']:
-      // TODO: prompt to login instead of doing this
-      return 'You must have logged in recently (within approx 5 mins) before changing your MFA settings. Logout then login and try again.'
-    case FirebaseErrorCode['auth/unsupported-first-factor']:
-      return 'MFA is not available for your sign-up method'
+    // case FirebaseErrorCode['auth/invalid-argument']:
+    //   return 'MFA unavailable'
+    // case FirebaseErrorCode['auth/requires-recent-login']:
+    //   // TODO: prompt to login instead of doing this
+    //   return 'You must have logged in recently (within approx 5 mins) before changing your MFA settings. Logout then login and try again.'
+    // case FirebaseErrorCode['auth/unsupported-first-factor']:
+    //   return 'MFA is not available for your sign-up method'
     default:
       return `Error code: ${code}`
   }
 }
 
 const getErrorCodeFromError = (err: Error): string => {
-  if (err instanceof FirebaseError) {
-    return err.code
-  }
   // outputting the error sucks but it's the quickest way to debug issues
-  // (especially because we cant test locally - thanks firebase!)
   return `Unknown: ${err.message}`
 }
 
 const MultiFactorAuthForm = () => {
   const [step, setStep] = useState(
-    getHasMfaEnabled() ? Step.Enrolled : Step.Start
+    // getHasMfaEnabled() ? Step.Enrolled : Step.Start
+    Step.Start
   )
   const [isWorking, setIsWorking] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
-  const [secret, setSecret] = useState<null | TotpSecret>(null)
+  const [secret, setSecret] = useState<null>(null)
   const [qrCodeUrl, setQrCodeUrl] = useState<null | string>(null)
-  const user = useFirebaseUser()
+  const user = useSupabaseUser()
 
   if (!user) return null
 
@@ -93,34 +79,36 @@ const MultiFactorAuthForm = () => {
 
           console.debug(`enabling MFA...`)
 
-          const user = auth.currentUser
+          // const user = auth.currentUser
           if (!user) {
             console.error('No auth current user')
             return
           }
 
-          if (!user.email) {
-            setLastErrorCode(ErrorCode.NoEmail)
-            return
-          }
+          throw new Error('noop')
 
-          if (
-            getSignedUpWithEmail(user) &&
-            !getHasUserVerifiedTheirEmail(user)
-          ) {
-            setLastErrorCode(ErrorCode.EmailUnverified)
-            return
-          }
+          // if (!user.email) {
+          //   setLastErrorCode(ErrorCode.NoEmail)
+          //   return
+          // }
+
+          // if (
+          //   getSignedUpWithEmail(user) &&
+          //   !getHasUserVerifiedTheirEmail(user)
+          // ) {
+          //   setLastErrorCode(ErrorCode.EmailUnverified)
+          //   return
+          // }
 
           console.debug(`getting MFA session...`)
 
-          const session = await multiFactor(user).getSession()
-          const totpSecret = await TotpMultiFactorGenerator.generateSecret(
-            session
-          )
+          // const session = await multiFactor(user).getSession()
+          // const totpSecret = await TotpMultiFactorGenerator.generateSecret(
+          //   session
+          // )
 
-          setSecret(totpSecret)
-          setQrCodeUrl(totpSecret.generateQrCodeUrl(user.email, 'VRCArena'))
+          // setSecret(totpSecret)
+          // setQrCodeUrl(totpSecret.generateQrCodeUrl(user.email, 'Lippy'))
           setIsWorking(false)
           setStep(Step.Scan)
         } catch (err) {
@@ -152,16 +140,18 @@ const MultiFactorAuthForm = () => {
         try {
           setIsWorking(true)
 
-          const user = auth.currentUser
-          if (!user) throw new Error('No user')
+          // const user = auth.currentUser
+          // if (!user) throw new Error('No user')
           if (!secret) throw new Error('No secret')
 
-          const assertion = TotpMultiFactorGenerator.assertionForEnrollment(
-            secret,
-            code
-          )
+          throw new Error('noop')
 
-          await multiFactor(user).enroll(assertion, 'VRCArena')
+          // const assertion = TotpMultiFactorGenerator.assertionForEnrollment(
+          //   secret,
+          //   code
+          // )
+
+          // await multiFactor(user).enroll(assertion, 'Lippy')
 
           setIsWorking(false)
           setStep(Step.Enrolled)
@@ -182,7 +172,7 @@ const MultiFactorAuthForm = () => {
           {qrCodeUrl ? <QrCode url={qrCodeUrl} /> : '(waiting for QR code)'}
           <p>
             Or enter this code manually:{' '}
-            {secret ? secret.secretKey : '(no secret)'}
+            {/* {secret ? secret.secretKey : '(no secret)'} */}
           </p>
           <hr />
           Enter the MFA code to confirm:
@@ -199,16 +189,18 @@ const MultiFactorAuthForm = () => {
 
           console.debug(`removing mfa...`)
 
-          const user = auth.currentUser!
+          // const user = auth.currentUser!
 
-          const factors = multiFactor(user).enrolledFactors
-          const totpFactor = factors.find((f) => f.factorId === 'totp')
+          throw new Error('noop')
 
-          if (!totpFactor) throw new Error('No totp')
+          // const factors = multiFactor(user).enrolledFactors
+          // const totpFactor = factors.find((f) => f.factorId === 'totp')
 
-          console.debug(`unenrolling...`)
+          // if (!totpFactor) throw new Error('No totp')
 
-          await multiFactor(user!).unenroll(totpFactor)
+          // console.debug(`unenrolling...`)
+
+          // await multiFactor(user!).unenroll(totpFactor)
 
           console.debug(`unenroll successful`)
 

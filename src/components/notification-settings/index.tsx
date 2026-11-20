@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import SaveIcon from '@mui/icons-material/Save'
 
-import { callFunction } from '@/firebase'
+import { callFunction } from '@/supabase'
 import { handleError } from '@/error-handling'
 import {
   NotificationEvent,

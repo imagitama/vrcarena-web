@@ -5,11 +5,10 @@ import Button from '@/components/button'
 import TextInput from '@/components/text-input'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
-import { changeLoggedInUserEmail, loggedInUser } from '@/firebase'
 import { handleError } from '@/error-handling'
 import SuccessMessage from '@/components/success-message'
 import FormControls from '@/components/form-controls'
-import { FirebaseError } from 'firebase/app'
+import { client } from '@/supabase'
 
 const getIsValidEmail = (input: string): boolean =>
   String(input)
@@ -19,34 +18,36 @@ const getIsValidEmail = (input: string): boolean =>
     ) !== null
 
 const getErrorCodeFromError = (err: Error): string => {
-  if (err instanceof FirebaseError) {
-    return err.code
-  }
   return 'unknown'
 }
 
 const ChangeEmailForm = () => {
-  const [emailInput, setEmailInput] = useState(
-    loggedInUser && loggedInUser.email ? loggedInUser.email : ''
-  )
+  const [emailInput, setEmailInput] = useState('')
   const [isChanging, setIsChanging] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
 
-  if (!loggedInUser) {
-    return null
-  }
+  // if (!loggedInUser) {
+  //   return null
+  // }
 
-  if (!loggedInUser.email) {
-    return <>You did not sign up with an email address</>
-  }
+  // if (!loggedInUser.email) {
+  //   return <>You did not sign up with an email address</>
+  // }
 
   const onClickChange = async () => {
     try {
+      if (!emailInput) return
+
       setIsChanging(true)
       setIsSuccess(false)
       setLastErrorCode(null)
-      await changeLoggedInUserEmail(emailInput.trim())
+
+      const { error } = await client.auth.updateUser({
+        email: emailInput,
+      })
+      if (error) throw error
+
       setIsChanging(false)
       setIsSuccess(true)
       setLastErrorCode(null)

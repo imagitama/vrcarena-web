@@ -44,7 +44,6 @@ import {
   mediaQueryForTabletsOrAbove,
 } from './media-queries'
 import useUserRecord from './hooks/useUserRecord'
-import useFirebaseUserId from './hooks/useFirebaseUserId'
 import useSupabaseUserId from './hooks/useSupabaseUserId'
 import DeprecatedRouteView from './containers/deprecated-route'
 import AccountVerificationMessage from './components/account-verification-message'
@@ -138,12 +137,6 @@ const getLoadingNiceness = () => {
 const MainContent = () => {
   const searchTerm = useSearchTerm()
   useSetupProfileRedirect()
-  const firebaseUserId = useFirebaseUserId()
-  const supabaseUserId = useSupabaseUserId()
-  const classes = useStyles()
-  const isLoadingFirebaseUser = useSelector<RootState, boolean>(
-    ({ firebase }) => firebase.isLoading
-  )
 
   if (searchTerm) {
     return <SearchResults />
@@ -151,11 +144,6 @@ const MainContent = () => {
 
   return (
     <Suspense fallback={<LoadingIndicator message={getLoadingNiceness()} />}>
-      {(firebaseUserId && !supabaseUserId) || isLoadingFirebaseUser ? (
-        <div className={classes.floatingLoadingIndicator}>
-          <LoadingIndicator message="Waiting for auth..." />
-        </div>
-      ) : null}
       <Switch>
         <Redirect from={'/guidelines'} to={routes.termsOfService} />
         <Redirect from={'/privacy-policy'} to={routes.privacyPolicy} />
@@ -569,52 +557,32 @@ export default () => {
       `${title || DEFAULT_PAGE_DESC} | The VRCArena Project`,
   })
   return (
-    <div style={{ textAlign: 'center' }}>
+    <ErrorBoundary>
       <CssBaseline />
-      <h1>VRCArena is down</h1>
-      <p>We have suffered a seemingly random attack on our database.</p>
-      <p>
-        The website will be down until the issue is resolved and backups are
-        applied.
-      </p>
-      <p>
-        More details in our Discord:{' '}
-        <a href="https://discord.gg/UVs9V58">Join Here</a>
-      </p>
-      <p>
-        Thank you to the community for your continued support,
-        <br />
-        <em>PeanutBuddha (admin/founder)</em>
-      </p>
-    </div>
+      <ErrorBoundary>
+        <FeaturedEvent />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <Header />
+        <WelcomeMessage />
+      </ErrorBoundary>
+      <main className="main">
+        <div className={classes.mainContainer}>
+          <ErrorBoundary>
+            <SurveyMessage />
+            <BannedNotice />
+            <Notices />
+            <AccountVerificationMessage />
+            <EditorQueueMessage />
+            <MyQueuedAssetsMessage />
+            <SubEditorMessage />
+          </ErrorBoundary>
+          <ErrorBoundary>
+            <MainContent />
+          </ErrorBoundary>
+        </div>
+      </main>
+      <Footer />
+    </ErrorBoundary>
   )
-  // return (
-  //   <ErrorBoundary>
-  //     <CssBaseline />
-  //     <ErrorBoundary>
-  //       <FeaturedEvent />
-  //     </ErrorBoundary>
-  //     <ErrorBoundary>
-  //       <Header />
-  //       <WelcomeMessage />
-  //     </ErrorBoundary>
-  //     <main className="main">
-  //       <div className={classes.mainContainer}>
-  //         <ErrorBoundary>
-  //           <SurveyMessage />
-  //           <BannedNotice />
-  //           <Notices />
-  //           <AccountVerificationMessage />
-  //           <EditorQueueMessage />
-  //           <MyQueuedAssetsMessage />
-  //           <SubEditorMessage />
-  //         </ErrorBoundary>
-  //         <ErrorBoundary>
-  //           <MainContent />
-  //         </ErrorBoundary>
-  //       </div>
-  //     </main>
-  //     <Footer />
-  //   </ErrorBoundary>
-  // )
 }

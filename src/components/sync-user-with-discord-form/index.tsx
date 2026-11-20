@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import SyncIcon from '@mui/icons-material/Sync'
 
-import { callFunction } from '@/firebase'
+import { callFunction } from '@/supabase'
 import { handleError } from '@/error-handling'
 import { User } from '@/modules/users'
 import { CollectionNames } from '@/modules/users'

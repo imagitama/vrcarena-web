@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { makeStyles } from '@mui/styles'
 
@@ -7,7 +7,6 @@ import { scrollToTop } from '@/utils'
 import { trackAction } from '@/analytics'
 // dev tools
 import { alreadyOver18Key } from '@/config'
-import { auth as firebaseAuth } from '@/firebase'
 
 import useUserId from '@/hooks/useUserId'
 import useStorage from '@/hooks/useStorage'
@@ -95,7 +94,6 @@ const footerLinks = [
 
 function DevelopmentTools() {
   const [isAlreadyOver18, setIsAlreadyOver18] = useStorage(alreadyOver18Key)
-  const firebaseUserId = useUserId()
   const supabaseUserId = useSupabaseUserId()
   const isEditor = useIsEditor()
   const isVerified = useAccountVerification()
@@ -116,15 +114,9 @@ function DevelopmentTools() {
         <tr>
           <td>Auth</td>
           <td>
-            FB: {firebaseUserId}
-            <br />
             SB: {supabaseUserId}
             <br />
             Editor: {isEditor ? 'Yes' : 'No'}
-            <br />
-            <Button onClick={() => firebaseAuth.signOut()}>
-              Sign out of FB
-            </Button>
             <br />
             Is verified: {isVerified ? 'Yes' : 'No'}
             <br />

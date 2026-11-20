@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import * as routes from '@/routes'
 import { trackAction } from '@/analytics'
 
-import useFirebaseUserId from '@/hooks/useFirebaseUserId'
+import useSupabaseUserId from '@/hooks/useSupabaseUserId'
 import useQueryParams from '@/hooks/useQueryParams'
 
 import LoginForm from '@/components/login-form'
@@ -13,11 +13,17 @@ import ErrorMessage from '@/components/error-message'
 import LoginWithDiscord from '@/components/login-with-discord'
 
 export default () => {
-  const firebaseUserId = useFirebaseUserId()
+  const userId = useSupabaseUserId()
   const queryParams = useQueryParams()
   const { push } = useHistory()
 
-  if (firebaseUserId && !queryParams.get('code')) {
+  return (
+    <ErrorMessage title="Login Unavailable">
+      No users can log in. See Discord for more info.
+    </ErrorMessage>
+  )
+
+  if (userId && !queryParams.get('code')) {
     return <ErrorMessage>You are already logged in</ErrorMessage>
   }
 
@@ -37,14 +43,20 @@ export default () => {
         <title>Login to manage your account</title>
         <meta
           name="description"
-          content="Login to upload and manage your assets, change your account and more."
+          content="Login to upload and manage your clubs, events, change your account and more."
         />
       </Helmet>
       <LoginForm
         onSuccess={() => {
           trackAction('Login', 'Click login button')
           const fromPath = queryParams.get('from')
-          push(fromPath || routes.home)
+
+          const newRoute =
+            !fromPath || fromPath.includes(routes.login)
+              ? routes.home
+              : fromPath
+
+          push(newRoute)
         }}
       />
     </>

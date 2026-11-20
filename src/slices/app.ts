@@ -63,6 +63,8 @@ export interface AppState {
   bulkEditAssetDatas: Asset[]
   previewFeaturedEvent: Event | null
   publishedAssetCount: number // to inform <MyQueuedAssetsMessage />
+  // auth
+  isAccountVerifySuccess: null | true
 }
 
 const initialState: AppState = {
@@ -77,6 +79,8 @@ const initialState: AppState = {
   bulkEditAssetDatas: [],
   previewFeaturedEvent: null,
   publishedAssetCount: 0,
+  // auth
+  isAccountVerifySuccess: null,
 }
 
 const OPEN_MENU = 'app/OPEN_MENU'
@@ -95,6 +99,8 @@ const SELECT_BULK_EDIT_ID = 'app/SELECT_BULK_EDIT_ID'
 const SET_SELECT_ALL = 'app/SET_SELECT_ALL'
 const SET_PREVIEW_FEATURED_EVENT = 'app/SET_PREVIEW_FEATURED_EVENT'
 const INCREMENT_PUBLISHED_ASSET_COUNT = 'app/INCREMENT_PUBLISHED_ASSET_COUNT'
+
+const ACCOUNT_VERIFY_SUCCESS = 'auth/ACCOUNT_VERIFY_SUCCESS'
 
 export default (
   state: AppState = initialState,
@@ -228,6 +234,12 @@ export default (
         publishedAssetCount: state.publishedAssetCount + 1,
       }
 
+    case ACCOUNT_VERIFY_SUCCESS:
+      return {
+        ...state,
+        isAccountVerifySuccess: true,
+      }
+
     default:
       return state
   }
@@ -354,3 +366,9 @@ export const setPreviewFeaturedEvent = (
 export const incrementPublishedAssetCount = () => ({
   type: INCREMENT_PUBLISHED_ASSET_COUNT,
 })
+
+export const accountVerifySuccess = () => (dispatch: Dispatch) => {
+  dispatch({
+    type: ACCOUNT_VERIFY_SUCCESS,
+  })
+}

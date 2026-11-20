@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import { useHistory } from 'react-router'
 
-import { callFunction } from '@/firebase'
+import { callFunction } from '@/supabase'
 import { handleError } from '@/error-handling'
 import { connectWithDiscordUrl } from '@/config'
 import { DiscordUser, FunctionNames } from '@/discord'

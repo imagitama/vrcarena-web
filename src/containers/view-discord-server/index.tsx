@@ -16,7 +16,7 @@ import {
 
 import useDataStoreItem from '@/hooks/useDataStoreItem'
 import useIsEditor from '@/hooks/useIsEditor'
-import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+import useSupabaseFunction from '@/hooks/useSupabaseFunction'
 
 import Link from '@/components/link'
 import Markdown from '@/components/markdown'
@@ -41,12 +41,14 @@ function SyncDiscordServerButton({
   discordServerId: string
 }) {
   const [isCalling, lastErrorCode, lastResult, callFunction] =
-    useFirebaseFunction<{ id: string }, { message: string }>(
+    useSupabaseFunction<{ id: string }, { message: string }>(
       FunctionName.SyncDiscordServerById
     )
 
   return (
     <Button
+      isDisabled
+      title="Feature unavailable: please open a support ticket if you need this"
       onClick={() => {
         callFunction({ id: discordServerId })
       }}

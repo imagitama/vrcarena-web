@@ -1,39 +1,12 @@
 import React, { useState } from 'react'
-import useFirebaseUser from '@/hooks/useFirebaseUser'
 import WarningMessage from '@/components/warning-message'
-import { auth } from '@/firebase'
 import Button from '@/components/button'
 import { handleError } from '@/error-handling'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import SuccessMessage from '@/components/success-message'
 import useAccountVerification from '@/hooks/useAccountVerification'
-import { sendEmailVerification } from 'firebase/auth'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
-
-enum FirebaseAuthErrorCode {
-  EmailAlreadyInUse = 'auth/email-already-in-use',
-  InvalidEmail = 'auth/invalid-email',
-  OperationNotAllowed = 'auth/operation-not-allowed',
-  WeakPassword = 'auth/weak-password',
-  UserDisabled = 'auth/user-disabled',
-  UserNotFound = 'auth/user-not-found',
-  WrongPassword = 'auth/wrong-password',
-  InvalidCredential = 'auth/invalid-credential',
-  TooManyRequests = 'auth/too-many-requests',
-  NetworkRequestFailed = 'auth/network-request-failed',
-  RequiresRecentLogin = 'auth/requires-recent-login',
-  PopupClosedByUser = 'auth/popup-closed-by-user',
-  PopupBlocked = 'auth/popup-blocked',
-  AccountExistsWithDifferentCredential = 'auth/account-exists-with-different-credential',
-  CredentialAlreadyInUse = 'auth/credential-already-in-use',
-  InvalidActionCode = 'auth/invalid-action-code',
-  ExpiredActionCode = 'auth/expired-action-code',
-  MissingEmail = 'auth/missing-email',
-  InvalidVerificationCode = 'auth/invalid-verification-code',
-  InvalidVerificationId = 'auth/invalid-verification-id',
-  UnknownAuth = 'auth/unknown',
-}
 
 enum ErrorCode {
   Unknown = 'unknown',
@@ -42,13 +15,6 @@ enum ErrorCode {
 const getErrorCodeFromError = (err: any): ErrorCode => {
   if (!('code' in err)) {
     return ErrorCode.Unknown
-  }
-
-  const code = err.code
-
-  const knownCodes = Object.values(FirebaseAuthErrorCode) as string[]
-  if (knownCodes.includes(code)) {
-    return code as ErrorCode
   }
 
   return ErrorCode.Unknown
@@ -69,13 +35,14 @@ const AccountVerificationMessage = () => {
       setIsSuccess(false)
       try {
         console.debug(`sending email verification...`)
-        if (!auth.currentUser) {
-          throw new Error('No current user')
-        }
-        if (!auth.currentUser.email) {
-          throw new Error('User has no email')
-        }
-        await sendEmailVerification(auth.currentUser)
+        throw new Error('noop')
+        // if (!auth.currentUser) {
+        //   throw new Error('No current user')
+        // }
+        // if (!auth.currentUser.email) {
+        //   throw new Error('User has no email')
+        // }
+        // await sendEmailVerification(auth.currentUser)
         console.debug(`sent successfully`)
         setIsSuccess(true)
         setIsSending(false)

@@ -5,19 +5,19 @@ import * as routes from '@/routes'
 
 import useHistory from '@/hooks/useHistory'
 import useIsLoggedIn from '@/hooks/useIsLoggedIn'
-import useFirebaseUserId from '@/hooks/useFirebaseUserId'
+import useUserId from '@/hooks/useUserId'
 
 import SetupProfile from '@/components/setup-profile'
 import NotLoggedInMessage from '@/components/not-logged-in-message'
 import LoadingIndicator from '@/components/loading-indicator'
 
 const View = () => {
-  const firebaseUserId = useFirebaseUserId()
+  const userId = useUserId()
   const isLoggedIn = useIsLoggedIn()
   const { push } = useHistory()
 
   if (!isLoggedIn) {
-    if (firebaseUserId) {
+    if (userId) {
       return <LoadingIndicator message="Preparing your account..." />
     } else {
       return <NotLoggedInMessage />

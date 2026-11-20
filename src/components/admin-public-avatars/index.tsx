@@ -9,7 +9,7 @@ import RefreshIcon from '@mui/icons-material/Refresh'
 
 import { updateRecords } from '@/data-store'
 import { handleError } from '@/error-handling'
-import { callFunction } from '@/firebase'
+import { callFunction } from '@/supabase'
 import { VrchatAvatar as VrchatAvatarData } from '@/vrchat'
 
 import { VrchatAvatarCachedItem } from '@/modules/vrchat-cache'

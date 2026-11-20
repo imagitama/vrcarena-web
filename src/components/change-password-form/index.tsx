@@ -5,16 +5,12 @@ import Button from '@/components/button'
 import TextInput from '@/components/text-input'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
-import { changeLoggedInUserPassword, loggedInUser } from '@/firebase'
 import { handleError } from '@/error-handling'
 import SuccessMessage from '@/components/success-message'
 import FormControls from '@/components/form-controls'
-import { FirebaseError } from 'firebase/app'
+import { client } from '@/supabase'
 
 const getErrorCodeFromError = (err: Error): string => {
-  if (err instanceof FirebaseError) {
-    return err.code
-  }
   return 'unknown'
 }
 
@@ -24,25 +20,30 @@ const ChangePasswordForm = () => {
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
 
-  if (!loggedInUser) {
-    return null
-  }
+  // if (!loggedInUser) {
+  //   return null
+  // }
 
-  if (!loggedInUser.email) {
-    return (
-      <>
-        You did not sign up with an email address so you cannot change your
-        password
-      </>
-    )
-  }
+  // if (!loggedInUser.email) {
+  //   return (
+  //     <>
+  //       You did not sign up with an email address so you cannot change your
+  //       password
+  //     </>
+  //   )
+  // }
 
   const onClickChange = async () => {
     try {
       setIsChanging(true)
       setIsSuccess(false)
       setLastErrorCode(null)
-      await changeLoggedInUserPassword(passwordInput)
+
+      const { error } = await client.auth.updateUser({
+        password: passwordInput,
+      })
+      if (error) throw error
+
       setIsChanging(false)
       setIsSuccess(true)
       setLastErrorCode(null)

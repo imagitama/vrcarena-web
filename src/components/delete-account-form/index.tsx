@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import WarningIcon from '@mui/icons-material/Warning'
 
-import { logout } from '@/firebase'
+import { logout } from '@/auth'
 
 import useTimer from '@/hooks/useTimer'
 import useHistory from '@/hooks/useHistory'
 import useUserRecord from '@/hooks/useUserRecord'
-import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+import useSupabaseFunction from '@/hooks/useSupabaseFunction'
 import useUserId from '@/hooks/useUserId'
 
 import Heading from '@/components/heading'
@@ -41,7 +41,7 @@ const DeleteAccountForm = () => {
   const userId = useUserId()
   const [, , user] = useUserRecord()
   const [isDeleting, lastErrorCode, deleteResult, callFunction] =
-    useFirebaseFunction<
+    useSupabaseFunction<
       { username: string; userId: string },
       { success: boolean }
     >('deleteAccount')
@@ -56,6 +56,12 @@ const DeleteAccountForm = () => {
       logoutAfterDelay()
     }
   }, [deleteResult && deleteResult.success])
+
+  return (
+    <ErrorMessage title="Automated deletion unavailable">
+      Please open a support ticket to delete your account
+    </ErrorMessage>
+  )
 
   if (deleteResult && deleteResult.success) {
     return (

@@ -5,7 +5,6 @@ import { MyUser } from '@/modules/users'
 import { UserState } from '@/slices/user'
 import { RootState } from '@/slices'
 import useSupabaseUserId from './useSupabaseUserId'
-import useSupabaseClient from './useSupabaseClient'
 import { DataStoreErrorCode } from '@/data-store'
 
 const useUserRecord = (): [
@@ -15,17 +14,21 @@ const useUserRecord = (): [
   () => void
 ] => {
   const userId = useSupabaseUserId()
-  const { isLoading, lastErrorCode, user } = useSelector<RootState, UserState>(
+  const { isLoading, lastErrorCode, user } = useSelector<
+    RootState,
+    Omit<UserState, 'passwordNeedsChanging'>
+  >(
     ({ user }) => ({
-      user: user.user,
       isLoading: user.isLoading,
       lastErrorCode: user.lastErrorCode,
+      user: user.user,
     }),
     shallowEqual
   )
-  const supabase = useSupabaseClient()
 
-  const hydrate = () => loadUserIntoStore(supabase, userId, false)
+  const hydrate = () => loadUserIntoStore(userId)
+
+  // console.debug(`useUserRecord`, { user })
 
   return [isLoading, lastErrorCode, user, hydrate]
 }

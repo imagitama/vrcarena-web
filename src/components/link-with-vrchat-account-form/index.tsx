@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 
-import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+import useSupabaseFunction from '@/hooks/useSupabaseFunction'
 import useUserRecord from '@/hooks/useUserRecord'
 
 import Button from '@/components/button'
@@ -10,6 +10,7 @@ import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import Paper from '@/components/paper'
 import Heading from '@/components/heading'
+import FeatureUnavailableMessage from '../feature-unavailable-message'
 
 interface GenerateCodePayload {}
 
@@ -59,13 +60,13 @@ const Form = () => {
     linkResult,
     performLink,
     clearLinkResult,
-  ] = useFirebaseFunction<LinkPayload, LinkResult>('linkWithVrchatAccount')
+  ] = useSupabaseFunction<LinkPayload, LinkResult>('linkWithVrchatAccount')
   const [
     isGeneratingCode,
     lastErrorCodeGeneratingCode,
     codeResult,
     generateCode,
-  ] = useFirebaseFunction<GenerateCodePayload, GenerateCodeResult>(
+  ] = useSupabaseFunction<GenerateCodePayload, GenerateCodeResult>(
     'generateVrchatLinkCode'
   )
   const [, , user, hydrateUser] = useUserRecord()
@@ -83,6 +84,8 @@ const Form = () => {
     }
     hydrateUser()
   }, [codeResult && codeResult.success])
+
+  return <FeatureUnavailableMessage />
 
   if (!user) {
     return null

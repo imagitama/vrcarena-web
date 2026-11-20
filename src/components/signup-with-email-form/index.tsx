@@ -1,14 +1,12 @@
 import React, { KeyboardEventHandler, useState } from 'react'
 import { makeStyles } from '@mui/styles'
-import { signInWithCustomToken } from 'firebase/auth'
 
 import { Login as LoginIcon } from '@/icons'
-import { auth } from '@/firebase'
 import { handleError } from '@/error-handling'
 import { getIsEmailAddress } from '@/utils/email'
 import { mediaQueryForMobiles } from '@/media-queries'
 
-import useFirebaseFunction from '@/hooks/useFirebaseFunction'
+import useSupabaseFunction from '@/hooks/useSupabaseFunction'
 
 import TextInput from '@/components/text-input'
 import FormControls from '@/components/form-controls'
@@ -16,6 +14,10 @@ import Center from '@/components/center'
 import Button from '@/components/button'
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
+import { signup } from '@/auth'
+import SuccessMessage from '../success-message'
+import { routes } from '@/routes'
+import { AuthApiError, AuthError } from '@supabase/supabase-js'
 
 const useStyles = makeStyles({
   root: {
@@ -87,7 +89,7 @@ enum SignUpErrorCode {
   Unknown = 0,
   // EmailTaken = 1,
   RecaptchaInvalid = 2,
-  // firebase codes
+  // codes
   InvalidEmail = 11,
   InvalidPassword = 12,
   WeakPassword = 13,
@@ -109,22 +111,21 @@ const getRecaptchaToken = async () => {
   return token
 }
 
-const getLabelForSignUpErrorCode = (errorCode: SignUpErrorCode): string => {
-  switch (errorCode) {
-    case SignUpErrorCode.RecaptchaInvalid:
-      return 'recaptcha failed'
-    case SignUpErrorCode.InvalidEmail:
-      return 'invalid email'
-    case SignUpErrorCode.InvalidPassword:
-      return 'invalid password (must have more than 6 characters)'
-    case SignUpErrorCode.WeakPassword:
-      return 'weak password'
-    case SignUpErrorCode.EmailAlreadyInUse:
-      return 'email already in use'
-    case SignUpErrorCode.Unknown:
-    default:
-      return `unknown error (code ${errorCode})`
+const getErrorCodeFromError = (err: Error): string => {
+  if (err instanceof AuthApiError) {
+    return err.code!
   }
+  return 'unknown'
+}
+
+type AuthErrorCode = AuthError['code']
+
+const getUserFriendlyMessageFromCode = (code: AuthErrorCode): string => {
+  switch (code!) {
+    case 'user_already_exists':
+      return 'user already exists'
+  }
+  return code as string
 }
 
 const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
@@ -132,10 +133,10 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [usernameVal, setUsernameVal] = useState('')
   const [passwordVal, setPasswordVal] = useState('')
   const classes = useStyles()
-  const [isSigningUp, lastErrorCode, lastResult, signupUser] =
-    useFirebaseFunction<SignUpUserPayload, SignUpUserResult>(
-      FunctionNames.SignUpWithEmail
-    )
+
+  const [isSuccess, setIsSuccess] = useState<boolean | null>(null)
+  const [lastResult, setLastResult] = useState<null>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
 
   const submit = async () => {
     try {
@@ -147,40 +148,25 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       })
 
       setIsWorking(true)
+      setIsSuccess(null)
 
-      const recaptchaToken = await getRecaptchaToken()
+      // const recaptchaToken = await getRecaptchaToken()
 
       setIsWorking(false)
 
-      if (!recaptchaToken) throw new Error('Need a recaptcha token')
+      // if (!recaptchaToken) throw new Error('Need a recaptcha token')
 
-      // send off to function to verify recaptcha token and perform user creation
+      await signup(usernameVal, passwordVal)
 
-      const { code, token } = await signupUser({
-        email: usernameVal,
-        password: passwordVal,
-        recaptchaToken,
-      })
+      // onSuccess()
 
-      // outputted to user from hook result
-      if (code) {
-        console.warn('Got a signup error code:', code)
-        return
-      }
-
-      if (!token) {
-        throw new Error('Need an auth token')
-      }
-
-      const user = await signInWithCustomToken(auth, token)
-
-      console.debug(`signup success`, { email: usernameVal, user })
-
-      onSuccess()
+      setIsSuccess(true)
     } catch (err) {
       console.error(err)
       handleError(err)
       setIsWorking(false)
+      setIsSuccess(false)
+      setLastErrorCode(getErrorCodeFromError(err as Error))
     }
   }
 
@@ -188,6 +174,37 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
     if (e.key == 'Enter') {
       console.debug(`user pressed enter, submitting...`)
       submit()
+    }
+  }
+
+  if (isSuccess !== null) {
+    if (isSuccess) {
+      return (
+        <SuccessMessage>
+          You have signed up successfully.
+          <br />
+          <br />
+          <strong>
+            You must now verify your email address and login again.
+          </strong>
+          <br />
+          <br />
+          <FormControls>
+            <Button url={routes.login} color="secondary">
+              Go To Login
+            </Button>
+          </FormControls>
+        </SuccessMessage>
+      )
+    } else {
+      return (
+        <ErrorMessage>
+          Signup failed:{' '}
+          {lastErrorCode
+            ? getUserFriendlyMessageFromCode(lastErrorCode)
+            : 'unknown'}
+        </ErrorMessage>
+      )
     }
   }
 
@@ -229,11 +246,11 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       {lastErrorCode !== null ? (
         <ErrorMessage errorCode={lastErrorCode}>Failed to sign up</ErrorMessage>
       ) : null}
-      {lastResult !== null && lastResult.code !== undefined ? (
+      {/* {lastResult !== null && lastResult.code !== undefined ? (
         <ErrorMessage>
           Failed to sign up: {getLabelForSignUpErrorCode(lastResult.code)}
         </ErrorMessage>
-      ) : null}
+      ) : null} */}
     </form>
   )
 }

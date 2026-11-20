@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js'
-import { callFunctionWithFile } from './firebase'
+import { callFunctionWithFile } from '@/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
 const getFilenameWithoutExtension = (filename: string): string =>

@@ -13,7 +13,7 @@ import {
   DataStoreErrorCode,
   getDataStoreErrorCodeFromError,
 } from '@/data-store'
-import { refreshJwtParallel } from '@/supabase'
+// import { refreshJwtParallel } from '@/supabase'
 import useSupabaseClient from './useSupabaseClient'
 import { QueryOptions as BaseQueryOptions } from './useDataStoreItems'
 
@@ -74,7 +74,7 @@ export default <TItem extends Record<string, any>>(
               `JWT invalid/expired, refreshing and re-subscribing...`
             )
 
-            await refreshJwtParallel()
+            // await refreshJwtParallel()
             await doIt()
 
             console.debug(`JWT refresh and re-subscribe done`)
@@ -225,7 +225,7 @@ export default <TItem extends Record<string, any>>(
                       `JWT expired, refreshing and re-subscribing...`
                     )
 
-                    await refreshJwtParallel()
+                    // await refreshJwtParallel()
                     await doIt()
 
                     console.debug(`JWT refresh and re-subscribe done`)

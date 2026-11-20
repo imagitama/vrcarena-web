@@ -19,6 +19,7 @@ import { CollectionNames } from '@/modules/public-avatar-submissions'
 
 import screenshotUrl from './assets/images/screenshot.webp'
 import HintText from '@/components/hint-text'
+import FeatureUnavailableMessage from '../feature-unavailable-message'
 
 interface PublicAvatarCreateFields extends Record<string, unknown> {
   asset: string
@@ -145,6 +146,10 @@ export default ({
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(isExpandedByDefault)
   const classes = useStyles()
+
+  // TODO: do this better (INSERT policy disabled until more secure)
+  return null
+  // return <FeatureUnavailableMessage />
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { getNameForAwardId } from './awards'
 import { getRouteForTopic, getSubscriptionMessage } from './subscriptions'
 import * as routes from './routes'
-import { getUserId } from './supabase'
+import { getUserId } from '@/auth'
 import { CollectionNames as SocialCollectionNames } from './modules/social'
 import {
   Asset,

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Helmet } from '@unhead/react/helmet'
 
-import { logout } from '@/firebase'
+import { logout } from '@/auth'
 import * as routes from '@/routes'
 import { trackAction } from '@/analytics'
 import { handleError } from '@/error-handling'

@@ -1,20 +1,24 @@
 import { getHasUserVerifiedTheirEmail, getSignedUpWithEmail } from '@/auth'
-import useFirebaseUser from './useFirebaseUser'
+import useSupabaseUser from './useSupabaseUser'
 
 // returns true/false if signed up with email
 // otherwise null
 export const useAccountVerification = (): boolean | null => {
-  const firebaseUser = useFirebaseUser()
+  const user = useSupabaseUser()
 
-  if (!firebaseUser) {
+  if (!user) {
+    // console.debug('NO USER!!!')
     return false
   }
 
-  if (!getSignedUpWithEmail(firebaseUser)) {
+  if (!getSignedUpWithEmail(user)) {
+    // console.debug('NOT EMAIL!!!')
     return null
   }
 
-  return getHasUserVerifiedTheirEmail(firebaseUser)
+  // console.debug('CHECK', user, getHasUserVerifiedTheirEmail(user))
+
+  return getHasUserVerifiedTheirEmail(user)
 }
 
 export default useAccountVerification

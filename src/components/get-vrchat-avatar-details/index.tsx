@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
 import { handleError } from '@/error-handling'
-import { callFunction } from '@/firebase'
+import { callFunction } from '@/supabase'
 import { getAvatarIdFromUserInput } from '@/utils'
 import { VrchatAvatar as VrchatAvatarDetails } from '@/vrchat'
 

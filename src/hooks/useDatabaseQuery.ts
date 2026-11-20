@@ -7,7 +7,7 @@ import {
   PostgRESTErrorCode,
 } from '@/data-store'
 import useSupabaseClient from './useSupabaseClient'
-import { refreshJwtParallel } from '@/supabase'
+// import { refreshJwtParallel } from '@/supabase'
 
 export enum Operators {
   IS = 'IS', // works for NULL vals
@@ -277,7 +277,7 @@ export default <TRecord>(
           result.error.code === PostgRESTErrorCode.JwtExpired ||
           result.error.code === PostgRESTErrorCode.JwtExpiredOld
         ) {
-          await refreshJwtParallel()
+          // await refreshJwtParallel()
           await doIt()
         }
 

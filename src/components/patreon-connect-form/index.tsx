@@ -6,7 +6,7 @@ import RefreshIcon from '@mui/icons-material/Refresh'
 
 import { ReactComponent as PatreonIcon } from '@/assets/images/icons/patreon.svg'
 import { handleError } from '@/error-handling'
-import { callFunction } from '@/firebase'
+import { callFunction } from '@/supabase'
 import { UserMeta } from '@/modules/users'
 import { CollectionNames } from '@/modules/users'
 
