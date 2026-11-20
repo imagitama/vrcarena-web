@@ -15,6 +15,10 @@ import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import Message from '@/components/message'
 import useDataStoreItems from '@/hooks/useDataStoreItems'
+import { Route, Switch } from 'react-router'
+import Markdown from '@/components/markdown'
+import Link from '@/components/link'
+import { routes } from '@/routes'
 
 const PatreonStatus = () => {
   const [isLoading, lastErrorCode, members] =
@@ -58,7 +62,46 @@ const PatreonStatus = () => {
   )
 }
 
-export default () => (
+const Incident = () => (
+  <Markdown
+    source={`# 18 Nov 2026 Attack
+  
+On the 18th of November 2026, an attacker used a basic vulnerability in our database to gain admin-level access to the database and storage.
+They replaced all text and images with a "you have been hacked" message also mentioning some other VR marketplace websites. It is not clear why we were targetted and it seems like a random attack.
+
+## Data exposed
+
+Almost all of the website is already publically accessible but Patreon and Discord user info was stored and it has been exposed in this attack:
+
+✅ everyone's Discord user IDs, names and emails  
+✅ Patreon subscriber user IDs and total monetary contributions to our Patreon (not emails or payment info - just totals)  
+✅ user preferred notification email (if set)
+
+This data was NOT exposed:
+
+❌ emails used to signup with a password  
+❌ passwords (never stored in plaintext anyway)  
+❌ Google/Twitter user IDs, names and emails  
+
+Authentication has always been handled on a separate platform outside of the database (I haven't migrated it yet).
+
+## Result
+
+- Cached Discord and Patreon user data has been deleted and will no longer be stored (some data always will be to make login work).
+- Data has been restored from a 1 day old backup and migrated to a brand new database.
+- The vulnerability has been patched.
+- The codebase has been thoroughly analysed and improved and several other vulnerabilities have been patched.
+- Most images have been restored. Thanks to [Wayback Machine](https://web.archive.org/) for archiving our archive!
+
+I'm sorry this happened. I try my best to secure everyone's data and the website in general but this slipped through the cracks.
+More effort will be put into security going forwards. If you have any comments please reach out via Discord.
+
+PeanutBuddha (admin/founder)`}
+  />
+)
+const incidentId = 'incident-18-nov-2026'
+
+const MainView = () => (
   <>
     <Helmet>
       <title>Transparency</title>
@@ -73,10 +116,19 @@ export default () => (
       website. It encourages trust between you and me. So here is a report I
       have voluntarily made to keep you informed.
     </p>
+    <Heading variant="h2">Incidents</Heading>
+    <ul>
+      <li>
+        <Link
+          to={routes.transparencyWithVar.replace(':incidentId', incidentId)}>
+          18 Nov 2026
+        </Link>
+      </li>
+    </ul>
+    <Heading variant="h2">Running Costs</Heading>
     <p>
       <strong>Last updated 15 June 2025.</strong>
     </p>
-    <Heading variant="h2">Running Costs</Heading>
     <p>
       Running a website isn't free. There are several costs: domain names,
       hosting, database, external APIs and more. Here are the costs of running
@@ -173,3 +225,16 @@ export default () => (
     <p>At Furality Legends we had a booth in their dealer's den :)</p>
   </>
 )
+
+export default () => {
+  return (
+    <Switch>
+      <Route
+        path={routes.transparencyWithVar.replace(':incidentId', incidentId)}
+        exact
+        component={Incident}
+      />
+      <Route component={MainView} />
+    </Switch>
+  )
+}

@@ -44,7 +44,6 @@ import {
   mediaQueryForTabletsOrAbove,
 } from './media-queries'
 import useUserRecord from './hooks/useUserRecord'
-import useSupabaseUserId from './hooks/useSupabaseUserId'
 import DeprecatedRouteView from './containers/deprecated-route'
 import AccountVerificationMessage from './components/account-verification-message'
 import { DEFAULT_PAGE_DESC } from './config'
@@ -52,11 +51,8 @@ import WelcomeMessage from './components/welcome-message'
 import FeaturedEvent from './components/featured-event'
 import EditorQueueMessage from './components/editor-queue-message'
 import SurveyMessage from './components/survey-message'
-import { useSelector } from 'react-redux'
-import { RootState } from './slices'
 import SubEditorMessage from './components/sub-editor-message'
 import { loadSecondary, Secondary } from './secondary-loader'
-import ErrorMessage from './components/error-message'
 
 const cache = new Map<string, React.ComponentType<any>>()
 
@@ -457,7 +453,11 @@ const MainContent = () => {
           component={Lazy.ViewReview}
         />
         <Route exact path={routes.reviews} component={Lazy.Reviews} />
-        <Route exact path={routes.transparency} component={Lazy.Transparency} />
+        <Route
+          exact
+          path={[routes.transparency, routes.transparencyWithVar]}
+          component={Lazy.Transparency}
+        />
         <Route exact path={routes.unsubscribe} component={Lazy.Unsubscribe} />
         <Route
           exact
