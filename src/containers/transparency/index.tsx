@@ -99,7 +99,7 @@ More effort will be put into security going forwards. If you have any comments p
 PeanutBuddha (admin/founder)`}
   />
 )
-const incidentId = 'incident-18-nov-2026'
+export const incidentId = 'incident-18-nov-2026'
 
 const MainView = () => (
   <>

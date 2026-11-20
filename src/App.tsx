@@ -53,6 +53,9 @@ import EditorQueueMessage from './components/editor-queue-message'
 import SurveyMessage from './components/survey-message'
 import SubEditorMessage from './components/sub-editor-message'
 import { loadSecondary, Secondary } from './secondary-loader'
+import Message from './components/message'
+import Link from './components/link'
+import { incidentId } from './containers/transparency'
 
 const cache = new Map<string, React.ComponentType<any>>()
 
@@ -564,7 +567,16 @@ export default () => {
       </ErrorBoundary>
       <ErrorBoundary>
         <Header />
-        <WelcomeMessage />
+        <Message title="We're Back" hideId="18-nov-2026-incident">
+          The site has been partially restored after an attack. Login/sign up is
+          unavailable. ~3000 assets are missing images. More info{' '}
+          <Link
+            to={routes.transparencyWithVar.replace(':incidentId', incidentId)}>
+            here
+          </Link>
+          .
+        </Message>
+        {/* <WelcomeMessage /> */}
       </ErrorBoundary>
       <main className="main">
         <div className={classes.mainContainer}>
