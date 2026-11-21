@@ -93,6 +93,12 @@ Authentication has always been handled on a separate platform outside of the dat
 - The codebase has been thoroughly analysed and improved and several other vulnerabilities have been patched.
 - Most images have been restored. Thanks to [Wayback Machine](https://web.archive.org/) for archiving our archive!
 
+## Status
+
+✅ Website is live and data restored
+⚠️ Login and sign up have been disabled (and will remain disabled for another week or two)
+⚠️ ~3000 assets attachments
+
 I'm sorry this happened. I try my best to secure everyone's data and the website in general but this slipped through the cracks.
 More effort will be put into security going forwards. If you have any comments please reach out via Discord.
 
