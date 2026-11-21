@@ -95,9 +95,9 @@ Authentication has always been handled on a separate platform outside of the dat
 
 ## Status
 
-✅ Website is live and data restored
-⚠️ Login and sign up have been disabled (and will remain disabled for another week or two)
-⚠️ ~3000 assets attachments
+✅ Website is live and data restored  
+⚠️ Login and sign up have been disabled (and will remain disabled for another week or two)  
+⚠️ ~3000 assets have missing images and will be automatically fixed over the coming weeks/months
 
 I'm sorry this happened. I try my best to secure everyone's data and the website in general but this slipped through the cracks.
 More effort will be put into security going forwards. If you have any comments please reach out via Discord.
