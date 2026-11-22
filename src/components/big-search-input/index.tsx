@@ -29,7 +29,7 @@ const useStyles = makeStyles({
     color: '#222 !important',
     '&.Mui-disabled': {
       opacity: 1,
-      '-webkit-text-fill-color': 'rgba(0, 0, 0, 0.5)',
+      '-webkit-text-fill-color': 'rgba(0, 0, 0, 0.5) !important',
     },
   },
   clearButton: {
