@@ -30,6 +30,7 @@ import Searchbar from '@/components/searchbar'
 import DesktopMenu from '@/components/desktop-menu'
 import VrchatGroupButton from '@/components/vrchat-group-button'
 import { colorBrandLight } from '@/themes'
+import HintText from '../hint-text'
 
 // when the navigation starts obstructing the logo
 const mediaQueryForMenuLogoCollision = '@media (max-width: 1280px)'
@@ -261,6 +262,7 @@ export default () => {
 
       <div className={classes.searchbarWrapper}>
         <Searchbar />
+        <HintText>Search is temporarily unavailable</HintText>
         {!isMobile ? <DesktopMenu /> : null}
       </div>
 

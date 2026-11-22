@@ -28,11 +28,6 @@ const useStyles = makeStyles({
     flex: 1,
     color: '#222 !important',
     opacity: 1,
-    '-webkit-text-fill-color': 'rgba(0, 0, 0, 0.5) !important',
-    '&&.Mui-disabled': {
-      opacity: 1,
-      '-webkit-text-fill-color': 'rgba(0, 0, 0, 0.5) !important',
-    },
   },
   clearButton: {
     position: 'absolute',
