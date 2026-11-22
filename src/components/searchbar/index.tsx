@@ -127,11 +127,6 @@ export default () => {
       // defaultValue={searchTerm || ''}
       value="Search temporarily unavailable"
       disabled
-      style={{
-        color: '#C2C2C2 !important',
-        opacity: '1 !important',
-        '-webkit-text-fill-color': '#C2C2C2 !important',
-      }}
     />
   )
 }
