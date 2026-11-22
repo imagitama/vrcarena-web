@@ -27,7 +27,9 @@ const useStyles = makeStyles({
     marginLeft: 8,
     flex: 1,
     color: '#222 !important',
-    '&.Mui-disabled': {
+    opacity: 1,
+    '-webkit-text-fill-color': 'rgba(0, 0, 0, 0.5) !important',
+    '&&.Mui-disabled': {
       opacity: 1,
       '-webkit-text-fill-color': 'rgba(0, 0, 0, 0.5) !important',
     },
