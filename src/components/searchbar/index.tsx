@@ -124,7 +124,8 @@ export default () => {
       autoFocus={true}
       autoComplete="false"
       onChange={onSearchTermInputChange}
-      defaultValue={searchTerm || ''}
+      // defaultValue={searchTerm || ''}
+      value="Search temporarily unavailable"
       disabled
     />
   )
