@@ -119,11 +119,13 @@ export default () => {
           }
         }
       }}
-      placeholder={getPlaceholderForSearchIndexName(searchTableName)}
+      // placeholder={getPlaceholderForSearchIndexName(searchTableName)}
+      placeholder="Search temporarily unavailable"
       autoFocus={true}
       autoComplete="false"
       onChange={onSearchTermInputChange}
       defaultValue={searchTerm || ''}
+      disabled
     />
   )
 }
