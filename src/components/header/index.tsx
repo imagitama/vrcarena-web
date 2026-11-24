@@ -262,7 +262,6 @@ export default () => {
 
       <div className={classes.searchbarWrapper}>
         <Searchbar />
-        <HintText>Search is temporarily unavailable</HintText>
         {!isMobile ? <DesktopMenu /> : null}
       </div>
 
