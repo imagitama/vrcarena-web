@@ -124,7 +124,6 @@ export default () => {
       autoComplete="false"
       onChange={onSearchTermInputChange}
       defaultValue={searchTerm || ''}
-      disabled
     />
   )
 }
