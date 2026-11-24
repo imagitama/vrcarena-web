@@ -117,6 +117,7 @@ const useSetupProfileRedirect = () => {
   useEffect(() => {
     // username will be "null" if not created yet
     if (user && !user.username) {
+      console.debug(`user has no username, redirecting to setup profile...`)
       push(routes.setupProfile)
     }
   }, [user ? user.username !== null : null, location.pathname])
@@ -567,16 +568,6 @@ export default () => {
       </ErrorBoundary>
       <ErrorBoundary>
         <Header />
-        <Message title="We're Back" hideId="18-nov-2026-incident">
-          The site has been partially restored after an attack. Login/sign up is
-          unavailable. ~3000 assets are missing images. More info{' '}
-          <Link
-            to={routes.transparencyWithVar.replace(':incidentId', incidentId)}>
-            here
-          </Link>
-          .
-        </Message>
-        {/* <WelcomeMessage /> */}
       </ErrorBoundary>
       <main className="main">
         <div className={classes.mainContainer}>
