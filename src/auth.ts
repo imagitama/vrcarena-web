@@ -137,12 +137,19 @@ client.auth.onAuthStateChange(async (event, session) => {
   }, 0)
 })
 
-export const login = async (email: string, password: string) => {
+export const login = async (
+  email: string,
+  password: string,
+  captchaToken: string
+) => {
   console.debug('logging in...')
 
   const { data, error } = await client.auth.signInWithPassword({
     email,
     password,
+    options: {
+      captchaToken,
+    },
   })
 
   if (error) {

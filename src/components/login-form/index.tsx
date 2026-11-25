@@ -31,6 +31,7 @@ import PasswordInput from '../password-input'
 import LoginWithOAuth from '../login-with-oauth'
 import { client } from '@/supabase'
 import CaptchaInput from '../captcha-input'
+import { getIsEmailAddress } from '@/utils/email'
 
 const useStyles = makeStyles({
   root: {
@@ -114,11 +115,27 @@ const getUserFriendlyMessageFromCode = (code: string): string => {
   return code
 }
 
+enum LoginErrorCode {
+  Unknown = 'Unknown',
+  NoEmail = 'NoEmail',
+  NoPassword = 'NoPassword',
+  InvalidEmail = 'InvalidEmail',
+  NoCaptcha = 'NoCaptcha',
+}
+
 export const KnownAuthErrorCode = {
   InvalidCredentials: 'invalid_credentials',
   EmailNotConfirmed: 'email_not_confirmed',
   UserAlreadyExists: 'user_already_exists',
 } as const satisfies Record<string, AuthErrorCode>
+
+class LoginError extends Error {
+  code: LoginErrorCode
+  constructor(code: LoginErrorCode) {
+    super(`Failed to login: ${code}`)
+    this.code = code
+  }
+}
 
 const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [step, setStep] = useState<LoginStep>(LoginStep.UsernameAndPassword)
@@ -159,8 +176,6 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       }
     }
 
-    console.debug(`LAST ERROR CODE`, lastErrorCode)
-
     return (
       <div>
         <Heading variant="h2">Two-Factor Authentication</Heading>
@@ -176,7 +191,11 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const submitLogin = async () => {
     try {
-      if (!usernameVal || !passwordVal) return
+      if (!usernameVal) throw new LoginError(LoginErrorCode.NoEmail)
+      if (!passwordVal) throw new LoginError(LoginErrorCode.NoPassword)
+      if (!captchaToken) throw new LoginError(LoginErrorCode.NoCaptcha)
+      if (!getIsEmailAddress(usernameVal))
+        throw new LoginError(LoginErrorCode.InvalidEmail)
 
       console.debug(`signing in with email and password...`, {
         email: usernameVal,
@@ -184,7 +203,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
       setIsWorking(true)
 
-      await login(usernameVal, passwordVal)
+      await login(usernameVal, passwordVal, captchaToken)
 
       const { data: aal, error } =
         await client.auth.mfa.getAuthenticatorAssuranceLevel()
