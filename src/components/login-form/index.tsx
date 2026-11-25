@@ -113,6 +113,10 @@ const getUserFriendlyMessageFromCode = (code: string): string => {
     case 'captcha_failed':
       return 'you did not complete the CAPTCHA (ensure you are not using an adblocker)'
   }
+  switch (code as LoginErrorCode) {
+    case LoginErrorCode.PasswordNeedsReset:
+      return 'your password has been reset to improve security (please click Reset Password)'
+  }
   return code
 }
 
@@ -295,14 +299,6 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       {lastErrorCode !== null ? (
         <ErrorMessage errorCode={lastErrorCode}>
           Failed to login: {getUserFriendlyMessageFromCode(lastErrorCode)}
-          {lastErrorCode === KnownAuthErrorCode.InvalidCredentials && (
-            <>
-              <br />
-              <br />
-              On 18 Nov 2026 all passwords have been reset. If you have not
-              reset your password, please do so now.
-            </>
-          )}
         </ErrorMessage>
       ) : null}
     </form>
