@@ -12,7 +12,7 @@ import {
   FileTooLargeError,
   SecurityError,
   UnsupportedMimeTypeError,
-  UploadImageError,
+  FileUploadError,
 } from '@/file-uploading'
 
 import FormControls from '@/components/form-controls'
@@ -89,8 +89,8 @@ const getErrorMessageForLastError = (error: Error): string => {
     }`
   }
 
-  if (error instanceof UploadImageError) {
-    return `${error.message} - code ${error.code}`
+  if (error instanceof FileUploadError) {
+    return `FileUploadError - ${error.message}` //  - code ${error.code}
   }
 
   return 'Unknown error'
@@ -98,7 +98,9 @@ const getErrorMessageForLastError = (error: Error): string => {
 
 const cropImageToBlob = async (
   image: HTMLImageElement,
-  cropSettings: Crop
+  cropSettings: Crop,
+  requiredWidth?: number,
+  requiredHeight?: number
 ): Promise<Blob> => {
   return new Promise((resolve) => {
     if (cropSettings.width === undefined || cropSettings.height === undefined) {
@@ -108,12 +110,22 @@ const cropImageToBlob = async (
       throw new Error('Cannot crop image to blob without t')
     }
 
-    const canvas = document.createElement('canvas')
-    canvas.width = cropSettings.width
-    canvas.height = cropSettings.height
-
     const scaleX = image.naturalWidth / image.width
     const scaleY = image.naturalHeight / image.height
+
+    // source rect in natural pixels
+    const sx = cropSettings.x * scaleX
+    const sy = cropSettings.y * scaleY
+    const sw = cropSettings.width * scaleX
+    const sh = cropSettings.height * scaleY
+
+    // output size: exact required size if given, otherwise the natural crop size
+    const outWidth = requiredWidth ?? Math.round(sw)
+    const outHeight = requiredHeight ?? Math.round(sh)
+
+    const canvas = document.createElement('canvas')
+    canvas.width = outWidth
+    canvas.height = outHeight
 
     const ctx = canvas.getContext('2d')
 
@@ -121,17 +133,11 @@ const cropImageToBlob = async (
       throw new Error('Cannot crop image without a 2D context')
     }
 
-    ctx.drawImage(
-      image,
-      cropSettings.x * scaleX,
-      cropSettings.y * scaleY,
-      cropSettings.width * scaleX,
-      cropSettings.height * scaleY,
-      0,
-      0,
-      cropSettings.width,
-      cropSettings.height
-    )
+    // better resampling quality when downscaling from a large source
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+
+    ctx.drawImage(image, sx, sy, sw, sh, 0, 0, outWidth, outHeight)
 
     canvas.toBlob((blob) => {
       if (!blob) {
@@ -160,20 +166,19 @@ const Cropper = ({
   const imageRef = useRef<HTMLImageElement>()
   const throttleTimeoutRef = useRef<NodeJS.Timeout>()
   const onImageLoadedTimeoutRef = useRef<NodeJS.Timeout>()
+  const aspect =
+    requiredWidth && requiredHeight ? requiredWidth / requiredHeight : undefined
   const [crop, setCrop] = useState<Crop>({
-    aspect:
-      requiredWidth && requiredHeight
-        ? requiredWidth / requiredHeight
-        : undefined,
+    aspect,
   })
   const classes = useStyles()
 
   useEffect(() => {
-    console.debug(`ImageUploader.Cropper.mount`, {
-      imageUrl,
-      requiredWidth,
-      requiredHeight,
-    })
+    // console.debug(`ImageUploader.Cropper.mount`, {
+    //   imageUrl,
+    //   requiredWidth,
+    //   requiredHeight,
+    // })
 
     return () => {
       if (throttleTimeoutRef.current) {
@@ -186,7 +191,7 @@ const Cropper = ({
   }, [])
 
   const onCrop = (newCrop: Crop) => {
-    console.debug(`ImageUploader.Cropper.onCrop`, { oldCrop: crop, newCrop })
+    // console.debug(`ImageUploader.Cropper.onCrop`, { oldCrop: crop, newCrop })
     if (throttleTimeoutRef.current) {
       clearTimeout(throttleTimeoutRef.current)
     }
@@ -203,30 +208,58 @@ const Cropper = ({
         onChange={(newCrop) => onCrop(newCrop)}
         ruleOfThirds
         onImageLoaded={(img) => {
-          console.debug(`ImageUploader.Cropper.ReactCrop.onImageLoaded`, {
-            img,
-          })
-
-          // store their image so we can use it later
           imageRef.current = img
-          imageRef.current.crossOrigin = 'anonymous' // allow us to render cross-domain images like Gumroad
+          img.crossOrigin = 'anonymous'
 
-          // need this delay because it is needed apparently
           onImageLoadedTimeoutRef.current = setTimeout(() => {
-            setCrop((currentVal) => ({
-              ...currentVal,
+            // ratio of displayed size to real size (<= 1 for large images)
+            const scaleX = img.width / img.naturalWidth
+            const scaleY = img.height / img.naturalHeight
+
+            // work in NATURAL pixels
+            let w = img.naturalWidth
+            let h = img.naturalHeight
+
+            if (aspect) {
+              if (w / h > aspect) w = h * aspect
+              else h = w / aspect
+            }
+
+            // if (requiredWidth && w > requiredWidth) {
+            //   w = requiredWidth
+            //   if (aspect) h = w / aspect
+            // }
+            // if (requiredHeight && h > requiredHeight) {
+            //   h = requiredHeight
+            //   if (aspect) w = h * aspect
+            // }
+
+            const initialWidth = w * scaleX
+            const initialHeight = h * scaleY
+
+            console.debug('ImageUploader.onImageLoaded', {
+              imageScaledWidth: img.width,
+              imageScaledHeight: img.height,
+              imageNatWidth: img.naturalWidth,
+              imageNatHeight: img.naturalHeight,
+              requiredWidth,
+              requiredHeight,
+              initialWidth,
+              initialHeight,
+            })
+
+            // convert to DISPLAY pixels for ReactCrop
+            setCrop((c) => ({
+              ...c,
+              unit: 'px',
               x: 0,
               y: 0,
-              width:
-                requiredWidth && img.width > requiredWidth
-                  ? requiredWidth
-                  : img.width,
-              height:
-                requiredHeight && img.height > requiredHeight
-                  ? requiredHeight
-                  : img.height,
+              width: initialWidth,
+              height: initialHeight,
             }))
           }, 50)
+
+          return false // tell ReactCrop not to apply its own default crop
         }}
         crop={crop}
       />
@@ -257,7 +290,7 @@ interface ImageInfo {
 }
 
 const getImageInfo = async (file: File): Promise<ImageInfo> => {
-  console.debug(`ImageUploader.getImageInfo`, { file })
+  // console.debug(`ImageUploader.getImageInfo`, { file })
 
   return new Promise((resolve, reject) => {
     const imageUrl = URL.createObjectURL(file)
@@ -265,15 +298,15 @@ const getImageInfo = async (file: File): Promise<ImageInfo> => {
     const i = new Image()
 
     i.onload = () => {
-      console.debug(`ImageUploader.getImageInfo.img.onload`)
+      // console.debug(`ImageUploader.getImageInfo.img.onload`)
 
       let reader = new FileReader()
       reader.readAsDataURL(file)
 
       reader.onload = () => {
-        console.debug(`ImageUploader.getImageInfo.reader.onload`, {
-          result: reader.result,
-        })
+        // console.debug(`ImageUploader.getImageInfo.reader.onload`, {
+        //   result: reader.result,
+        // })
 
         if (reader.result === null) {
           reject(new Error('Result is null'))
@@ -302,14 +335,14 @@ export interface ImageUploaderConfig {
   maxSizeBytes?: number
   allowMultiple?: boolean
   allowCropping?: boolean
+  // for sync with gumroad
+  preloadImageUrl?: string
+  preloadFile?: File
 }
 
 export interface ImageUploaderProps extends ImageUploaderConfig {
   onDone: (urls: string[]) => void
   onCancel?: () => void
-  // for sync with gumroad
-  preloadImageUrl?: string
-  preloadFile?: File
   resetOnDone?: boolean
   clickToOpen?: boolean
   children?: any // (props: { triggerOpen: () => void }) => React.ReactElement
@@ -350,7 +383,7 @@ const ImageUploader = ({
   const [lastCustomError, setLastCustomError] = useState<Error | null>(null)
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    console.debug(`ImageUploader.onDrop`, { files: acceptedFiles })
+    // console.debug(`ImageUploader.onDrop`, { files: acceptedFiles })
 
     if (!acceptedFiles.length) {
       // no error here as it should be caught by onDropRejected
@@ -443,9 +476,14 @@ const ImageUploader = ({
     cropSettings: Crop
   ): Promise<void> => {
     try {
-      console.debug(`ImageUploader.onDoneCropping`, { crop: cropSettings })
+      // console.debug(`ImageUploader.onDoneCropping`, { crop: cropSettings })
 
-      const blob = await cropImageToBlob(image, cropSettings)
+      const blob = await cropImageToBlob(
+        image,
+        cropSettings,
+        requiredWidth,
+        requiredHeight
+      )
 
       const fileNameWithExt = selectedFileRef.current
         ? selectedFileRef.current.name

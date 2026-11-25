@@ -9,6 +9,7 @@ import { handleError } from '@/error-handling'
 import SuccessMessage from '@/components/success-message'
 import FormControls from '@/components/form-controls'
 import { client } from '@/supabase'
+import { loggedInUser } from '@/auth'
 
 const getIsValidEmail = (input: string): boolean =>
   String(input)
@@ -27,13 +28,13 @@ const ChangeEmailForm = () => {
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
 
-  // if (!loggedInUser) {
-  //   return null
-  // }
+  if (!loggedInUser) {
+    return null
+  }
 
-  // if (!loggedInUser.email) {
-  //   return <>You did not sign up with an email address</>
-  // }
+  if (!loggedInUser.email) {
+    return <>You did not sign up with an email address</>
+  }
 
   const onClickChange = async () => {
     try {
@@ -43,10 +44,14 @@ const ChangeEmailForm = () => {
       setIsSuccess(false)
       setLastErrorCode(null)
 
-      const { error } = await client.auth.updateUser({
+      console.debug(`changing email to "${emailInput}"...`)
+
+      const { data, error } = await client.auth.updateUser({
         email: emailInput,
       })
       if (error) throw error
+
+      console.debug(`change email success!`, data)
 
       setIsChanging(false)
       setIsSuccess(true)
@@ -68,6 +73,7 @@ const ChangeEmailForm = () => {
         fullWidth
         type="email"
         isDisabled={isChanging}
+        onSubmit={onClickChange}
       />
       <FormControls>
         <Button
@@ -80,7 +86,10 @@ const ChangeEmailForm = () => {
       {isChanging ? (
         <LoadingIndicator message="Changing email..." />
       ) : isSuccess ? (
-        <SuccessMessage>Your email has been changed</SuccessMessage>
+        <SuccessMessage>
+          A verification email has been sent. Please check your inbox and
+          confirm your new email address.
+        </SuccessMessage>
       ) : lastErrorCode !== null ? (
         <ErrorMessage errorCode={lastErrorCode}>
           Failed to change your email. If it keeps happening please contact us

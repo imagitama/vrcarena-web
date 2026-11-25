@@ -9,8 +9,13 @@ import { handleError } from '@/error-handling'
 import SuccessMessage from '@/components/success-message'
 import FormControls from '@/components/form-controls'
 import { client } from '@/supabase'
+import { loggedInUser } from '@/auth'
+import { AuthError } from '@supabase/supabase-js'
 
 const getErrorCodeFromError = (err: Error): string => {
+  if (err instanceof AuthError) {
+    return err.code!
+  }
   return 'unknown'
 }
 
@@ -20,18 +25,18 @@ const ChangePasswordForm = () => {
   const [isSuccess, setIsSuccess] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
 
-  // if (!loggedInUser) {
-  //   return null
-  // }
+  if (!loggedInUser) {
+    return null
+  }
 
-  // if (!loggedInUser.email) {
-  //   return (
-  //     <>
-  //       You did not sign up with an email address so you cannot change your
-  //       password
-  //     </>
-  //   )
-  // }
+  if (!loggedInUser.email) {
+    return (
+      <>
+        You did not sign up with an email address so you cannot change your
+        password
+      </>
+    )
+  }
 
   const onClickChange = async () => {
     try {
@@ -79,9 +84,7 @@ const ChangePasswordForm = () => {
         <SuccessMessage>Your password has been changed</SuccessMessage>
       ) : lastErrorCode !== null ? (
         <ErrorMessage errorCode={lastErrorCode}>
-          Failed to change your password. If it keeps happening please contact
-          us on our Discord server and we can investigate and potentially
-          manually update your account.
+          Failed to change your password.
         </ErrorMessage>
       ) : null}
     </>

@@ -1,7 +1,8 @@
-import React, { KeyboardEventHandler, useEffect, useState } from 'react'
+import React, { KeyboardEventHandler, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { AuthApiError, AuthError } from '@supabase/supabase-js'
+import { ErrorCode as AuthErrorCode } from '@supabase/auth-js/src/lib/error-codes'
 
 import Button from '@/components/button'
 import {
@@ -15,7 +16,6 @@ import { handleError } from '@/error-handling'
 import { routes } from '@/routes'
 import { mediaQueryForMobiles } from '@/media-queries'
 
-import LoginWithDiscord from '@/components/login-with-discord'
 import LoadingIndicator from '@/components/loading-indicator'
 import TextInput from '@/components/text-input'
 import Link from '@/components/link'
@@ -29,6 +29,7 @@ import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
 import { login, ProviderId } from '@/auth'
 import PasswordInput from '../password-input'
 import LoginWithOAuth from '../login-with-oauth'
+import { client } from '@/supabase'
 
 const useStyles = makeStyles({
   root: {
@@ -95,37 +96,34 @@ enum LoginStep {
 
 const getErrorCodeFromError = (err: Error): string => {
   if (err instanceof AuthApiError) {
-    // switch (err.code) {
-    //   case 'invalid_credentials':
-    //     return
-    // }
     return err.code!
   }
   return 'unknown'
 }
 
-type AuthErrorCode = AuthError['code']
-
-const getUserFriendlyMessageFromCode = (code: AuthErrorCode): string => {
-  switch (code!) {
+const getUserFriendlyMessageFromCode = (code: string): string => {
+  switch (code as AuthErrorCode) {
     case 'invalid_credentials':
       return 'username or password is incorrect'
     case 'email_not_confirmed':
       return 'your email has not been confirmed yet'
   }
-  return code as string
+  return code
 }
 
+export const KnownAuthErrorCode = {
+  InvalidCredentials: 'invalid_credentials',
+  EmailNotConfirmed: 'email_not_confirmed',
+  UserAlreadyExists: 'user_already_exists',
+} as const satisfies Record<string, AuthErrorCode>
+
 const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const [step, setStep] = useState<LoginStep>(LoginStep.UsernameAndPassword)
   const [isWorking, setIsWorking] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
   const [usernameVal, setUsernameVal] = useState('')
   const [passwordVal, setPasswordVal] = useState('')
   const classes = useStyles()
-
-  // 2fa
-  const [step, setStep] = useState<LoginStep>(LoginStep.UsernameAndPassword)
-  // const [resolver, setResolver] = useState<null | MultiFactorResolver>(null)
 
   if (step === LoginStep.Totp) {
     const onCode = async (code: string) => {
@@ -134,29 +132,30 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
         setIsWorking(true)
 
-        // if (!resolver) throw new Error('No resolver')
+        const { data: factors, error: listError } =
+          await client.auth.mfa.listFactors()
+        if (listError) throw listError
 
-        // const totpFactor = resolver.hints.find((h) => h.factorId === 'totp')
+        const totpFactor = factors.totp.find((f) => f.status === 'verified')
+        if (!totpFactor) throw new Error('No factor')
 
-        // if (!totpFactor) throw new Error('No factor')
-
-        console.debug(`totp assertion...`)
-
-        throw new Error('noop')
-        console.debug(`resolving sign in...`)
-
-        // await resolver.resolveSignIn(assertion)
-
-        console.debug('user signed in!')
+        console.debug('totp challenge + verify...')
+        const { error } = await client.auth.mfa.challengeAndVerify({
+          factorId: totpFactor.id,
+          code,
+        })
+        if (error) throw error
 
         onSuccess()
       } catch (err) {
-        console.error('Failed to login:', err)
+        console.error('Failed to use MFA code:', err)
         handleError(err)
         setIsWorking(false)
         setLastErrorCode(getErrorCodeFromError(err as Error))
       }
     }
+
+    console.debug(`LAST ERROR CODE`, lastErrorCode)
 
     return (
       <div>
@@ -183,8 +182,19 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
       await login(usernameVal, passwordVal)
 
+      const { data: aal, error } =
+        await client.auth.mfa.getAuthenticatorAssuranceLevel()
+
+      if (error) throw error
+
       setIsWorking(false)
-      onSuccess()
+
+      if (aal?.nextLevel === 'aal2' && aal.currentLevel === 'aal1') {
+        console.debug(`user has MFA enabled, asking them for their code...`)
+        setStep(LoginStep.Totp)
+      } else {
+        onSuccess()
+      }
     } catch (err) {
       console.error(err)
       handleError(err)
@@ -236,6 +246,14 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       {lastErrorCode !== null ? (
         <ErrorMessage errorCode={lastErrorCode}>
           Failed to login: {getUserFriendlyMessageFromCode(lastErrorCode)}
+          {lastErrorCode === KnownAuthErrorCode.InvalidCredentials && (
+            <>
+              <br />
+              <br />
+              On 18 Nov 2026 all passwords have been reset. If you have not
+              reset your password, please do so now.
+            </>
+          )}
         </ErrorMessage>
       ) : null}
     </form>

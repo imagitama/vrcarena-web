@@ -64,3 +64,8 @@ export enum ViewNames {
 
 export const isFullAttachment = (thing: any): thing is FullAttachment =>
   thing && thing.createdbyusername
+
+export enum BucketNames {
+  Attachments = 'attachments',
+  AttachmentThumbnails = 'attachment-thumbnails',
+}

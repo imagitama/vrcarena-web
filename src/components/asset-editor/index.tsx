@@ -21,6 +21,8 @@ import ExperimentalArea from '../experimental-area'
 import { getCanSync } from '@/syncing'
 import useTimer from '@/hooks/useTimer'
 import useIsEditor from '@/hooks/useIsEditor'
+import { routes } from '@/routes'
+import { formHideDelay } from '@/config'
 
 const AssetEditor = ({
   assetId,
@@ -43,7 +45,7 @@ const AssetEditor = ({
     useDataStoreItem<FullAsset>(ViewNames.GetFullAssets, assetId || false)
   const [isAiFeaureEnabled] = useFeature(FeatureName.Ai)
   const [reRenderKey, setReRenderKey] = useState(0)
-  const hydrateAfterDelay = useTimer(hydrate)
+  const hydrateAfterDelay = useTimer(hydrate, formHideDelay * 2)
   const isEditor = useIsEditor()
 
   const onAssetSyncDone = (fields: Partial<Asset>) => {
@@ -127,6 +129,9 @@ const AssetEditor = ({
         onAttemptSave={() => {
           if (onAttemptSave) onAttemptSave()
         }}
+        getSuccessUrl={(recordId) =>
+          routes.viewAssetWithVar.replace(':assetId', recordId!)
+        }
         // amendments
         overrideFields={overrideFields}
         onFieldChanged={onFieldChanged}

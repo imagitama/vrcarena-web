@@ -11,7 +11,6 @@ import ErrorMessage from '@/components/error-message'
 import Button from '@/components/button'
 import { OpenExternalLink as OpenExternalLinkIcon } from '@/icons'
 import HintText from '@/components/hint-text'
-import useTimer from '@/hooks/useTimer'
 import { ProviderId } from '@/auth'
 import { Provider } from '@supabase/supabase-js'
 import { capitalize } from '@/utils'
@@ -69,7 +68,7 @@ const LoginWithOAuth = ({
         provider: provider as Provider,
         options: {
           redirectTo: process.env.REACT_APP_OAUTH_REDIRECT_BASE_URI, // not full URL
-          scopes: 'identify email',
+          scopes: provider === 'discord' ? 'identify email' : undefined,
         },
       })
 

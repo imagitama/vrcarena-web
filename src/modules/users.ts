@@ -169,3 +169,7 @@ export interface MyUser extends User, UserMeta, UserAdminMeta, UserPreferences {
 
 export const getIsFullUser = (user: User | FullUser): user is FullUser =>
   'role' in user
+
+export enum BucketNames {
+  UserAvatars = 'user-avatars',
+}

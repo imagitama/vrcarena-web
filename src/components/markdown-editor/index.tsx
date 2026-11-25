@@ -6,8 +6,8 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import Markdown from '@/components/markdown'
 import ImageUploader from '@/components/image-uploader'
 import Button from '@/components/button'
-import { bucketNames } from '@/file-uploading'
 import Tabs from '@/components/tabs'
+import { BucketNames } from '@/modules/attachments'
 
 const useStyles = makeStyles({
   input: {
@@ -172,7 +172,7 @@ This is a caption
                   <br />
                   <ImageUploader
                     // TODO: Better bucket
-                    bucketName={bucketNames.attachments}
+                    bucketName={BucketNames.Attachments}
                     onDone={onImageUploadedWithUrl}
                     // TODO: Better path
                     directoryPath="pages"

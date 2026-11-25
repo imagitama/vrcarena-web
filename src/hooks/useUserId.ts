@@ -1,5 +1,6 @@
-import useSupabaseUserId from './useSupabaseUserId'
+import useUserRecord from './useUserRecord'
 
 export default (): string | null => {
-  return useSupabaseUserId()
+  const [, , user] = useUserRecord()
+  return user?.id || null
 }

@@ -13,29 +13,23 @@ import ErrorMessage from '@/components/error-message'
 import LoginWithDiscord from '@/components/login-with-discord'
 
 export default () => {
-  const userId = useSupabaseUserId()
+  // const userId = useSupabaseUserId()
   const queryParams = useQueryParams()
   const { push } = useHistory()
 
-  return (
-    <ErrorMessage title="Login Unavailable">
-      No users can log in. See Discord for more info.
-    </ErrorMessage>
-  )
+  // if (userId && !queryParams.get('code')) {
+  //   return <ErrorMessage>You are already logged in</ErrorMessage>
+  // }
 
-  if (userId && !queryParams.get('code')) {
-    return <ErrorMessage>You are already logged in</ErrorMessage>
-  }
-
-  if (queryParams.get('code')) {
-    return (
-      <LoginWithDiscord
-        code={queryParams.get('code')!}
-        onSuccess={() => push(routes.myAccount)}
-        onFail={() => push(routes.login)}
-      />
-    )
-  }
+  // if (queryParams.get('code')) {
+  //   return (
+  //     <LoginWithDiscord
+  //       code={queryParams.get('code')!}
+  //       onSuccess={() => push(routes.myAccount)}
+  //       onFail={() => push(routes.login)}
+  //     />
+  //   )
+  // }
 
   return (
     <>
@@ -55,6 +49,8 @@ export default () => {
             !fromPath || fromPath.includes(routes.login)
               ? routes.home
               : fromPath
+
+          console.debug(`login was successful! redirecting to "${newRoute}"...`)
 
           push(newRoute)
         }}

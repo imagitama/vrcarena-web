@@ -3,7 +3,12 @@ import React from 'react'
 import categoryMetas from '@/category-meta'
 import type { EditableField } from './'
 import { fieldTypes } from '@/generic-forms'
-import { Asset, AssetCategory, CollectionNames } from '@/modules/assets'
+import {
+  Asset,
+  AssetCategory,
+  BucketNames,
+  CollectionNames,
+} from '@/modules/assets'
 import {
   ASSET_TITLE_MAX_LENGTH,
   ASSET_TITLE_MIN_LENGTH,
@@ -12,7 +17,6 @@ import {
   THUMBNAIL_WIDTH,
   nsfwRules,
 } from '@/config'
-import { bucketNames } from '@/file-uploading'
 import { popularCurrencies } from '@/currency'
 import { AttachmentReason } from '@/modules/attachments'
 
@@ -112,7 +116,7 @@ const fields: EditableField<Asset>[] = [
     hint: 'A static square image used anywhere the asset is displayed on the site.',
     requiredWidth: THUMBNAIL_WIDTH,
     requiredHeight: THUMBNAIL_HEIGHT,
-    bucketName: bucketNames.assetThumbnails,
+    bucketName: BucketNames.AssetThumbnails,
     getDirectoryPath: (fields) => fields.id,
     maxSizeBytes: NONATTACHMENT_MAX_SIZE_BYTES,
   },

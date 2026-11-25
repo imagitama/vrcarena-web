@@ -14,16 +14,31 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/slices'
 import ChangePasswordForm from '../change-password-form'
 import Heading from '../heading'
+import { AuthApiError } from '@supabase/supabase-js'
+import { ErrorCode as AuthErrorCode } from '@supabase/auth-js/src/lib/error-codes'
 
-enum ErrorCode {
-  Unknown,
+const getErrorCodeFromError = (err: Error): string => {
+  if (err instanceof AuthApiError) {
+    return err.code!
+  }
+  return 'unknown'
+}
+
+const getUserFriendlyMessageFromCode = (code: string): string => {
+  switch (code as AuthErrorCode) {
+    case 'email_address_invalid':
+      return 'invalid email address'
+    case 'validation_failed':
+      return 'invalid email address'
+  }
+  return code
 }
 
 const ResetPasswordForm = () => {
   const [emailValue, setEmailValue] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [hasSent, setHasSent] = useState(false)
-  const [lastErrorCode, setLastErrorCode] = useState<null | ErrorCode>(null)
+  const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
   const passwordNeedsChanging = useSelector<RootState, boolean>(
     ({ user }) => user.passwordNeedsChanging
   )
@@ -50,7 +65,7 @@ const ResetPasswordForm = () => {
       console.error(err)
       handleError(err)
 
-      setLastErrorCode(ErrorCode.Unknown)
+      setLastErrorCode(getErrorCodeFromError(err as Error))
       setIsSending(false)
       setHasSent(false)
     }
@@ -80,7 +95,8 @@ const ResetPasswordForm = () => {
       <ErrorMessage
         errorCode={lastErrorCode as unknown as string}
         onRetry={reset}>
-        Failed to send password reset email
+        Failed to send password reset email:{' '}
+        {getUserFriendlyMessageFromCode(lastErrorCode)}
       </ErrorMessage>
     )
   }
@@ -91,12 +107,15 @@ const ResetPasswordForm = () => {
 
   return (
     <>
-      <TextInput
-        value={emailValue}
-        onChange={(e) => setEmailValue(e.target.value)}
-        label="Email address"
-        style={{ width: '500px' }}
-      />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <TextInput
+          value={emailValue}
+          onChange={(e) => setEmailValue(e.target.value)}
+          label="Email address"
+          style={{ width: '500px' }}
+          type="email"
+        />
+      </div>
       <FormControls>
         <Button onClick={onClickSend}>Send Reset Email</Button>
       </FormControls>

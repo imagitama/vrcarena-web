@@ -18,6 +18,7 @@ import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
 import Button from '@/components/button'
 import WarningMessage from '../warning-message'
+import FeatureUnavailableMessage from '../feature-unavailable-message'
 
 interface SyncUserWithDiscordPayload {
   userId: string
@@ -54,6 +55,8 @@ const SyncUserWithDiscordForm = ({
     userId!
   )
   const avatarUrlRef = useRef<string | null>(null)
+
+  return <FeatureUnavailableMessage name="Sync With Discord" />
 
   const performSync = async (onlyWithAvatar: boolean = false) => {
     try {

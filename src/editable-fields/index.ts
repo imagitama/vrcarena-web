@@ -8,7 +8,7 @@ import { CollectionNames as AuthorsCollectionNames } from '@/modules/authors'
 import { CollectionNames as PagesCollectionNames } from '@/modules/pages'
 import { CollectionNames as AssetsCollectionNames } from '@/modules/assets'
 
-import { ImageUploaderConfig } from '@/components/image-uploader'
+import { ImageUploaderProps } from '@/components/image-uploader'
 import { TagsInputSettings } from '@/components/tags-input'
 
 import attachments from './attachments'
@@ -41,9 +41,7 @@ export interface EditableFieldBase<TRecord> {
   overrideValue?: any
 }
 
-export interface TextEditableField<TRecord>
-  extends ImageUploaderConfig,
-    EditableFieldBase<TRecord> {
+export interface TextEditableField<TRecord> extends EditableFieldBase<TRecord> {
   type: fieldTypes.text
   minLength?: number
   maxLength?: number
@@ -51,14 +49,13 @@ export interface TextEditableField<TRecord>
 }
 
 export interface SelectEditableField<TRecord>
-  extends ImageUploaderConfig,
-    EditableFieldBase<TRecord> {
+  extends EditableFieldBase<TRecord> {
   type: fieldTypes.singlechoice | fieldTypes.multichoice | fieldTypes.dropdown
   options: Option[] | ((fields: Partial<TRecord>) => Option[])
 }
 
 export interface ImageUploadEditableField<TRecord>
-  extends ImageUploaderConfig,
+  extends ImageUploaderProps,
     EditableFieldBase<TRecord> {
   type: fieldTypes.imageUpload
   getDirectoryPath?: (record: TRecord) => string

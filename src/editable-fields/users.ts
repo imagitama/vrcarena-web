@@ -1,7 +1,6 @@
 import { fieldTypes } from '@/generic-forms'
-import { bucketNames } from '@/file-uploading'
 import { AVATAR_HEIGHT, AVATAR_WIDTH } from '@/config'
-import { User } from '@/modules/users'
+import { BucketNames, User } from '@/modules/users'
 import type { EditableField } from './'
 
 const fields: EditableField<User>[] = [
@@ -17,7 +16,7 @@ const fields: EditableField<User>[] = [
     type: fieldTypes.imageUpload,
     requiredWidth: AVATAR_WIDTH,
     requiredHeight: AVATAR_HEIGHT,
-    bucketName: bucketNames.userAvatars,
+    bucketName: BucketNames.UserAvatars,
     default: '',
   },
   {

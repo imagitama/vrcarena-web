@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VpnKeyIcon from '@mui/icons-material/VpnKey'
 
 import { handleError } from '@/error-handling'
-import { getSignedUpWithEmail } from '@/auth'
+import { getHasUserVerifiedTheirEmail, getSignedUpWithEmail } from '@/auth'
 
 import useSupabaseUser from '@/hooks/useSupabaseUser'
 
@@ -13,6 +13,9 @@ import FormControls from '@/components/form-controls'
 import ErrorMessage from '@/components/error-message'
 import QrCode from '@/components/qr-code'
 import Message from '@/components/message'
+import { client } from '@/supabase'
+import Heading from '../heading'
+import { inDevelopment } from '@/environment'
 
 enum Step {
   Start,
@@ -50,16 +53,30 @@ const getErrorCodeFromError = (err: Error): string => {
   return `Unknown: ${err.message}`
 }
 
+const getHasMfaEnabled = async (): Promise<boolean> => {
+  const { data, error } = await client.auth.mfa.listFactors()
+  if (error) throw error
+
+  // `totp` and `phone` contain only verified factors.
+  // (`all` also includes unverified ones from abandoned enrollments.)
+  return data.totp.length > 0 || data.phone.length > 0
+}
+
 const MultiFactorAuthForm = () => {
-  const [step, setStep] = useState(
-    // getHasMfaEnabled() ? Step.Enrolled : Step.Start
-    Step.Start
-  )
+  const [step, setStep] = useState(Step.Start)
   const [isWorking, setIsWorking] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
-  const [secret, setSecret] = useState<null>(null)
+  const [factorId, setFactorId] = useState<null | string>(null)
+  const [secret, setSecret] = useState<null | string>(null)
   const [qrCodeUrl, setQrCodeUrl] = useState<null | string>(null)
   const user = useSupabaseUser()
+
+  useEffect(() => {
+    ;(async () => {
+      const isMfaEnabled = await getHasMfaEnabled()
+      if (isMfaEnabled) setStep(Step.Enrolled)
+    })()
+  }, [])
 
   if (!user) return null
 
@@ -85,30 +102,45 @@ const MultiFactorAuthForm = () => {
             return
           }
 
-          throw new Error('noop')
+          if (!user.email) {
+            setLastErrorCode(ErrorCode.NoEmail)
+            return
+          }
 
-          // if (!user.email) {
-          //   setLastErrorCode(ErrorCode.NoEmail)
-          //   return
-          // }
+          if (
+            getSignedUpWithEmail(user) &&
+            !getHasUserVerifiedTheirEmail(user)
+          ) {
+            setLastErrorCode(ErrorCode.EmailUnverified)
+            return
+          }
 
-          // if (
-          //   getSignedUpWithEmail(user) &&
-          //   !getHasUserVerifiedTheirEmail(user)
-          // ) {
-          //   setLastErrorCode(ErrorCode.EmailUnverified)
-          //   return
-          // }
+          console.debug(`unenrolling stale MFA...`)
 
-          console.debug(`getting MFA session...`)
+          const { data: factors, error: listError } =
+            await client.auth.mfa.listFactors()
+          if (listError) throw listError
 
-          // const session = await multiFactor(user).getSession()
-          // const totpSecret = await TotpMultiFactorGenerator.generateSecret(
-          //   session
-          // )
+          const stale = factors.all.filter(
+            (f) => f.factor_type === 'totp' && f.status === 'unverified'
+          )
+          await Promise.all(
+            stale.map((f) => client.auth.mfa.unenroll({ factorId: f.id }))
+          )
 
-          // setSecret(totpSecret)
-          // setQrCodeUrl(totpSecret.generateQrCodeUrl(user.email, 'Lippy'))
+          console.debug(`enrolling MFA...`)
+
+          const { data, error } = await client.auth.mfa.enroll({
+            factorType: 'totp',
+            issuer: inDevelopment() ? 'VRCArena DEV' : 'VRCArena', // shown in the authenticator app
+            friendlyName: user.email, // must be unique per user
+          })
+          if (error) throw error
+
+          setFactorId(data.id)
+          setSecret(data.totp.secret) // for manual entry
+          setQrCodeUrl(data.totp.qr_code) // replaces totpSecret.generateQrCodeUrl(...)
+
           setIsWorking(false)
           setStep(Step.Scan)
         } catch (err) {
@@ -140,18 +172,14 @@ const MultiFactorAuthForm = () => {
         try {
           setIsWorking(true)
 
-          // const user = auth.currentUser
-          // if (!user) throw new Error('No user')
+          if (!factorId) throw new Error('No factor ID')
           if (!secret) throw new Error('No secret')
 
-          throw new Error('noop')
-
-          // const assertion = TotpMultiFactorGenerator.assertionForEnrollment(
-          //   secret,
-          //   code
-          // )
-
-          // await multiFactor(user).enroll(assertion, 'Lippy')
+          const { error } = await client.auth.mfa.challengeAndVerify({
+            factorId,
+            code,
+          })
+          if (error) throw error
 
           setIsWorking(false)
           setStep(Step.Enrolled)
@@ -165,17 +193,17 @@ const MultiFactorAuthForm = () => {
 
       return (
         <>
+          <Heading variant="h4">Step 1</Heading>
           <p>
             Scan this QR code using your authentication app (eg. Authy, Google
             Authenticator):
           </p>
-          {qrCodeUrl ? <QrCode url={qrCodeUrl} /> : '(waiting for QR code)'}
-          <p>
-            Or enter this code manually:{' '}
-            {/* {secret ? secret.secretKey : '(no secret)'} */}
-          </p>
-          <hr />
+          {qrCodeUrl ? <QrCode svg={qrCodeUrl} /> : '(waiting for QR code)'}
+          <p>Or enter this code manually: {secret}</p>
+          <Heading variant="h4">Step 2</Heading>
           Enter the MFA code to confirm:
+          <br />
+          <br />
           <MultiFactorAuthCodeInput onCode={onCode} />
           {lastErrorCode !== null && (
             <ErrorMessage>{getMessageForCode(lastErrorCode)}</ErrorMessage>
@@ -189,18 +217,18 @@ const MultiFactorAuthForm = () => {
 
           console.debug(`removing mfa...`)
 
-          // const user = auth.currentUser!
+          const { data: factors, error: listError } =
+            await client.auth.mfa.listFactors()
+          if (listError) throw listError
 
-          throw new Error('noop')
+          const totpFactor = factors.totp[0] // `totp` contains only verified factors
+          if (!totpFactor) throw new Error('No totp')
 
-          // const factors = multiFactor(user).enrolledFactors
-          // const totpFactor = factors.find((f) => f.factorId === 'totp')
-
-          // if (!totpFactor) throw new Error('No totp')
-
-          // console.debug(`unenrolling...`)
-
-          // await multiFactor(user!).unenroll(totpFactor)
+          console.debug('unenrolling...')
+          const { error } = await client.auth.mfa.unenroll({
+            factorId: totpFactor.id,
+          })
+          if (error) throw error
 
           console.debug(`unenroll successful`)
 

@@ -6,8 +6,7 @@ import {
   AVATAR_WIDTH,
   NONATTACHMENT_MAX_SIZE_BYTES,
 } from '@/config'
-import { bucketNames } from '@/file-uploading'
-import { CollectionNames, User } from '@/modules/users'
+import { CollectionNames, User, BucketNames } from '@/modules/users'
 
 import useDataStoreEdit from '@/hooks/useDataStoreEdit'
 import useUserRecord from '@/hooks/useUserRecord'
@@ -78,7 +77,7 @@ const AvatarUploadForm = ({
       <Heading variant="h3">Upload New Avatar</Heading>
       <ImageUploader
         onDone={onUploadedWithUrls}
-        bucketName={bucketNames.userAvatars}
+        bucketName={BucketNames.UserAvatars}
         directoryPath={userId}
         requiredWidth={AVATAR_WIDTH}
         requiredHeight={AVATAR_HEIGHT}

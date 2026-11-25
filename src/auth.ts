@@ -8,7 +8,7 @@ import {
   USER_LOADED,
   USER_UNLOADED,
 } from '@/slices/user'
-import { readRecord } from '@/data-store'
+import { readFirstRecordOrThrow, readRecord } from '@/data-store'
 import { MyUser, ViewNames } from '@/modules/users'
 import { accountVerifySuccess } from './slices/app'
 
@@ -26,7 +26,10 @@ export const loadUserIntoStore = async (userId: string | null) => {
 
     console.debug(`load user :: reading user...`, userId)
 
-    const user = await readRecord<MyUser>(client, ViewNames.GetMyUser, userId)
+    const user = await readFirstRecordOrThrow<MyUser>(
+      client,
+      ViewNames.GetMyUser
+    )
 
     if (!user) {
       console.error('no user record!')
@@ -61,6 +64,9 @@ export const getSignedUpWithEmail = (user: SupabaseUser): boolean =>
 
 export const getSignedUpWithDiscord = (user: SupabaseUser): boolean =>
   user.app_metadata?.provider === 'discord'
+
+export const getSignUpMethod = (user: SupabaseUser): string | undefined =>
+  user.app_metadata?.provider
 
 export const getHasUserVerifiedTheirEmail = (user: SupabaseUser): boolean =>
   user.email_confirmed_at !== undefined
@@ -157,12 +163,19 @@ export const logout = async () => {
   console.debug('logout success!')
 }
 
-export const signup = async (email: string, password: string) => {
+export const signup = async (
+  email: string,
+  password: string,
+  captchaToken: string
+) => {
   console.debug(`signing up...`)
 
   const { data, error } = await client.auth.signUp({
     email,
     password,
+    options: {
+      captchaToken,
+    },
   })
 
   if (error) {
@@ -203,7 +216,7 @@ export const onAuthStateChanged = (callback: OnAuthStateChangedCallback) => {
 export enum ProviderId {
   Discord = 'discord',
   Google = 'google',
-  Twitter = 'twitter', // or 'x' for OAuth 2.0
+  Twitter = 'twitter', // X is separate
   Email = 'email',
 }
 

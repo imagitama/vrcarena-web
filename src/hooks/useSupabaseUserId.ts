@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getUserId, onAuthStateChanged } from '@/auth'
 
 export default (): string | null => {
+  // TODO: use redux state
   const [userId, setUserId] = useState(getUserId())
 
   // console.debug(`useSupabaseUserId`, userId)
