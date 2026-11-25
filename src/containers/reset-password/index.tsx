@@ -15,11 +15,6 @@ export default () => (
       />
     </Helmet>
     <Heading variant="h1">Reset Password</Heading>
-    <BodyText>
-      Did you forget your password? Enter your email address to send an email
-      with instructions to reset your password.
-    </BodyText>
-    <br />
     <ResetPasswordForm />
   </>
 )

@@ -8,8 +8,7 @@ import {
   THUMBNAIL_HEIGHT,
   NONATTACHMENT_MAX_SIZE_BYTES,
 } from '@/config'
-import { bucketNames } from '@/file-uploading'
-import { Asset, CollectionNames } from '@/modules/assets'
+import { Asset, BucketNames, CollectionNames } from '@/modules/assets'
 
 import LoadingIndicator from '@/components/loading-indicator'
 import ErrorMessage from '@/components/error-message'
@@ -104,7 +103,7 @@ export default ({
   return (
     <ImageUploader
       onDone={onUploaded}
-      bucketName={bucketNames.assetThumbnails}
+      bucketName={BucketNames.AssetThumbnails}
       directoryPath={assetIdForBucket || assetId || ''}
       requiredWidth={THUMBNAIL_WIDTH}
       requiredHeight={THUMBNAIL_HEIGHT}

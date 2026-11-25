@@ -1,5 +1,4 @@
-import { SupabaseClient } from '@supabase/supabase-js'
-import { callFunctionWithFile } from '@/supabase'
+import { client } from '@/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
 const getFilenameWithoutExtension = (filename: string): string =>
@@ -38,7 +37,6 @@ interface SupabaseStorageError {
 }
 
 export const uploadFile = async (
-  supabase: SupabaseClient,
   file: File,
   bucketName: string,
   fullPathInsideBucket: string,
@@ -54,7 +52,7 @@ export const uploadFile = async (
     throw new Error('Need a full path inside bucket')
   }
 
-  // console.debug(`uploadFile`, { file, bucketName, fullPathInsideBucket })
+  console.debug(`uploadFile`, { file, bucketName, fullPathInsideBucket })
 
   let fakeProgressPercentage = 0
 
@@ -77,11 +75,11 @@ export const uploadFile = async (
 
   const fullPathToUploadTo = fullPathInsideBucketAsUuid
 
-  // console.debug(
-  //   `uploading ${file.name} to ${bucketName}/${fullPathToUploadTo}...`
-  // )
+  console.debug(
+    `uploading ${file.name} to bucket '${bucketName}' path '${fullPathToUploadTo}'...`
+  )
 
-  const { error } = await supabase.storage
+  const { error } = await client.storage
     .from(bucketName)
     .upload(fullPathToUploadTo, file, {
       upsert: false,
@@ -103,7 +101,7 @@ export const uploadFile = async (
     throw error
   }
 
-  const { data } = supabase.storage
+  const { data } = client.storage
     .from(bucketName)
     .getPublicUrl(fullPathToUploadTo)
 
@@ -118,83 +116,54 @@ export const uploadFile = async (
   return url
 }
 
-enum ErrorCodes {
-  Unknown = 0,
-  MissingField = 1,
-  FailedToRetrieveFile = 2,
-  FailedToOptimize = 3,
-  FailedToUpload = 4,
-}
-
-export class UploadImageError extends Error {
-  code: ErrorCodes | null
-  constructor(message: string, code: ErrorCodes | null) {
-    super(message)
-    this.code = code
-  }
-}
+export class FileUploadError extends Error {}
 
 export const uploadImage = async (
-  image: File,
+  file: File,
   bucketName: string,
-  bucketDirectoryPath: string = '', // default to root
+  pathInsideBucket: string = '',
   onProgress?: (progress: number) => void
 ): Promise<string> => {
-  if (!(image instanceof File)) {
-    throw new Error('Need a file')
+  try {
+    console.debug('uploadImage')
+
+    const webpFile = await convertImageToWebp(file)
+
+    const fileNameWithExt = webpFile.name
+
+    console.debug('uploadImage.webp', { webpFile, pathInsideBucket })
+
+    const fullPathInsideBucket = `${
+      pathInsideBucket ? `${pathInsideBucket}/` : ''
+    }${fileNameWithExt}`
+
+    return uploadFile(webpFile, bucketName, fullPathInsideBucket, onProgress)
+  } catch (err) {
+    console.error(err)
+    throw new FileUploadError()
   }
-  if (!bucketName) {
-    throw new Error('Need a bucket name')
-  }
-
-  // console.debug(`uploadImage`, { image, bucketName, bucketDirectoryPath })
-
-  let fakeProgressPercentage = 0
-
-  // supabase client does not expose a progress callback so we will fake it until they add it
-  const fakeProgressLoop = setInterval(() => {
-    if (fakeProgressPercentage < 90) {
-      fakeProgressPercentage += 1
-
-      if (onProgress) {
-        onProgress(fakeProgressPercentage)
-      }
-    }
-  }, 50)
-
-  const {
-    data: { imageUrl, error: errorMessage, code },
-  } = await callFunctionWithFile<{
-    imageUrl: string
-    error?: string
-    code?: number | null
-  }>('uploadImage', image, {
-    bucketName,
-    bucketDirectoryPath,
-  })
-
-  clearInterval(fakeProgressLoop)
-
-  if (errorMessage) {
-    throw new UploadImageError(errorMessage, code || null)
-  } else {
-    // console.debug(`file uploaded to ${imageUrl}`)
-  }
-
-  return imageUrl
 }
 
-export const bucketNames = {
-  assetThumbnails: 'asset-thumbnails',
-  userAvatars: 'user-avatars',
-  attachments: 'attachments',
-  amendmentThumbnails: 'amendment-thumbnails',
-  speciesThumbnails: 'species-thumbnails',
-  authorAvatars: 'author-avatars',
-  playlistThumbnails: 'playlist-thumbnails',
-  eventThumbnails: 'event-thumbnails',
-  socialPostAttachments: 'socialpost-attachments',
-  authorPromos: 'author-promos',
-  temp: 'temp',
-  attachmentThumbnails: 'attachment-thumbnails',
+export async function convertImageToWebp(file: File): Promise<File> {
+  if (file.type === 'image/webp') return file
+
+  const bitmap = await createImageBitmap(file)
+
+  const canvas = document.createElement('canvas')
+  canvas.width = bitmap.width
+  canvas.height = bitmap.height
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0)
+  bitmap.close()
+
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, 'image/webp', 0.85)
+  )
+
+  // some browsers (older Safari) silently fall back to PNG
+  if (!blob || blob.type !== 'image/webp') throw new Error('Blob is not a webp')
+
+  return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.webp', {
+    type: 'image/webp',
+    lastModified: Date.now(),
+  })
 }

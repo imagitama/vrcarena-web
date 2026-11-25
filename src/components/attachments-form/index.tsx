@@ -11,6 +11,7 @@ import {
   AttachmentReason,
   AttachmentType,
   Attachment,
+  BucketNames,
 } from '@/modules/attachments'
 import {
   ChevronUp as ChevronUpIcon,
@@ -18,7 +19,6 @@ import {
   Info as InfoIcon,
   Delete as DeleteIcon,
 } from '@/icons'
-import { bucketNames } from '@/file-uploading'
 import { getIsUrlAYoutubeVideo } from '@/utils'
 
 import TextInput from '../text-input'
@@ -415,7 +415,7 @@ const AttachmentsForm = ({
         <ImageUploader
           allowMultiple
           allowCropping={false}
-          bucketName={bucketNames.attachments}
+          bucketName={BucketNames.Attachments}
           onDone={(urls) =>
             setNewUrls((currentVal) => currentVal?.concat(urls) || urls)
           }

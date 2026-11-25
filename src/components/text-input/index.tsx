@@ -96,6 +96,15 @@ const TextInput = ({ id, button, label, topMargin, ...props }: Props) => {
               root: classes.input,
             },
           }}
+          onKeyDown={
+            props.onSubmit
+              ? (e) => {
+                  if (e.key === 'Enter') {
+                    props.onSubmit!(e)
+                  }
+                }
+              : undefined
+          }
           {...props}
         />
         {button

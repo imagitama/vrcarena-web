@@ -29,9 +29,9 @@ import {
   AuthorForList,
   CollectionNames,
   ViewNames,
+  BucketNames,
 } from '@/modules/authors'
 import { AVATAR_HEIGHT, AVATAR_WIDTH } from '@/config'
-import { bucketNames } from '@/file-uploading'
 
 import HintText from '@/components/hint-text'
 import TextInput from '@/components/text-input'
@@ -148,11 +148,13 @@ const CheckExistingAuthorForm = ({
 
 const FormInput = ({
   editableField,
+  fields,
   value,
   onChange,
   onAuthorObtained,
 }: {
   editableField: EditableField<Author>
+  fields: Partial<Author>
   value: any
   onChange: (newValue: any) => void
   // for existing author form
@@ -192,7 +194,7 @@ const FormInput = ({
             value={value}
             onClear={() => onChange('')}
             onDone={(urls) => onChange(urls[0])}
-            bucketName={bucketNames.authorAvatars}
+            bucketName={BucketNames.AuthorAvatars}
             requiredWidth={AVATAR_WIDTH}
             requiredHeight={AVATAR_HEIGHT}
           />
@@ -217,26 +219,28 @@ const FormInput = ({
       )
     case fieldTypes.multichoice:
       const currentValue = value as string[]
+      const field = editableField as SelectEditableField<any>
+      const options = Array.isArray(field.options)
+        ? field.options
+        : field.options(fields)
       return (
         <>
           <FormFieldLabel>{editableField.label}</FormFieldLabel>
           <br />
-          {(editableField as SelectEditableField<any>).options?.map(
-            (option) => (
-              <CheckboxInput
-                key={option.value}
-                label={option.label}
-                value={currentValue.includes(option.value!)}
-                onChange={(newVal) =>
-                  onChange(
-                    currentValue.includes(option.value!)
-                      ? currentValue.filter((item) => item !== option.value!)
-                      : currentValue.concat(option.value!)
-                  )
-                }
-              />
-            )
-          )}
+          {options.map((option) => (
+            <CheckboxInput
+              key={option.value}
+              label={option.label}
+              value={currentValue.includes(option.value!)}
+              onChange={(newVal) =>
+                onChange(
+                  currentValue.includes(option.value!)
+                    ? currentValue.filter((item) => item !== option.value!)
+                    : currentValue.concat(option.value!)
+                )
+              }
+            />
+          ))}
           <br />
           <HintText small>{editableField.hint}</HintText>
           <br />
@@ -377,6 +381,7 @@ const CreateForm = ({
                 <FormInput
                   key={editableField.name}
                   editableField={editableField}
+                  fields={newFields}
                   value={newFields[editableField.name]}
                   onChange={(newVal) =>
                     onChange(editableField.name as string, newVal)

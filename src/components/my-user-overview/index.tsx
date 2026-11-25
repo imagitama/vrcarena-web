@@ -7,18 +7,16 @@ import FormattedDate from '@/components/formatted-date'
 import Avatar from '@/components/avatar'
 import UsernameLink from '@/components/username-link'
 import Button from '@/components/button'
-import {
-  getHasUserVerifiedTheirEmail,
-  getSignedUpWithDiscord,
-  getSignedUpWithEmail,
-  loggedInUser,
-} from '@/auth'
+import { getSignUpMethod, loggedInUser } from '@/auth'
+import useSupabaseUser from '@/hooks/useSupabaseUser'
+import { capitalize } from '@/utils'
 
 const MyUserOverview = () => {
   const [, , user] = useUserRecord()
+  const supabaseUser = useSupabaseUser()
   const [isPrivateInfoRevealed, setIsPrivateInfoRevealed] = useState(false)
 
-  if (!user) {
+  if (!user || !supabaseUser) {
     return null
   }
 
@@ -29,22 +27,22 @@ const MyUserOverview = () => {
         <UsernameLink username={user.username} id={user.id} />
       </Heading>
       <Heading variant="h2">Sign-up Method</Heading>
-      {getSignedUpWithEmail(loggedInUser!)
-        ? 'Email'
-        : getSignedUpWithDiscord(loggedInUser!)
-        ? 'Discord'
-        : 'Unknown'}
-      <Heading variant="h2">Email</Heading>
-      {isPrivateInfoRevealed ? (
-        loggedInUser!.email!
-      ) : (
-        <Button
-          onClick={() => setIsPrivateInfoRevealed(true)}
-          color="secondary"
-          size="small">
-          Reveal
-        </Button>
-      )}
+      {capitalize(getSignUpMethod(supabaseUser) || 'unknown')}
+      {loggedInUser?.email ? (
+        <>
+          <Heading variant="h2">Email</Heading>
+          {isPrivateInfoRevealed ? (
+            loggedInUser!.email
+          ) : (
+            <Button
+              onClick={() => setIsPrivateInfoRevealed(true)}
+              color="secondary"
+              size="small">
+              Reveal
+            </Button>
+          )}
+        </>
+      ) : null}
     </>
   )
 }

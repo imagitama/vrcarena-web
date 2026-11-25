@@ -386,3 +386,7 @@ export enum FunctionNames {
   // TODO: migrate func
   DeleteDraft = 'deleteDraft',
 }
+
+export enum BucketNames {
+  AssetThumbnails = 'asset-thumbnails',
+}

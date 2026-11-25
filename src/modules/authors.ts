@@ -71,3 +71,7 @@ export enum ViewNames {
 export enum FunctionNames {
   GetAuthorsWithUrl = 'getauthorswithurl',
 }
+
+export enum BucketNames {
+  AuthorAvatars = 'author-avatars',
+}

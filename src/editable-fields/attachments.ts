@@ -1,7 +1,6 @@
 import { fieldTypes } from '@/generic-forms'
 import { EditableField } from './'
-import { Attachment } from '@/modules/attachments'
-import { bucketNames } from '@/file-uploading'
+import { Attachment, BucketNames } from '@/modules/attachments'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/config'
 
 const fields: EditableField<Attachment>[] = [
@@ -41,7 +40,7 @@ const fields: EditableField<Attachment>[] = [
     type: fieldTypes.imageUpload,
     requiredWidth: THUMBNAIL_WIDTH,
     requiredHeight: THUMBNAIL_HEIGHT,
-    bucketName: bucketNames.attachmentThumbnails,
+    bucketName: BucketNames.AttachmentThumbnails,
   },
   {
     name: 'isadult',

@@ -1,7 +1,8 @@
-import React, { KeyboardEventHandler, useEffect, useState } from 'react'
+import React, { KeyboardEventHandler, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import { AuthApiError, AuthError } from '@supabase/supabase-js'
+import { AuthApiError } from '@supabase/supabase-js'
+import { ErrorCode as AuthErrorCode } from '@supabase/auth-js/src/lib/error-codes'
 
 import Button from '@/components/button'
 import {
@@ -15,7 +16,6 @@ import { handleError } from '@/error-handling'
 import { routes } from '@/routes'
 import { mediaQueryForMobiles } from '@/media-queries'
 
-import LoginWithDiscord from '@/components/login-with-discord'
 import LoadingIndicator from '@/components/loading-indicator'
 import TextInput from '@/components/text-input'
 import Link from '@/components/link'
@@ -29,6 +29,10 @@ import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
 import { login, ProviderId } from '@/auth'
 import PasswordInput from '../password-input'
 import LoginWithOAuth from '../login-with-oauth'
+import { client } from '@/supabase'
+import CaptchaInput from '../captcha-input'
+import { getIsEmailAddress } from '@/utils/email'
+import useQueryParam from '@/hooks/useQueryParam'
 
 const useStyles = makeStyles({
   root: {
@@ -95,37 +99,65 @@ enum LoginStep {
 
 const getErrorCodeFromError = (err: Error): string => {
   if (err instanceof AuthApiError) {
-    // switch (err.code) {
-    //   case 'invalid_credentials':
-    //     return
-    // }
     return err.code!
+  }
+  if (err instanceof LoginError) {
+    return err.code
   }
   return 'unknown'
 }
 
-type AuthErrorCode = AuthError['code']
-
-const getUserFriendlyMessageFromCode = (code: AuthErrorCode): string => {
-  switch (code!) {
+const getUserFriendlyMessageFromCode = (code: string): string => {
+  switch (code as AuthErrorCode) {
     case 'invalid_credentials':
       return 'username or password is incorrect'
     case 'email_not_confirmed':
       return 'your email has not been confirmed yet'
+    case 'captcha_failed':
+      return 'you did not complete the CAPTCHA (ensure you are not using an adblocker)'
   }
-  return code as string
+  switch (code as LoginErrorCode) {
+    case LoginErrorCode.PasswordNeedsReset:
+      return 'your password has been reset to improve security (please click Reset Password)'
+  }
+  return code
+}
+
+enum LoginErrorCode {
+  Unknown = 'Unknown',
+  NoEmail = 'NoEmail',
+  NoPassword = 'NoPassword',
+  InvalidEmail = 'InvalidEmail',
+  NoCaptcha = 'NoCaptcha',
+  PasswordNeedsReset = 'PasswordNeedsReset',
+}
+
+export const KnownAuthErrorCode = {
+  InvalidCredentials: 'invalid_credentials',
+  EmailNotConfirmed: 'email_not_confirmed',
+  UserAlreadyExists: 'user_already_exists',
+} as const satisfies Record<string, AuthErrorCode>
+
+class LoginError extends Error {
+  code: LoginErrorCode
+  constructor(code: LoginErrorCode) {
+    super(`Failed to login: ${code}`)
+    this.code = code
+  }
+}
+
+enum FunctionNames {
+  GetWasPasswordReset = 'getwaspasswordreset',
 }
 
 const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const [step, setStep] = useState<LoginStep>(LoginStep.UsernameAndPassword)
   const [isWorking, setIsWorking] = useState(false)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
   const [usernameVal, setUsernameVal] = useState('')
   const [passwordVal, setPasswordVal] = useState('')
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const classes = useStyles()
-
-  // 2fa
-  const [step, setStep] = useState<LoginStep>(LoginStep.UsernameAndPassword)
-  // const [resolver, setResolver] = useState<null | MultiFactorResolver>(null)
 
   if (step === LoginStep.Totp) {
     const onCode = async (code: string) => {
@@ -134,27 +166,27 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
         setIsWorking(true)
 
-        // if (!resolver) throw new Error('No resolver')
+        const { data: factors, error: listError } =
+          await client.auth.mfa.listFactors()
+        if (listError) throw listError
 
-        // const totpFactor = resolver.hints.find((h) => h.factorId === 'totp')
+        const totpFactor = factors.totp.find((f) => f.status === 'verified')
+        if (!totpFactor) throw new Error('No factor')
 
-        // if (!totpFactor) throw new Error('No factor')
-
-        console.debug(`totp assertion...`)
-
-        throw new Error('noop')
-        console.debug(`resolving sign in...`)
-
-        // await resolver.resolveSignIn(assertion)
-
-        console.debug('user signed in!')
+        console.debug('totp challenge + verify...')
+        const { error } = await client.auth.mfa.challengeAndVerify({
+          factorId: totpFactor.id,
+          code,
+        })
+        if (error) throw error
 
         onSuccess()
       } catch (err) {
-        console.error('Failed to login:', err)
+        console.error('Failed to use MFA code:', err)
         handleError(err)
         setIsWorking(false)
         setLastErrorCode(getErrorCodeFromError(err as Error))
+        setCaptchaToken(null)
       }
     }
 
@@ -173,7 +205,11 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const submitLogin = async () => {
     try {
-      if (!usernameVal || !passwordVal) return
+      if (!usernameVal) throw new LoginError(LoginErrorCode.NoEmail)
+      if (!passwordVal) throw new LoginError(LoginErrorCode.NoPassword)
+      if (!captchaToken) throw new LoginError(LoginErrorCode.NoCaptcha)
+      if (!getIsEmailAddress(usernameVal))
+        throw new LoginError(LoginErrorCode.InvalidEmail)
 
       console.debug(`signing in with email and password...`, {
         email: usernameVal,
@@ -181,15 +217,46 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
       setIsWorking(true)
 
-      await login(usernameVal, passwordVal)
+      try {
+        await login(usernameVal, passwordVal, captchaToken)
+      } catch (err) {
+        if (
+          err instanceof AuthApiError &&
+          err.code === KnownAuthErrorCode.InvalidCredentials
+        ) {
+          const { data: needsReset, error } = await client
+            .rpc(FunctionNames.GetWasPasswordReset, {
+              p_email: usernameVal,
+            })
+            .select('*')
+
+          if (error) throw error
+
+          if (needsReset)
+            throw new LoginError(LoginErrorCode.PasswordNeedsReset)
+        }
+        throw err
+      }
+
+      const { data: aal, error } =
+        await client.auth.mfa.getAuthenticatorAssuranceLevel()
+
+      if (error) throw error
 
       setIsWorking(false)
-      onSuccess()
+
+      if (aal?.nextLevel === 'aal2' && aal.currentLevel === 'aal1') {
+        console.debug(`user has MFA enabled, asking them for their code...`)
+        setStep(LoginStep.Totp)
+      } else {
+        onSuccess()
+      }
     } catch (err) {
       console.error(err)
       handleError(err)
       setIsWorking(false)
       setLastErrorCode(getErrorCodeFromError(err as Error))
+      setCaptchaToken(null)
     }
   }
 
@@ -198,6 +265,16 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       console.debug(`user pressed enter, submitting...`)
       submitLogin()
     }
+  }
+
+  const isAdmin = useQueryParam('admin')
+
+  if (isAdmin !== null) {
+    return (
+      <ErrorMessage>
+        Login is currently unavailable. Please see Discord for more info.
+      </ErrorMessage>
+    )
   }
 
   return (
@@ -217,6 +294,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         fullWidth
         onKeyDown={onKeyDown}
       />
+      <CaptchaInput token={captchaToken} onToken={setCaptchaToken} />
       <FormControls>
         <div>
           <br />

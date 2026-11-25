@@ -3,6 +3,7 @@ import { User as SupabaseUser } from '@supabase/supabase-js'
 import { loggedInUser, onAuthStateChanged } from '@/auth'
 
 export default (): SupabaseUser | null => {
+  // TODO: use redux state
   const [user, setUser] = useState(loggedInUser)
 
   // console.debug(`useSupabaseUserId`, userId)

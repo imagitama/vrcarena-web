@@ -52,6 +52,25 @@ export const readRecord = async <TRecord>(
   return data[0]
 }
 
+export const readFirstRecordOrThrow = async <TRecord>(
+  supabase: SupabaseClient,
+  tableName: string
+): Promise<TRecord> => {
+  let query = supabase.from(tableName.toLowerCase()).select('*')
+
+  const { error, data } = await query
+
+  if (error) throw error
+
+  if (data.length !== 1) {
+    throw new Error(
+      `Could not get record in view ${tableName}: length is ${data.length}`
+    )
+  }
+
+  return data[0]
+}
+
 export const readRecordsById = async <TRecord>(
   supabase: SupabaseClient,
   tableName: string,

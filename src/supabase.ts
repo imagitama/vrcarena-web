@@ -1,8 +1,4 @@
-import {
-  createClient,
-  FunctionRegion,
-  User as SupabaseUser,
-} from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
 const supabaseKey = process.env.REACT_APP_SUPABASE_API_KEY
@@ -29,8 +25,6 @@ export const callFunction = async <
 
   const { data, error } = await client.functions.invoke(functionName, {
     body: payload,
-    // fix issues with VRChat API and different regions
-    region: FunctionRegion.UsEast1,
   })
 
   if (error) {

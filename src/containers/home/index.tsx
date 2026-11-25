@@ -478,7 +478,6 @@ const Tiles = () => {
 }
 
 export default () => {
-  const classes = useStyles()
   const searchTerm = useSearchTerm()
 
   if (searchTerm) {

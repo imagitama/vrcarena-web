@@ -1,9 +1,8 @@
 import { fieldTypes } from '@/generic-forms'
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '@/config'
 import categoryMeta from '@/category-meta'
-import { bucketNames } from '@/file-uploading'
 import type { EditableField } from './'
-import { Author } from '@/modules/authors'
+import { Author, BucketNames } from '@/modules/authors'
 
 export enum SectionNames {
   Basic = 'Basic',
@@ -48,7 +47,7 @@ const fields: EditableField<Author>[] = [
     type: fieldTypes.imageUpload,
     requiredWidth: THUMBNAIL_WIDTH,
     requiredHeight: THUMBNAIL_HEIGHT,
-    bucketName: bucketNames.authorAvatars,
+    bucketName: BucketNames.AuthorAvatars,
     default: '',
     section: SectionNames.Basic,
   },

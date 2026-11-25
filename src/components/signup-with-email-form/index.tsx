@@ -1,12 +1,11 @@
-import React, { KeyboardEventHandler, useState } from 'react'
+import React, { KeyboardEventHandler, useRef, useState } from 'react'
 import { makeStyles } from '@mui/styles'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
 
 import { Login as LoginIcon } from '@/icons'
 import { handleError } from '@/error-handling'
 import { getIsEmailAddress } from '@/utils/email'
 import { mediaQueryForMobiles } from '@/media-queries'
-
-import useSupabaseFunction from '@/hooks/useSupabaseFunction'
 
 import TextInput from '@/components/text-input'
 import FormControls from '@/components/form-controls'
@@ -18,6 +17,7 @@ import { signup } from '@/auth'
 import SuccessMessage from '../success-message'
 import { routes } from '@/routes'
 import { AuthApiError, AuthError } from '@supabase/supabase-js'
+import CaptchaInput from '../captcha-input'
 
 const useStyles = makeStyles({
   root: {
@@ -75,50 +75,36 @@ const useStyles = makeStyles({
   },
 })
 
-enum FunctionNames {
-  SignUpWithEmail = 'signupWithEmail',
-}
-
-interface SignUpUserPayload {
-  email: string
-  password: string
-  recaptchaToken: string
-}
-
 enum SignUpErrorCode {
-  Unknown = 0,
-  // EmailTaken = 1,
-  RecaptchaInvalid = 2,
-  // codes
-  InvalidEmail = 11,
-  InvalidPassword = 12,
-  WeakPassword = 13,
-  EmailAlreadyInUse = 14,
+  Unknown = 'Unknown',
+  NoEmail = 'NoEmail',
+  NoPassword = 'NoPassword',
+  InvalidEmail = 'InvalidEmail',
+  NoCaptcha = 'NoCaptcha',
 }
 
-interface SignUpUserResult {
-  code?: SignUpErrorCode
-  token?: string // auth token
-}
-
-const RECAPTCHA_SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY!
-const RECAPTCHA_ACTION_NAME = 'signup'
-
-const getRecaptchaToken = async () => {
-  const { load: loadRecaptcha } = await import('recaptcha-v3')
-  const recaptcha = await loadRecaptcha(RECAPTCHA_SITE_KEY)
-  const token = await recaptcha.execute(RECAPTCHA_ACTION_NAME)
-  return token
-}
+const HCAPTCHA_SITE_KEY = process.env.REACT_APP_HCAPTCHA_SITE_KEY
+if (!HCAPTCHA_SITE_KEY) throw new Error('Need hcaptcha site key')
 
 const getErrorCodeFromError = (err: Error): string => {
   if (err instanceof AuthApiError) {
     return err.code!
   }
+  if (err instanceof SignUpError) {
+    return err.code.toString()
+  }
   return 'unknown'
 }
 
 type AuthErrorCode = AuthError['code']
+
+class SignUpError extends Error {
+  code: SignUpErrorCode
+  constructor(code: SignUpErrorCode) {
+    super(`Failed to sign up: ${code}`)
+    this.code = code
+  }
+}
 
 const getUserFriendlyMessageFromCode = (code: AuthErrorCode): string => {
   switch (code!) {
@@ -132,16 +118,23 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isWorking, setIsWorking] = useState(false)
   const [usernameVal, setUsernameVal] = useState('')
   const [passwordVal, setPasswordVal] = useState('')
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const classes = useStyles()
-
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null)
-  const [lastResult, setLastResult] = useState<null>(null)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
+
+  const reset = () => {
+    setIsSuccess(null)
+    setLastErrorCode(null)
+  }
 
   const submit = async () => {
     try {
-      if (!usernameVal || !passwordVal || !getIsEmailAddress(usernameVal))
-        return
+      if (!usernameVal) throw new SignUpError(SignUpErrorCode.NoEmail)
+      if (!passwordVal) throw new SignUpError(SignUpErrorCode.NoPassword)
+      if (!captchaToken) throw new SignUpError(SignUpErrorCode.NoCaptcha)
+      if (!getIsEmailAddress(usernameVal))
+        throw new SignUpError(SignUpErrorCode.InvalidEmail)
 
       console.debug(`signing in with email and password...`, {
         email: usernameVal,
@@ -149,16 +142,9 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
       setIsWorking(true)
       setIsSuccess(null)
-
-      // const recaptchaToken = await getRecaptchaToken()
-
       setIsWorking(false)
 
-      // if (!recaptchaToken) throw new Error('Need a recaptcha token')
-
-      await signup(usernameVal, passwordVal)
-
-      // onSuccess()
+      await signup(usernameVal, passwordVal, captchaToken)
 
       setIsSuccess(true)
     } catch (err) {
@@ -167,6 +153,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       setIsWorking(false)
       setIsSuccess(false)
       setLastErrorCode(getErrorCodeFromError(err as Error))
+      setCaptchaToken(null)
     }
   }
 
@@ -198,7 +185,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       )
     } else {
       return (
-        <ErrorMessage>
+        <ErrorMessage onOkay={reset}>
           Signup failed:{' '}
           {lastErrorCode
             ? getUserFriendlyMessageFromCode(lastErrorCode)
@@ -229,6 +216,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         onKeyDown={onKeyDown}
         autoComplete="new-password"
       />
+      <CaptchaInput token={captchaToken} onToken={setCaptchaToken} />
       <FormControls>
         <div>
           <br />
