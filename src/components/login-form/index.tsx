@@ -29,9 +29,10 @@ import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
 import { login, ProviderId } from '@/auth'
 import PasswordInput from '../password-input'
 import LoginWithOAuth from '../login-with-oauth'
-import { client } from '@/supabase'
+import { callFunction, client } from '@/supabase'
 import CaptchaInput from '../captcha-input'
 import { getIsEmailAddress } from '@/utils/email'
+import { readRecord } from '@/data-store'
 
 const useStyles = makeStyles({
   root: {
@@ -121,6 +122,7 @@ enum LoginErrorCode {
   NoPassword = 'NoPassword',
   InvalidEmail = 'InvalidEmail',
   NoCaptcha = 'NoCaptcha',
+  PasswordNeedsReset = 'PasswordNeedsReset',
 }
 
 export const KnownAuthErrorCode = {
@@ -135,6 +137,10 @@ class LoginError extends Error {
     super(`Failed to login: ${code}`)
     this.code = code
   }
+}
+
+enum FunctionNames {
+  GetWasPasswordReset = 'getwaspasswordreset',
 }
 
 const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
@@ -203,7 +209,26 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
       setIsWorking(true)
 
-      await login(usernameVal, passwordVal, captchaToken)
+      try {
+        await login(usernameVal, passwordVal, captchaToken)
+      } catch (err) {
+        if (
+          err instanceof AuthApiError &&
+          err.code === KnownAuthErrorCode.InvalidCredentials
+        ) {
+          const { data: needsReset, error } = await client
+            .rpc(FunctionNames.GetWasPasswordReset, {
+              p_email: usernameVal,
+            })
+            .select('*')
+
+          if (error) throw error
+
+          if (needsReset)
+            throw new LoginError(LoginErrorCode.PasswordNeedsReset)
+        }
+        throw err
+      }
 
       const { data: aal, error } =
         await client.auth.mfa.getAuthenticatorAssuranceLevel()
