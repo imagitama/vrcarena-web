@@ -32,6 +32,7 @@ import LoginWithOAuth from '../login-with-oauth'
 import { client } from '@/supabase'
 import CaptchaInput from '../captcha-input'
 import { getIsEmailAddress } from '@/utils/email'
+import useQueryParam from '@/hooks/useQueryParam'
 
 const useStyles = makeStyles({
   root: {
@@ -264,6 +265,16 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       console.debug(`user pressed enter, submitting...`)
       submitLogin()
     }
+  }
+
+  const isAdmin = useQueryParam('admin')
+
+  if (isAdmin !== null) {
+    return (
+      <ErrorMessage>
+        Login is currently unavailable. Please see Discord for more info.
+      </ErrorMessage>
+    )
   }
 
   return (
