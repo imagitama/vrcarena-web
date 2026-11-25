@@ -32,6 +32,7 @@ import InfoMessage from '@/components/info-message'
 import AssetResults from '@/components/asset-results'
 import NoResultsMessage from '@/components/no-results-message'
 import LoadingIndicator from '@/components/loading-indicator'
+import SpeciesBrowser from '@/components/species-browser'
 
 const useStyles = makeStyles({
   root: {},
@@ -477,7 +478,6 @@ const Tiles = () => {
 }
 
 export default () => {
-  const classes = useStyles()
   const searchTerm = useSearchTerm()
 
   if (searchTerm) {
@@ -496,11 +496,7 @@ export default () => {
           content="A website that has info about avatars, accessories, tutorials and tools for VR games like VRChat."
         />
       </Helmet>
-      <div className={classes.root}>
-        <Root>
-          <Tiles />
-        </Root>
-      </div>
+      <SpeciesBrowser />
     </>
   )
 }

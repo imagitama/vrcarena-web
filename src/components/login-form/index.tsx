@@ -107,6 +107,8 @@ const getUserFriendlyMessageFromCode = (code: string): string => {
       return 'username or password is incorrect'
     case 'email_not_confirmed':
       return 'your email has not been confirmed yet'
+    case 'captcha_failed':
+      return 'you did not complete the CAPTCHA (ensure you are not using an adblocker)'
   }
   return code
 }
