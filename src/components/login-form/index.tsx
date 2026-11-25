@@ -29,10 +29,9 @@ import MultiFactorAuthCodeInput from '../multi-factor-auth-code-input'
 import { login, ProviderId } from '@/auth'
 import PasswordInput from '../password-input'
 import LoginWithOAuth from '../login-with-oauth'
-import { callFunction, client } from '@/supabase'
+import { client } from '@/supabase'
 import CaptchaInput from '../captcha-input'
 import { getIsEmailAddress } from '@/utils/email'
-import { readRecord } from '@/data-store'
 
 const useStyles = makeStyles({
   root: {
@@ -256,6 +255,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       handleError(err)
       setIsWorking(false)
       setLastErrorCode(getErrorCodeFromError(err as Error))
+      setCaptchaToken(null)
     }
   }
 
