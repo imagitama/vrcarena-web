@@ -120,7 +120,6 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [passwordVal, setPasswordVal] = useState('')
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const classes = useStyles()
-  const captchaRef = useRef<null | HCaptcha>(null)
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
 
@@ -154,7 +153,6 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
       setIsWorking(false)
       setIsSuccess(false)
       setLastErrorCode(getErrorCodeFromError(err as Error))
-      captchaRef.current?.resetCaptcha()
       setCaptchaToken(null)
     }
   }

@@ -186,6 +186,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         handleError(err)
         setIsWorking(false)
         setLastErrorCode(getErrorCodeFromError(err as Error))
+        setCaptchaToken(null)
       }
     }
 
