@@ -29,7 +29,10 @@ const CaptchaInput = ({
   const captchaRef = useRef<null | HCaptcha>(null)
 
   useEffect(() => {
-    if (!token) captchaRef.current?.resetCaptcha()
+    if (!token) {
+      console.debug('resetting captcha...')
+      captchaRef.current?.resetCaptcha()
+    }
   }, [token])
 
   return (
