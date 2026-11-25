@@ -17,7 +17,7 @@ export default () => {
 
   const isAdmin = useQueryParam('admin')
 
-  if (isAdmin !== null) {
+  if (isAdmin === null) {
     return (
       <ErrorMessage>
         Login is currently unavailable. Please see Discord for more info.
