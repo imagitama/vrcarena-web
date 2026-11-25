@@ -1,7 +1,7 @@
 import React, { KeyboardEventHandler, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import { AuthApiError, AuthError } from '@supabase/supabase-js'
+import { AuthApiError } from '@supabase/supabase-js'
 import { ErrorCode as AuthErrorCode } from '@supabase/auth-js/src/lib/error-codes'
 
 import Button from '@/components/button'
@@ -30,6 +30,7 @@ import { login, ProviderId } from '@/auth'
 import PasswordInput from '../password-input'
 import LoginWithOAuth from '../login-with-oauth'
 import { client } from '@/supabase'
+import CaptchaInput from '../captcha-input'
 
 const useStyles = makeStyles({
   root: {
@@ -125,6 +126,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
   const [usernameVal, setUsernameVal] = useState('')
   const [passwordVal, setPasswordVal] = useState('')
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const classes = useStyles()
 
   if (step === LoginStep.Totp) {
@@ -229,6 +231,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         fullWidth
         onKeyDown={onKeyDown}
       />
+      <CaptchaInput onToken={setCaptchaToken} />
       <FormControls>
         <div>
           <br />

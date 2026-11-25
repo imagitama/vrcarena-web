@@ -7,8 +7,6 @@ import { handleError } from '@/error-handling'
 import { getIsEmailAddress } from '@/utils/email'
 import { mediaQueryForMobiles } from '@/media-queries'
 
-import useSupabaseFunction from '@/hooks/useSupabaseFunction'
-
 import TextInput from '@/components/text-input'
 import FormControls from '@/components/form-controls'
 import Center from '@/components/center'
@@ -19,6 +17,7 @@ import { signup } from '@/auth'
 import SuccessMessage from '../success-message'
 import { routes } from '@/routes'
 import { AuthApiError, AuthError } from '@supabase/supabase-js'
+import CaptchaInput from '../captcha-input'
 
 const useStyles = makeStyles({
   root: {
@@ -119,8 +118,8 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isWorking, setIsWorking] = useState(false)
   const [usernameVal, setUsernameVal] = useState('')
   const [passwordVal, setPasswordVal] = useState('')
-  const classes = useStyles()
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const classes = useStyles()
   const captchaRef = useRef<null | HCaptcha>(null)
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null)
   const [lastErrorCode, setLastErrorCode] = useState<null | string>(null)
@@ -219,12 +218,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         onKeyDown={onKeyDown}
         autoComplete="new-password"
       />
-      <HCaptcha
-        ref={captchaRef}
-        sitekey={HCAPTCHA_SITE_KEY}
-        onVerify={(token) => setCaptchaToken(token)}
-        onExpire={() => setCaptchaToken(null)}
-      />
+      <CaptchaInput onToken={setCaptchaToken} />
       <FormControls>
         <div>
           <br />
