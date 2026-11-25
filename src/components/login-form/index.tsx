@@ -441,16 +441,6 @@ const LoginForm = ({
 
   const reset = () => setSelectedProviderId(null)
 
-  const isAdmin = useQueryParam('admin')
-
-  if (isAdmin !== null) {
-    return (
-      <ErrorMessage>
-        Login is currently unavailable. Please see Discord for more info.
-      </ErrorMessage>
-    )
-  }
-
   return (
     <div className={classes.root}>
       <Form

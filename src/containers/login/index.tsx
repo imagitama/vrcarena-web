@@ -5,31 +5,25 @@ import { useHistory } from 'react-router-dom'
 import * as routes from '@/routes'
 import { trackAction } from '@/analytics'
 
-import useSupabaseUserId from '@/hooks/useSupabaseUserId'
 import useQueryParams from '@/hooks/useQueryParams'
 
 import LoginForm from '@/components/login-form'
 import ErrorMessage from '@/components/error-message'
-import LoginWithDiscord from '@/components/login-with-discord'
+import useQueryParam from '@/hooks/useQueryParam'
 
 export default () => {
-  // const userId = useSupabaseUserId()
   const queryParams = useQueryParams()
   const { push } = useHistory()
 
-  // if (userId && !queryParams.get('code')) {
-  //   return <ErrorMessage>You are already logged in</ErrorMessage>
-  // }
+  const isAdmin = useQueryParam('admin')
 
-  // if (queryParams.get('code')) {
-  //   return (
-  //     <LoginWithDiscord
-  //       code={queryParams.get('code')!}
-  //       onSuccess={() => push(routes.myAccount)}
-  //       onFail={() => push(routes.login)}
-  //     />
-  //   )
-  // }
+  if (isAdmin !== null) {
+    return (
+      <ErrorMessage>
+        Login is currently unavailable. Please see Discord for more info.
+      </ErrorMessage>
+    )
+  }
 
   return (
     <>
