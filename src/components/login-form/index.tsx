@@ -101,6 +101,9 @@ const getErrorCodeFromError = (err: Error): string => {
   if (err instanceof AuthApiError) {
     return err.code!
   }
+  if (err instanceof LoginError) {
+    return err.code
+  }
   return 'unknown'
 }
 
