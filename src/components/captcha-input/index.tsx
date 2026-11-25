@@ -1,8 +1,23 @@
+import { useRef } from 'react'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
-import { useRef, useState } from 'react'
+import styled from '@emotion/styled'
 
 const HCAPTCHA_SITE_KEY = process.env.REACT_APP_HCAPTCHA_SITE_KEY
 if (!HCAPTCHA_SITE_KEY) throw new Error('Need hcaptcha site key')
+
+const Root = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+`
+const Label = styled.div`
+  text-align: center;
+  margin: 1rem 0;
+`
+const CaptchaWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`
 
 const CaptchaInput = ({
   onToken,
@@ -12,12 +27,19 @@ const CaptchaInput = ({
   const captchaRef = useRef<null | HCaptcha>(null)
 
   return (
-    <HCaptcha
-      ref={captchaRef}
-      sitekey={HCAPTCHA_SITE_KEY}
-      onVerify={(token) => onToken(token)}
-      onExpire={() => onToken(null)}
-    />
+    <Root>
+      <Label>
+        Please complete this really annoying captcha to combat bots:
+      </Label>
+      <CaptchaWrapper>
+        <HCaptcha
+          ref={captchaRef}
+          sitekey={HCAPTCHA_SITE_KEY}
+          onVerify={(token) => onToken(token)}
+          onExpire={() => onToken(null)}
+        />
+      </CaptchaWrapper>
+    </Root>
   )
 }
 
