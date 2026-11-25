@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import styled from '@emotion/styled'
 
@@ -20,11 +20,17 @@ const CaptchaWrapper = styled.div`
 `
 
 const CaptchaInput = ({
+  token,
   onToken,
 }: {
+  token: string | null
   onToken: (token: string | null) => void
 }) => {
   const captchaRef = useRef<null | HCaptcha>(null)
+
+  useEffect(() => {
+    if (!token) captchaRef.current?.resetCaptcha()
+  }, [token])
 
   return (
     <Root>

@@ -283,7 +283,7 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         fullWidth
         onKeyDown={onKeyDown}
       />
-      <CaptchaInput onToken={setCaptchaToken} />
+      <CaptchaInput token={captchaToken} onToken={setCaptchaToken} />
       <FormControls>
         <div>
           <br />

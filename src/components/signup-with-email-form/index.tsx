@@ -216,7 +216,7 @@ const SignUpWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         onKeyDown={onKeyDown}
         autoComplete="new-password"
       />
-      <CaptchaInput onToken={setCaptchaToken} />
+      <CaptchaInput token={captchaToken} onToken={setCaptchaToken} />
       <FormControls>
         <div>
           <br />
