@@ -13,14 +13,27 @@ import ErrorMessage from '@/components/error-message'
 import UserOverviewForEditor from '@/components/user-overview-for-editor'
 
 export default () => {
-  const { userId } = useParams<{ userId: string }>()
+  const { userId: incomingUserId } = useParams<{ userId: string }>()
   const isEditor = useIsEditor()
+
+  const [isLoadingOldUser, lastErrorCodeLoadingOldUser, oldUser] =
+    useDataStoreItem<{ firebaseid: string; supabaseid: string }>(
+      'firebaseuserids',
+      incomingUserId,
+      {
+        queryName: 'firebaseuserids-lookup',
+        idField: 'firebaseid',
+      }
+    )
+
+  const userId = oldUser ? oldUser.supabaseid : incomingUserId
+
   const [isLoadingUser, lastErrorCodeLoadingUser, user] =
     useDataStoreItem<FullUser>(ViewNames.GetFullUsers, userId, {
       queryName: 'user-overview',
     })
 
-  if (isLoadingUser) {
+  if (isLoadingUser || isLoadingOldUser) {
     return <LoadingIndicator message="Loading user profile..." />
   }
 
@@ -28,6 +41,13 @@ export default () => {
     return (
       <ErrorMessage errorCode={lastErrorCodeLoadingUser}>
         Failed to the user
+      </ErrorMessage>
+    )
+  }
+  if (lastErrorCodeLoadingOldUser !== null) {
+    return (
+      <ErrorMessage errorCode={lastErrorCodeLoadingOldUser}>
+        Failed to the (old) user
       </ErrorMessage>
     )
   }

@@ -91,9 +91,9 @@ export default () => {
         fallback={
           <LoadingIndicator message="Loading whiteboard and notepad..." />
         }>
-        <ErrorBoundary>
+        {/* <ErrorBoundary>
           <Whiteboard />
-        </ErrorBoundary>
+        </ErrorBoundary> */}
         <ErrorBoundary>
           <Notepad />
         </ErrorBoundary>
