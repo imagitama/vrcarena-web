@@ -8,22 +8,10 @@ import { trackAction } from '@/analytics'
 import useQueryParams from '@/hooks/useQueryParams'
 
 import LoginForm from '@/components/login-form'
-import ErrorMessage from '@/components/error-message'
-import useQueryParam from '@/hooks/useQueryParam'
 
 export default () => {
   const queryParams = useQueryParams()
   const { push } = useHistory()
-
-  const isAdmin = useQueryParam('admin')
-
-  if (isAdmin === null) {
-    return (
-      <ErrorMessage>
-        Login is currently unavailable. Please see Discord for more info.
-      </ErrorMessage>
-    )
-  }
 
   return (
     <>
