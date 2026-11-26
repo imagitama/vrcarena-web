@@ -197,7 +197,9 @@ const LoginWithEmailForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <MultiFactorAuthCodeInput onCode={onCode} isDisabled={isWorking} />
         {isWorking && <LoadingIndicator message="Using your MFA code..." />}
         {lastErrorCode !== null ? (
-          <ErrorMessage>Failed to use your MFA code: </ErrorMessage>
+          <ErrorMessage errorCode={lastErrorCode}>
+            Failed to use your MFA code
+          </ErrorMessage>
         ) : null}
       </div>
     )
