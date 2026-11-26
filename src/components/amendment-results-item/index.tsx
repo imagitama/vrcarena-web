@@ -20,6 +20,7 @@ import UsernameLink from '@/components/username-link'
 import { HydrateFn } from '@/hooks/useDataStore'
 import useTimer from '@/hooks/useTimer'
 import ShortId from '../short-id'
+import ErrorBoundary from '../error-boundary'
 
 const useStyles = makeStyles({
   mainCell: {
@@ -71,7 +72,7 @@ const AmendmentResultsItem = ({
   }
 
   return (
-    <>
+    <ErrorBoundary>
       <TableRow title={amendmentId}>
         {showParentDetails && (
           <TableCell label="Parent" className={classes.mainCell}>
@@ -136,7 +137,7 @@ const AmendmentResultsItem = ({
           </TableCell>
         </TableRow>
       ) : null}
-    </>
+    </ErrorBoundary>
   )
 }
 
