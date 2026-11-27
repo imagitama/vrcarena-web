@@ -224,18 +224,6 @@ const View = () => {
 
   return (
     <>
-      <InfoMessage
-        hideId="asset-sync-unavailable-26-nov-26"
-        title="Asset Sync Unavailable">
-        We are restoring full access to the site after some recent changes.
-        Asset sync will be unavailable for a few days or weeks.
-      </InfoMessage>
-      <ManualCreateView />
-    </>
-  )
-
-  return (
-    <>
       {isCreatingManually ? (
         <ManualCreateView />
       ) : (

@@ -32,7 +32,6 @@ import LoginWithOAuth from '../login-with-oauth'
 import { client } from '@/supabase'
 import CaptchaInput from '../captcha-input'
 import { getIsEmailAddress } from '@/utils/email'
-import useQueryParam from '@/hooks/useQueryParam'
 
 const useStyles = makeStyles({
   root: {

@@ -8,6 +8,8 @@ enum AssetSyncFailureInfoCode {
   ElementNotFound = 'ElementNotFound',
   InvalidProductUrl = 'InvalidProductUrl',
   Stalled = 'Stalled', // function times out / runs out of memory
+  ProductNotFound = 'ProductNotFound',
+  RequestBlocked = 'RequestBlocked',
 }
 
 enum AiErrorCode {
@@ -27,12 +29,16 @@ const getFriendlyMessageFromFailureInfo = (
   // TODO: better type-safety for data
 
   switch (failureInfo.code) {
+    case AssetSyncFailureInfoCode.RequestBlocked:
+      return 'The platform blocked our request (eg. with CloudFlare)'
     case AssetSyncFailureInfoCode.ElementNotFound:
       return 'We found the product but the page was missing some required data'
     case AssetSyncFailureInfoCode.ScrapeOther:
       return 'We found the product but something stopped us from getting data (eg. you must login to continue, they changed their HTML page structure, etc.)'
     case AssetSyncFailureInfoCode.InvalidProductUrl:
       return `The platform told us the URL is invalid: ${failureInfo.data.url}`
+    case AssetSyncFailureInfoCode.ProductNotFound:
+      return `The platform told us the product does not exist (404)`
     case AssetSyncFailureInfoCode.Stalled:
       return 'We spent too long processing this asset (it might have some 4K images that caused us to run out of memory)'
     case AiErrorCode.PromptBlocked:
