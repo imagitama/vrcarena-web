@@ -2,14 +2,16 @@ import { QueuedItemFailureInfo } from '@/queues'
 import Tooltip from '../tooltip'
 
 // TODO: move to more specific spot
-enum AssetSyncFailureInfoCode {
+export enum AssetSyncFailureInfoCode {
   Unknown = 'Unknown',
   ScrapeOther = 'ScrapeOther',
   ElementNotFound = 'ElementNotFound',
   InvalidProductUrl = 'InvalidProductUrl',
-  Stalled = 'Stalled', // function times out / runs out of memory
+  Stalled = 'Stalled', // times out / runs out of memory
   ProductNotFound = 'ProductNotFound',
   RequestBlocked = 'RequestBlocked',
+  AssetAlreadyExists = 'AssetAlreadyExists',
+  FailedToCreateAsset = 'FailedToCreateAsset',
 }
 
 enum AiErrorCode {
@@ -41,21 +43,13 @@ const getFriendlyMessageFromFailureInfo = (
       return `The platform told us the product does not exist (404)`
     case AssetSyncFailureInfoCode.Stalled:
       return 'We spent too long processing this asset (it might have some 4K images that caused us to run out of memory)'
+    case AssetSyncFailureInfoCode.FailedToCreateAsset:
+      return 'An asset with that source URL already exists'
     case AiErrorCode.PromptBlocked:
       return `The AI blocked our prompt: ${failureInfo.data.reason}`
     case AiErrorCode.PromptEndedEarly:
       return `The AI ended their response early: ${failureInfo.data.finishReason}`
     default:
-      // TODO: use error codes for these
-      switch (failureInfo.error) {
-        case 'AutoSyncErrorAssetAlreadyExists':
-          return `An asset with that source URL already exists`
-        case 'ScrapeErrorRequestNotOk':
-          return 'We failed to visit the URL (are you sure it exists?)'
-        case 'AutoSyncErrorFailedToProcessImages':
-          return 'Something failed with downloading images (the platform probably detected our attempt and blocked it)'
-      }
-
       if (messages && failureInfo.error in messages)
         return messages[failureInfo.error]
 
