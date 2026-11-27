@@ -43,8 +43,10 @@ const getFriendlyMessageFromFailureInfo = (
       return `The platform told us the product does not exist (404)`
     case AssetSyncFailureInfoCode.Stalled:
       return 'We spent too long processing this asset (it might have some 4K images that caused us to run out of memory)'
-    case AssetSyncFailureInfoCode.FailedToCreateAsset:
+    case AssetSyncFailureInfoCode.AssetAlreadyExists:
       return 'An asset with that source URL already exists'
+    case AssetSyncFailureInfoCode.FailedToCreateAsset:
+      return 'We failed to create the asset for some reason'
     case AiErrorCode.PromptBlocked:
       return `The AI blocked our prompt: ${failureInfo.data.reason}`
     case AiErrorCode.PromptEndedEarly:
