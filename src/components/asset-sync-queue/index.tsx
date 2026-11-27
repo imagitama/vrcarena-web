@@ -33,6 +33,7 @@ import {
   QueueStatus,
   FullAssetSyncQueueItem,
   Intent,
+  Source,
 } from '@/modules/assetsyncqueue'
 import { Asset, FullAsset, ViewNames } from '@/modules/assets'
 import { DataStoreErrorCode, updateRecord } from '@/data-store'
@@ -396,6 +397,21 @@ const QueuedItemRow = ({
             queuedItem.createdassetid ? (
               <>
                 <br />
+                {queuedItem.result?.source === Source.Wayback && (
+                  <>
+                    <small>
+                      <WarningIcon /> We used{' '}
+                      <a
+                        href="https://web.archive.org"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        Wayback Machine
+                      </a>{' '}
+                      so the content may be out of date
+                    </small>
+                    <br />
+                  </>
+                )}
                 <small>
                   <WarningIcon /> You must submit your asset for approval (by
                   editing it below)

@@ -13,9 +13,15 @@ export interface FieldsData {
   authorName: string | null
 }
 
+export enum Source {
+  Actual = 'actual',
+  Wayback = 'wayback',
+}
+
 export interface AssetSyncResult {
-  fields: Partial<Asset>,
+  fields: Partial<Asset>
   fieldsData: FieldsData
+  source: Source
 }
 
 export enum Intent {
