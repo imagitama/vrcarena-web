@@ -169,14 +169,14 @@ const VisitSourceButton = ({
           analyticsEvent || 'Click visit source button',
           { url: sourceInfo.url, assetId }
         )
-        trackInternalAction(
-          supabase,
-          analyticsCategoryName,
-          analyticsEvent || 'Click visit source button',
-          AssetsCollectionNames.Assets,
-          assetId || '',
-          { url: sourceInfo.url }
-        )
+        // trackInternalAction(
+        //   supabase,
+        //   analyticsCategoryName,
+        //   analyticsEvent || 'Click visit source button',
+        //   AssetsCollectionNames.Assets,
+        //   assetId || '',
+        //   { url: sourceInfo.url }
+        // )
       }
     } catch (err) {
       console.error('Failed to save to database', err)
