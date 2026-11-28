@@ -15,5 +15,5 @@ export interface FullActivityEntry extends ActivityEntry {
 }
 
 export enum ViewNames {
-  FullActivity = 'fullactivity', // TODO: Rename with "get"
+  GetFullActivity = 'getfullactivity',
 }

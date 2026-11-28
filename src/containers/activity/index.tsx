@@ -71,7 +71,7 @@ export default () => {
       </Helmet>
       <Message>Updated every 15 minutes</Message>
       <PaginatedView<FullHistoryEntry>
-        viewName={ViewNames.FullActivity}
+        viewName={ViewNames.GetFullActivity}
         name="history"
         defaultFieldName="createdat"
         urlWithSubViewNameAndPageNumberVar={routes.activityWithPageNumberVar}>
