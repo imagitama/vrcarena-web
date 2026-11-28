@@ -24,12 +24,9 @@ import {
 import { routes } from '@/routes'
 
 import Button from '@/components/button'
-import ViewControls from '@/components/view-controls'
-import EditorBox from '@/components/editor-box'
 import FormattedDate from '@/components/formatted-date'
 import AwardRepButton from '@/components/award-rep-button'
 import AiResult, { ConfidenceScore } from '@/components/ai-result'
-import Heading from '@/components/heading'
 import StatusText from '@/components/status-text'
 import AiEvaluationResult from '@/components/ai-evaluation-result'
 import ErrorBoundary from '@/components/error-boundary'

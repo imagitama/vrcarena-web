@@ -16,7 +16,6 @@ import {
   CollectionNames as AssetsCollectionNames,
   FullAsset,
   FullAssetEditor,
-  FullAssetExtra,
 } from '@/modules/assets'
 
 import useIsEditor from '@/hooks/useIsEditor'

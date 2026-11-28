@@ -31,8 +31,6 @@ import NoResultsMessage from '@/components/no-results-message'
 import LoadingIndicator from '@/components/loading-indicator'
 import SuccessMessage from '@/components/success-message'
 import Heading from '@/components/heading'
-import FormattedDate from '@/components/formatted-date'
-import FailureInfoOutput from '@/components/failure-info-output'
 import {
   ConnectionStatus,
   getConnectionStatusFromHookResult,

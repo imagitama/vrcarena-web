@@ -95,7 +95,7 @@ const AssetEditor = ({
               <br />
             </Column>
           )}
-        {assetId && asset && isAiFeaureEnabled && (
+        {/* {assetId && asset && isAiFeaureEnabled && (
           <Column>
             <ExperimentalArea title="We are experimenting with AI to see what works and what doesn't. It is complicated and fragile. If it does not work please report it in our Discord server.">
               <AiArea
@@ -111,7 +111,7 @@ const AssetEditor = ({
               </AiArea>
             </ExperimentalArea>
           </Column>
-        )}
+        )} */}
       </Columns>
       <GenericEditor
         key={reRenderKey} // force re-render after sync
