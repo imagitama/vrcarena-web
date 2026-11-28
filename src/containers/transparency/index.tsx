@@ -67,7 +67,7 @@ const Incident = () => (
     source={`# 18 Nov 2026 Attack
   
 On the 18th of November 2026, an attacker used a basic vulnerability in our database to gain admin-level access to the database and storage.
-They replaced all text and images with a "you have been hacked" message also mentioning some other VR marketplace websites. It is not clear why we were targetted and it seems like a random attack.
+They replaced all text and images with a "you have been hacked" message also mentioning some other VR marketplace websites. It is not clear why we were targeted and it seems like a random attack.
 
 ## Data exposed
 
@@ -92,12 +92,6 @@ Authentication has always been handled on a separate platform outside of the dat
 - The vulnerability has been patched.
 - The codebase has been thoroughly analysed and improved and several other vulnerabilities have been patched.
 - Most images have been restored. Thanks to [Wayback Machine](https://web.archive.org/) for archiving our archive!
-
-## Status
-
-✅ Website is live and data restored  
-⚠️ Login and sign up have been disabled (and will remain disabled for another week or two)  
-⚠️ ~3000 assets have missing images and will be automatically fixed over the coming weeks/months
 
 I'm sorry this happened. I try my best to secure everyone's data and the website in general but this slipped through the cracks.
 More effort will be put into security going forwards. If you have any comments please reach out via Discord.
